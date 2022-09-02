@@ -47,7 +47,7 @@
 .box input[type="text"]:focus,
 .box input[type="password"]:focus {
     min-width: 350px;
-    border-color: rgb(25, 19, 80)
+    border-color: rgb(250, 44, 21)
 }
 
 .box input[type="submit"] {
