@@ -126,6 +126,43 @@ module.exports = {
             return error
         }
     },
+    updatePassword: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const LoggedOnUser = 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+            if (!Body.Password) return res.send({ message: "Invalid Query Data" })
+
+            const pass = await pass_init.hash_password(Body.Password)
+
+            doesExist = await connection.query(`select * from user where ID = '${Body.ID}' and Status = 1`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "User does not exists" })
+            }
+
+            const updateUser = await connection.query(`update user set Password = '${pass}' where ID = ${Body.ID}`)
+
+            console.log(connected("User Password Updated SuccessFUlly !!!"));
+
+
+            const User = await connection.query(`select * from user where ID = ${Body.ID}`)
+
+
+
+            response.message = "data update sucessfully"
+            response.data = User[0]
+            res.send(response)
+            connection.release()
+        } catch (error) {
+            return error
+        }
+    },
     update: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
@@ -166,13 +203,13 @@ module.exports = {
 
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
-           const doesExist = await connection.query(`select * from company where Status = 1 and ID = '${Body.ID}'`)
+            const doesExist = await connection.query(`select * from company where Status = 1 and ID = '${Body.ID}'`)
 
-           if (!doesExist.length) {
-            return res.send({message: "company doesnot exist from this id "})
-           }
+            if (!doesExist.length) {
+                return res.send({ message: "company doesnot exist from this id " })
+            }
 
-           console.log(doesExist, 'cc');
+            console.log(doesExist, 'cc');
 
             const deleteCompany = await connection.query(`update company set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
 
@@ -218,7 +255,7 @@ module.exports = {
             return error
         }
     },
-   
+
     list: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
