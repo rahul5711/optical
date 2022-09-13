@@ -8,7 +8,6 @@ router.post('/user', Controller.getUser)
 router.post('/list', Controller.list)
 router.post('/update', Controller.update)
 router.post('/delete', Controller.delete)
-router.post('/login', Controller.login)
 
 
 

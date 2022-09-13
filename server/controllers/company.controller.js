@@ -218,27 +218,7 @@ module.exports = {
             return error
         }
     },
-    login: async (req, res, next) => {
-        try {
-            const response = { data: null, success: true, message: "" }
-            const connection = await getConnection.connection();
-
-            const Body = req.body;
-
-            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
-
-            const User = await connection.query(`select * from user where LoginName = '${Body.LoginName}' and Status = 1`)
-
-            const isValidPassword = await pass_init.is_valid_password(`${Body.Password}`, `${User[0].Password}`)
-
-            response.message = "User Login sucessfully"
-            response.data = User[0]
-            connection.release()
-            res.send(response)
-        } catch (error) {
-            return error
-        }
-    },
+   
     list: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
