@@ -1,5 +1,7 @@
 const JWT = require('jsonwebtoken')
 const createError = require('http-errors')
+require('dotenv').config();
+const client = require('./init_redis')
 
 
 
@@ -59,19 +61,9 @@ module.exports = {
       }
       JWT.sign(payload, secret, options, (err, token) => {
         if (err) {
-          console.log(err.message)
-          // reject(err)
           reject(createError.InternalServerError())
         }
-
-        client.SET(userId, token, 'EX', 365 * 24 * 60 * 60, (err, reply) => {
-          if (err) {
-            console.log(err.message)
-            reject(createError.InternalServerError())
-            return
-          }
           resolve(token)
-        })
       })
     })
   },

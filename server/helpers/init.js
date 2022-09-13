@@ -26,7 +26,7 @@ const init = async () => {
                 PhotoURL:'',
                 Document: [],
                 LoginName: 'rahul',
-                Password: await pass_init.hash_password('9752885711'),
+                Password: await pass_init.hash_password('rahulgothi'),
                 Status:1,
                 CreatedBy: 0,
                 UpdatedBy: 0,
@@ -42,7 +42,6 @@ const init = async () => {
 
 
            console.log(connected("Super Admin Created SuccessFully !!!!"));
-           console.log(savedata); 
         }
 
         // connection.release()
