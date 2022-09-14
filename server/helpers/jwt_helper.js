@@ -36,16 +36,6 @@ module.exports = {
           err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message
         return next(createError.Unauthorized(message))
       }
-
-    //   const user = await User.findOne({ _id: mongoose.Types.ObjectId(payload.aud) }, {passwordConfirm: 0, __v: 0,  password: 0})
-    // // console.log(user , payload.aud, 'user');
-    //   const role = await Role.findOne({ _id: user.role })
-    //   req.user = user
-    //   req.role = role
-      // if (permissionData && !(req.role.permission[permissionData.permission[0]][permissionData.permission[1]])) {
-      //   const message = 'Unauthorized'
-      //   return next(createError.Unauthorized(message))
-      // }
       req.payload = payload
       next()
     })
@@ -75,15 +65,16 @@ module.exports = {
         (err, payload) => {
           if (err) return reject(createError.Unauthorized())
           const userId = payload.aud
-          client.GET(userId, (err, result) => {
-            if (err) {
-              console.log(err.message)
-              reject(createError.InternalServerError())
-              return
-            }
-            if (refreshToken === result) return resolve(userId)
-            reject(createError.Unauthorized())
-          })
+          // client.GET(userId, (err, result) => {
+          //   if (err) {
+          //     reject(createError.InternalServerError())
+          //     return
+          //   }
+          //   if (refreshToken === result) return resolve(userId)
+          //   reject(createError.Unauthorized())
+          // })
+          return resolve(userId)          
+          // next()
         }
       )
     })
