@@ -209,7 +209,6 @@ module.exports = {
                 return res.send({ message: "company doesnot exist from this id " })
             }
 
-            console.log(doesExist, 'cc');
 
             const deleteCompany = await connection.query(`update company set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
 
@@ -260,7 +259,7 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
-
+            console.log(req , 'req');
             const Body = req.body;
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
@@ -304,7 +303,6 @@ module.exports = {
 
             let finalQuery = qry + skipQuery;
 
-            console.log(finalQuery);
 
             let data = await connection.query(finalQuery);
             let count = await connection.query(qry);

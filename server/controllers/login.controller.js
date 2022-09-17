@@ -26,17 +26,19 @@ module.exports = {
 
             const Body = req.body;
 
-            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data", loginCode: 0 })
+            if (!Body.LoginName) return res.send({ message: "Invalid Query Data", loginCode: 0 })
+            if (!Body.Password) return res.send({ message: "Invalid Query Data", loginCode: 0 })
 
             const User = await connection.query(`select * from user where LoginName = '${Body.LoginName}' and Status = 1`)
 
             if (!User.length) {
-                return res.send({ message: "LoginName doesnot matched" })
+                return res.send({ message: "LoginName doesnot matched",loginCode: 0 })
             }
             const isValidPassword = await pass_init.is_valid_password(`${Body.Password}`, `${User[0].Password}`)
 
             if (!isValidPassword) {
-                return res.send({ message: "Password doesnot matched" })
+                return res.send({ message: "Password doesnot matched", loginCode: 0 })
             }
 
             if (User[0].UserGroup === 'SuperAdmin') {
@@ -62,7 +64,7 @@ module.exports = {
                
 
                 if (todate > expDate) {
-                  return res.send({message: "Plan Expired"})  
+                  return res.send({message: "Plan Expired", loginCode: 0})  
                 }
 
                 if (User[0].UserGroup === "CompanyAdmin") {
@@ -75,6 +77,9 @@ module.exports = {
 
                     );
 
+                    console.log(setting[0].SmsSetting);
+                    setting[0].WelComeNote = JSON.parse(setting[0].WelComeNote)
+                    setting[0].SmsSetting = JSON.parse(setting[0].SmsSetting)
                     return res.send({ message: "User Login sucessfully", User: User[0], Company: company[0], CompanySetting: setting[0], success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
                 } else {
                     
