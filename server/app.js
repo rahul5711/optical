@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 require('./helpers/init');
 require('dotenv').config();
+const cors = require('cors')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -13,6 +14,16 @@ const connected = chalk.bold.cyan;
 
 var app = express();
 const http = require('http').Server(app)
+
+app.use(cors())
+
+// app.use(function(req, res, next) {
+//   res.setHeader('Access-Control-Allow-Origin', req.header('Origin'));
+//   res.setHeader('Access-Control-Allow-Methods',req.method);
+//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+//   res.setHeader('Access-Control-Allow-Credentials', true);
+//   next();
+// });
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -43,6 +54,18 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// var whitelist = ['http://localhost:4200', 'http://localhost:3000']
+// var corsOptions = {
+//   origin: function (origin, callback) {
+//     if (whitelist.indexOf(origin) !== -1) {
+//       callback(null, true)
+//     } else {
+//       callback(new Error('Not allowed by CORS'))
+//     }
+//   }
+// }
+
 
 const PORT = process.env.PORT || 3000
 

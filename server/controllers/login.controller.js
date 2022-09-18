@@ -23,17 +23,17 @@ module.exports = {
 
             const Body = req.body;
 
-            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+            if (_.isEmpty(Body)) res.send({success: false, message: "Invalid Query Data" })
 
             const User = await connection.query(`select * from user where LoginName = '${Body.LoginName}' and Status = 1`)
 
             if (!User.length) {
-              return res.send({message:"LoginName doesnot matched"})  
+              return res.send({success: false,message:"LoginName doesnot matched"})  
             }
             const isValidPassword = await pass_init.is_valid_password(`${Body.Password}`, `${User[0].Password}`)
 
             if (!isValidPassword) {
-                return res.send({message:"Password doesnot matched"})    
+                return res.send({success: false,message:"Password doesnot matched"})    
             }
 
             if (User[0].UserGroup === 'SuperAdmin') {

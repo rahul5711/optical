@@ -4,6 +4,9 @@ import {NgForm} from '@angular/forms';
 import * as  particlesJS from 'angular-particle';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AlertService } from '../service/alert.service';
+import { AuthServiceService } from '../service/auth-service.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -12,11 +15,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class LoginComponent implements OnInit {
   particlesJS: any;
-  data = {UserName : '', Password:''}
+  data = {LoginName : '', Password:''}
 
   constructor(  private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,) { }
+    private snackBar: MatSnackBar,
+    public as: AlertService,
+    private auth: AuthServiceService
+    ) { }
   
 
   ngOnInit(): void {
@@ -25,7 +31,27 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(){
-    console.log(this.data,);
-    this.router.navigate(['/admin/CompanyDashborad']);
+    if(this.data.LoginName === "") {
+     return this.as.errorToast("please fill up login name")
+    }
+    if (this.data.Password === "") {
+     return this.as.errorToast("please fill up password")
+    }
+
+    const subs: Subscription = this.auth.login(this.data).subscribe({
+      next: (res: any) => {
+        console.log(res , 'response');
+        
+        if (res.success == true) {
+         this.as.successToast(res.message)
+        }
+        else {
+          this.as.errorToast(res.message);
+        }
+      },
+      error: (err: any) => console.log(err .message),
+      complete: () => subs.unsubscribe(),
+    });
+    // this.router.navigate(['/admin/CompanyDashborad']);
   }
 }

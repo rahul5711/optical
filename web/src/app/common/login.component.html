@@ -24,12 +24,12 @@
                 </div>
               </div>
               <p class="text-light"> Please enter your login and password!</p>
-              <input matInput type="text" name="Username" placeholder="Username" [(ngModel)]="data.UserName" required>
+              <input matInput type="text" name="LoginName" placeholder="LoginName" [(ngModel)]="data.LoginName" required>
               <input matInput type="password" name="Password" placeholder="Password" [(ngModel)]="data.Password"
                 required>
               <a class="forgot text-light" href="#">Forgot password?</a>
               <br>
-              <button class="logibtn" [disabled]="!f.valid">Login</button>
+              <button class="logibtn" >Login</button>
               <div class="col-md-12">
                 <ul class="social-network social-circle">
                   <li><a href="#" class="icoFacebook" title="Facebook"><i class="fa-brands fa-facebook"></i></a></li>

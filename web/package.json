@@ -26,6 +26,7 @@
     "bootstrap": "^5.2.1",
     "jquery": "^3.6.1",
     "ng-particles": "^2.2.2",
+    "ngx-toastr": "^14.3.0",
     "particlesjs": "^2.2.3",
     "popper.js": "^1.16.1",
     "rxjs": "~7.4.0",
