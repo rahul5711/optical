@@ -260,7 +260,7 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
-
+            console.log(req.user.CompanyID , 'req');
             const Body = req.body;
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 

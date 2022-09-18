@@ -2,6 +2,7 @@ const JWT = require('jsonwebtoken')
 const createError = require('http-errors')
 require('dotenv').config();
 const client = require('./init_redis')
+const getConnection = require('../helpers/db')
 
 
 
@@ -46,6 +47,9 @@ module.exports = {
       //   const message = 'Unauthorized'
       //   return next(createError.Unauthorized(message))
       // }
+      const connection = await getConnection.connection();
+      const user = await connection.query(`select * from user where ID = ${payload.aud}`)
+      req.user = user[0]
       req.payload = payload
       next()
     })

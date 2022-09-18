@@ -11,13 +11,19 @@ import { Company } from '../interface/Company';
 export class CompanyService {
 
   constructor(private httpClient: HttpClient) { }
-  private url = 'http://localhost:3000';
+  private url = 'http://localhost:3000/company';
   
   
   createCompany(Body: Company): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams()
     return this.httpClient.post<any>(this.url + '/create', Body, { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
+  getList(Body: any): Observable<any> {
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/list', Body, { params })
     .pipe(catchError(this.handleError));
   }
 

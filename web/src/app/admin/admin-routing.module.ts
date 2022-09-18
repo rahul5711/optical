@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { CompanyListComponent } from './company-list.component';
 import { CompanyComponent } from './company.component';
 import { DashboradComponent } from './dashborad.component';
 import { EmployeeComponent } from './employee/employee.component';
@@ -17,6 +18,7 @@ children: [
   { path: 'shopList', component: ShopListComponent },
   { path: 'employee', component: EmployeeComponent },
   { path: 'employeeList', component: EmpolyeeListComponent },
+  { path: 'companyList', component: CompanyListComponent },
    
 ]}
 ]

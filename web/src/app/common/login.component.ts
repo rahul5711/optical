@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
-import {NgForm} from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import * as  particlesJS from 'angular-particle';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AlertService } from '../service/alert.service';
 import { AuthServiceService } from '../service/auth-service.service';
 import { Subscription } from 'rxjs';
+import { TokenService } from '../service/token.service';
 
 @Component({
   selector: 'app-login',
@@ -15,45 +16,50 @@ import { Subscription } from 'rxjs';
 })
 export class LoginComponent implements OnInit {
   particlesJS: any;
-  data = {LoginName : '', Password:''}
+  data = { LoginName: '', Password: '' }
 
-  constructor(  private router: Router,
+  constructor(private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     public as: AlertService,
-    private auth: AuthServiceService
-    ) { }
-  
+    private auth: AuthServiceService,
+    private token: TokenService,
+
+  ) { }
+
 
   ngOnInit(): void {
 
 
   }
 
-  onSubmit(){
-    if(this.data.LoginName === "") {
-     return this.as.errorToast("please fill up login name")
+  onSubmit() {
+    if (this.data.LoginName === "") {
+      return this.as.errorToast("please fill up login name")
     }
     if (this.data.Password === "") {
-     return this.as.errorToast("please fill up password")
+      return this.as.errorToast("please fill up password")
     }
 
     const subs: Subscription = this.auth.login(this.data).subscribe({
       next: (res: any) => {
-        console.log(res , 'response');
-        
+        console.log(res, 'response');
+
         if (res.success == true) {
 
-         this.as.successToast(res.message)
-         this.router.navigate(['/admin/CompanyDashborad']);
+          this.as.successToast(res.message)
+          this.token.setToken(res.accessToken);
+          this.token.refreshToken(res.refreshToken);
+          localStorage.setItem('user', JSON.stringify(res.data));
+          this.router.navigate(['/admin/CompanyDashborad']);
         }
         else {
           this.as.errorToast(res.message);
         }
       },
-      error: (err: any) => console.log(err .message),
+      error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-  
+
   }
 }
