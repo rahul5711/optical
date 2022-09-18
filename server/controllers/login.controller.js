@@ -16,7 +16,6 @@ const connected = chalk.bold.cyan;
 module.exports = {
 
 
-    
     login: async (req, res, next) => {
         try {
             const response = { data: null,accessToken: null,refreshToken: null, success: true, message: "" }
@@ -50,10 +49,9 @@ module.exports = {
         }
 
             connection.release()
-        } catch (error) {
+        }   catch (error) {
             return error
         }
     }
     
-
 }

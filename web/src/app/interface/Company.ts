@@ -1,0 +1,32 @@
+export class Company {
+  ID?: number;
+  CompanyName?: string;
+  MobileNo1?: string;
+  MobileNo2?: string;
+  PhoneNo?: string;
+  Address?: string;
+  Country? : string;
+  State? : string;
+  City? : string;
+  Email?: string;
+  Website?: string;
+  GSTNo?: string;
+  CINNo?: string;
+  LogoURL?: string;
+  Remark?: string;
+  Plan?: string;
+  Version?: string;
+  NoOfShops?: string;
+  EffectiveDate?: Date ;
+  CancellationDate?: Date;
+  WhatsappMsg? : Boolean;
+  EmailMsg? : Boolean;
+  WholeSale? :Boolean;
+  RetailPrice? :Boolean;
+  Status?: number;
+  CreatedBy?: number;
+  CreatedOn?: any;
+  UpdatedBy?: number;
+  UpdatedOn?: any;
+  dataFormat: any;
+}

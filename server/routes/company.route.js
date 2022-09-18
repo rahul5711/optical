@@ -11,6 +11,4 @@ router.post('/list', verifyAccessTokenAdmin, Controller.list)
 router.post('/update', Controller.update)
 router.post('/delete', Controller.delete)
 
-
-
 module.exports = router

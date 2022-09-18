@@ -37,11 +37,11 @@ module.exports = {
         return next(createError.Unauthorized(message))
       }
 
-    //   const user = await User.findOne({ _id: mongoose.Types.ObjectId(payload.aud) }, {passwordConfirm: 0, __v: 0,  password: 0})
-    // // console.log(user , payload.aud, 'user');
-    //   const role = await Role.findOne({ _id: user.role })
-    //   req.user = user
-    //   req.role = role
+      // const user = await User.findOne({ _id: mongoose.Types.ObjectId(payload.aud) }, {passwordConfirm: 0, __v: 0,  password: 0})
+      // console.log(user , payload.aud, 'user');
+      // const role = await Role.findOne({ _id: user.role })
+      // req.user = user
+      // req.role = role
       // if (permissionData && !(req.role.permission[permissionData.permission[0]][permissionData.permission[1]])) {
       //   const message = 'Unauthorized'
       //   return next(createError.Unauthorized(message))

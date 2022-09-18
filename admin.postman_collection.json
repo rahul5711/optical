@@ -1,0 +1,260 @@
+{
+	"info": {
+		"_postman_id": "e9f44c22-c2eb-4970-afb1-09aa2cbdd218",
+		"name": "admin",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Company",
+			"item": [
+				{
+					"name": "create company",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"CompanyName\": \"patidar pvt\",\r\n    \"MobileNo1\": \"9752885711\",\r\n    \"MobileNo2\": \"9752885711\",\r\n    \"PhoneNo\": \"9131860873\",\r\n    \"Address\": \"3 sunil nagar indore\",\r\n    \"Country\": \"india\",\r\n    \"State\": \"mp\",\r\n    \"City\": \"indore\",\r\n    \"Email\": \"racchgdedjggrrgfeeveevjccihhdc@gmail.com\",\r\n    \"Website\": \"www.abc.com\",\r\n    \"GSTNo\": \"9131860873\",\r\n    \"CINNo\": \"9131860873\",\r\n    \"Remark\": \"9131860873\",\r\n    \"Plan\": 1,\r\n    \"Version\": \"Basic\",\r\n    \"EffectiveDate\": \"17/05/1995\",\r\n    \"CancellationDate\": \"25/05/2003\",\r\n    \"EmailMsg\": \"true\",\r\n    \"WhatsappMsg\": \"true\",\r\n    \"WholeSale\": \"true\",\r\n    \"Name\": \"rahul gothi\",\r\n    \"DOB\": \"17/05/1995\",\r\n    \"Anniversary\": \"17/05/1995\",\r\n    \"Branch\": \"pune\",\r\n    \"PhotoURL\": \"\",\r\n    \"Document\": \"\",\r\n    \"LoginName\": \"dggfeerreefcffkdd\",\r\n    \"Password\": \"rahulg\",\r\n    \"CommissionType\": 0,\r\n    \"CommissionMode\": 0,\r\n    \"CommissionValue\": 0,\r\n    \"CommissionValueNB\": 0,\r\n    \"NoOfShops\": 2,\r\n    \"LogoURL\": \"\",\r\n    \"RetailPrice\": \"true\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/company/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update Company",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 88,\r\n    \"CompanyName\": \"patidar pvt\",\r\n    \"MobileNo1\": \"9752885711\",\r\n    \"MobileNo2\": \"9752885711\",\r\n    \"PhoneNo\": \"9131860873\",\r\n    \"Address\": \"3 sunil nagar indore\",\r\n    \"Country\": \"indiaa\",\r\n    \"State\": \"mp\",\r\n    \"City\": \"indore\",\r\n    \"Email\": \"rahulberchha@gmail.com\",\r\n    \"Website\": \"www.abc.com\",\r\n    \"GSTNo\": \"9131860873\",\r\n    \"CINNo\": \"9131860873\",\r\n    \"Remark\": \"9131860873\",\r\n    \"Plan\": 1,\r\n    \"Version\": \"Basic\",\r\n    \"EffectiveDate\": \"17/05/1995\",\r\n    \"CancellationDate\": \"25/05/2003\",\r\n    \"EmailMsg\": \"true\",\r\n    \"WhatsappMsg\": \"true\",\r\n    \"WholeSale\": \"true\",\r\n    \"NoOfShops\": 2,\r\n    \"LogoURL\": \"\",\r\n    \"RetailPrice\": \"true\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/company/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCompanyById",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 75\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/company/getCompanyById",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"getCompanyById"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJgghbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjMwODg5MjAsImV4cCI6MTY2MzE3NTMyMCwiYXVkIjoiJzQzNCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.LL3KSG4urqY3d7kylwOiBbmGQVwSfU7-IW2qN-lVpZE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/company/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/company/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 435,\r\n    \"Password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/company/updatePassword",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"updatePassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 117\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/company/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "login",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"LoginName\": \"rahul\",\r\n    \"Password\": \"rahulgothi\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -3,15 +3,15 @@ import { RouterModule, Routes } from '@angular/router';
 import { CommonComponent } from './common/common.component';
 import { LoginComponent } from './common/login.component';
 import { AuthGuard } from './auth/auth.guard';
+import { WelcomeComponent } from './admin/welcome.component';
 
 const routes: Routes = [
   
-  {path: '' , component: LoginComponent},
+  {path: '' , component: WelcomeComponent},
+  {path: 'login' , component: LoginComponent},
   {path: '', component: CommonComponent,
   children: [
-    { path: 'admin',  loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule),canActivate: [AuthGuard]},
-   
-    
+    { path: 'admin',  loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)},
      ]
   },
 ];
