@@ -16,6 +16,7 @@
     "jade": "^1.11.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
+    "moment-timezone": "^0.5.37",
     "morgan": "^1.9.1",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.19",
