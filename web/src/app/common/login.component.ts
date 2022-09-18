@@ -43,7 +43,9 @@ export class LoginComponent implements OnInit {
         console.log(res , 'response');
         
         if (res.success == true) {
+
          this.as.successToast(res.message)
+         this.router.navigate(['/admin/CompanyDashborad']);
         }
         else {
           this.as.errorToast(res.message);
@@ -52,6 +54,6 @@ export class LoginComponent implements OnInit {
       error: (err: any) => console.log(err .message),
       complete: () => subs.unsubscribe(),
     });
-    // this.router.navigate(['/admin/CompanyDashborad']);
+  
   }
 }
