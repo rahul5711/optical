@@ -29,7 +29,7 @@ export class CompanyComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private companyService: CompanyService,
+    private cs: CompanyService,
   ) {}
 
   color: ThemePalette = 'primary';
@@ -39,10 +39,9 @@ export class CompanyComponent implements OnInit {
   {ID: 3, Name: 'Half Yearly Plan (180 Days)', days: 180},
   {ID: 4, Name: 'Yearly Plan (365 Days)' , days: 360}];
 
-  data : Company = {
-    ID: 0, CompanyName: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', Country: '', State: '', City: '', Email: '', Website: '',
-    GSTNo: '', CINNo: '', LogoURL: '', Remark: '', Plan: '', Version: '', NoOfShops: '', EffectiveDate: new Date(),
-    CancellationDate:  new Date(), WhatsappMsg: false, EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: 0, CreatedOn: null, UpdatedBy: 0, UpdatedOn: null,
+  data : any = {
+    ID: null, CompanyName: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', Country: '', State: '', City: '', Email: '', Website: '', GSTNo: '', CINNo: '', LogoURL: '', Remark: '', Plan: '', Version: '', NoOfShops: '', EffectiveDate: new Date(),
+    CancellationDate:  new Date(), WhatsappMsg: false, EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null,
     dataFormat: undefined
   };
 
@@ -54,10 +53,34 @@ export class CompanyComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  copyData(val: any) {
+    if (val) {
+      this.data1.Name = this.data.CompanyName;
+      this.data1.MobileNo1 = this.data.MobileNo1;
+      this.data1.MobileNo2 = this.data.MobileNo2;
+      this.data1.PhoneNo = this.data.PhoneNo;
+      this.data1.Address = this.data.Address;
+      this.data1.Email = this.data.Email;
+    }
+  }
+
   onsubmit() {
-    const subs: Subscription =  this.companyService.createCompany(this.data1).subscribe({
+    const subs: Subscription =  this.cs.createCompany('saveCompany',this.data).subscribe({
       next: (res: any) => {
         this.dataList = res.result;
+        console.log(this.dataList);
+        this.data1.UserGroup = 'CompanyAdmin';
+        const sub: Subscription =  this.cs.saveUser('saveUser',this.data1).subscribe({
+          next: (res1: any) => {
+
+            console.log(res1.result);
+            
+          },
+          error: (err: any) => {
+            console.log(err.msg);
+          },
+          complete: () => sub.unsubscribe(),
+        });
       },
       error: (err: any) => {
         console.log(err.msg);

@@ -28,6 +28,8 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { TokenInterceptor } from './service/token-interceptor';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgCircleProgressModule } from 'ng-circle-progress';
 // import { NgxPaginationModule } from 'ngx-pagination';
 
 
@@ -73,7 +75,16 @@ import { TokenInterceptor } from './service/token-interceptor';
     MatSlideToggleModule,
     MatMenuModule,
     ToastrModule.forRoot(),
-
+    NgbModule,
+    NgCircleProgressModule.forRoot({
+      // set defaults here
+      radius: 100,
+      outerStrokeWidth: 16,
+      innerStrokeWidth: 8,
+      outerStrokeColor: "#78C000",
+      innerStrokeColor: "#C7E596",
+      animationDuration: 300,
+    }),
   ],
   providers: [
     {

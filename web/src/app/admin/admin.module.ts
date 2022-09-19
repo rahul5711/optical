@@ -29,6 +29,9 @@ import { LoginHistoryComponent } from './login-history/login-history.component';
 import { CompanySettingComponent } from './company-setting/company-setting.component';
 import { ShopListComponent } from './shop-list/shop-list.component';
 import { EmpolyeeListComponent } from './empolyee-list/empolyee-list.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgCircleProgressModule } from 'ng-circle-progress';
+
 
 @NgModule({
   declarations: [
@@ -68,6 +71,16 @@ import { EmpolyeeListComponent } from './empolyee-list/empolyee-list.component';
     MatCheckboxModule,
     MatTabsModule,
     AdminRoutingModule,
+    NgbModule,
+    NgCircleProgressModule.forRoot({
+      // set defaults here
+      radius: 100,
+      outerStrokeWidth: 16,
+      innerStrokeWidth: 8,
+      outerStrokeColor: "#78C000",
+      innerStrokeColor: "#C7E596",
+      animationDuration: 300,
+    }),
   ],
   exports: [
     FormsModule, ReactiveFormsModule,

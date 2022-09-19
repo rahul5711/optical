@@ -110,10 +110,56 @@ $OguruPro-theme: mat.define-light-theme((
 
 }
 .table>thead {
-    vertical-align: bottom;
+ 
     background: #e2e2e2;
     color: #000;
 }
+
+.table thead tr th {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    color: #000 !important;
+    font-weight: bolder;
+    font-size: 14px;
+    text-align: center;
+    vertical-align: text-top;
+}
+
+ .table tbody tr td {
+
+    font-size: 12px !important;
+    }
+    thead  {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        vertical-align: top;
+        
+    }
+    
+    thead [scope=row] {
+        position: -webkit-sticky;
+        position: sticky;
+        left: 0;
+        z-index: 1;
+    }
+    
+    thead [scope=row] {
+        vertical-align: top;
+        color: inherit;
+    }
+    
+    thead :not([scope=row]):first-child {
+        left: 0;
+        z-index: 3;
+        vertical-align: top;
+    }
+
+    .page-link {
+    
+        border-radius: 20px;
+    }
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
@@ -167,3 +213,6 @@ height: 93vh !important;
     background-color: #e3e3e3 !important;
 }
 
+
+/* Importing Bootstrap SCSS file. */
+@import '~bootstrap/scss/bootstrap';

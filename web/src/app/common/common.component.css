@@ -5,6 +5,7 @@
 }
 
 .navbar{
+  z-index: 99;
   height: 50px;
   width: 100%;
   /* padding: 19px 30px; */
@@ -47,10 +48,12 @@
 .drop-content a:hover{
   background-color: rgb(116, 43, 12);
   color: #eee !important;
+
 }
  
 /* responsive navbar toggle button */
 .navbar #nav-check, .navbar .nav-btn{
+ 
   display: none;
 }
  

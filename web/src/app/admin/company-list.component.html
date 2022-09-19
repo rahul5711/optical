@@ -1,1 +1,97 @@
-<p>company-list works!</p>
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                    <div class="card p-0">
+                        <div class="header p-2 py-0 pt-1">
+                            <div class="row">
+                                <div class="col-md-1 p-0 ms-3">
+                                    <h2>Company List
+                                    <circle-progress *ngIf="loader"
+  [percent]="100"
+  [radius]="100"
+  [outerStrokeWidth]="16"
+  [innerStrokeWidth]="8"
+  [outerStrokeColor]="'#78C000'"
+  [innerStrokeColor]="'#C7E596'"
+  [animation]="true"
+  [animationDuration]="300"
+></circle-progress></h2>
+                                </div>
+                                <div class="col-md-2">
+                                    <select class=" form-control"
+                                        style="width: auto; border-radius: 22px;border: 2px solid #495057; font-size: 10px !important;"
+                                        [(ngModel)]="itemsPerPage" (change)="getList();">
+                                        <option [ngValue]="10">Show 10 Row</option>
+                                        <option [ngValue]="25">Show 25 Row</option>
+                                        <option [ngValue]="50">Show 50 Row</option>
+                                        <option [ngValue]="100">Show 100 Row</option>
+                                        <option [ngValue]="250">Show 250Row</option>
+                                        <option [ngValue]="500">Show 500 Row</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mx-auto" style="margin-top:0px;">
+                                    <ngb-pagination class="mx-auto" style="margin: 0px 0 !important;" [ellipses]="false"
+                                        ngbPaginationEllipsis [collectionSize]="collectionSize" #numPages
+                                        [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="getList()"
+                                        [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                                    </ngb-pagination>
+                                </div>
+                                <div class="col-md-2 ms-auto">
+                                    <mat-icon class="col-white plus_icon" [routerLink]="['/admin/company']"
+                                        style="float: right;"> add</mat-icon>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="body  mt-md-2 p-2 ">
+                            <div class="row">
+                                <div class="table-container col-12"
+                                    style="overflow-x:auto;overflow:auto;height:530px; " class="table-responsive">
+                                    <table class="table" style="width:100%;" id="exportsss">
+                                        <thead class="thead-light" style="width:100%;">
+                                            <tr>
+                                                <th>Details</th>
+                                                <th class="text-left">S.No</th>
+                                                <th class="text-left"> Name</th>
+                                                <th class="text-left">OwnerName</th>
+                                                <th class="text-left">Address</th>
+                                                <th class="text-left">City</th>
+                                                <th class="text-left">MobileNo1</th>
+                                                <th class="text-left">Email</th>
+                                                <th class="text-left">EffectiveDate</th>
+                                                <th class="text-left">NoOfShops</th>
+                                                <!-- <th class="text-left">Plan</th> -->
+                                                <th class="text-left">Version</th>
+                                                <th class="text-left">CacellationDate</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="text-center" *ngFor="let data of dataList  ; let i = index;">
+                                                <td><i class="fas fa-info-circle"
+                                                        style="color: rgb(23, 23, 194); font-size: 20px; cursor: pointer;"
+                                                        [routerLink]="['/admin/company',data.ID]"></i></td>
+                                                <td class="text-left">{{ dataList.length - i }}</td>
+                                                <td class="text-left">{{data.Name}}</td>
+                                                <td class="text-left">{{data.OwnerName }}</td>
+                                                <td class="text-left">{{data.Address }}</td>
+                                                <td class="text-left">{{data.City }}</td>
+                                                <td class="text-left">{{data.MobileNo1 }}</td>
+                                                <td class="text-left">{{data.Email}}</td>
+                                                <td class="text-left">{{data.EffectiveDate}}</td>
+                                                <td class="text-left">{{data.NoOfShops}}</td>
+                                                <!-- <td class="text-left">{{data.Plan}}</td> -->
+                                                <td class="text-left">{{data.Version}}</td>
+                                                <td class="text-left">{{data.CancellationDate }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

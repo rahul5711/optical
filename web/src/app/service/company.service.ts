@@ -14,9 +14,16 @@ export class CompanyService {
   private url = 'http://localhost:3000/company';
   
   
-  createCompany(Body: Company): Observable<any> {
+  createCompany(TableName:any, Body: any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams()
+    const params = new HttpParams().set('TableName', TableName);
+    return this.httpClient.post<any>(this.url + '/create', Body, { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
+  saveUser(TableName:any, Body: any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams().set('TableName', TableName);
     return this.httpClient.post<any>(this.url + '/create', Body, { headers, params })
     .pipe(catchError(this.handleError));
   }
