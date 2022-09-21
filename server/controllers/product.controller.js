@@ -28,7 +28,7 @@ module.exports = {
             console.log(connected("Data Save SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
-            response.data = saveData
+            response.data = await connection.query(`select * from product where CompanyID = ${CompanyID} and Status = 1 order by ID desc`)
             connection.release()
             return res.send(response)
 
