@@ -10,22 +10,25 @@ import { Company } from '../interface/Company';
 
 export class CompanyService {
 
+  loggedInUser = localStorage.getItem('LoggedINUser');
+  loggedInCompany = localStorage.getItem('LoggedInCompany');
+  
   constructor(private httpClient: HttpClient) { }
   private url = 'http://localhost:3000/company';
   
   
-  createCompany(TableName:any, Body: any): Observable<any> {
+  createCompany( Body: any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams().set('TableName', TableName);
+    const params = new HttpParams()
     return this.httpClient.post<any>(this.url + '/create', Body, { headers, params })
     .pipe(catchError(this.handleError));
   }
 
-  saveUser(TableName:any, Body: any): Observable<any> {
+  getCompanyById(ID:any , TableName:any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams().set('TableName', TableName);
-    return this.httpClient.post<any>(this.url + '/create', Body, { headers, params })
-    .pipe(catchError(this.handleError));
+    const params = new HttpParams().set('TableName', TableName).set('ID', ID);
+    return this.httpClient.get<any>(this.url + '/getCompanyById', { headers, params })
+      .pipe(catchError(this.handleError));
   }
 
   getList(Body: any): Observable<any> {

@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { CompanyService } from '../service/company.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AlertService } from '../service/alert.service';
 
 @Component({
   selector: 'app-company-list',
@@ -14,43 +17,44 @@ export class CompanyListComponent implements OnInit {
   pageSize!: number;
   collectionSize = 0
   page = 4;
-  loader = true;
+
   constructor(
     private cs: CompanyService,
+    private sp: NgxSpinnerService,
+    private snackBar: MatSnackBar,
+    public as: AlertService,
+
   ) { }
 
   ngOnInit(): void {
-    this.loader = true
     this.getList()
-    this.loader = false
   }
   onPageChange(pageNum: number): void {
-    this.pageSize = this.itemsPerPage*(pageNum - 1);
-    }
-  
-    changePagesize(num: number): void {
-      this.itemsPerPage = this.pageSize + num;
-      }
-      
+    this.pageSize = this.itemsPerPage * (pageNum - 1);
+  }
+
+  changePagesize(num: number): void {
+    this.itemsPerPage = this.pageSize + num;
+  }
+
   getList() {
-    this.loader = true
-    console.log('hhhii');
+    this.sp.show()
     const dtm = {
       currentPage: this.currentPage,
-      itemsPerPage: this.itemsPerPage 
+      itemsPerPage: this.itemsPerPage
     }
     const subs: Subscription = this.cs.getList(dtm).subscribe({
       next: (res: any) => {
         this.collectionSize = res.count;
         this.dataList = res.data
-       console.log(res.data); 
-       this.loader = false
+        console.log(res.data);
+        this.sp.hide();
+        this.as.successToast(res.message)
       },
       error: (err: any) => console.log(err.message),
-      
       complete: () => subs.unsubscribe(),
     });
-    
+
   }
 
 }

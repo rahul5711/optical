@@ -6,11 +6,18 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./common.component.css']
 })
 export class CommonComponent implements OnInit {
+
+  loggedInUser:any = localStorage.getItem('LoggedINUser');
+  user:any = localStorage.getItem('user');
+
+
   x: any;
 
   constructor(private router: Router, ) { }
 
   ngOnInit(): void {
+    console.log(this.user);
+    
   }
   myFunction() {
     this.x = document.getElementById("myTopnav");

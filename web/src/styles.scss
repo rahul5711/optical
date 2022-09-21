@@ -201,7 +201,7 @@ $OguruPro-theme: mat.define-light-theme((
 .allcard {
     margin-top: 20px;
     margin-bottom: 0px;
-height: 100% !important;
+    height: 100% !important;
     background-color: #ffffff !important;
     border-radius: 10px;
     padding: 10px;
@@ -212,7 +212,47 @@ height: 93vh !important;
 
     background-color: #e3e3e3 !important;
 }
+.page-item.disabled .page-link {
+    color: #757575;
+    pointer-events: none;
+    background-color: #fff;
+    border-color: #e0e0e0;
+    border: none;
+}
 
+.page-item:last-child .page-link {
+    border: none;
+    border-top-right-radius: var(--bs-pagination-border-radius);
+    border-bottom-right-radius: var(--bs-pagination-border-radius);
+}
 
+.page-item:first-child .page-link {
+    border: none;
+    border-top-left-radius: var(--bs-pagination-border-radius);
+    border-bottom-left-radius: var(--bs-pagination-border-radius);
+}
+
+.page-item.active .page-link {
+    background-color: rgb(255, 81, 0);
+    color: #ffffff !important;
+    border: 0;
+    box-shadow: 0 4px 9px -4px #e3ebf7;
+    transition: all .2s linear;
+    font-weight: 500;
+}
+.page-link {
+    border: none !important;
+    color: #757575 !important
+}
+
+.page-link:hover {
+    z-index: 2;
+    color: var(--bs-pagination-hover-color);
+    background-color: #ff94009e !important;
+    border-color: var(--bs-pagination-hover-border-color);
+}
+.page-link {
+    border-radius: 5px;
+}
 /* Importing Bootstrap SCSS file. */
 @import '~bootstrap/scss/bootstrap';

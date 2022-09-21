@@ -1,6 +1,6 @@
 import { ParticlesModule } from 'angular-particle';
 import { NgModule,CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+
 import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -29,7 +29,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { TokenInterceptor } from './service/token-interceptor';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgCircleProgressModule } from 'ng-circle-progress';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { BrowserModule } from '@angular/platform-browser';
+
 // import { NgxPaginationModule } from 'ngx-pagination';
 
 
@@ -41,9 +43,8 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
     
   ],
   imports: [
-    
     CommonModule,
-    BrowserAnimationsModule,
+   
     MatSnackBarModule,
     MatSelectModule,
     BrowserModule,
@@ -53,7 +54,6 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
     FormsModule,
     HttpClientModule,
     MatListModule,
-    BrowserModule,
     MatSnackBarModule,
     AppRoutingModule,
     HttpClientModule,
@@ -76,16 +76,12 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
     MatMenuModule,
     ToastrModule.forRoot(),
     NgbModule,
-    NgCircleProgressModule.forRoot({
-      // set defaults here
-      radius: 100,
-      outerStrokeWidth: 16,
-      innerStrokeWidth: 8,
-      outerStrokeColor: "#78C000",
-      innerStrokeColor: "#C7E596",
-      animationDuration: 300,
-    }),
+    NgxSpinnerModule,
+    BrowserAnimationsModule,
   ],
+  exports: [    // optional in your case
+        NgxSpinnerModule
+    ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

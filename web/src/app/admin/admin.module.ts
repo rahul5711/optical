@@ -30,7 +30,12 @@ import { CompanySettingComponent } from './company-setting/company-setting.compo
 import { ShopListComponent } from './shop-list/shop-list.component';
 import { EmpolyeeListComponent } from './empolyee-list/empolyee-list.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgCircleProgressModule } from 'ng-circle-progress';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { AdminDashboradComponent } from './admin-dashborad/admin-dashborad.component';
+
+
+
+
 
 
 @NgModule({
@@ -45,12 +50,14 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
     LoginHistoryComponent,
     CompanySettingComponent,
     ShopListComponent,
-    EmpolyeeListComponent
+    EmpolyeeListComponent,
+    AdminDashboradComponent
   ],
   imports: [
-  
+    
     CommonModule,
     AdminRoutingModule,
+    NgxSpinnerModule,
     MatRadioModule,
     AdminRoutingModule,
     ReactiveFormsModule,
@@ -72,18 +79,13 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
     MatTabsModule,
     AdminRoutingModule,
     NgbModule,
-    NgCircleProgressModule.forRoot({
-      // set defaults here
-      radius: 100,
-      outerStrokeWidth: 16,
-      innerStrokeWidth: 8,
-      outerStrokeColor: "#78C000",
-      innerStrokeColor: "#C7E596",
-      animationDuration: 300,
-    }),
+   
   ],
+
   exports: [
     FormsModule, ReactiveFormsModule,
+    NgxSpinnerModule
+
   ],
 })
 

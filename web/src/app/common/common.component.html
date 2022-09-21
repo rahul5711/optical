@@ -10,15 +10,33 @@
       </label>
     </div>
     <!-- Navbar items -->
+
     <div class="nav-links">
-      <a  [routerLink]="['/admin/CompanyDashborad']">Dashborad</a>
-      <div class="dropdown">
+      <!-- SuperAdmin nav -->
+
+      <a *ngIf="user.UserGroup !== 'SuperAdmin'" [routerLink]="['/admin/adminDashborad']">Dashborad1</a>
+      <div *ngIf="user.UserGroup !== 'SuperAdmin'" class="dropdown">
+        <a class="dropBtn" data-target="#collapseExample">Administration
+          <i class="fa fa-caret-down" aria-hidden="true"></i>
+        </a>
+        <div class="drop-content" id="collapseExample">
+          <a href="javascript:void(0)" [routerLink]="['/admin/company',0]" id="collapseExample">Company Info</a>
+          <a href="javascript:void(0)" [routerLink]="['/admin/companyList']" id="collapseExample">Company List</a>
+          <a class="dropdown-item" href="javascript:void(0)">CompanyLogin History</a>
+        </div>
+      </div>
+
+      <!-- SuperAdmin end nav-->
+
+      <!-- CompanyAdmin nav-->
+
+      <a *ngIf="user.UserGroup === 'CompanyAdmin'" [routerLink]="['/admin/CompanyDashborad']">Dashborad</a>
+      <div *ngIf="user.UserGroup === 'CompanyAdmin'" class="dropdown">
         <a class="dropBtn" data-target="#collapseExample">Administration
           <i class="fa fa-caret-down" aria-hidden="true"></i>
         </a>
         <div class="drop-content" id="collapseExample">
           <a href="javascript:void(0)" [routerLink]="['/admin/company']" id="collapseExample">Company Info</a>
-          <a href="javascript:void(0)" [routerLink]="['/admin/companyList']" id="collapseExample">Company List</a>
           <a href="javascript:void(0)" [routerLink]="['/admin/employeeList']" id="collapseExample">Employee</a>
           <a href="javascript:void(0)" [routerLink]="['/admin/shopList']" id="collapseExample">Shop</a>
           <a href="#">Role-Permission</a>
@@ -28,6 +46,7 @@
           <a href="#">Recycle-Bin</a>
         </div>
       </div>
+
     </div>
   </div>
 </body>
