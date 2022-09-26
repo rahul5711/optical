@@ -14,7 +14,7 @@ router.post('/delete', Controller.delete)
 
 // update company setting
 
-// router.post('/updatecompanysetting', Controller.updatecompanysetting)
+router.post('/updatecompanysetting', Controller.updatecompanysetting)
 
 
 
