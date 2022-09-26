@@ -18,7 +18,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 export class LoginComponent implements OnInit {
   particlesJS: any;
   data = { LoginName: '', Password: '' }
-  user:any = localStorage.getItem('User');
+ 
+  user = JSON.parse(localStorage.getItem('user') || '');
 
   constructor(private router: Router,
     private route: ActivatedRoute,

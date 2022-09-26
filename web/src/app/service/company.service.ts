@@ -10,8 +10,9 @@ import { Company } from '../interface/Company';
 
 export class CompanyService {
 
-  loggedInUser = localStorage.getItem('LoggedINUser');
-  loggedInCompany = localStorage.getItem('LoggedInCompany');
+
+  loggedInUser:any = localStorage.getItem('LoggedINUser');
+
   
   constructor(private httpClient: HttpClient) { }
   private url = 'http://localhost:3000/company';
@@ -24,10 +25,10 @@ export class CompanyService {
     .pipe(catchError(this.handleError));
   }
 
-  getCompanyById(ID:any , TableName:any): Observable<any> {
+  getCompanyById(ID:any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams().set('TableName', TableName).set('ID', ID);
-    return this.httpClient.get<any>(this.url + '/getCompanyById', { headers, params })
+    const params = new HttpParams().set('ID', ID);
+    return this.httpClient.get<any>(this.url + '/getCompanyById',  { headers, params })
       .pipe(catchError(this.handleError));
   }
 

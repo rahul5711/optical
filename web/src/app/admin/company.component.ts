@@ -9,6 +9,7 @@ import { Company} from '../interface/Company';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CompanyService } from '../service/company.service';
 import { Subscription } from 'rxjs';
+import { AlertService } from '../service/alert.service';
 
 @Component({
   selector: 'app-company',
@@ -17,6 +18,7 @@ import { Subscription } from 'rxjs';
 })
 
 export class CompanyComponent implements OnInit {
+  loggedInUser:any = localStorage.getItem('LoggedINUser');
   evn = environment;
   stringUrl: string | undefined;
 
@@ -26,14 +28,17 @@ export class CompanyComponent implements OnInit {
   disableSuperAdminFields = false;
   toggleChecked = false;
   dataList : any;
-
+  id : number;
   constructor(
     private router: Router,
     private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private cs: CompanyService,
-  ) {}
+    public as: AlertService,
+  ) {
+    this.id = this.route.snapshot.params['id'];
+  }
 
   color: ThemePalette = 'primary';
   plans: any[] = [
@@ -49,10 +54,13 @@ export class CompanyComponent implements OnInit {
   };
 
 
-  
+  // public id =  this.route.snapshot.paramMap.get('id');
+
 
   ngOnInit() {
-    
+
+  this.getCompanyById();
+  
   }
 
   copyData(val: any) {
@@ -77,6 +85,7 @@ export class CompanyComponent implements OnInit {
         this.dataList = res.result;
         console.log(this.dataList);
         this.router.navigate(['/admin/companyList']);
+
       },
       error: (err: any) => {
         console.log(err.msg);
@@ -84,4 +93,19 @@ export class CompanyComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   } 
+
+  getCompanyById(){
+   
+    const subs: Subscription = this.cs.getCompanyById(this.id).subscribe({
+      next: (res: any) => {
+        console.log(res.data);
+        this.as.successToast(res.message)
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
+  }
+
 }
