@@ -9,4 +9,9 @@ router.post('/delete', Controller.delete)
 router.post('/restore', Controller.restore)
 router.get('/getList', Controller.getList)
 
+router.post('/saveSpec', Controller.saveSpec)
+router.post('/deleteSpec', Controller.deleteSpec)
+router.post('/getSpec', Controller.getSpec)
+
+
 module.exports = router
