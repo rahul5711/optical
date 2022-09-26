@@ -11,4 +11,12 @@ router.post('/list', verifyAccessTokenAdmin, Controller.list)
 router.post('/update', Controller.update)
 router.post('/delete', Controller.delete)
 
+
+// update company setting
+
+// router.post('/updatecompanysetting', Controller.updatecompanysetting)
+
+
+
+
 module.exports = router
