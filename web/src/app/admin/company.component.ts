@@ -59,7 +59,12 @@ export class CompanyComponent implements OnInit {
 
   ngOnInit() {
 
-  this.getCompanyById();
+    console.log(this.id);
+    if (this.id !== 0) {
+      this.getCompanyById(); 
+    }
+    
+ 
   
   }
 
@@ -82,9 +87,13 @@ export class CompanyComponent implements OnInit {
     this.data.CommissionValueNB = 0;
     const subs: Subscription =  this.cs.createCompany( this.data).subscribe({
       next: (res: any) => {
-        this.dataList = res.result;
-        console.log(this.dataList);
-        this.router.navigate(['/admin/companyList']);
+        // this.dataList = res.result;
+        // console.log(this.dataList);
+        if (res.success) {
+          this.router.navigate(['/admin/companyList']);  
+        } else {
+          this.as.errorToast(res.message)
+        }
 
       },
       error: (err: any) => {
@@ -99,7 +108,13 @@ export class CompanyComponent implements OnInit {
     const subs: Subscription = this.cs.getCompanyById(this.id).subscribe({
       next: (res: any) => {
         console.log(res.data);
-        this.as.successToast(res.message)
+        if (res.success) {
+          this.as.successToast(res.message)
+          this.data = res.data[0]
+          
+        } else {
+          this.as.errorToast(res.message)
+        }
       },
       error: (err: any) => {
         console.log(err.message);

@@ -27,8 +27,8 @@ export class CompanyService {
 
   getCompanyById(ID:any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams().set('ID', ID);
-    return this.httpClient.get<any>(this.url + '/getCompanyById',  { headers, params })
+    const params = new HttpParams();
+    return this.httpClient.post<any>(this.url + '/getCompanyById', {ID: ID},  { headers, params })
       .pipe(catchError(this.handleError));
   }
 
