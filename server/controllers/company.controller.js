@@ -246,7 +246,29 @@ module.exports = {
 
             const Company = await connection.query(`select company.*, company.Name as CompanyName, user.DOB, user.Anniversary, user.LoginName, user.Name from company left join user on user.CompanyID = company.ID where company.ID = ${Body.ID} and company.Status = 1`)
 
+            if (Company[0].WhatsappMsg === 'false') {
+                Company[0].WhatsappMsg = false 
+            } else {
+                Company[0].WhatsappMsg = true
+            }
 
+            if (Company[0].EmailMsg === 'false') {
+                Company[0].EmailMsg = false 
+            } else {
+                Company[0].EmailMsg = true
+            }
+
+            if (Company[0].WholeSale === 'false') {
+                Company[0].WholeSale = false 
+            } else {
+                Company[0].WholeSale = true
+            }
+
+            if (Company[0].RetailPrice === 'false') {
+                Company[0].RetailPrice = false 
+            } else {
+                Company[0].RetailPrice = true
+            }
             response.message = "data fetch sucessfully"
             response.data = Company
             connection.release()
