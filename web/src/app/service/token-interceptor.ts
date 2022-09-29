@@ -31,11 +31,12 @@ export class TokenInterceptor implements HttpInterceptor {
           Accept: 'application/json'
         };
         const token = this.tokenService.getToken();
-      //  const ip = document.getElementById('ip')!.innerHTML;
+       const ip = document.getElementById('ip')!.innerHTML;
         if (token) {
             headersConfig['Authorization'] = `Bearer ${token}`;
           headersConfig['Access-Control-Allow-Headers'] =  'Content-Type';
-     
+          headersConfig['ip'] = ip;
+
         }
         req = req.clone({ setHeaders: headersConfig });
       } else {

@@ -28,6 +28,11 @@
 
 <body class="mat-typography">
   <app-root></app-root>
+  <div id="ip" class="d-none"></div>
+  <script type="text/javascript" src="https://l2.io/ip.js?var=myip"></script>
+  <script>
+    document.getElementById("ip").innerHTML = myip;
+  </script>
 </body>
 
 </html>

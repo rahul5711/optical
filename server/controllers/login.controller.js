@@ -23,7 +23,8 @@ module.exports = {
             const connection = await getConnection.connection();
 
             const Body = req.body;
-
+            const ip = req.headers.ip ? req.headers.ip : '**********';
+            console.log(ip);
             if (_.isEmpty(Body)) res.send({success: false, message: "Invalid Query Data" })
 
             const User = await connection.query(`select * from user where LoginName = '${Body.LoginName}' and Status = 1`)
@@ -68,7 +69,7 @@ module.exports = {
                 const accessToken = await signAccessTokenAdmin(`'${User[0].ID}'`)
                 const refreshToken = await signRefreshTokenAdmin(`'${User[0].ID}'`)
                 const saveHistory = await connection.query(
-                    `Insert into loginhistory (CompanyID, UserName, UserID, LoginTime, IpAddress, Comment) values (${User[0].CompanyID}, '${User[0].Name}', ${User[0].ID}, now(), '******', '${comment}')`
+                    `Insert into loginhistory (CompanyID, UserName, UserID, LoginTime, IpAddress, Comment) values (${User[0].CompanyID}, '${User[0].Name}', ${User[0].ID}, now(), '${ip}', '${comment}')`
 
                 );
 
@@ -89,7 +90,7 @@ module.exports = {
 
                 if (loginCode === 1) {
                     const saveHistory = await connection.query(
-                        `Insert into loginhistory (CompanyID, UserName, UserID, LoginTime, IpAddress, Comment) values (${User[0].CompanyID}, '${User[0].Name}', ${User[0].ID}, now(), '******', '${comment}')`
+                        `Insert into loginhistory (CompanyID, UserName, UserID, LoginTime, IpAddress, Comment) values (${User[0].CompanyID}, '${User[0].Name}', ${User[0].ID}, now(), '${ip}', '${comment}')`
 
                     );
                     const accessToken = await signAccessTokenAdmin(`'${User[0].ID}'`)
