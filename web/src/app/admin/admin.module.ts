@@ -32,6 +32,8 @@ import { EmpolyeeListComponent } from './empolyee-list/empolyee-list.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { AdminDashboradComponent } from './admin-dashborad/admin-dashborad.component';
+import { UserUpdatePasswordComponent } from './user-update-password/user-update-password.component';
+
 
 
 
@@ -51,10 +53,12 @@ import { AdminDashboradComponent } from './admin-dashborad/admin-dashborad.compo
     CompanySettingComponent,
     ShopListComponent,
     EmpolyeeListComponent,
-    AdminDashboradComponent
+    AdminDashboradComponent,
+    UserUpdatePasswordComponent,
+   
   ],
   imports: [
-    
+   
     CommonModule,
     AdminRoutingModule,
     NgxSpinnerModule,

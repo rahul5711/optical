@@ -3,13 +3,13 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,Reacti
 import { NgForm } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
-import { environment } from '../../environments/environment';
 import { ThemePalette } from '@angular/material/core';
-import { Company} from '../interface/Company';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CompanyService } from '../service/company.service';
 import { Subscription } from 'rxjs';
 import { AlertService } from '../service/alert.service';
+import { environment } from 'src/environments/environment';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-company',
@@ -18,17 +18,17 @@ import { AlertService } from '../service/alert.service';
 })
 
 export class CompanyComponent implements OnInit {
+
   loggedInUser:any = localStorage.getItem('LoggedINUser');
   evn = environment;
-  stringUrl: string | undefined;
-
-  name = new FormControl('');
+ 
   companyImage: any;
   userImage: any;
   disableSuperAdminFields = false;
   toggleChecked = false;
   dataList : any;
-  id : number;
+  id : any;
+
   constructor(
     private router: Router,
     private sanitizer: DomSanitizer,
@@ -48,9 +48,9 @@ export class CompanyComponent implements OnInit {
   {ID: 4, Name: 'Yearly Plan (365 Days)' , days: 360}];
 
   data : any = {
-    ID: null, CompanyName: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', Country: '', State: '', City: '', Email: '', Website: '', GSTNo: '', CINNo: '', LogoURL: '', Remark: '', Plan: '', Version: '', NoOfShops: '', EffectiveDate: new Date(), CancellationDate:  new Date(), WhatsappMsg: false, EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, dataFormat: undefined,
-     data: { ID : null, CompanyID : null, Name : "", UserGroup : "", DOB : null, Anniversary : null, MobileNo1 : null, MobileNo2 : null, PhoneNo : null, Email : null, Address : null, Branch : '', FaxNo : '', Website : '', PhotoURL : '',LoginName : "", Password : "", Status : 1, CreatedBy : null, UpdatedBy : null, CreatedOn : "", UpdatedOn : null
-     }
+    ID: null, CompanyName: null, MobileNo1: null, MobileNo2: null, PhoneNo: null, Address: null, Country: null, State: null, City: null, Email: null, Website: null, GSTNo: null, CINNo: null, LogoURL: null, Remark: null, Plan: null, Version: null, NoOfShops: null, EffectiveDate: new Date(), CacellationDate:  new Date(), WhatsappMsg: false, EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, dataFormat: undefined,
+     Name : null, UserGroup : "", DOB : null, Anniversary : null,  Branch : '', FaxNo : '',  PhotoURL : '',LoginName : "", Password : "",
+     Document:null, CommissionType :null, CommissionMode :null, CommissionValue :null, CommissionValueNB :null,
   };
 
 
@@ -58,14 +58,9 @@ export class CompanyComponent implements OnInit {
 
 
   ngOnInit() {
-
-    console.log(this.id);
-    if (this.id !== 0) {
+    if (this.id != 0) {
       this.getCompanyById(); 
     }
-    
- 
-  
   }
 
   copyData(val: any) {
@@ -80,11 +75,7 @@ export class CompanyComponent implements OnInit {
   }
 
   onsubmit() {
-    this.data.Document = [];
-    this.data.CommissionType = 0;
-    this.data.CommissionMode = 0;
-    this.data. CommissionValue = 0;
-    this.data.CommissionValueNB = 0;
+   
     const subs: Subscription =  this.cs.createCompany( this.data).subscribe({
       next: (res: any) => {
         // this.dataList = res.result;
@@ -94,7 +85,6 @@ export class CompanyComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
-
       },
       error: (err: any) => {
         console.log(err.msg);
@@ -104,14 +94,12 @@ export class CompanyComponent implements OnInit {
   } 
 
   getCompanyById(){
-   
     const subs: Subscription = this.cs.getCompanyById(this.id).subscribe({
       next: (res: any) => {
         console.log(res.data);
         if (res.success) {
           this.as.successToast(res.message)
           this.data = res.data[0]
-          
         } else {
           this.as.errorToast(res.message)
         }
@@ -122,5 +110,24 @@ export class CompanyComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     })
   }
+
+  updateCompany(){
+    console.log(this.data);
+    const subs: Subscription =  this.cs.updateCompany( this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.router.navigate(['/admin/companyList']);  
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+    
+  }
+
 
 }

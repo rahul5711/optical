@@ -8,6 +8,7 @@ import { EmployeeComponent } from './employee/employee.component';
 import { EmpolyeeListComponent } from './empolyee-list/empolyee-list.component';
 import { ShopListComponent } from './shop-list/shop-list.component';
 import { ShopComponent } from './shop/shop.component';
+import { UserUpdatePasswordComponent } from './user-update-password/user-update-password.component';
 
 
 const routes: Routes = [
@@ -16,11 +17,12 @@ children: [
   { path: 'adminDashborad', component: AdminDashboradComponent },
   { path: 'CompanyDashborad', component: DashboradComponent },
   { path: 'company/:id', component: CompanyComponent },
+  { path: 'companyList', component: CompanyListComponent },
+  { path: 'userList', component: UserUpdatePasswordComponent },
   { path: 'shop', component: ShopComponent },
   { path: 'shopList', component: ShopListComponent },
   { path: 'employee', component: EmployeeComponent },
   { path: 'employeeList', component: EmpolyeeListComponent },
-  { path: 'companyList', component: CompanyListComponent },
    
 ]}
 ]

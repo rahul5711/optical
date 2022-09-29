@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
   particlesJS: any;
   data = { LoginName: '', Password: '' }
  
-  user = JSON.parse(localStorage.getItem('user') || '');
+  user = (localStorage.getItem('user') || '');
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -56,13 +56,12 @@ export class LoginComponent implements OnInit {
           this.token.setToken(res.accessToken);
           this.token.refreshToken(res.refreshToken);
           localStorage.setItem('user', JSON.stringify(res.data));
-         
-            this.router.navigate(['/admin/adminDashborad']);
-            this.sp.hide()
-         
-            // this.router.navigate(['/admin/CompanyDashborad']);
-       
-         
+
+         if(res.data.UserGroup === "SuperAdmin"){
+          this.router.navigate(['/admin/adminDashborad']);
+         }else{
+          this.router.navigate(['/admin/CompanyDashborad']);
+         } 
         }
         else {
           this.as.errorToast(res.message);
@@ -70,7 +69,8 @@ export class LoginComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
+      
     });
-   
+    this.sp.hide()
   }
 }

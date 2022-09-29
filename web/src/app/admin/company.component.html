@@ -1,7 +1,6 @@
 <section class="content">
     <div class="container-fluid">
-        <div class="block-header">
-        </div>
+        <div class="block-header"></div>
         <div class="row clearfix">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                 <div class="card " style="padding-left: 15px;">
@@ -16,11 +15,8 @@
                                         <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Company Name</mat-label>
-                                                <input matInput type="text" name="CompanyName" minlength="3"
-                                                    [(ngModel)]="data.CompanyName" #CompanyNamecontrol required>
-                                                <mat-error>
-                                                    Company Name is required
-                                                </mat-error>
+                                                <input matInput  name="CompanyName" [(ngModel)]="data.CompanyName" required>
+                                                <mat-error> Company Name is required </mat-error>
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
@@ -173,7 +169,6 @@
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Effective Date</mat-label>
-                                               
                                                 <mat-datepicker #picker1></mat-datepicker>
                                                 <input matInput name="EffectiveDate" type="date"
                                                 [(ngModel)]="data.EffectiveDate">
@@ -185,7 +180,6 @@
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Cancellation Date</mat-label>
-                                             
                                                 <input matInput name="CacellationDate" type="date"
                                                 [(ngModel)]="data.CacellationDate">
                                                 <mat-error>
@@ -320,7 +314,7 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="id == 0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>LoginName</mat-label>
                                                     <input matInput name="LoginName" [(ngModel)]="data.LoginName"
@@ -343,10 +337,8 @@
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3 p-0">
-                                                <button class="ms-2" mat-raised-button color="primary" [disabled]="!f.valid">Save</button>
-                                                <button class="ms-3" type="button" mat-raised-button
-                                                    *ngIf="disableSuperAdminFields === false"
-                                                    [routerLink]="['/admin/companyList']">Cancel</button>
+                                                <button class="ms-2" type="submit" mat-raised-button color="primary" [disabled]="!f.valid " *ngIf="id == 0">Save</button>
+                                                <button class="ms-3" type="button" mat-raised-button color="primary"  [disabled]="id == 0" *ngIf=" id != 0"   (click)="updateCompany()"  >Update</button>
                                             </div>
                                         </div>
                                     </div>
@@ -359,7 +351,6 @@
                                                 <mat-form-field appearance="legacy">
                                                     <mat-label>User Image</mat-label>
                                                     <input matInput name='PhotoURL' [(ngModel)]="data.PhotoURL">
-
                                                     <mat-icon matSuffix class="upload_icon">cloud_upload</mat-icon>
                                                 </mat-form-field>
                                             </div>

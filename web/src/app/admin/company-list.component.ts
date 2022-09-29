@@ -57,4 +57,17 @@ export class CompanyListComponent implements OnInit {
 
   }
 
+  deleteItem(i:any){
+    this.sp.show();
+    const subs: Subscription = this.cs.deleteData(this.dataList[i].ID).subscribe({
+      next: (res: any) => {
+        this.dataList.splice(i, 1);
+        this.sp.hide();
+        this.as.successToast(res.message)
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
 }

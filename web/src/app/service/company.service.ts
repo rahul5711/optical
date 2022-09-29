@@ -25,10 +25,25 @@ export class CompanyService {
     .pipe(catchError(this.handleError));
   }
 
+  updateCompany( Body: any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/update', Body, { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
+
   getCompanyById(ID:any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams();
     return this.httpClient.post<any>(this.url + '/getCompanyById', {ID: ID},  { headers, params })
+      .pipe(catchError(this.handleError));
+  }
+
+  deleteData(ID:any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams();
+    return this.httpClient.post<any>(this.url + '/delete', {ID: ID},  { headers, params })
       .pipe(catchError(this.handleError));
   }
 
@@ -37,6 +52,20 @@ export class CompanyService {
     return this.httpClient.post<any>(this.url + '/list', Body, { params })
     .pipe(catchError(this.handleError));
   }
+
+  getUserList(Body: any): Observable<any> {
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/user', Body, { params })
+    .pipe(catchError(this.handleError));
+  }
+
+  updatePassword(Body:any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/updatePassword',  Body, { headers, params })
+      .pipe(catchError(this.handleError));
+  }
+
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
