@@ -13,6 +13,8 @@ const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 
 var app = express();
+app.use(express.static(path.join(__dirname, '')));
+
 const http = require('http').Server(app)
 
 app.use(cors())
@@ -39,6 +41,7 @@ app.use('/', indexRouter);
 app.use('/company', require('./routes/company.route'));
 app.use('/login', require('./routes/login.route'));
 app.use('/product', require('./routes/product.route'));
+app.use('/file', require('./routes/file.route'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
