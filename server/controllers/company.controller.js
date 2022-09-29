@@ -288,6 +288,38 @@ module.exports = {
             return error
         }
     },
+    LoginHistory: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            console.log(req.user.CompanyID , 'req');
+            const Body = req.body;
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+
+            let page = Body.currentPage;
+            let limit = Body.itemsPerPage;
+            let skip = page * limit - limit;
+
+            let qry = `select loginhistory.*, user.Name as UserName, company.Name as CompanyName from loginhistory left join user on user.ID = loginhistory.UserID left join company on company.ID  = loginhistory.CompanyID where loginhistory.Status = 1 and user.UserGroup = 'CompanyAdmin' order by loginhistory.ID desc`
+            let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
+
+
+            let finalQuery = qry + skipQuery ;
+
+            console.log(finalQuery);
+
+            let data = await connection.query(finalQuery);
+            let count = await connection.query(qry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = count.length
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            return error
+        }
+    },
     getUser: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }

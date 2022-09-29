@@ -8,6 +8,7 @@ router.post('/getCompanyById', Controller.getCompanyById)
 router.post('/user', Controller.getUser)
 router.post('/updatePassword', Controller.updatePassword)
 router.post('/list', verifyAccessTokenAdmin, Controller.list)
+router.post('/LoginHistory', verifyAccessTokenAdmin, Controller.LoginHistory)
 router.post('/update', Controller.update)
 router.post('/delete', Controller.delete)
 
