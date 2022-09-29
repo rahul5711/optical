@@ -244,7 +244,7 @@ module.exports = {
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
 
-            const Company = await connection.query(`select company.*, company.Name as CompanyName, user.DOB, user.Anniversary, user.LoginName from company left join user on user.CompanyID = company.ID where company.ID = ${Body.ID} and company.Status = 1`)
+            const Company = await connection.query(`select company.*, company.Name as CompanyName, user.DOB, user.Anniversary, user.LoginName, user.Name from company left join user on user.CompanyID = company.ID where company.ID = ${Body.ID} and company.Status = 1`)
 
 
             response.message = "data fetch sucessfully"
@@ -268,7 +268,7 @@ module.exports = {
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select * from company where Status = 1 order by ID desc`
+            let qry = `select company.*, user.Name as OwnerName from company left join user on user.CompanyID = company.ID where company.Status = 1 and user.UserGroup = 'CompanyAdmin' order by company.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
