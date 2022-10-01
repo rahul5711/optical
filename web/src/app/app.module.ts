@@ -78,6 +78,7 @@ import { BrowserModule } from '@angular/platform-browser';
     NgbModule,
     NgxSpinnerModule,
     BrowserAnimationsModule,
+    
   ],
   exports: [    // optional in your case
         NgxSpinnerModule

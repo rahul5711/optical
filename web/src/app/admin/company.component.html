@@ -348,11 +348,14 @@
                                                 <img class="fit-picture" width="170" height="150" [src]="userImage">
                                             </div>
                                             <div class="col-xl-11 col-lg-11 col-md-11 col-sm-12 mb-0 ">
-                                                <mat-form-field appearance="legacy">
+                                                <!-- <mat-form-field appearance="legacy">
                                                     <mat-label>User Image</mat-label>
-                                                    <input matInput name='PhotoURL' [(ngModel)]="data.PhotoURL">
+                                                    <input matInput name='PhotoURL' type="file" [(ngModel)]="data.PhotoURL" (change)="uploadImage($event, 'User')">
                                                     <mat-icon matSuffix class="upload_icon">cloud_upload</mat-icon>
-                                                </mat-form-field>
+                                                </mat-form-field> -->
+                                                
+                                                <input type="file" name='PhotoURL' [(ngModel)]="data.PhotoURL" (change)="uploadImage($event, 'User')">
+                                         
                                             </div>
                                         </div>
                                     </div>

@@ -6,6 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ThemePalette } from '@angular/material/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CompanyService } from '../service/company.service';
+import { FileUploadService } from '../service/file-upload.service';
 import { Subscription } from 'rxjs';
 import { AlertService } from '../service/alert.service';
 import { environment } from 'src/environments/environment';
@@ -35,6 +36,7 @@ export class CompanyComponent implements OnInit {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private cs: CompanyService,
+    private fu: FileUploadService,
     public as: AlertService,
   ) {
     this.id = this.route.snapshot.params['id'];
@@ -127,6 +129,15 @@ export class CompanyComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
     
+  }
+
+  uploadImage(e:any, mode:any){
+    let image: File = e.target.files[0]
+    console.log(image)
+    this.fu.uploadFile(image).subscribe(data => {
+     console.log(data);
+     this.data.PhotoURL = data.fileName;
+    });
   }
 
 

@@ -48,28 +48,29 @@ export class LoginComponent implements OnInit {
 
     const subs: Subscription = this.auth.login(this.data).subscribe({
       next: (res: any) => {
-        console.log(res, 'response');
-
         if (res.success == true) {
-
           this.as.successToast(res.message)
           this.token.setToken(res.accessToken);
           this.token.refreshToken(res.refreshToken);
-          localStorage.setItem('user', JSON.stringify(res.data));
-
-         if(res.data.UserGroup === "SuperAdmin"){
-          this.router.navigate(['/admin/adminDashborad']);
-         }else{
-          this.router.navigate(['/admin/CompanyDashborad']);
-         } 
-        }
+          localStorage.setItem('user', JSON.stringify(res));
+          console.log(res,'res');
+           if(res.data){
+            if(res.data.UserGroup  == "SuperAdmin" ){
+              this.router.navigate(['/admin/adminDashborad']);
+            }
+           } 
+           if(res.User){
+             if( res.User.UserGroup == "CompanyAdmin"){
+               this.router.navigate(['/admin/CompanyDashborad']);
+              } 
+           }
+        } 
         else {
           this.as.errorToast(res.message);
         }
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
-      
     });
     this.sp.hide()
   }
