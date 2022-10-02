@@ -3,13 +3,17 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,Reacti
 import { NgForm } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
+
 import { ThemePalette } from '@angular/material/core';
+
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CompanyService } from '../../service/company.service';
 import { Subscription } from 'rxjs';
 import { AlertService } from '../../service/alert.service';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import Swal from 'sweetalert2'; 
 
 @Component({
   selector: 'app-user-update-password',
@@ -30,6 +34,7 @@ export class UserUpdatePasswordComponent implements OnInit {
 
   data = {ID: null, Password :''}
   id: any;
+  permissions: any;
  
   constructor(
     private cs: CompanyService,
@@ -37,7 +42,7 @@ export class UserUpdatePasswordComponent implements OnInit {
     private snackBar: MatSnackBar,
     public as: AlertService,
     private route: ActivatedRoute,
-
+    private modalService: NgbModal
   ) { 
     this.id = this.route.snapshot.params['id'];
   }
@@ -78,9 +83,10 @@ export class UserUpdatePasswordComponent implements OnInit {
     });
   }
 
-  setID(ID:any){
+  openModal(content: any,ID:any) {
     this.data.ID = ID
-    console.log(this.data.ID);   
+    console.log(this.data.ID);
+    this.modalService.open(content, { centered: true });
   }
 
   UpdatePassword(){
@@ -93,6 +99,8 @@ export class UserUpdatePasswordComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+    
+       
       },
       error: (err: any) => {
         console.log(err.message);
@@ -100,6 +108,16 @@ export class UserUpdatePasswordComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     })
     this.data.Password = '';
+    Swal.fire({
+      position: 'center',
+      icon: 'success',
+      title: 'User Password has been Updated',
+      showConfirmButton: false,
+      timer: 1000
+    })
   }
+
+ 
+ 
 
 }

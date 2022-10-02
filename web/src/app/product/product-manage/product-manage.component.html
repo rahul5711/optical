@@ -1,0 +1,117 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row">
+
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+                    <p style="font-size: 20px; color: white">Loading...</p>
+                </ngx-spinner>
+                <div class="card">
+                    <div class="header">
+                        <h2>Product Master</h2>
+                        <ul class="header-dropdown m-r--5">
+                           
+                        </ul>
+                    </div>
+                    <div class="body">
+                        <form  #f="ngForm" autocomplete="off" >
+                            <div class="row" *ngIf="!showAdd">
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Product</mat-label>
+                                        <mat-select name="selectedProduct" [(ngModel)]="selectedProduct"  required #Typecontrol appAutoFoucsDirectives>
+                                        </mat-select>
+                                        <mat-error>
+                                            Select Product Type
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>HSN Code</mat-label>
+                                        <input matInput name="HSNCode" [(ngModel)]="selectedHSNCode" #HSNCodecontrol [disabled]="true">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>GST Percentage</mat-label>
+                                        <input matInput name="GSTPercentage" [(ngModel)]="selectedGSTPercentage" #GSTPercentagecontrol [disabled]="true">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                    <!-- <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>GST Type</mat-label>
+                                        <input matInput name="GSTType" [(ngModel)]="selectedGSTType" #GSTTypecontrol [disabled]="true">
+                                    </mat-form-field> -->
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>GST Type</mat-label>
+                                        <mat-select name="GSTType" [(ngModel)]="selectedGSTType" [disabled]="true" #GSTTypecontrol>
+                                            <mat-option value="None">None</mat-option>
+                                            
+                                        </mat-select>
+
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <button mat-mini-fab color="primary" (click)="showAdd = !showAdd;" aria-label="Example icon button with a bookmark icon">
+                        <mat-icon>add</mat-icon></button>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <button mat-mini-fab color="warn" [disabled]="selectedProduct === ''" aria-label="Example icon button with a bookmark icon">
+                        <mat-icon>delete</mat-icon></button>
+                                </div>
+                            </div>
+                            <div class="row" *ngIf="showAdd">
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Product Type</mat-label>
+                                        <input matInput name="NewProduct" [(ngModel)]="newProduct.Name" required #NewProductTypecontrol>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>HSN Code</mat-label>
+                                        <input matInput name="NewHSNCode" [(ngModel)]="newProduct.HSNCode"  #HSNCodecontrol>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>GST Percentage</mat-label>
+                                        <input matInput name="NewGSTPercentage" [(ngModel)]="newProduct.GSTPercentage" #GSTPercentagecontrol>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                    <!-- <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>GST Type</mat-label>
+                                        <input matInput name="NewGSTType" [(ngModel)]="newProduct.GSTType" (ngModelChange)="newProduct.GSTType = onChange($event)" #GSTTypecontrol>
+                                    </mat-form-field> -->
+
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>GST Type</mat-label>
+                                        <mat-select name="NewGSTType" [(ngModel)]="newProduct.GSTType"  #GSTTypecontrol>
+                                            <mat-option value="None">None</mat-option>
+                                            
+                                        </mat-select>
+
+                                    </mat-form-field>
+                                </div>
+                                
+
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                    <button mat-mini-fab color="primary"  aria-label="Example icon button with a bookmark icon">
+                        <mat-icon>save</mat-icon></button>
+                                </div>
+                            </div>
+                          
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

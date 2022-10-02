@@ -8,7 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class CommonComponent implements OnInit {
 
   loggedInUser:any = localStorage.getItem('LoggedINUser');
-  user:any = localStorage.getItem('user');
+  user:any =JSON.parse(localStorage.getItem('user') || '') ;
 
 
   x: any;
@@ -16,6 +16,7 @@ export class CommonComponent implements OnInit {
   constructor(private router: Router, ) { }
 
   ngOnInit(): void {
+    console.log(this.user);
     
     
   }

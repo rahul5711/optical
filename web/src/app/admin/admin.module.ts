@@ -83,7 +83,7 @@ import { UserUpdatePasswordComponent } from './user-update-password/user-update-
     MatTabsModule,
     AdminRoutingModule,
     NgbModule,
-
+  
   ],
 
   exports: [

@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { CompanyService } from '../service/company.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AlertService } from '../service/alert.service';
-
+import Swal from 'sweetalert2'; 
 @Component({
   selector: 'app-company-list',
   templateUrl: './company-list.component.html',
@@ -27,7 +27,7 @@ export class CompanyListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getList()
+    this.getList();    
   }
   onPageChange(pageNum: number): void {
     this.pageSize = this.itemsPerPage * (pageNum - 1);
@@ -58,16 +58,38 @@ export class CompanyListComponent implements OnInit {
   }
 
   deleteItem(i:any){
-    this.sp.show();
-    const subs: Subscription = this.cs.deleteData(this.dataList[i].ID).subscribe({
-      next: (res: any) => {
-        this.dataList.splice(i, 1);
-        this.sp.hide();
-        this.as.successToast(res.message)
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.sp.show();
+        const subs: Subscription = this.cs.deleteData(this.dataList[i].ID).subscribe({
+          next: (res: any) => {
+            this.dataList.splice(i, 1);
+            this.sp.hide();
+            this.as.successToast(res.message)
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Your file has been deleted.',
+          showConfirmButton: false,
+          timer: 1000
+        })
+      }
+    })
+
+   
+    
   }
 
 }

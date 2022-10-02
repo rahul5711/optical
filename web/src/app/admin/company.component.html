@@ -131,7 +131,7 @@
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Plan</mat-label>
-                                                <mat-select name="Plan" [(ngModel)]="data.Plan" required #Plancontrol>
+                                                <mat-select name="Plan" [(ngModel)]="data.Plan" required #Plancontrol (selectionChange)="onPlanChange(data.Plan)">
                                                     <mat-option *ngFor="let plan of plans" [value]="plan.ID">
                                                         {{plan.Name}}
                                                     </mat-option>
@@ -167,23 +167,24 @@
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
-                                            <mat-form-field class="example-full-width mb-0">
+                                            <mat-form-field class="example-full-width mb-0" >
                                                 <mat-label>Effective Date</mat-label>
+                                                <input matInput  name="EffectiveDate" [(ngModel)]="data.EffectiveDate" [disabled]="disableSuperAdminFields" required #EffectiveDatecontrol [matDatepicker]="picker1">
+                                                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
                                                 <mat-datepicker #picker1></mat-datepicker>
-                                                <input matInput name="EffectiveDate" type="date"
-                                                [(ngModel)]="data.EffectiveDate">
-                                                <mat-error>
-                                                    Effective is required
+                                                <mat-error >
+                                                    Shop count is required
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
-                                            <mat-form-field class="example-full-width mb-0">
+                                            <mat-form-field class="example-full-width mb-0" >
                                                 <mat-label>Cancellation Date</mat-label>
-                                                <input matInput name="CacellationDate" type="date"
-                                                [(ngModel)]="data.CacellationDate">
-                                                <mat-error>
-                                                    Cancellation is required
+                                                <input matInput name="CacellationDate" [(ngModel)]="data.CancellationDate" [disabled]="disableSuperAdminFields" required #CacellationDatecontrol [matDatepicker]="picker2">
+                                                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                                <mat-datepicker #picker2></mat-datepicker>
+                                                <mat-error >
+                                                    Plan start date
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
@@ -217,17 +218,21 @@
                                         <div class="col-12 mt-1 ">
                                             <img class="fit-picture" width="170" height="170" [src]="companyImage">
                                         </div>
-                                        <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 ">
-                                            <mat-form-field appearance="legacy">
+                                        <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 " >
+                                            <!-- <mat-form-field appearance="legacy">
                                                 <mat-label>Company Image</mat-label>
                                                 <input matInput name='LogoURL' [(ngModel)]="data.LogoURL">
                                                 <mat-icon matSuffix class="upload_icon">cloud_upload</mat-icon>
-                                            </mat-form-field>
+                                            </mat-form-field> -->
+                                            <input type="file" id="my-input
+                                            "  name='LogoURL' [(ngModel)]="data.LogoURL" (change)="uploadImage($event, 'company')" style="width: 250px;">
+
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mt-5 mb-0">
-                                    <div class="col h5 " style="color: rgb(255, 81, 0)">Owner Details</div>
+                                <div class="row mt-4 mb-0">
+                                    <h2 style="color: rgb(255, 81, 0)"> Owner Details</h2>
+                                  
                                 </div>
                                 <div class="row ">
                                     <div class="col-md-10 col-12">
@@ -295,7 +300,7 @@
                                             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Email</mat-label>
-                                                    <input matInput name="Email" type="email" ngModel email="true"
+                                                    <input matInput name="Email"  ngModel email="true"
                                                         [(ngModel)]="data.Email" required #Emailcontrol1>
                                                     <mat-error>
                                                         Invalid Email Id
@@ -347,14 +352,14 @@
                                             <div class="col-12 ">
                                                 <img class="fit-picture" width="170" height="150" [src]="userImage">
                                             </div>
-                                            <div class="col-xl-11 col-lg-11 col-md-11 col-sm-12 mb-0 ">
+                                            <div class="col-xl-11 col-lg-11 col-md-11 col-sm-12 mb-0 " >
                                                 <!-- <mat-form-field appearance="legacy">
                                                     <mat-label>User Image</mat-label>
                                                     <input matInput name='PhotoURL' type="file" [(ngModel)]="data.PhotoURL" (change)="uploadImage($event, 'User')">
                                                     <mat-icon matSuffix class="upload_icon">cloud_upload</mat-icon>
                                                 </mat-form-field> -->
                                                 
-                                                <input type="file" name='PhotoURL' [(ngModel)]="data.PhotoURL" (change)="uploadImage($event, 'User')">
+                                                <input type="file" name='PhotoURL' [(ngModel)]="data.PhotoURL" (change)="uploadImage($event, 'User')" style="width: 250px;">
                                          
                                             </div>
                                         </div>

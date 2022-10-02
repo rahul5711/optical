@@ -73,7 +73,7 @@ module.exports = {
 
                 );
 
-                return res.send({ message: "User Login sucessfully", User: User[0], Company: company[0], CompanySetting: setting[0], success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
+                return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
             } else {
 
                 var currentTime = moment().tz("Asia/Kolkata").format("HH:mm");
@@ -95,7 +95,7 @@ module.exports = {
                     );
                     const accessToken = await signAccessTokenAdmin(`'${User[0].ID}'`)
                     const refreshToken = await signRefreshTokenAdmin(`'${User[0].ID}'`)
-                    return res.send({ message: "User Login sucessfully", User: User[0], Company: company[0], CompanySetting: setting[0], success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
+                    return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
                 } else {
                     return res.send({ message: comment, success: false, loginCode: loginCode })
                 }

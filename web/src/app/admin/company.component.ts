@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 import { AlertService } from '../service/alert.service';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
+import Swal from 'sweetalert2'; 
 
 @Component({
   selector: 'app-company',
@@ -29,6 +30,8 @@ export class CompanyComponent implements OnInit {
   toggleChecked = false;
   dataList : any;
   id : any;
+  imgList: any;
+  img: any;
 
   constructor(
     private router: Router,
@@ -50,7 +53,7 @@ export class CompanyComponent implements OnInit {
   {ID: 4, Name: 'Yearly Plan (365 Days)' , days: 360}];
 
   data : any = {
-    ID: null, CompanyName: null, MobileNo1: null, MobileNo2: null, PhoneNo: null, Address: null, Country: null, State: null, City: null, Email: null, Website: null, GSTNo: null, CINNo: null, LogoURL: null, Remark: null, Plan: null, Version: null, NoOfShops: null, EffectiveDate: new Date(), CacellationDate:  new Date(), WhatsappMsg: false, EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, dataFormat: undefined,
+    ID: null, CompanyName: null, MobileNo1: null, MobileNo2: null, PhoneNo: null, Address: null, Country: null, State: null, City: null, Email: null, Website: null, GSTNo: null, CINNo: null, LogoURL: null, Remark: null, Plan: null, Version: null, NoOfShops: null, EffectiveDate: new Date(), CacellationDate:  null, WhatsappMsg: false, EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, dataFormat: undefined,
      Name : null, UserGroup : "", DOB : null, Anniversary : null,  Branch : '', FaxNo : '',  PhotoURL : '',LoginName : "", Password : "",
      Document:null, CommissionType :null, CommissionMode :null, CommissionValue :null, CommissionValueNB :null,
   };
@@ -60,9 +63,36 @@ export class CompanyComponent implements OnInit {
 
 
   ngOnInit() {
+    
     if (this.id != 0) {
       this.getCompanyById(); 
     }
+  }
+
+  onPlanChange(value:any){  
+    if(this.id !== 0) {
+      this.data.EffectiveDate = new Date();
+    }
+    if (value === 1) {
+        const d = new Date().setDate(this.data.EffectiveDate.getDate() + 15);
+        const date = new Date(d);
+        this.data.CancellationDate = date;
+    }
+    if (value === 2) {
+      const e = new Date().setDate(this.data.EffectiveDate.getDate() + 30);
+      const date1 = new Date(e);
+      this.data.CancellationDate = date1;
+    }
+    if (value === 3) {
+    const f = new Date().setDate(this.data.EffectiveDate.getDate() + 181);
+    const date2 = new Date(f);
+    this.data.CancellationDate = date2;
+    }
+    if (value === 4) {
+      const a = new Date().setDate(this.data.EffectiveDate.getDate() + 365);
+      const date3 = new Date(a);
+      this.data.CancellationDate = date3;
+      }
   }
 
   copyData(val: any) {
@@ -83,7 +113,14 @@ export class CompanyComponent implements OnInit {
         // this.dataList = res.result;
         // console.log(this.dataList);
         if (res.success) {
-          this.router.navigate(['/admin/companyList']);  
+          this.router.navigate(['/admin/companyList']); 
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Save.',
+            showConfirmButton: false,
+            timer: 1200
+          }) 
         } else {
           this.as.errorToast(res.message)
         }
@@ -92,7 +129,9 @@ export class CompanyComponent implements OnInit {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
+      
     });
+   
   } 
 
   getCompanyById(){
@@ -132,13 +171,21 @@ export class CompanyComponent implements OnInit {
   }
 
   uploadImage(e:any, mode:any){
-    let image: File = e.target.files[0]
-    console.log(image)
-    this.fu.uploadFile(image).subscribe(data => {
-     console.log(data);
-     this.data.PhotoURL = data.fileName;
+    if (e.target.files.length) {
+      this.img = e.target.files[0];
+      const elem: any = document.getElementById("my-input");
+      
+    } else {
+      this.img = null;
+    }
+    this.fu.uploadFiles(this.img).subscribe(data => {
+   
+   
+     
+
     });
   }
+
 
 
 }

@@ -14,11 +14,27 @@ export class FileUploadService {
   private url = 'http://localhost:3000/file';
 
 
-  uploadFile(Body:any): Observable<any> {
+  uploadFile(file:any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/upload',  Body, { headers, params })
+    const params = new HttpParams();
+    const fd = new FormData();
+    fd.append('file', file, file.name);
+    return this.httpClient.post<any>(this.url + '/upload',  fd, { headers, params })
       .pipe(catchError(this.handleError));
+  }
+
+
+  uploadFiles(file: any) {
+    const fd = new FormData();
+    // fd.append('docname', docname);
+    // fd.append('mobile', mobile);
+    fd.append('file', file, file.name);
+    console.log(fd);
+
+    return this.httpClient.post(this.url + '/upload', fd, {
+      reportProgress: true,
+      observe: 'events'
+    });
   }
 
   private handleError(errorResponse: HttpErrorResponse) {

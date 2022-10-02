@@ -9,6 +9,8 @@ import { AuthServiceService } from '../service/auth-service.service';
 import { Subscription } from 'rxjs';
 import { TokenService } from '../service/token.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import Swal from 'sweetalert2'; 
+import { Toast } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -38,14 +40,14 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-    this.sp.show()
+   
     if (this.data.LoginName === "") {
       return this.as.errorToast("please fill up login name")
     }
     if (this.data.Password === "") {
       return this.as.errorToast("please fill up password")
     }
-
+    this.sp.show()
     const subs: Subscription = this.auth.login(this.data).subscribe({
       next: (res: any) => {
         if (res.success == true) {
@@ -54,16 +56,60 @@ export class LoginComponent implements OnInit {
           this.token.refreshToken(res.refreshToken);
           localStorage.setItem('user', JSON.stringify(res));
           console.log(res,'res');
-           if(res.data){
+           
             if(res.data.UserGroup  == "SuperAdmin" ){
               this.router.navigate(['/admin/adminDashborad']);
+             
+              let dt = new Date();
+              let hours = dt.getHours();
+              let min = dt.getMinutes();
+      
+              if(hours>=1 || hours<=12){
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title:   'Good Morning Sir ' + `${res.data.Name}`,
+                  showConfirmButton: false,
+                  timer: 1500
+                })
+              }else if(hours>=12 || hours<=16){
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title:   'Good After Sir ' + `${res.data.Name}`,
+                  showConfirmButton: false,
+                  timer: 1500
+                })
+              }else if(hours>=16 || hours<=21){
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title:   'Good Evning Sir ' + `${res.data.Name}`,
+                  showConfirmButton: false,
+                  timer: 1500
+                })
+              }else if(hours>=21 || hours<=24){
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title:   'Good Night Sir ' + `${res.data.Name}`,
+                  showConfirmButton: false,
+                  timer: 1500
+                })
+              }
             }
-           } 
-           if(res.User){
-             if( res.User.UserGroup == "CompanyAdmin"){
+          
+             if( res.data.UserGroup == "CompanyAdmin"){
                this.router.navigate(['/admin/CompanyDashborad']);
+               Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title:   'Welcome TO ' + `${res.data.Name}`,
+                showConfirmButton: false,
+                timer: 1500
+              })
               } 
-           }
+           
         } 
         else {
           this.as.errorToast(res.message);
@@ -73,5 +119,6 @@ export class LoginComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
     this.sp.hide()
+  
   }
 }

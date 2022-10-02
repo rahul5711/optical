@@ -31,7 +31,7 @@ import { TokenInterceptor } from './service/token-interceptor';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { ModalModule } from 'ngb-modal';
 // import { NgxPaginationModule } from 'ngx-pagination';
 
 
