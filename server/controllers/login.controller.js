@@ -97,6 +97,10 @@ module.exports = {
                     const refreshToken = await signRefreshTokenAdmin(`'${User[0].ID}'`)
                     return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
                 } else {
+                    const saveHistory = await connection.query(
+                        `Insert into loginhistory (CompanyID, UserName, UserID, LoginTime, IpAddress, Comment) values (${User[0].CompanyID}, '${User[0].Name}', ${User[0].ID}, now(), '${ip}', '${comment}')`
+
+                    );
                     return res.send({ message: comment, success: false, loginCode: loginCode })
                 }
 
