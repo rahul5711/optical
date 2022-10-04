@@ -49,7 +49,7 @@ $OguruPro-theme: mat.define-light-theme((
     background-color: rgba(89, 89, 89, 0.549) !important;
 }
 .plus_icon{
-    background: #ff0606;
+    background: #615be7;
     color: #fff;
     padding: 3px;
     border-radius: 24px;
@@ -63,13 +63,13 @@ $OguruPro-theme: mat.define-light-theme((
 }
 .plus_icon:hover{
    
-    color: #ff0606 !important;
+    color: #615be7 !important;
     background: #ffffff;
     font-size: 23px;
 
 }
 .delete_icon{
-    background: #ff0606;
+    background: #ff0000;
     color: #fff;
     padding: 3px;
     border-radius: 24px;
@@ -82,14 +82,14 @@ $OguruPro-theme: mat.define-light-theme((
 }
 .delete_icon:hover{
    
-    color: #ff0606 !important;
+    color: #ff0000 !important;
     background: #ffffff;
     font-size: 23px;
 
 }
 
 .edit_icon{
-    background: rgb(32, 24, 108);
+    background: #393497e8;
     color: #fff;
     padding: 3px;
     border-radius: 24px;
@@ -104,7 +104,7 @@ $OguruPro-theme: mat.define-light-theme((
 
 .edit_icon:hover{
    
-    color: rgb(32, 24, 108) !important;
+    color: #393497e8 !important;
     background: #ffffff;
     font-size: 23px;
 
@@ -254,5 +254,6 @@ height: 93vh !important;
 .page-link {
     border-radius: 5px;
 }
+
 /* Importing Bootstrap SCSS file. */
 @import '~bootstrap/scss/bootstrap';
