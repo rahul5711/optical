@@ -29,6 +29,7 @@
     "bootstrap": "^5.2.1",
     "jquery": "^3.6.1",
     "jwt-decode": "^3.1.2",
+    "moment": "^2.29.4",
     "ng-particles": "^2.2.2",
     "ngb-modal": "^2.0.3",
     "ngx-mat-file-input": "^3.0.0-beta.0",

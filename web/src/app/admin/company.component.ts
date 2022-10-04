@@ -12,6 +12,7 @@ import { AlertService } from '../service/alert.service';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-company',
@@ -22,7 +23,6 @@ import Swal from 'sweetalert2';
 export class CompanyComponent implements OnInit {
 
   loggedInUser:any = localStorage.getItem('LoggedINUser');
-  evn = environment;
  
   companyImage: any;
   userImage: any;
@@ -32,6 +32,7 @@ export class CompanyComponent implements OnInit {
   id : any;
   imgList: any;
   img: any;
+  env: { production: boolean; apiUrl: string; appUrl: string; };
 
   constructor(
     private router: Router,
@@ -43,6 +44,8 @@ export class CompanyComponent implements OnInit {
     public as: AlertService,
   ) {
     this.id = this.route.snapshot.params['id'];
+    this.env = environment
+
   }
 
   color: ThemePalette = 'primary';
@@ -141,6 +144,13 @@ export class CompanyComponent implements OnInit {
         if (res.success) {
           this.as.successToast(res.message)
           this.data = res.data[0]
+          console.log(res.data[0]?.DOB);
+          
+          this.data.DOB =  moment(new Date(res.data[0]?.DOB)).format('YYYY-MM-DD'),
+          this.data.CancellationDate =  moment(res.data[0]?.CancellationDate).format('YYYY-MM-DD'),
+          this.companyImage = this.env.apiUrl + res.data[0].LogoURL;
+          this.userImage = this.env.apiUrl + res.data[0].PhotoURL;
+
         } else {
           this.as.errorToast(res.message)
         }
@@ -178,10 +188,18 @@ export class CompanyComponent implements OnInit {
     } else {
       this.img = null;
     }
-    this.fu.uploadFiles(this.img).subscribe(data => {
-   
-   
-     
+    this.fu.uploadFiles(this.img).subscribe((data:any) => {
+      if (data.body !== undefined && mode === 'company') {
+        this.companyImage = this.env.apiUrl + data.body.download;
+        this.data.LogoURL = data.body.download
+        console.log(this.companyImage);
+        this.as.successToast(data.body.message)
+      } else {
+        this.userImage = this.env.apiUrl + data.body.download;
+        this.data.PhotoURL = data.body.download
+        this.as.successToast(data.body.message) 
+      }
+      
 
     });
   }
