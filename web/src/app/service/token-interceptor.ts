@@ -33,9 +33,10 @@ export class TokenInterceptor implements HttpInterceptor {
         const token = this.tokenService.getToken();
        const ip = document.getElementById('ip')!.innerHTML;
         if (token) {
-            headersConfig['Authorization'] = `Bearer ${token}`;
+          headersConfig['Authorization'] = `Bearer ${token}`;
           headersConfig['Access-Control-Allow-Headers'] =  'Content-Type';
           headersConfig['ip'] = ip;
+          headersConfig['UserGroup'] = this.tokenService.getUser().data.UserGroup;
 
         }
         req = req.clone({ setHeaders: headersConfig });
