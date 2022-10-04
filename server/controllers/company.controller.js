@@ -179,6 +179,12 @@ module.exports = {
             console.log("Company Updated SuccessFUlly !!!");
 
 
+            const updateUser = await connection.query(`update user set Name = '${Body.Name}',DOB = '${Body.DOB}',Anniversary = '${Body.Anniversary}',PhotoURL = '${Body.PhotoURL}',MobileNo1 = '${Body.MobileNo1}',MobileNo2 = '${Body.MobileNo2}',PhoneNo = '${Body.PhoneNo}',Address = '${Body.Address}' where CompanyID = ${Body.ID} and UserGroup = 'CompanyAdmin'`)
+
+            console.log("User Updated SuccessFUlly !!!");
+
+
+
             const Company = await connection.query(`select * from company where ID = ${Body.ID}`)
 
 
@@ -244,28 +250,28 @@ module.exports = {
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
 
-            const Company = await connection.query(`select company.*, company.Name as CompanyName, user.DOB, user.Anniversary, user.LoginName, user.Name from company left join user on user.CompanyID = company.ID where company.ID = ${Body.ID} and company.Status = 1`)
+            const Company = await connection.query(`select company.*, company.Name as CompanyName, user.DOB, user.Anniversary, user.LoginName, user.PhotoURL, user.Name from company left join user on user.CompanyID = company.ID where company.ID = ${Body.ID} and company.Status = 1`)
 
             if (Company[0].WhatsappMsg === 'false') {
-                Company[0].WhatsappMsg = false 
+                Company[0].WhatsappMsg = false
             } else {
                 Company[0].WhatsappMsg = true
             }
 
             if (Company[0].EmailMsg === 'false') {
-                Company[0].EmailMsg = false 
+                Company[0].EmailMsg = false
             } else {
                 Company[0].EmailMsg = true
             }
 
             if (Company[0].WholeSale === 'false') {
-                Company[0].WholeSale = false 
+                Company[0].WholeSale = false
             } else {
                 Company[0].WholeSale = true
             }
 
             if (Company[0].RetailPrice === 'false') {
-                Company[0].RetailPrice = false 
+                Company[0].RetailPrice = false
             } else {
                 Company[0].RetailPrice = true
             }
@@ -282,7 +288,7 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
-            console.log(req.user.CompanyID , 'req');
+            console.log(req.user.CompanyID, 'req');
             const Body = req.body;
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
@@ -294,7 +300,7 @@ module.exports = {
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
-            let finalQuery = qry + skipQuery ;
+            let finalQuery = qry + skipQuery;
 
             console.log(finalQuery);
 
@@ -314,7 +320,7 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
-            console.log(req.user.CompanyID , 'req');
+            console.log(req.user.CompanyID, 'req');
             const Body = req.body;
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
@@ -326,7 +332,7 @@ module.exports = {
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
-            let finalQuery = qry + skipQuery ;
+            let finalQuery = qry + skipQuery;
 
             console.log(finalQuery);
 
