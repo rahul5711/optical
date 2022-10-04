@@ -26,7 +26,6 @@ export class TokenInterceptor implements HttpInterceptor {
     this.tokenService.token = localStorage.getItem('auth')|| '';
     if (this.tokenService.getToken()) {
       if (!this.tokenService.isTokenExpired()) {
-        
         const headersConfig:any = {
           Accept: 'application/json'
         };
@@ -36,7 +35,7 @@ export class TokenInterceptor implements HttpInterceptor {
           headersConfig['Authorization'] = `Bearer ${token}`;
           headersConfig['Access-Control-Allow-Headers'] =  'Content-Type';
           headersConfig['ip'] = ip;
-          headersConfig['UserGroup'] = this.tokenService.getUser().data.UserGroup;
+          headersConfig['UserGroup'] = this.tokenService.getUser().data.UserGroup || '';
 
         }
         req = req.clone({ setHeaders: headersConfig });

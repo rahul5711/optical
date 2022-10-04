@@ -20,11 +20,12 @@ const http = require('http').Server(app)
 app.use(cors())
 
 // app.use(function(req, res, next) {
-//   res.setHeader('Access-Control-Allow-Origin', req.header('Origin'));
-//   res.setHeader('Access-Control-Allow-Methods',req.method);
-//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-//   res.setHeader('Access-Control-Allow-Credentials', true);
-//   next();
+//   console.log(req.headers.usergroup);
+//   if (req.headers.usergroup !== 'SuperAdmin') {
+//     return res.send({message: "expired", LoginCode: 3})
+//   } else {
+//     next();
+//   }
 // });
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

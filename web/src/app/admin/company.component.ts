@@ -144,10 +144,6 @@ export class CompanyComponent implements OnInit {
         if (res.success) {
           this.as.successToast(res.message)
           this.data = res.data[0]
-          console.log(res.data[0]?.DOB);
-          
-          this.data.DOB =  moment(new Date(res.data[0]?.DOB)).format('YYYY-MM-DD'),
-          this.data.CancellationDate =  moment(res.data[0]?.CancellationDate).format('YYYY-MM-DD'),
           this.companyImage = this.env.apiUrl + res.data[0].LogoURL;
           this.userImage = this.env.apiUrl + res.data[0].PhotoURL;
 
