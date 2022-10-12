@@ -43,6 +43,7 @@ app.use('/company', require('./routes/company.route'));
 app.use('/login', require('./routes/login.route'));
 app.use('/product', require('./routes/product.route'));
 app.use('/file', require('./routes/file.route'));
+app.use('/support', require('./routes/support.route'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
