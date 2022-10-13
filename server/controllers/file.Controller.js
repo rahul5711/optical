@@ -29,6 +29,24 @@ module.exports = {
       next(error)
     }
   },
+  companyimageupload: async (req, res, next) => {
+    try {
+      const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0
+
+      if (req.file == undefined) {
+        return res.status(400).json({ message: "Please upload file!" });
+      }
+      return res.json({
+        message: "Uploaded Successfully",
+        file: req.file,
+        fileName: req.file.filename,
+        download: '/uploads/' + year + '/' + month + '/' + CompanyID + '/' + 'images/' + req.file.filename
+      });
+
+    } catch (error) {
+      next(error)
+    }
+  },
   
 
 }

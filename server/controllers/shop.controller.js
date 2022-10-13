@@ -9,15 +9,14 @@ const connected = chalk.bold.cyan;
 
 module.exports = {
 
-
     save: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
 
             const Body = req.body;
-            const LoggedOnUser = req.user.ID  ? req.user.ID: 0;
-            const CompanyID = req.user.CompanyID  ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (_.isEmpty(Body.Name)) return res.send({ message: "Invalid Query Data" })
@@ -27,13 +26,13 @@ module.exports = {
             console.log(connected("Data Added SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
-            response.data =  await connection.query(`select * from shop where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
+            // response.data =  await connection.query(`select * from shop where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
             connection.release()
             return res.send(response)
         } catch (error) {
             console.log(error);
             return error
-        }   
+        }
     },
 
     list: async (req, res, next) => {
@@ -41,7 +40,7 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
             const Body = req.body;
-            const CompanyID = req.user.CompanyID  ? req.user.CompanyID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
             let page = Body.currentPage;
@@ -53,8 +52,6 @@ module.exports = {
 
 
             let finalQuery = qry + skipQuery;
-
-            console.log(finalQuery);
 
             let data = await connection.query(finalQuery);
             let count = await connection.query(qry);
@@ -68,6 +65,93 @@ module.exports = {
             return error
         }
     },
-   
+    dropdownlist: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const UserID = req.user.ID ? req.user.ID : 0;
+            const UserGroup = req.user.UserGroup ? req.user.UserGroup : 'CompanyAdmin';
+
+            let qry = ``
+            
+            if (UserGroup === 'CompanyAdmin') {
+                qry = `select * from shop where Status = 1 and CompanyID = '${CompanyID}'  order by ID desc`;
+            } else {
+                qry = `SELECT * FROM shop LEFT JOIN usershop ON usershop.ShopID = shop.ID WHERE usershop.Status = 1 AND shop.CompanyID = ${CompanyID} AND usershop.UserID = ${UserID} order by shop.ID desc`
+            }
+
+            let data = await connection.query(qry);
+            response.message = "data fetch sucessfully"
+            response.data = data
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+    delete: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+
+            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+
+            const doesExist = await connection.query(`select * from shop where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "shop doesnot exist from this id " })
+            }
+
+
+            const deleteShop = await connection.query(`update shop set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+
+            console.log("Shop Delete SuccessFUlly !!!");
+
+            response.message = "data delete sucessfully"
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            return error
+        }
+    },
+    restore: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+
+            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+
+            const doesExist = await connection.query(`select * from shop where Status = 0 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "shop doesnot exist from this id " })
+            }
+
+
+            const restoreShop = await connection.query(`update shop set Status=1, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+
+            console.log("Shop Restore SuccessFUlly !!!");
+
+            response.message = "data restore sucessfully"
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            return error
+        }
+    },
 
 }
