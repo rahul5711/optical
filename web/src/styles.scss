@@ -109,6 +109,20 @@ $OguruPro-theme: mat.define-light-theme((
     font-size: 23px;
 
 }
+
+.logoutBtn{
+    float: right; 
+    color: aliceblue; 
+    margin-right: 1% !important; 
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.logoutBtn:hover{
+    color: rgb(228, 30, 30); 
+
+}
+
 .table>thead {
  
     background: #e2e2e2;
@@ -188,8 +202,15 @@ $OguruPro-theme: mat.define-light-theme((
 .blue{
     background-color: rgb(25, 19, 80);
 }
-.upload_icon{
-    color: rgb(255, 81, 0)
+.upload_icon {
+    font-size: 20px;
+    color: #ffffff;
+    background: #ff5100;
+    width: 171px;
+    padding-top: 2px;
+    height: 25px;
+   padding-left: 4px;
+    
 }
 .og{
     background-color: rgb(255, 81, 0);

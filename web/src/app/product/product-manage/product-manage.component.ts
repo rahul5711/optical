@@ -19,6 +19,7 @@ import { AlertService } from 'src/app/service/alert.service';
 })
 
 export class ProductManageComponent implements OnInit {
+i: any;
 
   constructor(
     private router: Router,
@@ -166,13 +167,18 @@ export class ProductManageComponent implements OnInit {
 
   updateedit(){
   this.hideSave = false
-  // this.newProduct.ID = this.prodList[0].ID
-  // this.newProduct.CompanyID = this.prodList[0].CompanyID
-  // this.newProduct.Name = this.prodList[0].Name
-  // this.newProduct.HSNCode = this.prodList[0].HSNCode
-  // this.newProduct.GSTPercentage = this.prodList[0].GSTPercentage
-  // this.newProduct.GSTType = this.prodList[0].GSTType
-  // console.log(this.newProduct.HSNCode);
+  
+  
+
+    this.newProduct.ID = this.prodList[0].ID
+    this.newProduct.CompanyID = this.prodList[0].CompanyID
+    this.newProduct.Name = this.prodList[0].Name
+    this.newProduct.HSNCode = this.prodList[0].HSNCode
+    this.newProduct.GSTPercentage = this.prodList[0].GSTPercentage
+    this.newProduct.GSTType = this.prodList[0].GSTType
+    console.log(this.newProduct.HSNCode);
+  
+  
   }
 
   updateProductType(){

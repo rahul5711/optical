@@ -177,26 +177,20 @@ export class CompanyComponent implements OnInit {
   }
 
   uploadImage(e:any, mode:any){
-    if (e.target.files.length) {
+    if(e.target.files.length) {
       this.img = e.target.files[0];
-      const elem: any = document.getElementById("my-input");
-      
-    } else {
-      this.img = null;
-    }
+    };
     this.fu.uploadFiles(this.img).subscribe((data:any) => {
       if (data.body !== undefined && mode === 'company') {
-        this.companyImage = this.env.apiUrl + data.body.download;
-        this.data.LogoURL = data.body.download
+        this.companyImage = this.env.apiUrl + data.body?.download;
+        this.data.LogoURL = data.body?.download
         console.log(this.companyImage);
-        this.as.successToast(data.body.message)
+        this.as.successToast(data.body?.message)
       } else {
-        this.userImage = this.env.apiUrl + data.body.download;
-        this.data.PhotoURL = data.body.download
-        this.as.successToast(data.body.message) 
+        this.userImage = this.env.apiUrl + data.body?.download;
+        this.data.PhotoURL = data.body?.download
+        this.as.successToast(data.body?.message) 
       }
-      
-
     });
   }
 

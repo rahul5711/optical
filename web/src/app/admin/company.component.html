@@ -215,24 +215,19 @@
                                 </div>
                                 <div class="col-md-2 col-12">
                                     <div class="row">
-                                        <div class="col-12 mt-1 ">
+                                        <div class="col-12 mt-1 " >
                                             <img class="fit-picture" width="170" height="170" [src]="companyImage">
                                         </div>
-                                        <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 " >
-                                            <!-- <mat-form-field appearance="legacy">
-                                                <mat-label>Company Image</mat-label>
-                                                <input matInput name='LogoURL' [(ngModel)]="data.LogoURL">
-                                                <mat-icon matSuffix class="upload_icon">cloud_upload</mat-icon>
-                                            </mat-form-field> -->
-                                            <input type="file" id="my-input
-                                            "  name='LogoURL' [(ngModel)]="data.LogoURL" (change)="uploadImage($event, 'company')" style="width: 250px;">
-
+                                        <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 " (click)="fileInput.click()" style="cursor: pointer;">
+                                            <i class="fa-solid fa-cloud-arrow-up upload_icon" >
+                                                <span style="font-size: 10px;letter-spacing: 2px;"> Company Image </span>
+                                            </i>
+                                            <input  #fileInput id="my-input" name='LogoURL' type="file" [(ngModel)]="data.LogoURL" (change)="uploadImage($event, 'company')" style="display:none;">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row mt-4 mb-0">
                                     <h2 style="color: rgb(255, 81, 0)"> Owner Details</h2>
-                                  
                                 </div>
                                 <div class="row ">
                                     <div class="col-md-10 col-12">
@@ -350,17 +345,13 @@
                                     <div class="col-md-2 col-12 ps-md-4">
                                         <div class="row ps-2">
                                             <div class="col-12 ">
-                                                <img class="fit-picture" width="170" height="150" [src]="userImage">
+                                                <img class="fit-picture" width="170" height="170" [src]="userImage">
                                             </div>
-                                            <div class="col-xl-11 col-lg-11 col-md-11 col-sm-12 mb-0 " >
-                                                <!-- <mat-form-field appearance="legacy">
-                                                    <mat-label>User Image</mat-label>
-                                                    <input matInput name='PhotoURL' type="file" [(ngModel)]="data.PhotoURL" (change)="uploadImage($event, 'User')">
-                                                    <mat-icon matSuffix class="upload_icon">cloud_upload</mat-icon>
-                                                </mat-form-field> -->
-                                                
-                                                <input type="file" name='PhotoURL' [(ngModel)]="data.PhotoURL" (change)="uploadImage($event, 'User')" style="width: 250px;">
-                                         
+                                            <div class="col-xl-11 col-lg-11 col-md-11 col-sm-12 mb-0 " (click)="fileInputs.click()" style="cursor: pointer;">
+                                                <i class="fa-solid fa-cloud-arrow-up upload_icon" >
+                                                    <span style="font-size: 10px;letter-spacing: 2px;"> user Image</span> 
+                                                </i>
+                                                <input  #fileInputs  name='PhotoURL' type="file" [(ngModel)]="data.PhotoURL" (change)="uploadImage($event, '')" accept="/*" style="display:none;">
                                             </div>
                                         </div>
                                     </div>
