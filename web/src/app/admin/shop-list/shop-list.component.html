@@ -16,30 +16,38 @@
                     <table  class="table table-striped table-hover table-sm table-bordered" style="border: 2px solid #fff !important;">
                       <thead>
                         <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">First</th>
-                          <th scope="col">Last</th>
-                          <th scope="col">Handle</th>
+                           <th class="text-left">Action</th>
+                           <th class="text-left">S.No</th>
+                           <th class="text-left">Shop Name</th>
+                           <th class="text-left">Area Name</th>
+                           <th class="text-left">Mobile No1</th>
+                           <th class="text-left">Mobile No2</th>
+                           <th class="text-left">Phone No</th>
+                           <th class="text-left">Email</th>
+                           <th class="text-left">Website</th>
+                           <th class="text-left">GST No</th>
+                           <th class="text-left">CIN No</th>
+                           <th class="text-left">Shop Timing</th>
+                           <th class="text-left">CreatedBy</th>
+                           <th class="text-left">UpdatedBy</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>Mark</td>
-                          <td>Otto</td>
-                          <td>@mdo</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">2</th>
-                          <td>Jacob</td>
-                          <td>Thornton</td>
-                          <td>@fat</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">3</th>
-                          <td>Larry</td>
-                          <td>the Bird</td>
-                          <td>@twitter</td>
+                        <tr class="text-center" *ngFor="let data of dataList let i = index;" style="white-space: nowrap;">
+                          <td style="width: 7%;"><mat-icon class="delete_icon ms-1" (click)="deleteItem(i)">delete_forever</mat-icon></td>
+                          <td class="text-left">{{ dataList.length - i }}</td>
+                          <td class="text-left">{{data.Name}}</td>
+                          <td class="text-left">{{data.AreaName}}</td>
+                          <td class="text-left">{{data.MobileNo1 }}</td>
+                          <td class="text-left">{{(data.MobileNo2 !== 'null')? data.MobileNo2: ''}}</td>
+                          <td class="text-left">{{(data.PhoneNo !== 'null')? data.PhoneNo: ''}}</td>
+                          <td class="text-left">{{(data.Email !== 'null')? data.Email: ''}}</td>
+                          <td class="text-left">{{(data.Website !== 'null')? data.Website: ''}}</td>
+                          <td class="text-left">{{(data.GSTNo !== 'null')? data.GSTNo: ''}}</td>
+                          <td class="text-left">{{(data.CINNo !== 'null')? data.CINNo: ''}}</td>
+                          <td class="text-left">{{data.ShopTiming}}</td>
+                          <td class="text-left">{{data.CreatedByUser}}</td>
+                          <td class="text-left">{{data.UpdatedByUser}}</td>
                         </tr>
                       </tbody>
                     </table>

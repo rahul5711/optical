@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 })
 export class CommonComponent implements OnInit {
 
-  loggedInUser:any = localStorage.getItem('LoggedINUser');
+  loggedInUser:any = localStorage.getItem('LoggedINUser') || '' ;
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
 
   x: any;
@@ -17,6 +17,7 @@ export class CommonComponent implements OnInit {
   constructor(private router: Router, ) { }
 
   ngOnInit(): void {
+   
    
   }
 

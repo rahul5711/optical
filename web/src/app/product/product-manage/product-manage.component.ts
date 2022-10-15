@@ -167,9 +167,6 @@ i: any;
 
   updateedit(){
   this.hideSave = false
-  
-  
-
     this.newProduct.ID = this.prodList[0].ID
     this.newProduct.CompanyID = this.prodList[0].CompanyID
     this.newProduct.Name = this.prodList[0].Name
@@ -253,6 +250,8 @@ i: any;
         },
         complete: () => subs.unsubscribe(),
       });
+    this.getfieldList();
+
   }
   
 }

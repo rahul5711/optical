@@ -58,6 +58,7 @@ export class CompanyService {
     return this.httpClient.post<any>(this.url + '/user', Body, { params })
     .pipe(catchError(this.handleError));
   }
+  
   getLoginList(Body: any): Observable<any> {
     const params = new HttpParams()
     return this.httpClient.post<any>(this.url + '/LoginHistory', Body, { params })

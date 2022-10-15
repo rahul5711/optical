@@ -22,11 +22,13 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { AddManageComponent } from './add-manage/add-manage.component';
 
 @NgModule({
   declarations: [
     ProductManageComponent,
-    ProductMasterComponent
+    ProductMasterComponent,
+    AddManageComponent
   ],
   imports: [
     CommonModule,

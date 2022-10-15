@@ -99,8 +99,6 @@ export class UserUpdatePasswordComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
-    
-       
       },
       error: (err: any) => {
         console.log(err.message);

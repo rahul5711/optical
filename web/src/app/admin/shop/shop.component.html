@@ -10,7 +10,7 @@
                         </h2>
                     </div>
                     <div class="body">
-                        <form autocomplete="off" #f="ngForm" (ngSubmit)="onSubmit()">
+                        <form autocomplete="off" #f="ngForm" (ngSubmit)="onsubmit()">
                             <!-- shop form filed -->
                             <div class="row">
                                 <div class="col-md-10 col-11">
@@ -37,7 +37,7 @@
                                         </div>
                                         <div class="col-md-3 mb-0 pt-md-3 ps-md-5 ">
                                             <mat-slide-toggle name="Checked" class="example-margin "
-                                                [checked]="toggleChecked" [disabled]="false" #CompanyIDcontrol>
+                                                [checked]="toggleChecked" color="primary" (change)="copyData($event.checked)" [disabled]="false" #CompanyIDcontrol>
                                                 Copy Data From Company
                                             </mat-slide-toggle>
                                         </div>
@@ -141,75 +141,58 @@
                                 </div>
                                 <div class="col-md-2 col-11 ps-md-5">
                                     <div class="row">
-                                        <div class="col-md-12 col-12 mt-1 ">
-                                            <img class="fit-picture" width="170" height="150" [src]="companyImage">
+                                        <div class="col-12 mt-1 " >
+                                            <img class="fit-picture" width="170" height="170" [src]="companyImage">
                                         </div>
-                                        <div class="col-xl-11 col-lg-11 col-md-11 col-12 mb-0 mt-3">
-                                            <mat-form-field appearance="legacy">
-                                                <mat-label>Company Image</mat-label>
-                                                <input matInput name='LogoURL' [(ngModel)]="data.LogoURL">
-                                                <mat-icon matSuffix class="upload_icon">cloud_upload</mat-icon>
-                                            </mat-form-field>
+                                        <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 " (click)="fileInput.click()" style="cursor: pointer;">
+                                            <i class="fa-solid fa-cloud-arrow-up upload_icon" >
+                                                <span style="font-size: 10px;letter-spacing: 2px;"> Company Image </span>
+                                            </i>
+                                            <input  #fileInput id="my-input" name='LogoURL' type="file" [(ngModel)]="data.LogoURL" (change)="uploadImage($event, 'company')" style="display:none;">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                               <!-- Bill Fromat Options -->
-                            <h2 class="header">Bill Fromat Hide/Show</h2>
+                            <h2 class="header">Bill Format Hide/Show</h2>
                             <div class="row">
                                 <div class="col-md-1 col-sm-6 col-6">
-                                    <mat-slide-toggle name="HSNCode" color="primary" [(ngModel)]="data.HSNCode"
-                                        class="example-margin">HSN</mat-slide-toggle>
+                                    <mat-slide-toggle name="HSNCode" color="primary" [(ngModel)]="data.HSNCode" class="example-margin">HSN</mat-slide-toggle>
                                 </div>
                                 <div class="col-md-1 col-sm-6 col-6">
-                                    <mat-slide-toggle name="CustGSTNo" color="primary" [(ngModel)]="data.CustGSTNo"
-                                        class="example-margin"> GST No.
-                                    </mat-slide-toggle>
+                                    <mat-slide-toggle name="CustGSTNo" color="primary" [(ngModel)]="data.CustGSTNo"  class="example-margin"> GST No. </mat-slide-toggle>
                                 </div>
                                 <div class="col-md-1 col-sm-6 col-6">
-                                    <mat-slide-toggle name="Rate" color="primary" [(ngModel)]="data.Rate"
-                                        class="example-margin">Rate</mat-slide-toggle>
+                                    <mat-slide-toggle name="Rate" color="primary" [(ngModel)]="data.Rate"  class="example-margin">Rate</mat-slide-toggle>
                                 </div>
                                 <div class="col-md-1 col-sm-6 col-6">
-                                    <mat-slide-toggle name="Discounts" color="primary" [(ngModel)]="data.Discounts"
-                                        class="example-margin">Discount
-                                    </mat-slide-toggle>
+                                    <mat-slide-toggle name="Discounts" color="primary" [(ngModel)]="data.Discounts" class="example-margin">Discount </mat-slide-toggle>
                                 </div>
                                 <div class="col-md-1 col-sm-6 col-6">
-                                    <mat-slide-toggle name="SubTotal" color="primary" [(ngModel)]="data.SubTotal"
-                                        class="example-margin">SubTotal
-                                    </mat-slide-toggle>
+                                    <mat-slide-toggle name="SubTotal" color="primary" [(ngModel)]="data.SubTotal"  class="example-margin">SubTotal </mat-slide-toggle>
                                 </div>
                                 <div class="col-md-1 col-sm-6 col-6">
-                                    <mat-slide-toggle name="Tax" color="primary" [(ngModel)]="data.Tax"
-                                        class="example-margin">Tax</mat-slide-toggle>
+                                    <mat-slide-toggle name="Tax" color="primary" [(ngModel)]="data.Tax" class="example-margin">Tax</mat-slide-toggle>
                                 </div>
                                 <div class="col-md-1 col-sm-6 col-6">
-                                    <mat-slide-toggle name="Total" color="primary" [(ngModel)]="data.Total"
-                                        class="example-margin">Total</mat-slide-toggle>
+                                    <mat-slide-toggle name="Total" color="primary" [(ngModel)]="data.Total" class="example-margin">Total</mat-slide-toggle>
                                 </div>
                             </div>
                             <!-- Software Bill Options Hide/Show -->
                             <h2 class="header mt-4">Software Bill Hide/Show</h2>
                             <div class="row">
                                 <div class="col-md-1 col-sm-6 col-6">
-                                    <mat-slide-toggle name="Discount" color="primary" class="example-margin"
-                                        [(ngModel)]="data.Discount" class="example-margin">Discount
-                                    </mat-slide-toggle>
+                                    <mat-slide-toggle name="Discount" color="primary" class="example-margin" [(ngModel)]="data.Discount" class="example-margin">Discount </mat-slide-toggle>
                                 </div>
                                 <div class="col-md-1 col-sm-6 col-6">
-                                    <mat-slide-toggle name="GSTnumber" color="primary" [(ngModel)]="data.GSTnumber"
-                                        class="example-margin">GST
-                                    </mat-slide-toggle>
+                                    <mat-slide-toggle name="GSTnumber" color="primary" [(ngModel)]="data.GSTnumber" class="example-margin">GST</mat-slide-toggle>
                                 </div>
                             </div>
                              <!-- Save/Cancel -->
                             <div class="row my-4">
                                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
-                                    <button type="submit" class="me-3" mat-raised-button color="primary"
-                                        [disabled]="!f.valid">Save</button>
-                                    <button type="button" mat-raised-button
-                                        [routerLink]="['/admin/shopList']">Cancel</button>
+                                    <button type="submit" class="me-3" mat-raised-button color="primary" [disabled]="!f.valid">Save</button>
+                                    <button type="button" mat-raised-button [routerLink]="['/admin/shopList']">Cancel</button>
                                 </div>
                             </div>
                         </form>
