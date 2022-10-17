@@ -10,10 +10,8 @@ import { Company } from '../interface/Company';
 
 export class CompanyService {
 
-
   loggedInUser:any = localStorage.getItem('LoggedINUser');
 
-  
   constructor(private httpClient: HttpClient) { }
   private url = 'http://localhost:3000/company';
   
@@ -32,19 +30,18 @@ export class CompanyService {
     .pipe(catchError(this.handleError));
   }
 
-
   getCompanyById(ID:any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams();
     return this.httpClient.post<any>(this.url + '/getCompanyById', {ID: ID},  { headers, params })
-      .pipe(catchError(this.handleError));
+    .pipe(catchError(this.handleError));
   }
 
   deleteData(ID:any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams();
     return this.httpClient.post<any>(this.url + '/delete', {ID: ID},  { headers, params })
-      .pipe(catchError(this.handleError));
+    .pipe(catchError(this.handleError));
   }
 
   getList(Body: any): Observable<any> {
@@ -70,9 +67,8 @@ export class CompanyService {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams()
     return this.httpClient.post<any>(this.url + '/updatePassword',  Body, { headers, params })
-      .pipe(catchError(this.handleError));
+    .pipe(catchError(this.handleError));
   }
-
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

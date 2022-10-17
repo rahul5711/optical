@@ -22,13 +22,14 @@ import { FileUploadService } from 'src/app/service/file-upload.service';
 
 export class ShopComponent implements OnInit {
 
-  loggedInCompany:any = JSON?.parse(localStorage.getItem('LoggedINCompany') || '');
-
+  loggedInCompany:any = (localStorage.getItem('LoggedINCompany') || '');
+  user = (localStorage.getItem('user') || '');
   reactiveForm!: FormGroup;
   toggleChecked = false
   companyImage:any;
   img: any;
   env: { production: boolean; apiUrl: string; appUrl: string; };
+ 
 
   constructor(
 
@@ -42,6 +43,7 @@ export class ShopComponent implements OnInit {
     private fu: FileUploadService,
 
   ) { 
+   
     this.env = environment
     this.reactiveForm = new FormGroup({
       Name : new FormControl(null, Validators.required)
@@ -55,7 +57,6 @@ export class ShopComponent implements OnInit {
 
   ngOnInit(): void {
 
-    
   }
   copyData(val: any) {
     if (val) {

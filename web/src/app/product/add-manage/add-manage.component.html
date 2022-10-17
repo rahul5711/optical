@@ -5,19 +5,23 @@
         </div>
         <div class="row clearfix">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <!-- addManagecard -->
                 <div class="card">
                     <div class="header">
-                        <h2>Add Type Master</h2>
+                        <h2>Add Management</h2>
                         <ul class="header-dropdown m-r--5"> </ul>
                     </div>
                     <div class="body">
                         <form #f="ngForm" autocomplete="off">
-                            <div class="row" >
+                            <div class="row">
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Product</mat-label>
-                                        <mat-select name="FieldType" [(ngModel)]="selectedProduct" (selectionChange)="getfieldList()" required #Typecontrol appAutoFoucsDirectives>
-                                            <mat-option *ngFor="let type of productType let i = index; " [value]="type.value">
+                                        <mat-select name="FieldType" [(ngModel)]="selectedProduct"
+                                            (selectionChange)="getfieldList()" required #Typecontrol
+                                            appAutoFoucsDirectives>
+                                            <mat-option *ngFor="let type of productType let i = index; "
+                                                [value]="type.value">
                                                 {{type.Name | uppercase}}
                                             </mat-option>
                                         </mat-select>
@@ -26,17 +30,15 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                
-                            </div>
-
-                            <div class="row" *ngIf="showFeild">
-
-
-                                <div *ngIf="!showAdd" class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                <div *ngIf="showFeild" class="col-xl-4 col-lg-4 col-md-4 col-sm-2 mb-0">
+                                <div class="row" >
+                                <div *ngIf="!showAdd" class="col-md-6 col-sm-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Category</mat-label>
-                                        <mat-select name="Field Type" [(ngModel)]="data1.Category"  required #Typecontrol>
-                                            <mat-option *ngFor="let prod of depList   let i = index; " [value]="prod.Name">
+                                        <mat-select name="Field Type" [(ngModel)]="data1.Category" required
+                                            #Typecontrol>
+                                            <mat-option *ngFor="let prod of depList   let i = index; "
+                                                [value]="prod.Name">
                                                 {{prod.Name | uppercase}}
                                             </mat-option>
                                         </mat-select>
@@ -45,31 +47,168 @@
                                         </mat-error> -->
                                     </mat-form-field>
                                 </div>
-                                <div *ngIf="!showAdd" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
-                                    <button mat-mini-fab color="primary" (click)="showAdd = !showAdd" aria-label="Example icon button with a bookmark icon">
-                                        <mat-icon>add</mat-icon></button>
-                                </div>
-                                <div *ngIf="!showAdd" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
-                                    <button class="ml-2" mat-mini-fab color="warn" *ngIf="showAdd === false" (click)="delSupport()" aria-label="Example icon button with a bookmark icon">                   
-                                            <mat-icon>delete</mat-icon>
-                                           </button>
-                                </div>
+                                <div *ngIf="!showAdd" class="col-md-6 col-sm-12 mb-0">
+                                   <button type="button" autofocus class="btn_icon" (click)="showAdd = !showAdd;">
+                                    <mat-icon class="col-white plus_icon" >add</mat-icon>
+                                   </button>
+                                   <button type="button" autofocus class="btn_icon" *ngIf="showAdd === false"  (click)="delSupport()">
+                                    <mat-icon class="delete_icon me-2 ms-2" 
+                                       >delete_forever</mat-icon>
+                                   </button>
 
-                                <div *ngIf="showAdd" class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                </div>
+                                <div *ngIf="showAdd" class="col-md-6 col-sm-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Add Type</mat-label>
-                                        <input matInput name="NewDepartment" [(ngModel)]="newDepartment.Name"  required #NewDepartmentTypecontrol>
+                                        <input matInput name="NewDepartment" [(ngModel)]="newDepartment.Name" required
+                                            #NewDepartmentTypecontrol>
                                     </mat-form-field>
                                 </div>
-                                <div *ngIf="showAdd" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
-                                    <button mat-mini-fab color="primary" (click)="showAdd = !showAdd; saveDepartment()" aria-label="Example icon button with a bookmark icon">
-                                  <mat-icon>save</mat-icon></button>
+                                <div *ngIf="showAdd" class="col-md-6 col-sm-12 mb-0">
+                                    <button mat-mini-fab color="primary" (click)="showAdd = !showAdd; saveDepartment()"
+                                        aria-label="Example icon button with a bookmark icon">
+                                        <mat-icon>save</mat-icon>
+                                    </button>
                                 </div>
+                               </div>
+                            </div>
+                          </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- chargeCard -->
+                <div class="card">
+                    <div class="header">
+                        <h2>Charge Management For Purchase</h2>
+                        <ul class="header-dropdown m-r--5"> </ul>
+                    </div>
+                    <div class="body">
+                        <form  #f="ngForm" autocomplete="off">
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="  !showAdd">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Product Name</mat-label>
+                                        <mat-select name="Field Type" [(ngModel)]="selectedRow.Name" (selectionChange)="setValues()" required #Typecontrol appAutoFoucsDirectives>
+                                          <mat-option *ngFor="let data of dataList  let i = index;" [value]="data.Name">
+                                            {{data.Name | uppercase}}
+                                          </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                        Select Valid Value
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="showAdd">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Product Name</mat-label>
+                                        <input matInput name="NewRole" [(ngModel)]="selectedRow.Name"  required #NewProductTypecontrol>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label>Description</mat-label>
+                                        <input matInput name="Description" [(ngModel)]="selectedRow.Description"  required #Descriptioncontrol>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label>Customer Price</mat-label>
+                                        <input matInput name="Price" [(ngModel)]="selectedRow.Price" required #Pricecontrol>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label>GST%</mat-label>
+                                        <input matInput name="GSTPercentage" [(ngModel)]="selectedRow.GSTPercentage" (blur)="calculate('GSTPercentage', 'chgst')" required #GSTPercentagecontrol>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label>GSTAmount</mat-label>
+                                        <input matInput name="GSTAmount" [(ngModel)]="selectedRow.GSTAmount" (blur)="calculate('GSTAmount', 'chgst')" required #GSTAmountcontrol>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 p-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>GST Type</mat-label>
+                                        <mat-select name="GSTType" [(ngModel)]="selectedRow.GSTType" (blur)="calculate('Total', 'chtotal')" required #GSTTypecontrol1>
+                                            <mat-option value="None">None</mat-option>
+                                            <mat-option [value]="g.Name" *ngFor="let g of gstList">{{g.Name}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label>Total </mat-label>
+                                        <input matInput name="Total" [(ngModel)]="selectedRow.TotalAmount" required #Totalcontrol>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0" *ngIf="!showAdd">
+                                   <button type="button" autofocus class="btn_icon" (click)="showAdd = !showAdd; resetData();">
+                                     <mat-icon class="col-white plus_icon" >add</mat-icon>
+                                   </button>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-2 mb-0" *ngIf="showAdd">
+                                    <button type="button" autofocus class="btn_icon" (click)="showAdd = !showAdd; chargesave(); ">
+                                        <mat-icon class="save_icon" >save</mat-icon>
+                                    </button>
+                                </div>
+                                <!-- <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0" *ngIf="selectedRow.Name !== null">
+                                    <button type="button" autofocus class="btn_icon" [disabled]="selectedRow.Name === ''" (click)="chargedelete()">
+                                     <mat-icon class="delete_icon me-2 ms-2" >delete_forever</mat-icon>
+                                    </button>
+                                </div> -->
                             </div>
                         </form>
                     </div>
+                    <div class="body" style="overflow-x:auto;overflow:auto;height:220px;"
+                    class="table-responsive">
+                    <table class="table" class="table table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important;">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>S.No</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>GSTPercentage</th>
+                                <th>GSTAmount</th>
+                                <th>GSTType</th>
+                                <th>TotalAmount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="text-center" *ngFor="let c of dataList ; let i = index;">
+                                <td>{{ i + 1 }}</td>
+                                <td>{{c.Name | uppercase}}</td>
+                                <td>{{c.Description}}</td>
+                                <td>{{c.Price}}</td>
+                                <td>{{c.GSTPercentage}}</td>
+                                <td>{{c.GSTAmount}}</td>
+                                <td>{{c.GSTType}}</td>
+                                <td>{{c.TotalAmount}}</td>
+                                <td>
+                                    <mat-icon class="delete_icon" (click)="chargedelete(i)">delete_forever
+                                    </mat-icon>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+
+                <!-- serviceCard -->
+                <div class="card">
+                    <div class="header">
+                        <h2>Service Management For Billing</h2>
+                        <ul class="header-dropdown m-r--5"> </ul>
+                    </div>
+                    
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+

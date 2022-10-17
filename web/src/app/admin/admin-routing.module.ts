@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AddTypeComponent } from './add-type/add-type.component';
 import { AdminDashboradComponent } from './admin-dashborad/admin-dashborad.component';
 import { CompanyListComponent } from './company-list.component';
 import { CompanyComponent } from './company.component';
@@ -7,6 +8,7 @@ import { DashboradComponent } from './dashborad.component';
 import { EmployeeComponent } from './employee/employee.component';
 import { EmpolyeeListComponent } from './empolyee-list/empolyee-list.component';
 import { LoginHistoryComponent } from './login-history/login-history.component';
+import { ProductManageComponent } from './product-manage/product-manage.component';
 import { ShopListComponent } from './shop-list/shop-list.component';
 import { ShopComponent } from './shop/shop.component';
 import { UserUpdatePasswordComponent } from './user-update-password/user-update-password.component';
@@ -25,6 +27,8 @@ children: [
   { path: 'shopList', component: ShopListComponent },
   { path: 'employee', component: EmployeeComponent },
   { path: 'employeeList', component: EmpolyeeListComponent },
+  { path: 'addTypeAssign', component: AddTypeComponent },
+  { path: 'productManageAssign', component: ProductManageComponent },
    
 ]}
 ]

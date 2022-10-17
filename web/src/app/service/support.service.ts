@@ -10,6 +10,7 @@ export class SupportService {
 
   constructor(private httpClient: HttpClient) { }
   private url = 'http://localhost:3000/support';
+  private url1 = 'http://localhost:3000/charge';
 
   saveData( TableName:any,Name:any, ): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
@@ -26,6 +27,27 @@ export class SupportService {
 
   deleteSupport(TableName:any,Name:any,  ): Observable<any> {
     return this.httpClient.post<any>(this.url + '/delete', {TableName: TableName,Name:Name})
+    .pipe(catchError(this.handleError));
+  }
+
+  chargesave( Body:any ): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/chargesave', Body)
+    .pipe(catchError(this.handleError));
+  }
+
+  chargedelete( Name:any ): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/chargedelete', {Name:Name})
+    .pipe(catchError(this.handleError));
+  }
+
+  chargelist( Body:any ): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.get<any>(this.url + '/chargelist', Body)
     .pipe(catchError(this.handleError));
   }
 

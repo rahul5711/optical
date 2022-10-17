@@ -29,9 +29,9 @@
         <a class="dropBtn" data-target="#collapseExample">Product Assign <i class="fa fa-caret-down" aria-hidden="true"></i></a>
 
         <div class="drop-content" id="collapseExample">
-          <a href="javascript:void(0)" [routerLink]="['/product/productManage']" id="collapseExample">Product Manage</a>
-          <a href="javascript:void(0)" [routerLink]="['/product/productMaster']" id="collapseExample">Product Master</a>
-          <a href="javascript:void(0)" [routerLink]="['/product/addManage']"     id="collapseExample">Add Manager</a>
+          <a href="javascript:void(0)" [routerLink]="['/admin/productManageAssign']" id="collapseExample">Product Manage</a>
+          <a href="javascript:void(0)" [routerLink]="['/admin/productMaster']" id="collapseExample">Product Master</a>
+          <a href="javascript:void(0)" [routerLink]="['/admin/addTypeAssign']"     id="collapseExample">Add Manager</a>
         </div>
 
       </div>
@@ -41,7 +41,7 @@
       <!-- CompanyAdmin nav-->
       <a *ngIf="user.data.UserGroup !== 'SuperAdmin'" [routerLink]="['/admin/CompanyDashborad']">Dashborad</a>
       <div *ngIf="user.data.UserGroup !== 'SuperAdmin'" class="dropdown">
-        <a class="dropBtn" data-target="#collapseExample">Administration<i class="fa fa-caret-down" aria-hidden="true"></i> </a>
+        <a class="dropBtn" data-target="#collapseExample">Administration <i class="fa fa-caret-down" aria-hidden="true"></i> </a>
 
         <div class="drop-content" id="collapseExample">
           <a href="javascript:void(0)" [routerLink]="['/admin/company',loggedInUser.CompanyID]" id="collapseExample">Company Info</a>
@@ -52,6 +52,17 @@
           <a href="#">SMS Setting</a>
           <a href="#">Login History</a>
           <a href="#">Recycle-Bin</a>
+        </div>
+
+      </div>
+
+      <div *ngIf="user?.data?.UserGroup !== 'SuperAdmin'" class="dropdown">
+        <a class="dropBtn" data-target="#collapseExample">Product Assign <i class="fa fa-caret-down" aria-hidden="true"></i></a>
+
+        <div class="drop-content" id="collapseExample">
+          <a href="javascript:void(0)" [routerLink]="['/product/productManage']" id="collapseExample">Product Manage</a>
+          <a href="javascript:void(0)" [routerLink]="['/product/productMaster']" id="collapseExample">Product Master</a>
+          <a href="javascript:void(0)" [routerLink]="['/product/addManage']"     id="collapseExample">Add Manager</a>
         </div>
 
       </div>

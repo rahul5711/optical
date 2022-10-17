@@ -33,6 +33,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { AdminDashboradComponent } from './admin-dashborad/admin-dashborad.component';
 import { UserUpdatePasswordComponent } from './user-update-password/user-update-password.component';
+import { ProductManageComponent } from './product-manage/product-manage.component';
+import { AddTypeComponent } from './add-type/add-type.component';
 
 
 
@@ -55,6 +57,8 @@ import { UserUpdatePasswordComponent } from './user-update-password/user-update-
     EmpolyeeListComponent,
     AdminDashboradComponent,
     UserUpdatePasswordComponent,
+    ProductManageComponent,
+    AddTypeComponent,
    
   ],
   imports: [
