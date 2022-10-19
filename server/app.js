@@ -45,6 +45,7 @@ app.use('/product', require('./routes/product.route'));
 app.use('/file', require('./routes/file.route'));
 app.use('/support', require('./routes/support.route'));
 app.use('/shop', require('./routes/shop.route'));
+app.use('/role', require('./routes/role.route'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
