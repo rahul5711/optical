@@ -47,7 +47,7 @@ module.exports = {
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select * from shop where Status = 1 and CompanyID = '${CompanyID}'  order by ID desc`
+            let qry = `select shop.*, user.Name as CreatedPerson, users.Name as UpdatedPerson from shop left join user on user.ID = shop.CreatedBy left join user as users on users.ID = shop.UpdatedBy where shop.Status = 1 and shop.CompanyID = '${CompanyID}'  order by ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -147,6 +147,94 @@ module.exports = {
             console.log("Shop Restore SuccessFUlly !!!");
 
             response.message = "data restore sucessfully"
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            return error
+        }
+    },
+
+    getShopById: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+            if (!Body.ID) res.send({ message: "Invalid Query Data" })
+
+            const Shop = await connection.query(`select * from shop where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
+
+            if (Shop.length) {
+                if (Shop[0].Discount === 'false') {
+                    Shop[0].Discount = false
+                } else {
+                    Shop[0].Discount = true
+                }
+                if (Shop[0].GSTnumber === 'false') {
+                    Shop[0].GSTnumber = false
+                } else {
+                    Shop[0].GSTnumber = true
+                }
+                if (Shop[0].HSNCode === 'false') {
+                    Shop[0].HSNCode = false
+                } else {
+                    Shop[0].HSNCode = true
+                }
+                if (Shop[0].CustGSTNo === 'false') {
+                    Shop[0].CustGSTNo = false
+                } else {
+                    Shop[0].CustGSTNo = true
+                }
+                if (Shop[0].Rate === 'false') {
+                    Shop[0].Rate = false
+                } else {
+                    Shop[0].Rate = true
+                }
+                if (Shop[0].Discounts === 'false') {
+                    Shop[0].Discounts = false
+                } else {
+                    Shop[0].Discounts = true
+                }
+                if (Shop[0].Tax === 'false') {
+                    Shop[0].Tax = false
+                } else {
+                    Shop[0].Tax = true
+                }
+                if (Shop[0].SubTotal === 'false') {
+                    Shop[0].SubTotal = false
+                } else {
+                    Shop[0].SubTotal = true
+                }
+                if (Shop[0].Total === 'false') {
+                    Shop[0].Total = false
+                } else {
+                    Shop[0].Total = true
+                }
+            }
+
+            response.message = "data fetch sucessfully"
+            response.data = Shop
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            return error
+        }
+    },
+    update: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+            if (!Body.ID) res.send({ message: "Invalid Query Data" })
+
+            const Shop = await connection.query(`update shop set Name = '${Body.Name}', AreaName = '${Body.AreaName}',Address = '${Body.Address}',MobileNo1='${Body.MobileNo1}',MobileNo2='${Body.MobileNo2}',PhoneNo='${Body.PhoneNo}',Email='${Body.Email}',Website='${Body.Website}',GSTNo='${Body.GSTNo}',CINNo='${Body.CINNo}',BarcodeName='${Body.BarcodeName}',Discount='${Body.Discount}',GSTnumber='${Body.GSTnumber}',LogoURL='${Body.LogoURL}',ShopTiming='${Body.ShopTiming}',WelcomeNote='${Body.WelcomeNote}',Status=1,UpdatedOn=now(),UpdatedBy='${LoggedOnUser}',HSNCode='${Body.HSNCode}',CustGSTNo='${Body.CustGSTNo}',Rate='${Body.Rate}',Discounts='${Body.Discounts}',Tax='${Body.Tax}',SubTotal='${Body.SubTotal}',Total='${Body.Total}',ShopStatus=${Body.ShopStatus} where ID = ${Body.ID} `)
+
+            response.message = "data update sucessfully"
             connection.release()
             res.send(response)
         } catch (error) {
