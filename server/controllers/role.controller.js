@@ -20,7 +20,7 @@ module.exports = {
             const doesExist = await connection.query(`select * from role where Name = '${Body.Name}' and CompanyID = ${CompanyID} and Status = 1`)
             if (doesExist.length) return res.send({ message: `Role Already exist from this Name ${Body.Name}` })
 
-            const saveData = await connection.query(`insert into role(Name,CompanyID,Permission,Status,CreatedBy,CreatedOn)values('${Body.Name}', ${CompanyID}, '${Body.Permission}', 1, '${LoggedOnUser}', now()))`)
+            const saveData = await connection.query(`insert into role(Name,CompanyID,Permission,Status,CreatedBy,CreatedOn)values('${Body.Name}', ${CompanyID}, '${Body.Permission}', 1, '${LoggedOnUser}', now())`)
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
@@ -79,7 +79,7 @@ module.exports = {
             console.log(connected("Data Delete SuccessFUlly !!!"));
 
             response.message = "data delete sucessfully"
-            response.data = saveData
+            response.data = await connection.query(`select * from role where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
             connection.release()
             return res.send(response)
 
@@ -105,7 +105,7 @@ module.exports = {
             console.log(connected("Data Restore SuccessFUlly !!!"));
 
             response.message = "data restore sucessfully"
-            response.data = saveData
+            response.data = await connection.query(`select * from role where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
             connection.release()
             return res.send(response)
 
