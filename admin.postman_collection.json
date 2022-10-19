@@ -67,6 +67,35 @@
 					"response": []
 				},
 				{
+					"name": "update Company Setting",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 19,\r\n    \"CompanyID\": 1,\r\n    \"CompanyLanguage\": \"English\",\r\n    \"CompanyCurrency\": \"INR\",\r\n    \"CurrencyFormat\": \"4.2-2\",\r\n    \"DateFormat\": \"llll\",\r\n    \"CompanyTagline\": \"\",\r\n    \"BillHeader\": \"\",\r\n    \"BillFooter\": \"\",\r\n    \"RewardsPointValidity\": \"\",\r\n    \"EmailReport\": 0,\r\n    \"MessageReport\": 0,\r\n    \"LogoURL\": \"\",\r\n    \"WatermarkLogoURL\": \"\",\r\n    \"LoginTimeStart\": \"09:00\",\r\n    \"LoginTimeEnd\": \"22:30\",\r\n    \"Status\": 1,\r\n    \"InvoiceOption\": \"\",\r\n    \"Locale\": \"en-IN\",\r\n    \"WholeSalePrice\": \"false\",\r\n    \"RetailRate\": \"false\",\r\n    \"Composite\": \"false\",\r\n    \"WelComeNote\": [{\"NoteType\":\"retail\",\"Content\":\"No 1 Return once sold. No Cash Refund.\"},{\"NoteType\":\"retail\",\"Content\":\"50% Advance at the time of booking the order.\"},{\"NoteType\":\"retail\",\"Content\":\"Please collect your  spects within 15 days from the date of order.\"},{\"NoteType\":\"retail\",\"Content\":\"No risk for breakage at the time of repairing.\"},{\"NoteType\":\"retail\",\"Content\":\"Free Computerized EYES* Testing Facility Available.\"},{\"NoteType\":\"retail\",\"Content\":\"Repairing work at customer risk.\"}],\r\n\"HSNCode\": \"false\",\r\n\"Discount\": \"false\",\r\n\"GSTNo\": \"false\",\r\n\"BillFormat\": \"\",\r\n\"SenderID\": \"\",\r\n\"SmsSetting\": [{\"MessageName\":\"CustomerOrder\",\"MessageID\":\"\",\"Required\":true,\"MessageText\":\"\"},{\"MessageName\":\"CustomerDelivery\",\"MessageID\":\"\",\"Required\":true,\"MessageText\":\"\"},{\"MessageName\":\"CustomerBill\",\"MessageID\":\"\",\"Required\":true,\"MessageText\":\"\"},{\"MessageName\":\"CustomerCreditNote\",\"MessageID\":\"\",\"Required\":true,\"MessageText\":\"\"},{\"MessageName\":\"Birthday\",\"MessageID\":\"\",\"Required\":true,\"MessageText\":\"\"},{\"MessageName\":\"Anniversary\",\"MessageID\":\"\",\"Required\":true,\"MessageText\":\"\"},{\"MessageName\":\"CustomerEyeTesting\",\"MessageID\":\"\",\"Required\":true,\"MessageText\":\"\"},{\"MessageName\":\"CustomerContactlensExp\",\"MessageID\":\"\",\"Required\":true,\"MessageText\":\"\"}],\r\n\"year\": \"true\",\r\n\"month\": \"true\",\r\n\"partycode\": \"true\",\r\n\"type\": \"true\",\r\n\"Rate\": \"true\",\r\n\"SubTotal\": \"false\",\r\n\"Total\": \"false\",\r\n\"CGSTSGST\": \"false\",\r\n\"Color1\": \"#d00c35\",\r\n\"DataFormat\": \"0\",\r\n\"RewardExpiryDate\": \"120\",\r\n\"RewardPercentage\": \"0\",\r\n\"AppliedReward\": \"0\",\r\n\"MobileNo\": \"\",\r\n\"FontsStyle\": \"\",\r\n\"FontApi\": \"\",\r\n\"BarCode\": \"1\",\r\n\"FeedbackDate\": \"7\",\r\n\"ServiceDate\": \"180\",\r\n\"DeliveryDay\": \"0\",\r\n\"AppliedDiscount\": \"true\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/company/updatecompanysetting",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"updatecompanysetting"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "getCompanyById",
 					"request": {
 						"method": "POST",
@@ -129,6 +158,45 @@
 							"path": [
 								"company",
 								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "loginhistory",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjQ0NzQ3MTAsImV4cCI6MTY2NDU2MTExMCwiYXVkIjoiJzAnIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.RBeFEjaofllOWsE96zpQGjw4C4zOWKQM4qSCTZFIyVI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/company/LoginHistory",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"LoginHistory"
 							]
 						}
 					},
@@ -224,7 +292,7 @@
 			]
 		},
 		{
-			"name": "login",
+			"name": "Login",
 			"item": [
 				{
 					"name": "login",
@@ -249,6 +317,1384 @@
 							"port": "3000",
 							"path": [
 								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Save",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": null,\r\n    \"CompanyID\": 0,\r\n    \"Name\": \"laptop\",\r\n    \"HSNCode\": \"lap-123\",\r\n    \"GSTPercentage\": 18,\r\n    \"GSTType\":\"GST\",\r\n    \"Status\": 1,\r\n    \"CreatedBy\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/product/save",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"product",
+								"save"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 2,\r\n    \"CompanyID\": 0,\r\n    \"Name\": \"Laptops\",\r\n    \"HSNCode\": \"Lap-P1234\",\r\n    \"GSTPercentage\": 18,\r\n    \"GSTType\":\"GST\",\r\n    \"Status\": 1,\r\n    \"CreatedBy\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/product/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"product",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 3,\r\n    \"TableName\": \"product\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/product/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"product",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restore",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 2,\r\n    \"TableName\": \"product\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/product/restore",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"product",
+								"restore"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/product/getList",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"product",
+								"getList"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "save Spec",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ProductName\": \"laptop\",\r\n    \"Name\": \"Type\",\r\n    \"Required\": 1,\r\n    \"Seq\": \"1\",\r\n    \"Type\": \"DropDown\",\r\n    \"Ref\": \"0\",\r\n    \"SptTableName\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/product/saveSpec",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"product",
+								"saveSpec"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Spec",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 2,\r\n    \"TableName\": \"productspec\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/product/deleteSpec",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"product",
+								"deleteSpec"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Spec",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ProductName\": \"laptop\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/product/getSpec",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"product",
+								"getSpec"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File Upload",
+			"item": [
+				{
+					"name": "image upload",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Dell/Downloads/mean-stack-tech.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3000/file/upload",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"file",
+								"upload"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "image upload",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/C:/Users/Dell/Downloads/mean-stack-tech.png"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:3000/file/upload",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"file",
+										"upload"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "363"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"16b-VtssMd0wx4CgJRK64v4RvxosuU0\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 29 Sep 2022 19:22:11 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Uploaded Successfully\",\n    \"file\": {\n        \"fieldname\": \"file\",\n        \"originalname\": \"mean-stack-tech.png\",\n        \"encoding\": \"7bit\",\n        \"mimetype\": \"image/png\",\n        \"destination\": \"./uploads/2022/9/images\",\n        \"filename\": \"1664479331742.png\",\n        \"path\": \"uploads\\\\2022\\\\9\\\\images\\\\1664479331742.png\",\n        \"size\": 56940\n    },\n    \"fileName\": \"1664479331742.png\",\n    \"download\": \"/uploads/2022/9/images/1664479331742.png\"\n}"
+						}
+					]
+				},
+				{
+					"name": "download image",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/uploads/2022/9/images/1664479331742.png",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"uploads",
+								"2022",
+								"9",
+								"images",
+								"1664479331742.png"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "companyimage upload",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjU1OTg1NzIsImV4cCI6MTY2NTY4NDk3MiwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.BQsAr_1DHrab5IUSFtACb3RSF0ir2YvreTWthp371Nc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Dell/Downloads/mean-stack-tech.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3000/file/companyimage",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"file",
+								"companyimage"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "companyimage upload",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/C:/Users/Dell/Downloads/mean-stack-tech.png"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:3000/file/companyimage",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"file",
+										"companyimage"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "379"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"17b-4jhmH+X34dEiZTsmdpE8BM/y23U\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 13 Oct 2022 17:53:48 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Uploaded Successfully\",\n    \"file\": {\n        \"fieldname\": \"file\",\n        \"originalname\": \"mean-stack-tech.png\",\n        \"encoding\": \"7bit\",\n        \"mimetype\": \"image/png\",\n        \"destination\": \"./uploads/2022/10/122/images\",\n        \"filename\": \"1665683628685.png\",\n        \"path\": \"uploads\\\\2022\\\\10\\\\122\\\\images\\\\1665683628685.png\",\n        \"size\": 56940\n    },\n    \"fileName\": \"1665683628685.png\",\n    \"download\": \"/uploads/2022/10/122/images/1665683628685.png\"\n}"
+						}
+					]
+				},
+				{
+					"name": "download companyimage",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/uploads/2022/10/122/images/1665683628685.png",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"uploads",
+								"2022",
+								"10",
+								"122",
+								"images",
+								"1665683628685.png"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Support",
+			"item": [
+				{
+					"name": "save",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjU1OTE4ODIsImV4cCI6MTY2NTY3ODI4MiwiYXVkIjoiJzAnIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.cHN-63ckSheIhqtxD3hVuhRvy_Ca4XQuIhNZwf7CsIo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"TableName\": \"Gender\",\r\n    \"Name\": \"Female\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/support/save",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"support",
+								"save"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjU1OTE4ODIsImV4cCI6MTY2NTY3ODI4MiwiYXVkIjoiJzAnIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.cHN-63ckSheIhqtxD3hVuhRvy_Ca4XQuIhNZwf7CsIo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"TableName\": \"Gender\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/support/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"support",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjU1OTE4ODIsImV4cCI6MTY2NTY3ODI4MiwiYXVkIjoiJzAnIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.cHN-63ckSheIhqtxD3hVuhRvy_Ca4XQuIhNZwf7CsIo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"TableName\": \"Gender\",\r\n    \"Name\": \"Male\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/support/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"support",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Shop",
+			"item": [
+				{
+					"name": "save",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjU1OTg1NzIsImV4cCI6MTY2NTY4NDk3MiwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.BQsAr_1DHrab5IUSFtACb3RSF0ir2YvreTWthp371Nc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"patidar 2\",\r\n    \"AreaName\": \"berchha\",\r\n    \"Address\": \"shajapur\",\r\n    \"MobileNo1\": \"9752885711\",\r\n    \"MobileNo2\": \"9131860873\",\r\n    \"PhoneNo\": \"9752885711\",\r\n    \"Email\": \"rahulberchha@gmail.com\",\r\n    \"Website\": \"\",\r\n    \"GSTNo\": \"xxxxxx\",\r\n    \"CINNo\": \"xxxxxx\",\r\n    \"BarcodeName\": \"xxxxxxx\",\r\n    \"Discount\": \"true\",\r\n    \"GSTnumber\": \"true\",\r\n    \"LogoURL\": \"\",\r\n    \"ShopTiming\": \"10 am\",\r\n    \"WelcomeNote\": \"\",\r\n    \"HSNCode\": \"true\",\r\n    \"CustGSTNo\": \"false\",\r\n    \"Rate\": \"false\",\r\n    \"Discounts\": \"false\",\r\n    \"Tax\": \"true\",\r\n    \"SubTotal\": \"true\",\r\n    \"Total\": \"true\",\r\n    \"ShopStatus\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/shop/save",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"shop",
+								"save"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjYxOTg3ODgsImV4cCI6MTY2NjI4NTE4OCwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.QNaEFe9mr2Huv2yBUZo0jYKTFtHy7WMxOFgxFHMdqsY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/shop/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"shop",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dropdownlist",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjU1OTg1NzIsImV4cCI6MTY2NTY4NDk3MiwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.BQsAr_1DHrab5IUSFtACb3RSF0ir2YvreTWthp371Nc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/shop/dropdownlist",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"shop",
+								"dropdownlist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjU1OTg1NzIsImV4cCI6MTY2NTY4NDk3MiwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.BQsAr_1DHrab5IUSFtACb3RSF0ir2YvreTWthp371Nc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/shop/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"shop",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "restore",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjU1OTg1NzIsImV4cCI6MTY2NTY4NDk3MiwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.BQsAr_1DHrab5IUSFtACb3RSF0ir2YvreTWthp371Nc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/shop/restore",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"shop",
+								"restore"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getShopById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjYxOTg3ODgsImV4cCI6MTY2NjI4NTE4OCwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.QNaEFe9mr2Huv2yBUZo0jYKTFtHy7WMxOFgxFHMdqsY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/shop/getShopById",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"shop",
+								"getShopById"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjYxOTg3ODgsImV4cCI6MTY2NjI4NTE4OCwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.QNaEFe9mr2Huv2yBUZo0jYKTFtHy7WMxOFgxFHMdqsY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 3,\r\n     \"Name\": \"patidar3\",\r\n    \"AreaName\": \"berchha\",\r\n    \"Address\": \"shajapur\",\r\n    \"MobileNo1\": \"9752885711\",\r\n    \"MobileNo2\": \"9131860873\",\r\n    \"PhoneNo\": \"9752885711\",\r\n    \"Email\": \"rahulberchha@gmail.com\",\r\n    \"Website\": \"\",\r\n    \"GSTNo\": \"xxxxxx\",\r\n    \"CINNo\": \"xxxxxx\",\r\n    \"BarcodeName\": \"xxxxxxx\",\r\n    \"Discount\": \"true\",\r\n    \"GSTnumber\": \"true\",\r\n    \"LogoURL\": \"\",\r\n    \"ShopTiming\": \"10 am\",\r\n    \"WelcomeNote\": \"\",\r\n    \"HSNCode\": \"true\",\r\n    \"CustGSTNo\": \"false\",\r\n    \"Rate\": \"false\",\r\n    \"Discounts\": \"false\",\r\n    \"Tax\": \"true\",\r\n    \"SubTotal\": \"true\",\r\n    \"Total\": \"true\",\r\n    \"ShopStatus\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/shop/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"shop",
+								"update"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ChargeMaster",
+			"item": [
+				{
+					"name": "save",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjU2ODUxMDAsImV4cCI6MTY2NTc3MTUwMCwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.ZP2gNIKeC8-M3CuKiNxw43aQJyxvN2N28E7clp8anxk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"courrier\",\r\n    \"Description\": \"courrier charge\",\r\n    \"Price\": 100,\r\n    \"GSTPercentage\": 18,\r\n    \"GSTAmount\": 18,\r\n    \"GSTType\": \"CGST\",\r\n    \"TotalAmount\": 118\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/support/chargesave",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"support",
+								"chargesave"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjU2ODUxMDAsImV4cCI6MTY2NTc3MTUwMCwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.ZP2gNIKeC8-M3CuKiNxw43aQJyxvN2N28E7clp8anxk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"courrier\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/support/chargedelete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"support",
+								"chargedelete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjU2ODUxMDAsImV4cCI6MTY2NTc3MTUwMCwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.ZP2gNIKeC8-M3CuKiNxw43aQJyxvN2N28E7clp8anxk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"courrier\",\r\n    \"Description\": \"courrier charge\",\r\n    \"Price\": 100,\r\n    \"GSTPercentage\": 18,\r\n    \"GSTAmount\": 18,\r\n    \"GSTType\": \"CGST\",\r\n    \"TotalAmount\": 118\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/support/chargelist",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"support",
+								"chargelist"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ServiceMaster",
+			"item": [
+				{
+					"name": "list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjYyMDE2NTYsImV4cCI6MTY2NjI4ODA1NiwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.FrtYeUKf8DskQyyIOqu4AAH-b5-t33O-AHhFhDo6uZ8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"courrier\",\r\n    \"Description\": \"courrier charge\",\r\n    \"Price\": 100,\r\n    \"GSTPercentage\": 18,\r\n    \"GSTAmount\": 18,\r\n    \"GSTType\": \"CGST\",\r\n    \"TotalAmount\": 118\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/support/servicelist",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"support",
+								"servicelist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "save",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjYyMDE2NTYsImV4cCI6MTY2NjI4ODA1NiwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.FrtYeUKf8DskQyyIOqu4AAH-b5-t33O-AHhFhDo6uZ8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"service\",\r\n    \"Description\": \"service charge\",\r\n    \"Cost\": 100,\r\n    \"Price\": 100,\r\n    \"GSTPercentage\": 18,\r\n    \"GSTAmount\": 18,\r\n    \"GSTType\": \"CGST\",\r\n    \"TotalAmount\": 118\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/support/servicesave",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"support",
+								"servicesave"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjYyMDE2NTYsImV4cCI6MTY2NjI4ODA1NiwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.FrtYeUKf8DskQyyIOqu4AAH-b5-t33O-AHhFhDo6uZ8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"service\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/support/servicedelete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"support",
+								"servicedelete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Role",
+			"item": [
+				{
+					"name": "save",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjYyMDM5NjQsImV4cCI6MTY2NjI5MDM2NCwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.YLQ4kRlyA5gQ60D9vt2BYutKGmspqlZpKwJzjS4G34E",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"Manager\",\r\n    \"Permission\": \"[]\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/role/save",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"role",
+								"save"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getList",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjYyMDM5NjQsImV4cCI6MTY2NjI5MDM2NCwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.YLQ4kRlyA5gQ60D9vt2BYutKGmspqlZpKwJzjS4G34E",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"Manager\",\r\n    \"Permission\": \"[]\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/role/getList",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"role",
+								"getList"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "getList",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"Name\": \"Manager\",\r\n    \"Permission\": \"[]\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/role/getList",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"role",
+										"getList"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "237"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"ed-1a6b/4UoXhdrrCpNPRw0KtqNjl4\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 19 Oct 2022 18:31:01 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": [\n        {\n            \"ID\": 1,\n            \"Name\": \"Manager\",\n            \"CompanyID\": 122,\n            \"Permission\": \"[]\",\n            \"Status\": \"1\",\n            \"CreatedBy\": \"440\",\n            \"UpdatedBy\": \"440\",\n            \"CreatedOn\": \"2022-10-20 00:00:54\",\n            \"UpdatedOn\": \"2022-10-20 00:00:54\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjYyMDM5NjQsImV4cCI6MTY2NjI5MDM2NCwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.YLQ4kRlyA5gQ60D9vt2BYutKGmspqlZpKwJzjS4G34E",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/role/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"role",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "restore",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjYyMDM5NjQsImV4cCI6MTY2NjI5MDM2NCwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.YLQ4kRlyA5gQ60D9vt2BYutKGmspqlZpKwJzjS4G34E",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/role/restore",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"role",
+								"restore"
 							]
 						}
 					},
