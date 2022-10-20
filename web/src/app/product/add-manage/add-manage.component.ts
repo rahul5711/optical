@@ -24,6 +24,7 @@ export class AddManageComponent implements OnInit {
   depList: any ;
   showFeild = false;
   showAdd = false;
+  showAddService = false;
   selectedDepartment: any;
   selectedDepartmentHead: any;
   selectedProduct: any;
@@ -55,12 +56,15 @@ export class AddManageComponent implements OnInit {
   newDepartment: any  = {ID: null, CompanyID: null, Name: "", TableName:null,   Status: 1};
 
   selectedRow: any = {ID: null, CompanyID: null, Name: null, Description:null,  Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
+  Service: any = {ID: null, CompanyID: null, Name: null, Description:null,  Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
 
   dataList:any
+  serviceList:any
   gstList:any
   
   ngOnInit(): void {
     this.chargelist();
+    this.servicelist();
     this.getList();
   }
 
@@ -249,7 +253,6 @@ export class AddManageComponent implements OnInit {
       next: (res: any) => {
         this.dataList = res.data
         this.sp.hide();
-        this.as.successToast(res.message)
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -261,10 +264,122 @@ export class AddManageComponent implements OnInit {
       next: (res: any) => {
         this.gstList = res.data
         this.sp.hide();
-        this.as.successToast(res.message)
+        
       },
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),
+    });
+  }
+
+  setValuesService(){
+    this.serviceList.forEach((element: { ID: any; Name:any; Price: any; Description: any; GSTAmount: any; GSTPercentage: any; GSTType: any; TotalAmount: any; }) => {
+      if (element.Name === this.Service.Name) {
+      this.Service.Price = element.Price;
+      this.Service.Description = element.Description;
+      this.Service.GSTAmount = element.GSTAmount;
+      this.Service.GSTPercentage = element.GSTPercentage;
+      this.Service.GSTType = element.GSTType;
+      this.Service.TotalAmount = element.TotalAmount;
+      }
+    });
+  }
+
+  calculateSevice(fieldName: string, mode: any){
+    switch (mode) {
+      case 'chgst1':
+        if (fieldName === 'GSTPercentage') {
+          this.Service.GSTAmount =+this.Service.Price * +this.Service.GSTPercentage / 100;
+        }
+        if (fieldName === 'GSTAmount') {
+          this.Service.GSTPercentage = 100 * +this.Service.GSTAmount / (+this.Service.Price);
+        }
+        break;
+        case 'chtotal1':
+          this.Service.TotalAmount = +this.Service.GSTAmount + +this.Service.Price;
+        break;
+    }
+  
+  }
+  
+  serviceresetData(){
+    this.Service = {ID: null, CompanyID: null, Name: null, Cost: 0, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
+  }
+
+  servicesave(){
+    const subs: Subscription =  this.supps.servicesave(this.Service).subscribe({
+      next: (res: any) => {
+        // this.serviceList = res.result;
+        // console.log(this.dataList);
+        if (res.success) {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Save.',
+            showConfirmButton: false,
+            timer: 1200
+          }) 
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Duplicate or Empty Values are not allowed',
+            text: '',
+            footer: ''
+          }); 
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+    this.serviceresetData();
+    this.servicelist();
+  
+  }
+
+  servicedelete(i: string | number){
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.sp.show();
+        const subs: Subscription = this.supps.servicedelete(this.serviceList[i].Name).subscribe({
+          next: (res: any) => {
+            this.serviceList.splice(i, 1);
+            this.sp.hide();
+            this.as.successToast(res.message)
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      this.Service = {ID: null, CompanyID: null, Name: null, Description: null, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
+        this.servicelist();
+      Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Your file has been deleted.',
+          showConfirmButton: false,
+          timer: 1000
+        })
+      }
+    })
+  }
+
+  servicelist(){
+    const subs: Subscription = this.supps.servicelist(this.Service).subscribe({
+      next: (res: any) => {
+        this.serviceList = res.data
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
     });
   }
 

@@ -51,6 +51,28 @@ export class SupportService {
     .pipe(catchError(this.handleError));
   }
 
+  servicesave( Body:any ): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/servicesave', Body)
+    .pipe(catchError(this.handleError));
+  }
+
+  servicedelete( Name:any ): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/servicedelete', {Name:Name})
+    .pipe(catchError(this.handleError));
+  }
+
+  servicelist( Body:any ): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.get<any>(this.url + '/servicelist', Body)
+    .pipe(catchError(this.handleError));
+  }
+  
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

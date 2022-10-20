@@ -29,8 +29,8 @@ export class ShopComponent implements OnInit {
   companyImage:any;
   img: any;
   env: { production: boolean; apiUrl: string; appUrl: string; };
+  id: any;
  
-
   constructor(
 
     private router: Router,
@@ -43,7 +43,7 @@ export class ShopComponent implements OnInit {
     private fu: FileUploadService,
 
   ) { 
-   
+    this.id = this.route.snapshot.params['id'];
     this.env = environment
     this.reactiveForm = new FormGroup({
       Name : new FormControl(null, Validators.required)
@@ -56,8 +56,11 @@ export class ShopComponent implements OnInit {
   };
 
   ngOnInit(): void {
-
+    if (this.id != 0) {
+      this.getShopById(); 
+    }
   }
+
   copyData(val: any) {
     if (val) {
       this.data.GSTNo = this.loggedInCompany.GSTNo;
@@ -112,4 +115,51 @@ export class ShopComponent implements OnInit {
       }
     });
   }
+
+  getShopById(){
+    const subs: Subscription = this.ss.getShopById(this.id).subscribe({
+      next: (res: any) => {
+        console.log(res.data);
+        
+        if (res.success) {
+          this.as.successToast(res.message)
+          this.data = res.data[0]
+          this.companyImage = this.env.apiUrl + res.data[0].LogoURL;
+
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
+  }
+
+  updateShop(){
+    console.log(this.data);
+    const subs: Subscription =  this.ss.updateShop( this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.router.navigate(['/admin/shopList']);
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Update.',
+            showConfirmButton: false,
+            timer: 1200
+          })   
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+    
+  }
+
 }

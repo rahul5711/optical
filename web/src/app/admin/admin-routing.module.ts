@@ -9,6 +9,7 @@ import { EmployeeComponent } from './employee/employee.component';
 import { EmpolyeeListComponent } from './empolyee-list/empolyee-list.component';
 import { LoginHistoryComponent } from './login-history/login-history.component';
 import { ProductManageComponent } from './product-manage/product-manage.component';
+import { RoleComponent } from './role/role.component';
 import { ShopListComponent } from './shop-list/shop-list.component';
 import { ShopComponent } from './shop/shop.component';
 import { UserUpdatePasswordComponent } from './user-update-password/user-update-password.component';
@@ -23,10 +24,11 @@ children: [
   { path: 'companyList', component: CompanyListComponent },
   { path: 'userList', component: UserUpdatePasswordComponent },
   { path: 'loginHistory', component: LoginHistoryComponent },
-  { path: 'shop', component: ShopComponent },
+  { path: 'shop/:id', component: ShopComponent },
   { path: 'shopList', component: ShopListComponent },
   { path: 'employee', component: EmployeeComponent },
   { path: 'employeeList', component: EmpolyeeListComponent },
+  { path: 'rolePermission', component: RoleComponent },
   { path: 'addTypeAssign', component: AddTypeComponent },
   { path: 'productManageAssign', component: ProductManageComponent },
    

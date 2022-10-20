@@ -12,7 +12,7 @@ export class AlertService {
   constructor(private toastr: ToastrService,private http: HttpClient) {}
 
   toastOptions = {
-    timeOut: 3000,
+    timeOut: 1500,
     positionClass: "toast-bottom-right",
     preventDuplicates: true,
   };

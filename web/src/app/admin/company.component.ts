@@ -22,7 +22,8 @@ import * as moment from 'moment';
 
 export class CompanyComponent implements OnInit {
 
-  loggedInUser:any = localStorage.getItem('LoggedINUser');
+  loggedInUser:any = (localStorage.getItem('LoggedINUser') || '');
+  user:any =JSON.parse(localStorage.getItem('user') || '') ;
  
   companyImage: any;
   userImage: any;
@@ -33,6 +34,7 @@ export class CompanyComponent implements OnInit {
   imgList: any;
   img: any;
   env: { production: boolean; apiUrl: string; appUrl: string; };
+  compId: any;
 
   constructor(
     private router: Router,
@@ -141,6 +143,7 @@ export class CompanyComponent implements OnInit {
     const subs: Subscription = this.cs.getCompanyById(this.id).subscribe({
       next: (res: any) => {
         console.log(res.data);
+        
         if (res.success) {
           this.as.successToast(res.message)
           this.data = res.data[0]
@@ -159,11 +162,23 @@ export class CompanyComponent implements OnInit {
   }
 
   updateCompany(){
-    console.log(this.data);
+    console.log(this.user);
+
     const subs: Subscription =  this.cs.updateCompany( this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.router.navigate(['/admin/companyList']);  
+           if(this.user.data.UserGroup === 'SuperAdmin'){
+            this.router.navigate(['/admin/companyList']);
+           }else{
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been Update.',
+              showConfirmButton: false,
+              timer: 1200
+            }) 
+           }
+            
         } else {
           this.as.errorToast(res.message)
         }
