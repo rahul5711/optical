@@ -70,6 +70,9 @@
     <a  *ngIf="user?.data?.UserGroup === 'SuperAdmin' " class="logoutBtn" (click)="logout()" title="LogOut">
       <i class="fa-solid fa-right-from-bracket"></i>
     </a>
+    <!-- <a  *ngIf="user?.data?.UserGroup !== 'SuperAdmin' " class="logoutBtn" (click)="logout()" title="LogOut">
+      <i class="fa-solid fa-right-from-bracket"></i>
+    </a> -->
   </div>
 </body>
 <router-outlet></router-outlet>
