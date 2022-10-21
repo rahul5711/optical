@@ -12,8 +12,8 @@ module.exports = {
             const connection = await getConnection.connection();
 
             const Body = req.body;
-            const LoggedOnUser = {ID : 0}
-            const CompanyID = 0
+            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
             console.log(Body);
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
@@ -44,8 +44,8 @@ module.exports = {
             const connection = await getConnection.connection();
 
             const Body = req.body;
-            const LoggedOnUser = {ID : 0}
-            const CompanyID = 0
+            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
             console.log(Body);
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
@@ -75,8 +75,8 @@ module.exports = {
             const connection = await getConnection.connection();
 
             const Body = req.body;
-            const LoggedOnUser = {ID : 0}
-            const CompanyID = 0
+            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
             console.log(Body);
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
@@ -107,8 +107,8 @@ module.exports = {
             const connection = await getConnection.connection();
 
             const Body = req.body;
-            const LoggedOnUser = {ID : 0}
-            const CompanyID = 0
+            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
             console.log(Body);
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
@@ -136,8 +136,9 @@ module.exports = {
             const connection = await getConnection.connection();
 
             const Body = req.body;
-            const LoggedOnUser = {ID : 0}
-            const CompanyID = 0
+            
+            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
             const query = await _Query.getQuery("getProduct", Body, LoggedOnUser, CompanyID,  ShopID)
             const saveData = await connection.query(query)
@@ -163,8 +164,8 @@ module.exports = {
             const connection = await getConnection.connection();
 
             const Body = req.body;
-            const LoggedOnUser = {ID : 0}
-            const CompanyID = 0
+            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
             console.log(Body);
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
@@ -198,8 +199,8 @@ module.exports = {
             const connection = await getConnection.connection();
 
             const Body = req.body;
-            const LoggedOnUser = {ID : 0}
-            const CompanyID = 0
+            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
             console.log(Body);
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
@@ -229,8 +230,8 @@ module.exports = {
             const connection = await getConnection.connection();
 
             const Body = req.body;
-            const LoggedOnUser = {ID : 0}
-            const CompanyID = 0
+            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.ProductName.trim() === "") return res.send({ message: "Invalid Query Data" })

@@ -55,11 +55,11 @@ module.exports = {
 
             const setting = await connection.query(`select * from companysetting where CompanyID = '${User[0].CompanyID}'`);
 
-            var expDate = company[0].CancellationDate;
-            var todate = moment(new Date()).format('DD/MM/YYYY')
+            var expDate = new Date(company[0].CancellationDate);
+            var todate = new Date()
+            console.log(todate);
 
-
-            if (todate > expDate) {
+            if (todate >= expDate) {
               return res.send({message: "Plan Expired"})  
             }
 
