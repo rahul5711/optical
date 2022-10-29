@@ -16,6 +16,9 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.Name.trim() === "") return res.send({ message: "Invalid Query Data" })
+            if (Body.Name.trim() !== "CompanyAdmin") return res.send({ message: "Invalid Query Data" })
+            if (Body.Name.trim() !== "SuperAdmin") return res.send({ message: "Invalid Query Data" })
+            if (Body.Name.trim() !== "Employee") return res.send({ message: "Invalid Query Data" })
 
             const doesExist = await connection.query(`select * from role where Name = '${Body.Name}' and CompanyID = ${CompanyID} and Status = 1`)
             if (doesExist.length) return res.send({ message: `Role Already exist from this Name ${Body.Name}` })

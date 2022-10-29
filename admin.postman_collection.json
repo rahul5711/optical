@@ -1701,6 +1701,245 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Employee",
+			"item": [
+				{
+					"name": "save",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjY5NzY4MTEsImV4cCI6MTY2NzA2MzIxMSwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.dmgHaL0zUXqCCpAyTweD_XRLO61faXKZVsX9whql7kI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"MobileNo1\": \"9752885711\",\r\n    \"MobileNo2\": \"9752885711\",\r\n    \"PhoneNo\": \"9131860873\",\r\n    \"Address\": \"3 sunil nagar indore\",\r\n    \"Email\": \"rahulgothiii@gmail.com\",\r\n    \"Name\": \"rahul gothi\",\r\n    \"DOB\": \"17/05/1995\",\r\n    \"Anniversary\": \"17/05/1995\",\r\n    \"Branch\": \"pune\",\r\n    \"PhotoURL\": \"\",\r\n    \"Document\": \"\",\r\n    \"LoginName\": \"rahulGGG\",\r\n    \"Password\": \"rahulGothi1\",\r\n    \"CommissionType\": 0,\r\n    \"CommissionMode\": 0,\r\n    \"CommissionValue\": 0,\r\n    \"CommissionValueNB\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/employee/save",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"employee",
+								"save"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjY5NzY4MTEsImV4cCI6MTY2NzA2MzIxMSwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.dmgHaL0zUXqCCpAyTweD_XRLO61faXKZVsX9whql7kI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\":443,\r\n    \"MobileNo1\": \"9752885711\",\r\n    \"MobileNo2\": \"9752885711\",\r\n    \"PhoneNo\": \"9131860873\",\r\n    \"Address\": \"3 sunil nagar indore\",\r\n    \"Email\": \"rahulgothiii@gmail.com\",\r\n    \"Name\": \"rahul gothi\",\r\n    \"DOB\": \"17/05/1995\",\r\n    \"Anniversary\": \"17/05/1995\",\r\n    \"Branch\": \"pune\",\r\n    \"PhotoURL\": \"\",\r\n    \"Document\": \"\",\r\n    \"LoginName\": \"rahulGGG\",\r\n    \"Password\": \"rahulGothi1\",\r\n    \"CommissionType\": 0,\r\n    \"CommissionMode\": 0,\r\n    \"CommissionValue\": 0,\r\n    \"CommissionValueNB\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/employee/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"employee",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjY5NzY4MTEsImV4cCI6MTY2NzA2MzIxMSwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.dmgHaL0zUXqCCpAyTweD_XRLO61faXKZVsX9whql7kI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\":443\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/employee/getUserById",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"employee",
+								"getUserById"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjY5NzY4MTEsImV4cCI6MTY2NzA2MzIxMSwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.dmgHaL0zUXqCCpAyTweD_XRLO61faXKZVsX9whql7kI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\":443\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/employee/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"employee",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "restore",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjY5NzY4MTEsImV4cCI6MTY2NzA2MzIxMSwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.dmgHaL0zUXqCCpAyTweD_XRLO61faXKZVsX9whql7kI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 443\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/employee/restore",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"employee",
+								"restore"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjY5NzY4MTEsImV4cCI6MTY2NzA2MzIxMSwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.dmgHaL0zUXqCCpAyTweD_XRLO61faXKZVsX9whql7kI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/employee/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"employee",
+								"list"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
