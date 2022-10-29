@@ -42,6 +42,7 @@ import { AddTypeComponent } from './add-type/add-type.component';
 
 
 
+
 @NgModule({
   declarations: [
     CompanyComponent,

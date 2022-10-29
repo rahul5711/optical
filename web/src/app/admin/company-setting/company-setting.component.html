@@ -1,1 +1,404 @@
-<p>company-setting works!</p>
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row"></div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="header">
+                        <h2>Company Setting</h2>
+                        <ul class="header-dropdown m-r--5"> </ul>
+                    </div>
+                    <div class="body">
+                        <form #f="ngForm" autocomplete="off">
+                            <form #settingForm="ngForm">
+                                <!-- Tabs navs -->
+                                <ul class="nav nav-tabs mb-3" id="ex1" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab"
+                                            href="#ex1-tabs-1" role="tab" aria-controls="ex1-tabs-1"
+                                            aria-selected="true">Tab 1</a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link" id="ex1-tab-2" data-mdb-toggle="tab" href="#ex1-tabs-2"
+                                            role="tab" aria-controls="ex1-tabs-2" aria-selected="false">Tab 2</a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link" id="ex1-tab-3" data-mdb-toggle="tab" href="#ex1-tabs-3"
+                                            role="tab" aria-controls="ex1-tabs-3" aria-selected="false">Tab 3</a>
+                                    </li>
+                                </ul>
+                                <!-- Tabs navs -->
+
+                                <!-- Tabs content -->
+                                <div class="tab-content" id="ex1-content">
+                                    <div class="tab-pane fade show active" id="ex1-tabs-1" role="tabpanel"
+                                        aria-labelledby="ex1-tab-1">
+                                        <div class="row">
+                                            <div class="col-10">
+                                                <div class="row">
+                                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Company Language</mat-label>
+                                                            <mat-select name="CompanyLanguage"
+                                                                [(ngModel)]="data.CompanyLanguage" required
+                                                                #name="ngModel">
+                                                                <mat-option value="English">English</mat-option>
+                                                            </mat-select>
+                                                            <mat-error>Select </mat-error>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Locale</mat-label>
+                                                            <mat-select name="Locale" required [(ngModel)]="data.Locale"
+                                                                required>
+                                                                <mat-option value="en-IN">India</mat-option>
+                                                                <mat-option value="en-US">USA</mat-option>
+                                                                <mat-option value="ar-ae">UAE</mat-option>
+                                                            </mat-select>
+                                                            <mat-error>Select Locale</mat-error>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Company Currency</mat-label>
+                                                            <mat-select name="CompanyCurrency" required
+                                                                [(ngModel)]="data.CompanyCurrency" required>
+                                                                <mat-option value=" ">No Currency </mat-option>
+                                                                <mat-option value="INR">INR</mat-option>
+                                                                <mat-option value="USD">USD</mat-option>
+                                                                <mat-option value="CAD">CAD</mat-option>
+                                                                <mat-option value="AED">AED</mat-option>
+
+                                                            </mat-select>
+                                                            <mat-error>Select any currency</mat-error>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Currency Format</mat-label>
+                                                            <mat-select name="CurrencyFormat" required
+                                                                [(ngModel)]="data.CurrencyFormat">
+                                                                <mat-option value="1.2-2">1.2-2 ex 41.34</mat-option>
+                                                                <mat-option value="1.1-1">1.2-2 ex 41.3</mat-option>
+                                                                <mat-option value="4.2-2">4.2-2 ex 0041.34</mat-option>
+                                                                <mat-option value="1.2-4">1.2-4 ex 41.3423</mat-option>
+                                                                <mat-option value="1.2-3">1.2-2 ex 41.342</mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-3 col-sm-12 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Date Format</mat-label>
+                                                            <mat-select name="DateFormat" required
+                                                                [(ngModel)]="data.DateFormat">
+                                                                <mat-option [value]="d.ID" *ngFor="let d of dataFormat">
+                                                                    {{d.Name}}</mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-2 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Data Format</mat-label>
+                                                            <mat-select name="DataFormat" [(ngModel)]="data.DataFormat">
+                                                                <mat-option value="0">User Preffered</mat-option>
+                                                                <mat-option value="1">CAPATALIZE</mat-option>
+                                                                <mat-option value="2">CAMEL CASE</mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Reward Percentage</mat-label>
+                                                            <input matInput type="number" name="RewardPercentage"
+                                                                [(ngModel)]="data.RewardPercentage" />
+                                                            <mat-error>Reward Percentagee required</mat-error>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Applied Reward</mat-label>
+                                                            <input matInput type="number" name="AppliedReward"
+                                                                [(ngModel)]="data.AppliedReward" />
+                                                            <mat-error>AppliedReward required</mat-error>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-2 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Reward ExpiryDate</mat-label>
+                                                            <mat-select name="RewardExpiryDate"
+                                                                [(ngModel)]="data.RewardExpiryDate">
+                                                                <!-- <mat-option value="None">None</mat-option> -->
+                                                                <mat-option value="1">1 Month</mat-option>
+                                                                <mat-option value="3">3 Month</mat-option>
+                                                                <mat-option value="6">6 Month </mat-option>
+                                                                <mat-option value="120">No Expiry</mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-2 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>ComfortMsg Days</mat-label>
+                                                            <input matInput type="number" name="FeedbackDate"
+                                                                [(ngModel)]="data.FeedbackDate" />
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-2 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>ServiceMsg Days</mat-label>
+                                                            <input matInput type="number" name="ServiceDate"
+                                                                [(ngModel)]="data.ServiceDate" />
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-2 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>LoginTimeStart</mat-label>
+                                                            <input matInput type="time" name="LoginTimeStart"
+                                                                timeformat="24h" [(ngModel)]="data.LoginTimeStart">
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-2 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>LoginTimeEnd</mat-label>
+                                                            <input matInput type="time" type="time-24"
+                                                                name="LoginTimeEnd" [(ngModel)]="data.LoginTimeEnd">
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-3 col-lg-3 mb-0"
+                                                        style="padding: 0;  padding-left: 14px;">
+                                                        <b>Report Send To</b>&nbsp;
+                                                        <mat-checkbox color="primary" name="EmailReport"
+                                                            [(ngModel)]="data.EmailReport">Email</mat-checkbox>
+                                                        <mat-checkbox color="primary" class="example-margin"
+                                                            name="MessageReport" [(ngModel)]="data.MessageReport">Text
+                                                            Message</mat-checkbox>
+                                                    </div>
+                                                    <div class="col-md-12 header mt-md-3">
+                                                        <h2>Purchase Setting (SecretCode)</h2>
+                                                    </div>
+                                                    <div class="col-xl-1 col-lg-1" style=" margin-right: 53px;">
+                                                        <mat-slide-toggle name="year" color="primary" #Multiplecontrol
+                                                            [(ngModel)]="data.year" class="example-margin">year
+                                                        </mat-slide-toggle>
+                                                    </div>
+                                                    <div class="col-xl-1 col-lg-1" style="padding:0;">
+                                                        <mat-slide-toggle name="month" color="primary" #Multiplecontrol
+                                                            [(ngModel)]="data.month" class="example-margin">month
+                                                        </mat-slide-toggle>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-1"
+                                                        style="padding:0; padding-left: 43px;">
+                                                        <mat-slide-toggle name="partycode" color="primary"
+                                                            #Multiplecontrol [(ngModel)]="data.partycode"
+                                                            class="example-margin">partycode</mat-slide-toggle>
+                                                    </div>
+                                                    <div class="col-xl-1 col-lg-1"
+                                                        style="padding:0; padding-left: 21px;">
+                                                        <mat-slide-toggle name="type" color="primary" #Multiplecontrol
+                                                            [(ngModel)]="data.type" class="example-margin">type
+                                                        </mat-slide-toggle>
+                                                    </div>
+                                                    <div class="col-md-12  header mt-md-4">
+                                                        <h2>Barcode Select</h2>
+                                                    </div>
+                                                    <div class="col-12 mt-md-2">
+                                                        <mat-radio-group aria-label="Select an option" name="BarCode"
+                                                            [(ngModel)]="data.BarCode" style="display: inline-flex;">
+                                                            <mat-radio-button value="0" color="primary"><img
+                                                                    src="assets/images/clipart/bar1.jpeg" alt=""
+                                                                    width="80%"></mat-radio-button>
+                                                            <mat-radio-button value="1"><img
+                                                                    src="assets/images/clipart/bar2.jpeg" alt=""
+                                                                    width="80%"></mat-radio-button>
+                                                            <mat-radio-button value="2"><img
+                                                                    src="assets/images/clipart/bar3.jpeg" alt=""
+                                                                    width="80%"></mat-radio-button>
+                                                            <mat-radio-button value="3">Lens/WithOut MRP
+                                                            </mat-radio-button>
+                                                            <mat-radio-button value="4">Lens/With MRP</mat-radio-button>
+                                                            <mat-radio-button value="5"><img
+                                                                    src="assets/images/clipart/bar1.jpeg" alt=""
+                                                                    width="80%">Hv</mat-radio-button>
+                                                        </mat-radio-group>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-2">
+                                                <div class="col-12 ">
+                                                    <img class="fit-picture" width="170" height="170"
+                                                        [src]="companyImage">
+                                                </div>
+                                                <div class="col-xl-11 col-lg-11 col-md-11 col-sm-12 mb-0 "
+                                                    (click)="fileInput.click()" style="cursor: pointer;">
+                                                    <i class="fa-solid fa-cloud-arrow-up upload_icon">
+                                                        <span style="font-size: 10px;letter-spacing: 2px;">Company
+                                                            Logo</span>
+                                                    </i>
+                                                    <input #fileInput name='LogoURL' type="file"
+                                                        [(ngModel)]="data.LogoURL"
+                                                        (change)="uploadImage($event, 'company')" accept="/*"
+                                                        style="display:none;">
+                                                </div>
+                                                <div class="col-12 mt-1">
+                                                    <img class="fit-picture" width="170" height="170"
+                                                        [src]="companyWatermark">
+                                                </div>
+                                                <div class="col-xl-11 col-lg-11 col-md-11 col-sm-12 mb-0 "
+                                                    (click)="fileInputs.click()" style="cursor: pointer;">
+                                                    <i class="fa-solid fa-cloud-arrow-up upload_icon">
+                                                        <span
+                                                            style="font-size: 10px;letter-spacing: 2px;">WatermarkLogoURL</span>
+                                                    </i>
+                                                    <input #fileInputs name='WatermarkLogoURL' type="file"
+                                                        [(ngModel)]="data.WatermarkLogoURL"
+                                                        (change)="uploadImage($event, '')" accept="/*"
+                                                        style="display:none;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="ex1-tabs-2" role="tabpanel"
+                                        aria-labelledby="ex1-tab-2">
+                                        <div class="row ">
+                                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Company Tagline</mat-label>
+                                                    <input matInput name="CompanyTagline" maxlength="50" [(ngModel)]="data.CompanyTagline" />
+                                                    <mat-error>Company Tagline required</mat-error>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Bill Format</mat-label>
+                                                    <mat-select name="BillFormat" [(ngModel)]="data.BillFormat" required>
+                                                        <mat-option value="Bill">1</mat-option>
+                                                    </mat-select>
+                                                    <mat-error>Bill Format </mat-error>
+                                                </mat-form-field>
+                                            </div>
+                                               <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Bill Herder </mat-label>
+                                                            <mat-select name="BillHeader" required [(ngModel)]="data.BillHeader" required>
+                                                                <mat-option ></mat-option>
+                                                                <mat-option value="0">Center Logo</mat-option>
+                                                                <mat-option value="1">Right Logo</mat-option>
+                                                                <mat-option value="2">Left Logo</mat-option>
+                                                                <mat-option value="3">50-50</mat-option>
+                                                            </mat-select>
+                                                            <mat-error>Select Mobile  </mat-error>
+                                                        </mat-form-field>
+                                                    </div>
+                                            <div class="col-xl-2 col-lg-2">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Bill Delivery Days</mat-label>
+                                                    <input matInput type="number" min="0" name="DeliveryDay" [(ngModel)]="data.DeliveryDay" />
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2" style="padding:0; padding-left: 21px;">
+                                                <mat-slide-toggle name="AppliedDiscount" color="primary" #Multiplecontrol [(ngModel)]="data.AppliedDiscount" class="example-margin">Add Discount</mat-slide-toggle>
+                                            </div>
+                                        </div>
+                                      
+                                        <div class="row">
+                                            <div class="col-xl-12 col-lg-12 header">
+                                                <h2> Bill Color/FontStyle</h2>
+                                            </div>
+                                            <div class="col-xl-3 col-lg-3">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>colorPicker</mat-label>
+                                                    <input matInput name="Color1" [(ngModel)]="data.Color1"  />
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Font API</mat-label>
+                                                    <input matInput name="FontApi" [(ngModel)]="data.FontApi" />
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Font Style</mat-label>
+                                                    <input matInput name="FontsStyle" [(ngModel)]="data.FontsStyle">
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                      
+                                        <div class="col-md-3" >
+                                            <button  mat-raised-button color="primary" [disabled]="!settingForm.valid" (click)="updatecompanysetting()"> Update</button>
+                                            <button class="ms-3" type="button" mat-raised-button (click)="settingForm.reset()"> Cancel</button>
+                                        </div>
+                                        <div class="row mt-3" >
+                                            <div class="col-sm-12 header">
+                                                <h2>Welcome Note
+                                                    <mat-icon class="col-white plus_icon" (click)="addRow()" > add</mat-icon>
+                                                  </h2>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3" >
+                                            <div class="col-sm-12 table-container" style="overflow:auto;height:300px;">
+                                                <table class="table">
+                                                    <thead class="thead-light">
+                                                        <tr>
+                                                            <th>S.No.</th>
+                                                            <th>Note Type</th>
+                                                            <th>Content</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let data of wlcmArray1; let i = index;">
+                                                            <td class="text-center">{{i+1}}</td>
+                                                            <td class="text-center">
+                                                                <mat-form-field class="example-full-width" appearance="outline" [style.width.px]=150>
+                                                                    <mat-select [(ngModel)]="data.NoteType" name="{{data.NoteType + i}}">
+                                                                        <mat-option value="wholesale">Wholesale</mat-option>
+                                                                        <mat-option value="retail">Retail</mat-option>
+                                                                        <mat-option value="CustomerCredit">CustomerCredit</mat-option>
+                                                                        <mat-option value="CustomerPower">CustomerPower</mat-option>
+    
+    
+                                                                    </mat-select>
+                                                                </mat-form-field>
+                                                            </td>
+                                                            <!-- <td class="text-center">
+                                                                <mat-form-field class="example-full-width" appearance="outline">
+                                                                    <input matInput [(ngModel)]="data.NoteType" #name="ngModel" name="data{{i}}">
+                                                                </mat-form-field>
+                                                            </td> -->
+                                                            <td class="text-center">
+                                                                <mat-form-field class="example-full-width" appearance="outline">
+                                                                    <input matInput [(ngModel)]="data.Content" name="{{data.Content + i}}">
+                                                                </mat-form-field>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <ul class="header-dropdown list-inline-item m-r--5">
+                                                                    <li class="d-inline"><i (click)="delete(i)" class="material-icons" style="cursor: pointer;  color:red;">delete</i></li>
+                                                                </ul>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="ex1-tabs-3" role="tabpanel"
+                                        aria-labelledby="ex1-tab-3">
+                                        Tab 3 content
+                                    </div>
+                                </div>
+                                <!-- Tabs content -->
+
+                                <div class="row">
+                                    <div class="col-md-9"></div>
+                                </div>
+                            </form>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

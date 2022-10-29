@@ -106,7 +106,7 @@ export class ShopComponent implements OnInit {
     if(e.target.files.length) {
       this.img = e.target.files[0];
     };
-    this.fu.uploadFiles(this.img).subscribe((data:any) => {
+    this.fu.uploadFileComapny(this.img).subscribe((data:any) => {
       if (data.body !== undefined && mode === 'company') {
         this.companyImage = this.env.apiUrl + data.body?.download;
         this.data.LogoURL = data.body?.download

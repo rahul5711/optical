@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AddTypeComponent } from './add-type/add-type.component';
 import { AdminDashboradComponent } from './admin-dashborad/admin-dashborad.component';
 import { CompanyListComponent } from './company-list.component';
+import { CompanySettingComponent } from './company-setting/company-setting.component';
 import { CompanyComponent } from './company.component';
 import { DashboradComponent } from './dashborad.component';
 import { EmployeeComponent } from './employee/employee.component';
@@ -29,6 +30,7 @@ children: [
   { path: 'employee', component: EmployeeComponent },
   { path: 'employeeList', component: EmpolyeeListComponent },
   { path: 'rolePermission', component: RoleComponent },
+  { path: 'companySetting', component: CompanySettingComponent },
   { path: 'addTypeAssign', component: AddTypeComponent },
   { path: 'productManageAssign', component: ProductManageComponent },
    
