@@ -68,16 +68,12 @@ export class CompanySettingComponent implements OnInit {
      ];
    
      wlcmArray: any = [];
-   
      wlcmArray1: any = [];
-
-   
-
 
   ngOnInit(): void {
     console.log(this.user.CompanySetting.WelComeNote);
-    this.data = this.user?.CompanySetting
-    this.wlcmArray1 = this.user?.CompanySetting.WelComeNote
+    this.data = this.user.CompanySetting
+    this.wlcmArray1 = this.user?.CompanySetting?.WelComeNote
   }
 
   uploadImage(e:any, mode:any){

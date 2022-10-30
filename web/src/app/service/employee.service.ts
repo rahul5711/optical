@@ -6,13 +6,13 @@ import { catchError } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class ShopService {
+export class EmployeeService {
 
   constructor(private httpClient: HttpClient) { }
-  private url = 'http://localhost:3000/shop';
+  private url = 'http://localhost:3000/employee';
 
-
-  shopSave( Body: any): Observable<any> {
+  
+  saveUser( Body: any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams()
     return this.httpClient.post<any>(this.url + '/save', Body, { headers, params })
@@ -32,24 +32,17 @@ export class ShopService {
     .pipe(catchError(this.handleError));
   }
 
-  getShopById(ID:any): Observable<any> {
+  getUserById(ID:any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams();
-    return this.httpClient.post<any>(this.url + '/getShopById', {ID: ID},  { headers, params })
+    return this.httpClient.post<any>(this.url + '/getUserById', {ID: ID},  { headers, params })
     .pipe(catchError(this.handleError));
   }
 
-  updateShop( Body: any): Observable<any> {
+  updateUser( Body: any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams()
     return this.httpClient.post<any>(this.url + '/update', Body, { headers, params })
-    .pipe(catchError(this.handleError));
-  }
-
-  dropdownShoplist(Body:any): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams()
-    return this.httpClient.get<any>(this.url + '/dropdownlist', Body )
     .pipe(catchError(this.handleError));
   }
 
@@ -61,4 +54,5 @@ export class ShopService {
     }
     return throwError(errorResponse);
   }
+
 }

@@ -27,7 +27,7 @@ children: [
   { path: 'loginHistory', component: LoginHistoryComponent },
   { path: 'shop/:id', component: ShopComponent },
   { path: 'shopList', component: ShopListComponent },
-  { path: 'employee', component: EmployeeComponent },
+  { path: 'employee/:id', component: EmployeeComponent },
   { path: 'employeeList', component: EmpolyeeListComponent },
   { path: 'rolePermission', component: RoleComponent },
   { path: 'companySetting', component: CompanySettingComponent },

@@ -207,6 +207,12 @@ $OguruPro-theme: mat.define-light-theme((
     
         border-radius: 20px;
     }
+
+    .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+        color: #ffffff !important;
+        background-color: #ff5100 !important;
+        border-color: var(--bs-nav-tabs-link-active-border-color);
+    }
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.

@@ -35,6 +35,11 @@ export class RoleComponent implements OnInit {
 
   roleList :any
   showAdd = false;
+  displayModule :any= true;
+
+  moduleList: any = [
+    {ModuleName: 'CompanyInfo', MView: true, Edit: true, Add: true, View: true, Delete: true},
+  ];
 
   ngOnInit(): void {
     this.getList();
@@ -111,5 +116,8 @@ export class RoleComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+
+  
 
 }

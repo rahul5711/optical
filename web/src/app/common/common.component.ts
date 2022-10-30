@@ -15,7 +15,7 @@ export class CommonComponent implements OnInit {
   x: any;
 
   constructor(private router: Router, ) { }
-
+  viewCompanyInfo = true;
   ngOnInit(): void {
    
    
