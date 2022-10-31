@@ -13,6 +13,14 @@ router.post('/getShopById',verifyAccessTokenAdmin, Controller.getShopById)
 router.post('/update',verifyAccessTokenAdmin, Controller.update)
 
 
+//  user shop
+router.post('/saveUserShop', verifyAccessTokenAdmin, Controller.saveUserShop)
+router.post('/deleteUserShop', verifyAccessTokenAdmin, Controller.deleteUserShop)
+router.post('/updateUserShop', verifyAccessTokenAdmin, Controller.updateUserShop)
+
+
+
+
 
 
 module.exports = router

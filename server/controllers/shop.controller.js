@@ -242,4 +242,108 @@ module.exports = {
         }
     },
 
+    //  user shop 
+
+    saveUserShop: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (!Body.UserID) return res.send({ message: "Invalid Query Data" })
+            if (!Body.ShopID) return res.send({ message: "Invalid Query Data" })
+            if (!Body.RoleID) return res.send({ message: "Invalid Query Data" })
+
+            doesExist = await connection.query(`select * from usershop where Status = 1 and UserID=${Body.UserID} and ShopID=${Body.ShopID}`);
+
+            if (doesExist.length) {
+               return res.send({message: `User have already role in this shop`});
+            }
+
+
+            const saveData = await connection.query(`insert into usershop (UserID,ShopID, RoleID,  Status,  CreatedBy, CreatedOn ) values (${Body.UserID},${Body.ShopID}, ${Body.RoleID},1,${LoggedOnUser}, now())`)
+
+            console.log(connected("Data Added SuccessFUlly !!!"));
+
+            response.message = "data save sucessfully"
+            response.data =  await connection.query(`select usershop.*, role.Name as RoleName, shop.Name as ShopName, shop.AreaName as AreaName, user.Name as UserName from usershop left join role on role.ID = usershop.RoleID left join shop on shop.ID = usershop.ShopID left join user on user.ID = usershop.UserID where usershop.Status = 1 and usershop.UserID = ${Body.UserID} and usershop.ShopID = ${Body.ShopID} and usershop.ID = ${saveData.insertId}`)
+            connection.release()
+            return res.send(response)
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+    updateUserShop: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (!Body.UserID) return res.send({ message: "Invalid Query Data" })
+            if (!Body.ShopID) return res.send({ message: "Invalid Query Data" })
+            if (!Body.RoleID) return res.send({ message: "Invalid Query Data" })
+            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+
+            // doesExist = await connection.query(`select * from usershop where Status = 1 and UserID=${Body.UserID} and ShopID=${Body.ShopID} and ID = ${Body.ID}`);
+
+            // if (doesExist.length) {
+            //    return res.send({message: `User have already role in this shop`});
+            // }
+
+            const updateData = await connection.query(`update usershop set RoleID = ${Body.RoleID}, ShopID = ${Body.ShopID}, UpdatedBy=${LoggedOnUser}, UpdatedOn = now() where ID = ${Body.ID}`)
+
+            // const saveData = await connection.query(`insert into usershop (UserID,ShopID, RoleID,  Status,  CreatedBy, CreatedOn ) values (${Body.UserID},${Body.ShopID}, ${Body.RoleID},1,${LoggedOnUser}, now())`)
+
+            console.log(connected("Data Updated SuccessFUlly !!!"));
+
+            response.message = "data update sucessfully"
+            connection.release()
+            return res.send(response)
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+
+    deleteUserShop: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+
+            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+
+            const doesExist = await connection.query(`select * from usershop where Status = 1 and ID = '${Body.ID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "user shop doesnot exist of this user " })
+            }
+
+
+            const deleteShop = await connection.query(`update usershop set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
+
+            console.log("User Shop Delete SuccessFUlly !!!");
+
+            response.message = "data delete sucessfully"
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            return error
+        }
+    },
+
 }

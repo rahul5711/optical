@@ -169,7 +169,7 @@ module.exports = {
 
     getUserById: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "" }
+            const response = { data: null, UserShop: [], success: true, message: "" }
             const connection = await getConnection.connection();
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -180,6 +180,7 @@ module.exports = {
            
             response.message = "data fetch sucessfully"
             response.data = User
+            response.UserShop = await connection.query(`select usershop.*, role.Name as RoleName, shop.Name as ShopName, shop.AreaName as AreaName, user.Name as UserName from usershop left join role on role.ID = usershop.RoleID left join shop on shop.ID = usershop.ShopID left join user on user.ID = usershop.UserID where usershop.Status = 1 and usershop.UserID = ${Body.ID}`)
             connection.release()
             res.send(response)
         } catch (error) {
