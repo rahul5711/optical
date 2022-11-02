@@ -59,9 +59,9 @@ module.exports = {
             var todate = new Date()
             console.log(todate);
 
-            if (todate >= expDate) {
-              return res.send({message: "Plan Expired"})  
-            }
+            // if (todate >= expDate) {
+            //   return res.send({message: "Plan Expired"})  
+            // }
 
             if (User[0].UserGroup === "CompanyAdmin") {
                 loginCode = 1;
