@@ -39,7 +39,7 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Mobile No1</mat-label>
                                                 <input matInput type="number" name="MobileNo1"
-                                                    [(ngModel)]="data.MobileNo1" required #MobileNo1control>
+                                                    [(ngModel)]="data.MobileNo1"  #MobileNo1control>
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
@@ -70,7 +70,7 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Email</mat-label>
                                                 <input matInput name="Email" type="email" [(ngModel)]="data.Email"
-                                                    #Emailcontrol>
+                                                    #Emailcontrol required>
                                                 <mat-error>
                                                     InValid Emailid.
                                                 </mat-error>
@@ -90,41 +90,31 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div *ngIf="data.CommissionType == 1 || data.CommissionType == 2 " class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Commission Mode</mat-label>
                                                 <mat-select name="CommissionMode" [(ngModel)]="data.CommissionMode"
                                                     required #CommissionTypecontrol>
-                                                    <mat-option [value]=0></mat-option>
-                                                    <mat-option [value]=1>Percentage</mat-option>
-                                                    <mat-option [value]=2>Fixed Amount</mat-option>
+                                                    <mat-option [value]=0>Percentage</mat-option>
+                                                   
+                                                    
                                                 </mat-select>
                                                 <mat-error> Select Commission Type</mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
-                                            <mat-form-field class="example-full-width mb-0">
-                                                <mat-label>Commission Mode</mat-label>
-                                                <mat-select name="CommissionMode" [(ngModel)]="data.CommissionMode"
-                                                    required #CommissionTypecontrol>
-                                                    <mat-option [value]=0></mat-option>
-                                                    <mat-option [value]=1>Percentage</mat-option>
-                                                </mat-select>
-                                                <mat-error>Select Commission Type</mat-error>
-                                            </mat-form-field>
-                                        </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                       
+                                        <div *ngIf="data.CommissionType == 2 || data.CommissionType == 1" class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Commission Value (Brand Wise)</mat-label>
                                                 <input matInput type="number" name="CommissionValue"
-                                                    [(ngModel)]="data.CommissionValue" #CommissionValuecontrol>
+                                                    [(ngModel)]="data.CommissionValue" #CommissionValuecontrol required>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div *ngIf="data.CommissionType == 2 " class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Commission Value(Non Brand Wise)</mat-label>
                                                 <input matInput type="number" name="CommissionValueNB"
-                                                    [(ngModel)]="data.CommissionValueNB" #CommissionValueNBcontrol>
+                                                    [(ngModel)]="data.CommissionValueNB" #CommissionValueNBcontrol required>
                                             </mat-form-field>
                                         </div>
                                     </div>
@@ -138,7 +128,7 @@
                                                 <mat-error>Fill Login Name minimum length 3 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div *ngIf="this.id == 0" class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Password</mat-label>
                                                 <input matInput name="Password" [(ngModel)]="data.Password" required
@@ -151,8 +141,8 @@
                                     <div class="row">
                                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0 mt-2 mb-3">
                                                 <button class="me-3" type="button" mat-raised-button color="primary"  [disabled]="id == 0 || !f.valid" *ngIf=" id != 0" (click)="updateUser()" >Update</button>
-                                                <button type="submit" class="me-3" mat-raised-button color="primary" [disabled]="!f.valid" *ngIf="id == 0">Save</button>
-                                                <button type="button" mat-raised-button [routerLink]="['/admin/employeeList']">Cancel</button>
+                                                <button type="submit" class="me-3" mat-raised-button color="primary" [disabled]="!f.valid  " *ngIf="id == 0">Save</button>
+                                                <button type="button" mat-raised-button [routerLink]="['/admin/employeeList']">Back</button>
                                         </div>
                                     </div>
                                 </div>
@@ -175,14 +165,14 @@
                         <!-- empolyess shop permision -->
                         <div class="row" style="margin: 0;">
                             <div class="col-md-5 col-12 ps-0">
-                                <form #assignForm="ngForm">
+                                <form #assignForm="ngForm" (ngSubmit)="saveUserShop();">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <mat-form-field class="example-full-width mb-0"
                                                 [class.has-error]="ShopControl.invalid && ShopControl.touched"
                                                 [class.has-success]="ShopControl.valid">
                                                 <mat-label>Select Shop</mat-label>
-                                                <mat-select name="ShopID" [(ngModel)]="userShop.ShopID" required #ShopControl="ngModel">
+                                                <mat-select name="ShopID" [(ngModel)]="UserShop.ShopID" required #ShopControl="ngModel">
                                                     <mat-option [value]="s.ID" *ngFor="let s of dropShoplist"> {{s.Name}}<span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'"> ({{s.AreaName}})</span> </mat-option>
                                                 </mat-select>
                                                 <mat-error> Shop is required</mat-error>
@@ -193,7 +183,7 @@
                                                 [class.has-error]="RoleControl.invalid && RoleControl.touched"
                                                 [class.has-success]="RoleControl.valid">
                                                 <mat-label>Select Role</mat-label>
-                                                <mat-select name="RoleID" [(ngModel)]="userShop.RoleID" required #RoleControl="ngModel">
+                                                <mat-select name="RoleID" [(ngModel)]="UserShop.RoleID" required #RoleControl="ngModel">
                                                     <mat-option [value]="r.ID" *ngFor="let r of roleList"> {{r.Name}} </mat-option>
                                                 </mat-select>
                                                 <mat-error *ngIf="RoleControl.invalid && RoleControl.touched"> Role is
@@ -204,18 +194,21 @@
                                     <div class="row mt-2">
                                         <div class="col-lg-12">
                                             <button class="me-3" mat-raised-button color="primary"
-                                                [disabled]="!assignForm.valid">Save </button>
-                                            <button type="button" mat-raised-button
-                                                (click)="assignForm.reset()">Cancel</button>
+                                                [disabled]="!assignForm.valid" *ngIf="this.id == 0">Save </button>
+                                                <button class="me-3" mat-raised-button color="primary"
+                                                [disabled]="!assignForm.valid" *ngIf="this.id != 0" (click)="updateUserShop()">Update </button>
+                                            <!-- <button type="button" mat-raised-button
+                                                (click)="assignForm.reset()">Cancel</button> -->
                                         </div>
                                     </div>
                                 </form>
                             </div>
                             <div class="table-container col-md-7 col-12"
                                 style="overflow-x:auto;overflow:auto;height:200px;">
-                                <table class="table">
+                                <table class="table table-striped table-hover table-sm table-bordered"
+                                style="border: 2px solid #fff !important;">
                                     <thead class="thead-light">
-                                        <tr>
+                                        <tr >
                                             <th class="text-left">Action</th>
                                             <th class="text-left">S.No</th>
                                             <th class="text-left">ShopName</th>
@@ -224,11 +217,15 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>
-                                                <mat-icon class="delete_icon me-1">delete_forever</mat-icon>
-                                                <mat-icon class="edit_icon">edit</mat-icon>
+                                        <tr *ngFor="let s of userList; let i = index">
+                                            <td class="text-center">
+                                                <mat-icon class="delete_icon me-1" (click)="deleteItem(i)">delete_forever</mat-icon>
+                                                <mat-icon class="edit_icon" (click)="editUserShop(s)">edit</mat-icon>
                                             </td>
+                                            <td class="text-center">{{i+1}}</td>
+                                            <td class="text-center">{{s.ShopName}}</td>
+                                            <td class="text-center">{{s.AreaName}}</td>
+                                            <td class="text-center">{{s.RoleName}}</td>
                                         </tr>
                                     </tbody>
                                 </table>

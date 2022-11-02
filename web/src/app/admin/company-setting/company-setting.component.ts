@@ -37,23 +37,24 @@ export class CompanySettingComponent implements OnInit {
 
   ) { }
 
-  data: any = {ID: null, CompanyLanguage: 'English', Locale: 'en-IN', CompanyCurrency: '', CurrencyFormat: null, DateFormat: null,
-    CompanyTagline: '', BillHeader: '', BillFooter: '', RewardsPointValidity: '', EmailReport: null,
+  data: any = {ID: null, CompanyLanguage: 'English', Locale: 'en-IN', CompanyCurrency: '', CurrencyFormat: null, DateFormat: null,CompanyTagline: '', BillHeader: '', BillFooter: '', RewardsPointValidity: '', EmailReport: null,
      WholeSalePrice: false, Composite: false, RetailRate: false,  Color1: '', FontApi:'', FontsStyle: '', HSNCode: false, Discount: false, GSTNo: false, Rate: false, SubTotal: false, Total: false, CGSTSGST: false, 
-     WelComeNote: '',BillFormat:null,SenderID: '',MsgAPIKey:'', SmsSetting: '',DataFormat: 0,RewardPercentage:0, RewardExpiryDate: '30',AppliedReward:0, MobileNo:'2', MessageReport: null, LogoURL: '', WatermarkLogoURL: '', InvoiceFormat: 'option.ejs', LoginTimeStart: '', LoginTimeEnd: '', year: false, month: false, partycode: false, type: false , BarCode:'', FeedbackDate:'', ServiceDate:'',DeliveryDay:''}; 
+     WelComeNote: '',BillFormat:null,SenderID: '',MsgAPIKey:'', SmsSetting: '',DataFormat: 0,RewardPercentage:0, RewardExpiryDate: '30',AppliedReward:0, MobileNo:'2', MessageReport: null, LogoURL: '', WatermarkLogoURL: '', 
+     InvoiceFormat: 'option.ejs', LoginTimeStart: '', LoginTimeEnd: '', year: false, month: false, partycode: false, type: false , BarCode:'', FeedbackDate:'', ServiceDate:'',DeliveryDay:''
+  }; 
 
 
-     companyWatermark: any;
+  companyWatermark: any;
   companyWholeSalePrice: any;
   billFormatList: any;
-     env = environment;
-     companyImage: any;
-     dataList: any;
-     loggedInCompany = (localStorage.getItem('LoggedINCompany'));
+  env = environment;
+  companyImage: any;
+  dataList: any;
+  loggedInCompany = (localStorage.getItem('LoggedINCompany'));
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
    
    
-     dataFormat: any = [
+  dataFormat: any = [
        {ID: 'llll', Name: 'Wed, Feb 10, 2021 7:03 PM'},
        {ID: 'LLLL', Name: 'Wednesday, February 10, 2021 7:02 PM'},
        {ID: 'lll', Name: 'Feb 10, 2021 7:00 PM'},
@@ -64,11 +65,10 @@ export class CompanySettingComponent implements OnInit {
        {ID: 'l', Name: '2/10/2021'},
        {ID: 'DD/MM/YYYY', Name: '10/02/2021'},
        {ID: 'DD-MM-YYYY', Name: '10-02-2021'}
+  ];
    
-     ];
-   
-     wlcmArray: any = [];
-     wlcmArray1: any;
+  wlcmArray: any = [];
+  wlcmArray1: any;
 
   ngOnInit(): void {
     this.data = this.user.CompanySetting

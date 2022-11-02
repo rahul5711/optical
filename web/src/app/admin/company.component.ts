@@ -58,8 +58,8 @@ export class CompanyComponent implements OnInit {
   {ID: 4, Name: 'Yearly Plan (365 Days)' , days: 360}];
 
   data : any = {
-    ID: null, CompanyName: null, MobileNo1: null, MobileNo2: null, PhoneNo: null, Address: null, Country: null, State: null, City: null, Email: null, Website: null, GSTNo: null, CINNo: null, LogoURL: null, Remark: null, Plan: null, Version: null, NoOfShops: null, EffectiveDate: new Date(), CacellationDate:  null, WhatsappMsg: false, EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, dataFormat: undefined,
-     Name : null, UserGroup : "", DOB : null, Anniversary : null,  Branch : '', FaxNo : '',  PhotoURL : '',LoginName : "", Password : "",
+    ID: null, CompanyName: null, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: null, Country: null, State: null, City: null, Email: null, Website: '', GSTNo: '', CINNo: '', LogoURL: null, Remark: '', Plan: null, Version: null, NoOfShops: null, EffectiveDate: new Date(), CacellationDate:  null,  WhatsappMsg: false, EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, dataFormat: undefined,
+     Name : '', UserGroup : "", DOB : null, Anniversary : null,  Branch : '', FaxNo : '',  PhotoURL : '',LoginName : "", Password : "",
      Document:null, CommissionType :null, CommissionMode :null, CommissionValue :null, CommissionValueNB :null,
   };
 

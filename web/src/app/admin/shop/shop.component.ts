@@ -23,7 +23,7 @@ import { FileUploadService } from 'src/app/service/file-upload.service';
 export class ShopComponent implements OnInit {
 
   loggedInCompany:any = (localStorage.getItem('LoggedINCompany') || '');
-  user = (localStorage.getItem('user') || '');
+  user = JSON.parse(localStorage.getItem('user') || '');
   reactiveForm!: FormGroup;
   toggleChecked = false
   companyImage:any;
@@ -59,19 +59,21 @@ export class ShopComponent implements OnInit {
     if (this.id != 0) {
       this.getShopById(); 
     }
+    console.log(this.user.Company);
+    
   }
 
   copyData(val: any) {
     if (val) {
-      this.data.GSTNo = this.loggedInCompany.GSTNo;
-      this.data.CINNo = this.loggedInCompany.CINNo;
-      this.data.Address = this.loggedInCompany.Address;
-      this.data.Website = this.loggedInCompany.Website;
-      this.data.Email = this.loggedInCompany.Email;
-      this.data.LogoURL = this.loggedInCompany.LogoURL;
-      this.data.PhoneNo = this.loggedInCompany.PhoneNo;
-      this.data.MobileNo1 = this.loggedInCompany.MobileNo1;
-      this.data.MobileNo2 = this.loggedInCompany.MobileNo2; 
+      this.data.GSTNo = this.user.Company.GSTNo;
+      this.data.CINNo = this.user.Company.CINNo;
+      this.data.Address = this.user.Company.Address;
+      this.data.Website = this.user.Company.Website;
+      this.data.Email = this.user.Company.Email;
+      this.data.LogoURL = this.user.Company.LogoURL;
+      this.data.PhoneNo = this.user.Company.PhoneNo;
+      this.data.MobileNo1 = this.user.Company.MobileNo1;
+      this.data.MobileNo2 = this.user.Company.MobileNo2; 
     }
   }
 

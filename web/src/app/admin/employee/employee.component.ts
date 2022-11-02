@@ -30,6 +30,7 @@ export class EmployeeComponent implements OnInit {
   img: any;
   roleList:any
   dropShoplist: any;
+  userList: any;
   
   constructor(
     private router: Router,
@@ -54,7 +55,7 @@ export class EmployeeComponent implements OnInit {
   CommissionValue: 0, CommissionValueNB: 0
   };
 
-  userShop: any = {ID: null, UserID: null, ShopID: null, RoleID: null, Status: 1, CreatedOn: null, CreatedBy: null};
+  UserShop: any = {ID: null, UserID: null, ShopID: null, RoleID: null, Status: 1};
 
   ngOnInit(): void {
     if (this.id != 0) {
@@ -70,7 +71,7 @@ export class EmployeeComponent implements OnInit {
         // this.dataList = res.result;
         // console.log(this.dataList);
         if (res.success) {
-          this.router.navigate(['/admin/employeeList']); 
+          // this.router.navigate(['/admin/employeeList']); 
           Swal.fire({
             position: 'center',
             icon: 'success',
@@ -98,7 +99,6 @@ export class EmployeeComponent implements OnInit {
       if (data.body !== undefined && mode === 'company') {
         this.userImage = this.env.apiUrl + data.body?.download;
         this.data.PhotoURL = data.body?.download
-        console.log(this.userImage);
         this.as.successToast(data.body?.message)
       }
     });
@@ -107,7 +107,9 @@ export class EmployeeComponent implements OnInit {
   getUserById(){
     const subs: Subscription = this.es.getUserById(this.id).subscribe({
       next: (res: any) => {
-        console.log(res.data);
+      
+        this.userList = res.UserShop
+        console.log( this.userList);
         
         if (res.success) {
           this.as.successToast(res.message)
@@ -126,7 +128,6 @@ export class EmployeeComponent implements OnInit {
   }
 
   updateUser(){
-    console.log(this.data);
     const subs: Subscription =  this.es.updateUser( this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -154,7 +155,6 @@ export class EmployeeComponent implements OnInit {
     const subs: Subscription = this.role.getList().subscribe({
       next: (res: any) => {
         this.roleList = res.data
-        console.log(this.roleList);
         this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
@@ -166,12 +166,100 @@ export class EmployeeComponent implements OnInit {
     const subs: Subscription = this.ss.dropdownShoplist(this.user).subscribe({
       next: (res: any) => {
         this.dropShoplist = res.data
-        console.log(this.dropShoplist);
         this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+  }
+
+  saveUserShop(){
+    this.UserShop.UserID = this.id
+    const subs: Subscription =  this.ss.saveUserShop(this.UserShop).subscribe({
+      next: (res: any) => {
+        // this.dataList = res.result;
+        // console.log(this.dataList);
+        if (res.success) {
+          this.router.navigate(['/admin/employeeList']); 
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your role has been Save.',
+            showConfirmButton: false,
+            timer: 1200
+          }) 
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+      
+    });
+  }
+
+  updateUserShop(){
+    const subs: Subscription =  this.ss.updateUserShop(this.UserShop.ID).subscribe({
+      next: (res: any) => {
+        // this.dataList = res.result;
+        // console.log(this.dataList);
+        if (res.success) {
+          this.router.navigate(['/admin/employeeList']); 
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your role has been Update.',
+            showConfirmButton: false,
+            timer: 1200
+          }) 
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+      
+    });
+  }
+
+  deleteItem(i:any){
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.sp.show();
+        const subs: Subscription = this.ss.deleteUserShop(this.userList[i].ID).subscribe({
+          next: (res: any) => {
+            this.userList.splice(i, 1);
+            this.sp.hide();
+            this.as.successToast(res.message)
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Your file has been deleted.',
+          showConfirmButton: false,
+          timer: 1000
+        })
+      }
+    })
+  }
+
+  editUserShop(data: any) {
+   this.UserShop = data;
   }
 
 }

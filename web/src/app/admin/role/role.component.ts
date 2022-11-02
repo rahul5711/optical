@@ -31,7 +31,7 @@ export class RoleComponent implements OnInit {
   loggedInCompany:any = (localStorage.getItem('LoggedINCompany') || '');
   user = (localStorage.getItem('user') || '');
 
-  selectedRole = {ID: null, Name: "", CompanyID: this.loggedInCompany, Permission: "[]", Status: 1};
+  selectedRole :any = {ID: null, Name: "", CompanyID: this.loggedInCompany, Permission: "[]", Status: 1};
 
   roleList :any
   showAdd = false;
