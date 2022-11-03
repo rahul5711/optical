@@ -103,6 +103,25 @@ module.exports = {
         }
     },
 
+    dropdownlist: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const UserID = req.user.ID ? req.user.ID : 0;
+            const UserGroup = req.user.UserGroup ? req.user.UserGroup : 'CompanyAdmin';
+
+            let data = await connection.query(`select * from user where Status = 1 and CompanyID = ${CompanyID}`);
+            response.message = "data fetch sucessfully"
+            response.data = data
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+
     delete: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }

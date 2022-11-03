@@ -9,6 +9,7 @@ router.post('/delete',verifyAccessTokenAdmin, Controller.delete)
 router.post('/restore',verifyAccessTokenAdmin, Controller.restore)
 router.post('/getUserById',verifyAccessTokenAdmin, Controller.getUserById)
 router.post('/update',verifyAccessTokenAdmin, Controller.update)
+router.get('/dropdownlist', verifyAccessTokenAdmin, Controller.dropdownlist)
 
 
 
