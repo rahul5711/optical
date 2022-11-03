@@ -8,6 +8,10 @@ import * as moment from 'moment';
 import { ShopService } from 'src/app/service/shop.service';
 import { AlertService } from 'src/app/service/alert.service';
 import { FileUploadService } from 'src/app/service/file-upload.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DomSanitizer } from '@angular/platform-browser';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-shop-list',
@@ -15,12 +19,27 @@ import { FileUploadService } from 'src/app/service/file-upload.service';
   styleUrls: ['./shop-list.component.css']
 })
 export class ShopListComponent implements OnInit {
+
+  loggedInCompany:any = (localStorage.getItem('LoggedINCompany') || '');
+  user = JSON.parse(localStorage.getItem('user') || '');
+  reactiveForm!: FormGroup;
+  toggleChecked = false
+  companyImage:any;
+  img: any;
+  env: { production: boolean; apiUrl: string; appUrl: string; };
+  id: any;
+  
   dataList: any;
   currentPage = 1;
   itemsPerPage = 10;
   pageSize!: number;
   collectionSize = 0
   page = 4;
+  suBtn = true;
+
+  data: any = { ID : null,  CompanyID: null, Name : '', AreaName: '', MobileNo1 : '', MobileNo2 : '', PhoneNo : '', Address : '', 
+     Email :'', Website : '', GSTNo : '', CINNo : '', BarcodeName: '', Discount: false, GSTnumber: false, LogoURL : '',HSNCode: false, CustGSTNo:false, Rate:false, Discounts:false, Tax:false, SubTotal:false, Total:false,  ShopTiming : 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote : 'No Terms and Conditions',   Status : 1, CreatedBy : null, CreatedOn : null, UpdatedBy : null, UpdatedOn : null, ShopStatus: 0,
+  };
 
   constructor(
     private router: Router,
@@ -28,11 +47,22 @@ export class ShopListComponent implements OnInit {
     private ss: ShopService,
     private fu: FileUploadService,
     private sp: NgxSpinnerService,
-
-  ) { }
+    private modalService: NgbModal,
+    private sanitizer: DomSanitizer,
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
+    private formBuilder: FormBuilder,
+  ) { 
+    this.id = this.route.snapshot.params['id'];
+    this.env = environment
+    this.reactiveForm = new FormGroup({
+      Name : new FormControl(null, Validators.required)
+    })
+  }
 
   ngOnInit(): void {
-    this.getList();    
+    this.getList();   
+    
   }
 
   onPageChange(pageNum: number): void {
@@ -92,6 +122,121 @@ export class ShopListComponent implements OnInit {
         })
       }
     })
+  }
+
+  openModal(content: any) {
+    this.suBtn = false;
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, });
+
+  }
+
+  openModalEdit(content: any,datas: any) {
+    this.data = datas
+    this.suBtn = true;
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, });
+  }
+
+  copyData(val: any) {
+    if (val) {
+      this.data.GSTNo = this.user.Company.GSTNo;
+      this.data.CINNo = this.user.Company.CINNo;
+      this.data.Address = this.user.Company.Address;
+      this.data.Website = this.user.Company.Website;
+      this.data.Email = this.user.Company.Email;
+      this.data.LogoURL = this.user.Company.LogoURL;
+      this.data.PhoneNo = this.user.Company.PhoneNo;
+      this.data.MobileNo1 = this.user.Company.MobileNo1;
+      this.data.MobileNo2 = this.user.Company.MobileNo2; 
+    }
+  }
+  
+  onsubmit() {
+    var shopdate = this.data ?? " ";
+    const subs: Subscription =  this.ss.shopSave( shopdate).subscribe({
+      next: (res: any) => {
+        // this.dataList = res.result;
+        // console.log(this.dataList);
+        if (res.success) {
+          this.router.navigate(['/admin/shopList']); 
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Save.',
+            showConfirmButton: false,
+            timer: 1200
+          }) 
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+      
+    });
+    this.getList();
+    this.modalService.dismissAll()
+  } 
+
+  uploadImage(e:any, mode:any){
+    if(e.target.files.length) {
+      this.img = e.target.files[0];
+    };
+    this.fu.uploadFileComapny(this.img).subscribe((data:any) => {
+      if (data.body !== undefined && mode === 'company') {
+        this.companyImage = this.env.apiUrl + data.body?.download;
+        this.data.LogoURL = data.body?.download
+        console.log(this.companyImage);
+        this.as.successToast(data.body?.message)
+      }
+    });
+  }
+
+  getShopById(){
+    const subs: Subscription = this.ss.getShopById(this.id).subscribe({
+      next: (res: any) => {
+        console.log(res.data);
+        
+        if (res.success) {
+          this.as.successToast(res.message)
+          this.data = res.data[0]
+          this.companyImage = this.env.apiUrl + res.data[0].LogoURL;
+
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
+  }
+
+  updateShop(){
+    console.log(this.data);
+    const subs: Subscription =  this.ss.updateShop( this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.router.navigate(['/admin/shopList']);
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Update.',
+            showConfirmButton: false,
+            timer: 1200
+          })   
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+    this.modalService.dismissAll()
   }
 
 }

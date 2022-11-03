@@ -2,3 +2,14 @@
     background-image: url(../../../assets/images/SHOP.svg);
     background-size: 100%;
 }
+
+.mat-slide-toggle {
+    display: inline-block;
+    height: 24px;
+    min-width: 100% !important;
+ 
+    line-height: 24px;
+    white-space: nowrap;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}

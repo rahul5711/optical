@@ -66,6 +66,16 @@
         </div>
 
       </div>
+
+      <div *ngIf="user?.data?.UserGroup !== 'SuperAdmin'" class="dropdown">
+        <a class="dropBtn" data-target="#collapseExample">Purchasing <i class="fa fa-caret-down" aria-hidden="true"></i></a>
+
+        <div class="drop-content" id="collapseExample">
+          <a href="javascript:void(0)" [routerLink]="['/inventory/supplier',0]" id="collapseExample">Supplier</a>
+        </div>
+
+      </div>
+
     </div>
     <a  *ngIf="user?.data?.UserGroup === 'SuperAdmin' " class="logoutBtn" (click)="logout()" title="LogOut">
       <i class="fa-solid fa-right-from-bracket"></i>

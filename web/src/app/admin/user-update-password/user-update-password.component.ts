@@ -86,7 +86,7 @@ export class UserUpdatePasswordComponent implements OnInit {
   openModal(content: any,ID:any) {
     this.data.ID = ID
     console.log(this.data.ID);
-    this.modalService.open(content, { centered: true });
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,});
   }
 
   UpdatePassword(){
