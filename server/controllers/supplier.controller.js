@@ -170,4 +170,24 @@ module.exports = {
             return error
         }
     },
+
+    getSupplierById: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+            if (!Body.ID) res.send({ message: "Invalid Query Data" })
+
+            const supplier = await connection.query(`select * from supplier where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
+            
+            response.message = "data fetch sucessfully"
+            response.data = supplier
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            return error
+        }
+    },
 }

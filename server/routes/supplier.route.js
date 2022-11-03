@@ -8,6 +8,7 @@ router.post('/update', verifyAccessTokenAdmin, Controller.update)
 router.post('/list', verifyAccessTokenAdmin, Controller.list)
 router.post('/delete', verifyAccessTokenAdmin, Controller.delete)
 router.get('/dropdownlist', verifyAccessTokenAdmin, Controller.dropdownlist)
+router.post('/getSupplierById',verifyAccessTokenAdmin, Controller.getSupplierById)
 
 
 
