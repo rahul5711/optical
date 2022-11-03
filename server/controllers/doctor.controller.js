@@ -1,0 +1,243 @@
+const createError = require('http-errors')
+const getConnection = require('../helpers/db')
+const _ = require("lodash")
+const bcrypt = require('bcrypt')
+const { now } = require('lodash')
+const chalk = require('chalk');
+const connected = chalk.bold.cyan;
+const pass_init = require('../helpers/generate_password')
+
+
+module.exports = { 
+    save: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (!Body.Name || Body.Name.trim() === "" || Body.Name === undefined || Body.Name === null) {
+                return res.send({ message: "Invalid Query Data" })   
+            } 
+            
+
+            doesExist = await connection.query(`select * from supplier where Status = 1 and Name = '${Body.Name}' and CompanyID = ${CompanyID}`)
+
+            if (doesExist.length) {
+               return res.send({message : `supplier already exist from this name ${Body.Name}`}) 
+            }
+
+            const pass = await pass_init.hash_password(Body.Password)
+
+
+            const datum = {
+                Name : req.body.Name ? req.body.Name : '',
+                Designation : req.body.Designation ? req.body.Designation : '',
+                Qualification : req.body.Qualification ? req.body.Qualification : '',
+                HospitalName : req.body.HospitalName ? req.body.HospitalName : '',
+                MobileNo1 : req.body.MobileNo1 ? req.body.MobileNo1 : '',
+                MobileNo2 : req.body.MobileNo2 ? req.body.MobileNo2 : '',
+                PhoneNo : req.body.PhoneNo ? req.body.PhoneNo : '',
+                Email : req.body.Email ? req.body.Email : '',
+                Address : req.body.Address ? req.body.Address : '',
+                Branch : req.body.Branch ? req.body.Branch : '',
+                Landmark : req.body.Landmark ? req.body.Landmark : '',
+                PhotoURL : req.body.PhotoURL ? req.body.PhotoURL : '',
+                DoctorType : req.body.DoctorType ? req.body.DoctorType : '',
+                DoctorLoyalty : req.body.DoctorLoyalty ? req.body.DoctorLoyalty : '',
+                LoyaltyPerPatient : req.body.LoyaltyPerPatient ? req.body.LoyaltyPerPatient : '',
+                LoginPermission : req.body.LoginPermission ? req.body.LoginPermission : '',
+                LoginName : req.body.LoginName ? req.body.LoginName : '',
+                Password : req.body.Password ? req.body.Password : '',
+                CommissionType : req.body.CommissionType ? req.body.CommissionType : 0,
+                CommissionMode : req.body.CommissionMode ? req.body.CommissionMode : 0,
+                CommissionValue : req.body.CommissionValue ? req.body.CommissionValue : 0,
+                CommissionValueNB : req.body.CommissionValueNB ? req.body.CommissionValueNB : 0,
+                DOB : req.body.DOB ? req.body.DOB : '',
+                Anniversary : req.body.Anniversary ? req.body.Anniversary : ''
+                
+            }
+
+
+            const saveData = await connection.query(`insert into doctor (CompanyID, Name, UserGroup, Designation,Qualification,HospitalName,MobileNo1, MobileNo2 , PhoneNo,Email,Address ,Branch,Landmark,PhotoURL,DoctorType,DoctorLoyalty,LoyaltyPerPatient,LoginPermission,LoginName,Password, Status,CreatedBy,CreatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB,DOB,Anniversary) values (${CompanyID},'${datum.Name}','Doctor', '${datum.Designation}', '${datum.Qualification}', '${datum.HospitalName}','${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Email}','${datum.Address}','${datum.Branch}','${datum.Landmark}','${datum.DoctorType}','${datum.DoctorLoyalty}','${datum.LoyaltyPerPatient}','${datum.LoginPermission}','${datum.LoginName}','${pass}',1,${LoggedOnUser}, now(),${datum.CommissionType},${datum.CommissionMode},${datum.CommissionValue},${datum.CommissionValueNB},'${datum.DOB}','${datum.Anniversary}')`)
+
+            console.log(connected("Data Added SuccessFUlly !!!"));
+
+            response.message = "data save sucessfully"
+            response.data =  saveData.insertId;
+            connection.release()
+            return res.send(response)
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+
+
+    update: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const Body = req.body;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+
+            const doesExistDoctor = await connection.query(`select * from doctor where Name = '${Body.Name}' and Status = 1 and ID != ${Body.ID}`)
+            if (doesExistDoctor.length) return res.send({ message: `Doctor Already exist from this Name ${Body.Name}` })
+
+            const doesExistLoginName = await connection.query(`select * from doctor where LoginName = '${Body.LoginName}' and ID != ${Body.ID}`)
+            if (doesExistLoginName.length) return res.send({ message: `LoginName Already exist from this LoginName ${Body.LoginName}` })
+
+            const datum = {
+                Name : req.body.Name ? req.body.Name : '',
+                Designation : req.body.Designation ? req.body.Designation : '',
+                Qualification : req.body.Qualification ? req.body.Qualification : '',
+                HospitalName : req.body.HospitalName ? req.body.HospitalName : '',
+                MobileNo1 : req.body.MobileNo1 ? req.body.MobileNo1 : '',
+                MobileNo2 : req.body.MobileNo2 ? req.body.MobileNo2 : '',
+                PhoneNo : req.body.PhoneNo ? req.body.PhoneNo : '',
+                Email : req.body.Email ? req.body.Email : '',
+                Address : req.body.Address ? req.body.Address : '',
+                Branch : req.body.Branch ? req.body.Branch : '',
+                Landmark : req.body.Landmark ? req.body.Landmark : '',
+                PhotoURL : req.body.PhotoURL ? req.body.PhotoURL : '',
+                DoctorType : req.body.DoctorType ? req.body.DoctorType : '',
+                DoctorLoyalty : req.body.DoctorLoyalty ? req.body.DoctorLoyalty : '',
+                LoyaltyPerPatient : req.body.LoyaltyPerPatient ? req.body.LoyaltyPerPatient : '',
+                LoginPermission : req.body.LoginPermission ? req.body.LoginPermission : '',
+                LoginName : req.body.LoginName ? req.body.LoginName : '',
+                Password : req.body.Password ? req.body.Password : '',
+                CommissionType : req.body.CommissionType ? req.body.CommissionType : 0,
+                CommissionMode : req.body.CommissionMode ? req.body.CommissionMode : 0,
+                CommissionValue : req.body.CommissionValue ? req.body.CommissionValue : 0,
+                CommissionValueNB : req.body.CommissionValueNB ? req.body.CommissionValueNB : 0,
+                DOB : req.body.DOB ? req.body.DOB : '',
+                Anniversary : req.body.Anniversary ? req.body.Anniversary : ''
+                
+            }
+
+            const updateDoctor = await connection.query(`update doctor set Name = '${Body.Name}',Designation = '${datum.Designation}',Qualification = '${datum.Qualification}',HospitalName = '${datum.HospitalName}',MobileNo1 = '${datum.MobileNo1}',MobileNo2 = '${datum.MobileNo2}',PhoneNo = '${datum.PhoneNo}',Email = '${datum.Email}',Address='${datum.Address}',Branch='${datum.Branch}',Landmark='${datum.Landmark}',PhotoURL='${datum.PhotoURL}',DoctorType='${datum.DoctorType}', DoctorLoyalty='${datum.DoctorLoyalty}', LoyaltyPerPatient='${datum.LoyaltyPerPatient}', LoginPermission='${datum.LoginPermission}', LoginName='${datum.LoginName}', Status = 1, UpdatedBy=${LoggedOnUser},UpdatedOn=now(), CommissionType = ${datum.CommissionType},CommissionMode=${datum.CommissionMode},CommissionValue=${datum.CommissionValue},CommissionValueNB=${datum.CommissionValueNB},DOB='${datum.DOB}',Anniversary='${datum.Anniversary}' where ID = ${datum.ID} and CompanyID = ${CompanyID}`)
+
+            console.log("Doctor Updated SuccessFUlly !!!");
+
+
+            response.message = "data update sucessfully"
+            connection.release()
+            return res.send(response)
+
+        } catch (error) {
+            return error
+        }
+    },
+
+    list: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+
+            let page = Body.currentPage;
+            let limit = Body.itemsPerPage;
+            let skip = page * limit - limit;
+
+            let qry = `select doctor.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from doctor left join user as users1 on users1.ID = doctor.CreatedBy left join user as users on users.ID = doctor.UpdatedBy where doctor.Status = 1 and doctor.CompanyID = '${CompanyID}'  order by doctor.ID desc`
+            let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
+
+
+            let finalQuery = qry + skipQuery;
+            
+
+            let data = await connection.query(finalQuery);
+            let count = await connection.query(qry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = count.length
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+
+    dropdownlist: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const UserID = req.user.ID ? req.user.ID : 0;
+            const UserGroup = req.user.UserGroup ? req.user.UserGroup : 'CompanyAdmin';
+
+            let data = await connection.query(`select * from doctor where Status = 1 and CompanyID = ${CompanyID}`);
+            response.message = "data fetch sucessfully"
+            response.data = data
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+
+    delete: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+
+            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+
+            const doesExist = await connection.query(`select * from doctor where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "doctor doesnot exist from this id " })
+            }
+
+
+            const deleteDoctor = await connection.query(`update doctor set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+
+            console.log("Doctor Delete SuccessFUlly !!!");
+
+            response.message = "data delete sucessfully"
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            return error
+        }
+    },
+
+    getDoctorById: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+            if (!Body.ID) res.send({ message: "Invalid Query Data" })
+
+            const Doctor = await connection.query(`select * from doctor where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
+           
+            response.message = "data fetch sucessfully"
+            response.data = Doctor
+            
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            return error
+        }
+    },
+}
