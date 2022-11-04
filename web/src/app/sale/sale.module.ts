@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { InventoryRoutingModule } from './inventory-routing.module';
-import { SupplierComponent } from './supplier/supplier.component';
+
+import { SaleRoutingModule } from './sale-routing.module';
+import { DoctorComponent } from './doctor/doctor.component';
 import { FormsModule, ReactiveFormsModule, } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -21,19 +22,17 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from 'ngx-spinner';
-import { FitterComponent } from './fitter/fitter.component';
-import { FitterListComponent } from './fitter-list/fitter-list.component';
+import { DoctorListComponent } from './doctor-list/doctor-list.component';
 
 
 @NgModule({
   declarations: [
-    SupplierComponent,
-    FitterComponent,
-    FitterListComponent
+    DoctorComponent,
+    DoctorListComponent
   ],
   imports: [
     CommonModule,
-    InventoryRoutingModule,
+    SaleRoutingModule,
     NgxSpinnerModule,
     MatRadioModule,
     ReactiveFormsModule,
@@ -56,4 +55,4 @@ import { FitterListComponent } from './fitter-list/fitter-list.component';
     NgbModule,
   ]
 })
-export class InventoryModule { }
+export class SaleModule { }

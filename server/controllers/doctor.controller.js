@@ -24,10 +24,10 @@ module.exports = {
             } 
             
 
-            doesExist = await connection.query(`select * from supplier where Status = 1 and Name = '${Body.Name}' and CompanyID = ${CompanyID}`)
+            doesExist = await connection.query(`select * from doctor where Status = 1 and Name = '${Body.Name}' and CompanyID = ${CompanyID}`)
 
             if (doesExist.length) {
-               return res.send({message : `supplier already exist from this name ${Body.Name}`}) 
+               return res.send({message : `doctor already exist from this name ${Body.Name}`}) 
             }
 
             const pass = await pass_init.hash_password(Body.Password)
@@ -62,7 +62,7 @@ module.exports = {
             }
 
 
-            const saveData = await connection.query(`insert into doctor (CompanyID, Name, UserGroup, Designation,Qualification,HospitalName,MobileNo1, MobileNo2 , PhoneNo,Email,Address ,Branch,Landmark,PhotoURL,DoctorType,DoctorLoyalty,LoyaltyPerPatient,LoginPermission,LoginName,Password, Status,CreatedBy,CreatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB,DOB,Anniversary) values (${CompanyID},'${datum.Name}','Doctor', '${datum.Designation}', '${datum.Qualification}', '${datum.HospitalName}','${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Email}','${datum.Address}','${datum.Branch}','${datum.Landmark}','${datum.DoctorType}','${datum.DoctorLoyalty}','${datum.LoyaltyPerPatient}','${datum.LoginPermission}','${datum.LoginName}','${pass}',1,${LoggedOnUser}, now(),${datum.CommissionType},${datum.CommissionMode},${datum.CommissionValue},${datum.CommissionValueNB},'${datum.DOB}','${datum.Anniversary}')`)
+            const saveData = await connection.query(`insert into doctor (CompanyID, Name, UserGroup, Designation,Qualification,HospitalName,MobileNo1, MobileNo2 , PhoneNo,Email,Address ,Branch,Landmark,PhotoURL,DoctorType,DoctorLoyalty,LoyaltyPerPatient,LoginPermission,LoginName,Password, Status,CreatedBy,CreatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB,DOB,Anniversary) values (${CompanyID},'${datum.Name}','Doctor', '${datum.Designation}', '${datum.Qualification}', '${datum.HospitalName}','${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Email}','${datum.Address}','${datum.Branch}','${datum.Landmark}','${Body.PhotoURL}','${datum.DoctorType}','${datum.DoctorLoyalty}','${datum.LoyaltyPerPatient}','${datum.LoginPermission}','${datum.LoginName}','${pass}',1,${LoggedOnUser}, now(),${datum.CommissionType},${datum.CommissionMode},${datum.CommissionValue},${datum.CommissionValueNB},'${datum.DOB}','${datum.Anniversary}')`)
 
             console.log(connected("Data Added SuccessFUlly !!!"));
 
@@ -91,7 +91,7 @@ module.exports = {
             const doesExistDoctor = await connection.query(`select * from doctor where Name = '${Body.Name}' and Status = 1 and ID != ${Body.ID}`)
             if (doesExistDoctor.length) return res.send({ message: `Doctor Already exist from this Name ${Body.Name}` })
 
-            const doesExistLoginName = await connection.query(`select * from doctor where LoginName = '${Body.LoginName}' and ID != ${Body.ID}`)
+            const doesExistLoginName = await connection.query(`select * from doctor where LoginName = '${Body.LoginName}' and Status = 1 and ID != ${Body.ID}`)
             if (doesExistLoginName.length) return res.send({ message: `LoginName Already exist from this LoginName ${Body.LoginName}` })
 
             const datum = {
@@ -122,16 +122,15 @@ module.exports = {
                 
             }
 
-            const updateDoctor = await connection.query(`update doctor set Name = '${Body.Name}',Designation = '${datum.Designation}',Qualification = '${datum.Qualification}',HospitalName = '${datum.HospitalName}',MobileNo1 = '${datum.MobileNo1}',MobileNo2 = '${datum.MobileNo2}',PhoneNo = '${datum.PhoneNo}',Email = '${datum.Email}',Address='${datum.Address}',Branch='${datum.Branch}',Landmark='${datum.Landmark}',PhotoURL='${datum.PhotoURL}',DoctorType='${datum.DoctorType}', DoctorLoyalty='${datum.DoctorLoyalty}', LoyaltyPerPatient='${datum.LoyaltyPerPatient}', LoginPermission='${datum.LoginPermission}', LoginName='${datum.LoginName}', Status = 1, UpdatedBy=${LoggedOnUser},UpdatedOn=now(), CommissionType = ${datum.CommissionType},CommissionMode=${datum.CommissionMode},CommissionValue=${datum.CommissionValue},CommissionValueNB=${datum.CommissionValueNB},DOB='${datum.DOB}',Anniversary='${datum.Anniversary}' where ID = ${datum.ID} and CompanyID = ${CompanyID}`)
+            const updateDoctor = await connection.query(`update doctor set Name = '${Body.Name}',Designation = '${datum.Designation}',Qualification = '${datum.Qualification}',HospitalName = '${datum.HospitalName}',MobileNo1 = '${datum.MobileNo1}',MobileNo2 = '${datum.MobileNo2}',PhoneNo = '${datum.PhoneNo}',Email = '${datum.Email}',Address='${datum.Address}',Branch='${datum.Branch}',Landmark='${datum.Landmark}',PhotoURL='${datum.PhotoURL}',DoctorType='${datum.DoctorType}', DoctorLoyalty='${datum.DoctorLoyalty}', LoyaltyPerPatient='${datum.LoyaltyPerPatient}', LoginPermission='${datum.LoginPermission}', LoginName='${datum.LoginName}', Status = 1, UpdatedBy=${LoggedOnUser},UpdatedOn=now(), CommissionType = ${datum.CommissionType},CommissionMode=${datum.CommissionMode},CommissionValue=${datum.CommissionValue},CommissionValueNB=${datum.CommissionValueNB},DOB='${datum.DOB}',Anniversary='${datum.Anniversary}' where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Doctor Updated SuccessFUlly !!!");
-
-
             response.message = "data update sucessfully"
             connection.release()
             return res.send(response)
 
         } catch (error) {
+            console.log(error);
             return error
         }
     },

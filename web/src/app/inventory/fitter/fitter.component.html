@@ -1,0 +1,163 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"> </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                <div class="card">
+                    <div class="header">
+                        <h2>Fitter Info </h2>
+                    </div>
+                    <div class="body">
+                        <form #f="ngForm" autocomplete="off" (ngSubmit)="onsubmit()">
+                            <div class="row">
+                                <div class="col-10">
+                                    <div class="row">
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Fitter/Company Name</mat-label>
+                                                <input matInput name="Name" [(ngModel)]="data.Name"
+                                                    (ngModelChange)="data.Name = onChange($event)" required #Namecontrol
+                                                    appAutoFoucsDirectives>
+                                                <mat-error>
+                                                    Fitter/Company Name is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Mobile No1</mat-label>
+                                                <input matInput name="MobileNo1" type="number"
+                                                    [(ngModel)]="data.MobileNo1" required #MobileNo1control>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Mobile No2</mat-label>
+                                                <input matInput name="MobileNo2" type="text"
+                                                    [(ngModel)]="data.MobileNo2" #MobileNo2control>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Phone No</mat-label>
+                                                <input matInput name="PhoneNo" type="number" [(ngModel)]="data.PhoneNo"
+                                                    #PhoneNocontrol>
+                                                <mat-error>
+                                                    Phone No is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-4 col-md-2 col-sm-12 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Email</mat-label>
+                                                <input matInput name="Email"
+                                                    pattern="[a-zA-Z0-9.-_]{3,}@[a-zA-Z.-]{3,}[.]{1}[a-zA-Z]{3,}"
+                                                    [(ngModel)]="data.Email"
+                                                    (ngModelChange)="data.Email = onChange($event)" #Emailcontrol>
+                                                <mat-error>
+                                                    Invalid EmailId
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Address</mat-label>
+                                                <input matInput name="Address" minlength="2" [(ngModel)]="data.Address"
+                                                    (ngModelChange)="data.Address = onChange($event)" required
+                                                    #Addresscontrol>
+                                                <mat-error>
+                                                    Atleast 2 characters is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Website</mat-label>
+                                                <input matInput name="Website" [(ngModel)]="data.Website"
+                                                    (ngModelChange)="data.Website = onChange($event)" #Websitecontrol>
+                                                <mat-error>
+                                                    Website is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>GST No</mat-label>
+                                                <input matInput name="GSTNo" [(ngModel)]="data.GSTNo"
+                                                    (ngModelChange)="data.GSTNo = onChange($event)" #GSTNocontrol>
+                                                <mat-error>
+                                                    GST No is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0 mr-3">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>CIN No</mat-label>
+                                                <input matInput name="CINNo" [(ngModel)]="data.CINNo"
+                                                    (ngModelChange)="data.CINNo = onChange($event)" #CINNocontrol>
+                                                <mat-error>
+                                                    CIN is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Fax No</mat-label>
+                                                <input matInput name="Fax" [(ngModel)]="data.Fax"
+                                                    (ngModelChange)="data.Fax = onChange($event)" #Faxcontrol>
+                                                <mat-error>
+                                                    Fax is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>DOB</mat-label>
+                                                <input matInput name="DOB" type="date" [(ngModel)]="data.DOB">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Anniversary</mat-label>
+                                                <input matInput name="Anniversary" type="date"
+                                                    [(ngModel)]="data.Anniversary">
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3">
+                                            <button class="me-3" type="button" mat-raised-button color="primary"
+                                            [disabled]="!f.valid" *ngIf="id != 0"
+                                            (click)="updateFitter()">Update</button>
+                                            <button type="submit" class="me-3" mat-raised-button color="primary"
+                                                [disabled]="!f.valid" *ngIf="id == 0">Save</button>
+                                            <button type="button" mat-raised-button
+                                                [routerLink]="['/inventory/fitterList']">Back</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=" col-md-2 col-12 ps-md-5">
+                                    <div class="row">
+                                        <div class="col-10 mt-md-3 ">
+                                            <img class="fit-picture" width="170" height="170" [src]="userImage">
+                                        </div>
+                                        <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 "
+                                            (click)="fileInput.click()" style="cursor: pointer;">
+                                            <i class="fa-solid fa-cloud-arrow-up upload_icon">
+                                                <span style="font-size: 10px;letter-spacing: 2px;"> Image
+                                                </span>
+                                            </i>
+                                            <input #fileInput id="my-input" name='PhotoURL' type="file"
+                                                [(ngModel)]="data.PhotoURL" (change)="uploadImage($event, 'company')"
+                                                style="display:none;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
