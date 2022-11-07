@@ -11,6 +11,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
 import { ProductService } from '../../service/product.service';
 import { AlertService } from 'src/app/service/alert.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-product-manage',
@@ -29,6 +30,8 @@ i: any;
     private ps: ProductService,
     public as: AlertService,
     private sp: NgxSpinnerService,
+    private modalService: NgbModal
+
 
   ) { this.id = this.route.snapshot.params['id']; }
 
@@ -49,6 +52,7 @@ i: any;
   searchValue:any;
   disbleProduct = true
   hideSave = true
+  showAdds = false
 
   ngOnInit(): void {
     this.sp.show();
@@ -165,20 +169,9 @@ i: any;
     }
   }
 
-  updateedit(){
-  this.hideSave = false
-    this.newProduct.ID = this.prodList[0].ID
-    this.newProduct.CompanyID = this.prodList[0].CompanyID
-    this.newProduct.Name = this.prodList[0].Name
-    this.newProduct.HSNCode = this.prodList[0].HSNCode
-    this.newProduct.GSTPercentage = this.prodList[0].GSTPercentage
-    this.newProduct.GSTType = this.prodList[0].GSTType
-    console.log(this.newProduct.HSNCode);
-  
-  
-  }
 
   updateProductType(){
+    this.newProduct.ID = this.selectedProductID
     const subs: Subscription =  this.ps.updateProduct(this.newProduct).subscribe({
       next: (res: any) => {
         console.log(res);
@@ -186,7 +179,7 @@ i: any;
           Swal.fire({
             position: 'center',
             icon: 'success',
-            title: 'Your file has been Save.',
+            title: 'Your file has been update Product.',
             showConfirmButton: false,
             timer: 1200
           }) 
@@ -200,6 +193,8 @@ i: any;
       complete: () => subs.unsubscribe(),
       
     });
+    this.getProductList()
+    this.modalService.dismissAll()
   }
 
   saveSpec(){
@@ -253,5 +248,14 @@ i: any;
     
 
   }
+
+  openModal(content: any,sProduct:any,sHSNCode:any,sGSTPercentage:any,sGSTType:any) {
+    this.newProduct.Name = sProduct
+    this.newProduct.HSNCode = sHSNCode
+    this.newProduct.GSTPercentage = sGSTPercentage
+    this.newProduct.GSTType = sGSTType
+    this.showAdds = true
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'lg' });
+   }
   
 }

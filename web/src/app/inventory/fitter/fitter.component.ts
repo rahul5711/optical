@@ -13,6 +13,8 @@ import { AlertService } from 'src/app/service/alert.service';
 import { FileUploadService } from 'src/app/service/file-upload.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FitterService } from 'src/app/service/fitter.service';
+import { SupportService } from 'src/app/service/support.service';
+import { ShopService } from 'src/app/service/shop.service';
 
 @Component({
   selector: 'app-fitter',
@@ -27,6 +29,7 @@ export class FitterComponent implements OnInit {
   id: any;
   userImage: any;
   img: any;
+ 
 
   constructor(
     private router: Router,
@@ -38,26 +41,60 @@ export class FitterComponent implements OnInit {
     private fs: FitterService,
     private fu: FileUploadService,
     private sp: NgxSpinnerService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private supps: SupportService,
+    private ss: ShopService,
   ) { 
     this.id = this.route.snapshot.params['id'];
     this.env = environment
   }
 
   data: any = {
-    ID: null, ShopID: null, Name: null, MobileNo1: null, MobileNo2: null, PhoneNo: null, Address: null, Email: null, Website: null,
-    GSTNo: null, CINNo: null, PhotoURL: null, Remark: null, ContactPerson: null, Fax: null, DOB: '', Anniversary: '',
+    ID: null, ShopID: null, Name: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', Email: '', Website: '',
+    GSTNo: '', CINNo: '', PhotoURL: '', Remark: '', ContactPerson: '', Fax: '', DOB: '', Anniversary: '',
     Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
   };
+
+  rateCard: any = { ID: null, CompanyID: null, FitterID: null, LensType: null, Rate: 0 };
+  assignShop: any = { ID: null, CompanyID: null, ShopID: null, FitterID: null };
+
+  rateCardList:any
+  LensTypeList: any;
+  assignShopList:any
+  dropShoplist:any
 
   ngOnInit(): void {
     if (this.id != 0) {
       this.getFitterById(); 
     }
+    this.getList();
+    this.dropdownShoplist();
+  }
+
+  getList(){
+    const subs: Subscription = this.supps.getList('LensType').subscribe({
+      next: (res: any) => {
+        this.LensTypeList = res.data
+      },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+    });
+  }
+
+  dropdownShoplist(){
+    const subs: Subscription = this.ss.dropdownShoplist(this.user).subscribe({
+      next: (res: any) => {
+        this.dropShoplist = res.data
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   onsubmit() {
-    const subs: Subscription =  this.fs.saveFitter(this.data).subscribe({
+    var fitterdate = this.data ?? " ";
+    const subs: Subscription =  this.fs.saveFitter(fitterdate).subscribe({
       next: (res: any) => {
         if (res.success) {
           // this.router.navigate(['/inventory/fitterList']); 
@@ -107,6 +144,8 @@ export class FitterComponent implements OnInit {
   getFitterById(){
     const subs: Subscription = this.fs.getFitterById(this.id).subscribe({
       next: (res: any) => {
+        this.rateCardList = res.RateCard
+        this.assignShopList = res.AssignedShop
         if (res.success) {
           this.as.successToast(res.message)
           this.data = res.data[0]
@@ -144,4 +183,122 @@ export class FitterComponent implements OnInit {
       }
     });
   }
+
+  saveRateCard() {
+    this.rateCard.FitterID = this.id;
+    const subs: Subscription =  this.fs.saveRateCard(this.rateCard).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          // this.router.navigate(['/inventory/fitterList']); 
+
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your LensType has been Save.',
+            showConfirmButton: false,
+            timer: 1200
+          }) 
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+    this.getFitterById()
+  } 
+
+  deleteRateCard(i:any){
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.sp.show();
+        const subs: Subscription = this.fs.deleteRateCard(this.rateCardList[i].ID).subscribe({
+          next: (res: any) => {
+            this.rateCardList.splice(i, 1);
+            this.sp.hide();
+            this.as.successToast(res.message)
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Your file has been deleted.',
+          showConfirmButton: false,
+          timer: 1000
+        })
+      }
+    })
+  }
+
+  saveFitterAssignedShop() {
+    this.assignShop.FitterID = this.id;
+    const subs: Subscription =  this.fs.saveFitterAssignedShop(this.assignShop).subscribe({
+      next: (res: any) => {
+
+        if (res.success) {
+          // this.router.navigate(['/inventory/fitterList']); 
+
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your AssignShop has been Save.',
+            showConfirmButton: false,
+            timer: 1200
+          }) 
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+    this.getFitterById()
+  } 
+
+  deleteFitterAssignedShop(i:any){
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.sp.show();
+        const subs: Subscription = this.fs.deleteFitterAssignedShop(this.assignShopList[i].ID).subscribe({
+          next: (res: any) => {
+            this.assignShopList.splice(i, 1);
+            this.sp.hide();
+            this.as.successToast(res.message)
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Your file has been deleted.',
+          showConfirmButton: false,
+          timer: 1000
+        })
+      }
+    })
+  }
+  
 }

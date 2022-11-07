@@ -46,7 +46,18 @@ export class EmployeeService {
     .pipe(catchError(this.handleError));
   }
 
+  getLoginList(Body: any): Observable<any> {
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/LoginHistory', Body, { params })
+    .pipe(catchError(this.handleError));
+  }
 
+  updatePassword(Body:any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/updatePassword',  Body, { headers, params })
+    .pipe(catchError(this.handleError));
+  }
 
 
   private handleError(errorResponse: HttpErrorResponse) {

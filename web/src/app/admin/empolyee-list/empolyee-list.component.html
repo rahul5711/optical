@@ -65,7 +65,11 @@
                       <tbody>
                         <tr class="text-center" *ngFor="let data of dataList let i = index;"
                           style="white-space: nowrap;">
-                          <td style="width: 7%;">
+                          <td style="width: 7%;" class="detail_icon">
+                            <i class="fas fa-info-circle" 
+                             data-mdb-toggle="modal" 
+                            data-mdb-target="#exampleModal"  (click)="openModal(content,data.ID)">
+                        </i>
                             <mat-icon class="edit_icon ms-1" [routerLink]="['/admin/employee',data.ID]">edit</mat-icon>
                             <mat-icon class="delete_icon ms-1" (click)="deleteItem(i)">delete_forever</mat-icon>
                           </td>
@@ -95,3 +99,32 @@
     </div>
   </div>
 </section>
+
+  <!-- Modal -->
+  <ng-template #content role="document" let-modal>
+    <div class="modal-header" style="height: 50px;">
+      <h3 class="modal-title header pt-2" id="exampleModalLabel">Employee Update Password</h3>
+      <button type="button" class="btn-close" aria-hidden="true"
+        (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form #f="ngForm">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xl-10 col-lg-10 col-md-8 col-sm-12 mb-0 mx-auto" >
+                        <mat-form-field class="example-full-width mb-0">
+                            <mat-label>Password</mat-label>
+                            <input matInput name="Password" [(ngModel)]="data.Password" required #Passwordcontrol  >
+                            <mat-error>
+                                Password is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" mat-raised-button color="primary" [disabled]="!f.valid" (click)="UpdatePassword()"  (click)="modal.dismiss('Cross click')">Update</button>
+            </div>
+        </form>
+    </div>
+  </ng-template>

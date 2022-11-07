@@ -72,7 +72,7 @@ export class CompanySettingComponent implements OnInit {
 
   ngOnInit(): void {
     this.data = this.user.CompanySetting
-    this.wlcmArray1 = JSON.parse(this.user?.CompanySetting?.WelComeNote)
+    this.wlcmArray1 = this.user?.CompanySetting?.WelComeNote
     console.log(this.user.CompanySetting.WelComeNote);
   }
 

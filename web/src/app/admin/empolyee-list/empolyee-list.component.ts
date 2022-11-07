@@ -8,6 +8,7 @@ import * as moment from 'moment';
 import { AlertService } from 'src/app/service/alert.service';
 import { FileUploadService } from 'src/app/service/file-upload.service';
 import { EmployeeService } from 'src/app/service/employee.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-empolyee-list',
@@ -21,6 +22,8 @@ export class EmpolyeeListComponent implements OnInit {
   pageSize!: number;
   collectionSize = 0
   page = 4;
+  id:any;
+  data = {ID: null, Password :''}
 
   constructor(
     private router: Router,
@@ -28,7 +31,11 @@ export class EmpolyeeListComponent implements OnInit {
     private es: EmployeeService,
     private fu: FileUploadService,
     private sp: NgxSpinnerService,
-  ) { }
+    private route: ActivatedRoute,
+    private modalService: NgbModal
+  ) {
+    this.id = this.route.snapshot.params['id'];
+   }
 
   ngOnInit(): void {
     this.getList();    
@@ -62,6 +69,38 @@ export class EmpolyeeListComponent implements OnInit {
 
   }
 
+  openModal(content: any,ID:any) {
+    this.data.ID = ID
+    console.log(this.data.ID);
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+  }
+
+  UpdatePassword(){
+    
+    const subs: Subscription = this.es.updatePassword(this.data).subscribe({
+      next: (res: any) => {
+        console.log(res.data);
+        if (res.success) {
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
+    
+    Swal.fire({
+      position: 'center',
+      icon: 'success',
+      title: 'User Password has been Updated',
+      showConfirmButton: false,
+      timer: 1000
+    })
+  }
+
   deleteItem(i:any){
     Swal.fire({
       title: 'Are you sure?',
@@ -92,5 +131,7 @@ export class EmpolyeeListComponent implements OnInit {
       }
     })
   }
+
+
 
 }

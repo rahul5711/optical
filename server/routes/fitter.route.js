@@ -9,7 +9,11 @@ router.post('/list', verifyAccessTokenAdmin, Controller.list)
 router.post('/delete', verifyAccessTokenAdmin, Controller.delete)
 router.get('/dropdownlist', verifyAccessTokenAdmin, Controller.dropdownlist)
 router.post('/getFitterById',verifyAccessTokenAdmin, Controller.getFitterById)
+router.post('/saveRateCard',verifyAccessTokenAdmin, Controller.saveRateCard)
+router.post('/deleteRateCard', verifyAccessTokenAdmin, Controller.deleteRateCard)
+router.post('/saveFitterAssignedShop',verifyAccessTokenAdmin, Controller.saveFitterAssignedShop)
 
+router.post('/deleteFitterAssignedShop', verifyAccessTokenAdmin, Controller.deleteFitterAssignedShop)
 
 
 module.exports = router

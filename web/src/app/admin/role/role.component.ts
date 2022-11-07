@@ -45,7 +45,7 @@ export class RoleComponent implements OnInit {
     this.getList();
   }
 
-  saveRole(){
+  saveRole(){    
     const subs: Subscription =  this.role.roleSave(this.selectedRole.Name,this.selectedRole.Permission).subscribe({
       next: (res: any) => {
         this.roleList = res.result;
@@ -117,6 +117,7 @@ export class RoleComponent implements OnInit {
     });
   }
 
+ 
 
   
 

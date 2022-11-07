@@ -5,7 +5,7 @@
       <div class="row">
         <div class="col-md-4 my-5 mx-auto">
           <div class="card">
-            <form #f="ngForm" (ngSubmit)="onSubmit()" class="box">
+            <form #f="ngForm" (ngSubmit)="onSubmit(content)" class="box">
               <div class="row">
                 <div class="col-md-5 col-sm-4 col-7 mx-auto text-center">
                   <h1 class="log_name">Login</h1>
@@ -40,6 +40,7 @@
                 </ul>
               </div>
             </form>
+           
           </div>
         </div>
       </div>
@@ -68,3 +69,24 @@
     <div class="particle particle-4"></div>
   </div>
 </div>
+
+<!-- Modal -->
+<ng-template #content role="document" let-modal >
+  <div class="modal-header" style="height: 50px;">
+    <h3 class="modal-title header pt-2" id="exampleModalLabel">Employee Select Shop</h3>
+    <button type="button" class="btn-close" aria-hidden="true"
+      (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xl-12col-lg-12 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+              <mat-label>Select Shop</mat-label>
+              <mat-select name="selectedShop" [(ngModel)]="selectedShop" (selectionChange)="saveSelectedShop()">
+                  <mat-option [value]="s.ID" *ngFor="let s of dropShoplist"> {{s.Name}} <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></mat-option>
+              </mat-select>
+          </mat-form-field>
+      </div>
+  </div>
+  </div>
+</ng-template>

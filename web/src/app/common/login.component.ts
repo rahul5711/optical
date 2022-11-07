@@ -11,6 +11,8 @@ import { TokenService } from '../service/token.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
 import { Toast } from 'ngx-toastr';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ShopService } from '../service/shop.service';
 
 @Component({
   selector: 'app-login',
@@ -19,9 +21,12 @@ import { Toast } from 'ngx-toastr';
 })
 export class LoginComponent implements OnInit {
   particlesJS: any;
-  data = { LoginName: '', Password: '' }
+  data:any = { LoginName: '', Password: '' }
  
-  user = (localStorage.getItem('user') || '');
+  user:any =localStorage.getItem('user') || '';
+  hide = false
+  dropShoplist: any;
+  selectedShop: any;
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -30,16 +35,51 @@ export class LoginComponent implements OnInit {
     private auth: AuthServiceService,
     private token: TokenService,
     private sp: NgxSpinnerService,
+    private modalService: NgbModal,
+    private ss: ShopService,
 
   ) { }
 
 
   ngOnInit(): void {
-
+   console.log(this.user);
+   
 
   }
+ 
+  dropdownShoplist(){
+    const subs: Subscription = this.ss.dropdownShoplist(this.user).subscribe({
+      next: (res: any) => {
+        this.dropShoplist = res.data
+        console.log(this.dropShoplist);
+        
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
 
-  onSubmit() {
+  saveSelectedShop() {
+    this.dropShoplist.forEach((element:any) => {
+      if (element.ID === this.selectedShop) {
+        localStorage.setItem('user', JSON.stringify(element));
+        
+        this.modalService.dismissAll()
+        this.router.navigate(['/admin/CompanyDashborad']);
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title:   'Welcome TO ' + `${element.Name}`,
+          showConfirmButton: false,
+          timer: 100
+        })
+      }
+    });
+    
+  }
+
+  onSubmit(content:any) {
    
     if (this.data.LoginName === "") {
       return this.as.errorToast("please fill up login name")
@@ -109,6 +149,15 @@ export class LoginComponent implements OnInit {
                 timer: 1500
               })
               } 
+
+              if( res.data.UserGroup == "Employee"){
+                
+                this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+                this.dropdownShoplist()
+                
+               } 
+
+
            
         } 
         else {

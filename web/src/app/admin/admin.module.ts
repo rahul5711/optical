@@ -35,12 +35,7 @@ import { AdminDashboradComponent } from './admin-dashborad/admin-dashborad.compo
 import { UserUpdatePasswordComponent } from './user-update-password/user-update-password.component';
 import { ProductManageComponent } from './product-manage/product-manage.component';
 import { AddTypeComponent } from './add-type/add-type.component';
-
-
-
-
-
-
+import { CompanyLoginHistoryComponent } from './company-login-history/company-login-history.component';
 
 
 @NgModule({
@@ -60,10 +55,10 @@ import { AddTypeComponent } from './add-type/add-type.component';
     UserUpdatePasswordComponent,
     ProductManageComponent,
     AddTypeComponent,
-   
+    CompanyLoginHistoryComponent,
   ],
+
   imports: [
-   
     CommonModule,
     AdminRoutingModule,
     NgxSpinnerModule,

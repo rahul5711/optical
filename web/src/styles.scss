@@ -143,6 +143,27 @@ $OguruPro-theme: mat.define-light-theme((
 
 }
 
+.detail_icon i{
+    background: #38a042e8;
+    color: #fff;
+    padding: 4px !important;
+    border-radius: 24px !important;
+    font-size: 22px !important;
+    height: 30px !important;
+    width: 30px !important;
+    transition: .5s;
+    cursor: pointer;
+    box-shadow: 2px 2px 6px #9c9795fa;
+}
+
+.detail_icon i:hover{
+   
+    color: #38a042e8 !important;
+    background: #ffffff;
+    font-size: 23px;
+
+}
+
 .logoutBtn{
     float: right; 
     color: aliceblue; 

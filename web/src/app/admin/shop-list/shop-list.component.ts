@@ -126,7 +126,7 @@ export class ShopListComponent implements OnInit {
 
   openModal(content: any) {
     this.suBtn = false;
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, });
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'md' });
 
   }
 

@@ -47,6 +47,35 @@ export class FitterService {
     .pipe(catchError(this.handleError));
   }
 
+  saveRateCard( Body: any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/saveRateCard', Body, { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+  
+  deleteRateCard(ID:any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams();
+    return this.httpClient.post<any>(this.url + '/deleteRateCard', {ID: ID},  { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
+  saveFitterAssignedShop( Body: any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/saveFitterAssignedShop', Body, { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
+  deleteFitterAssignedShop(ID:any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams();
+    return this.httpClient.post<any>(this.url + '/deleteFitterAssignedShop', {ID: ID},  { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

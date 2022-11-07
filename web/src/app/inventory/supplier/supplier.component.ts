@@ -65,7 +65,8 @@ export class SupplierComponent implements OnInit {
   }
 
   onsubmit() {
-    const subs: Subscription =  this.ss.supplierSave( this.data).subscribe({
+    var supplierdate = this.data ?? " ";
+    const subs: Subscription =  this.ss.supplierSave(supplierdate).subscribe({
       next: (res: any) => {
         if (res.success) {
           Swal.fire({
@@ -224,6 +225,6 @@ export class SupplierComponent implements OnInit {
     GSTNo : '', CINNo : '', PhotoURL : '', Remark : '', ContactPerson : '', Fax : '', DOB: '', Anniversary: '',
     Status : 1, CreatedBy : null, CreatedOn : null, UpdatedBy : null, UpdatedOn : null
    };
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, });
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'xl'});
   }
 }

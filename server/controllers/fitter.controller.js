@@ -168,7 +168,7 @@ module.exports = {
 
     getFitterById: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "" }
+            const response = { data: null, RateCard: [], AssignedShop: [], success: true, message: "" }
             const connection = await getConnection.connection();
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -179,10 +179,143 @@ module.exports = {
             
             response.message = "data fetch sucessfully"
             response.data = fitter
+            response.RateCard = await connection.query(`select * from fitterratecard where  Status = 1 and FitterID = ${Body.ID} and CompanyID = ${CompanyID} `)
+            response.AssignedShop = await connection.query(`SELECT fitterassignedshop.*,  shop.Name AS ShopName, shop.AreaName AS AreaName  FROM fitterassignedshop  LEFT JOIN shop ON shop.ID = fitterassignedshop.ShopID WHERE fitterassignedshop.Status = 1 AND fitterassignedshop.FitterID = ${Body.ID} `)
+           
             connection.release()
             res.send(response)
         } catch (error) {
             return error
         }
     },
+
+    saveRateCard: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (!Body.LensType) return res.send({ message: "Invalid Query Data" })
+           
+            doesExist = await connection.query(`select * from fitterratecard where Status = 1 and LensType='${Body.LensType}' and ID = ${Body.ID}`);
+
+            if (doesExist.length) {
+               return res.send({message: `User have already LensType in this shop`});
+            }
+
+            const saveData = await connection.query(`insert into fitterratecard (CompanyID, FitterID,  LensType,  Rate,  Status,  CreatedBy, CreatedOn ) values (${CompanyID}, ${Body.FitterID}, '${Body.LensType}', ${Body.Rate},1,${LoggedOnUser}, now())`)
+
+            console.log(connected("Data Added SuccessFUlly !!!"));
+
+            response.message = "data save sucessfully"
+            response.data = saveData.insertId;
+            connection.release()
+            return res.send(response)
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+
+    deleteRateCard: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+
+            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+
+            const doesExist = await connection.query(`select * from fitterratecard where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "fitter doesnot exist from this id " })
+            }
+
+
+            const deleteFitter = await connection.query(`update fitterratecard set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+
+            console.log("Fitter Delete SuccessFUlly !!!");
+
+            response.message = "data delete sucessfully"
+            response.data = await connection.query(`select * from fitterratecard where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            return error
+        }
+    },
+
+    saveFitterAssignedShop: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (!Body.FitterID) return res.send({ message: "Invalid Query Data" })
+            doesExist = await connection.query(`select * from fitterassignedshop where Status = 1 and FitterID=${Body.FitterID}`);
+
+            if (doesExist.length) {
+               return res.send({message: `User have already FitterAssignedShop in this shop`});
+            }
+
+            const saveData = await connection.query(`insert into fitterassignedshop (CompanyID,ShopID, FitterID, Status,  CreatedBy, CreatedOn ) values (${CompanyID}, ${Body.ShopID}, ${Body.FitterID},1,${LoggedOnUser}, now())`)
+
+            console.log(connected("Data Added SuccessFUlly !!!"));
+
+            response.message = "data save sucessfully"
+            response.data = saveData.insertId;
+            connection.release()
+            return res.send(response)
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+
+    deleteFitterAssignedShop: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+
+            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+
+            const doesExist = await connection.query(`select * from fitterassignedshop where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "fitter doesnot exist from this id " })
+            }
+
+
+            const deleteFitter = await connection.query(`update fitterassignedshop set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+
+            console.log("FitterAssignedShop Delete SuccessFUlly !!!");
+
+            response.message = "data delete sucessfully"
+            response.data = await connection.query(`select * from fitterassignedshop where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            return error
+        }
+    },
+
 }

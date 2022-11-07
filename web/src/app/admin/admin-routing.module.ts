@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AddTypeComponent } from './add-type/add-type.component';
 import { AdminDashboradComponent } from './admin-dashborad/admin-dashborad.component';
 import { CompanyListComponent } from './company-list.component';
+import { CompanyLoginHistoryComponent } from './company-login-history/company-login-history.component';
 import { CompanySettingComponent } from './company-setting/company-setting.component';
 import { CompanyComponent } from './company.component';
 import { DashboradComponent } from './dashborad.component';
@@ -33,6 +34,8 @@ children: [
   { path: 'companySetting', component: CompanySettingComponent },
   { path: 'addTypeAssign', component: AddTypeComponent },
   { path: 'productManageAssign', component: ProductManageComponent },
+  { path: 'companyLoginHistory', component: CompanyLoginHistoryComponent },
+
    
 ]}
 ]
