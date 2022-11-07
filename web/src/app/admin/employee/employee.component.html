@@ -191,9 +191,9 @@
                                     </div>
                                     <div class="row mt-2">
                                         <div class="col-lg-12">
-                                            <button class="me-3" mat-raised-button color="primary"
+                                            <button type="submit" class="me-3" mat-raised-button color="primary"
                                                 [disabled]="!assignForm.valid" *ngIf="this.id == 0">Save </button>
-                                                <button class="me-3" mat-raised-button color="primary"
+                                                <button type="button" class="me-3" mat-raised-button color="primary"
                                                 [disabled]="!assignForm.valid" *ngIf="this.id != 0" (click)="updateUserShop()">Update </button>
                                             <!-- <button type="button" mat-raised-button
                                                 (click)="assignForm.reset()">Cancel</button> -->
