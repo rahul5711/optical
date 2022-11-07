@@ -15,18 +15,18 @@ const init = async () => {
                 CompanyID: 0,
                 Name: 'Relinksys software pvt ltd',
                 UserGroup: 'SuperAdmin',
-                DOB: '17/05/1995',
-                Anniversary: '17/05/1995',
-                MobileNo1: '9752885711',
-                MobileNo2:'9752885711',
-                PhoneNo:'9752885711',
-                Email:'rahulberchha@gmail.com',
-                Address:'3 sunil nagar indore',
-                Branch: 'pune',
+                DOB: '1987-10-13',
+                Anniversary: '2018-04-19',
+                MobileNo1: '9766666248',
+                MobileNo2:'9130366248',
+                PhoneNo:'9131860873',
+                Email:'relinksys@gmail.com',
+                Address:'Pune',
+                Branch: 'Pune',
                 PhotoURL:'',
                 Document: [],
-                LoginName: 'rahul',
-                Password: await pass_init.hash_password('rahulgothi'),
+                LoginName: 'RVS@248',
+                Password: await pass_init.hash_password('RVS@248'),
                 Status:1,
                 CreatedBy: 0,
                 UpdatedBy: 0,
@@ -42,6 +42,42 @@ const init = async () => {
 
 
            console.log(connected("Super Admin Created SuccessFully !!!!"));
+        } else {
+           
+            const datum = {
+                ID: 0,
+                CompanyID: 0,
+                Name: 'Relinksys software pvt ltd',
+                UserGroup: 'SuperAdmin',
+                DOB: '1987-10-13',
+                Anniversary: '2018-04-19',
+                MobileNo1: '9766666248',
+                MobileNo2:'9130366248',
+                PhoneNo:'9131860873',
+                Email:'relinksys@gmail.com',
+                Address:'Pune',
+                Branch: 'Pune',
+                PhotoURL:'',
+                Document: [],
+                LoginName: 'RVS@248',
+                Password: await pass_init.hash_password('RVS@248'),
+                Status:1,
+                CreatedBy: 0,
+                UpdatedBy: 0,
+                CreatedOn: new Date(),
+                UpdatedOn: new Date(),
+                CommissionType:0,
+                CommissionMode:0,
+                CommissionValue:0,
+                CommissionValueNB:0
+            }
+
+            // const update_data = await connection.query(``)
+
+
+            console.log(connected("Super Admin Updated SuccessFully !!!!"));
+
+
         }
 
         // connection.release()
