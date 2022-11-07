@@ -198,6 +198,7 @@ export class FitterComponent implements OnInit {
             showConfirmButton: false,
             timer: 1200
           }) 
+          this.getFitterById()
         } else {
           this.as.errorToast(res.message)
         }
@@ -207,7 +208,6 @@ export class FitterComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.getFitterById()
   } 
 
   deleteRateCard(i:any){
@@ -257,6 +257,7 @@ export class FitterComponent implements OnInit {
             showConfirmButton: false,
             timer: 1200
           }) 
+          this.getFitterById()
         } else {
           this.as.errorToast(res.message)
         }
@@ -266,7 +267,6 @@ export class FitterComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.getFitterById()
   } 
 
   deleteFitterAssignedShop(i:any){

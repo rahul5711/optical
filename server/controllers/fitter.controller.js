@@ -265,7 +265,7 @@ module.exports = {
 
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.FitterID) return res.send({ message: "Invalid Query Data" })
-            doesExist = await connection.query(`select * from fitterassignedshop where Status = 1 and FitterID=${Body.FitterID}`);
+            doesExist = await connection.query(`select * from fitterassignedshop where Status = 1 and FitterID=${Body.FitterID} and ShopID=${Body.ShopID}`);
 
             if (doesExist.length) {
                return res.send({message: `User have already FitterAssignedShop in this shop`});
