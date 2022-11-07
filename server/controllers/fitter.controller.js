@@ -31,7 +31,7 @@ module.exports = {
                return res.send({message : `fitter already exist from this number ${Body.MobileNo1}`}) 
             }
 
-            const saveData = await connection.query(`insert into fitter (CompanyID, ShopID, Name,  MobileNo1,  MobileNo2,  PhoneNo,  Email,  Address,  Website,  PhotoURL,  CINNO, GSTNo,  Fax, ContactPerson, Remark,  DOB,  Anniversary, Status, CreatedBy , CreatedOn ) values ('${CompanyID}', '${Body.ShopID}', '${Body.Name}',  '${Body.MobileNo1}', '${Body.MobileNo2}', '${Body.PhoneNo}','${Body.Email}', '${Body.Address}', '${Body.Website}','${Body.PhotoURL}','${Body.CINNo}','${Body.GSTNo}','${Body.Fax}','${Body.ContactPerson}','${Body.Remark}','${Body.DOB}', '${Body.Anniversary}', 1 , '${LoggedOnUser.ID}', now())`)
+            const saveData = await connection.query(`insert into fitter (CompanyID, ShopID, Name,  MobileNo1,  MobileNo2,  PhoneNo,  Email,  Address,  Website,  PhotoURL,  CINNO, GSTNo,  Fax, ContactPerson, Remark,  DOB,  Anniversary, Status, CreatedBy , CreatedOn ) values ('${CompanyID}', '${Body.ShopID}', '${Body.Name}',  '${Body.MobileNo1}', '${Body.MobileNo2}', '${Body.PhoneNo}','${Body.Email}', '${Body.Address}', '${Body.Website}','${Body.PhotoURL}','${Body.CINNo}','${Body.GSTNo}','${Body.Fax}','${Body.ContactPerson}','${Body.Remark}','${Body.DOB}', '${Body.Anniversary}', 1 , '${LoggedOnUser}', now())`)
 
             console.log(connected("Data Added SuccessFUlly !!!"));
 
