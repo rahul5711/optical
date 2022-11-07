@@ -49,8 +49,9 @@ module.exports = {
             const ShopID = 0
             console.log(Body);
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
             if (Body.Name.trim() === "") return res.send({ message: "Invalid Query Data" })
-            const doesExist = await connection.query(`select * from product where Name = '${Body.Name}' and CompanyID = ${CompanyID} and Status = 1`)
+            const doesExist = await connection.query(`select * from product where Name = '${Body.Name}' and CompanyID = ${CompanyID} and Status = 1 and ID != ${Body.ID}`)
             if (doesExist.length) return res.send({ message: `Product Already exist from this Name ${Body.Name}` })
 
             const query = await _Query.getQuery("Product", Body, LoggedOnUser, CompanyID,  ShopID)
