@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e9f44c22-c2eb-4970-afb1-09aa2cbdd218",
+		"_postman_id": "c88eed06-b2be-4f46-95e7-ecf78e655ac9",
 		"name": "admin",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -1675,15 +1675,6 @@
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"Name\": \"Manager\",\r\n    \"Permission\": \"[]\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
 								"url": {
 									"raw": "http://localhost:3000/role/getList",
 									"protocol": "http",
@@ -2055,6 +2046,74 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "loginHistory",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjY5NzY4MTEsImV4cCI6MTY2NzA2MzIxMSwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.dmgHaL0zUXqCCpAyTweD_XRLO61faXKZVsX9whql7kI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/employee/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"employee",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatePassword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 435,\r\n    \"Password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/company/updatePassword",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"updatePassword"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -2253,6 +2312,646 @@
 							"port": "3000",
 							"path": [
 								"supplier",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Fitter",
+			"item": [
+				{
+					"name": "save",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njc1NTUyMjYsImV4cCI6MTY2NzY0MTYyNiwiYXVkIjoiJzQ0MSciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.m7zc28lrEi661qXipHZxxTFLFLWvdM7qPKwCfuyMo_M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"Rahul sss\",\r\n    \"MobileNo1\": \"9752885741\",\r\n    \"MobileNo2\": \"9752885741\",\r\n    \"PhoneNo\": \"9752885711\",\r\n    \"Address\": \"indore\",\r\n    \"GSTNo\": \"*****\",\r\n    \"Email\": \"abcss@gmai;.com\",\r\n    \"Website\": \"*****\",\r\n    \"CINNo\": \"*****\",\r\n    \"Fax\": \"******\",\r\n    \"ContactPerson\": \"rahul admin\",\r\n    \"Remark\": \"testing\",\r\n    \"DOB\": \"17-08-1995\",\r\n    \"Anniversary\": \"01-01-2001\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/save",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
+								"save"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "saveRateCard",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njc1NTUyMjYsImV4cCI6MTY2NzY0MTYyNiwiYXVkIjoiJzQ0MSciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.m7zc28lrEi661qXipHZxxTFLFLWvdM7qPKwCfuyMo_M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"Rahul sss\",\r\n    \"MobileNo1\": \"9752885741\",\r\n    \"MobileNo2\": \"9752885741\",\r\n    \"PhoneNo\": \"9752885711\",\r\n    \"Address\": \"indore\",\r\n    \"GSTNo\": \"*****\",\r\n    \"Email\": \"abcss@gmai;.com\",\r\n    \"Website\": \"*****\",\r\n    \"CINNo\": \"*****\",\r\n    \"Fax\": \"******\",\r\n    \"ContactPerson\": \"rahul admin\",\r\n    \"Remark\": \"testing\",\r\n    \"DOB\": \"17-08-1995\",\r\n    \"Anniversary\": \"01-01-2001\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/save",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
+								"save"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "saveFitterAssignedShop",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njc1NTUyMjYsImV4cCI6MTY2NzY0MTYyNiwiYXVkIjoiJzQ0MSciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.m7zc28lrEi661qXipHZxxTFLFLWvdM7qPKwCfuyMo_M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"Rahul sss\",\r\n    \"MobileNo1\": \"9752885741\",\r\n    \"MobileNo2\": \"9752885741\",\r\n    \"PhoneNo\": \"9752885711\",\r\n    \"Address\": \"indore\",\r\n    \"GSTNo\": \"*****\",\r\n    \"Email\": \"abcss@gmai;.com\",\r\n    \"Website\": \"*****\",\r\n    \"CINNo\": \"*****\",\r\n    \"Fax\": \"******\",\r\n    \"ContactPerson\": \"rahul admin\",\r\n    \"Remark\": \"testing\",\r\n    \"DOB\": \"17-08-1995\",\r\n    \"Anniversary\": \"01-01-2001\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/save",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
+								"save"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njc0MTIwMDYsImV4cCI6MTY2NzQ5ODQwNiwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.PcIBYSLJroqKs_QfLue40q_Be52aM0dgB6yYVE2DWCE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 1,\r\n    \"Name\": \"Rahul supplier\",\r\n    \"MobileNo1\": \"9752885711\",\r\n    \"MobileNo2\": \"9752885711\",\r\n    \"PhoneNo\": \"9752885711\",\r\n    \"Address\": \"indore\",\r\n    \"GSTNo\": \"*****\",\r\n    \"Email\": \"abc@gmai;.com\",\r\n    \"Website\": \"*****\",\r\n    \"CINNo\": \"*****\",\r\n    \"Fax\": \"******\",\r\n    \"ContactPerson\": \"rahul admin\",\r\n    \"Remark\": \"testing\",\r\n    \"DOB\": \"17-08-1995\",\r\n    \"Anniversary\": \"01-01-2001\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njc1NTUyMjYsImV4cCI6MTY2NzY0MTYyNiwiYXVkIjoiJzQ0MSciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.m7zc28lrEi661qXipHZxxTFLFLWvdM7qPKwCfuyMo_M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getFitterById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njc1NTUyMjYsImV4cCI6MTY2NzY0MTYyNiwiYXVkIjoiJzQ0MSciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.m7zc28lrEi661qXipHZxxTFLFLWvdM7qPKwCfuyMo_M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listRateCard",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njc1NTUyMjYsImV4cCI6MTY2NzY0MTYyNiwiYXVkIjoiJzQ0MSciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.m7zc28lrEi661qXipHZxxTFLFLWvdM7qPKwCfuyMo_M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dropdownlist",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njc1NTUyMjYsImV4cCI6MTY2NzY0MTYyNiwiYXVkIjoiJzQ0MSciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.m7zc28lrEi661qXipHZxxTFLFLWvdM7qPKwCfuyMo_M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/dropdownlist",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
+								"dropdownlist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njc1NTUyMjYsImV4cCI6MTY2NzY0MTYyNiwiYXVkIjoiJzQ0MSciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.m7zc28lrEi661qXipHZxxTFLFLWvdM7qPKwCfuyMo_M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 416\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteRateCard",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njc1NTUyMjYsImV4cCI6MTY2NzY0MTYyNiwiYXVkIjoiJzQ0MSciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.m7zc28lrEi661qXipHZxxTFLFLWvdM7qPKwCfuyMo_M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 416\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteFitterAssignedShop",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njc1NTUyMjYsImV4cCI6MTY2NzY0MTYyNiwiYXVkIjoiJzQ0MSciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.m7zc28lrEi661qXipHZxxTFLFLWvdM7qPKwCfuyMo_M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 416\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Doctor",
+			"item": [
+				{
+					"name": "save",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njc1NTUyMjYsImV4cCI6MTY2NzY0MTYyNiwiYXVkIjoiJzQ0MSciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.m7zc28lrEi661qXipHZxxTFLFLWvdM7qPKwCfuyMo_M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"Rahul sss\",\r\n    \"MobileNo1\": \"9752885741\",\r\n    \"MobileNo2\": \"9752885741\",\r\n    \"PhoneNo\": \"9752885711\",\r\n    \"Address\": \"indore\",\r\n    \"GSTNo\": \"*****\",\r\n    \"Email\": \"abcss@gmai;.com\",\r\n    \"Website\": \"*****\",\r\n    \"CINNo\": \"*****\",\r\n    \"Fax\": \"******\",\r\n    \"ContactPerson\": \"rahul admin\",\r\n    \"Remark\": \"testing\",\r\n    \"DOB\": \"17-08-1995\",\r\n    \"Anniversary\": \"01-01-2001\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/save",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
+								"save"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njc0MTIwMDYsImV4cCI6MTY2NzQ5ODQwNiwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.PcIBYSLJroqKs_QfLue40q_Be52aM0dgB6yYVE2DWCE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 1,\r\n    \"Name\": \"Rahul supplier\",\r\n    \"MobileNo1\": \"9752885711\",\r\n    \"MobileNo2\": \"9752885711\",\r\n    \"PhoneNo\": \"9752885711\",\r\n    \"Address\": \"indore\",\r\n    \"GSTNo\": \"*****\",\r\n    \"Email\": \"abc@gmai;.com\",\r\n    \"Website\": \"*****\",\r\n    \"CINNo\": \"*****\",\r\n    \"Fax\": \"******\",\r\n    \"ContactPerson\": \"rahul admin\",\r\n    \"Remark\": \"testing\",\r\n    \"DOB\": \"17-08-1995\",\r\n    \"Anniversary\": \"01-01-2001\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njc1NTUyMjYsImV4cCI6MTY2NzY0MTYyNiwiYXVkIjoiJzQ0MSciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.m7zc28lrEi661qXipHZxxTFLFLWvdM7qPKwCfuyMo_M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dropdownlist",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njc1NTUyMjYsImV4cCI6MTY2NzY0MTYyNiwiYXVkIjoiJzQ0MSciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.m7zc28lrEi661qXipHZxxTFLFLWvdM7qPKwCfuyMo_M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/dropdownlist",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
+								"dropdownlist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njc1NTUyMjYsImV4cCI6MTY2NzY0MTYyNiwiYXVkIjoiJzQ0MSciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.m7zc28lrEi661qXipHZxxTFLFLWvdM7qPKwCfuyMo_M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 416\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
 								"delete"
 							]
 						}
