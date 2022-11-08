@@ -75,7 +75,7 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('user', JSON.stringify(res));
 
             if(res.data.UserGroup  == "SuperAdmin" ){
-              localStorage.setItem('user', JSON.stringify(res.data));
+              localStorage.setItem('user', JSON.stringify(res));
               this.router.navigate(['/admin/adminDashborad']);
              
               let dt = new Date();
@@ -118,7 +118,7 @@ export class LoginComponent implements OnInit {
             }
 
             if( res.data.UserGroup == "CompanyAdmin"){
-              localStorage.setItem('user', JSON.stringify(res.data));
+              localStorage.setItem('user', JSON.stringify(res));
                this.router.navigate(['/admin/CompanyDashborad']);
                Swal.fire({
                 position: 'center',
