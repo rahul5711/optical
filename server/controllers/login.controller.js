@@ -81,8 +81,9 @@ module.exports = {
 
                 var currentTime = moment().tz("Asia/Kolkata").format("HH:mm");
                 if (
-                    currentTime >= setting[0].LoginTimeStart &&
-                    currentTime < setting[0].LoginTimeEnd
+                    true
+                    // currentTime >= setting[0].LoginTimeStart &&
+                    // currentTime < setting[0].LoginTimeEnd
                 ) {
                     comment = "login SuccessFully";
                     loginCode = 1;
