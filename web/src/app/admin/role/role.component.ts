@@ -46,9 +46,10 @@ export class RoleComponent implements OnInit {
   }
 
   saveRole(){    
+    this.selectedRole.Permission = JSON.stringify(this.moduleList) 
     const subs: Subscription =  this.role.roleSave(this.selectedRole.Name,this.selectedRole.Permission).subscribe({
       next: (res: any) => {
-        this.roleList = res.result;
+        this.roleList = res.data;
         console.log(this.roleList);
         this.getList();
         if (res.success) {
