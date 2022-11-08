@@ -1,0 +1,328 @@
+{
+	"info": {
+		"_postman_id": "9b40dcbd-8c52-4ddd-a03a-30d8e63210e7",
+		"name": "ProductMaster",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "fieldList",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njc5MzM3MDgsImV4cCI6MTY2ODAyMDEwOCwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.PQRHn4Tsj3m8MoCez0Uq4bRRJ6pruPtESBpY0_0vgwM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ProductName\": \"lens\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/product/getFieldList",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"product",
+						"getFieldList"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "fieldList",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ProductName\": \"lens\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/product/fieldList",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"product",
+								"fieldList"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "308"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"134-Pj5BLldPyHDdNvQLcRFS77/Ft/Y\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 08 Nov 2022 18:56:32 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"SpecID\": 3,\n            \"ProductName\": \"lens\",\n            \"Required\": 0,\n            \"CompanyID\": 122,\n            \"FieldName\": \"brand\",\n            \"Seq\": \"1\",\n            \"FieldType\": \"DropDown\",\n            \"Ref\": \"0\",\n            \"SptTableName\": \"lens3511841\",\n            \"SptTableData\": null,\n            \"SelectedValue\": \"\",\n            \"DisplayAdd\": 0,\n            \"EnteredValue\": \"\",\n            \"SptFilterData\": null\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "getProductSupportData",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njc5MzM3MDgsImV4cCI6MTY2ODAyMDEwOCwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.PQRHn4Tsj3m8MoCez0Uq4bRRJ6pruPtESBpY0_0vgwM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"TableName\":\"lens3511841\",\r\n    \"Ref\":\"0\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/product/getProductSupportData",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"product",
+						"getProductSupportData"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getProductSupportData",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"TableName\":\"lens3511841\",\r\n    \"Ref\":\"0\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/product/getProductSupportData",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"product",
+								"getProductSupportData"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "61"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"3d-/EdxrYRy8E9OIhwaPwVGtBAgtcM\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 08 Nov 2022 19:09:31 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "saveProductSupportData",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njc5MzM3MDgsImV4cCI6MTY2ODAyMDEwOCwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.PQRHn4Tsj3m8MoCez0Uq4bRRJ6pruPtESBpY0_0vgwM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"TableName\":\"lens3511841\",\r\n    \"Ref\":\"0\",\r\n    \"SelectedValue\": \"Supra\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/product/saveProductSupportData",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"product",
+						"saveProductSupportData"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "saveProductSupportData",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"TableName\":\"lens3511841\",\r\n    \"Ref\":\"0\",\r\n    \"SelectedValue\": \"Supra\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/product/saveProductSupportData",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"product",
+								"saveProductSupportData"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "185"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"b9-1TrVmpX8uh/1brEGXQEM4KDD0Yg\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 08 Nov 2022 19:21:30 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": {\n        \"fieldCount\": 0,\n        \"affectedRows\": 1,\n        \"insertId\": 1,\n        \"serverStatus\": 2,\n        \"warningCount\": 0,\n        \"message\": \"\",\n        \"protocol41\": true,\n        \"changedRows\": 0\n    },\n    \"success\": true,\n    \"message\": \"data save sucessfully\"\n}"
+				}
+			]
+		}
+	]
+}
