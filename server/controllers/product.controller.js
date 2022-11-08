@@ -254,4 +254,96 @@ module.exports = {
         }
     },
 
+
+    getFieldList: async (req, res, next) => { 
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const ShopID = 0
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (Body.ProductName.trim() === "") return res.send({ message: "Invalid Query Data" })
+
+            const query = `Select ProductSpec.ID as SpecID, ProductSpec.ProductName , ProductSpec.Required , ProductSpec.CompanyID, ProductSpec.Name as FieldName, ProductSpec.Seq, ProductSpec.Type as FieldType, ProductSpec.Ref, ProductSpec.SptTableName, null as SptTableData, '' as SelectedValue, false as DisplayAdd,  '' as EnteredValue, null as SptFilterData from ProductSpec where ProductSpec.ProductName = '${Body.ProductName}' and CompanyID = '${CompanyID}' and Status = 1  Order By ProductSpec.Seq ASC`
+
+            const Data = await connection.query(query)
+
+            console.log(connected("Data Fetch SuccessFUlly !!!"));
+
+            response.message = "data fetch sucessfully"
+            response.data = Data
+            connection.release()
+            return res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+
+        }
+    },
+    getProductSupportData: async (req, res, next) => { 
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const ShopID = 0
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (Body.TableName.trim() === "") return res.send({ message: "Invalid Query Data" })
+            if (Body.Ref.trim() === "") return res.send({ message: "Invalid Query Data" })
+
+            const query = `select * from SpecSptTable where RefID = '${Body.Ref}' and TableName = '${Body.TableName}' and Status = 1`
+
+            const Data = await connection.query(query)
+
+            console.log(connected("Data Fetch SuccessFUlly !!!"));
+
+            response.message = "data fetch sucessfully"
+            response.data = Data
+            connection.release()
+            return res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+
+        }
+    },
+    saveProductSupportData: async (req, res, next) => { 
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const ShopID = 0
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (Body.TableName.trim() === "") return res.send({ message: "Invalid Query Data" })
+            if (Body.Ref.trim() === "") return res.send({ message: "Invalid Query Data" })
+            if (Body.SelectedValue.trim() === "") return res.send({ message: "Invalid Query Data" })
+
+            const query = `insert into SpecSptTable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${Body.TableName}','${Body.Ref}','${Body.SelectedValue}',1,now(),${LoggedOnUser.ID})`
+
+            const Data = await connection.query(query)
+
+            console.log(connected("Data Save SuccessFUlly !!!"));
+
+            response.message = "data save sucessfully"
+            response.data = Data
+            connection.release()
+            return res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+
+        }
+    },
+
 }

@@ -14,4 +14,12 @@ router.post('/deleteSpec',verifyAccessTokenAdmin, Controller.deleteSpec)
 router.post('/getSpec',verifyAccessTokenAdmin, Controller.getSpec)
 
 
+//  product master
+
+router.post('/getFieldList',verifyAccessTokenAdmin, Controller.getFieldList)
+router.post('/getProductSupportData',verifyAccessTokenAdmin, Controller.getProductSupportData)
+router.post('/saveProductSupportData',verifyAccessTokenAdmin, Controller.saveProductSupportData)
+
+
+
 module.exports = router
