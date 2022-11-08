@@ -42,17 +42,13 @@ export class LoginComponent implements OnInit {
 
 
   ngOnInit(): void {
-   console.log(this.user);
-   
-
+  
   }
  
   dropdownShoplist(){
     const subs: Subscription = this.ss.dropdownShoplist(this.user).subscribe({
       next: (res: any) => {
         this.dropShoplist = res.data
-        console.log(this.dropShoplist);
-        
         this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
@@ -60,27 +56,9 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  saveSelectedShop() {
-    this.dropShoplist.forEach((element:any) => {
-      if (element.ID === this.selectedShop) {
-        localStorage.setItem('user', JSON.stringify(element));
-        
-        this.modalService.dismissAll()
-        this.router.navigate(['/admin/CompanyDashborad']);
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title:   'Welcome TO ' + `${element.Name}`,
-          showConfirmButton: false,
-          timer: 100
-        })
-      }
-    });
-    
-  }
+ 
 
   onSubmit(content:any) {
-   
     if (this.data.LoginName === "") {
       return this.as.errorToast("please fill up login name")
     }
@@ -95,9 +73,9 @@ export class LoginComponent implements OnInit {
           this.token.setToken(res.accessToken);
           this.token.refreshToken(res.refreshToken);
           localStorage.setItem('user', JSON.stringify(res));
-          console.log(res,'res');
-           
+
             if(res.data.UserGroup  == "SuperAdmin" ){
+              localStorage.setItem('user', JSON.stringify(res.data));
               this.router.navigate(['/admin/adminDashborad']);
              
               let dt = new Date();
@@ -138,8 +116,9 @@ export class LoginComponent implements OnInit {
                 })
               }
             }
-          
-             if( res.data.UserGroup == "CompanyAdmin"){
+
+            if( res.data.UserGroup == "CompanyAdmin"){
+              localStorage.setItem('user', JSON.stringify(res.data));
                this.router.navigate(['/admin/CompanyDashborad']);
                Swal.fire({
                 position: 'center',
@@ -148,17 +127,13 @@ export class LoginComponent implements OnInit {
                 showConfirmButton: false,
                 timer: 1500
               })
-              } 
+            } 
 
-              if( res.data.UserGroup == "Employee"){
-                
+            if( res.data.UserGroup == "Employee"){
+                localStorage.setItem('user', JSON.stringify(res));
                 this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
-                this.dropdownShoplist()
-                
-               } 
-
-
-           
+                this.dropdownShoplist() 
+            }   
         } 
         else {
           this.as.errorToast(res.message);          
@@ -170,4 +145,24 @@ export class LoginComponent implements OnInit {
     this.sp.hide()
   
   }
+
+  saveSelectedShop() {
+   this.modalService.dismissAll()
+   this.router.navigate(['/admin/CompanyDashborad']);
+  
+  //  this.dropShoplist.forEach((element:any) => {
+  //    if (element.ID === this.selectedShop) {
+  //      localStorage.setItem('user', JSON.stringify(element));
+  //      this.modalService.dismissAll()
+  //      this.router.navigate(['/admin/CompanyDashborad']);
+  //      Swal.fire({
+  //        position: 'center',
+  //        icon: 'success',
+  //        title:   'Welcome TO ' + `${element.Name}`,
+  //        showConfirmButton: false,
+  //        timer: 100
+  //      })
+  //    }
+  //  });
+ }
 }
