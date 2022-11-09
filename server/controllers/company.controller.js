@@ -112,6 +112,48 @@ module.exports = {
             console.log(connected("CompanySetting Save SuccessFUlly !!!"));
 
 
+            const product = await connection.query(`SELECT ${saveCompany.insertId} as CompanyID ,product.Name, product.HSNCode, product.GSTPercentage,product.GSTType, product.Status, 0 AS CreatedBy, NOW() AS CreatedOn FROM product WHERE Status = 1 AND CompanyID = 0`)
+            let result = []
+            if (product) {
+                result = JSON.parse(JSON.stringify(product))
+            }
+
+            if (result) {
+
+                for (const item of result) {
+                    const saveProduct = await connection.query(`insert into product(CompanyID, Name, HSNCode,GSTPercentage,GSTType,Status,CreatedBy,CreatedOn) values(${saveCompany.insertId}, '${item.Name}', '${item.HSNCode}',${item.GSTPercentage}, '${item.GSTType}', 1, 0, now())`)
+                }
+
+                console.log(connected("Product Assign SuccessFully !!!!"));
+
+            }
+
+            const productSpec = await connection.query(`select * from productspec where Status = 1 and CompanyID = 0`)
+            let result2 = []
+            if (productSpec) {
+                result2 = JSON.parse(JSON.stringify(productSpec))
+            }
+
+            if (result2) {
+
+                for (const item of result2) {
+                    if (item.Type === 'DropDown') {
+                        item.SptTableName = item.ProductName + Math.floor(Math.random() * 999999) + 1;
+                    } else {
+                        item.SptTableName = ''
+                    }
+                    if (item.Type === 'DropDown') {
+                        const saveSpec = await connection.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', ${saveCompany.insertId}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now())`)
+                    } else if (item.Type !== 'DropDown') {
+                        const saveSpec = await connection.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', ${saveCompany.insertId}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now())`)
+                    }
+                }
+
+                console.log(connected("ProductSpec Assign SuccessFully !!!!"));
+
+            }
+
+
             const Company = await connection.query(`select * from company where ID = ${saveCompany.insertId}`)
             const User = await connection.query(`select * from User where ID = ${saveUser.insertId}`)
 
