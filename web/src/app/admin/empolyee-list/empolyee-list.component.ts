@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -9,6 +9,8 @@ import { AlertService } from 'src/app/service/alert.service';
 import { FileUploadService } from 'src/app/service/file-upload.service';
 import { EmployeeService } from 'src/app/service/employee.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { fromEvent   } from 'rxjs';
 
 @Component({
   selector: 'app-empolyee-list',
@@ -16,6 +18,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./empolyee-list.component.css']
 })
 export class EmpolyeeListComponent implements OnInit {
+  @ViewChild('searching') searching: ElementRef | any;
+  term = "";
   dataList: any;
   currentPage = 1;
   itemsPerPage = 10;
@@ -99,6 +103,7 @@ export class EmpolyeeListComponent implements OnInit {
       showConfirmButton: false,
       timer: 1000
     })
+    this.data = {ID: null, Password :''}
   }
 
   deleteItem(i:any){
@@ -132,6 +137,51 @@ export class EmpolyeeListComponent implements OnInit {
     })
   }
 
+  ngAfterViewInit() {
+    // server-side search
+    fromEvent(this.searching.nativeElement, 'keyup').pipe(
+      // get value
+      map((event: any) => {
+        return event.target.value;
+      }),
 
+      // if character length greater then 2
+      // filter(res => res.length > 2),
+
+      // Time in milliseconds between key events
+      debounceTime(1000),
+
+      // If previous query is different from current
+      distinctUntilChanged(),
+      // tap((event: KeyboardEvent) => {
+      //     console.log(event)
+      //     console.log(this.input.nativeElement.value)
+      //   })
+      // subscription for response
+    ).subscribe((text: string) => {
+  //  const name = e.target.value;
+    let data = {
+      searchQuery: text.trim(),
+      
+    }
+      
+       
+    if(data.searchQuery !== "") {
+      const dtm = {
+        currentPage: 1,
+        itemsPerPage: 50000,
+        searchQuery: data.searchQuery 
+      }
+    
+    } else {
+      this.getList()
+    }
+     console.log(data.searchQuery);
+     
+    });
+
+    
+
+  }
 
 }

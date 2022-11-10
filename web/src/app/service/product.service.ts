@@ -54,6 +54,28 @@ export class ProductService {
     .pipe(catchError(this.handleError));
   }
 
+  getFieldList(ProductName: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getFieldList', {ProductName :ProductName})
+    .pipe(catchError(this.handleError));
+  }
+
+  getProductSupportData(Ref:any ,TableName: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getProductSupportData', { Ref: Ref ,TableName :TableName})
+    .pipe(catchError(this.handleError));
+  }
+
+  saveProductSupportData(TableName: any, Ref:any,SelectedValue:any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/saveProductSupportData',{TableName :TableName, Ref: Ref,SelectedValue:SelectedValue})
+    .pipe(catchError(this.handleError));
+  }
+
+  deleteSpecValue(ID:any,TableName:any  ): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/deleteSpec', {ID: ID,TableName: TableName})
+    .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

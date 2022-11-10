@@ -83,6 +83,7 @@ import { CompanyLoginHistoryComponent } from './company-login-history/company-lo
     MatTabsModule,
     AdminRoutingModule,
     NgbModule,
+ 
   
   ],
 
