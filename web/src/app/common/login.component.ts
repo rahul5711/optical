@@ -147,22 +147,30 @@ export class LoginComponent implements OnInit {
   }
 
   saveSelectedShop() {
-   this.modalService.dismissAll()
-   this.router.navigate(['/admin/CompanyDashborad']);
+    console.log(this.selectedShop);
+    
+  //  this.modalService.dismissAll()
+  //  this.router.navigate(['/admin/CompanyDashborad']);
   
-  //  this.dropShoplist.forEach((element:any) => {
-  //    if (element.ID === this.selectedShop) {
-  //      localStorage.setItem('user', JSON.stringify(element));
-  //      this.modalService.dismissAll()
-  //      this.router.navigate(['/admin/CompanyDashborad']);
-  //      Swal.fire({
-  //        position: 'center',
-  //        icon: 'success',
-  //        title:   'Welcome TO ' + `${element.Name}`,
-  //        showConfirmButton: false,
-  //        timer: 100
-  //      })
-  //    }
-  //  });
+   this.dropShoplist.forEach((element:any) => {
+    
+    
+     if (element.ID === this.selectedShop) {
+      let shop = []
+      shop.push(element)
+      console.log(element);
+       localStorage.setItem('selectedShop', JSON.stringify(shop));
+
+       this.modalService.dismissAll()
+       this.router.navigate(['/admin/CompanyDashborad']);
+       Swal.fire({
+         position: 'center',
+         icon: 'success',
+         title:   'Welcome TO ' + `${element.Name}`,
+         showConfirmButton: false,
+         timer: 100
+       })
+     }
+   });
  }
 }
