@@ -1,9 +1,11 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders ,HttpErrorResponse} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable,throwError, of} from 'rxjs';
 import { environment } from '../../environments/environment';
 import { TokenService } from './token.service';
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +23,12 @@ export class AuthServiceService {
     login(data:any) {
       return this.http.post(`${environment.apiUrl}/login`, data);
     }
+
+
+    companylogin(LoginName:any) {
+      return this.http.post(`${environment.apiUrl}/login/companylogin`, {LoginName: LoginName});
+    }
+
 
     isLoggedIn(): boolean {
       if (this.ts.getToken()) {
@@ -46,5 +54,14 @@ export class AuthServiceService {
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('token');
       this.router.navigate(['/']);
+    }
+
+    private handleError(errorResponse: HttpErrorResponse) {
+      if (errorResponse.error instanceof ErrorEvent) {
+        console.error('Client Side Error: ', errorResponse.error.message);
+      } else {
+        console.error('Server Side Error: ', errorResponse);
+      }
+      return throwError(errorResponse);
     }
 }

@@ -5,6 +5,9 @@ import { CompanyService } from '../service/company.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AlertService } from '../service/alert.service';
 import Swal from 'sweetalert2'; 
+import { AuthServiceService } from '../service/auth-service.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TokenService } from '../service/token.service';
 @Component({
   selector: 'app-company-list',
   templateUrl: './company-list.component.html',
@@ -19,16 +22,21 @@ export class CompanyListComponent implements OnInit {
   page = 4;
 
   constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private token: TokenService,
     private cs: CompanyService,
     private sp: NgxSpinnerService,
     private snackBar: MatSnackBar,
     public as: AlertService,
+    private auth: AuthServiceService,
 
   ) { }
 
   ngOnInit(): void {
     this.getList();    
   }
+
   onPageChange(pageNum: number): void {
     this.pageSize = this.itemsPerPage * (pageNum - 1);
   }
@@ -90,6 +98,33 @@ export class CompanyListComponent implements OnInit {
 
    
     
+  }
+
+  companylogin(i:any){
+    const subs: Subscription = this.auth.companylogin(this.dataList[i].LoginName).subscribe({
+      next: (res: any) => {
+        if(res.loginCode === 1){
+         
+          localStorage.clear();
+          this.as.successToast(res.message)
+          this.token.setToken(res.accessToken);
+          this.token.refreshToken(res.refreshToken);
+          localStorage.setItem('user', JSON.stringify(res));
+
+
+          this.router.navigate(
+            ['/admin/CompanyDashborad'],
+            { queryParams: { page: 'page' } }
+          );
+          
+        }else{
+          console.log('not login compnay');
+        }
+       console.log(res);        
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
 }

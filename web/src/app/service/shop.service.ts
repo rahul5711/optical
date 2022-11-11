@@ -53,8 +53,6 @@ export class ShopService {
     .pipe(catchError(this.handleError));
   }
 
-
-
   saveUserShop( Body: any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams()
@@ -73,6 +71,11 @@ export class ShopService {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams();
     return this.httpClient.post<any>(this.url + '/deleteUserShop', {ID: ID},  { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
+  searchByFeild(searchQuery: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/searchByFeild', searchQuery)
     .pipe(catchError(this.handleError));
   }
 
