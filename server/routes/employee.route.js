@@ -16,6 +16,7 @@ router.post('/updatePassword', verifyAccessTokenAdmin, Controller.updatePassword
 // Regex search
 
 router.post('/searchByFeild',verifyAccessTokenAdmin, Controller.searchByFeild)
+router.post('/searchByFeildCompanyAdmin',verifyAccessTokenAdmin, Controller.searchByFeildCompanyAdmin)
 
 
 

@@ -10,6 +10,8 @@ router.post('/delete', verifyAccessTokenAdmin, Controller.delete)
 router.get('/dropdownlist', verifyAccessTokenAdmin, Controller.dropdownlist)
 router.post('/getSupplierById',verifyAccessTokenAdmin, Controller.getSupplierById)
 
+// Regex search
 
+router.post('/searchByFeild',verifyAccessTokenAdmin, Controller.searchByFeild)
 
 module.exports = router

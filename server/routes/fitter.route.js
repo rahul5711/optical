@@ -15,5 +15,8 @@ router.post('/saveFitterAssignedShop',verifyAccessTokenAdmin, Controller.saveFit
 
 router.post('/deleteFitterAssignedShop', verifyAccessTokenAdmin, Controller.deleteFitterAssignedShop)
 
+// Regex search
+
+router.post('/searchByFeild',verifyAccessTokenAdmin, Controller.searchByFeild)
 
 module.exports = router

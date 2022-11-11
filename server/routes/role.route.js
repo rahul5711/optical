@@ -9,5 +9,8 @@ router.post('/delete', verifyAccessTokenAdmin ,Controller.delete)
 router.post('/restore', verifyAccessTokenAdmin ,Controller.restore)
 router.get('/getList', verifyAccessTokenAdmin ,Controller.getList)
 
+// Regex search
+
+router.post('/searchByFeild',verifyAccessTokenAdmin, Controller.searchByFeild)
 
 module.exports = router

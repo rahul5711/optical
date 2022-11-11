@@ -305,5 +305,30 @@ module.exports = {
             return error
 
         }
+    },
+    searchByFeildCompanyAdmin: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "", count: 0 }
+            const connection = await getConnection.connection();
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
+
+            let qry = `select loginhistory.*, user.Name as UserName, company.Name as CompanyName from loginhistory left join user on user.ID = loginhistory.UserID left join company on company.ID  = loginhistory.CompanyID where loginhistory.Status = 1 and user.UserGroup != 'CompanyAdmin' and loginhistory.CompanyID = ${CompanyID} and user.Name like '%${Body.searchQuery}%' OR loginhistory.Status = 1 and loginhistory.CompanyID = '${CompanyID}' and company.Name like '%${Body.searchQuery}%' `
+
+            let data = await connection.query(qry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = data.length
+            connection.release()
+            res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+
+        }
     }
 }

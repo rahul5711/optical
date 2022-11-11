@@ -318,4 +318,31 @@ module.exports = {
         }
     },
 
+
+    searchByFeild: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "", count: 0 }
+            const connection = await getConnection.connection();
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
+
+            let qry = `select fitter.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from fitter left join user as users1 on users1.ID = fitter.CreatedBy left join user as users on users.ID = fitter.UpdatedBy where fitter.Status = 1 and fitter.CompanyID = '${CompanyID}' and fitter.Name like '%${Body.searchQuery}%' OR fitter.Status = 1 and fitter.CompanyID = '${CompanyID}' and fitter.MobileNo1 like '%${Body.searchQuery}%' `
+
+            let data = await connection.query(qry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = data.length
+            connection.release()
+            res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+
+        }
+    }
+
 }

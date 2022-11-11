@@ -19,7 +19,9 @@ router.post('/deleteUserShop', verifyAccessTokenAdmin, Controller.deleteUserShop
 router.post('/updateUserShop', verifyAccessTokenAdmin, Controller.updateUserShop)
 
 
+// Regex search
 
+router.post('/searchByFeild',verifyAccessTokenAdmin, Controller.searchByFeild)
 
 
 

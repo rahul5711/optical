@@ -17,6 +17,11 @@ router.post('/delete', Controller.delete)
 
 router.post('/updatecompanysetting', Controller.updatecompanysetting)
 
+// Regex search
+
+router.post('/searchByFeild',verifyAccessTokenAdmin, Controller.searchByFeild)
+router.post('/searchByFeildAdmin',verifyAccessTokenAdmin, Controller.searchByFeildAdmin)
+
 
 
 

@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "doctor",
+			"name": "Doctor",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -76,6 +76,272 @@
 					"path": [
 						"employee",
 						"searchByFeild"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Supplier",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjgxODYxOTUsImV4cCI6MTY2ODI3MjU5NSwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.7pdx4qpPOTPlb5QGW1p-CPrcKs7bU9XMRpWyeuSjqdc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"searchQuery\": \"9\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/supplier/searchByFeild",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"supplier",
+						"searchByFeild"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fitter",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjgxODYxOTUsImV4cCI6MTY2ODI3MjU5NSwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.7pdx4qpPOTPlb5QGW1p-CPrcKs7bU9XMRpWyeuSjqdc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"searchQuery\": \"9\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/fitter/searchByFeild",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"fitter",
+						"searchByFeild"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Role",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjgxODYxOTUsImV4cCI6MTY2ODI3MjU5NSwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.7pdx4qpPOTPlb5QGW1p-CPrcKs7bU9XMRpWyeuSjqdc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"searchQuery\": \"m\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/role/searchByFeild",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"role",
+						"searchByFeild"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Shop",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjgxODYxOTUsImV4cCI6MTY2ODI3MjU5NSwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.7pdx4qpPOTPlb5QGW1p-CPrcKs7bU9XMRpWyeuSjqdc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"searchQuery\": \"m\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/shop/searchByFeild",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"shop",
+						"searchByFeild"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Company",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjgxODYxOTUsImV4cCI6MTY2ODI3MjU5NSwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.7pdx4qpPOTPlb5QGW1p-CPrcKs7bU9XMRpWyeuSjqdc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"searchQuery\": \"m\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/company/searchByFeild",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"company",
+						"searchByFeild"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Company - super admin",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjgxODYxOTUsImV4cCI6MTY2ODI3MjU5NSwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.7pdx4qpPOTPlb5QGW1p-CPrcKs7bU9XMRpWyeuSjqdc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"searchQuery\": \"m\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/company/searchByFeildAdmin",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"company",
+						"searchByFeildAdmin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Company - company admin",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjgxODYxOTUsImV4cCI6MTY2ODI3MjU5NSwiYXVkIjoiJzQ0MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.7pdx4qpPOTPlb5QGW1p-CPrcKs7bU9XMRpWyeuSjqdc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"searchQuery\": \"ra\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/employee/searchByFeildCompanyAdmin",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"employee",
+						"searchByFeildCompanyAdmin"
 					]
 				}
 			},
