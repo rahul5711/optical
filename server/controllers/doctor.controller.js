@@ -8,7 +8,7 @@ const connected = chalk.bold.cyan;
 const pass_init = require('../helpers/generate_password')
 
 
-module.exports = { 
+module.exports = {
     save: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
@@ -20,45 +20,45 @@ module.exports = {
 
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.Name || Body.Name.trim() === "" || Body.Name === undefined || Body.Name === null) {
-                return res.send({ message: "Invalid Query Data" })   
-            } 
-            
+                return res.send({ message: "Invalid Query Data" })
+            }
+
 
             doesExist = await connection.query(`select * from doctor where Status = 1 and Name = '${Body.Name}' and CompanyID = ${CompanyID}`)
 
             if (doesExist.length) {
-               return res.send({message : `doctor already exist from this name ${Body.Name}`}) 
+                return res.send({ message: `doctor already exist from this name ${Body.Name}` })
             }
 
             const pass = await pass_init.hash_password(Body.Password)
 
 
             const datum = {
-                Name : req.body.Name ? req.body.Name : '',
-                Designation : req.body.Designation ? req.body.Designation : '',
-                Qualification : req.body.Qualification ? req.body.Qualification : '',
-                HospitalName : req.body.HospitalName ? req.body.HospitalName : '',
-                MobileNo1 : req.body.MobileNo1 ? req.body.MobileNo1 : '',
-                MobileNo2 : req.body.MobileNo2 ? req.body.MobileNo2 : '',
-                PhoneNo : req.body.PhoneNo ? req.body.PhoneNo : '',
-                Email : req.body.Email ? req.body.Email : '',
-                Address : req.body.Address ? req.body.Address : '',
-                Branch : req.body.Branch ? req.body.Branch : '',
-                Landmark : req.body.Landmark ? req.body.Landmark : '',
-                PhotoURL : req.body.PhotoURL ? req.body.PhotoURL : '',
-                DoctorType : req.body.DoctorType ? req.body.DoctorType : '',
-                DoctorLoyalty : req.body.DoctorLoyalty ? req.body.DoctorLoyalty : '',
-                LoyaltyPerPatient : req.body.LoyaltyPerPatient ? req.body.LoyaltyPerPatient : '',
-                LoginPermission : req.body.LoginPermission ? req.body.LoginPermission : '',
-                LoginName : req.body.LoginName ? req.body.LoginName : '',
-                Password : req.body.Password ? req.body.Password : '',
-                CommissionType : req.body.CommissionType ? req.body.CommissionType : 0,
-                CommissionMode : req.body.CommissionMode ? req.body.CommissionMode : 0,
-                CommissionValue : req.body.CommissionValue ? req.body.CommissionValue : 0,
-                CommissionValueNB : req.body.CommissionValueNB ? req.body.CommissionValueNB : 0,
-                DOB : req.body.DOB ? req.body.DOB : '',
-                Anniversary : req.body.Anniversary ? req.body.Anniversary : ''
-                
+                Name: req.body.Name ? req.body.Name : '',
+                Designation: req.body.Designation ? req.body.Designation : '',
+                Qualification: req.body.Qualification ? req.body.Qualification : '',
+                HospitalName: req.body.HospitalName ? req.body.HospitalName : '',
+                MobileNo1: req.body.MobileNo1 ? req.body.MobileNo1 : '',
+                MobileNo2: req.body.MobileNo2 ? req.body.MobileNo2 : '',
+                PhoneNo: req.body.PhoneNo ? req.body.PhoneNo : '',
+                Email: req.body.Email ? req.body.Email : '',
+                Address: req.body.Address ? req.body.Address : '',
+                Branch: req.body.Branch ? req.body.Branch : '',
+                Landmark: req.body.Landmark ? req.body.Landmark : '',
+                PhotoURL: req.body.PhotoURL ? req.body.PhotoURL : '',
+                DoctorType: req.body.DoctorType ? req.body.DoctorType : '',
+                DoctorLoyalty: req.body.DoctorLoyalty ? req.body.DoctorLoyalty : '',
+                LoyaltyPerPatient: req.body.LoyaltyPerPatient ? req.body.LoyaltyPerPatient : '',
+                LoginPermission: req.body.LoginPermission ? req.body.LoginPermission : '',
+                LoginName: req.body.LoginName ? req.body.LoginName : '',
+                Password: req.body.Password ? req.body.Password : '',
+                CommissionType: req.body.CommissionType ? req.body.CommissionType : 0,
+                CommissionMode: req.body.CommissionMode ? req.body.CommissionMode : 0,
+                CommissionValue: req.body.CommissionValue ? req.body.CommissionValue : 0,
+                CommissionValueNB: req.body.CommissionValueNB ? req.body.CommissionValueNB : 0,
+                DOB: req.body.DOB ? req.body.DOB : '',
+                Anniversary: req.body.Anniversary ? req.body.Anniversary : ''
+
             }
 
 
@@ -67,7 +67,7 @@ module.exports = {
             console.log(connected("Data Added SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
-            response.data =  saveData.insertId;
+            response.data = saveData.insertId;
             connection.release()
             return res.send(response)
         } catch (error) {
@@ -95,31 +95,31 @@ module.exports = {
             if (doesExistLoginName.length) return res.send({ message: `LoginName Already exist from this LoginName ${Body.LoginName}` })
 
             const datum = {
-                Name : req.body.Name ? req.body.Name : '',
-                Designation : req.body.Designation ? req.body.Designation : '',
-                Qualification : req.body.Qualification ? req.body.Qualification : '',
-                HospitalName : req.body.HospitalName ? req.body.HospitalName : '',
-                MobileNo1 : req.body.MobileNo1 ? req.body.MobileNo1 : '',
-                MobileNo2 : req.body.MobileNo2 ? req.body.MobileNo2 : '',
-                PhoneNo : req.body.PhoneNo ? req.body.PhoneNo : '',
-                Email : req.body.Email ? req.body.Email : '',
-                Address : req.body.Address ? req.body.Address : '',
-                Branch : req.body.Branch ? req.body.Branch : '',
-                Landmark : req.body.Landmark ? req.body.Landmark : '',
-                PhotoURL : req.body.PhotoURL ? req.body.PhotoURL : '',
-                DoctorType : req.body.DoctorType ? req.body.DoctorType : '',
-                DoctorLoyalty : req.body.DoctorLoyalty ? req.body.DoctorLoyalty : '',
-                LoyaltyPerPatient : req.body.LoyaltyPerPatient ? req.body.LoyaltyPerPatient : '',
-                LoginPermission : req.body.LoginPermission ? req.body.LoginPermission : '',
-                LoginName : req.body.LoginName ? req.body.LoginName : '',
-                Password : req.body.Password ? req.body.Password : '',
-                CommissionType : req.body.CommissionType ? req.body.CommissionType : 0,
-                CommissionMode : req.body.CommissionMode ? req.body.CommissionMode : 0,
-                CommissionValue : req.body.CommissionValue ? req.body.CommissionValue : 0,
-                CommissionValueNB : req.body.CommissionValueNB ? req.body.CommissionValueNB : 0,
-                DOB : req.body.DOB ? req.body.DOB : '',
-                Anniversary : req.body.Anniversary ? req.body.Anniversary : ''
-                
+                Name: req.body.Name ? req.body.Name : '',
+                Designation: req.body.Designation ? req.body.Designation : '',
+                Qualification: req.body.Qualification ? req.body.Qualification : '',
+                HospitalName: req.body.HospitalName ? req.body.HospitalName : '',
+                MobileNo1: req.body.MobileNo1 ? req.body.MobileNo1 : '',
+                MobileNo2: req.body.MobileNo2 ? req.body.MobileNo2 : '',
+                PhoneNo: req.body.PhoneNo ? req.body.PhoneNo : '',
+                Email: req.body.Email ? req.body.Email : '',
+                Address: req.body.Address ? req.body.Address : '',
+                Branch: req.body.Branch ? req.body.Branch : '',
+                Landmark: req.body.Landmark ? req.body.Landmark : '',
+                PhotoURL: req.body.PhotoURL ? req.body.PhotoURL : '',
+                DoctorType: req.body.DoctorType ? req.body.DoctorType : '',
+                DoctorLoyalty: req.body.DoctorLoyalty ? req.body.DoctorLoyalty : '',
+                LoyaltyPerPatient: req.body.LoyaltyPerPatient ? req.body.LoyaltyPerPatient : '',
+                LoginPermission: req.body.LoginPermission ? req.body.LoginPermission : '',
+                LoginName: req.body.LoginName ? req.body.LoginName : '',
+                Password: req.body.Password ? req.body.Password : '',
+                CommissionType: req.body.CommissionType ? req.body.CommissionType : 0,
+                CommissionMode: req.body.CommissionMode ? req.body.CommissionMode : 0,
+                CommissionValue: req.body.CommissionValue ? req.body.CommissionValue : 0,
+                CommissionValueNB: req.body.CommissionValueNB ? req.body.CommissionValueNB : 0,
+                DOB: req.body.DOB ? req.body.DOB : '',
+                Anniversary: req.body.Anniversary ? req.body.Anniversary : ''
+
             }
 
             const updateDoctor = await connection.query(`update doctor set Name = '${Body.Name}',Designation = '${datum.Designation}',Qualification = '${datum.Qualification}',HospitalName = '${datum.HospitalName}',MobileNo1 = '${datum.MobileNo1}',MobileNo2 = '${datum.MobileNo2}',PhoneNo = '${datum.PhoneNo}',Email = '${datum.Email}',Address='${datum.Address}',Branch='${datum.Branch}',Landmark='${datum.Landmark}',PhotoURL='${datum.PhotoURL}',DoctorType='${datum.DoctorType}', DoctorLoyalty='${datum.DoctorLoyalty}', LoyaltyPerPatient='${datum.LoyaltyPerPatient}', LoginPermission='${datum.LoginPermission}', LoginName='${datum.LoginName}', Status = 1, UpdatedBy=${LoggedOnUser},UpdatedOn=now(), CommissionType = ${datum.CommissionType},CommissionMode=${datum.CommissionMode},CommissionValue=${datum.CommissionValue},CommissionValueNB=${datum.CommissionValueNB},DOB='${datum.DOB}',Anniversary='${datum.Anniversary}' where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
@@ -152,7 +152,7 @@ module.exports = {
 
 
             let finalQuery = qry + skipQuery;
-            
+
 
             let data = await connection.query(finalQuery);
             let count = await connection.query(qry);
@@ -229,14 +229,40 @@ module.exports = {
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
             const Doctor = await connection.query(`select * from doctor where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
-           
+
             response.message = "data fetch sucessfully"
             response.data = Doctor
-            
+
             connection.release()
             res.send(response)
         } catch (error) {
             return error
         }
     },
+
+    searchByFeild: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "", count: 0 }
+            const connection = await getConnection.connection();
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
+
+            let qry = `select doctor.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from doctor left join user as users1 on users1.ID = doctor.CreatedBy left join user as users on users.ID = doctor.UpdatedBy where doctor.Status = 1 and doctor.CompanyID = '${CompanyID}' and doctor.Name like '%${Body.searchQuery}%' OR doctor.Status = 1 and doctor.CompanyID = '${CompanyID}' and doctor.MobileNo1 like '%${Body.searchQuery}%' OR doctor.Status = 1 and doctor.CompanyID = '${CompanyID}' and doctor.HospitalName like '%${Body.searchQuery}%'`
+
+            let data = await connection.query(qry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = data.length
+            connection.release()
+            res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+
+        }
+    }
 }

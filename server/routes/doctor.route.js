@@ -10,6 +10,9 @@ router.post('/delete',verifyAccessTokenAdmin, Controller.delete)
 router.post('/getDoctorById',verifyAccessTokenAdmin, Controller.getDoctorById)
 router.post('/update',verifyAccessTokenAdmin, Controller.update)
 
+// Regex search
+
+router.post('/searchByFeild',verifyAccessTokenAdmin, Controller.searchByFeild)
 
 
 
