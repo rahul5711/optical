@@ -12,7 +12,7 @@
                     </h2>
                       
                   </div>
-                  <div class="col-2">
+                  <div  class="col-md-2 col-1 ps-md-0 ps-1">
                       <select class=" form-control"
                           style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
                           [(ngModel)]="itemsPerPage" (change)="getList();">
@@ -24,14 +24,19 @@
                           <option [ngValue]="500">Show 500 Row</option>
                       </select>
                   </div>
-                  <div class="col-3 mx-auto" style="margin-top:0px;">
+                  <div  class="col-md-3 col-4 mx-md-auto" style="margin-top:0px;">
                       <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false"
                           ngbPaginationEllipsis [collectionSize]="collectionSize" #numPages
                           [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="getList()"
                           [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
                       </ngb-pagination>
                   </div>
-                  <div class="col-2 ms-auto">
+                  <div class="col-md-2 col-4 ms-auto">
+                    <div class="input-group">
+                        <input   placeholder="Search" [(ngModel)]="term" #searching  mdbInput type="search" id="form1" class="form-control" />
+                    </div>
+            </div>
+                  <div class="col-md-1 col-1" style="width: 50px">
                       <mat-icon class="col-white plus_icon" [routerLink]="['/sale/doctor',0]"
                           style="float: right;"> add</mat-icon>
                   </div>

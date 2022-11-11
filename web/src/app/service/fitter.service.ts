@@ -74,7 +74,11 @@ export class FitterService {
     return this.httpClient.post<any>(this.url + '/deleteFitterAssignedShop', {ID: ID},  { headers, params })
     .pipe(catchError(this.handleError));
   }
-
+ 
+  searchByFeild(searchQuery: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/searchByFeild', searchQuery)
+    .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

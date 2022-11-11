@@ -85,6 +85,8 @@
         </div>
 
       </div>
+
+     
     </div>
  <!-- CompanyAdmin end nav-->
 
@@ -95,9 +97,19 @@
 <!-- SuperAdmin login btn -->
 
  <!-- companyAdmin or employee login btn -->
-    <a  *ngIf="user?.data?.UserGroup != 'SuperAdmin' " class="logoutBtn" (click)="logout()" title="LogOut">
-      <i class="fa-solid fa-right-from-bracket"></i>
-    </a>
+ <!-- <div class="SelectYourShop">
+  
+  <mat-select name="FieldType"  placeholder="Select Your Shop"  required #Typecontrol>
+    <mat-option *ngFor="let s of dropShoplist let i = index;" [value]="s.ShopID">
+        <span style="color: rgb(39, 39, 39); "> {{s.Name}} <span [style.color]="'blue'" *ngIf = "s.AreaName !== 'null'">({{s.AreaName}})</span> <i *ngIf="s.Status == 0" class="fas fa-times" style="color: red;"> </i> </span>
+    </mat-option>
+  </mat-select>
+      
+ </div> -->
+ <a  *ngIf="user?.data?.UserGroup != 'SuperAdmin'" class="logoutBtn" (click)="logout()" title="LogOut">
+  <i class="fa-solid fa-right-from-bracket"></i>
+</a>
+
 <!-- companyAdmin or employee login btn -->
   </div>
 </body>

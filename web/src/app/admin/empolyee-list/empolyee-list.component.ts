@@ -162,26 +162,28 @@ export class EmpolyeeListComponent implements OnInit {
   //  const name = e.target.value;
     let data = {
       searchQuery: text.trim(),
-      
-    }
-      
-       
+    } 
     if(data.searchQuery !== "") {
       const dtm = {
         currentPage: 1,
         itemsPerPage: 50000,
         searchQuery: data.searchQuery 
       }
-    
+      const subs: Subscription = this.es.searchByFeild(dtm).subscribe({
+        next: (res: any) => {
+          this.collectionSize = res.count;
+          this.page = 1;
+          this.dataList = res.data
+          this.sp.hide();
+          this.as.successToast(res.message)
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     } else {
-      this.getList()
-    }
-     console.log(data.searchQuery);
-     
+      this.getList();
+    } 
     });
-
-    
-
   }
 
 }

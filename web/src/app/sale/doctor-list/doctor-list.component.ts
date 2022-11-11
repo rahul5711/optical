@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -14,6 +14,8 @@ import { FileUploadService } from 'src/app/service/file-upload.service';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DoctorService } from 'src/app/service/doctor.service';
+import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { fromEvent   } from 'rxjs';
 
 @Component({
   selector: 'app-doctor-list',
@@ -21,7 +23,9 @@ import { DoctorService } from 'src/app/service/doctor.service';
   styleUrls: ['./doctor-list.component.css']
 })
 export class DoctorListComponent implements OnInit {
-
+  
+  @ViewChild('searching') searching: ElementRef | any;
+  term = "";
   dataList: any;
   currentPage = 1;
   itemsPerPage = 10;
@@ -101,6 +105,66 @@ export class DoctorListComponent implements OnInit {
         })
       }
     })
+  }
+
+  ngAfterViewInit() {
+    // server-side search
+    fromEvent(this.searching.nativeElement, 'keyup').pipe(
+      // get value
+      map((event: any) => {
+        return event.target.value;
+      }),
+
+      // if character length greater then 2
+      // filter(res => res.length > 2),
+
+      // Time in milliseconds between key events
+      debounceTime(1000),
+
+      // If previous query is different from current
+      distinctUntilChanged(),
+      // tap((event: KeyboardEvent) => {
+      //     console.log(event)
+      //     console.log(this.input.nativeElement.value)
+      //   })
+      // subscription for response
+    ).subscribe((text: string) => {
+  //  const name = e.target.value;
+    let data = {
+      searchQuery: text.trim(),
+      
+    }
+      
+       
+    if(data.searchQuery !== "") {
+      const dtm = {
+        currentPage: 1,
+        itemsPerPage: 50000,
+        searchQuery: data.searchQuery 
+      }
+      const subs: Subscription = this.ds.searchByFeild(dtm).subscribe({
+        next: (res: any) => {
+        
+          this.collectionSize = res.count;
+          this.page = 1;
+          this.dataList = res.data
+          console.log(res.data);
+          this.sp.hide();
+          this.as.successToast(res.message)
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    
+    } else {
+      this.getList()
+    }
+     console.log(data.searchQuery);
+     
+    });
+
+    
+
   }
 
 }

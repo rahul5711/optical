@@ -1,7 +1,7 @@
 import { ParticlesModule } from 'angular-particle';
 import { NgModule,CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
-import { CommonModule } from '@angular/common';
+import { CommonModule, HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './common/login.component';
@@ -84,6 +84,10 @@ import { ModalModule } from 'ngb-modal';
         NgxSpinnerModule
     ],
   providers: [
+    {
+      provide: LocationStrategy,
+      useClass: HashLocationStrategy
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,

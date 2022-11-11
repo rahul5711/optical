@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -13,6 +13,8 @@ import { AlertService } from 'src/app/service/alert.service';
 import { FileUploadService } from 'src/app/service/file-upload.service';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { fromEvent   } from 'rxjs';
 
 @Component({
   selector: 'app-supplier',
@@ -23,10 +25,11 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 
 export class SupplierComponent implements OnInit {
-
+  
+  @ViewChild('searching') searching: ElementRef | any;
   user = JSON.parse(localStorage.getItem('user') || '');
   env: { production: boolean; apiUrl: string; appUrl: string; };
-
+  term:any;
   id: any;
   companyImage: any;
   img: any;
@@ -226,5 +229,54 @@ export class SupplierComponent implements OnInit {
     Status : 1, CreatedBy : null, CreatedOn : null, UpdatedBy : null, UpdatedOn : null
    };
     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'xl'});
+  }
+
+  ngAfterViewInit() {
+    // server-side search
+    fromEvent(this.searching.nativeElement, 'keyup').pipe(
+      // get value
+      map((event: any) => {
+        return event.target.value;
+      }),
+
+      // if character length greater then 2
+      // filter(res => res.length > 2),
+
+      // Time in milliseconds between key events
+      debounceTime(1000),
+
+      // If previous query is different from current
+      distinctUntilChanged(),
+      // tap((event: KeyboardEvent) => {
+      //     console.log(event)
+      //     console.log(this.input.nativeElement.value)
+      //   })
+      // subscription for response
+    ).subscribe((text: string) => {
+  //  const name = e.target.value;
+    let data = {
+      searchQuery: text.trim(),
+    } 
+    if(data.searchQuery !== "") {
+      const dtm = {
+        currentPage: 1,
+        itemsPerPage: 50000,
+        searchQuery: data.searchQuery 
+      }
+      const subs: Subscription = this.ss.searchByFeild(dtm).subscribe({
+        next: (res: any) => {
+          this.collectionSize = res.count;
+          this.page = 1;
+          this.dataList = res.data
+          this.sp.hide();
+          this.as.successToast(res.message)
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    } else {
+      this.getList();
+    } 
+    });
   }
 }
