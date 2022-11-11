@@ -113,8 +113,7 @@ export class CompanyListComponent implements OnInit {
 
 
           this.router.navigate(
-            ['/admin/CompanyDashborad'],
-            { queryParams: { page: 'page' } }
+            ['/admin/CompanyDashborad']
           );
           
         }else{

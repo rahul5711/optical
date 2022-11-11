@@ -52,6 +52,12 @@ export class TokenInterceptor implements HttpInterceptor {
         },
         (err: any) => {
           if (err instanceof HttpErrorResponse) {
+            if(err.status === 999) {
+              localStorage.clear()
+              this.router.navigate(['/'])
+              
+            }
+            
             // this.spinner.hide();
               if (err.status === 401) {
               // this.as.errorToast(err.error.error.message);

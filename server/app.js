@@ -8,6 +8,7 @@ require('dotenv').config();
 const cors = require('cors')
 const getConnection = require('./helpers/db')
 const JWT = require('jsonwebtoken')
+var moment = require("moment-timezone");
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -35,9 +36,18 @@ app.use(function(req, res, next) {
 
       const connection = await getConnection.connection();
       const user = await connection.query(`select * from user where ID = ${payload.aud}`)
+      console.log(user);
       if ( user && ( user[0].UserGroup !== 'CompanyAdmin' && user[0].UserGroup !== 'SuperAdmin')) {
-        console.log(user[0].UserGroup);
+        const companysetting = await connection.query(`select * from companysetting where Status = 1 and CompanyID = ${user[0].CompanyID}`)
+        var currentTime = moment().tz("Asia/Kolkata").format("HH:mm");
+        if (
+          currentTime < companysetting[0].LoginTimeEnd
+      ) { 
         next()
+      } else {
+        return res.status(999).send({success: false, message: `your session has been expired`})
+      }
+       
       } else {
         next()
       }
