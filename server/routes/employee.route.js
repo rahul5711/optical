@@ -13,6 +13,10 @@ router.get('/dropdownlist', verifyAccessTokenAdmin, Controller.dropdownlist)
 router.post('/LoginHistory', verifyAccessTokenAdmin, Controller.LoginHistory)
 router.post('/updatePassword', verifyAccessTokenAdmin, Controller.updatePassword)
 
+// Regex search
+
+router.post('/searchByFeild',verifyAccessTokenAdmin, Controller.searchByFeild)
+
 
 
 
