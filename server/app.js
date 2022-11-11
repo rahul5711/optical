@@ -6,6 +6,8 @@ var logger = require('morgan');
 require('./helpers/init');
 require('dotenv').config();
 const cors = require('cors')
+const getConnection = require('./helpers/db')
+const JWT = require('jsonwebtoken')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -19,14 +21,31 @@ const http = require('http').Server(app)
 
 app.use(cors())
 
-// app.use(function(req, res, next) {
-//   console.log(req.headers.usergroup);
-//   if (req.headers.usergroup !== 'SuperAdmin') {
-//     return res.send({message: "expired", LoginCode: 3})
-//   } else {
-//     next();
-//   }
-// });
+app.use(function(req, res, next) {
+  if (req.headers.authorization !== undefined) {
+    const authHeader = req.headers['authorization']
+    const bearerToken = authHeader.split(' ')
+    const token = bearerToken[1]
+    JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, payload) => {
+      if (err) {
+        const message =
+          err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message
+        return next(createError.Unauthorized(message))
+      }
+
+      const connection = await getConnection.connection();
+      const user = await connection.query(`select * from user where ID = ${payload.aud}`)
+      if ( user && ( user[0].UserGroup !== 'CompanyAdmin' && user[0].UserGroup !== 'SuperAdmin')) {
+        console.log(user[0].UserGroup);
+        next()
+      } else {
+        next()
+      }
+    })
+  } else {
+    next();
+  }
+});
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
