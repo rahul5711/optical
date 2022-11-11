@@ -338,7 +338,7 @@ module.exports = {
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select company.*, user.Name as OwnerName from company left join user on user.CompanyID = company.ID where company.Status = 1 and user.UserGroup = 'CompanyAdmin' order by company.ID desc`
+            let qry = `select company.*, user.Name as OwnerName, user.LoginName from company left join user on user.CompanyID = company.ID where company.Status = 1 and user.UserGroup = 'CompanyAdmin' order by company.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
