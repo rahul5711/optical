@@ -1,0 +1,37 @@
+{
+	"info": {
+		"_postman_id": "3615cc31-4c87-4f5f-88ff-47e25bb679ff",
+		"name": "admin login to another company",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"LoginName\": \"rahulGothi\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/login/companylogin",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login",
+						"companylogin"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
