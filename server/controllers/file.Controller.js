@@ -13,7 +13,6 @@ module.exports = {
 
 
   upload: async (req, res, next) => {
-    console.log(req.file, 'file');
     try {
       if (req.file == undefined) {
         return res.status(400).json({ message: "Please upload file!" });

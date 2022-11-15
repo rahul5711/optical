@@ -15,7 +15,6 @@ module.exports = {
             const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
-            console.log(Body);
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.Name.trim() === "") return res.send({ message: "Invalid Query Data" })
 
@@ -47,7 +46,6 @@ module.exports = {
             const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
-            console.log(Body);
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
             if (Body.Name.trim() === "") return res.send({ message: "Invalid Query Data" })
@@ -79,7 +77,6 @@ module.exports = {
             const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
-            console.log(Body);
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.ID === null) return res.send({ message: "Invalid Query Data" })
             if (Body.TableName === "") return res.send({ message: "Invalid Query Data" })
@@ -111,7 +108,6 @@ module.exports = {
             const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
-            console.log(Body);
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.ID === null) return res.send({ message: "Invalid Query Data" })
             if (Body.TableName === "") return res.send({ message: "Invalid Query Data" })
@@ -168,7 +164,6 @@ module.exports = {
             const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
-            console.log(Body);
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
            
             if(Body.Type === 'DropDown') {
@@ -203,7 +198,6 @@ module.exports = {
             const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
-            console.log(Body);
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.ID === null) return res.send({ message: "Invalid Query Data" })
             if (Body.TableName === "") return res.send({ message: "Invalid Query Data" })
@@ -237,7 +231,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.ProductName.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            const query = `select * from productspec where ProductName = '${Body.ProductName}' and Status = 1`
+            const query = `select * from productspec where ProductName = '${Body.ProductName}' and Status = 1 and CompanyID = ${CompanyID}`
             const saveData = await connection.query(query)
 
             console.log(connected("Data Fetch SuccessFUlly !!!"));
@@ -295,7 +289,7 @@ module.exports = {
             const ShopID = 0
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.TableName.trim() === "") return res.send({ message: "Invalid Query Data" })
-            if (Body.Ref.trim() === "") return res.send({ message: "Invalid Query Data" })
+            // if (Body.Ref.trim() === "") return res.send({ message: "Invalid Query Data" })
 
             const query = `select * from SpecSptTable where RefID = '${Body.Ref}' and TableName = '${Body.TableName}' and Status = 1`
 
@@ -325,7 +319,7 @@ module.exports = {
             const ShopID = 0
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.TableName.trim() === "") return res.send({ message: "Invalid Query Data" })
-            if (Body.Ref.trim() === "") return res.send({ message: "Invalid Query Data" })
+            // if (Body.Ref.trim() === "") return res.send({ message: "Invalid Query Data" })
             if (Body.SelectedValue.trim() === "") return res.send({ message: "Invalid Query Data" })
 
             const query = `insert into SpecSptTable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${Body.TableName}','${Body.Ref}','${Body.SelectedValue}',1,now(),${LoggedOnUser.ID})`

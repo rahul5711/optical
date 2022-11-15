@@ -211,7 +211,6 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
-            console.log(req.user.CompanyID, 'req');
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
@@ -226,7 +225,6 @@ module.exports = {
 
             let finalQuery = qry + skipQuery;
 
-            console.log(finalQuery);
 
             let data = await connection.query(finalQuery);
             let count = await connection.query(qry);

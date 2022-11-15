@@ -153,6 +153,44 @@ module.exports = {
 
             }
 
+            const support_data = await connection.query(`select * from productspec where Status = 1 and CompanyID = 0 and Type = 'DropDown'`)
+            let support_data_result = []
+            if (support_data) {
+                support_data_result = JSON.parse(JSON.stringify(support_data))
+            }
+    
+            let complete_data = []
+    
+            if (support_data_result) {
+                complete_data = []
+                for (const item of support_data_result) {
+                    
+                    let result = await connection.query(`select * from specspttable where Status = 1 and TableName = '${item.SptTableName}'`)
+                    if (result) {
+                        result = JSON.parse(JSON.stringify(result))
+                        for (const item2 of result) { 
+                            item2.ProductName = item.ProductName;
+                            complete_data.push(item2)
+                        }
+    
+                    }
+                }
+            }
+    
+            if (complete_data) {
+                for (const item of complete_data) { 
+                    let TableName = await connection.query(`select * from productspec where Status = 1 and ProductName = '${item.ProductName}' and Type = 'DropDown' and CompanyID = ${saveCompany.insertId}`)
+                    if (TableName) {
+                        TableName = JSON.parse(JSON.stringify(TableName))
+                    }
+                    item.SptTableName = TableName[0].SptTableName
+    
+                    let saveData = await connection.query(`insert into SpecSptTable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.SptTableName}','${item.RefID}','${item.TableValue}',1,now(),0)`)
+                }
+
+                console.log(connected("Spec Data Assign SuccessFully !!!!"));
+
+            }
 
             const Company = await connection.query(`select * from company where ID = ${saveCompany.insertId}`)
             const User = await connection.query(`select * from User where ID = ${saveUser.insertId}`)
@@ -257,8 +295,6 @@ module.exports = {
                 return res.send({ message: "company doesnot exist from this id " })
             }
 
-            console.log(doesExist, 'cc');
-
             const deleteCompany = await connection.query(`update company set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
 
             console.log("Company Delete SuccessFUlly !!!");
@@ -285,9 +321,6 @@ module.exports = {
 
             const Body = req.body;
             const LoggedOnUser = 0;
-
-            console.log(Body.ID);
-
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
@@ -330,7 +363,6 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
-            console.log(req.user.CompanyID, 'req');
             const Body = req.body;
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
@@ -343,9 +375,6 @@ module.exports = {
 
 
             let finalQuery = qry + skipQuery;
-
-            console.log(finalQuery);
-
             let data = await connection.query(finalQuery);
             let count = await connection.query(qry);
 
@@ -362,7 +391,6 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
-            console.log(req.user.CompanyID, 'req');
             const Body = req.body;
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
@@ -376,7 +404,6 @@ module.exports = {
 
             let finalQuery = qry + skipQuery;
 
-            console.log(finalQuery);
 
             let data = await connection.query(finalQuery);
             let count = await connection.query(qry);
@@ -408,7 +435,6 @@ module.exports = {
 
             let finalQuery = qry + skipQuery;
 
-            console.log(finalQuery);
 
             let data = await connection.query(finalQuery);
             let count = await connection.query(qry);

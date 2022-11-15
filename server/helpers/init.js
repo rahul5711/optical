@@ -100,8 +100,8 @@ const product = async () => {
 
         if (result) {
 
-            for(const item of result) {
-               const saveProduct = await connection.query(`insert into product(CompanyID, Name, HSNCode,GSTPercentage,GSTType,Status,CreatedBy,CreatedOn) values(${item.CompanyID}, '${item.Name}', '${item.HSNCode}',${item.GSTPercentage}, '${item.GSTType}', 1, 0, now())`)
+            for (const item of result) {
+                const saveProduct = await connection.query(`insert into product(CompanyID, Name, HSNCode,GSTPercentage,GSTType,Status,CreatedBy,CreatedOn) values(${item.CompanyID}, '${item.Name}', '${item.HSNCode}',${item.GSTPercentage}, '${item.GSTType}', 1, 0, now())`)
             }
 
             console.log(connected("Product Assign SuccessFully !!!!"));
@@ -139,5 +139,56 @@ const product = async () => {
     }
 }
 
+const product_support = async () => {
+    try {
+        const connection = await getConnection.connection();
+        // spec spt table data to another company
+
+        const support_data = await connection.query(`select * from productspec where Status = 1 and CompanyID = 0 and Type = 'DropDown'`)
+        let support_data_result = []
+        if (support_data) {
+            support_data_result = JSON.parse(JSON.stringify(support_data))
+        }
+
+        let complete_data = []
+
+        if (support_data_result) {
+            complete_data = []
+            for (const item of support_data_result) {
+                
+                let result = await connection.query(`select * from specspttable where Status = 1 and TableName = '${item.SptTableName}'`)
+                if (result) {
+                    result = JSON.parse(JSON.stringify(result))
+                    for (const item2 of result) { 
+                        item2.ProductName = item.ProductName;
+                        complete_data.push(item2)
+                    }
+
+                }
+            }
+        }
+
+        if (complete_data) {
+            for (const item of complete_data) { 
+                let TableName = await connection.query(`select * from productspec where Status = 1 and ProductName = '${item.ProductName}' and Type = 'DropDown' and CompanyID = 122`)
+                if (TableName) {
+                    TableName = JSON.parse(JSON.stringify(TableName))
+                }
+                item.SptTableName = TableName[0].SptTableName
+                console.log(item);
+                // let saveData = await connection.query(`insert into SpecSptTable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.TableName}','${item.Ref}','${item.SelectedValue}',1,now(),${LoggedOnUser.ID})`)
+            }
+        }
+
+
+    } catch (error) {
+        throw error
+
+    }
+}
+
+
+
 // product()
 init()
+// product_support()
