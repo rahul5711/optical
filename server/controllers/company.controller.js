@@ -192,6 +192,25 @@ module.exports = {
 
             }
 
+
+            let suport_master_table = []
+            let suport_master_table_data = await connection.query(`select * from supportmaster where Status =1 and CompanyID = 0`)
+
+            if (suport_master_table_data) {
+                suport_master_table = JSON.parse(JSON.stringify(suport_master_table_data))
+            }
+
+            if (suport_master_table) {
+                for (const item of suport_master_table) { 
+                    let result = await connection.query(`insert into supportmaster (Name,  TableName,  CompanyID,  Status, UpdatedBy , UpdatedOn ) values ('${item.Name}', '${item.TableName}', '${saveCompany.insertId}', 1, '0', now())`)
+                }
+
+                console.log(connected("suport_master_table_data Data Assign SuccessFully !!!!"));
+
+ 
+            }
+
+
             const Company = await connection.query(`select * from company where ID = ${saveCompany.insertId}`)
             const User = await connection.query(`select * from User where ID = ${saveUser.insertId}`)
 
