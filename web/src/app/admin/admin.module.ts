@@ -36,6 +36,7 @@ import { UserUpdatePasswordComponent } from './user-update-password/user-update-
 import { ProductManageComponent } from './product-manage/product-manage.component';
 import { AddTypeComponent } from './add-type/add-type.component';
 import { CompanyLoginHistoryComponent } from './company-login-history/company-login-history.component';
+import { ProductMasterComponent } from './product-master/product-master.component';
 
 
 @NgModule({
@@ -56,6 +57,7 @@ import { CompanyLoginHistoryComponent } from './company-login-history/company-lo
     ProductManageComponent,
     AddTypeComponent,
     CompanyLoginHistoryComponent,
+    ProductMasterComponent,
   ],
 
   imports: [

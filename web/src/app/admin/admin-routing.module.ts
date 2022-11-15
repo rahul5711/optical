@@ -11,6 +11,7 @@ import { EmployeeComponent } from './employee/employee.component';
 import { EmpolyeeListComponent } from './empolyee-list/empolyee-list.component';
 import { LoginHistoryComponent } from './login-history/login-history.component';
 import { ProductManageComponent } from './product-manage/product-manage.component';
+import { ProductMasterComponent } from './product-master/product-master.component';
 import { RoleComponent } from './role/role.component';
 import { ShopListComponent } from './shop-list/shop-list.component';
 import { ShopComponent } from './shop/shop.component';
@@ -34,6 +35,7 @@ children: [
   { path: 'companySetting', component: CompanySettingComponent },
   { path: 'addTypeAssign', component: AddTypeComponent },
   { path: 'productManageAssign', component: ProductManageComponent },
+  { path: 'productMasterAssign', component: ProductMasterComponent },
   { path: 'companyLoginHistory', component: CompanyLoginHistoryComponent },
 
    

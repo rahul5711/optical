@@ -30,7 +30,7 @@
 
         <div class="drop-content" id="collapseExample">
           <a href="javascript:void(0)" [routerLink]="['/admin/productManageAssign']" id="collapseExample">Product Manage</a>
-          <a href="javascript:void(0)" [routerLink]="['/admin/productMaster']" id="collapseExample">Product Master</a>
+          <a href="javascript:void(0)" [routerLink]="['/admin/productMasterAssign']" id="collapseExample">Product Master</a>
           <a href="javascript:void(0)" [routerLink]="['/admin/addTypeAssign']"     id="collapseExample">Add Manager</a>
         </div>
 
@@ -97,7 +97,7 @@
 <!-- SuperAdmin login btn -->
 
  <!-- companyAdmin or employee login btn -->
- <div class="SelectYourShop">
+ <!-- <div class="SelectYourShop">
   
   <mat-select name="FieldType"  placeholder="Select Your Shop"  required #Typecontrol>
     <mat-option *ngFor="let s of dropShoplist let i = index;" [value]="s.ShopID">
@@ -105,7 +105,7 @@
     </mat-option>
   </mat-select>
       
- </div>
+ </div> -->
  <a  *ngIf="user?.data?.UserGroup != 'SuperAdmin'" class="logoutBtn" (click)="logout()" title="LogOut">
   <i class="fa-solid fa-right-from-bracket"></i>
 </a>

@@ -64,6 +64,11 @@ export class EmployeeService {
     .pipe(catchError(this.handleError));
   }
 
+  searchByFeildCompanyAdmin(searchQuery: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/searchByFeildCompanyAdmin', searchQuery)
+    .pipe(catchError(this.handleError));
+  }
+
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
