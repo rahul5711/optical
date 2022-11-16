@@ -449,12 +449,11 @@ module.exports = {
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select * from user where Status = 1 and UserGroup = 'CompanyAdmin'`
+            let qry = `select * from user where Status = 1 and UserGroup != 'Employee' order by ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
             let finalQuery = qry + skipQuery;
-
 
             let data = await connection.query(finalQuery);
             let count = await connection.query(qry);
