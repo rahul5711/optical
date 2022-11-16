@@ -161,6 +161,7 @@ const product_support = async () => {
                     result = JSON.parse(JSON.stringify(result))
                     for (const item2 of result) { 
                         item2.ProductName = item.ProductName;
+                        item2.Name = item.Name;
                         complete_data.push(item2)
                     }
 
@@ -170,12 +171,14 @@ const product_support = async () => {
 
         if (complete_data) {
             for (const item of complete_data) { 
-                let TableName = await connection.query(`select * from productspec where Status = 1 and ProductName = '${item.ProductName}' and Type = 'DropDown' and CompanyID = 122`)
+                let TableName = await connection.query(`select * from productspec where Status = 1 and ProductName = '${item.ProductName}' and Type = 'DropDown' and Name = '${item.Name}' and CompanyID = 134`)
                 if (TableName) {
                     TableName = JSON.parse(JSON.stringify(TableName))
                 }
                 item.SptTableName = TableName[0].SptTableName
-                console.log(item);
+                // item.RefID = TableName[0].Ref 
+
+                console.log(item , 'tablename');
                 // let saveData = await connection.query(`insert into SpecSptTable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.TableName}','${item.Ref}','${item.SelectedValue}',1,now(),${LoggedOnUser.ID})`)
             }
         }

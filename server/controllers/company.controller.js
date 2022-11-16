@@ -170,6 +170,7 @@ module.exports = {
                         result = JSON.parse(JSON.stringify(result))
                         for (const item2 of result) { 
                             item2.ProductName = item.ProductName;
+                            item2.Name = item.Name;
                             complete_data.push(item2)
                         }
     
@@ -179,12 +180,11 @@ module.exports = {
     
             if (complete_data) {
                 for (const item of complete_data) { 
-                    let TableName = await connection.query(`select * from productspec where Status = 1 and ProductName = '${item.ProductName}' and Type = 'DropDown' and CompanyID = ${saveCompany.insertId}`)
+                    let TableName = await connection.query(`select * from productspec where Status = 1 and ProductName = '${item.ProductName}' and Type = 'DropDown' and Name = '${item.Name}' and CompanyID = ${saveCompany.insertId}`)
                     if (TableName) {
                         TableName = JSON.parse(JSON.stringify(TableName))
                     }
                     item.SptTableName = TableName[0].SptTableName
-                    item.RefID = TableName[0].Ref
     
                     let saveData = await connection.query(`insert into SpecSptTable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.SptTableName}','${item.RefID}','${item.TableValue}',1,now(),0)`)
                 }
