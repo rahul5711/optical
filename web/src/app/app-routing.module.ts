@@ -11,10 +11,10 @@ const routes: Routes = [
   {path: 'login' , component: LoginComponent},
   {path: '', component: CommonComponent,
   children: [
-    { path: 'admin',  loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)},
-    { path: 'product',  loadChildren: () => import('./product/product.module').then(m => m.ProductModule)},
-    { path: 'inventory',  loadChildren: () => import('./inventory/inventory.module').then(m => m.InventoryModule)},
-    { path: 'sale',  loadChildren: () => import('./sale/sale.module').then(m => m.SaleModule)},
+    { path: 'admin',  loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule),canActivate: [AuthGuard]},
+    { path: 'product',  loadChildren: () => import('./product/product.module').then(m => m.ProductModule),canActivate: [AuthGuard]},
+    { path: 'inventory',  loadChildren: () => import('./inventory/inventory.module').then(m => m.InventoryModule),canActivate: [AuthGuard]},
+    { path: 'sale',  loadChildren: () => import('./sale/sale.module').then(m => m.SaleModule),canActivate: [AuthGuard]},
      ]
   },
 ];
@@ -23,4 +23,6 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule { 
+  
+}

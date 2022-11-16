@@ -13,6 +13,8 @@ import Swal from 'sweetalert2';
 import { Toast } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ShopService } from '../service/shop.service';
+import { RoleService } from '../service/role.service';
+import { DataStorageServiceService } from '../service/data-storage-service.service';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +28,11 @@ export class LoginComponent implements OnInit {
   user:any =localStorage.getItem('user') || '';
   hide = false
   dropShoplist: any;
+  roleList: any;
   selectedShop: any;
+  moduleList: any = [
+    {ModuleName: 'CompanyInfo', MView: true, Edit: true, Add: true, View: true, Delete: true},
+  ];
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -37,18 +43,23 @@ export class LoginComponent implements OnInit {
     private sp: NgxSpinnerService,
     private modalService: NgbModal,
     private ss: ShopService,
+    private role: RoleService,
+    private dataStorageService: DataStorageServiceService,
+
 
   ) { }
 
 
   ngOnInit(): void {
-  
+    localStorage.removeItem('user');
   }
  
   dropdownShoplist(){
-    const subs: Subscription = this.ss.dropdownShoplist(this.user).subscribe({
+    const subs: Subscription = this.ss.dropdownShoplist(this.user.shop).subscribe({
       next: (res: any) => {
         this.dropShoplist = res.data
+        console.log(this.dropShoplist);
+        
         this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
@@ -56,7 +67,16 @@ export class LoginComponent implements OnInit {
     });
   }
 
- 
+  rolesList(){
+    const subs: Subscription = this.role.getList().subscribe({
+      next: (res: any) => {
+        this.roleList = res.data
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
 
   onSubmit(content:any) {
     if (this.data.LoginName === "") {
@@ -119,6 +139,8 @@ export class LoginComponent implements OnInit {
 
             if( res.data.UserGroup == "CompanyAdmin"){
               localStorage.setItem('user', JSON.stringify(res));
+              localStorage.setItem('Permission', JSON.stringify(this.moduleList));
+              this.dataStorageService.permission = this.moduleList;
                this.router.navigate(['/admin/CompanyDashborad']);
                Swal.fire({
                 position: 'center',
@@ -130,9 +152,12 @@ export class LoginComponent implements OnInit {
             } 
 
             if( res.data.UserGroup == "Employee"){
-                localStorage.setItem('user', JSON.stringify(res));
+                localStorage.setItem('Company', JSON.stringify(res.Company));
+                localStorage.setItem('CompanySetting', JSON.stringify(res.CompanySetting));
+                localStorage.setItem('data', JSON.stringify(res.data));
                 this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
                 this.dropdownShoplist() 
+                this.rolesList() 
             }   
         } 
         else {
@@ -156,11 +181,9 @@ export class LoginComponent implements OnInit {
     
     
      if (element.ID === this.selectedShop) {
-      let shop = []
-      shop.push(element)
-      console.log(element);
-       localStorage.setItem('selectedShop', JSON.stringify(shop));
-
+    
+       localStorage.setItem('selectedShop', JSON.stringify(element));
+       this.setPermission(element.RoleID);
        this.modalService.dismissAll()
        this.router.navigate(['/admin/CompanyDashborad']);
        Swal.fire({
@@ -173,4 +196,13 @@ export class LoginComponent implements OnInit {
      }
    });
  }
+
+ setPermission(RoleID:any) {
+  this.roleList.forEach((element: any) => {
+    if (element.ID === RoleID) {
+     localStorage.setItem('Permission', element.Permission);
+     this.dataStorageService.permission = JSON.parse(element.Permission);
+    }
+  });
+}
 }

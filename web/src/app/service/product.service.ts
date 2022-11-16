@@ -42,8 +42,8 @@ export class ProductService {
     .pipe(catchError(this.handleError));
   }
 
-  deleteSpec(ID:any,TableName:any  ): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/deleteSpec', {ID: ID,TableName: TableName})
+  deleteSpec(TableName:any,ID:any  ): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/deleteSpec', {TableName: TableName,ID: ID})
     .pipe(catchError(this.handleError));
   }
 

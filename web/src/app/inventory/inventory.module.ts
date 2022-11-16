@@ -23,13 +23,17 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { FitterComponent } from './fitter/fitter.component';
 import { FitterListComponent } from './fitter-list/fitter-list.component';
+import { PurchaseComponent } from './purchase/purchase.component';
+import { PurchaseListComponent } from './purchase-list/purchase-list.component';
 
 
 @NgModule({
   declarations: [
     SupplierComponent,
     FitterComponent,
-    FitterListComponent
+    FitterListComponent,
+    PurchaseComponent,
+    PurchaseListComponent
   ],
   imports: [
     CommonModule,

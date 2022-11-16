@@ -1,4 +1,6 @@
-<body>
+<body >
+
+  
   <div class="navbar">
 <!-- responsive navbar toggle button -->
     <input type="checkbox" id="nav-check">
@@ -12,12 +14,13 @@
 <!-- Navbar items -->
     <div class="nav-links">
 <!-- SuperAdmin nav -->
+
       <a *ngIf="user?.data?.UserGroup === 'SuperAdmin'" [routerLink]="['/admin/adminDashborad']">Dashborad</a>
       <div *ngIf="user?.data?.UserGroup === 'SuperAdmin'" class="dropdown">
         <a class="dropBtn" data-target="#collapseExample">Administration <i class="fa fa-caret-down" aria-hidden="true"></i></a>
 
         <div class="drop-content" id="collapseExample">
-          <a href="javascript:void(0)" [routerLink]="['/admin/company',0]"    id="collapseExample">Company Info</a>
+          <a *ngIf="viewCompanyInfo" href="javascript:void(0)" [routerLink]="['/admin/company',0]"    id="collapseExample">Company Info</a>
           <a href="javascript:void(0)" [routerLink]="['/admin/companyList']"  id="collapseExample">Company List</a>
           <a href="javascript:void(0)" [routerLink]="['/admin/userList']"     id="collapseExample">User List</a>
           <a href="javascript:void(0)" [routerLink]="['/admin/loginHistory']" id="collapseExample">Login History</a>
@@ -71,6 +74,7 @@
 
         <div class="drop-content" id="collapseExample">
           <a href="javascript:void(0)" [routerLink]="['/inventory/supplier',0]" id="collapseExample">Supplier</a>
+          <a href="javascript:void(0)" [routerLink]="['/inventory/purchaseList']" id="collapseExample">Purchase List</a>
           <a href="javascript:void(0)" [routerLink]="['/inventory/fitterList']" id="collapseExample">Fitter</a>
         </div>
 
@@ -97,15 +101,15 @@
 <!-- SuperAdmin login btn -->
 
  <!-- companyAdmin or employee login btn -->
- <!-- <div class="SelectYourShop">
+ <div class="SelectYourShop">
   
-  <mat-select name="FieldType"  placeholder="Select Your Shop"  required #Typecontrol>
+  <mat-select name="FieldType"  placeholder="Select Your Shop" [(ngModel)]="selectedShops" (selectionChange)="saveSelectedShop()"  required #Typecontrol>
     <mat-option *ngFor="let s of dropShoplist let i = index;" [value]="s.ShopID">
         <span style="color: rgb(39, 39, 39); "> {{s.Name}} <span [style.color]="'blue'" *ngIf = "s.AreaName !== 'null'">({{s.AreaName}})</span> <i *ngIf="s.Status == 0" class="fas fa-times" style="color: red;"> </i> </span>
     </mat-option>
   </mat-select>
       
- </div> -->
+ </div>
  <a  *ngIf="user?.data?.UserGroup != 'SuperAdmin'" class="logoutBtn" (click)="logout()" title="LogOut">
   <i class="fa-solid fa-right-from-bracket"></i>
 </a>

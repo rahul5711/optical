@@ -117,11 +117,11 @@ export class CompanyListComponent implements OnInit {
           this.token.refreshToken(res.refreshToken);
           localStorage.setItem('user', JSON.stringify(res));
 
-
-          this.router.navigate(
-            ['/admin/CompanyDashborad']
-          );
-          
+          this.router.navigate(['/admin/CompanyDashborad'])
+          .then(() => {
+            window.location.reload();
+          });
+         
         }else{
           console.log('not login compnay');
         }
@@ -130,6 +130,7 @@ export class CompanyListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    
   }
 
   ngAfterViewInit() {
