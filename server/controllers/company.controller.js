@@ -184,7 +184,7 @@ module.exports = {
                         TableName = JSON.parse(JSON.stringify(TableName))
                     }
                     item.SptTableName = TableName[0].SptTableName
-                    item.RefID = TableName[0].RefID
+                    item.RefID = TableName[0].Ref
     
                     let saveData = await connection.query(`insert into SpecSptTable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.SptTableName}','${item.RefID}','${item.TableValue}',1,now(),0)`)
                 }
