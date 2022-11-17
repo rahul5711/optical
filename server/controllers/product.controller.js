@@ -172,6 +172,10 @@ module.exports = {
                 Body.SptTableName = '0' 
             }
 
+
+            const doesExistSeq = await connection.query(`select * from productspec where ProductName = '${Body.ProductName}' and CompanyID = ${CompanyID} and Status = 1 and Seq = '${Body.Seq}'`)
+            if (doesExistSeq.length) return res.send({ message: `this Seq Already Exist ${Body.Seq}` })
+
             const query = await _Query.getQuery("ProductSpec", Body, LoggedOnUser, CompanyID,  ShopID)
             const saveData = await connection.query(query)
 
