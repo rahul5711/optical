@@ -507,7 +507,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            let qry = `select company.*, user.Name as OwnerName from company left join user on user.CompanyID = company.ID where company.Status = 1 and user.UserGroup = 'CompanyAdmin' and user.Status = 1 and  user.Name like '%${Body.searchQuery}%' OR user.Status = 1  and user.MobileNo1 like '%${Body.searchQuery}%' OR user.Status = 1  and company.Name like '%${Body.searchQuery}%' OR user.Status = 1  and company.MobileNo1 like '%${Body.searchQuery}%' OR user.Status = 1  and company.Email like '%${Body.searchQuery}%'`
+            let qry = `select company.*, user.Name as OwnerName from company left join user on user.CompanyID = company.ID where company.Status = 1 and company.Status = 1 and user.UserGroup = 'CompanyAdmin' and user.Status = 1 and  user.Name like '%${Body.searchQuery}%' OR user.Status = 1 and company.Status = 1  and user.MobileNo1 like '%${Body.searchQuery}%' OR user.Status = 1 and company.Status = 1 and company.Name like '%${Body.searchQuery}%' OR user.Status = 1 and company.Status = 1 and company.MobileNo1 like '%${Body.searchQuery}%' OR user.Status = 1 and company.Status = 1  and company.Email like '%${Body.searchQuery}%'`
 
             let data = await connection.query(qry);
 
