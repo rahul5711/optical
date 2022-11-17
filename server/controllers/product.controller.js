@@ -165,6 +165,10 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+
+            const doesExistSeq = await connection.query(`select * from productspec where ProductName = '${Body.ProductName}' and CompanyID = ${CompanyID} and Status = 1 and Seq = '${Body.Seq}'`)
+            if (doesExistSeq.length) return res.send({ message: `this Seq Already Exist ${Body.Seq}` })
+            
            
             if(Body.Type === 'DropDown') {
                 Body.SptTableName = Body.ProductName + Math.floor(Math.random() * 999999) + 1 ;
@@ -173,8 +177,7 @@ module.exports = {
             }
 
 
-            const doesExistSeq = await connection.query(`select * from productspec where ProductName = '${Body.ProductName}' and CompanyID = ${CompanyID} and Status = 1 and Seq = '${Body.Seq}'`)
-            if (doesExistSeq.length) return res.send({ message: `this Seq Already Exist ${Body.Seq}` })
+          
 
             const query = await _Query.getQuery("ProductSpec", Body, LoggedOnUser, CompanyID,  ShopID)
             const saveData = await connection.query(query)
