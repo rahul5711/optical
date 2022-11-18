@@ -193,7 +193,10 @@ i: any;
       complete: () => subs.unsubscribe(),
       
     });
-    this.getProductList()
+    this.selectedProduct = '';
+     this.selectedHSNCode = '';
+     this.selectedGSTPercentage = 0;
+     this.selectedGSTType = '';
     this.modalService.dismissAll()
   }
 
@@ -209,10 +212,34 @@ i: any;
     this.newSpec.ProductName = this.selectedProduct;
     let specData = this.newSpec;
     this.newSpec = {ID : null, ProductName: '', Name : '', Seq: null,  Type: '', Ref: 0, SptTableName: '', Required: false  };
-
-    this.ps.saveSpec(specData).subscribe(data => {
-    this.getfieldList();
-      });
+    const subs: Subscription = this.ps.saveSpec(specData).subscribe({
+      next: (res: any) => {
+        console.log(res);
+        if (res.success || res.message == 'this Seq Already Exist') {
+          this.getfieldList();
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your record has been update Product.',
+            showConfirmButton: false,
+            timer: 1200
+          }) 
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            icon: 'error',
+            title: 'Already Exist',
+            text: ' this Seq Already Exist ',
+            footer: ''
+          });
+        }
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+      
+    });
     } else {
       Swal.fire({
         icon: 'error',

@@ -49,8 +49,8 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Email</mat-label>
                                                 <input matInput name="Email1" [(ngModel)]="data.Email"
-                                                    pattern="[a-zA-Z0-9.-_]{4,}@[a-zA-Z.-]{3,}[.]{1}[a-zA-Z]{3,}"
-                                                    required #Emailcontrol [disabled]="user?.data?.UserGroup !== 'SuperAdmin'">
+                                                    
+                                                    required #Emailcontrol [disabled]="user?.data?.UserGroup === 'SuperAdmin' && id != 0">
                                                 <mat-error>
                                                     Invalid Email Id
                                                 </mat-error>
@@ -120,17 +120,23 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div *ngIf="user?.data?.UserGroup == 'SuperAdmin'" class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                        <div  class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Remark</mat-label>
                                                 <input matInput name="Remark" [(ngModel)]="data.Remark" #Remarkscontrol [disabled]="user?.data?.UserGroup !== 'SuperAdmin'">
                                             </mat-form-field>
                                         </div>
 
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                        <div *ngIf="user?.data?.UserGroup == 'SuperAdmin'" class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
-                                                <mat-label>Remark</mat-label>
-                                                <input matInput name="Remark" [(ngModel)]="data.Remark" #Remarkscontrol [disabled]="user?.data?.UserGroup !== 'SuperAdmin'">
+                                                <mat-label>SRemark</mat-label>
+                                                <input matInput name="SRemark" [(ngModel)]="data.SRemark" #SRemarkcontrol >
+                                            </mat-form-field>
+                                        </div>
+                                        <div *ngIf="user?.data?.UserGroup == 'SuperAdmin'" class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>CAmount</mat-label>
+                                                <input matInput name="CAmount" [(ngModel)]="data.CAmount" #CAmountcontrol >
                                             </mat-form-field>
                                         </div>
 
@@ -281,7 +287,7 @@
                                                     <mat-label>Mobile No1</mat-label>
                                                     <input matInput name="MobileNo11" type="number"
                                                         [(ngModel)]="data.MobileNo1"
-                                                        pattern="^((\\+91-?)|0)?[0-9]{10}$" required #MobileNo1control1>
+                                                         required #MobileNo1control1>
                                                     <mat-error>
                                                         Invalid Mobile Number.
                                                     </mat-error>

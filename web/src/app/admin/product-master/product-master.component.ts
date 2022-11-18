@@ -84,7 +84,7 @@ export class ProductMasterComponent implements OnInit {
         next: (res: any) => {
           element.SptTableData = res.data;   
           element.SptFilterData = res.data;   
-          this.as.successToast(res.message)
+          // this.as.successToast(res.message)
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),

@@ -202,6 +202,15 @@ h4:hover {
 
 }
 
+.key{
+  cursor: pointer;
+    float: right;
+    position: absolute;
+    top: 54%;
+    COLOR: #FFF;
+    LEFT: 47%;
+}
+
 .box h1 {
     color: white;
     text-transform: uppercase;
@@ -211,7 +220,7 @@ h4:hover {
 .box input[type="text"]:focus,
 .box input[type="password"]:focus {
     min-width: 350px;
-    border-color: rgb(25, 19, 80)
+    border-color: rgb(255, 81, 0);
 }
 
 .box input[type="submit"] {

@@ -14,6 +14,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
+import {CompressImageService} from '../../service/compress-image.service'
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-shop-list',
@@ -56,6 +58,8 @@ export class ShopListComponent implements OnInit {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private formBuilder: FormBuilder,
+    private compressImage: CompressImageService
+
   ) { 
     this.id = this.route.snapshot.params['id'];
     this.env = environment
@@ -184,17 +188,20 @@ export class ShopListComponent implements OnInit {
   } 
 
   uploadImage(e:any, mode:any){
-    if(e.target.files.length) {
-      this.img = e.target.files[0];
-    };
-    this.fu.uploadFileComapny(this.img).subscribe((data:any) => {
+   
+    this.img = e.target.files[0];
+      // console.log(`Image size before compressed: ${this.img.size} bytes.`)
+    this.compressImage.compress(this.img).pipe(take(1)).subscribe((compressedImage: any) => {
+      // console.log(`Image size after compressed: ${compressedImage.size} bytes.`)
+    this.fu.uploadFileComapny(compressedImage).subscribe((data:any) => {
       if (data.body !== undefined && mode === 'company') {
         this.companyImage = this.env.apiUrl + data.body?.download;
         this.data.LogoURL = data.body?.download
-        console.log(this.companyImage);
         this.as.successToast(data.body?.message)
       }
-    });
+     });
+   })
+
   }
 
   getShopById(){

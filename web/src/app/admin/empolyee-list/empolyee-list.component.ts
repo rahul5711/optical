@@ -28,7 +28,7 @@ export class EmpolyeeListComponent implements OnInit {
   page = 4;
   id:any;
   data = {ID: null, Password :''}
-
+  ConfirmPassword :any;
   constructor(
     private router: Router,
     public as: AlertService,
@@ -80,30 +80,43 @@ export class EmpolyeeListComponent implements OnInit {
   }
 
   UpdatePassword(){
+    if(this.data.Password === this.ConfirmPassword){
+      const subs: Subscription = this.es.updatePassword(this.data).subscribe({
+        next: (res: any) => {
+          console.log(res.data);
+          if (res.success) {
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+        },
+        error: (err: any) => {
+          console.log(err.message);
+        },
+        complete: () => subs.unsubscribe(),
+      })
+      
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: 'User Password has been Updated',
+        showConfirmButton: false,
+        timer: 1000
+      })
+      this.data = {ID: null, Password :''}
+      this.ConfirmPassword = '';
+      this.modalService.dismissAll()
+    }else{
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Password doesn`t match',
+        // text: 'Password don`t match',
+        showConfirmButton: true,
+      
+      })
+    }
     
-    const subs: Subscription = this.es.updatePassword(this.data).subscribe({
-      next: (res: any) => {
-        console.log(res.data);
-        if (res.success) {
-          this.as.successToast(res.message)
-        } else {
-          this.as.errorToast(res.message)
-        }
-      },
-      error: (err: any) => {
-        console.log(err.message);
-      },
-      complete: () => subs.unsubscribe(),
-    })
-    
-    Swal.fire({
-      position: 'center',
-      icon: 'success',
-      title: 'User Password has been Updated',
-      showConfirmButton: false,
-      timer: 1000
-    })
-    this.data = {ID: null, Password :''}
   }
 
   deleteItem(i:any){

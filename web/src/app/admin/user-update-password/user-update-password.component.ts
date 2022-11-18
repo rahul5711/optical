@@ -30,7 +30,7 @@ export class UserUpdatePasswordComponent implements OnInit {
   pageSize!: number;
   collectionSize = 0
   page = 4;
- 
+  ConfirmPassword:any
 
   data = {ID: null, Password :''}
   id: any;
@@ -48,14 +48,11 @@ export class UserUpdatePasswordComponent implements OnInit {
   }
 
 
-  
-  
    ngOnInit(): void {
-    
     console.log(this.id);
-    
     this.getList()
   }
+  
   onPageChange(pageNum: number): void {
     this.pageSize = this.itemsPerPage * (pageNum - 1);
   }
@@ -90,29 +87,42 @@ export class UserUpdatePasswordComponent implements OnInit {
   }
 
   UpdatePassword(){
+    if(this.data.Password === this.ConfirmPassword){
+      const subs: Subscription = this.cs.updatePassword(this.data).subscribe({
+        next: (res: any) => {
+          console.log(res.data);
+          if (res.success) {
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+        },
+        error: (err: any) => {
+          console.log(err.message);
+        },
+        complete: () => subs.unsubscribe(),
+      })
+      this.data.Password = '';
+      this.ConfirmPassword = '';
+      this.modalService.dismissAll()
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: 'User Password has been Updated',
+        showConfirmButton: false,
+        timer: 1000
+      })
+    }else{
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Password doesn`t match',
+        // text: 'Password don`t match',
+        showConfirmButton: true,
+      
+      })
+    }
     
-    const subs: Subscription = this.cs.updatePassword(this.data).subscribe({
-      next: (res: any) => {
-        console.log(res.data);
-        if (res.success) {
-          this.as.successToast(res.message)
-        } else {
-          this.as.errorToast(res.message)
-        }
-      },
-      error: (err: any) => {
-        console.log(err.message);
-      },
-      complete: () => subs.unsubscribe(),
-    })
-    this.data.Password = '';
-    Swal.fire({
-      position: 'center',
-      icon: 'success',
-      title: 'User Password has been Updated',
-      showConfirmButton: false,
-      timer: 1000
-    })
   }
 
  

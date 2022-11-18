@@ -5,7 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ThemePalette } from '@angular/material/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
+import { pipe, Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
@@ -13,6 +13,8 @@ import * as moment from 'moment';
 import { ShopService } from 'src/app/service/shop.service';
 import { AlertService } from 'src/app/service/alert.service';
 import { FileUploadService } from 'src/app/service/file-upload.service';
+import {CompressImageService} from '../../service/compress-image.service'
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-shop',
@@ -41,6 +43,8 @@ export class ShopComponent implements OnInit {
     public as: AlertService,
     private ss: ShopService,
     private fu: FileUploadService,
+    private compressImage: CompressImageService
+
 
   ) { 
     this.id = this.route.snapshot.params['id'];
@@ -104,18 +108,23 @@ export class ShopComponent implements OnInit {
    
   } 
 
+
+
   uploadImage(e:any, mode:any){
-    if(e.target.files.length) {
-      this.img = e.target.files[0];
-    };
-    this.fu.uploadFileComapny(this.img).subscribe((data:any) => {
+   
+    this.img = e.target.files[0];
+      // console.log(`Image size before compressed: ${this.img.size} bytes.`)
+    this.compressImage.compress(this.img).pipe(take(1)).subscribe((compressedImage: any) => {
+      // console.log(`Image size after compressed: ${compressedImage.size} bytes.`)
+    this.fu.uploadFileComapny(compressedImage).subscribe((data:any) => {
       if (data.body !== undefined && mode === 'company') {
         this.companyImage = this.env.apiUrl + data.body?.download;
         this.data.LogoURL = data.body?.download
-        console.log(this.companyImage);
         this.as.successToast(data.body?.message)
       }
-    });
+     });
+   })
+
   }
 
   getShopById(){

@@ -5,7 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ThemePalette } from '@angular/material/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
+import { pipe, Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
@@ -15,6 +15,8 @@ import { FileUploadService } from 'src/app/service/file-upload.service';
 import { EmployeeService } from 'src/app/service/employee.service';
 import { RoleService } from 'src/app/service/role.service';
 import { ShopService } from 'src/app/service/shop.service';
+import {CompressImageService} from '../../service/compress-image.service'
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-employee',
@@ -44,6 +46,7 @@ export class EmployeeComponent implements OnInit {
     private role: RoleService,
     private sp: NgxSpinnerService,
     private ss: ShopService,
+    private compressImage: CompressImageService
   ) { 
     this.id = this.route.snapshot.params['id'];
     this.env = environment
@@ -92,17 +95,23 @@ export class EmployeeComponent implements OnInit {
   }
 
   uploadImage(e:any, mode:any){
-    if(e.target.files.length) {
-      this.img = e.target.files[0];
-    };
-    this.fu.uploadFileComapny(this.img).subscribe((data:any) => {
+   
+    this.img = e.target.files[0];
+      // console.log(`Image size before compressed: ${this.img.size} bytes.`)
+    this.compressImage.compress(this.img).pipe(take(1)).subscribe((compressedImage: any) => {
+      // console.log(`Image size after compressed: ${compressedImage.size} bytes.`)
+    this.fu.uploadFileComapny(compressedImage).subscribe((data:any) => {
       if (data.body !== undefined && mode === 'company') {
         this.userImage = this.env.apiUrl + data.body?.download;
         this.data.PhotoURL = data.body?.download
-        this.as.successToast(data.body?.message)
-      }
-    });
+        this.as.successToast(data.body.message)
+       }
+     });
+   })
+
   }
+
+ 
 
   getUserById(){
     const subs: Subscription = this.es.getUserById(this.id).subscribe({

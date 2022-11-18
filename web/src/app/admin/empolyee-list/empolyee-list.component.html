@@ -115,17 +115,28 @@
                 <div class="row">
                     <div class="col-xl-10 col-lg-10 col-md-8 col-sm-12 mb-0 mx-auto" >
                         <mat-form-field class="example-full-width mb-0">
-                            <mat-label>Password</mat-label>
-                            <input matInput name="Password" [(ngModel)]="data.Password" required #Passwordcontrol  >
+                            <mat-label>Enter Password</mat-label>
+                            <input #x type="password" matInput name="Password" [(ngModel)]="data.Password" required #Passwordcontrol  >
+                            <mat-icon *ngIf="data.Password !== ''" style="color: #ff5100;cursor: pointer;" (click)="x.type = x.type=='password'?'text':'password'"  matSuffix>vpn_key</mat-icon>
                             <mat-error>
                                 Password is required
                             </mat-error>
                         </mat-form-field>
                     </div>
+                    <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 mb-0 mx-auto" >
+                      <mat-form-field class="example-full-width mb-0">
+                          <mat-label>Confirm Password</mat-label>
+                          <input #y matInput type="password"  name="ConfirmPassword" [(ngModel)]="ConfirmPassword" required #ConfirmPasswordcontrol  >
+                          <mat-icon *ngIf="data.Password !== ''" style="color: #ff5100;cursor: pointer;" (click)="y.type = y.type=='password'?'text':'password'"  matSuffix>vpn_key</mat-icon>
+                          <mat-error>
+                              Confirm Password is required
+                          </mat-error>
+                      </mat-form-field>
+                  </div>
                 </div>
             </div>
             <div class="modal-footer">
-              <button type="button" mat-raised-button color="primary" [disabled]="!f.valid" (click)="UpdatePassword()"  (click)="modal.dismiss('Cross click')">Update</button>
+              <button type="button" mat-raised-button color="primary" [disabled]="!f.valid" (click)="UpdatePassword()" >Update</button>
             </div>
         </form>
     </div>

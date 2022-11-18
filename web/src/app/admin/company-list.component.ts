@@ -107,29 +107,50 @@ export class CompanyListComponent implements OnInit {
   }
 
   companylogin(i:any){
-    const subs: Subscription = this.auth.companylogin(this.dataList[i].LoginName).subscribe({
-      next: (res: any) => {
-        if(res.loginCode === 1){
-         
-          localStorage.clear();
-          this.as.successToast(res.message)
-          this.token.setToken(res.accessToken);
-          this.token.refreshToken(res.refreshToken);
-          localStorage.setItem('user', JSON.stringify(res));
-
-          this.router.navigate(['/admin/CompanyDashborad'])
-          .then(() => {
-            window.location.reload();
-          });
-         
-        }else{
-          console.log('not login compnay');
-        }
-       console.log(res);        
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+    Swal.fire({
+      title: 'Are you sure Login To Company?',
+      // text: "Do You Want To Login To The Company Or Not!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Login'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.sp.show();
+        const subs: Subscription = this.auth.companylogin(this.dataList[i].LoginName).subscribe({
+          next: (res: any) => {
+            if(res.loginCode === 1){
+             
+              localStorage.clear();
+              this.as.successToast(res.message)
+              this.token.setToken(res.accessToken);
+              this.token.refreshToken(res.refreshToken);
+              localStorage.setItem('user', JSON.stringify(res));
+    
+              this.router.navigate(['/admin/CompanyDashborad'])
+              .then(() => {
+                window.location.reload();
+              });
+             
+            }else{
+              console.log('not login compnay');
+            }
+           console.log(res);        
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Your has been Company Login.',
+          showConfirmButton: false,
+          timer: 1000
+        })
+      }
+    })
+   
     
   }
 

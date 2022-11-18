@@ -11,6 +11,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
 import { ProductService } from '../../service/product.service';
 import { AlertService } from 'src/app/service/alert.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-product-manage',
@@ -29,6 +30,8 @@ i: any;
     private ps: ProductService,
     public as: AlertService,
     private sp: NgxSpinnerService,
+    private modalService: NgbModal
+
 
   ) { this.id = this.route.snapshot.params['id']; }
 
@@ -43,12 +46,13 @@ i: any;
   selectedGSTPercentage: any = 0;
   selectedGSTType: any = '';
   showAdd = false;
-  newProduct = {ID : null, CompanyID:null, Name: "", HSNCode: "", GSTPercentage: 0, GSTType: "None"};
+  newProduct:any = {ID : null, CompanyID:null, Name: "", HSNCode: "", GSTPercentage: 0, GSTType: "None"};
   fieldType: any[] = [{ID: 1, Name: "DropDown"}, {ID: 2, Name: "Text"}, {ID: 3, Name: "boolean"} , {ID: 4, Name: "Date"}];
   selectedProductID: any;
   searchValue:any;
   disbleProduct = true
   hideSave = true
+  showAdds = false
 
   ngOnInit(): void {
     this.sp.show();
@@ -165,20 +169,8 @@ i: any;
     }
   }
 
-  updateedit(){
-  this.hideSave = false
-    this.newProduct.ID = this.prodList[0].ID
-    this.newProduct.CompanyID = this.prodList[0].CompanyID
-    this.newProduct.Name = this.prodList[0].Name
-    this.newProduct.HSNCode = this.prodList[0].HSNCode
-    this.newProduct.GSTPercentage = this.prodList[0].GSTPercentage
-    this.newProduct.GSTType = this.prodList[0].GSTType
-    console.log(this.newProduct.HSNCode);
-  
-  
-  }
-
   updateProductType(){
+    this.newProduct.ID = this.selectedProductID
     const subs: Subscription =  this.ps.updateProduct(this.newProduct).subscribe({
       next: (res: any) => {
         console.log(res);
@@ -186,7 +178,7 @@ i: any;
           Swal.fire({
             position: 'center',
             icon: 'success',
-            title: 'Your file has been Save.',
+            title: 'Your file has been update Product.',
             showConfirmButton: false,
             timer: 1200
           }) 
@@ -200,6 +192,13 @@ i: any;
       complete: () => subs.unsubscribe(),
       
     });
+     this.selectedProduct = '';
+     this.selectedHSNCode = '';
+     this.selectedGSTPercentage = 0;
+     this.selectedGSTType = '';
+     this.specList = [];
+    this.modalService.dismissAll()
+ 
   }
 
   saveSpec(){
@@ -214,10 +213,34 @@ i: any;
     this.newSpec.ProductName = this.selectedProduct;
     let specData = this.newSpec;
     this.newSpec = {ID : null, ProductName: '', Name : '', Seq: null,  Type: '', Ref: 0, SptTableName: '', Required: false  };
-
-    this.ps.saveSpec(specData).subscribe(data => {
-    this.getfieldList();
-      });
+    const subs: Subscription = this.ps.saveSpec(specData).subscribe({
+      next: (res: any) => {
+        console.log(res);
+        if (res.success || res.message == 'this Seq Already Exist') {
+          this.getfieldList();
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your record has been update Product.',
+            showConfirmButton: false,
+            timer: 1200
+          }) 
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            icon: 'error',
+            title: 'Already Exist',
+            text: ' this Seq Already Exist ',
+            footer: ''
+          });
+        }
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+      
+    });
     } else {
       Swal.fire({
         icon: 'error',
@@ -253,5 +276,15 @@ i: any;
     
 
   }
+
+  openModal(content: any,sProduct:any,sHSNCode:any,sGSTPercentage:any,sGSTType:any) {
+    this.newProduct.Name = sProduct
+    this.newProduct.HSNCode = sHSNCode
+    this.newProduct.GSTPercentage = sGSTPercentage
+    this.newProduct.GSTType = sGSTType
+    this.showAdds = true
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'lg' });
+    this.getfieldList()
+   }
   
 }

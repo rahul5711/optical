@@ -54,6 +54,7 @@ export class LoginComponent implements OnInit {
     localStorage.removeItem('user');
   }
  
+
   dropdownShoplist(){
     const subs: Subscription = this.ss.dropdownShoplist(this.user.shop).subscribe({
       next: (res: any) => {
