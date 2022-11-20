@@ -53,7 +53,7 @@ module.exports = {
                 const company = await connection.query(`select * from company where Status = 1 and ID = '${User[0].CompanyID}'`)
 
                 if (!company) {
-                    return res.send({ success: false, message: "Company De-Activate By Admin, Contact Admin" })  
+                    return res.send({ success: false, message: "Company De-Activate By Admin, Contact OpticalGuru Team" })  
                 }
 
                 const setting = await connection.query(`select * from companysetting where CompanyID = '${User[0].CompanyID}'`);

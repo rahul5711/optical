@@ -13,6 +13,7 @@ router.post('/LoginHistory', verifyAccessTokenAdmin, Controller.LoginHistory)
 router.post('/update', Controller.update)
 router.post('/delete', Controller.delete)
 router.post('/deactive', Controller.deactive)
+router.post('/acticecompany', Controller.acticecompany)
 
 
 // update company setting

@@ -363,6 +363,35 @@ module.exports = {
             return error
         }
     },
+    acticecompany: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const LoggedOnUser = 0;
+
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+
+            if (!Body.ID) res.send({ message: "Invalid Query Data" })
+
+            const doesExist = await connection.query(`select * from company where Status = 0 and ID = '${Body.ID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "company doesnot exist from this id " })
+            }
+
+            const activeCompany = await connection.query(`update company set Status=1, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
+
+            console.log("Company Active SuccessFUlly !!!");
+
+            response.message = "data active sucessfully"
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            return error
+        }
+    },
     getCompanyById: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
