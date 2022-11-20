@@ -363,7 +363,7 @@ module.exports = {
             return error
         }
     },
-    acticecompany: async (req, res, next) => {
+    activecompany: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
