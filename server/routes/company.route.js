@@ -12,6 +12,7 @@ router.post('/Deactivelist', verifyAccessTokenAdmin, Controller.Deactivelist)
 router.post('/LoginHistory', verifyAccessTokenAdmin, Controller.LoginHistory)
 router.post('/update', Controller.update)
 router.post('/delete', Controller.delete)
+router.post('/deactive', Controller.deactive)
 
 
 // update company setting
@@ -20,8 +21,8 @@ router.post('/updatecompanysetting', Controller.updatecompanysetting)
 
 // Regex search
 
-router.post('/searchByFeild',verifyAccessTokenAdmin, Controller.searchByFeild)
-router.post('/searchByFeildAdmin',verifyAccessTokenAdmin, Controller.searchByFeildAdmin)
+router.post('/searchByFeild', verifyAccessTokenAdmin, Controller.searchByFeild)
+router.post('/searchByFeildAdmin', verifyAccessTokenAdmin, Controller.searchByFeildAdmin)
 
 
 

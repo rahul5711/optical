@@ -158,34 +158,34 @@ module.exports = {
             if (support_data) {
                 support_data_result = JSON.parse(JSON.stringify(support_data))
             }
-    
+
             let complete_data = []
-    
+
             if (support_data_result) {
                 complete_data = []
                 for (const item of support_data_result) {
-                    
+
                     let result = await connection.query(`select * from specspttable where Status = 1 and TableName = '${item.SptTableName}'`)
                     if (result) {
                         result = JSON.parse(JSON.stringify(result))
-                        for (const item2 of result) { 
+                        for (const item2 of result) {
                             item2.ProductName = item.ProductName;
                             item2.Name = item.Name;
                             complete_data.push(item2)
                         }
-    
+
                     }
                 }
             }
-    
+
             if (complete_data) {
-                for (const item of complete_data) { 
+                for (const item of complete_data) {
                     let TableName = await connection.query(`select * from productspec where Status = 1 and ProductName = '${item.ProductName}' and Type = 'DropDown' and Name = '${item.Name}' and CompanyID = ${saveCompany.insertId}`)
                     if (TableName) {
                         TableName = JSON.parse(JSON.stringify(TableName))
                     }
                     item.SptTableName = TableName[0].SptTableName
-    
+
                     let saveData = await connection.query(`insert into SpecSptTable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.SptTableName}','${item.RefID}','${item.TableValue}',1,now(),0)`)
                 }
 
@@ -202,13 +202,13 @@ module.exports = {
             }
 
             if (suport_master_table) {
-                for (const item of suport_master_table) { 
+                for (const item of suport_master_table) {
                     let result = await connection.query(`insert into supportmaster (Name,  TableName,  CompanyID,  Status, UpdatedBy , UpdatedOn ) values ('${item.Name}', '${item.TableName}', '${saveCompany.insertId}', 1, '0', now())`)
                 }
 
                 console.log(connected("suport_master_table_data Data Assign SuccessFully !!!!"));
 
- 
+
             }
 
 
@@ -328,6 +328,35 @@ module.exports = {
             console.log("Shop Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            return error
+        }
+    },
+    deactive: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const LoggedOnUser = 0;
+
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+
+            if (!Body.ID) res.send({ message: "Invalid Query Data" })
+
+            const doesExist = await connection.query(`select * from company where Status = 1 and ID = '${Body.ID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "company doesnot exist from this id " })
+            }
+
+            const deleteCompany = await connection.query(`update company set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
+
+            console.log("Company Deactive SuccessFUlly !!!");
+
+            response.message = "data deactive sucessfully"
             connection.release()
             res.send(response)
         } catch (error) {
