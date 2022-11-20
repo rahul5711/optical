@@ -407,6 +407,34 @@ module.exports = {
             return error
         }
     },
+    Deactivelist: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const Body = req.body;
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+
+            let page = Body.currentPage;
+            let limit = Body.itemsPerPage;
+            let skip = page * limit - limit;
+
+            let qry = `select company.*, user.Name as OwnerName, user.LoginName from company left join user on user.CompanyID = company.ID where company.Status = 0 and user.UserGroup = 'CompanyAdmin' order by company.ID desc`
+            let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
+
+
+            let finalQuery = qry + skipQuery;
+            let data = await connection.query(finalQuery);
+            let count = await connection.query(qry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = count.length
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            return error
+        }
+    },
     LoginHistory: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }

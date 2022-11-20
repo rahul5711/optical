@@ -52,12 +52,14 @@ module.exports = {
                 let loginCode = 0;
                 const company = await connection.query(`select * from company where Status = 1 and ID = '${User[0].CompanyID}'`)
 
+                if (!company) {
+                    return res.send({ success: false, message: "Company De-Activate By Admin, Contact Admin" })  
+                }
+
                 const setting = await connection.query(`select * from companysetting where CompanyID = '${User[0].CompanyID}'`);
 
                 var expDate = new Date(company[0].CancellationDate);
                 var todate = new Date()
-                console.log(todate);
-
                 // if (todate >= expDate) {
                 //   return res.send({message: "Plan Expired"})  
                 // }
