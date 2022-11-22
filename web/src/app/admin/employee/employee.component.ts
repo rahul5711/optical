@@ -80,10 +80,18 @@ export class EmployeeComponent implements OnInit {
             icon: 'success',
             title: 'Your file has been Save.',
             showConfirmButton: false,
-            timer: 1200
+            timer: 1500
           }) 
         } else {
           this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'Already exist',
+            text:'User Already exist from this User ' + this.data.Name,
+            showConfirmButton: true,
+            backdrop: false
+          }) 
         }
       },
       error: (err: any) => {

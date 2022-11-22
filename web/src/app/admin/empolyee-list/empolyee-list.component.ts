@@ -110,9 +110,12 @@ export class EmpolyeeListComponent implements OnInit {
       Swal.fire({
         position: 'center',
         icon: 'error',
-        title: 'Password doesn`t match',
+        title: 'Oops!! Incorrect Password',
         // text: 'Password don`t match',
         showConfirmButton: true,
+        // background: '#fff url(../../../assets/images/relinksyslogo.png)',
+        width: 400,
+        backdrop: false
       
       })
     }

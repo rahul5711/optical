@@ -15,6 +15,8 @@ import { SupplierService } from 'src/app/service/supplier.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
+import {CompressImageService} from '../../service/compress-image.service'
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-supplier',
@@ -51,7 +53,8 @@ export class SupplierComponent implements OnInit {
     private ss: SupplierService,
     private fu: FileUploadService,
     private sp: NgxSpinnerService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private compressImage: CompressImageService
 
   ) {
     this.id = this.route.snapshot.params['id'];
@@ -114,20 +117,22 @@ export class SupplierComponent implements OnInit {
 
   }
 
-  
 
   uploadImage(e:any, mode:any){
-    if(e.target.files.length) {
-      this.img = e.target.files[0];
-    };
-    this.fu.uploadFileComapny(this.img).subscribe((data:any) => {
+   
+    this.img = e.target.files[0];
+      // console.log(`Image size before compressed: ${this.img.size} bytes.`)
+    this.compressImage.compress(this.img).pipe(take(1)).subscribe((compressedImage: any) => {
+      // console.log(`Image size after compressed: ${compressedImage.size} bytes.`)
+    this.fu.uploadFileComapny(compressedImage).subscribe((data:any) => {
       if (data.body !== undefined && mode === 'company') {
         this.companyImage = this.env.apiUrl + data.body?.download;
         this.data.PhotoURL = data.body?.download
         console.log(this.companyImage);
         this.as.successToast(data.body?.message)
       }
-    });
+     });
+   })
   }
 
   deleteItem(i:any){

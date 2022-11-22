@@ -14,6 +14,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
 import * as moment from 'moment';
 
+
 @Component({
   selector: 'app-company',
   templateUrl: './company.component.html',
@@ -44,6 +45,7 @@ export class CompanyComponent implements OnInit {
     private cs: CompanyService,
     private fu: FileUploadService,
     public as: AlertService,
+    
   ) {
     this.id = this.route.snapshot.params['id'];
     this.env = environment
@@ -117,6 +119,7 @@ export class CompanyComponent implements OnInit {
       next: (res: any) => {
         // this.dataList = res.result;
         // console.log(this.dataList);
+      
         if (res.success) {
           this.router.navigate(['/admin/companyList']); 
           Swal.fire({
@@ -128,6 +131,16 @@ export class CompanyComponent implements OnInit {
           }) 
         } else {
           this.as.errorToast(res.message)
+         
+            Swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: 'Already exist',
+              text:'LoginName Already exist from this LoginName ' + this.data.LoginName,
+              showConfirmButton: true,
+              backdrop: false
+            }) 
+          
         }
       },
       error: (err: any) => {
@@ -162,10 +175,9 @@ export class CompanyComponent implements OnInit {
   }
 
   updateCompany(){
-    console.log(this.user);
-
     const subs: Subscription =  this.cs.updateCompany( this.data).subscribe({
       next: (res: any) => {
+        console.log(res);
         if (res.success) {
            if(this.user.data.UserGroup === 'SuperAdmin'){
             this.router.navigate(['/admin/companyList']);

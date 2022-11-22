@@ -7,9 +7,9 @@ import { environment } from '../../environments/environment';
 import { catchError } from 'rxjs/operators';
 
 // in bytes, compress images larger than 1MB
-const fileSizeMax = 1 * 400 * 400;
+const fileSizeMax = 1 * 500 * 500;
 // in pixels, compress images have the width or height larger than 1024px
-const widthHeightMax = 400;
+const widthHeightMax = 500;
 const defaultWidthHeightRatio = 1;
 const defaultQualityRatio = 100;
 

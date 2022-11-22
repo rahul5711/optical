@@ -398,6 +398,15 @@ height: 93vh !important;
     outline: 0;
 }
 
+.swal2-styled.swal2-confirm {
+    border: 0;
+    border-radius: 0.25em;
+    background: initial;
+    background-color: #2d2495 !important;
+    color: #fff;
+    font-size: 1em;
+}
+
 
 
 /* Importing Bootstrap SCSS file. */

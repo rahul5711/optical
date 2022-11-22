@@ -15,6 +15,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FitterService } from 'src/app/service/fitter.service';
 import { SupportService } from 'src/app/service/support.service';
 import { ShopService } from 'src/app/service/shop.service';
+import {CompressImageService} from '../../service/compress-image.service'
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-fitter',
@@ -44,6 +46,7 @@ export class FitterComponent implements OnInit {
     private modalService: NgbModal,
     private supps: SupportService,
     private ss: ShopService,
+    private compressImage: CompressImageService
   ) { 
     this.id = this.route.snapshot.params['id'];
     this.env = environment
@@ -170,18 +173,23 @@ export class FitterComponent implements OnInit {
     return event;
   }
 
+
+
   uploadImage(e:any, mode:any){
-    if(e.target.files.length) {
-      this.img = e.target.files[0];
-    };
-    this.fu.uploadFileComapny(this.img).subscribe((data:any) => {
+   
+    this.img = e.target.files[0];
+      // console.log(`Image size before compressed: ${this.img.size} bytes.`)
+    this.compressImage.compress(this.img).pipe(take(1)).subscribe((compressedImage: any) => {
+      // console.log(`Image size after compressed: ${compressedImage.size} bytes.`)
+    this.fu.uploadFileComapny(compressedImage).subscribe((data:any) => {
       if (data.body !== undefined && mode === 'company') {
         this.userImage = this.env.apiUrl + data.body?.download;
         this.data.PhotoURL = data.body?.download
         console.log(this.userImage);
         this.as.successToast(data.body?.message)
-      }
-    });
+       }
+     });
+   })
   }
 
   saveRateCard() {
