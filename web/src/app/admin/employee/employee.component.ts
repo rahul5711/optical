@@ -80,18 +80,10 @@ export class EmployeeComponent implements OnInit {
             icon: 'success',
             title: 'Your file has been Save.',
             showConfirmButton: false,
-            timer: 1500
+            timer: 1200
           }) 
         } else {
           this.as.errorToast(res.message)
-          Swal.fire({
-            position: 'center',
-            icon: 'error',
-            title: 'Already exist',
-            text:'User Already exist from this User ' + this.data.Name,
-            showConfirmButton: true,
-            backdrop: false
-          }) 
         }
       },
       error: (err: any) => {
@@ -104,19 +96,28 @@ export class EmployeeComponent implements OnInit {
 
   uploadImage(e:any, mode:any){
    
-    this.img = e.target.files[0];
-      // console.log(`Image size before compressed: ${this.img.size} bytes.`)
-    this.compressImage.compress(this.img).pipe(take(1)).subscribe((compressedImage: any) => {
-      // console.log(`Image size after compressed: ${compressedImage.size} bytes.`)
-    this.fu.uploadFileComapny(compressedImage).subscribe((data:any) => {
-      if (data.body !== undefined && mode === 'company') {
-        this.userImage = this.env.apiUrl + data.body?.download;
-        this.data.PhotoURL = data.body?.download
-        this.as.successToast(data.body.message)
-       }
-     });
-   })
-
+  this.img = e.target.files[0];
+   const subs: Subscription = this.compressImage.compress(this.img).pipe(take(1)).subscribe({
+    next: (compressedImage: any) => {
+      const subss: Subscription = this.fu.uploadFileComapny(compressedImage).subscribe({
+        next: (data: any) => {
+          if (data.body !== undefined && mode === 'company') {
+            this.userImage = this.env.apiUrl + data.body?.download;
+            this.data.PhotoURL = data.body?.download
+            this.as.successToast(data.body.message)
+           }
+        },
+        error: (err: any) => {
+          console.log(err.message);
+        },
+        complete: () => subss.unsubscribe(),
+      }) 
+    },
+    error: (err: any) => {
+      console.log(err.message);
+    },
+    complete: () => subs.unsubscribe(),
+  })
   }
 
  

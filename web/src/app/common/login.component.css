@@ -206,15 +206,9 @@ h4:hover {
   cursor: pointer;
     float: right;
     position: absolute;
-    top: 54%;
+    top: 47%;
     COLOR: #FFF;
-    LEFT: 47%;
-}
-
-.box h1 {
-    color: white;
-    text-transform: uppercase;
-    font-weight: 500
+    LEFT: 60%;
 }
 
 .box input[type="text"]:focus,
@@ -222,6 +216,20 @@ h4:hover {
     min-width: 350px;
     border-color: rgb(255, 81, 0);
 }
+
+
+
+.box h1 {
+    color: white;
+    text-transform: uppercase;
+    font-weight: 500
+}
+
+/* .box input[type="text"]:focus,
+.box input[type="password"]:focus {
+    min-width: 350px;
+    border-color: rgb(255, 81, 0);
+} */
 
 .box input[type="submit"] {
     border: 0;

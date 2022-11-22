@@ -1,3 +1,4 @@
+
 <section class="content">
     <div class="container-fluid">
         <div class="block-header">
@@ -6,16 +7,13 @@
                     <div class="card p-0">
                         <div class="header p-2 py-0 pt-1">
                             <div class="row">
-                                <div class="col-md-1 col-6 p-0 ms-3">
-                                    <h2>Company List</h2>
+                                <div class="col-md-1 col-8 p-0 ms-3">
+                                    <h2>Deactive List</h2>
                                 </div>
-                                <div class="ps-md-0 ps-1 pt-1" style="width: 40px;">
-                                    <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button" (click)="exportAsXLSX()"></i>
-                                </div>
-                                <div class="col-md-1 col-1 ps-md-0 ps-1">
+                                <div class="col-md-2 col-1 ps-md-0 ps-1">
                                     <select class=" form-control"
                                         style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
-                                        [(ngModel)]="itemsPerPage" (change)="getList();">
+                                        [(ngModel)]="itemsPerPage" (change)="Deactivelist();">
                                         <option [ngValue]="10">Show 10 Row</option>
                                         <option [ngValue]="25">Show 25 Row</option>
                                         <option [ngValue]="50">Show 50 Row</option>
@@ -23,13 +21,11 @@
                                         <option [ngValue]="250">Show 250Row</option>
                                         <option [ngValue]="500">Show 500 Row</option>
                                     </select>
-                                    
                                 </div>
-                                
                                 <div class="col-md-3 col-4 mx-md-auto" style="margin-top:0px;">
                                     <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false"
                                         ngbPaginationEllipsis [collectionSize]="collectionSize" #numPages
-                                        [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="getList()"
+                                        [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="Deactivelist()"
                                         [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
                                     </ngb-pagination>
                                 </div>
@@ -38,10 +34,7 @@
                                         <input   placeholder="Search" [(ngModel)]="term" #searching  mdbInput type="search" id="form1" class="form-control" />
                                     </div>
                                 </div>
-                                <div class="col-md-1 col-1" style="width: 50px">
-                                    <mat-icon class="col-white plus_icon" [routerLink]="['/admin/company',0]"
-                                        style="float: right;"> add</mat-icon>
-                                </div>
+                                
                             </div>
                         </div>
 
@@ -70,19 +63,7 @@
                                     <tbody>
                                         <tr class="text-center" *ngFor="let data of dataList  ; let i = index;">
                                             <td style="white-space: nowrap;">
-                                                <mat-icon class="sync_disabled me-1" title="Deactive" (click)="deactive(i)">sync_disabled</mat-icon>
-                                                <mat-icon class="swap_icon me-1" title="companylogin" (click)="companylogin(i)">swap_vert</mat-icon>
-                                                <i class="fas fa-info-circle" title="Edit"
-                                                    style="color: rgb(23, 23, 194); font-size: 30px; cursor: pointer;box-shadow: 2px 2px 6px #9c9795fa; border-radius: 20px;"
-                                                    [routerLink]="['/admin/company',data.ID]" >
-                                                </i>
-                                                <mat-icon class="delete_icon ms-1" title="Delete" (click)="deleteItem(i)">delete_forever</mat-icon>
-                                                <!-- <i class="fa fa-trash"
-                                                    style="color: rgb(250, 0, 0);
-                                                    font-size: 15px;
-                                                    cursor: pointer; "
-                                                    (click)="deleteItem(i)" title="delete">
-                                                </i> -->
+                                                <mat-icon class="swap_icon ms-1" title="Active" (click)="activecompany(i)">sync</mat-icon>
                                             </td>
                                             <td class="text-left">{{ dataList.length - i }}</td>
                                             <td class="text-left">{{data.Name}}</td>

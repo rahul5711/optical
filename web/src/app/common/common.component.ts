@@ -52,7 +52,7 @@ export class CommonComponent implements OnInit {
          
           // localStorage.setItem('LoggedINShop', JSON.stringify(this.shopList[0]));
           // this.loggedInShop = this.shopList[0];
-          this.selectedShops = JSON.parse(localStorage.getItem("selectedShop") || '');
+          this.selectedShops = localStorage.getItem("selectedShop") || '';
           console.log(this.selectedShops);
           
           if(this.selectedShops === null ) {
@@ -61,7 +61,7 @@ export class CommonComponent implements OnInit {
             
           } else {
           
-            this.selectedShops = JSON.parse(localStorage.getItem("selectedShop") || '').ShopID;
+            this.selectedShops = JSON.parse(localStorage.getItem("selectedShop") || '')?.ShopID;
         
           }
         }

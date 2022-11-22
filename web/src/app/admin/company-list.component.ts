@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TokenService } from '../service/token.service';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
+import { ExcelService } from '../service/excel.service';
 
 @Component({
   selector: 'app-company-list',
@@ -26,7 +27,7 @@ export class CompanyListComponent implements OnInit {
   pageSize!: number;
   collectionSize = 0
   page = 4;
-
+  deactives =0
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -36,6 +37,7 @@ export class CompanyListComponent implements OnInit {
     private snackBar: MatSnackBar,
     public as: AlertService,
     private auth: AuthServiceService,
+    private excelService: ExcelService,
 
   ) { }
 
@@ -79,7 +81,10 @@ export class CompanyListComponent implements OnInit {
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Yes, delete it!',
+      backdrop : 'static',
+  
+
     }).then((result) => {
       if (result.isConfirmed) {
         this.sp.show();
@@ -114,7 +119,9 @@ export class CompanyListComponent implements OnInit {
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Login'
+      confirmButtonText: 'Login',
+      backdrop: false
+
     }).then((result) => {
       if (result.isConfirmed) {
         this.sp.show();
@@ -201,6 +208,44 @@ export class CompanyListComponent implements OnInit {
       this.getList();
     } 
     });
+  }
+
+  deactive(i:any) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Do You Want To Deactive This Company",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Deactive',
+      backdrop: false
+
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const subs: Subscription = this.cs.deactive(this.dataList[i].ID).subscribe({
+          next: (res: any) => {
+            this.dataList.splice(i, 1);
+            this.as.successToast(res.message)
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Company has been Deactive.',
+          showConfirmButton: false,
+          timer: 1500
+        })
+      }
+    })
+  
+
+  }
+
+  exportAsXLSX(): void {
+    this.excelService.exportAsExcelFile(this.dataList, 'company_history');
   }
 
 }

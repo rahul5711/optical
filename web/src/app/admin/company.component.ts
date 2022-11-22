@@ -13,6 +13,7 @@ import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
 import * as moment from 'moment';
+import { Company} from '../interface/Company';
 
 
 @Component({
@@ -23,7 +24,7 @@ import * as moment from 'moment';
 
 export class CompanyComponent implements OnInit {
 
-  loggedInUser:any = (localStorage.getItem('LoggedINUser') || '');
+  
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
  
   companyImage: any;
@@ -49,6 +50,7 @@ export class CompanyComponent implements OnInit {
   ) {
     this.id = this.route.snapshot.params['id'];
     this.env = environment
+   
 
   }
 
@@ -59,6 +61,7 @@ export class CompanyComponent implements OnInit {
   {ID: 3, Name: 'Half Yearly Plan (180 Days)', days: 180},
   {ID: 4, Name: 'Yearly Plan (365 Days)' , days: 360}];
 
+  
   data : any = {
     ID: null, CompanyName: null, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: null, Country: null, State: null, City: null, Email: null, Website: '', GSTNo: '', CINNo: '', LogoURL: null, Remark: '',SRemark:'',CAmount:'', Plan: null, Version: null, NoOfShops: null, EffectiveDate: new Date(), CacellationDate:  null,  WhatsappMsg: false, EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, dataFormat: undefined,
      Name : '', UserGroup : "", DOB : null, Anniversary : null,  Branch : '', FaxNo : '',  PhotoURL : '',LoginName : "", Password : "",
@@ -204,6 +207,7 @@ export class CompanyComponent implements OnInit {
   }
 
   uploadImage(e:any, mode:any){
+    
     if(e.target.files.length) {
       this.img = e.target.files[0];
     };
@@ -226,7 +230,7 @@ export class CompanyComponent implements OnInit {
       } else {
         this.userImage = this.env.apiUrl + data.body?.download;
         this.data.PhotoURL = data.body?.download
-        if(data.body.message === 'Uploaded Successfully'){
+        if(data?.body?.message === 'Uploaded Successfully'){
           Swal.fire({
             position: 'center',
             icon: 'success',

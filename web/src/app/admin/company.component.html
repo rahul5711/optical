@@ -50,7 +50,7 @@
                                                 <mat-label>Email</mat-label>
                                                 <input matInput name="Email1" [(ngModel)]="data.Email"
                                                     
-                                                    required #Emailcontrol [disabled]="user?.data?.UserGroup === 'SuperAdmin' && id != 0">
+                                                    required #Emailcontrol [disabled]="user?.data?.UserGroup === 'SuperAdmin' || id !== 0">
                                                 <mat-error>
                                                     Invalid Email Id
                                                 </mat-error>
@@ -242,7 +242,7 @@
                                             <i class="fa-solid fa-cloud-arrow-up upload_icon" >
                                                 <span style="font-size: 10px;letter-spacing: 2px;"> Company Image </span>
                                             </i>
-                                            <input  #fileInput id="my-input" name='LogoURL' type="file" [(ngModel)]="data.LogoURL" (change)="uploadImage($event, 'company')" style="display:none;">
+                                            <input  value={this.data.LogoURL} #fileInput id="my-input" name='LogoURL' type="file" [(ngModel)]="data.LogoURL" (change)="uploadImage($event, 'company')" style="display:none;">
                                         </div>
                                     </div>
                                 </div>

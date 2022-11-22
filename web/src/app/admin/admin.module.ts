@@ -37,6 +37,7 @@ import { ProductManageComponent } from './product-manage/product-manage.componen
 import { AddTypeComponent } from './add-type/add-type.component';
 import { CompanyLoginHistoryComponent } from './company-login-history/company-login-history.component';
 import { ProductMasterComponent } from './product-master/product-master.component';
+import { DeactiveListComponent } from './deactive-list/deactive-list.component';
 
 
 @NgModule({
@@ -58,6 +59,7 @@ import { ProductMasterComponent } from './product-master/product-master.componen
     AddTypeComponent,
     CompanyLoginHistoryComponent,
     ProductMasterComponent,
+    DeactiveListComponent,
   ],
 
   imports: [

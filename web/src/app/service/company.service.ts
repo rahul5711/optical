@@ -87,6 +87,28 @@ export class CompanyService {
     .pipe(catchError(this.handleError));
   }
 
+  deactive(ID:any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/deactive', {ID: ID},  { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
+
+  activecompany(ID:any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/activecompany', {ID: ID},  { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
+  Deactivelist(Body: any): Observable<any> {
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/Deactivelist', Body, { params })
+    .pipe(catchError(this.handleError));
+  }
+
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

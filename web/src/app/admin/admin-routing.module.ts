@@ -7,6 +7,7 @@ import { CompanyLoginHistoryComponent } from './company-login-history/company-lo
 import { CompanySettingComponent } from './company-setting/company-setting.component';
 import { CompanyComponent } from './company.component';
 import { DashboradComponent } from './dashborad.component';
+import { DeactiveListComponent } from './deactive-list/deactive-list.component';
 import { EmployeeComponent } from './employee/employee.component';
 import { EmpolyeeListComponent } from './empolyee-list/empolyee-list.component';
 import { LoginHistoryComponent } from './login-history/login-history.component';
@@ -37,6 +38,7 @@ children: [
   { path: 'productManageAssign', component: ProductManageComponent },
   { path: 'productMasterAssign', component: ProductMasterComponent },
   { path: 'companyLoginHistory', component: CompanyLoginHistoryComponent },
+  { path: 'deactiveList', component: DeactiveListComponent },
 
    
 ]}

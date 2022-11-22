@@ -27,6 +27,7 @@
     "angular-particle": "^1.0.4",
     "angular-particle-updated": "^1.0.4-1",
     "bootstrap": "^5.2.1",
+    "file-saver": "^2.0.5",
     "jquery": "^3.6.1",
     "jwt-decode": "^3.1.2",
     "moment": "^2.29.4",
@@ -42,12 +43,14 @@
     "tslib": "^2.3.0",
     "tsparticles": "^2.2.4",
     "tsparticles-engine": "^2.2.4",
+    "xlsx": "^0.18.5",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~13.1.4",
     "@angular/cli": "~13.1.4",
     "@angular/compiler-cli": "~13.1.0",
+    "@types/file-saver": "^2.0.5",
     "@types/jasmine": "~3.10.0",
     "@types/node": "^12.11.1",
     "jasmine-core": "~3.10.0",
