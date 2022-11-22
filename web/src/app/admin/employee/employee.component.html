@@ -153,7 +153,7 @@
                                             <i class="fa-solid fa-cloud-arrow-up upload_icon" >
                                                 <span style="font-size: 10px;letter-spacing: 2px;">  User Image </span>
                                             </i>
-                                            <input  #fileInput id="my-input" name='PhotoURL' type="file" [(ngModel)]="data.PhotoURL" (change)="uploadImage($event, 'company')" style="display:none;">
+                                            <input  #fileInput id="my-input" name='PhotoURL' type="file" (change)="uploadImage($event, 'company')" style="display:none;">
                                             
                                         </div>
                                     </div>
