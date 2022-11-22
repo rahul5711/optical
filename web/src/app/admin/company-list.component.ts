@@ -245,7 +245,7 @@ export class CompanyListComponent implements OnInit {
   }
 
   exportAsXLSX(): void {
-    this.excelService.exportAsExcelFile(this.dataList, 'company_history');
+    this.excelService.exportAsExcelFile(this.dataList, 'company_list');
   }
 
 }
