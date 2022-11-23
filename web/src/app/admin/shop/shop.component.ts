@@ -1,15 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ThemePalette } from '@angular/material/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { pipe, Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
-import * as moment from 'moment';
 import { ShopService } from 'src/app/service/shop.service';
 import { AlertService } from 'src/app/service/alert.service';
 import { FileUploadService } from 'src/app/service/file-upload.service';
@@ -36,9 +32,7 @@ export class ShopComponent implements OnInit {
   constructor(
 
     private router: Router,
-    private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
     private formBuilder: FormBuilder,
     public as: AlertService,
     private ss: ShopService,
@@ -63,8 +57,6 @@ export class ShopComponent implements OnInit {
     if (this.id != 0) {
       this.getShopById(); 
     }
-    console.log(this.user.Company);
-    
   }
 
   copyData(val: any) {
@@ -84,8 +76,6 @@ export class ShopComponent implements OnInit {
   onsubmit() {
     const subs: Subscription =  this.ss.shopSave( this.data).subscribe({
       next: (res: any) => {
-        // this.dataList = res.result;
-        // console.log(this.dataList);
         if (res.success) {
           this.router.navigate(['/admin/shopList']); 
           Swal.fire({
@@ -130,8 +120,6 @@ export class ShopComponent implements OnInit {
   getShopById(){
     const subs: Subscription = this.ss.getShopById(this.id).subscribe({
       next: (res: any) => {
-        console.log(res.data);
-        
         if (res.success) {
           this.as.successToast(res.message)
           this.data = res.data[0]
@@ -149,7 +137,6 @@ export class ShopComponent implements OnInit {
   }
 
   updateShop(){
-    console.log(this.data);
     const subs: Subscription =  this.ss.updateShop( this.data).subscribe({
       next: (res: any) => {
         if (res.success) {

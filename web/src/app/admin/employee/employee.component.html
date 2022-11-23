@@ -166,38 +166,32 @@
                             <div class="col-md-5 col-12 ps-0">
                                 <form #assignForm="ngForm" (ngSubmit)="saveUserShop();">
                                     <div class="row">
+                                        <div class="col-lg-6 ">
+                                           <ng-select bindLabel="Shop" name="ShopID" placeholder="Select Shop" [(ngModel)]="UserShop.  ShopID" [required]="true" #ShopID="ngModel" [closeOnSelect]="true" [searchable]="true">
+                                                <ng-option [value]="s.ID" *ngFor="let s of dropShoplist">{{s.Name}}
+                                                     <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'"> ({{s.AreaName}})</span>
+                                                </ng-option>
+                                             </ng-select>
+                                             <span *ngIf="ShopID.errors && !ShopID.touched" class="star">*</span>
+                                             <span *ngIf="ShopID.touched && ShopID.errors" class="errorss"> Shop is required</span>
+                                         </div>
+
                                         <div class="col-lg-6">
-                                            <mat-form-field class="example-full-width mb-0"
-                                                [class.has-error]="ShopControl.invalid && ShopControl.touched"
-                                                [class.has-success]="ShopControl.valid">
-                                                <mat-label>Select Shop</mat-label>
-                                                <mat-select name="ShopID" [(ngModel)]="UserShop.ShopID" required #ShopControl="ngModel">
-                                                    <mat-option [value]="s.ID" *ngFor="let s of dropShoplist"> {{s.Name}}<span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'"> ({{s.AreaName}})</span> </mat-option>
-                                                </mat-select>
-                                                <mat-error> Shop is required</mat-error>
-                                            </mat-form-field>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <mat-form-field class="example-full-width mb-0"
-                                                [class.has-error]="RoleControl.invalid && RoleControl.touched"
-                                                [class.has-success]="RoleControl.valid">
-                                                <mat-label>Select Role</mat-label>
-                                                <mat-select name="RoleID" [(ngModel)]="UserShop.RoleID" required #RoleControl="ngModel">
-                                                    <mat-option [value]="r.ID" *ngFor="let r of roleList"> {{r.Name}} </mat-option>
-                                                </mat-select>
-                                                <mat-error *ngIf="RoleControl.invalid && RoleControl.touched"> Role is
-                                                    required</mat-error>
-                                            </mat-form-field>
+                                            <ng-select name="RoleID" placeholder="Select Role" [(ngModel)]="UserShop.RoleID" required #RoleID="ngModel" required [closeOnSelect]="true" [searchable]="true">
+                                                <ng-option [value]="r.ID" *ngFor="let r of roleList">{{r.Name}}</ng-option>
+                                             </ng-select>
+                                             <span *ngIf="RoleID.errors && !RoleID.touched" class="star" style="left: 70px;">*</span>
+                                            <span *ngIf="RoleID.touched && RoleID.errors" class="errorss"> Role is rquired</span>
                                         </div>
                                     </div>
                                     <div class="row mt-2">
                                         <div class="col-lg-12">
                                             <button type="submit" class="me-3" mat-raised-button color="primary"
-                                                [disabled]="!assignForm.valid" *ngIf="this.id == 0">Save </button>
+                                                [disabled]="!assignForm.valid || this.saveUpdateHide"  >Save </button>
                                                 <button type="button" class="me-3" mat-raised-button color="primary"
-                                                [disabled]="!assignForm.valid" *ngIf="this.id != 0" (click)="updateUserShop()">Update </button>
+                                                [disabled]="!assignForm.valid" *ngIf="this.saveUpdateHide" (click)="updateUserShop()">Update </button>
                                             <!-- <button type="button" mat-raised-button
-                                                (click)="assignForm.reset()">Cancel</button> -->
+                                            (click)="assignForm.reset()">Cancel</button> -->
                                         </div>
                                     </div>
                                 </form>

@@ -2,7 +2,6 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { CompanyService } from '../service/company.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { AlertService } from '../service/alert.service';
 import Swal from 'sweetalert2'; 
 import { AuthServiceService } from '../service/auth-service.service';
@@ -29,12 +28,10 @@ export class CompanyListComponent implements OnInit {
   page = 4;
   deactives =0
   constructor(
-    private route: ActivatedRoute,
     private router: Router,
     private token: TokenService,
     private cs: CompanyService,
     private sp: NgxSpinnerService,
-    private snackBar: MatSnackBar,
     public as: AlertService,
     private auth: AuthServiceService,
     private excelService: ExcelService,
@@ -63,7 +60,6 @@ export class CompanyListComponent implements OnInit {
       next: (res: any) => {
         this.collectionSize = res.count;
         this.dataList = res.data
-        console.log(res.data);
         this.sp.hide();
         this.as.successToast(res.message)
       },
@@ -134,7 +130,6 @@ export class CompanyListComponent implements OnInit {
               this.token.setToken(res.accessToken);
               this.token.refreshToken(res.refreshToken);
               localStorage.setItem('user', JSON.stringify(res));
-    
               this.router.navigate(['/admin/CompanyDashborad'])
               .then(() => {
                 window.location.reload();
@@ -143,7 +138,7 @@ export class CompanyListComponent implements OnInit {
             }else{
               console.log('not login compnay');
             }
-           console.log(res);        
+               
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),

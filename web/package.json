@@ -23,6 +23,7 @@
     "@angular/platform-browser-dynamic": "~13.1.0",
     "@angular/router": "~13.1.0",
     "@ng-bootstrap/ng-bootstrap": "^12.1.2",
+    "@ng-select/ng-select": "^8.3.0",
     "@popperjs/core": "^2.10.2",
     "angular-particle": "^1.0.4",
     "angular-particle-updated": "^1.0.4-1",

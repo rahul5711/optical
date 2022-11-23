@@ -1,11 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
-import { Router, ActivatedRoute } from '@angular/router';
-import { ThemePalette } from '@angular/material/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { CompanyService } from '../../service/company.service';
 import { Subscription } from 'rxjs';
 import { AlertService } from '../../service/alert.service';
 import { environment } from 'src/environments/environment';
@@ -36,9 +31,7 @@ export class CompanyLoginHistoryComponent implements OnInit {
   constructor(
     private es: EmployeeService,
     private sp: NgxSpinnerService,
-    private snackBar: MatSnackBar,
     public as: AlertService,
-    private route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
@@ -63,7 +56,6 @@ export class CompanyLoginHistoryComponent implements OnInit {
       next: (res: any) => {
         this.collectionSize = res.count;
         this.dataList = res.data
-        console.log(res.data);
         this.sp.hide();
         this.as.successToast(res.message)
       },

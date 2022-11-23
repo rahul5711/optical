@@ -1,15 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
-import { Router, ActivatedRoute } from '@angular/router';
-import { ThemePalette } from '@angular/material/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
-import { ProductService } from '../../service/product.service';
 import { AlertService } from 'src/app/service/alert.service';
 import { SupportService } from 'src/app/service/support.service';
 
@@ -30,10 +24,6 @@ export class AddManageComponent implements OnInit {
   selectedProduct: any;
 
   constructor(
-    private router: Router,
-    private sanitizer: DomSanitizer,
-    private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
     private supps: SupportService,
     public as: AlertService,
     private sp: NgxSpinnerService,
@@ -186,7 +176,6 @@ export class AddManageComponent implements OnInit {
     const subs: Subscription =  this.supps.chargesave( this.selectedRow).subscribe({
       next: (res: any) => {
         // this.dataList = res.result;
-        // console.log(this.dataList);
         if (res.success) {
           Swal.fire({
             position: 'center',
@@ -265,7 +254,6 @@ export class AddManageComponent implements OnInit {
       next: (res: any) => {
         this.gstList = res.data
         this.sp.hide();
-        
       },
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),
@@ -310,7 +298,6 @@ export class AddManageComponent implements OnInit {
     const subs: Subscription =  this.supps.servicesave(this.Service).subscribe({
       next: (res: any) => {
         // this.serviceList = res.result;
-        // console.log(this.dataList);
         if (res.success) {
           Swal.fire({
             position: 'center',

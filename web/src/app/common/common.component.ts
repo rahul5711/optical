@@ -21,18 +21,17 @@ export class CommonComponent implements OnInit {
   x: any;
   dropShoplist :any;
   selectedShops :any;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private ss: ShopService,
     private sp: NgxSpinnerService,
-    ) { 
-      console.log(window.location.href);
-
-    }
+    ) { }
   viewCompanyInfo = true;
+
   ngOnInit(): void { 
-      this.dropdownShoplist()
+    this.dropdownShoplist()
   }
  
   myFunction() {
@@ -49,20 +48,15 @@ export class CommonComponent implements OnInit {
       next: (res: any) => {
         this.dropShoplist = res.data
         if (this.dropShoplist.length !== 0) {
-         
+  
           // localStorage.setItem('LoggedINShop', JSON.stringify(this.shopList[0]));
           // this.loggedInShop = this.shopList[0];
           this.selectedShops = localStorage.getItem("selectedShop") || '';
-          console.log(this.selectedShops);
-          
           if(this.selectedShops === null ) {
             this.selectedShops = this.dropShoplist[0].ShopID;
             localStorage.setItem('selectedShop', JSON.stringify(this.dropShoplist[0]));
-            
           } else {
-          
             this.selectedShops = JSON.parse(localStorage.getItem("selectedShop") || '')?.ShopID;
-        
           }
         }
       },

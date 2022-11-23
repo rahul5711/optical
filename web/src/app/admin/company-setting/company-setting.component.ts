@@ -1,16 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
-import { Router, ActivatedRoute } from '@angular/router';
-import { ThemePalette } from '@angular/material/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
-import * as moment from 'moment';
-import { ShopService } from 'src/app/service/shop.service';
 import { AlertService } from 'src/app/service/alert.service';
 import { FileUploadService } from 'src/app/service/file-upload.service';
 import { CompanyService } from 'src/app/service/company.service';
@@ -25,13 +19,8 @@ export class CompanySettingComponent implements OnInit {
   userImage: string | undefined;
 
   constructor(
-    private router: Router,
-    private sanitizer: DomSanitizer,
-    private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
     private formBuilder: FormBuilder,
     public as: AlertService,
-    private ss: ShopService,
     private fu: FileUploadService,
     private cs: CompanyService,
 
@@ -50,7 +39,6 @@ export class CompanySettingComponent implements OnInit {
   env = environment;
   companyImage: any;
   dataList: any;
-  loggedInCompany = (localStorage.getItem('LoggedINCompany'));
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
    
    
@@ -73,7 +61,6 @@ export class CompanySettingComponent implements OnInit {
   ngOnInit(): void {
     this.data = this.user.CompanySetting
     this.wlcmArray1 = this.user?.CompanySetting?.WelComeNote
-    console.log(this.user.CompanySetting.WelComeNote);
   }
 
   uploadImage(e:any, mode:any){
@@ -84,7 +71,6 @@ export class CompanySettingComponent implements OnInit {
       if (data.body !== undefined && mode === 'company') {
         this.companyImage = this.env.apiUrl + data.body?.download;
         this.data.LogoURL = data.body?.download
-        console.log(this.companyImage);
         this.as.successToast(data.body?.message)
       } else {
         this.companyWatermark = this.env.apiUrl + data.body?.download;
@@ -103,12 +89,9 @@ export class CompanySettingComponent implements OnInit {
   }
 
   updatecompanysetting(){
-    console.log(this.user);
-
     const subs: Subscription =  this.cs.updatecompanysetting( this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
-         
             Swal.fire({
               position: 'center',
               icon: 'success',
@@ -116,8 +99,6 @@ export class CompanySettingComponent implements OnInit {
               showConfirmButton: false,
               timer: 1200
             }) 
-           
-            
         } else {
           this.as.errorToast(res.message)
         }

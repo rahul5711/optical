@@ -9,7 +9,10 @@
                 <div class="col-md-1 col-8 p-0 ms-3">
                   <h2>Employee List </h2>
                 </div>
-                <div  class="col-md-2 col-1 ps-md-0 ps-1">
+                <div class="ps-md-0 ps-1 pt-1" style="width: 40px;">
+                  <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button" (click)="exportAsXLSX()"></i>
+              </div>
+                <div  class="col-md-1 col-1 ps-md-0 ps-1">
                     <select class=" form-control"
                         style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
                         [(ngModel)]="itemsPerPage" (change)="getList();">

@@ -1,20 +1,14 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
-import { Router, ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
-import * as moment from 'moment';
 import { AlertService } from 'src/app/service/alert.service';
-import { FileUploadService } from 'src/app/service/file-upload.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FitterService } from 'src/app/service/fitter.service';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
+import { ExcelService } from '../../service/excel.service';
 
 @Component({
   selector: 'app-fitter-list',
@@ -33,16 +27,12 @@ export class FitterListComponent implements OnInit {
   page = 4;
 
   constructor(
-    private router: Router,
-    private sanitizer: DomSanitizer,
-    private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
     private formBuilder: FormBuilder,
     public as: AlertService,
     private fs: FitterService,
-    private fu: FileUploadService,
     private sp: NgxSpinnerService,
-    private modalService: NgbModal
+    private excelService: ExcelService,
+
   ) { }
 
   ngOnInit(): void {
@@ -62,9 +52,7 @@ export class FitterListComponent implements OnInit {
     const subs: Subscription = this.fs.getList(dtm).subscribe({
       next: (res: any) => {
         this.collectionSize = res.count;
-        this.dataList = res.data
-        
-        console.log(res.data);
+        this.dataList = res.data;
         this.sp.hide();
         this.as.successToast(res.message)
       },
@@ -85,7 +73,6 @@ export class FitterListComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
-
         const subs: Subscription = this.fs.deleteData(this.dataList[i].ID).subscribe({
           next: (res: any) => {
             this.dataList.splice(i, 1);
@@ -152,6 +139,10 @@ export class FitterListComponent implements OnInit {
       this.getList();
      } 
     });
+  }
+
+  exportAsXLSX(): void {
+    this.excelService.exportAsExcelFile(this.dataList, 'fitter_list');
   }
 
 }

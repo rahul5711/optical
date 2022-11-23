@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ThemePalette } from '@angular/material/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -23,16 +20,11 @@ export class ProductManageComponent implements OnInit {
 i: any;
 
   constructor(
-    private router: Router,
-    private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
     private ps: ProductService,
     public as: AlertService,
     private sp: NgxSpinnerService,
     private modalService: NgbModal
-
-
   ) { this.id = this.route.snapshot.params['id']; }
 
   id: any;
@@ -40,14 +32,16 @@ i: any;
   specList :any = [];
   gstList: any;
   prodList:any = [];
-  newSpec: any = {ID : null, ProductName: '', Name : '', Seq: null,  Type: '', Ref: 0, SptTableName: '', Required: false  };
   selectedProduct: any = '';
   selectedHSNCode: any = '';
   selectedGSTPercentage: any = 0;
   selectedGSTType: any = '';
   showAdd = false;
+
   newProduct = {ID : null, CompanyID:null, Name: "", HSNCode: "", GSTPercentage: 0, GSTType: "None"};
+  newSpec: any = {ID : null, ProductName: '', Name : '', Seq: null,  Type: '', Ref: 0, SptTableName: '', Required: false  };
   fieldType: any[] = [{ID: 1, Name: "DropDown"}, {ID: 2, Name: "Text"}, {ID: 3, Name: "boolean"} , {ID: 4, Name: "Date"}];
+
   selectedProductID: any;
   searchValue:any;
   disbleProduct = true
@@ -174,7 +168,6 @@ i: any;
     this.newProduct.ID = this.selectedProductID
     const subs: Subscription =  this.ps.updateProduct(this.newProduct).subscribe({
       next: (res: any) => {
-        console.log(res);
         if (res.success) {
           Swal.fire({
             position: 'center',
@@ -214,7 +207,6 @@ i: any;
     this.newSpec = {ID : null, ProductName: '', Name : '', Seq: null,  Type: '', Ref: 0, SptTableName: '', Required: false  };
     const subs: Subscription = this.ps.saveSpec(specData).subscribe({
       next: (res: any) => {
-        console.log(res);
         if (res.success || res.message == 'this Seq Already Exist') {
           this.getfieldList();
           Swal.fire({

@@ -1,17 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
-import * as moment from 'moment';
 import { AlertService } from 'src/app/service/alert.service';
 import { FileUploadService } from 'src/app/service/file-upload.service';
-import { SupplierService } from 'src/app/service/supplier.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DoctorService } from 'src/app/service/doctor.service';
 import {CompressImageService} from '../../service/compress-image.service'
@@ -34,9 +30,7 @@ export class DoctorComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
     private formBuilder: FormBuilder,
     public as: AlertService,
     private ds: DoctorService,
@@ -66,7 +60,6 @@ export class DoctorComponent implements OnInit {
  
 
   uploadImage(e:any, mode:any){
-   
     this.img = e.target.files[0];
       // console.log(`Image size before compressed: ${this.img.size} bytes.`)
     this.compressImage.compress(this.img).pipe(take(1)).subscribe((compressedImage: any) => {
@@ -74,8 +67,7 @@ export class DoctorComponent implements OnInit {
     this.fu.uploadFileComapny(compressedImage).subscribe((data:any) => {
       if (data.body !== undefined && mode === 'company') {
         this.userImage = this.env.apiUrl + data.body?.download;
-        this.data.PhotoURL = data.body?.download
-        console.log(this.userImage);
+        this.data.PhotoURL = data.body?.download;
         this.as.successToast(data.body?.message)
       }
      });
@@ -87,7 +79,6 @@ export class DoctorComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.router.navigate(['/sale/doctorList']); 
-
           Swal.fire({
             position: 'center',
             icon: 'success',
@@ -133,8 +124,6 @@ export class DoctorComponent implements OnInit {
   getDoctorById(){
     const subs: Subscription = this.ds.getDoctorById(this.id).subscribe({
       next: (res: any) => {
-      
-        
         if (res.success) {
           this.as.successToast(res.message)
           this.data = res.data[0]

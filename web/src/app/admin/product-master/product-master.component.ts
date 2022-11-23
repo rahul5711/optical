@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -24,7 +23,6 @@ export class ProductMasterComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
     private ps: ProductService,
     public as: AlertService,
     private sp: NgxSpinnerService,

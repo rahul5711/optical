@@ -38,7 +38,7 @@ import { AddTypeComponent } from './add-type/add-type.component';
 import { CompanyLoginHistoryComponent } from './company-login-history/company-login-history.component';
 import { ProductMasterComponent } from './product-master/product-master.component';
 import { DeactiveListComponent } from './deactive-list/deactive-list.component';
-
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   declarations: [
@@ -87,7 +87,7 @@ import { DeactiveListComponent } from './deactive-list/deactive-list.component';
     MatTabsModule,
     AdminRoutingModule,
     NgbModule,
- 
+    NgSelectModule
   
   ],
 

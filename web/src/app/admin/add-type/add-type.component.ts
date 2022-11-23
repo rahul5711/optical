@@ -1,15 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
-import { Router, ActivatedRoute } from '@angular/router';
-import { ThemePalette } from '@angular/material/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
-import { ProductService } from '../../service/product.service';
 import { AlertService } from 'src/app/service/alert.service';
 import { SupportService } from 'src/app/service/support.service';
 
@@ -29,10 +23,6 @@ export class AddTypeComponent implements OnInit {
   selectedProduct: any;
 
   constructor(
-    private router: Router,
-    private sanitizer: DomSanitizer,
-    private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
     private supps: SupportService,
     public as: AlertService,
     private sp: NgxSpinnerService,
@@ -65,7 +55,6 @@ export class AddTypeComponent implements OnInit {
     const subs: Subscription = this.supps.getList(this.selectedProduct).subscribe({
       next: (res: any) => {
         this.depList = res.data
-        console.log(res.data);
         this.sp.hide();
         this.as.successToast(res.message)
       },

@@ -1,17 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ThemePalette } from '@angular/material/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
 import { ProductService } from '../../service/product.service';
-import { AlertService } from 'src/app/service/alert.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AlertService } from 'src/app/service/alert.service'
 import { MatSelect } from '@angular/material/select';
 
 @Component({
@@ -26,14 +22,10 @@ export class ProductMasterComponent implements OnInit {
   env = environment;
 
   constructor(
-    private router: Router,
-    private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
     private ps: ProductService,
     public as: AlertService,
     private sp: NgxSpinnerService,
-    private modalService: NgbModal
   ) {
     this.id = this.route.snapshot.params['id'];
    }
@@ -88,8 +80,7 @@ export class ProductMasterComponent implements OnInit {
       const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
         next: (res: any) => {
           element.SptTableData = res.data;   
-          element.SptFilterData = res.data;   
-          // this.as.successToast(res.message)
+          element.SptFilterData = res.data;  
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
@@ -151,13 +142,11 @@ saveFieldData(i:any){
         this.as.errorToast(res.message)
       }
     },
-    
     error: (err: any) => {
       console.log(err.msg);
     },
     complete: () => subs.unsubscribe(),
   });
- 
 }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
@@ -200,9 +189,9 @@ saveFieldData(i:any){
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
-    });
-  }
-      })
+      });
+     }
+    })
   }
  
 }

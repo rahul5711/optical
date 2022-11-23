@@ -1,16 +1,14 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
-import * as moment from 'moment';
 import { AlertService } from 'src/app/service/alert.service';
-import { FileUploadService } from 'src/app/service/file-upload.service';
 import { EmployeeService } from 'src/app/service/employee.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
+import { ExcelService } from '../../service/excel.service';
 
 @Component({
   selector: 'app-empolyee-list',
@@ -29,14 +27,14 @@ export class EmpolyeeListComponent implements OnInit {
   id:any;
   data = {ID: null, Password :''}
   ConfirmPassword :any;
+  
   constructor(
-    private router: Router,
     public as: AlertService,
     private es: EmployeeService,
-    private fu: FileUploadService,
     private sp: NgxSpinnerService,
     private route: ActivatedRoute,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private excelService: ExcelService,
   ) {
     this.id = this.route.snapshot.params['id'];
    }
@@ -63,7 +61,6 @@ export class EmpolyeeListComponent implements OnInit {
       next: (res: any) => {
         this.collectionSize = res.count;
         this.dataList = res.data
-        console.log(res.data);
         this.sp.hide();
         this.as.successToast(res.message)
       },
@@ -75,7 +72,6 @@ export class EmpolyeeListComponent implements OnInit {
 
   openModal(content: any,ID:any) {
     this.data.ID = ID
-    console.log(this.data.ID);
     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
   }
 
@@ -83,7 +79,6 @@ export class EmpolyeeListComponent implements OnInit {
     if(this.data.Password === this.ConfirmPassword){
       const subs: Subscription = this.es.updatePassword(this.data).subscribe({
         next: (res: any) => {
-          console.log(res.data);
           if (res.success) {
             this.as.successToast(res.message)
           } else {
@@ -202,4 +197,7 @@ export class EmpolyeeListComponent implements OnInit {
     });
   }
 
+  exportAsXLSX(): void {
+    this.excelService.exportAsExcelFile(this.dataList, 'empolyee_list');
+  }
 }

@@ -4,18 +4,16 @@ import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
-import * as moment from 'moment';
 import { ShopService } from 'src/app/service/shop.service';
 import { AlertService } from 'src/app/service/alert.service';
 import { FileUploadService } from 'src/app/service/file-upload.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { DomSanitizer } from '@angular/platform-browser';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
 import {CompressImageService} from '../../service/compress-image.service'
 import { take } from 'rxjs/operators';
+import { ExcelService } from '../../service/excel.service';
 
 @Component({
   selector: 'app-shop-list',
@@ -54,11 +52,10 @@ export class ShopListComponent implements OnInit {
     private fu: FileUploadService,
     private sp: NgxSpinnerService,
     private modalService: NgbModal,
-    private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
     private formBuilder: FormBuilder,
-    private compressImage: CompressImageService
+    private compressImage: CompressImageService,
+    private excelService: ExcelService,
 
   ) { 
     this.id = this.route.snapshot.params['id'];
@@ -91,7 +88,6 @@ export class ShopListComponent implements OnInit {
       next: (res: any) => {
         this.collectionSize = res.count;
         this.dataList = res.data
-        console.log(res.data);
         this.sp.hide();
         this.as.successToast(res.message)
       },
@@ -162,8 +158,6 @@ export class ShopListComponent implements OnInit {
     var shopdate = this.data ?? " ";
     const subs: Subscription =  this.ss.shopSave( shopdate).subscribe({
       next: (res: any) => {
-        // this.dataList = res.result;
-        // console.log(this.dataList);
         if (res.success) {
           this.router.navigate(['/admin/shopList']); 
           Swal.fire({
@@ -207,8 +201,6 @@ export class ShopListComponent implements OnInit {
   getShopById(){
     const subs: Subscription = this.ss.getShopById(this.id).subscribe({
       next: (res: any) => {
-        console.log(res.data);
-        
         if (res.success) {
           this.as.successToast(res.message)
           this.data = res.data[0]
@@ -226,7 +218,6 @@ export class ShopListComponent implements OnInit {
   }
 
   updateShop(){
-    console.log(this.data);
     const subs: Subscription =  this.ss.updateShop( this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -297,6 +288,10 @@ export class ShopListComponent implements OnInit {
       this.getList();
     } 
     });
+  }
+
+  exportAsXLSX(): void {
+    this.excelService.exportAsExcelFile(this.dataList, 'shop_list');
   }
 
 }

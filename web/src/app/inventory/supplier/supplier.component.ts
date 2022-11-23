@@ -1,14 +1,11 @@
 import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
-import * as moment from 'moment';
 import { AlertService } from 'src/app/service/alert.service';
 import { FileUploadService } from 'src/app/service/file-upload.service';
 import { SupplierService } from 'src/app/service/supplier.service';
@@ -17,6 +14,8 @@ import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators'
 import { fromEvent   } from 'rxjs';
 import {CompressImageService} from '../../service/compress-image.service'
 import { take } from 'rxjs/operators';
+import { SupplierModel} from '../../interface/Supplier';
+import { ExcelService } from '../../service/excel.service';
 
 @Component({
   selector: 'app-supplier',
@@ -45,17 +44,15 @@ export class SupplierComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
     private formBuilder: FormBuilder,
     public as: AlertService,
     private ss: SupplierService,
     private fu: FileUploadService,
     private sp: NgxSpinnerService,
     private modalService: NgbModal,
-    private compressImage: CompressImageService
-
+    private compressImage: CompressImageService,
+    private excelService: ExcelService,
   ) {
     this.id = this.route.snapshot.params['id'];
     this.env = environment
@@ -106,8 +103,6 @@ export class SupplierComponent implements OnInit {
       next: (res: any) => {
         this.collectionSize = res.count;
         this.dataList = res.data
-        
-        console.log(res.data);
         this.sp.hide();
         this.as.successToast(res.message)
       },
@@ -127,8 +122,7 @@ export class SupplierComponent implements OnInit {
     this.fu.uploadFileComapny(compressedImage).subscribe((data:any) => {
       if (data.body !== undefined && mode === 'company') {
         this.companyImage = this.env.apiUrl + data.body?.download;
-        this.data.PhotoURL = data.body?.download
-        console.log(this.companyImage);
+        this.data.PhotoURL = data.body?.download;
         this.as.successToast(data.body?.message)
       }
      });
@@ -283,5 +277,9 @@ export class SupplierComponent implements OnInit {
       this.getList();
     } 
     });
+  }
+
+  exportAsXLSX(): void {
+    this.excelService.exportAsExcelFile(this.dataList, 'supplier_list');
   }
 }

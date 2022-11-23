@@ -1,12 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
-
-import { ThemePalette } from '@angular/material/core';
-
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { CompanyService } from '../../service/company.service';
 import { Subscription } from 'rxjs';
 import { AlertService } from '../../service/alert.service';
@@ -39,7 +34,6 @@ export class UserUpdatePasswordComponent implements OnInit {
   constructor(
     private cs: CompanyService,
     private sp: NgxSpinnerService,
-    private snackBar: MatSnackBar,
     public as: AlertService,
     private route: ActivatedRoute,
     private modalService: NgbModal
@@ -49,7 +43,6 @@ export class UserUpdatePasswordComponent implements OnInit {
 
 
    ngOnInit(): void {
-    console.log(this.id);
     this.getList()
   }
   
@@ -71,7 +64,6 @@ export class UserUpdatePasswordComponent implements OnInit {
       next: (res: any) => {
         this.collectionSize = res.count;
         this.dataList = res.data
-        console.log(res.data);
         this.sp.hide();
         this.as.successToast(res.message)
       },
@@ -82,7 +74,6 @@ export class UserUpdatePasswordComponent implements OnInit {
 
   openModal(content: any,ID:any) {
     this.data.ID = ID
-    console.log(this.data.ID);
     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'sm'});
   }
 
@@ -90,7 +81,6 @@ export class UserUpdatePasswordComponent implements OnInit {
     if(this.data.Password === this.ConfirmPassword){
       const subs: Subscription = this.cs.updatePassword(this.data).subscribe({
         next: (res: any) => {
-          console.log(res.data);
           if (res.success) {
             this.as.successToast(res.message)
           } else {

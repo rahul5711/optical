@@ -1,15 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ThemePalette } from '@angular/material/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { pipe, Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
-import * as moment from 'moment';
 import { AlertService } from 'src/app/service/alert.service';
 import { FileUploadService } from 'src/app/service/file-upload.service';
 import { EmployeeService } from 'src/app/service/employee.service';
@@ -33,13 +29,10 @@ export class EmployeeComponent implements OnInit {
   roleList:any
   dropShoplist: any;
   userList: any;
-  
+  saveUpdateHide:any
   constructor(
-    private router: Router,
-    private sanitizer: DomSanitizer,
+    private router: Router,      
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
-    private formBuilder: FormBuilder,
     public as: AlertService,
     private es: EmployeeService,
     private fu: FileUploadService,
@@ -61,6 +54,7 @@ export class EmployeeComponent implements OnInit {
   UserShop: any = {ID: null, UserID: null, ShopID: null, RoleID: null, Status: 1};
 
   ngOnInit(): void {
+    
     if (this.id != 0) {
       this.getUserById(); 
     }
@@ -72,7 +66,6 @@ export class EmployeeComponent implements OnInit {
     const subs: Subscription =  this.es.saveUser(this.data).subscribe({
       next: (res: any) => {
         // this.dataList = res.result;
-        // console.log(this.dataList);
         if (res.success) {
           // this.router.navigate(['/admin/employeeList']); 
           Swal.fire({
@@ -84,6 +77,14 @@ export class EmployeeComponent implements OnInit {
           }) 
         } else {
           this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'Already exist',
+            text:'LoginName Already exist from this LoginName ' + this.data.LoginName,
+            showConfirmButton: true,
+            backdrop: false
+          }) 
         }
       },
       error: (err: any) => {
@@ -125,10 +126,7 @@ export class EmployeeComponent implements OnInit {
   getUserById(){
     const subs: Subscription = this.es.getUserById(this.id).subscribe({
       next: (res: any) => {
-      
         this.userList = res.UserShop
-        console.log( this.userList);
-        
         if (res.success) {
           this.as.successToast(res.message)
           this.data = res.data[0]
@@ -195,8 +193,6 @@ export class EmployeeComponent implements OnInit {
     this.UserShop.UserID = this.id
     const subs: Subscription =  this.ss.saveUserShop(this.UserShop).subscribe({
       next: (res: any) => {
-        // this.dataList = res.result;
-        // console.log(this.dataList);
         if (res.success) {
           this.router.navigate(['/admin/employeeList']); 
           Swal.fire({
@@ -219,10 +215,8 @@ export class EmployeeComponent implements OnInit {
   }
 
   updateUserShop(){
-    const subs: Subscription =  this.ss.updateUserShop(this.UserShop.ID).subscribe({
+    const subs: Subscription =  this.ss.updateUserShop(this.UserShop).subscribe({
       next: (res: any) => {
-        // this.dataList = res.result;
-        // console.log(this.dataList);
         if (res.success) {
           this.router.navigate(['/admin/employeeList']); 
           Swal.fire({
@@ -278,6 +272,7 @@ export class EmployeeComponent implements OnInit {
 
   editUserShop(data: any) {
    this.UserShop = data;
+   this.saveUpdateHide = true
   }
 
 }

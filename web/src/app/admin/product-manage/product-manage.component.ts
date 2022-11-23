@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ThemePalette } from '@angular/material/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -24,9 +21,7 @@ i: any;
 
   constructor(
     private router: Router,
-    private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
     private ps: ProductService,
     public as: AlertService,
     private sp: NgxSpinnerService,
@@ -173,14 +168,13 @@ i: any;
     this.newProduct.ID = this.selectedProductID
     const subs: Subscription =  this.ps.updateProduct(this.newProduct).subscribe({
       next: (res: any) => {
-        console.log(res);
         if (res.success) {
           Swal.fire({
             position: 'center',
             icon: 'success',
             title: 'Your file has been update Product.',
             showConfirmButton: false,
-            timer: 1200
+            timer: 1200,
           }) 
         } else {
           this.as.errorToast(res.message)
@@ -197,6 +191,10 @@ i: any;
      this.selectedGSTPercentage = 0;
      this.selectedGSTType = '';
      this.specList = [];
+     this.router.navigate(['/admin/productManageAssign'])
+     .then(() => {
+       window.location.reload();
+     });
     this.modalService.dismissAll()
  
   }
@@ -215,7 +213,6 @@ i: any;
     this.newSpec = {ID : null, ProductName: '', Name : '', Seq: null,  Type: '', Ref: 0, SptTableName: '', Required: false  };
     const subs: Subscription = this.ps.saveSpec(specData).subscribe({
       next: (res: any) => {
-        console.log(res);
         if (res.success || res.message == 'this Seq Already Exist') {
           this.getfieldList();
           Swal.fire({

@@ -2,12 +2,8 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { CompanyService } from '../../service/company.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { AlertService } from '../../service/alert.service';
 import Swal from 'sweetalert2'; 
-import { AuthServiceService } from '../../service/auth-service.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { TokenService } from '../../service/token.service';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
 
@@ -28,15 +24,9 @@ export class DeactiveListComponent implements OnInit {
   page = 4;
   deactives =0
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private token: TokenService,
     private cs: CompanyService,
     private sp: NgxSpinnerService,
-    private snackBar: MatSnackBar,
     public as: AlertService,
-    private auth: AuthServiceService,
-
   ) { }
 
   ngOnInit(): void {
@@ -61,7 +51,6 @@ export class DeactiveListComponent implements OnInit {
       next: (res: any) => {
         this.collectionSize = res.count;
         this.dataList = res.data
-        console.log(res.data);
         this.sp.hide();
         this.as.successToast(res.message)
       },

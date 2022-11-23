@@ -1,14 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
-import * as moment from 'moment';
 import { AlertService } from 'src/app/service/alert.service';
 import { FileUploadService } from 'src/app/service/file-upload.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -35,9 +32,7 @@ export class FitterComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
     private formBuilder: FormBuilder,
     public as: AlertService,
     private fs: FitterService,
@@ -184,8 +179,7 @@ export class FitterComponent implements OnInit {
     this.fu.uploadFileComapny(compressedImage).subscribe((data:any) => {
       if (data.body !== undefined && mode === 'company') {
         this.userImage = this.env.apiUrl + data.body?.download;
-        this.data.PhotoURL = data.body?.download
-        console.log(this.userImage);
+        this.data.PhotoURL = data.body?.download;
         this.as.successToast(data.body?.message)
        }
      });

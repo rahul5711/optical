@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { SupplierModel} from '../interface/Supplier';
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +13,10 @@ export class SupplierService {
   private url = 'http://localhost:3000/supplier';
 
 
-  supplierSave( Body: any): Observable<any> {
+  supplierSave( Body: any): Observable<SupplierModel> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/save', Body, { headers, params })
+    return this.httpClient.post<SupplierModel>(this.url + '/save', Body, { headers, params })
     .pipe(catchError(this.handleError));
   }
 

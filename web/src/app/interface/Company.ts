@@ -1,4 +1,4 @@
-export class Company {
+export class CompanyModel {
   ID: number = 0;
   CompanyName: string = '';
   MobileNo1: string = '';

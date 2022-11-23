@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ThemePalette } from '@angular/material/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { CompanyService } from '../service/company.service';
 import { FileUploadService } from '../service/file-upload.service';
 import { Subscription } from 'rxjs';
@@ -13,7 +10,7 @@ import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
 import * as moment from 'moment';
-import { Company} from '../interface/Company';
+import { CompanyModel} from '../interface/Company';
 
 
 @Component({
@@ -24,9 +21,7 @@ import { Company} from '../interface/Company';
 
 export class CompanyComponent implements OnInit {
 
-  
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
- 
   companyImage: any;
   userImage: any;
   disableSuperAdminFields = false;
@@ -40,21 +35,16 @@ export class CompanyComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
     private cs: CompanyService,
     private fu: FileUploadService,
     public as: AlertService,
-    
   ) {
     this.id = this.route.snapshot.params['id'];
     this.env = environment
-   
-
   }
 
-  color: ThemePalette = 'primary';
+ 
   plans: any[] = [
   {ID: 1, Name: 'Trial Plan (15 Days)', days: 15},
   {ID: 2, Name: 'Monthly Plan (30 Days)', days: 30}, 
@@ -67,13 +57,10 @@ export class CompanyComponent implements OnInit {
      Name : '', UserGroup : "", DOB : null, Anniversary : null,  Branch : '', FaxNo : '',  PhotoURL : '',LoginName : "", Password : "",
      Document:null, CommissionType :null, CommissionMode :null, CommissionValue :null, CommissionValueNB :null,
   };
-
-
   // public id =  this.route.snapshot.paramMap.get('id');
 
 
   ngOnInit() {
-    
     if (this.id != 0) {
       this.getCompanyById(); 
     }
@@ -83,22 +70,22 @@ export class CompanyComponent implements OnInit {
     if(this.id !== 0) {
       this.data.EffectiveDate = new Date();
     }
-    if (value === 1) {
-        const d = new Date().setDate(this.data.EffectiveDate.getDate() + 15);
-        const date = new Date(d);
-        this.data.CancellationDate = date;
+    if(value === 1) {
+      const d = new Date().setDate(this.data.EffectiveDate.getDate() + 15);
+      const date = new Date(d);
+      this.data.CancellationDate = date;
     }
-    if (value === 2) {
+    if(value === 2) {
       const e = new Date().setDate(this.data.EffectiveDate.getDate() + 30);
       const date1 = new Date(e);
       this.data.CancellationDate = date1;
     }
-    if (value === 3) {
-    const f = new Date().setDate(this.data.EffectiveDate.getDate() + 181);
-    const date2 = new Date(f);
-    this.data.CancellationDate = date2;
+    if(value === 3) {
+      const f = new Date().setDate(this.data.EffectiveDate.getDate() + 181);
+      const date2 = new Date(f);
+      this.data.CancellationDate = date2;
     }
-    if (value === 4) {
+    if(value === 4) {
       const a = new Date().setDate(this.data.EffectiveDate.getDate() + 365);
       const date3 = new Date(a);
       this.data.CancellationDate = date3;
@@ -117,12 +104,9 @@ export class CompanyComponent implements OnInit {
   }
 
   onsubmit() {
-   
     const subs: Subscription =  this.cs.createCompany( this.data).subscribe({
       next: (res: any) => {
         // this.dataList = res.result;
-        // console.log(this.dataList);
-      
         if (res.success) {
           this.router.navigate(['/admin/companyList']); 
           Swal.fire({
@@ -134,7 +118,6 @@ export class CompanyComponent implements OnInit {
           }) 
         } else {
           this.as.errorToast(res.message)
-         
             Swal.fire({
               position: 'center',
               icon: 'error',
@@ -142,30 +125,24 @@ export class CompanyComponent implements OnInit {
               text:'LoginName Already exist from this LoginName ' + this.data.LoginName,
               showConfirmButton: true,
               backdrop: false
-            }) 
-          
+            })
         }
       },
       error: (err: any) => {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
-      
     });
-   
   } 
 
   getCompanyById(){
     const subs: Subscription = this.cs.getCompanyById(this.id).subscribe({
       next: (res: any) => {
-        console.log(res.data);
-        
         if (res.success) {
           this.as.successToast(res.message)
           this.data = res.data[0]
           this.companyImage = this.env.apiUrl + res.data[0].LogoURL;
           this.userImage = this.env.apiUrl + res.data[0].PhotoURL;
-
         } else {
           this.as.errorToast(res.message)
         }
@@ -180,7 +157,6 @@ export class CompanyComponent implements OnInit {
   updateCompany(){
     const subs: Subscription =  this.cs.updateCompany( this.data).subscribe({
       next: (res: any) => {
-        console.log(res);
         if (res.success) {
            if(this.user.data.UserGroup === 'SuperAdmin'){
             this.router.navigate(['/admin/companyList']);
@@ -192,8 +168,7 @@ export class CompanyComponent implements OnInit {
               showConfirmButton: false,
               timer: 1200
             }) 
-           }
-            
+           } 
         } else {
           this.as.errorToast(res.message)
         }
@@ -203,11 +178,9 @@ export class CompanyComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    
   }
 
   uploadImage(e:any, mode:any){
-    
     if(e.target.files.length) {
       this.img = e.target.files[0];
     };
@@ -215,7 +188,6 @@ export class CompanyComponent implements OnInit {
       if (data.body !== undefined && mode === 'company') {
         this.companyImage = this.env.apiUrl + data.body?.download;
         this.data.LogoURL = data.body?.download
-        console.log(this.companyImage);
         if(data.body.message === 'Uploaded Successfully'){
           Swal.fire({
             position: 'center',
@@ -225,8 +197,6 @@ export class CompanyComponent implements OnInit {
             timer: 500
           })
         }
-       
-        
       } else {
         this.userImage = this.env.apiUrl + data.body?.download;
         this.data.PhotoURL = data.body?.download
@@ -243,7 +213,4 @@ export class CompanyComponent implements OnInit {
       }
     });
   }
-
-
-
 }

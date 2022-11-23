@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -20,9 +18,7 @@ export class RoleComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
     private role: RoleService,
     public as: AlertService,
     private sp: NgxSpinnerService,
@@ -50,7 +46,6 @@ export class RoleComponent implements OnInit {
     const subs: Subscription =  this.role.roleSave(this.selectedRole.Name,this.selectedRole.Permission).subscribe({
       next: (res: any) => {
         this.roleList = res.data;
-        console.log(this.roleList);
         this.getList();
         if (res.success) {
           Swal.fire({
@@ -110,7 +105,6 @@ export class RoleComponent implements OnInit {
     const subs: Subscription = this.role.getList().subscribe({
       next: (res: any) => {
         this.roleList = res.data
-        console.log(this.roleList);
         this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
