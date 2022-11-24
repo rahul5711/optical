@@ -3,15 +3,15 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
 import { ShopService } from 'src/app/service/shop.service';
 import { AlertService } from 'src/app/service/alert.service';
 import { FileUploadService } from 'src/app/service/file-upload.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { fromEvent   } from 'rxjs';
-import {CompressImageService} from '../../service/compress-image.service'
+import { fromEvent } from 'rxjs';
+import { CompressImageService } from '../../service/compress-image.service'
 import { take } from 'rxjs/operators';
 import { ExcelService } from '../../service/excel.service';
 
@@ -21,16 +21,16 @@ import { ExcelService } from '../../service/excel.service';
   styleUrls: ['./shop-list.component.css']
 })
 export class ShopListComponent implements OnInit {
-  
+
   @ViewChild('searching') searching: ElementRef | any;
   env = environment;
   gridview = true;
   term = "";
-  loggedInCompany:any = (localStorage.getItem('LoggedINCompany') || '');
+  loggedInCompany: any = (localStorage.getItem('LoggedINCompany') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
   reactiveForm!: FormGroup;
   toggleChecked = false
-  companyImage:any;
+  companyImage: any;
   img: any;
   id: any;
   dataList: any;
@@ -41,8 +41,9 @@ export class ShopListComponent implements OnInit {
   page = 4;
   suBtn = true;
 
-  data: any = { ID : null,  CompanyID: null, Name : '', AreaName: '', MobileNo1 : '', MobileNo2 : '', PhoneNo : '', Address : '', 
-     Email :'', Website : '', GSTNo : '', CINNo : '', BarcodeName: '', Discount: false, GSTnumber: false, LogoURL : '',HSNCode: false, CustGSTNo:false, Rate:false, Discounts:false, Tax:false, SubTotal:false, Total:false,  ShopTiming : 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote : 'No Terms and Conditions',   Status : 1, CreatedBy : null, CreatedOn : null, UpdatedBy : null, UpdatedOn : null, ShopStatus: 0,
+  data: any = {
+    ID: null, CompanyID: null, Name: '', AreaName: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '',
+    Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: false, GSTnumber: false, LogoURL: '', HSNCode: false, CustGSTNo: false, Rate: false, Discounts: false, Tax: false, SubTotal: false, Total: false, ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: 'No Terms and Conditions', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
   };
 
   constructor(
@@ -57,17 +58,17 @@ export class ShopListComponent implements OnInit {
     private compressImage: CompressImageService,
     private excelService: ExcelService,
 
-  ) { 
+  ) {
     this.id = this.route.snapshot.params['id'];
     this.env = environment
     this.reactiveForm = new FormGroup({
-      Name : new FormControl(null, Validators.required)
+      Name: new FormControl(null, Validators.required)
     })
   }
 
   ngOnInit(): void {
-    this.getList();   
-    
+    this.getList();
+
   }
 
   onPageChange(pageNum: number): void {
@@ -89,10 +90,10 @@ export class ShopListComponent implements OnInit {
         this.collectionSize = res.count;
         this.dataList = res.data
         this.dataList.forEach((element: { LogoURL: any; }) => {
-          if(element.LogoURL !== "null" && element.LogoURL !== ''){
+          if (element.LogoURL !== "null" && element.LogoURL !== '') {
             element.LogoURL = (this.env.apiUrl + element.LogoURL);
-          }else{
-            element.LogoURL = "../../../assets/images/userEmpty.png"
+          } else {
+            element.LogoURL = "/assets/images/userEmpty.png"
           }
         });
         this.sp.hide();
@@ -104,7 +105,7 @@ export class ShopListComponent implements OnInit {
 
   }
 
-  deleteItem(i:any){
+  deleteItem(i: any) {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -137,13 +138,15 @@ export class ShopListComponent implements OnInit {
 
   openModal(content: any) {
     this.suBtn = false;
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'md' });
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
   }
 
-  openModalEdit(content: any,datas: any) {
+  openModalEdit(content: any, datas: any) {
+    console.log(datas);
+
     this.suBtn = true;
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, });
-    this.companyImage =  datas.LogoURL;
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, });
+    this.companyImage = datas.LogoURL;
     this.data = datas
   }
 
@@ -157,23 +160,26 @@ export class ShopListComponent implements OnInit {
       this.data.LogoURL = this.user.Company.LogoURL;
       this.data.PhoneNo = this.user.Company.PhoneNo;
       this.data.MobileNo1 = this.user.Company.MobileNo1;
-      this.data.MobileNo2 = this.user.Company.MobileNo2; 
+      this.data.MobileNo2 = this.user.Company.MobileNo2;
     }
   }
-  
+
   onsubmit() {
     var shopdate = this.data ?? " ";
-    const subs: Subscription =  this.ss.shopSave( shopdate).subscribe({
+    const subs: Subscription = this.ss.shopSave(shopdate).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.router.navigate(['/admin/shopList']); 
+          this.formReset()
+          this.modalService.dismissAll()
+          this.getList();
+          this.router.navigate(['/admin/shopList']);
           Swal.fire({
             position: 'center',
             icon: 'success',
             title: 'Your file has been Save.',
             showConfirmButton: false,
             timer: 1200
-          }) 
+          })
         } else {
           this.as.errorToast(res.message)
         }
@@ -182,30 +188,29 @@ export class ShopListComponent implements OnInit {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
-      
-    });
-    this.modalService.dismissAll()
-    this.getList();
-  } 
 
-  uploadImage(e:any, mode:any){
-   
-    this.img = e.target.files[0];
-      // console.log(`Image size before compressed: ${this.img.size} bytes.`)
-    this.compressImage.compress(this.img).pipe(take(1)).subscribe((compressedImage: any) => {
-      // console.log(`Image size after compressed: ${compressedImage.size} bytes.`)
-    this.fu.uploadFileComapny(compressedImage).subscribe((data:any) => {
-      if (data.body !== undefined && mode === 'company') {
-        this.companyImage = this.env.apiUrl + data.body?.download;
-        this.data.LogoURL = data.body?.download
-        this.as.successToast(data.body?.message)
-      }
-     });
-   })
+    });
 
   }
 
-  getShopById(){
+  uploadImage(e: any, mode: any) {
+
+    this.img = e.target.files[0];
+    // console.log(`Image size before compressed: ${this.img.size} bytes.`)
+    this.compressImage.compress(this.img).pipe(take(1)).subscribe((compressedImage: any) => {
+      // console.log(`Image size after compressed: ${compressedImage.size} bytes.`)
+      this.fu.uploadFileComapny(compressedImage).subscribe((data: any) => {
+        if (data.body !== undefined && mode === 'company') {
+          this.companyImage = this.env.apiUrl + data.body?.download;
+          this.data.LogoURL = data.body?.download
+          this.as.successToast(data.body?.message)
+        }
+      });
+    })
+
+  }
+
+  getShopById() {
     const subs: Subscription = this.ss.getShopById(this.id).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -224,10 +229,13 @@ export class ShopListComponent implements OnInit {
     })
   }
 
-  updateShop(){
-    const subs: Subscription =  this.ss.updateShop( this.data).subscribe({
+  updateShop() {
+    const subs: Subscription = this.ss.updateShop(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
+          this.formReset()
+          this.modalService.dismissAll()
+          this.getList();
           this.router.navigate(['/admin/shopList']);
           Swal.fire({
             position: 'center',
@@ -235,7 +243,7 @@ export class ShopListComponent implements OnInit {
             title: 'Your file has been Update.',
             showConfirmButton: false,
             timer: 1200
-          })   
+          })
         } else {
           this.as.errorToast(res.message)
         }
@@ -245,8 +253,7 @@ export class ShopListComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.modalService.dismissAll()
-    this.getList();
+
   }
 
   ngAfterViewInit() {
@@ -271,35 +278,42 @@ export class ShopListComponent implements OnInit {
       //   })
       // subscription for response
     ).subscribe((text: string) => {
-  //  const name = e.target.value;
-    let data = {
-      searchQuery: text.trim(),
-    } 
-    if(data.searchQuery !== "") {
-      const dtm = {
-        currentPage: 1,
-        itemsPerPage: 50000,
-        searchQuery: data.searchQuery 
+      //  const name = e.target.value;
+      let data = {
+        searchQuery: text.trim(),
       }
-      const subs: Subscription = this.ss.searchByFeild(dtm).subscribe({
-        next: (res: any) => {
-          this.collectionSize = res.count;
-          this.page = 1;
-          this.dataList = res.data
-          this.sp.hide();
-          this.as.successToast(res.message)
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    } else {
-      this.getList();
-    } 
+      if (data.searchQuery !== "") {
+        const dtm = {
+          currentPage: 1,
+          itemsPerPage: 50000,
+          searchQuery: data.searchQuery
+        }
+        const subs: Subscription = this.ss.searchByFeild(dtm).subscribe({
+          next: (res: any) => {
+            this.collectionSize = res.count;
+            this.page = 1;
+            this.dataList = res.data
+            this.sp.hide();
+            this.as.successToast(res.message)
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      } else {
+        this.getList();
+      }
     });
   }
 
   exportAsXLSX(): void {
     this.excelService.exportAsExcelFile(this.dataList, 'shop_list');
+  }
+
+  formReset() {
+    this.data = {
+      ID: null, CompanyID: null, Name: '', AreaName: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '',
+      Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: false, GSTnumber: false, LogoURL: '', HSNCode: false, CustGSTNo: false, Rate: false, Discounts: false, Tax: false, SubTotal: false, Total: false, ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: 'No Terms and Conditions', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
+    };
   }
 
 }

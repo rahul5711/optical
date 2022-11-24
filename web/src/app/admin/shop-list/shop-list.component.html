@@ -141,7 +141,7 @@
     <div class="modal-header" style="height: 50px;">
         <h2 class="modal-title header pt-2" id="exampleModalLabel">Shop Info</h2>
         <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
-            (click)="modal.dismiss('Cross click')"></button>
+            (click)="modal.dismiss('Cross click');formReset()"></button>
     </div>
     <div class="modal-body">
         <form autocomplete="off" #f="ngForm" (ngSubmit)="onsubmit()">
