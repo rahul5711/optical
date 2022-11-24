@@ -36,6 +36,7 @@ export class TokenInterceptor implements HttpInterceptor {
           headersConfig['Access-Control-Allow-Headers'] =  'Content-Type';
           headersConfig['ip'] = ip;
           headersConfig['UserGroup'] = this.tokenService.getUser().data?.UserGroup || '';
+          headersConfig['selectedShop'] = localStorage.getItem('selectedShop')|| '0';
 
         }
         req = req.clone({ setHeaders: headersConfig });
@@ -55,9 +56,9 @@ export class TokenInterceptor implements HttpInterceptor {
             if(err.status === 999) {
               localStorage.clear()
               this.router.navigate(['/'])
-              
+
             }
-            
+
             // this.spinner.hide();
               if (err.status === 401) {
               // this.as.errorToast(err.error.error.message);
@@ -71,20 +72,20 @@ export class TokenInterceptor implements HttpInterceptor {
               this.router.navigate([`/500/${msg}`]);
               }else if (err.status === 503) {
                 var message = err.error.error.message.replaceAll(' ', '_')
-      
+
                 this.router.navigate([`/503/${message}`]);
                 } else {
                 // console.log(err);
                 // this.as.errorToast(err.message);
                 const error =  err.error.error.message || err.error.message || err.statusText  || err.message;
                 console.log(error);
-                
+
                 this.as.errorToast(error);
               }
               // const error = err.error.message || err.statusText || err.error.error.message || err.message;
 
               // return Error(error);
-              
+
           }
         }, () => {
           // this.spinner.hide();

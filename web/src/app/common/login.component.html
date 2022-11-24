@@ -85,7 +85,7 @@
           <mat-form-field class="example-full-width" appearance="outline">
               <mat-label>Select Shop</mat-label>
               <mat-select name="selectedShop" [(ngModel)]="selectedShop" (selectionChange)="saveSelectedShop()">
-                  <mat-option [value]="s.ID" *ngFor="let s of dropShoplist"> {{s.Name}} <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></mat-option>
+                  <mat-option [value]="s.ID" *ngFor="let s of dropShoplist"> {{s.ShopName}} <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></mat-option>
               </mat-select>
           </mat-form-field>
       </div>

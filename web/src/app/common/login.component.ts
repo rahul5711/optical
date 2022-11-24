@@ -51,27 +51,13 @@ export class LoginComponent implements OnInit {
 
 
   ngOnInit(): void {
-    localStorage.removeItem('user');
   }
  
-
-  dropdownShoplist(){
-    const subs: Subscription = this.ss.dropdownShoplist(this.user.shop).subscribe({
-      next: (res: any) => {
-        this.dropShoplist = res.data
-        console.log(this.dropShoplist);
-        
-        this.sp.hide();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
-
   rolesList(){
     const subs: Subscription = this.role.getList().subscribe({
       next: (res: any) => {
         this.roleList = res.data
+        this.setPermission()
         this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
@@ -139,8 +125,12 @@ export class LoginComponent implements OnInit {
             }
 
             if( res.data.UserGroup == "CompanyAdmin"){
-              localStorage.setItem('user', JSON.stringify(res));
-              localStorage.setItem('Permission', JSON.stringify(this.moduleList));
+              localStorage.setItem('user', JSON.stringify(res.data));
+              localStorage.setItem('company', JSON.stringify(res.Company));
+              localStorage.setItem('companysetting', JSON.stringify(res.CompanySetting));
+              localStorage.setItem('shop', JSON.stringify(res.shop));
+              localStorage.setItem('selectedShop', JSON.stringify([`${res.shop[0].ID}`]));
+              localStorage.setItem('permission', JSON.stringify(this.moduleList));
               this.dataStorageService.permission = this.moduleList;
                this.router.navigate(['/admin/CompanyDashborad']);
                Swal.fire({
@@ -153,12 +143,14 @@ export class LoginComponent implements OnInit {
             } 
 
             if( res.data.UserGroup == "Employee"){
-                localStorage.setItem('Company', JSON.stringify(res.Company));
-                localStorage.setItem('CompanySetting', JSON.stringify(res.CompanySetting));
-                localStorage.setItem('data', JSON.stringify(res.data));
+                localStorage.setItem('company', JSON.stringify(res.Company));
+                localStorage.setItem('companysetting', JSON.stringify(res.CompanySetting));
+                localStorage.setItem('user', JSON.stringify(res.data));
+                localStorage.setItem('permission', JSON.stringify(this.moduleList));
+                this.dataStorageService.permission = this.moduleList;
+                this.dropShoplist = res.shop
                 this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
-                this.dropdownShoplist() 
-                this.rolesList() 
+
             }   
         } 
         else {
@@ -173,18 +165,13 @@ export class LoginComponent implements OnInit {
   }
 
   saveSelectedShop() {
-    console.log(this.selectedShop);
-    
-  //  this.modalService.dismissAll()
-  //  this.router.navigate(['/admin/CompanyDashborad']);
-  
    this.dropShoplist.forEach((element:any) => {
-    
-    
      if (element.ID === this.selectedShop) {
-    
-       localStorage.setItem('selectedShop', JSON.stringify(element));
-       this.setPermission(element.RoleID);
+        let shop = []
+        shop.push(element)
+       localStorage.setItem('selectedShop', JSON.stringify([`${element.ID}`]));
+       localStorage.setItem('shop', JSON.stringify(shop));
+       this.rolesList()
        this.modalService.dismissAll()
        this.router.navigate(['/admin/CompanyDashborad']);
        Swal.fire({
@@ -198,10 +185,10 @@ export class LoginComponent implements OnInit {
    });
  }
 
- setPermission(RoleID:any) {
+ setPermission() {
   this.roleList.forEach((element: any) => {
-    if (element.ID === RoleID) {
-     localStorage.setItem('Permission', element.Permission);
+    if (element.ID === Number(JSON.parse(localStorage.getItem('shop') || '')[0].RoleID)) {
+     localStorage.setItem('permission', element.Permission);
      this.dataStorageService.permission = JSON.parse(element.Permission);
     }
   });

@@ -82,8 +82,9 @@ module.exports = {
 
                     var currentTime = moment().tz("Asia/Kolkata").format("HH:mm");
                     if (
+                        true
                         // currentTime >= setting[0].LoginTimeStart &&
-                        currentTime < setting[0].LoginTimeEnd
+                        // currentTime < setting[0].LoginTimeEnd
                     ) {
                         comment = "login SuccessFully";
                         loginCode = 1;
@@ -97,7 +98,7 @@ module.exports = {
                             `Insert into loginhistory (CompanyID, UserName, UserID, LoginTime, IpAddress, Comment) values (${User[0].CompanyID}, '${User[0].Name}', ${User[0].ID}, now(), '${ip}', '${comment}')`
 
                         );
-                        const shop = await connection.query(`select usershop.*, role.Name as RoleName, shop.Name as ShopName, shop.AreaName as AreaName, user.Name as UserName from usershop left join role on role.ID = usershop.RoleID left join shop on shop.ID = usershop.ShopID left join user on user.ID = usershop.UserID where usershop.Status = 1 and usershop.UserID = ${User[0].ID}`)
+                        const shop = await connection.query(`select usershop.*, role.Name as RoleName, shop.Name as ShopName, shop.Name as Name, shop.AreaName as AreaName, user.Name as UserName from usershop left join role on role.ID = usershop.RoleID left join shop on shop.ID = usershop.ShopID left join user on user.ID = usershop.UserID where usershop.Status = 1 and usershop.UserID = ${User[0].ID}`)
                         const accessToken = await signAccessTokenAdmin(`'${User[0].ID}'`)
                         const refreshToken = await signRefreshTokenAdmin(`'${User[0].ID}'`)
                         return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], shop: shop, success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })

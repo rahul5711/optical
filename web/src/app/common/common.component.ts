@@ -14,12 +14,11 @@ import { NgxSpinnerService } from 'ngx-spinner';
 })
 export class CommonComponent implements OnInit {
 
-  loggedInUser:any = localStorage.getItem('LoggedINUser') || '' ;
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
   CompanyAdmindisplsy :any
   SuperAdmindis :any
   x: any;
-  dropShoplist :any;
+  dropShoplist :any = JSON.parse(localStorage.getItem('shop') || '');
   selectedShops :any;
 
   constructor(
@@ -31,7 +30,7 @@ export class CommonComponent implements OnInit {
   viewCompanyInfo = true;
 
   ngOnInit(): void { 
-    this.dropdownShoplist()
+    this.selectedShops = Number(JSON.parse(localStorage.getItem('selectedShop') || '')[0]);
   }
  
   myFunction() {
@@ -43,38 +42,9 @@ export class CommonComponent implements OnInit {
     }
   }
 
-  dropdownShoplist(){
-    const subs: Subscription = this.ss.dropdownShoplist(this.user.shop).subscribe({
-      next: (res: any) => {
-        this.dropShoplist = res.data
-        if (this.dropShoplist.length !== 0) {
-  
-          // localStorage.setItem('LoggedINShop', JSON.stringify(this.shopList[0]));
-          // this.loggedInShop = this.shopList[0];
-          this.selectedShops = localStorage.getItem("selectedShop") || '';
-          if(this.selectedShops === null ) {
-            this.selectedShops = this.dropShoplist[0].ShopID;
-            localStorage.setItem('selectedShop', JSON.stringify(this.dropShoplist[0]));
-          } else {
-            this.selectedShops = JSON.parse(localStorage.getItem("selectedShop") || '')?.ShopID;
-          }
-        }
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
-
   saveSelectedShop() {
-    localStorage.removeItem('selectedShop');
-    this.dropShoplist.forEach((element: { ID: any; }) => {
-      if (element.ID === this.selectedShops) {
-        localStorage.setItem('LoggedINShop', JSON.stringify(element));
-        this.selectedShops = element;
-        this.selectedShops = JSON.parse(localStorage.getItem("selectedShop") || '').ShopID;
-        this.router.navigate(['/admin/CompanyDashborad']);
-      }
-    });
+   localStorage.removeItem('selectedShop');
+   localStorage.setItem('selectedShop', JSON.stringify([`${this.selectedShops}`]));
   }
 
   logout() {
