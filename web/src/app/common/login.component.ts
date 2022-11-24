@@ -79,11 +79,9 @@ export class LoginComponent implements OnInit {
           this.as.successToast(res.message)
           this.token.setToken(res.accessToken);
           this.token.refreshToken(res.refreshToken);
-          localStorage.setItem('user', JSON.stringify(res));
-
             if(res.data.UserGroup  == "SuperAdmin" ){
-              localStorage.setItem('user', JSON.stringify(res));
-              this.router.navigate(['/admin/adminDashborad']);
+              localStorage.setItem('user', JSON.stringify(res.data));
+              this.router.navigate(['/admin/companyList']);
              
               let dt = new Date();
               let hours = dt.getHours();
