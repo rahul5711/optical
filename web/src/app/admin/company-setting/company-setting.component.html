@@ -227,8 +227,7 @@
                                             </div>
                                             <div class="col-2">
                                                 <div class="col-12 ">
-                                                    <img class="fit-picture" width="170" height="170"
-                                                        [src]="companyImage">
+                                                    <img class="fit-picture" width="170" height="170" [src]="companyImage">
                                                 </div>
                                                 <div class="col-xl-11 col-lg-11 col-md-11 col-sm-12 mb-0 "
                                                     (click)="fileInput.click()" style="cursor: pointer;">
@@ -236,8 +235,8 @@
                                                         <span style="font-size: 10px;letter-spacing: 2px;">Company
                                                             Logo</span>
                                                     </i>
-                                                    <input #fileInput name='LogoURL' type="file"
-                                                        (change)="uploadImage($event, 'company')" accept="/*"
+                                                    <input #fileInput id="my-input" name='LogoURL' type="file"
+                                                        (change)="uploadImage($event, 'company')" 
                                                         style="display:none;">
                                                 </div>
                                                 <div class="col-12 mt-1">
@@ -250,7 +249,7 @@
                                                         <span
                                                             style="font-size: 10px;letter-spacing: 2px;">WatermarkLogoURL</span>
                                                     </i>
-                                                    <input #fileInputs name='WatermarkLogoURL' type="file"
+                                                    <input #fileInputs  id="my-input" name='WatermarkLogoURL' type="file"
                                                         [(ngModel)]="data.WatermarkLogoURL"
                                                         (change)="uploadImage($event, '')" accept="/*"
                                                         style="display:none;">

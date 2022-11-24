@@ -9,7 +9,7 @@ import { SupplierComponent } from './supplier/supplier.component';
 const routes: Routes = [
   { path: '',
   children: [
-    { path: 'supplier/:id', component: SupplierComponent },  
+    { path: 'supplier', component: SupplierComponent },  
     { path: 'purchase/:id', component: PurchaseComponent },  
     { path: 'purchaseList', component: PurchaseListComponent },  
     { path: 'fitter/:id', component: FitterComponent },  

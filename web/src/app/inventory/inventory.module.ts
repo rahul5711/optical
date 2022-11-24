@@ -25,6 +25,7 @@ import { FitterComponent } from './fitter/fitter.component';
 import { FitterListComponent } from './fitter-list/fitter-list.component';
 import { PurchaseComponent } from './purchase/purchase.component';
 import { PurchaseListComponent } from './purchase-list/purchase-list.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 @NgModule({
@@ -58,6 +59,7 @@ import { PurchaseListComponent } from './purchase-list/purchase-list.component';
     MatCheckboxModule,
     MatTabsModule,
     NgbModule,
+    NgSelectModule
   ]
 })
 export class InventoryModule { }

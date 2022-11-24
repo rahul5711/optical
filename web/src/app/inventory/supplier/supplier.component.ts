@@ -29,7 +29,8 @@ export class SupplierComponent implements OnInit {
   
   @ViewChild('searching') searching: ElementRef | any;
   user = JSON.parse(localStorage.getItem('user') || '');
-  env: { production: boolean; apiUrl: string; appUrl: string; };
+  env = environment;
+  gridview = true;
   term:any;
   id: any;
   companyImage: any;
@@ -91,6 +92,8 @@ export class SupplierComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
     this.modalService.dismissAll()
+    this.getList(); 
+
   } 
 
   getList() {
@@ -102,7 +105,14 @@ export class SupplierComponent implements OnInit {
     const subs: Subscription = this.ss.getList(dtm).subscribe({
       next: (res: any) => {
         this.collectionSize = res.count;
-        this.dataList = res.data
+        this.dataList = res.data;
+        this.dataList.forEach((element: { PhotoURL: any; }) => {
+          if(element.PhotoURL !== "null" && element.PhotoURL !== ''){
+            element.PhotoURL = (this.env.apiUrl + element.PhotoURL);
+          }else{
+            element.PhotoURL = "../../../assets/images/userEmpty.png"
+          }
+        });
         this.sp.hide();
         this.as.successToast(res.message)
       },
@@ -162,9 +172,9 @@ export class SupplierComponent implements OnInit {
   }
 
   getSupplierById(datas:any){
-    this.suBtn = true;
-    this.router.navigate(['/inventory/supplier',datas.ID]); 
+    this.companyImage =  datas.PhotoURL;
     this.data = datas;
+    this.suBtn = true;
   }
 
   Clear(){
@@ -198,6 +208,8 @@ export class SupplierComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
     this.modalService.dismissAll()
+    this.getList(); 
+
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {

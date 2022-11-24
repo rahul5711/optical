@@ -23,6 +23,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { AddManageComponent } from './add-manage/add-manage.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,7 @@ import { AddManageComponent } from './add-manage/add-manage.component';
     MatCheckboxModule,
     MatTabsModule,
     NgbModule,
-  
+    NgSelectModule
   ]
 })
 export class ProductModule { }

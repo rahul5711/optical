@@ -5,10 +5,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { CompanyService } from '../../service/company.service';
 import { Subscription } from 'rxjs';
 import { AlertService } from '../../service/alert.service';
-import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2'; 
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-user-update-password',
@@ -17,7 +17,8 @@ import Swal from 'sweetalert2';
 })
 export class UserUpdatePasswordComponent implements OnInit {
   loggedInUser:any = localStorage.getItem('LoggedINUser');
-  evn = environment;
+  env = environment;
+  gridview = true;
   stringUrl: string | undefined;
   dataList: any;
   currentPage = 1;
@@ -63,7 +64,14 @@ export class UserUpdatePasswordComponent implements OnInit {
     const subs: Subscription = this.cs.getUserList(dtm).subscribe({
       next: (res: any) => {
         this.collectionSize = res.count;
-        this.dataList = res.data
+        this.dataList = res.data;
+        this.dataList.forEach((element: { PhotoURL: any; }) => {
+          if(element.PhotoURL !== "null" && element.PhotoURL !== ""){
+            element.PhotoURL = (this.env.apiUrl + element.PhotoURL);
+          }else{
+            element.PhotoURL = "../../../assets/images/userEmpty.png"
+          }
+        });
         this.sp.hide();
         this.as.successToast(res.message)
       },

@@ -7,10 +7,11 @@
                     <div class="header p-0 py-0 pt-1">
                         <div class="row">
                             <div class="col-md-1 col-6 p-0 ms-3">
-                                <h2>Suppliers List  </h2>
+                                <h2>Suppliers List </h2>
                             </div>
                             <div class="ps-md-0 ps-0 pt-1" style="width: 40px;">
-                                <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button" (click)="exportAsXLSX()"></i>
+                                <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"
+                                    (click)="exportAsXLSX()"></i>
                             </div>
                             <div class="col-md-2 col-1 ps-md-0 ps-1">
                                 <select class=" form-control"
@@ -33,18 +34,44 @@
                             </div>
                             <div class="col-md-2 col-4 ms-auto">
                                 <div class="input-group">
-                                    <input   placeholder="Search" [(ngModel)]="term" #searching  mdbInput type="search" id="form1" class="form-control" />
+                                    <input placeholder="Search" [(ngModel)]="term" #searching mdbInput type="search"
+                                        id="form1" class="form-control" />
                                 </div>
-                        </div>
-                            <div  class="col-md-1 col-1" style="width: 50px">
-                                <mat-icon class="col-white plus_icon"  data-mdb-toggle="modal" 
-                                data-mdb-target="#exampleModal" (click)="openModal(content)"
-                                    style="float: right;"> add</mat-icon>
+                            </div>
+                            <div class="col-md-1 col-1" style="width: 70px;padding: 0;">
+                                <mat-icon class="col-white plus_icon me-1" data-mdb-toggle="modal"
+                                    data-mdb-target="#exampleModal" (click)="openModal(content)"> add</mat-icon>
+                                <mat-icon class="col-white Grid_icon" (click)="gridview = !gridview" title="Grid View"
+                                    style="font-size: 22px;padding: 4px;">grid_on</mat-icon>
                             </div>
                         </div>
                     </div>
- <!-- table list start -->         
-                    <div class="row mt-md-3 mt-5  ">
+                    <!-- Grid View start -->
+                    <div class="row mt-2 p-2" *ngIf="dataList?.length !== 0 && !gridview"
+                        style="overflow:auto;height:530px; ">
+                        <div class="col-md-3" *ngFor="let data of dataList let i = index;">
+                            <div class="course-card" style="height: 28rem;">
+                                <div class="course-card-body">
+                                    <div class="course-card-top-overflow text-white">
+                                        <img [src]="data.PhotoURL" alt="Image" class="mx-auto d-block cardImg" />
+                                    </div>
+                                    <h2 class="text-center m-0">{{data.Name}}</h2>
+                                    <p class="text-center m-0">{{data.MobileNo1}}</p>
+                                    <p class="text-center m-0">{{data.Email}}</p>
+                                    <p class="text-center m-0 cardAddress">{{data.Address }}</p>
+                                    <div class="text-center mb-3">
+                                        <mat-icon class="edit_icon ms-1" (click)="openModal(content)"
+                                            (click)="getSupplierById(data)">edit</mat-icon>
+                                        <mat-icon class="delete_icon ms-1" (click)="deleteItem(i)">delete_forever
+                                        </mat-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Grid View end -->
+                    <!-- table list start -->
+                    <div class="row mt-md-3 mt-5  " *ngIf="gridview">
                         <div style="overflow-x:auto;overflow:auto;height:530px; " class="table-responsive mt-md-0 mt-3">
                             <table style="width:100%;" id="exportsss"
                                 class="table table-striped table-hover table-sm table-bordered"
@@ -67,8 +94,12 @@
                                 <tbody>
                                     <tr *ngFor="let data of dataList  let i = index;">
                                         <td style="width: 7%;">
-                                            <mat-icon class="edit_icon ms-1" data-mdb-toggle="modal"  data-mdb-target="#exampleModal" (click)="openModal(content)" (click)="getSupplierById(data)" [routerLink]="['/inventory/supplier',data.ID]">edit</mat-icon>
-                                            <mat-icon class="delete_icon ms-1" (click)="deleteItem(i)">delete_forever</mat-icon>
+                                            <mat-icon class="edit_icon ms-1" data-mdb-toggle="modal"
+                                                data-mdb-target="#exampleModal" (click)="openModal(content)"
+                                                (click)="getSupplierById(data)" [routerLink]="['/inventory/supplier']">
+                                                edit</mat-icon>
+                                            <mat-icon class="delete_icon ms-1" (click)="deleteItem(i)">delete_forever
+                                            </mat-icon>
                                         </td>
                                         <td class="text-center">{{ dataList.length - i }}</td>
                                         <td class="text-center">{{data.Name}}</td>
@@ -77,7 +108,8 @@
                                         <td class="text-center">{{(data.PhoneNo !== 'null')? data.PhoneNo: ''}}</td>
                                         <td class="text-center">{{(data.Email !== 'null')? data.Email: ''}}</td>
                                         <td class="text-center">{{data.Address}}</td>
-                                        <td class="text-center">{{(data.ContactPerson !== 'null')? data.ContactPerson: ''}}</td>
+                                        <td class="text-center">{{(data.ContactPerson !== 'null')? data.ContactPerson:
+                                            ''}}</td>
                                         <td class="text-left"> {{data.CreatedPerson}} </td>
                                         <td class="text-left"> {{data.UpdatedPerson}} </td>
                                     </tr>
@@ -85,181 +117,177 @@
                             </table>
                         </div>
                     </div>
- <!-- table list start -->
+                    <!-- table list end -->
                 </div>
             </div>
         </div>
     </div>
 </section>
- <!-- model popup start -->
+<!-- model popup start -->
 <ng-template #content role="document" let-modal>
     <div class="modal-header" style="height: 50px;">
-      <h2 class="modal-title header pt-2" id="exampleModalLabel">Supplier Info [{{this.data.Sno}}]</h2>
-      <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
-        (click)="modal.dismiss('Cross click')"></button>
+        <h2 class="modal-title header pt-2" id="exampleModalLabel">Supplier Info [{{this.data.Sno}}]</h2>
+        <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
+            (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-            <form #f="ngForm" autocomplete="off" (ngSubmit)="onsubmit();">
-                <div class="row">
-                    <div class="col-10">
-                        <div class="row">
-                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>Company Name</mat-label>
-                                    <input matInput name="Name" [(ngModel)]="data.Name"
-                                        (ngModelChange)="data.Name = onChange($event)" required #Namecontrol
-                                        appAutoFoucsDirectives>
-                                    <mat-error>
-                                        Supplier Name is required
-                                    </mat-error>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>Phone No</mat-label>
-                                    <input matInput name="PhoneNo" type="number" [(ngModel)]="data.PhoneNo"
-                                        #PhoneNocontrol>
-                                    <mat-error>
-                                        Phone No is required
-                                    </mat-error>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>Mobile No1</mat-label>
-                                    <input matInput name="MobileNo1" type="number"
-                                        [(ngModel)]="data.MobileNo1" required #MobileNo1control>
-                                    <!-- pattern="^((\\+91-?)|0)?[0-9]{10}$"  -->
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>Mobile No2</mat-label>
-                                    <input matInput name="MobileNo2" type="number"
-                                        [(ngModel)]="data.MobileNo2" #MobileNo2control>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>Email</mat-label>
-                                    <input matInput name="Email" [(ngModel)]="data.Email"
-                                        (ngModelChange)="data.Email = onChange($event)" #Emailcontrol>
-                                    <!-- pattern="[a-zA-Z0-9.-_]{3,}@[a-zA-Z.-]{3,}[.]{1}[a-zA-Z]{3,}"  -->
-                                    <mat-error>
-                                        Invalid EmailId
-                                    </mat-error>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-9 col-lg-9 col-md-6 col-sm-12 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>Address</mat-label>
-                                    <input matInput name="Address" minlength="2" [(ngModel)]="data.Address"
-                                        (ngModelChange)="data.Address = onChange($event)" required
-                                        #Addresscontrol>
-                                    <mat-error>
-                                        Atleast 2 characters is required
-                                    </mat-error>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>Website</mat-label>
-                                    <input matInput name="Website" [(ngModel)]="data.Website"
-                                        (ngModelChange)="data.Website = onChange($event)" #Websitecontrol>
-                                    <mat-error>
-                                        Website is required
-                                    </mat-error>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>GST/VAT No</mat-label>
-                                    <input matInput name="GSTNo" [(ngModel)]="data.GSTNo"
-                                        (ngModelChange)="data.GSTNo = onChange($event)" #GSTNocontrol>
-                                    <mat-error>
-                                        GST No is required
-                                    </mat-error>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0 ">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>CIN No</mat-label>
-                                    <input matInput name="CINNo" [(ngModel)]="data.CINNo"
-                                        (ngModelChange)="data.CINNo = onChange($event)" #CINNocontrol>
-                                    <mat-error>
-                                        CIN is required
-                                    </mat-error>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>Fax No</mat-label>
-                                    <input matInput name="Fax" [(ngModel)]="data.Fax"
-                                        (ngModelChange)="data.Fax = onChange($event)" #Faxcontrol>
-                                    <mat-error>
-                                        Fax is required
-                                    </mat-error>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>DOB</mat-label>
-                                    <input matInput name="DOB" type="date" [(ngModel)]="data.DOB">
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>Anniversary</mat-label>
-                                    <input matInput name="Anniversary" type="date"
-                                        [(ngModel)]="data.Anniversary">
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>Contact Person</mat-label>
-                                    <input matInput name="ContactPerson" [(ngModel)]="data.ContactPerson"
-                                        (ngModelChange)="data.ContactPerson = onChange($event)">
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>Remark</mat-label>
-                                    <input matInput name="Remark" [(ngModel)]="data.Remark"
-                                        (ngModelChange)="data.Remark = onChange($event)">
-                                </mat-form-field>
-                            </div>
-                            
+        <form #f="ngForm" autocomplete="off" (ngSubmit)="onsubmit();">
+            <div class="row">
+                <div class="col-10">
+                    <div class="row">
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Company Name</mat-label>
+                                <input matInput name="Name" [(ngModel)]="data.Name"
+                                    (ngModelChange)="data.Name = onChange($event)" required #Namecontrol
+                                    appAutoFoucsDirectives>
+                                <mat-error>
+                                    Supplier Name is required
+                                </mat-error>
+                            </mat-form-field>
                         </div>
-                        <div class="row">
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3">
-                                <button class="me-3" type="button" mat-raised-button color="primary"
-                                    [disabled]="!f.valid" *ngIf="suBtn == true" (click)="supplierUpdate()">Update</button>
-                                <button type="submit" class="me-3" mat-raised-button color="primary"
-                                    [disabled]="!f.valid" *ngIf="suBtn == false">Save</button>
-                                <button type="button" mat-raised-button
-                                    [routerLink]="['/inventory/supplier',0]" (click)="Clear()">Clear</button>
-                            </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Phone No</mat-label>
+                                <input matInput name="PhoneNo" type="number" [(ngModel)]="data.PhoneNo" #PhoneNocontrol>
+                                <mat-error>
+                                    Phone No is required
+                                </mat-error>
+                            </mat-form-field>
                         </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Mobile No1</mat-label>
+                                <input matInput name="MobileNo1" type="number" [(ngModel)]="data.MobileNo1" required
+                                    #MobileNo1control>
+                                <!-- pattern="^((\\+91-?)|0)?[0-9]{10}$"  -->
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Mobile No2</mat-label>
+                                <input matInput name="MobileNo2" type="number" [(ngModel)]="data.MobileNo2"
+                                    #MobileNo2control>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Email</mat-label>
+                                <input matInput name="Email" [(ngModel)]="data.Email"
+                                    (ngModelChange)="data.Email = onChange($event)" #Emailcontrol>
+                                <!-- pattern="[a-zA-Z0-9.-_]{3,}@[a-zA-Z.-]{3,}[.]{1}[a-zA-Z]{3,}"  -->
+                                <mat-error>
+                                    Invalid EmailId
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xl-9 col-lg-9 col-md-6 col-sm-12 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Address</mat-label>
+                                <input matInput name="Address" minlength="2" [(ngModel)]="data.Address"
+                                    (ngModelChange)="data.Address = onChange($event)" required #Addresscontrol>
+                                <mat-error>
+                                    Atleast 2 characters is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Website</mat-label>
+                                <input matInput name="Website" [(ngModel)]="data.Website"
+                                    (ngModelChange)="data.Website = onChange($event)" #Websitecontrol>
+                                <mat-error>
+                                    Website is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>GST/VAT No</mat-label>
+                                <input matInput name="GSTNo" [(ngModel)]="data.GSTNo"
+                                    (ngModelChange)="data.GSTNo = onChange($event)" #GSTNocontrol>
+                                <mat-error>
+                                    GST No is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0 ">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>CIN No</mat-label>
+                                <input matInput name="CINNo" [(ngModel)]="data.CINNo"
+                                    (ngModelChange)="data.CINNo = onChange($event)" #CINNocontrol>
+                                <mat-error>
+                                    CIN is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Fax No</mat-label>
+                                <input matInput name="Fax" [(ngModel)]="data.Fax"
+                                    (ngModelChange)="data.Fax = onChange($event)" #Faxcontrol>
+                                <mat-error>
+                                    Fax is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>DOB</mat-label>
+                                <input matInput name="DOB" type="date" [(ngModel)]="data.DOB">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Anniversary</mat-label>
+                                <input matInput name="Anniversary" type="date" [(ngModel)]="data.Anniversary">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Contact Person</mat-label>
+                                <input matInput name="ContactPerson" [(ngModel)]="data.ContactPerson"
+                                    (ngModelChange)="data.ContactPerson = onChange($event)">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Remark</mat-label>
+                                <input matInput name="Remark" [(ngModel)]="data.Remark"
+                                    (ngModelChange)="data.Remark = onChange($event)">
+                            </mat-form-field>
+                        </div>
+
                     </div>
-                    <div class="col-md-2 col-12">
-                        <div class="row ">
-                            <div class="col-10 mt-md-3 ">
-                                <img class="fit-picture" width="170" height="170" [src]="companyImage">
-                            </div>
-                            <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 "
-                                (click)="fileInput.click()" style="cursor: pointer;">
-                                <i class="fa-solid fa-cloud-arrow-up upload_icon">
-                                    <span style="font-size: 10px;letter-spacing: 2px;"> Image
-                                    </span>
-                                </i>
-                                <input #fileInput id="my-input" name='PhotoURL' type="file"
-                                    (change)="uploadImage($event, 'company')"
-                                    style="display:none;">
-                            </div>
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3">
+                            <button class="me-3" type="button" mat-raised-button color="primary" [disabled]="!f.valid"
+                                *ngIf="suBtn == true" (click)="supplierUpdate()">Update</button>
+                            <button type="submit" class="me-3" mat-raised-button color="primary" [disabled]="!f.valid"
+                                *ngIf="suBtn == false">Save</button>
+                            <button type="button" mat-raised-button [routerLink]="['/inventory/supplier',0]"
+                                (click)="Clear()">Clear</button>
                         </div>
                     </div>
                 </div>
-            </form>
+                <div class="col-md-2 col-12">
+                    <div class="row ">
+                        <div class="col-10 mt-md-3 ">
+                            <img class="fit-picture" width="170" height="170" [src]="companyImage">
+                        </div>
+                        <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 " (click)="fileInput.click()"
+                            style="cursor: pointer;">
+                            <i class="fa-solid fa-cloud-arrow-up upload_icon">
+                                <span style="font-size: 10px;letter-spacing: 2px;"> Image
+                                </span>
+                            </i>
+                            <input #fileInput id="my-input" name='PhotoURL' type="file"
+                                (change)="uploadImage($event, 'company')" style="display:none;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </ng-template>
- <!-- model popup ent -->
+<!-- model popup ent -->

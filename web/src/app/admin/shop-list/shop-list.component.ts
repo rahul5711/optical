@@ -23,6 +23,8 @@ import { ExcelService } from '../../service/excel.service';
 export class ShopListComponent implements OnInit {
   
   @ViewChild('searching') searching: ElementRef | any;
+  env = environment;
+  gridview = true;
   term = "";
   loggedInCompany:any = (localStorage.getItem('LoggedINCompany') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
@@ -30,9 +32,7 @@ export class ShopListComponent implements OnInit {
   toggleChecked = false
   companyImage:any;
   img: any;
-  env: { production: boolean; apiUrl: string; appUrl: string; };
   id: any;
-  
   dataList: any;
   currentPage = 1;
   itemsPerPage = 10;
@@ -88,6 +88,13 @@ export class ShopListComponent implements OnInit {
       next: (res: any) => {
         this.collectionSize = res.count;
         this.dataList = res.data
+        this.dataList.forEach((element: { LogoURL: any; }) => {
+          if(element.LogoURL !== "null" && element.LogoURL !== ''){
+            element.LogoURL = (this.env.apiUrl + element.LogoURL);
+          }else{
+            element.LogoURL = "../../../assets/images/userEmpty.png"
+          }
+        });
         this.sp.hide();
         this.as.successToast(res.message)
       },
@@ -131,13 +138,13 @@ export class ShopListComponent implements OnInit {
   openModal(content: any) {
     this.suBtn = false;
     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'md' });
-
   }
 
   openModalEdit(content: any,datas: any) {
-    this.data = datas
     this.suBtn = true;
     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, });
+    this.companyImage =  datas.LogoURL;
+    this.data = datas
   }
 
   copyData(val: any) {
@@ -177,8 +184,8 @@ export class ShopListComponent implements OnInit {
       complete: () => subs.unsubscribe(),
       
     });
-    this.getList();
     this.modalService.dismissAll()
+    this.getList();
   } 
 
   uploadImage(e:any, mode:any){
@@ -239,6 +246,7 @@ export class ShopListComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
     this.modalService.dismissAll()
+    this.getList();
   }
 
   ngAfterViewInit() {

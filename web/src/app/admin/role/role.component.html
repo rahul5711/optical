@@ -13,20 +13,14 @@
                     <div class="body">
                         <form #f="ngForm">
                             <div class="row" *ngIf="!showAdd">
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 mb-0">
-                                    <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>Role</mat-label>
-                                        <mat-select name="Field Type" [(ngModel)]="selectedRole.ID"  required
-                                            #Typecontrol appAutoFoucsDirectives>
-                                            <mat-option [value]=""></mat-option>
-                                            <mat-option *ngFor="let role of roleList" [value]="role.ID">
-                                                {{role.Name | uppercase}}
-                                            </mat-option>
-                                        </mat-select>
-                                        <mat-error>
-                                            Select Valid Value
-                                        </mat-error>
-                                    </mat-form-field>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 mb-0" style=" height: 60px;">
+                                    <ng-select bindLabel="Shop" name="Role" placeholder="Select Role" [(ngModel)]="selectedRole.ID" [required]="true" #Role="ngModel" [closeOnSelect]="true" [searchable]="true">
+                                        <ng-option [value]=""></ng-option>
+                                        <ng-option [value]="role.ID" *ngFor="let role of roleList">{{role.Name | uppercase}} </ng-option>
+                                     </ng-select>
+                                     <span *ngIf="Role.errors && !Role.touched" class="star">*</span>
+                                     <span *ngIf="Role.touched && Role.errors" class="errorss">Select Valid Value</span>
+
                                 </div>
                                 <div *ngIf="!showAdd" class="col-md-6 col-sm-6 mb-0">
                                     <button type="button" class="btn_icon" (click)="showAdd = !showAdd;">

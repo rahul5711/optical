@@ -165,17 +165,12 @@
                                         <form class="m-0" #assignForm="ngForm" (ngSubmit)="saveRateCard()">
                                             <div class="row">
                                                 <div class="col-lg-6">
-                                                    <mat-form-field class="example-full-width mb-0">
-                                                        <mat-label>Select Lens Type</mat-label>
-                                                        <mat-select name="LensType" [(ngModel)]="rateCard.LensType"
-                                                            required>
-                                                            <mat-option [value]="l.Name" *ngFor="let l of LensTypeList">
-                                                                {{l.Name}} </mat-option>
-                                                        </mat-select>
-                                                        <mat-error>
-                                                            LensType is required
-                                                        </mat-error>
-                                                    </mat-form-field>
+                                                    <ng-select bindLabel="LensType" name="LensType" placeholder="Select LensType" [(ngModel)]="rateCard.LensType" [required]="true" #LensType="ngModel" [closeOnSelect]="true" [searchable]="true">
+                                                        <ng-option [value]="l.Name" *ngFor="let l of LensTypeList">{{l.Name}}
+                                                        </ng-option>
+                                                     </ng-select>
+                                                     <span *ngIf="LensType.errors && !LensType.touched" class="star" style="left: 105px;">*</span>
+                                                     <span *ngIf="LensType.touched && LensType.errors" class="errorss"> LensType is required</span>
                                                 </div>
                                                 <div class="col-lg-4">
                                                     <mat-form-field class="example-full-width mb-0">
@@ -231,16 +226,13 @@
                                             (ngSubmit)="saveFitterAssignedShop()">
                                             <div class="row">
                                                 <div class="col-lg-6">
-                                                    <mat-form-field class="example-full-width mb-0">
-                                                        <mat-label>Select Shop</mat-label>
-                                                        <mat-select name="ShopID" [(ngModel)]="assignShop.ShopID"
-                                                            required>
-                                                            <mat-option [value]="s.ID" *ngFor="let s of dropShoplist">
-                                                                {{s.Name}}<span [style.color]="'blue'"
-                                                                    *ngIf="s.AreaName !== 'null'">
-                                                                    ({{s.AreaName}})</span> </mat-option>
-                                                        </mat-select>
-                                                    </mat-form-field>
+                                                    <ng-select bindLabel="Shop" name="ShopID" placeholder="Select Shop" [(ngModel)]="assignShop.ShopID" [required]="true" #ShopID="ngModel" [closeOnSelect]="true" [searchable]="true">
+                                                        <ng-option [value]="s.ID" *ngFor="let s of dropShoplist">{{s.Name}}
+                                                             <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'"> ({{s.AreaName}})</span>
+                                                        </ng-option>
+                                                     </ng-select>
+                                                     <span *ngIf="ShopID.errors && !ShopID.touched" class="star">*</span>
+                                                     <span *ngIf="ShopID.touched && ShopID.errors" class="errorss"> Shop is required</span>
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <button class="mr-3" mat-raised-button color="primary"

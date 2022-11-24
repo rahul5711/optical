@@ -57,6 +57,14 @@ export class RoleComponent implements OnInit {
           }) 
         } else {
           this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'Already exist',
+            text:'Already exist from this Role Name',
+            showConfirmButton: true,
+            backdrop: false
+          }) 
         }
       },
       error: (err: any) => {

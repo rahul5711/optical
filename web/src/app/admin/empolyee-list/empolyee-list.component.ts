@@ -9,6 +9,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
 import { ExcelService } from '../../service/excel.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-empolyee-list',
@@ -17,6 +18,8 @@ import { ExcelService } from '../../service/excel.service';
 })
 export class EmpolyeeListComponent implements OnInit {
   @ViewChild('searching') searching: ElementRef | any;
+  env = environment;
+  gridview = true;
   term = "";
   dataList: any;
   currentPage = 1;
@@ -27,7 +30,7 @@ export class EmpolyeeListComponent implements OnInit {
   id:any;
   data = {ID: null, Password :''}
   ConfirmPassword :any;
-  
+ 
   constructor(
     public as: AlertService,
     private es: EmployeeService,
@@ -40,7 +43,11 @@ export class EmpolyeeListComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    this.getList();    
+    this.getList();  
+    console.log(this.env.apiUrl);
+    
+    
+     
   }
 
   onPageChange(pageNum: number): void {
@@ -61,6 +68,13 @@ export class EmpolyeeListComponent implements OnInit {
       next: (res: any) => {
         this.collectionSize = res.count;
         this.dataList = res.data
+        this.dataList.forEach((element: { PhotoURL: any; }) => {
+          if(element.PhotoURL !== "null" && element.PhotoURL !== ''){
+            element.PhotoURL = (this.env.apiUrl + element.PhotoURL);
+          }else{
+            element.PhotoURL = "../../../assets/images/userEmpty.png"
+          }
+        });
         this.sp.hide();
         this.as.successToast(res.message)
       },

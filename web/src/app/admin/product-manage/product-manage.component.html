@@ -16,7 +16,7 @@
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Product</mat-label>
-                                        <mat-select name="selectedProduct" [(ngModel)]="selectedProduct" required
+                                        <mat-select  name="selectedProduct" [(ngModel)]="selectedProduct" required
                                             (selectionChange)="getfieldList()" #Typecontrol appAutoFoucsDirectives>
                                             <mat-option *ngFor="let prod of prodList  let i = index; "
                                                 [value]="prod.Name">
@@ -167,8 +167,7 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <button mat-raised-button color="primary"
-                                        [disabled]="selectedProduct === '' && !f.valid"
-                                        (click)="saveSpec()">Save</button>
+                                        [disabled]="newSpec.Type != ''" (click)="saveSpec()">Save</button>
                                 </div>
                             </div>
 

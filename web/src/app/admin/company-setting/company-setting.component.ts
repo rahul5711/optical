@@ -39,6 +39,7 @@ export class CompanySettingComponent implements OnInit {
   env = environment;
   companyImage: any;
   dataList: any;
+  loggedInCompany = (localStorage.getItem('LoggedINCompany'));
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
    
    
@@ -60,7 +61,10 @@ export class CompanySettingComponent implements OnInit {
 
   ngOnInit(): void {
     this.data = this.user.CompanySetting
-    this.wlcmArray1 = this.user?.CompanySetting?.WelComeNote
+     this.wlcmArray1 = JSON.parse(this.data.WelComeNote) || ''
+
+    console.log(this.wlcmArray1);
+    
   }
 
   uploadImage(e:any, mode:any){
@@ -92,6 +96,7 @@ export class CompanySettingComponent implements OnInit {
     const subs: Subscription =  this.cs.updatecompanysetting( this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
+         
             Swal.fire({
               position: 'center',
               icon: 'success',

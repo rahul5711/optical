@@ -10,6 +10,7 @@ import { TokenService } from '../service/token.service';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
 import { ExcelService } from '../service/excel.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-company-list',
@@ -19,7 +20,9 @@ import { ExcelService } from '../service/excel.service';
 export class CompanyListComponent implements OnInit {
 
   @ViewChild('searching') searching: ElementRef | any;
+  env = environment;
   term = "";
+  gridview = true;
   dataList: any;
   currentPage = 1;
   itemsPerPage = 10;
@@ -59,7 +62,14 @@ export class CompanyListComponent implements OnInit {
     const subs: Subscription = this.cs.getList(dtm).subscribe({
       next: (res: any) => {
         this.collectionSize = res.count;
-        this.dataList = res.data
+        this.dataList = res.data;
+        this.dataList.forEach((element: { LogoURL: any; }) => {
+          if(element.LogoURL !== "null" && element.LogoURL !== ""){
+            element.LogoURL = (this.env.apiUrl + element.LogoURL);
+          }else{
+            element.LogoURL = "../../../assets/images/userEmpty.png"
+          }
+        });
         this.sp.hide();
         this.as.successToast(res.message)
       },

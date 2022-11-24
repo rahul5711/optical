@@ -9,6 +9,7 @@ import { DoctorService } from 'src/app/service/doctor.service';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
 import { ExcelService } from '../../service/excel.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-doctor-list',
@@ -18,6 +19,8 @@ import { ExcelService } from '../../service/excel.service';
 export class DoctorListComponent implements OnInit {
   
   @ViewChild('searching') searching: ElementRef | any;
+  env = environment;
+  gridview = true
   term = "";
   dataList: any;
   currentPage = 1;
@@ -54,6 +57,13 @@ export class DoctorListComponent implements OnInit {
       next: (res: any) => {
         this.collectionSize = res.count;
         this.dataList = res.data;
+        this.dataList.forEach((element: { PhotoURL: any; }) => {
+          if(element.PhotoURL !== "null" && element.PhotoURL !== ''){
+            element.PhotoURL = (this.env.apiUrl + element.PhotoURL);
+          }else{
+            element.PhotoURL = "../../../assets/images/userEmpty.png"
+          }
+        });
         this.sp.hide();
         this.as.successToast(res.message)
       },
