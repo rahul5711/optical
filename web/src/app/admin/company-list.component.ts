@@ -3,12 +3,12 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { CompanyService } from '../service/company.service';
 import { AlertService } from '../service/alert.service';
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
 import { AuthServiceService } from '../service/auth-service.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TokenService } from '../service/token.service';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { fromEvent   } from 'rxjs';
+import { fromEvent } from 'rxjs';
 import { ExcelService } from '../service/excel.service';
 import { environment } from '../../environments/environment';
 
@@ -29,7 +29,12 @@ export class CompanyListComponent implements OnInit {
   pageSize!: number;
   collectionSize = 0
   page = 4;
-  deactives =0
+  deactives = 0
+  moduleList: any = [
+    { ModuleName: 'CompanyInfo', MView: true, Edit: true, Add: true, View: true, Delete: true },
+  ];
+  user: any = JSON.parse(localStorage.getItem('user') || '');
+
   constructor(
     private router: Router,
     private token: TokenService,
@@ -38,11 +43,17 @@ export class CompanyListComponent implements OnInit {
     public as: AlertService,
     private auth: AuthServiceService,
     private excelService: ExcelService,
-
   ) { }
 
   ngOnInit(): void {
-    this.getList();    
+    this.user = JSON.parse(localStorage.getItem('user') || '')
+    if (this.user.UserGroup !== 'SuperAdmin') {
+      localStorage.clear();
+      this.router.navigate(['/']);
+      this.as.successToast("LogOut !!")
+    } else {
+      this.getList();
+    }
   }
 
   onPageChange(pageNum: number): void {
@@ -64,9 +75,9 @@ export class CompanyListComponent implements OnInit {
         this.collectionSize = res.count;
         this.dataList = res.data;
         this.dataList.forEach((element: { LogoURL: any; }) => {
-          if(element.LogoURL !== "null" && element.LogoURL !== ""){
+          if (element.LogoURL !== "null" && element.LogoURL !== "") {
             element.LogoURL = (this.env.apiUrl + element.LogoURL);
-          }else{
+          } else {
             element.LogoURL = "../../../assets/images/userEmpty.png"
           }
         });
@@ -79,7 +90,7 @@ export class CompanyListComponent implements OnInit {
 
   }
 
-  deleteItem(i:any){
+  deleteItem(i: any) {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -88,8 +99,8 @@ export class CompanyListComponent implements OnInit {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!',
-      backdrop : 'static',
-  
+      backdrop: 'static',
+
 
     }).then((result) => {
       if (result.isConfirmed) {
@@ -113,11 +124,11 @@ export class CompanyListComponent implements OnInit {
       }
     })
 
-   
-    
+
+
   }
 
-  companylogin(i:any){
+  companylogin(i: any) {
     Swal.fire({
       title: 'Are you sure Login To Company?',
       // text: "Do You Want To Login To The Company Or Not!",
@@ -133,22 +144,27 @@ export class CompanyListComponent implements OnInit {
         this.sp.show();
         const subs: Subscription = this.auth.companylogin(this.dataList[i].LoginName).subscribe({
           next: (res: any) => {
-            if(res.loginCode === 1){
-             
+            if (res.loginCode === 1) {
+
               localStorage.clear();
               this.as.successToast(res.message)
               this.token.setToken(res.accessToken);
               this.token.refreshToken(res.refreshToken);
-              localStorage.setItem('user', JSON.stringify(res));
+              localStorage.setItem('user', JSON.stringify(res.data));
+              localStorage.setItem('company', JSON.stringify(res.Company));
+              localStorage.setItem('companysetting', JSON.stringify(res.CompanySetting));
+              localStorage.setItem('shop', JSON.stringify(res.shop));
+              localStorage.setItem('selectedShop', JSON.stringify([`${res.shop[0].ID}`]));
+              localStorage.setItem('permission', JSON.stringify(this.moduleList));
               this.router.navigate(['/admin/CompanyDashborad'])
-              .then(() => {
-                window.location.reload();
-              });
-             
-            }else{
+                .then(() => {
+                  window.location.reload();
+                });
+
+            } else {
               console.log('not login compnay');
             }
-               
+
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
@@ -162,8 +178,8 @@ export class CompanyListComponent implements OnInit {
         })
       }
     })
-   
-    
+
+
   }
 
   ngAfterViewInit() {
@@ -188,34 +204,34 @@ export class CompanyListComponent implements OnInit {
       //   })
       // subscription for response
     ).subscribe((text: string) => {
-  //  const name = e.target.value;
-    let data = {
-      searchQuery: text.trim(),
-    } 
-    if(data.searchQuery !== "") {
-      const dtm = {
-        currentPage: 1,
-        itemsPerPage: 50000,
-        searchQuery: data.searchQuery 
+      //  const name = e.target.value;
+      let data = {
+        searchQuery: text.trim(),
       }
-      const subs: Subscription = this.cs.searchByFeild(dtm).subscribe({
-        next: (res: any) => {
-          this.collectionSize = res.count;
-          this.page = 1;
-          this.dataList = res.data
-          this.sp.hide();
-          this.as.successToast(res.message)
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    } else {
-      this.getList();
-    } 
+      if (data.searchQuery !== "") {
+        const dtm = {
+          currentPage: 1,
+          itemsPerPage: 50000,
+          searchQuery: data.searchQuery
+        }
+        const subs: Subscription = this.cs.searchByFeild(dtm).subscribe({
+          next: (res: any) => {
+            this.collectionSize = res.count;
+            this.page = 1;
+            this.dataList = res.data
+            this.sp.hide();
+            this.as.successToast(res.message)
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      } else {
+        this.getList();
+      }
     });
   }
 
-  deactive(i:any) {
+  deactive(i: any) {
     Swal.fire({
       title: 'Are you sure?',
       text: "Do You Want To Deactive This Company",
@@ -245,7 +261,7 @@ export class CompanyListComponent implements OnInit {
         })
       }
     })
-  
+
 
   }
 
