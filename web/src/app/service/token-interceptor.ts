@@ -35,8 +35,8 @@ export class TokenInterceptor implements HttpInterceptor {
           headersConfig['Authorization'] = `Bearer ${token}`;
           headersConfig['Access-Control-Allow-Headers'] =  'Content-Type';
           headersConfig['ip'] = ip;
-          headersConfig['UserGroup'] = this.tokenService.getUser().data?.UserGroup || '';
-          // headersConfig['selectedShop'] = localStorage.getItem('selectedShop')|| '0';
+          headersConfig['UserGroup'] = this.tokenService.getUser().UserGroup || '';
+          headersConfig['selectedShop'] = localStorage.getItem('selectedShop')|| '0';
 
         }
         req = req.clone({ setHeaders: headersConfig });
@@ -53,6 +53,8 @@ export class TokenInterceptor implements HttpInterceptor {
         },
         (err: any) => {
           if (err instanceof HttpErrorResponse) {
+            console.log(err);
+
             if(err.status === 999) {
               localStorage.clear()
               this.router.navigate(['/'])

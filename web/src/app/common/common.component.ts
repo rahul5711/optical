@@ -18,8 +18,8 @@ export class CommonComponent implements OnInit {
   CompanyAdmindisplsy :any
   SuperAdmindis :any
   x: any;
-  dropShoplist :any = JSON.parse(localStorage.getItem('shop') || '');
-  selectedShops :any;
+  dropShoplist :any;
+  selectedShops :any = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -30,7 +30,12 @@ export class CommonComponent implements OnInit {
   viewCompanyInfo = true;
 
   ngOnInit(): void { 
-    this.selectedShops = Number(JSON.parse(localStorage.getItem('selectedShop') || '')[0]);
+    this.user = JSON.parse(localStorage.getItem('user') || '')
+    if (this.user.UserGroup !== 'SuperAdmin') {
+      this.selectedShops = Number(JSON.parse(localStorage.getItem('selectedShop') || '')[0]);
+      this.dropShoplist  = JSON.parse(localStorage.getItem('shop') || '')
+    }
+
   }
  
   myFunction() {

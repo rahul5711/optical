@@ -51,6 +51,7 @@ export class LoginComponent implements OnInit {
 
 
   ngOnInit(): void {
+
   }
  
   rolesList(){
@@ -79,10 +80,12 @@ export class LoginComponent implements OnInit {
           this.as.successToast(res.message)
           this.token.setToken(res.accessToken);
           this.token.refreshToken(res.refreshToken);
+          localStorage.setItem('user', JSON.stringify(res.data));
+
             if(res.data.UserGroup  == "SuperAdmin" ){
               localStorage.setItem('user', JSON.stringify(res.data));
-              this.router.navigate(['/admin/companyList']);
-             
+              this.router.navigate(['/admin/adminDashborad']);
+
               let dt = new Date();
               let hours = dt.getHours();
               let min = dt.getMinutes();
@@ -155,7 +158,7 @@ export class LoginComponent implements OnInit {
           this.as.errorToast(res.message);          
         }
       },
-      error: (err: any) => console.log(err.message),
+      error: (err: any) => console.log(err),
       complete: () => subs.unsubscribe(),
     });
     this.sp.hide()

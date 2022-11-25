@@ -102,7 +102,7 @@
 <!-- SuperAdmin login btn -->
 
  <!-- companyAdmin or employee login btn -->
- <div class="SelectYourShop">
+ <div class="SelectYourShop" *ngIf="selectedShops?.length !== 0">
   
   <mat-select name="selectedShops"  placeholder="Select Your Shop" [(ngModel)]="selectedShops" (selectionChange)="saveSelectedShop()"  required #Typecontrol>
     <mat-option *ngIf="user?.UserGroup === 'CompanyAdmin'" [value]="0">All</mat-option>

@@ -42,7 +42,7 @@ app.use(function(req, res, next) {
         var currentTime = moment().tz("Asia/Kolkata").format("HH:mm");
         if (
           currentTime < companysetting[0].LoginTimeEnd
-      ) { 
+      ) {
         next()
       } else {
         return res.status(999).send({success: false, message: `your session has been expired`})
