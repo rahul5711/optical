@@ -6,7 +6,6 @@ import { ShopService } from '../service/shop.service';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { NgxSpinnerService } from 'ngx-spinner';
 
-
 @Component({
   selector: 'app-common',
   templateUrl: './common.component.html',
@@ -35,7 +34,6 @@ export class CommonComponent implements OnInit {
       this.selectedShops = Number(JSON.parse(localStorage.getItem('selectedShop') || '')[0]);
       this.dropShoplist  = JSON.parse(localStorage.getItem('shop') || '')
     }
-
   }
  
   myFunction() {

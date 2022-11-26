@@ -118,7 +118,13 @@ $OguruPro-theme: mat.define-light-theme((
 .content{
     background-image: url(assets/images/SHOP.svg);
     background-size: 100%;
+    -webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
 }
+
+
 
 .card_TBL{
     margin-top: 10px;
@@ -345,19 +351,24 @@ $OguruPro-theme: mat.define-light-theme((
 }
 
 .SelectYourShop{
-    float: right; 
     color: aliceblue; 
-    margin-left: 50% !important;
     cursor: pointer;
     transition: 0.5s;
+    background: aliceblue;
+    padding: 10px !important;
+    border-radius: 6px;
+    box-shadow: inset 1px 1px 13px #00000073;
+    width: 75% !important;
 }
 
 .logoutBtn{
-    float: right; 
-    color: aliceblue; 
-    margin-right: 1% !important; 
+    float: right;
+    color: aliceblue;
+    margin-right: 5% !important;
     cursor: pointer;
     transition: 0.5s;
+    margin-top: -42px !important;
+    font-size: 25px;
 }
 
 .logoutBtn:hover{
