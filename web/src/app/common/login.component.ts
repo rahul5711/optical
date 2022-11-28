@@ -15,6 +15,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ShopService } from '../service/shop.service';
 import { RoleService } from '../service/role.service';
 import { DataStorageServiceService } from '../service/data-storage-service.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -22,6 +23,8 @@ import { DataStorageServiceService } from '../service/data-storage-service.servi
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+  env = environment;
+
   particlesJS: any;
   data:any = { LoginName: '', Password: '' }
  
@@ -148,8 +151,10 @@ export class LoginComponent implements OnInit {
                 localStorage.setItem('companysetting', JSON.stringify(res.CompanySetting));
                 localStorage.setItem('user', JSON.stringify(res.data));
                 localStorage.setItem('permission', JSON.stringify(this.moduleList));
+                
                 this.dataStorageService.permission = this.moduleList;
                 this.dropShoplist = res.shop
+               
                 this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
 
             }   

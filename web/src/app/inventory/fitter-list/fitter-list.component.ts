@@ -69,7 +69,7 @@ export class FitterListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-
+    this.sp.hide()
   }
 
   deleteItem(i:any){
