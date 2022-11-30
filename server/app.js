@@ -79,6 +79,7 @@ app.use('/employee', require('./routes/employee.route'));
 app.use('/supplier', require('./routes/supplier.route'));
 app.use('/doctor', require('./routes/doctor.route'));
 app.use('/fitter', require('./routes/fitter.route'));
+app.use('/expense', require('./routes/expense.route'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
