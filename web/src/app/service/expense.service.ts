@@ -46,6 +46,10 @@ export class ExpenseService {
     .pipe(catchError(this.handleError));
   }
 
+  searchByFeild(searchQuery: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/searchByFeild', searchQuery)
+    .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

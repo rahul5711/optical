@@ -100,6 +100,7 @@ module.exports = {
             return error
         }
     },
+
     delete: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
@@ -202,6 +203,32 @@ module.exports = {
         } catch (error) {
             console.log(error);
             return error
+        }
+    },
+
+    searchByFeild: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "", count: 0 }
+            const connection = await getConnection.connection();
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
+
+            let qry = `select expense.*, shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from expense left join user as users1 on users1.ID = expense.CreatedBy left join user as users on users.ID = expense.UpdatedBy left join shop on shop.ID = expense.ShopID where expense.Status = 1 and expense.CompanyID = '${CompanyID}' and expense.Name like '%${Body.searchQuery}%' OR expense.Status = 1 and expense.CompanyID = '${CompanyID}' and expense.Category like '%${Body.searchQuery}%' `
+
+     
+            let data = await connection.query(qry);
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = data.length
+            connection.release()
+            res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+
         }
     },
 

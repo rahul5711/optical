@@ -9,9 +9,7 @@ import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/alert.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { fromEvent   } from 'rxjs';
-import {CompressImageService} from '../../service/compress-image.service'
-import { take } from 'rxjs/operators';
+import { fromEvent   } from 'rxjs'
 import { ExcelService } from '../../service/excel.service';
 import { ExpenseService } from 'src/app/service/expense.service';
 import { ShopService } from 'src/app/service/shop.service';
@@ -24,7 +22,9 @@ import { SupportService } from 'src/app/service/support.service';
   styleUrls: ['./expense.component.css']
 })
 export class ExpenseComponent implements OnInit {
+
   user = JSON.parse(localStorage.getItem('user') || '');
+  @ViewChild('searching') searching: ElementRef | any;
   term:any;
   dataList:any;
   dropShoplist:any;
@@ -237,6 +237,55 @@ export class ExpenseComponent implements OnInit {
 
   exportAsXLSX(): void {
     this.excelService.exportAsExcelFile(this.dataList, 'expense_list');
+  }
+
+  ngAfterViewInit() {
+    // server-side search
+    fromEvent(this.searching.nativeElement, 'keyup').pipe(
+      // get value
+      map((event: any) => {
+        return event.target.value;
+      }),
+
+      // if character length greater then 2
+      // filter(res => res.length > 2),
+
+      // Time in milliseconds between key events
+      debounceTime(1000),
+
+      // If previous query is different from current
+      distinctUntilChanged(),
+      // tap((event: KeyboardEvent) => {
+      //     console.log(event)
+      //     console.log(this.input.nativeElement.value)
+      //   })
+      // subscription for response
+    ).subscribe((text: string) => {
+  //  const name = e.target.value;
+    let data = {
+      searchQuery: text.trim(),
+    } 
+    if(data.searchQuery !== "") {
+      const dtm = {
+        currentPage: 1,
+        itemsPerPage: 50000,
+        searchQuery: data.searchQuery 
+      }
+      const subs: Subscription = this.expen.searchByFeild(dtm).subscribe({
+        next: (res: any) => {
+          this.collectionSize = res.count;
+          this.page = 1;
+          this.dataList = res.data
+          this.sp.hide();
+          this.as.successToast(res.message)
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    } else {
+      this.getList();
+    } 
+    });
   }
 
   formReset() {

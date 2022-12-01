@@ -39,56 +39,62 @@
                                 </div>
                             </div>
                             <div class="col-md-1 col-1" style="width: 40px;padding: 0;">
-                                <mat-icon class="col-white plus_icon me-1" (click)="openModal(content)" data-mdb-toggle="modal"
-                                    data-mdb-target="#exampleModal"> add</mat-icon>
-                                
+                                <button class="bg-none" (click)="openModal(content)">
+                                    <mat-icon class="col-white plus_icon me-1" data-mdb-toggle="modal"
+                                        data-mdb-target="#exampleModal"> add</mat-icon>
+                                </button>
                             </div>
                         </div>
                     </div>
-                
+
                     <!-- table list start -->
-                    <div class="row mt-md-3 mt-5 " >
+                    <div class="row mt-md-3 mt-5 ">
                         <div style="overflow-x:auto;overflow:auto;height:530px; " class="table-responsive mt-md-0 mt-3">
                             <table style="width:100%;" id="exportsss"
                                 class="table table-striped table-hover table-sm table-bordered"
                                 style="border: 2px solid #fff !important;">
                                 <thead class="thead-light" style="width:100%;">
                                     <tr>
-                                    <th>Action</th>
-                                    <th>S.No</th>
-                                    <th>ExpenseDate</th>
-                                    <th>InvoiceNo</th>
-                                    <th>ShopName</th>
-                                    <th>GiveTo</th>
-                                    <th>Category</th>
-                                    <th>Amount</th>
-                                    <th>PaymentMode</th>
-                                    <th>Reference</th>
-                                    <th>Comments</th>
-                                    <th>CreatedBy</th>
-                                    <th>UpdatedBy</th>
+                                        <th>Action</th>
+                                        <th>S.No</th>
+                                        <th>ExpenseDate</th>
+                                        <th>InvoiceNo</th>
+                                        <th>ShopName</th>
+                                        <th>GiveTo</th>
+                                        <th>Category</th>
+                                        <th>Amount</th>
+                                        <th>PaymentMode</th>
+                                        <th>Reference</th>
+                                        <th>Comments</th>
+                                        <th>CreatedBy</th>
+                                        <th>UpdatedBy</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let data of dataList  let i = index;">
                                         <td class="text-center" style="width: 7%;">
-                                            <mat-icon class="edit_icon ms-1" data-mdb-toggle="modal"
-                                                data-mdb-target="#exampleModal"  (click)="openEditModal(content,data)"
-                                                  >
-                                                edit</mat-icon>
-                                            <mat-icon class="delete_icon ms-1" (click)="deleteItem(i)">delete_forever
-                                            </mat-icon>
+                                            <button class="bg-none" (click)="openEditModal(content,data)">
+                                                <mat-icon class="edit_icon ms-1" data-mdb-toggle="modal"
+                                                    data-mdb-target="#exampleModal">
+                                                    edit
+                                                </mat-icon>
+                                            </button>
+                                            <button class="bg-none" (click)="deleteItem(i)">
+                                                <mat-icon class="delete_icon ms-1">delete_forever</mat-icon>
+                                            </button>
                                         </td>
                                         <td class="text-center">{{ dataList.length - i }}</td>
                                         <td class="text-center">{{data.ExpenseDate }}</td>
                                         <td class="text-center">{{data.InvoiceNo}}</td>
                                         <td class="text-center">{{data.ShopName }}
-                                            <span [style.color]="'blue'" *ngIf="data.AreaName !== 'null'">({{data. AreaName}})</span>
+                                            <span [style.color]="'blue'" *ngIf="data.AreaName !== 'null'">({{data.
+                                                AreaName}})</span>
                                         </td>
                                         <td class="text-center">{{data.Name }}</td>
                                         <td class="text-center">{{data.Category }}</td>
                                         <td class="text-center">{{data.Amount}}</td>
-                                        <td class="text-center">{{data.PaymentMode}}<span *ngIf="this.data.CashType != ''">-[{{data.CashType}}]</span> </td>
+                                        <td class="text-center">{{data.PaymentMode}}<span
+                                                *ngIf="this.data.CashType != ''">-[{{data.CashType}}]</span> </td>
                                         <td class="text-center">{{data.PaymentRefereceNo}}</td>
                                         <td class="text-center">{{data.Comments}}</td>
                                         <td class="text-center">{{data.CreatedPerson}} </td>
@@ -114,94 +120,98 @@
     </div>
     <div class="modal-body ">
         <form #f="ngForm" autocomplete="off">
-                        <div class="row mt-0">
-                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0 ">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>Shop Name</mat-label>
-                                    <mat-select  name="ShopID"  [(ngModel)]="data.ShopID" #singleSelect required appAutoFoucsDirectives>
-                                        <mat-option [value]="0">All</mat-option>
-                                        <mat-option [value]="sup.ID" *ngFor="let sup of dropShoplist" >
-                                            {{sup.Name}} 
-                                        <span [style.color]="'blue'" *ngIf="sup.AreaName !== 'null'">({{sup.AreaName}})</span>
-                                        </mat-option>
-                                    </mat-select>
-                                    <mat-error>
-                                        Select Shop
-                                    </mat-error>
-                                </mat-form-field>
-                            </div> 
-                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>ExpenseType</mat-label>
-                                    <mat-select name="Category" [(ngModel)]="data.Category"  #singleSelect required>
-                                        <mat-option [value]="e.Name" *ngFor="let e of ExpenseTypeList"> {{e.Name}} </mat-option>
-                                    </mat-select>
-                                    <mat-error>
-                                        Payment Mode is required
-                                    </mat-error>
-                                </mat-form-field>
-                            </div>      
-                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>Given To</mat-label>
-                                    <input matInput name="Name" [(ngModel)]="data.Name" (ngModelChange)="data.Name = onChange($event)" />
-                                    <mat-error>Name is required</mat-error>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>Amount</mat-label>
-                                    <input matInput name="MobileNo2" type="number" [(ngModel)]="data.Amount" required />
-                                    <mat-error>Amount is required</mat-error>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>Payment Mode</mat-label>
-                                    <mat-select name="PaymentMode" [(ngModel)]="data.PaymentMode"  #singleSelect required>
-                                        <mat-option [value]="p.Name" *ngFor="let p of PaymentModesList"> {{p.Name}} </mat-option>
-                                    </mat-select>
-                                    <mat-error>
-                                        Payment Mode is required
-                                    </mat-error>
-                                </mat-form-field>
-                            </div>
-                            <div *ngIf="data.PaymentMode === 'CASH' || data.PaymentMode === 'cash'" class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0 ">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>Cash Type</mat-label>
-                                    <mat-select name="Duration" [(ngModel)]="data.CashType" required>
-                                        <mat-option value="CashCounter">Cash Counter</mat-option>
-                                        <mat-option value="PettyCash">Petty Cash</mat-option>
-                                    </mat-select>
-                                    <mat-error>
-                                        CashType is required
-                                    </mat-error>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>Reference</mat-label>
-                                    <input matInput name="Reference" [(ngModel)]="data.PaymentRefereceNo" (ngModelChange)="data.PaymentRefereceNo = onChange($event)" />
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>Comments</mat-label>
-                                    <input matInput name="Comments" [(ngModel)]="data.Comments" (ngModelChange)="data.Comments = onChange($event)" />
-                                </mat-form-field>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
-                                <button  *ngIf="suBtn === false" 
-                                (click)="onsubmit()"  class="me-3" mat-raised-button color="primary"  [disabled]=!f.valid>Save</button>
-                                <button  *ngIf="suBtn === true"  (click)="updateExpense()" class="me-3" mat-raised-button color="primary"  [disabled]=!f.valid>Update</button>
-                                <button type="button" mat-raised-button > Cancel</button>
-                            </div>
-                        </div>
-               
-            </form>
-        
+            <div class="row mt-0">
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0 ">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Shop Name</mat-label>
+                        <mat-select name="ShopID" [(ngModel)]="data.ShopID" #singleSelect required
+                            appAutoFoucsDirectives>
+                            <mat-option [value]="0">All</mat-option>
+                            <mat-option [value]="sup.ID" *ngFor="let sup of dropShoplist">
+                                {{sup.Name}}
+                                <span [style.color]="'blue'" *ngIf="sup.AreaName !== 'null'">({{sup.AreaName}})</span>
+                            </mat-option>
+                        </mat-select>
+                        <mat-error>
+                            Select Shop
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>ExpenseType</mat-label>
+                        <mat-select name="Category" [(ngModel)]="data.Category" #singleSelect required>
+                            <mat-option [value]="e.Name" *ngFor="let e of ExpenseTypeList"> {{e.Name}} </mat-option>
+                        </mat-select>
+                        <mat-error>
+                            Payment Mode is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Given To</mat-label>
+                        <input matInput name="Name" [(ngModel)]="data.Name"
+                            (ngModelChange)="data.Name = onChange($event)" />
+                        <mat-error>Name is required</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Amount</mat-label>
+                        <input matInput name="MobileNo2" type="number" [(ngModel)]="data.Amount" required />
+                        <mat-error>Amount is required</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Payment Mode</mat-label>
+                        <mat-select name="PaymentMode" [(ngModel)]="data.PaymentMode" #singleSelect required>
+                            <mat-option [value]="p.Name" *ngFor="let p of PaymentModesList"> {{p.Name}} </mat-option>
+                        </mat-select>
+                        <mat-error>
+                            Payment Mode is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="data.PaymentMode === 'CASH' || data.PaymentMode === 'cash'"
+                    class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0 ">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Cash Type</mat-label>
+                        <mat-select name="Duration" [(ngModel)]="data.CashType" required>
+                            <mat-option value="CashCounter">Cash Counter</mat-option>
+                            <mat-option value="PettyCash">Petty Cash</mat-option>
+                        </mat-select>
+                        <mat-error>
+                            CashType is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Reference</mat-label>
+                        <input matInput name="Reference" [(ngModel)]="data.PaymentRefereceNo"
+                            (ngModelChange)="data.PaymentRefereceNo = onChange($event)" />
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Comments</mat-label>
+                        <input matInput name="Comments" [(ngModel)]="data.Comments"
+                            (ngModelChange)="data.Comments = onChange($event)" />
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
+                    <button *ngIf="suBtn === false" (click)="onsubmit()" class="me-3" mat-raised-button color="primary"
+                        [disabled]=!f.valid>Save</button>
+                    <button *ngIf="suBtn === true" (click)="updateExpense()" class="me-3" mat-raised-button
+                        color="primary" [disabled]=!f.valid>Update</button>
+                    <button type="button" mat-raised-button> Cancel</button>
+                </div>
+            </div>
+        </form>
     </div>
 </ng-template>
 <!-- model popup ent -->
