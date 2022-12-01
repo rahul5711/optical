@@ -1,0 +1,204 @@
+{
+	"info": {
+		"_postman_id": "0d759538-9a19-465d-a892-b2e43faf2f6f",
+		"name": "Payroll",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "save",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njk5MTg3MzAsImV4cCI6MTY3MDAwNTEzMCwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.tcDKOnKI-nev8vVyfbOzRA_hId5xGTqis08h8hwK-uA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"EmployeeID\": 1,\r\n    \"Month\":\"January\",\r\n    \"Year\":\"2022\",\r\n    \"LeaveDays\":0,\r\n    \"Salary\":100,\r\n    \"PaymentMode\":\"\",\r\n    \"CashType\":\"\",\r\n    \"Comments\":\"testing\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/payroll/save",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"payroll",
+						"save"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njk5MTg3MzAsImV4cCI6MTY3MDAwNTEzMCwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.tcDKOnKI-nev8vVyfbOzRA_hId5xGTqis08h8hwK-uA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/payroll/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"payroll",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njk5MTg3MzAsImV4cCI6MTY3MDAwNTEzMCwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.tcDKOnKI-nev8vVyfbOzRA_hId5xGTqis08h8hwK-uA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/payroll/delete",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"payroll",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getbyid",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njk5MTg3MzAsImV4cCI6MTY3MDAwNTEzMCwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.tcDKOnKI-nev8vVyfbOzRA_hId5xGTqis08h8hwK-uA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/payroll/getById",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"payroll",
+						"getById"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Njk5MTg3MzAsImV4cCI6MTY3MDAwNTEzMCwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.tcDKOnKI-nev8vVyfbOzRA_hId5xGTqis08h8hwK-uA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\":2,\r\n    \"EmployeeID\": 2,\r\n    \"Month\":\"Feb\",\r\n    \"Year\":\"2022\",\r\n    \"LeaveDays\":0,\r\n    \"Salary\":1005,\r\n    \"PaymentMode\":\"\",\r\n    \"CashType\":\"\",\r\n    \"Comments\":\"testing\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/payroll/update",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"payroll",
+						"update"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
