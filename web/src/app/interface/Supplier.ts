@@ -1,5 +1,5 @@
 export class SupplierModel {
-  'ID': number;
+  'ID': number | string;
   'Sno': number;
   'Name': string;
   'MobileNo1': string;

@@ -39,6 +39,8 @@ export class CompanyComponent implements OnInit {
     private cs: CompanyService,
     private fu: FileUploadService,
     public as: AlertService,
+    private sp: NgxSpinnerService,
+
   ) {
     this.id = this.route.snapshot.params['id'];
     this.env = environment
@@ -61,9 +63,11 @@ export class CompanyComponent implements OnInit {
 
 
   ngOnInit() {
+    this.sp.show();
     if (this.id != 0) {
       this.getCompanyById(); 
     }
+    this.sp.hide();
   }
 
   onPlanChange(value:any){  
@@ -104,10 +108,11 @@ export class CompanyComponent implements OnInit {
   }
 
   onsubmit() {
+    this.sp.show();
     const subs: Subscription =  this.cs.createCompany( this.data).subscribe({
       next: (res: any) => {
         // this.dataList = res.result;
-        if (res.success) {
+        if (res.success) {         
           this.router.navigate(['/admin/companyList']); 
           Swal.fire({
             position: 'center',
@@ -133,9 +138,11 @@ export class CompanyComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide();
   } 
 
   getCompanyById(){
+    this.sp.show();
     const subs: Subscription = this.cs.getCompanyById(this.id).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -152,13 +159,15 @@ export class CompanyComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     })
+    this.sp.hide();
   }
 
   updateCompany(){
+    this.sp.show();
     const subs: Subscription =  this.cs.updateCompany( this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
-           if(this.user.data.UserGroup === 'SuperAdmin'){
+           if(this.user.UserGroup === 'SuperAdmin'){
             this.router.navigate(['/admin/companyList']);
            }else{
             Swal.fire({
@@ -178,9 +187,11 @@ export class CompanyComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide();
   }
 
   uploadImage(e:any, mode:any){
+    this.sp.show();
     if(e.target.files.length) {
       this.img = e.target.files[0];
     };
@@ -212,5 +223,6 @@ export class CompanyComponent implements OnInit {
         // this.as.successToast(data.body?.message) 
       }
     });
+    this.sp.hide();
   }
 }

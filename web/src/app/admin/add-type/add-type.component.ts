@@ -38,6 +38,7 @@ export class AddTypeComponent implements OnInit {
     {Name: 'Tray No',value:'TrayNo'},
     {Name: 'Gender',value:'Gender'},
     {Name: 'Customer Category',value:'CustomerCategory'},
+    {Name: 'Expense Type',value:'ExpenseType'},
     {Name: 'Location Master',value:'LocationMaster'},
     {Name: 'Other',value:'Other'},
     {Name: 'Lens Type',value:'LensType'},

@@ -60,7 +60,7 @@ export class FitterListComponent implements OnInit {
           if(element.PhotoURL !== "null" && element.PhotoURL !== ''){
             element.PhotoURL = (this.env.apiUrl + element.PhotoURL);
           }else{
-            element.PhotoURL = "../../../assets/images/userEmpty.png"
+            element.PhotoURL = "/assets/images/userEmpty.png"
           }
         });
         this.sp.hide();

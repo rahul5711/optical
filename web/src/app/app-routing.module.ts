@@ -15,6 +15,7 @@ const routes: Routes = [
     { path: 'product',  loadChildren: () => import('./product/product.module').then(m => m.ProductModule),canActivate: [AuthGuard]},
     { path: 'inventory',  loadChildren: () => import('./inventory/inventory.module').then(m => m.InventoryModule),canActivate: [AuthGuard]},
     { path: 'sale',  loadChildren: () => import('./sale/sale.module').then(m => m.SaleModule),canActivate: [AuthGuard]},
+    { path: 'companyPayment',  loadChildren: () => import('./company-payment/company-payment.module').then(m => m.CompanyPaymentModule),canActivate: [AuthGuard]},
      ]
   },
 ];

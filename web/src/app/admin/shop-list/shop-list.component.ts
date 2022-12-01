@@ -26,7 +26,7 @@ export class ShopListComponent implements OnInit {
   env = environment;
   gridview = true;
   term = "";
-  loggedInCompany: any = (localStorage.getItem('LoggedINCompany') || '');
+  company = JSON.parse(localStorage.getItem('company') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
   reactiveForm!: FormGroup;
   toggleChecked = false
@@ -61,9 +61,7 @@ export class ShopListComponent implements OnInit {
   ) {
     this.id = this.route.snapshot.params['id'];
     this.env = environment
-    this.reactiveForm = new FormGroup({
-      Name: new FormControl(null, Validators.required)
-    })
+   
   }
 
   ngOnInit(): void {
@@ -142,8 +140,6 @@ export class ShopListComponent implements OnInit {
   }
 
   openModalEdit(content: any, datas: any) {
-    console.log(datas);
-
     this.suBtn = true;
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, });
     this.companyImage = datas.LogoURL;
@@ -152,15 +148,15 @@ export class ShopListComponent implements OnInit {
 
   copyData(val: any) {
     if (val) {
-      this.data.GSTNo = this.user.Company.GSTNo;
-      this.data.CINNo = this.user.Company.CINNo;
-      this.data.Address = this.user.Company.Address;
-      this.data.Website = this.user.Company.Website;
-      this.data.Email = this.user.Company.Email;
-      this.data.LogoURL = this.user.Company.LogoURL;
-      this.data.PhoneNo = this.user.Company.PhoneNo;
-      this.data.MobileNo1 = this.user.Company.MobileNo1;
-      this.data.MobileNo2 = this.user.Company.MobileNo2;
+      this.data.GSTNo = this.company.GSTNo;
+      this.data.CINNo = this.company.CINNo;
+      this.data.Address = this.company.Address;
+      this.data.Website = this.company.Website;
+      this.data.Email = this.company.Email;
+      this.data.LogoURL = this.company.LogoURL;
+      this.data.PhoneNo = this.company.PhoneNo;
+      this.data.MobileNo1 = this.company.MobileNo1;
+      this.data.MobileNo2 = this.company.MobileNo2;
     }
   }
 

@@ -2,35 +2,20 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { SupplierModel} from '../interface/Supplier';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SupplierService {
+export class ExpenseService {
 
   constructor(private httpClient: HttpClient) { }
-  private url = 'http://localhost:3000/supplier';
+  private url = 'http://localhost:3000/expense';
 
 
-  supplierSave( Body: any): Observable<SupplierModel> {
+  saveExpense( Body: any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams()
-    return this.httpClient.post<SupplierModel>(this.url + '/save', Body, { headers, params })
-    .pipe(catchError(this.handleError));
-  }
-
-  supplierUpdate( Body: any): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/update', Body, { headers, params })
-    .pipe(catchError(this.handleError));
-  }
-
-  dropdownSupplierlist(): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams()
-    return this.httpClient.get<any>(this.url + '/dropdownlist')
+    return this.httpClient.post<any>(this.url + '/save', Body, { headers, params })
     .pipe(catchError(this.handleError));
   }
 
@@ -47,8 +32,17 @@ export class SupplierService {
     .pipe(catchError(this.handleError));
   }
 
-  searchByFeild(searchQuery: any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/searchByFeild', searchQuery)
+  getExpenseById(ID:any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams();
+    return this.httpClient.post<any>(this.url + '/getById', {ID: ID},  { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
+  updateExpense( Body: any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/update', Body, { headers, params })
     .pipe(catchError(this.handleError));
   }
 

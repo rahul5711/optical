@@ -16,6 +16,7 @@ import {CompressImageService} from '../../service/compress-image.service'
 import { take } from 'rxjs/operators';
 import { SupplierModel} from '../../interface/Supplier';
 import { ExcelService } from '../../service/excel.service';
+import { SupportService } from 'src/app/service/support.service';
 
 @Component({
   selector: 'app-supplier',
@@ -42,7 +43,8 @@ export class SupplierComponent implements OnInit {
   collectionSize = 0
   page = 4;
   suBtn = false;
-
+  purchasVariable: any = 0;
+  gstList:any;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -54,18 +56,24 @@ export class SupplierComponent implements OnInit {
     private modalService: NgbModal,
     private compressImage: CompressImageService,
     private excelService: ExcelService,
+    private supps: SupportService,
+
   ) {
     this.id = this.route.snapshot.params['id'];
     this.env = environment
   }
 
   data: any = { ID : null, Sno: 0, Name : null, MobileNo1 : null, MobileNo2 : '', PhoneNo : '', Address : null, Email : '', Website : '',
-  GSTNo : '', CINNo : '', PhotoURL : '', Remark : '', ContactPerson : '', Fax : '', DOB: '', Anniversary: '',
+  GSTNo : '', GSTType:'None', CINNo : '', PhotoURL : '', Remark : null, ContactPerson : '', Fax : '', DOB: '', Anniversary: '',
   Status : 1, CreatedBy : null, CreatedOn : null, UpdatedBy : null, UpdatedOn : null
   };
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.purchasVariable = +params['check'] || 0;
+    });
     this.getList(); 
+    this.getGSTList();
   }
 
   onsubmit() {
@@ -73,6 +81,7 @@ export class SupplierComponent implements OnInit {
     const subs: Subscription =  this.ss.supplierSave(supplierdate).subscribe({
       next: (res: any) => {
         if (res.success) {
+          this.formReset();
           Swal.fire({
             position: 'center',
             icon: 'success',
@@ -81,6 +90,11 @@ export class SupplierComponent implements OnInit {
             timer: 1200
           }) 
           this.data = [];
+          if(this.purchasVariable === 1) {
+            this.router.navigate(['/inventory/purchase/0']);
+          } else {
+            this.getList();
+          }
           this.getList();
         } else {
           this.as.errorToast(res.message)
@@ -110,7 +124,7 @@ export class SupplierComponent implements OnInit {
           if(element.PhotoURL !== "null" && element.PhotoURL !== ''){
             element.PhotoURL = (this.env.apiUrl + element.PhotoURL);
           }else{
-            element.PhotoURL = "../../../assets/images/userEmpty.png"
+            element.PhotoURL = "/assets/images/userEmpty.png"
           }
         });
         this.sp.hide();
@@ -121,7 +135,6 @@ export class SupplierComponent implements OnInit {
     });
 
   }
-
 
   uploadImage(e:any, mode:any){
    
@@ -190,6 +203,8 @@ export class SupplierComponent implements OnInit {
     const subs: Subscription =  this.ss.supplierUpdate( this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
+          this.formReset();
+          this.modalService.dismissAll();
           this.getList();
           Swal.fire({
             position: 'center',
@@ -207,9 +222,6 @@ export class SupplierComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.modalService.dismissAll()
-    this.getList(); 
-
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
@@ -293,5 +305,22 @@ export class SupplierComponent implements OnInit {
 
   exportAsXLSX(): void {
     this.excelService.exportAsExcelFile(this.dataList, 'supplier_list');
+  }
+
+  getGSTList(){
+    const subs: Subscription = this.supps.getList('TaxType').subscribe({
+      next: (res: any) => {
+        this.gstList = res.data
+      },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+    });
+  }
+
+  formReset() {
+   this.data = { ID : null, Sno: 0, Name : null, MobileNo1 : null, MobileNo2 : '', PhoneNo : '', Address : null, Email : '', Website : '',
+    GSTNo : '', GSTType:'None', CINNo : '', PhotoURL : '', Remark : null, ContactPerson : '', Fax : '', DOB: '', Anniversary: '',
+    Status : 1, CreatedBy : null, CreatedOn : null, UpdatedBy : null, UpdatedOn : null
+    };
   }
 }

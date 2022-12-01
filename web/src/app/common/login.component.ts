@@ -133,7 +133,7 @@ export class LoginComponent implements OnInit {
               localStorage.setItem('company', JSON.stringify(res.Company));
               localStorage.setItem('companysetting', JSON.stringify(res.CompanySetting));
               localStorage.setItem('shop', JSON.stringify(res.shop));
-              localStorage.setItem('selectedShop', JSON.stringify([`${res.shop[0].ID}`]));
+              localStorage.setItem('selectedShop', JSON.stringify([`${res.shop[0]?.ID}`]));
               localStorage.setItem('permission', JSON.stringify(this.moduleList));
               this.dataStorageService.permission = this.moduleList;
                this.router.navigate(['/admin/CompanyDashborad']);

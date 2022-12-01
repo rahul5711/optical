@@ -152,9 +152,8 @@
                         <div class="col-md-3 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Shop Name</mat-label>
-                                <input matInput name="Name" [(ngModel)]="data.Name" required #Namecontrol minlength="2"
-                                    appAutoFoucsDirectives>
-                                <mat-error *ngIf="Namecontrol.required">
+                                <input matInput name="Name" [(ngModel)]="data.Name" required #Namecontrol minlength="2">
+                                <mat-error >
                                     Shop Name is required
                                 </mat-error>
                             </mat-form-field>
@@ -169,7 +168,7 @@
                             </mat-form-field>
                         </div>
                         <div class="col-md-3 mb-0 pt-md-3  ">
-                            <mat-slide-toggle name="Checked" class="example-margin " [checked]="toggleChecked"
+                            <mat-slide-toggle type="ratio" name="Checked" class="example-margin " [checked]="toggleChecked"
                                 color="primary" (change)="copyData($event.checked)" [disabled]="false"
                                 #CompanyIDcontrol>
                                 Copy Data From Company
@@ -206,7 +205,7 @@
                                 <mat-label>Address</mat-label>
                                 <input matInput name="Address" [(ngModel)]="data.Address" minlength="2" required
                                     #Addresscontrol>
-                                <mat-error *ngIf="Addresscontrol.required">
+                                <mat-error>
                                     Atleast 2 characters is required
                                 </mat-error>
                             </mat-form-field>
@@ -215,7 +214,6 @@
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Email</mat-label>
                                 <input matInput name="email" type="email" ngModel [email]="true"
-                                    pattern="[a-zA-Z0-9.-_]{3,}@[a-zA-Z.-]{3,}[.]{1}[a-zA-Z]{3,}"
                                     [(ngModel)]="data.Email" #Emailcontrol>
                                 <mat-error>
                                     Invalid EmailId.
@@ -244,7 +242,7 @@
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>CIN No</mat-label>
                                 <input matInput name="CINNo" [(ngModel)]="data.CINNo" #CINNocontrol>
-                                <mat-error *ngIf="CINNocontrol.required">
+                                <mat-error>
                                     CIN is required
                                 </mat-error>
                             </mat-form-field>
@@ -263,7 +261,7 @@
                                 <mat-label>Barcode ShopName</mat-label>
                                 <input matInput name="BarcodeName" min="0" max="15" [(ngModel)]="data.BarcodeName"
                                     #BarcodeNamecontrol>
-                                <mat-error *ngIf="BarcodeNamecontrol.required">
+                                <mat-error >
                                     BarcodeName is required
                                 </mat-error>
                             </mat-form-field>
@@ -290,31 +288,31 @@
             <h2 class="header">Bill Format Hide/Show</h2>
             <div class="row ps-3">
                 <div class="col-md-1 col-sm-6 col-6 p-0">
-                    <mat-slide-toggle name="HSNCode" color="primary" [(ngModel)]="data.HSNCode" class="example-margin">
+                    <mat-slide-toggle type="ratio" name="HSNCode" color="primary" [(ngModel)]="data.HSNCode" class="example-margin">
                         HSN</mat-slide-toggle>
                 </div>
                 <div class="col-md-1 col-sm-6 col-6 p-0">
-                    <mat-slide-toggle name="CustGSTNo" color="primary" [(ngModel)]="data.CustGSTNo"
+                    <mat-slide-toggle type="ratio" name="CustGSTNo" color="primary" [(ngModel)]="data.CustGSTNo"
                         class="example-margin">GST</mat-slide-toggle>
                 </div>
                 <div class="col-md-1 col-sm-6 col-6 p-0">
-                    <mat-slide-toggle name="Rate" color="primary" [(ngModel)]="data.Rate" class="example-margin">Rate
+                    <mat-slide-toggle type="ratio" name="Rate" color="primary" [(ngModel)]="data.Rate" class="example-margin">Rate
                     </mat-slide-toggle>
                 </div>
                 <div class="col-md-1 col-sm-6 col-6 p-0">
-                    <mat-slide-toggle name="Discounts" color="primary" [(ngModel)]="data.Discounts"
+                    <mat-slide-toggle type="ratio" name="Discounts" color="primary" [(ngModel)]="data.Discounts"
                         class="example-margin">Dis </mat-slide-toggle>
                 </div>
                 <div class="col-md-1 col-sm-6 col-6 p-0">
-                    <mat-slide-toggle name="SubTotal" color="primary" [(ngModel)]="data.SubTotal"
+                    <mat-slide-toggle type="ratio" name="SubTotal" color="primary" [(ngModel)]="data.SubTotal"
                         class="example-margin">SubTotal </mat-slide-toggle>
                 </div>
                 <div class="col-md-1 col-sm-6 col-6 p-0">
-                    <mat-slide-toggle name="Tax" color="primary" [(ngModel)]="data.Tax" class="example-margin">Tax
+                    <mat-slide-toggle type="ratio" name="Tax" color="primary" [(ngModel)]="data.Tax" class="example-margin">Tax
                     </mat-slide-toggle>
                 </div>
                 <div class="col-md-1 col-sm-6 col-6 p-0">
-                    <mat-slide-toggle name="Total" color="primary" [(ngModel)]="data.Total" class="example-margin">Total
+                    <mat-slide-toggle type="ratio" name="Total" color="primary" [(ngModel)]="data.Total" class="example-margin">Total
                     </mat-slide-toggle>
                 </div>
             </div>
@@ -322,11 +320,11 @@
             <h2 class="header mt-4">Software Bill Hide/Show</h2>
             <div class="row ps-3">
                 <div class="col-md-1 col-sm-6 col-6 p-0">
-                    <mat-slide-toggle name="Discount" color="primary" class="example-margin" [(ngModel)]="data.Discount"
+                    <mat-slide-toggle type="ratio" name="Discount" color="primary" class="example-margin" [(ngModel)]="data.Discount"
                         class="example-margin">Dis</mat-slide-toggle>
                 </div>
                 <div class="col-md-1 col-sm-6 col-6 p-0">
-                    <mat-slide-toggle name="GSTnumber" color="primary" [(ngModel)]="data.GSTnumber"
+                    <mat-slide-toggle type="ratio" name="GSTnumber" color="primary" [(ngModel)]="data.GSTnumber"
                         class="example-margin">GST</mat-slide-toggle>
                 </div>
             </div>

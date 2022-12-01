@@ -78,7 +78,7 @@ export class CompanyListComponent implements OnInit {
           if (element.LogoURL !== "null" && element.LogoURL !== "") {
             element.LogoURL = (this.env.apiUrl + element.LogoURL);
           } else {
-            element.LogoURL = "../../../assets/images/userEmpty.png"
+            element.LogoURL = "/assets/images/userEmpty.png"
           }
         });
         this.sp.hide();
@@ -154,7 +154,7 @@ export class CompanyListComponent implements OnInit {
               localStorage.setItem('company', JSON.stringify(res.Company));
               localStorage.setItem('companysetting', JSON.stringify(res.CompanySetting));
               localStorage.setItem('shop', JSON.stringify(res.shop));
-              localStorage.setItem('selectedShop', JSON.stringify([`${res.shop[0].ID}`]));
+              localStorage.setItem('selectedShop', JSON.stringify([`${res.shop[0]?.ID}`]));
               localStorage.setItem('permission', JSON.stringify(this.moduleList));
               this.router.navigate(['/admin/CompanyDashborad'])
                 .then(() => {
@@ -169,6 +169,7 @@ export class CompanyListComponent implements OnInit {
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
+        this.sp.hide();
         Swal.fire({
           position: 'center',
           icon: 'success',

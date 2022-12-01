@@ -102,6 +102,15 @@
             </div>
           </div>
           <!-- companyadmin end Bliing -->
+          <!-- companyadmin  company payment start -->
+          <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown">
+            <a class="dropBtn" data-target="#collapseExample">Payment <i class="fa fa-caret-down"
+                aria-hidden="true"></i></a>
+            <div class="drop-content" id="collapseExample">
+              <a href="javascript:void(0)" [routerLink]="['/companyPayment/expense']" id="collapseExample">Expense</a>
+            </div>
+          </div>
+          <!-- companyadmin end company payment -->
         </div>
       </div>
       <!-- CompanyAdmin end nav-->

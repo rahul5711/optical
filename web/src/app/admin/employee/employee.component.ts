@@ -121,8 +121,6 @@ export class EmployeeComponent implements OnInit {
   })
   }
 
- 
-
   getUserById(){
     const subs: Subscription = this.es.getUserById(this.id).subscribe({
       next: (res: any) => {

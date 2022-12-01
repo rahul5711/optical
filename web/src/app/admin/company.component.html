@@ -49,7 +49,6 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Email</mat-label>
                                                 <input matInput name="Email1" [(ngModel)]="data.Email"
-                                                    
                                                     required #Emailcontrol [disabled]=" id != 0">
                                                 <mat-error>
                                                     Invalid Email Id
@@ -71,7 +70,7 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Country</mat-label>
                                                 <input matInput name="Country" [(ngModel)]="data.Country" required
-                                                    #Countrycontrol [disabled]="user?.data?.UserGroup !== 'SuperAdmin'">
+                                                    #Countrycontrol [disabled]="user?.UserGroup !== 'SuperAdmin'">
                                                 <mat-error>
                                                     Country is required
                                                 </mat-error>
@@ -81,7 +80,7 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>State</mat-label>
                                                 <input matInput name="State" [(ngModel)]="data.State" required
-                                                    #Statecontrol [disabled]="user?.data?.UserGroup !== 'SuperAdmin'">
+                                                    #Statecontrol [disabled]="user?.UserGroup !== 'SuperAdmin'">
                                                 <mat-error>
                                                     State is required
                                                 </mat-error>
@@ -91,7 +90,7 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>City</mat-label>
                                                 <input matInput name="City" [(ngModel)]="data.City" required
-                                                    #Citycontrol [disabled]="user?.data?.UserGroup !== 'SuperAdmin'">
+                                                    #Citycontrol [disabled]="user?.UserGroup !== 'SuperAdmin'">
                                                 <mat-error>
                                                     City is required
                                                 </mat-error>
@@ -123,29 +122,27 @@
                                         <div  class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Remark</mat-label>
-                                                <input matInput name="Remark" [(ngModel)]="data.Remark" #Remarkscontrol [disabled]="user?.data?.UserGroup !== 'SuperAdmin'">
+                                                <input matInput name="Remark" [(ngModel)]="data.Remark" #Remarkscontrol [disabled]="user?.UserGroup != 'SuperAdmin' && this.id != 0 ">
                                             </mat-form-field>
                                         </div>
-
-                                        <div *ngIf="user?.data?.UserGroup == 'SuperAdmin'" class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                        <div *ngIf="user?.UserGroup == 'SuperAdmin'" class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>SRemark</mat-label>
                                                 <input matInput name="SRemark" [(ngModel)]="data.SRemark" #SRemarkcontrol >
                                             </mat-form-field>
                                         </div>
-                                        <div *ngIf="user?.data?.UserGroup == 'SuperAdmin'" class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                        <div *ngIf="user?.UserGroup == 'SuperAdmin'" class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>CAmount</mat-label>
                                                 <input matInput name="CAmount" [(ngModel)]="data.CAmount" #CAmountcontrol >
                                             </mat-form-field>
                                         </div>
-
                                     </div>
                                     <div class="row">
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Plan</mat-label>
-                                                <mat-select name="Plan" [(ngModel)]="data.Plan" required #Plancontrol (selectionChange)="onPlanChange(data.Plan)" [disabled]="user?.data?.UserGroup !== 'SuperAdmin'">
+                                                <mat-select name="Plan" [(ngModel)]="data.Plan" required #Plancontrol (selectionChange)="onPlanChange(data.Plan)" [disabled]="user?.UserGroup !== 'SuperAdmin'">
                                                     <mat-option *ngFor="let plan of plans" [value]="plan.ID" >
                                                         {{plan.Name}}
                                                     </mat-option>
@@ -159,7 +156,7 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Version</mat-label>
                                                 <mat-select name="Version" [(ngModel)]="data.Version" required
-                                                    #Versioncontrol [disabled]="user?.data?.UserGroup !== 'SuperAdmin'">
+                                                    #Versioncontrol [disabled]="user?.UserGroup !== 'SuperAdmin'">
                                                     <mat-option value="Basic">Basic</mat-option>
                                                     <mat-option value="Upper">Upper</mat-option>
                                                     <mat-option value="Top">Top</mat-option>
@@ -174,7 +171,7 @@
                                                 <mat-label>Shops</mat-label>
                                                 <input matInput name="NoOfShops" type="number"
                                                     [(ngModel)]="data.NoOfShops" required #NoOfShopscontrol
-                                                    [disabled]="user?.data?.UserGroup !== 'SuperAdmin'">
+                                                    [disabled]="user?.UserGroup !== 'SuperAdmin'">
                                                 <mat-error>
                                                     Shop count is required
                                                 </mat-error>
@@ -183,7 +180,7 @@
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0" >
                                                 <mat-label>Effective Date</mat-label>
-                                                <input matInput  name="EffectiveDate" [(ngModel)]="data.EffectiveDate"  required #EffectiveDatecontrol [matDatepicker]="picker1" [disabled]="user?.data?.UserGroup !== 'SuperAdmin'">
+                                                <input matInput  name="EffectiveDate" [(ngModel)]="data.EffectiveDate"  required #EffectiveDatecontrol [matDatepicker]="picker1" [disabled]="user?.UserGroup !== 'SuperAdmin'">
                                                 <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
                                                 <mat-datepicker #picker1></mat-datepicker>
                                                 <mat-error >
@@ -194,7 +191,7 @@
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0" >
                                                 <mat-label>Cancellation Date</mat-label>
-                                                <input matInput name="CacellationDate" [(ngModel)]="data.CancellationDate"  required #CacellationDatecontrol [matDatepicker]="picker2" [disabled]="user?.data?.UserGroup !== 'SuperAdmin'">
+                                                <input matInput name="CacellationDate" [(ngModel)]="data.CancellationDate"  required #CacellationDatecontrol [matDatepicker]="picker2" [disabled]="user?.UserGroup !== 'SuperAdmin'">
                                                 <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                                                 <mat-datepicker #picker2></mat-datepicker>
                                                 <mat-error >
@@ -206,30 +203,30 @@
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                             <mat-slide-toggle type="button" name="EmailMsg" color="primary"
-                                                [(ngModel)]="data.EmailMsg" class="example-margin" #EmailMsgcontrol [disabled]="user?.data?.UserGroup !== 'SuperAdmin'">
+                                                [(ngModel)]="data.EmailMsg" class="example-margin" #EmailMsgcontrol [disabled]="user?.UserGroup !== 'SuperAdmin'">
                                                 SMS
                                             </mat-slide-toggle>
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                             <mat-slide-toggle type="button" name="EmailMsg" color="primary"
-                                                [(ngModel)]="data.EmailMsg" class="example-margin" #EmailMsgcontrol [disabled]="user?.data?.UserGroup !== 'SuperAdmin'">
+                                                [(ngModel)]="data.EmailMsg" class="example-margin" #EmailMsgcontrol [disabled]="user?.UserGroup !== 'SuperAdmin'">
                                                 Email
                                             </mat-slide-toggle>
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-6" style="padding:0; ">
                                             <mat-slide-toggle type="button" name="WhatsappMsg" color="primary"
                                                 #WhatsappMsgcontrol [(ngModel)]="data.WhatsappMsg"
-                                                class="example-margin" [disabled]="user?.data?.UserGroup !== 'SuperAdmin'">Whatsapp</mat-slide-toggle>
+                                                class="example-margin" [disabled]="user?.UserGroup !== 'SuperAdmin'">Whatsapp</mat-slide-toggle>
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-6 ps-3 ps-md-0" style="padding:0; ">
                                             <mat-slide-toggle type="button" name="WholeSale" color="primary"
-                                                #WholeSalecontrol [(ngModel)]="data.WholeSale" class="example-margin" [disabled]="user?.data?.UserGroup !== 'SuperAdmin'">
+                                                #WholeSalecontrol [(ngModel)]="data.WholeSale" class="example-margin" [disabled]="user?.UserGroup !== 'SuperAdmin'">
                                                 WholeSale</mat-slide-toggle>
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-6" style="padding:0; ">
                                             <mat-slide-toggle type="button" name="RetailPrice" color="primary"
                                                 #RetailPricecontrol [(ngModel)]="data.RetailPrice"
-                                                class="example-margin" [disabled]="user?.data?.UserGroup !== 'SuperAdmin'">Retail</mat-slide-toggle>
+                                                class="example-margin" [disabled]="user?.UserGroup !== 'SuperAdmin'">Retail</mat-slide-toggle>
                                         </div>
                                     </div>
                                 </div>
@@ -246,6 +243,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- Owner Details start -->
                                 <div class="row mt-4 mb-0">
                                     <h2 style="color: rgb(255, 81, 0)"> Owner Details</h2>
                                 </div>
@@ -316,7 +314,7 @@
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Email</mat-label>
                                                     <input matInput name="Email"  ngModel email="true"
-                                                        [(ngModel)]="data.Email" required #Emailcontrol1>
+                                                        [(ngModel)]="data.Email"  [disabled]=" id != 0" required #Emailcontrol1>
                                                     <mat-error>
                                                         Invalid Email Id
                                                     </mat-error>
@@ -376,6 +374,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- Owner Details end -->
                             </div>
                         </form>
                     </div>
