@@ -13,4 +13,7 @@
 5. purchase and product master 
  * product master me se vo product delete nhi ho skta jb tk vo product stock me avilable ho.
 Note - 2 value selected in  dorpdown 
-  
+
+
+
+  Note:-** we have to add column in database InvoiceNo, CashType in payroll table
