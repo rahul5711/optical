@@ -123,9 +123,9 @@ module.exports = {
 
             const deleteExpense = await connection.query(`update expense set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
-            const deletePaymentMaster = await connection.query(`update paymentmaster set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where CustomerID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const deletePaymentMaster = await connection.query(`update paymentmaster set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where CustomerID = ${Body.ID} and CompanyID = ${CompanyID} and PaymentType = 'Expense'`)
 
-            const deletePaymentDetail = await connection.query(`update paymentdetail set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where BillMasterID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const deletePaymentDetail = await connection.query(`update paymentdetail set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where BillMasterID = ${Body.ID} and CompanyID = ${CompanyID} and PaymentType = 'Expense'`)
 
             console.log("Expense Delete SuccessFUlly !!!");
 
@@ -187,12 +187,12 @@ module.exports = {
                 Status: Body.Status ? Body.Status : 1,
             }
 
-            const update = await connection.query(`update expense set ShopID='${datum.ShopID}',Name='${datum.Name}', Category='${datum.Category}',SubCategory='${datum.SubCategory}',Amount=${datum.Amount},PaymentMode='${datum.PaymentMode}',CashType='${datum.CashType}',PaymentRefereceNo='${datum.PaymentRefereceNo}',Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
+            const update = await connection.query(`update expense set ShopID='${datum.ShopID}',Name='${datum.Name}', Category='${datum.Category}',SubCategory='${datum.SubCategory}',Amount=${datum.Amount},PaymentMode='${datum.PaymentMode}',CashType='${datum.CashType}',PaymentRefereceNo='${datum.PaymentRefereceNo}',Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
 
-            const updatePaymentMaster = await connection.query(`update paymentmaster set PaymentMode='${datum.PaymentMode}',PaymentReferenceNo='${datum.PaymentRefereceNo}',PayableAmount=${datum.Amount},PaidAmount=${datum.Amount},Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where CustomerID=${Body.ID} and PaymentType = 'Expense'`)
+            const updatePaymentMaster = await connection.query(`update paymentmaster set PaymentMode='${datum.PaymentMode}',PaymentReferenceNo='${datum.PaymentRefereceNo}',PayableAmount=${datum.Amount},PaidAmount=${datum.Amount},Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where CustomerID=${Body.ID} and PaymentType = 'Expense' and CompanyID = ${CompanyID}`)
 
-            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount=${datum.Amount} where BillMasterID =${Body.ID} and PaymentType = 'Expense'`)
+            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount=${datum.Amount} where BillMasterID =${Body.ID} and PaymentType = 'Expense' and CompanyID = ${CompanyID}`)
 
             console.log("Expense Updated SuccessFUlly !!!");
 

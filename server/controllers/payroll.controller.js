@@ -121,9 +121,9 @@ module.exports = {
 
             const deletePayroll = await connection.query(`update payroll set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
-            const deletePaymentMaster = await connection.query(`update paymentmaster set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where CustomerID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const deletePaymentMaster = await connection.query(`update paymentmaster set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where CustomerID = ${Body.ID} and CompanyID = ${CompanyID} and PaymentType = 'Employee'`)
 
-            const deletePaymentDetail = await connection.query(`update paymentdetail set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where BillMasterID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const deletePaymentDetail = await connection.query(`update paymentdetail set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where BillMasterID = ${Body.ID} and CompanyID = ${CompanyID} and PaymentType = 'Employee'`)
 
             console.log("Payroll Delete SuccessFUlly !!!");
 
@@ -184,12 +184,12 @@ module.exports = {
                 Status: Body.Status ? Body.Status : 1,
             }
 
-            const update = await connection.query(`update payroll set EmployeeID=${datum.EmployeeID},Month='${datum.Month}', Year='${datum.Year}',LeaveDays=${datum.LeaveDays},Salary=${datum.Salary},PaymentMode='${datum.PaymentMode}',CashType='${datum.CashType}',Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
+            const update = await connection.query(`update payroll set EmployeeID=${datum.EmployeeID},Month='${datum.Month}', Year='${datum.Year}',LeaveDays=${datum.LeaveDays},Salary=${datum.Salary},PaymentMode='${datum.PaymentMode}',CashType='${datum.CashType}',Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
 
-            const updatePaymentMaster = await connection.query(`update paymentmaster set PaymentMode='${datum.PaymentMode}',PayableAmount=${datum.Salary},PaidAmount=${datum.Salary},Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where CustomerID=${Body.ID} and PaymentType = 'Employee'`)
+            const updatePaymentMaster = await connection.query(`update paymentmaster set PaymentMode='${datum.PaymentMode}',PayableAmount=${datum.Salary},PaidAmount=${datum.Salary},Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where CustomerID=${Body.ID} and PaymentType = 'Employee' and CompanyID = ${CompanyID}`)
 
-            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount=${datum.Salary} where BillMasterID =${Body.ID} and PaymentType = 'Employee'`)
+            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount=${datum.Salary} where BillMasterID =${Body.ID} and PaymentType = 'Employee' and CompanyID = ${CompanyID}`)
 
             console.log("Payroll Updated SuccessFUlly !!!");
 
