@@ -137,6 +137,7 @@ export class ShopListComponent implements OnInit {
   openModal(content: any) {
     this.suBtn = false;
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+    
   }
 
   openModalEdit(content: any, datas: any) {
@@ -144,6 +145,54 @@ export class ShopListComponent implements OnInit {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, });
     this.companyImage = datas.LogoURL;
     this.data = datas
+    if(datas.length !== 0){
+      if(datas.Discount === 'true') {
+       this.data.Discount = true;
+     } else if (datas.Discount === 'false' ) {
+       this.data.Discount = false;
+     }
+     if(datas.GSTnumber === 'true') {
+       this.data.GSTnumber = true;
+     } else if (datas.GSTnumber === 'false' ) {
+       this.data.GSTnumber = false;
+     } 
+     if(datas.HSNCode === 'true') {
+      this.data.HSNCode = true;
+     } else if (datas.HSNCode === 'false' ) {
+      this.data.HSNCode = false;
+     } 
+     if(datas.CustGSTNo === 'true') {
+      this.data.CustGSTNo = true;
+     } else if (datas.CustGSTNo === 'false' ) {
+      this.data.CustGSTNo = false;
+     }
+     if(datas.Rate === 'true') {
+      this.data.Rate = true;
+     } else if (datas.Rate === 'false' ) {
+      this.data.Rate = false;
+     }
+     if(datas.Discounts === 'true') {
+      this.data.Discounts = true;
+     } else if (datas.Discounts === 'false' ) {
+      this.data.Discounts = false;
+     }
+     if(datas.Tax === 'true') {
+      this.data.Tax = true;
+     } else if (datas.Tax === 'false' ) {
+      this.data.Tax = false;
+     }
+     if(datas.SubTotal === 'true') {
+      this.data.SubTotal = true;
+     } else if (datas.SubTotal === 'false' ) {
+      this.data.SubTotal = false;
+     }
+     if(datas.Total === 'true') {
+      this.data.Total = true;
+     } else if (datas.Total === 'false' ) {
+      this.data.Total = false;
+     }
+   
+    }   
   }
 
   copyData(val: any) {

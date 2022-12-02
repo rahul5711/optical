@@ -36,10 +36,14 @@
                                     </div>
                                 </div>
                                 <div class="col-md-1 col-1" style="width: 70px;padding: 0;">
-                                    <mat-icon class="col-white plus_icon me-1" data-mdb-toggle="modal"
-                                        data-mdb-target="#exampleModal" (click)="openModal(content)"> add</mat-icon>
-                                    <mat-icon class="col-white Grid_icon" (click)="gridview = !gridview"
+                                    <button class="bg-none" (click)="openModal(content)">
+                                        <mat-icon class="col-white plus_icon me-1" data-mdb-toggle="modal"
+                                        data-mdb-target="#exampleModal" > add</mat-icon>
+                                    </button>
+                                    <button class="bg-none" (click)="gridview = !gridview">
+                                        <mat-icon class="col-white Grid_icon" 
                                         title="Grid View" style="font-size: 22px;padding: 4px;">grid_on</mat-icon>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -57,10 +61,12 @@
                                         <p class="text-center m-0">{{data.Email}}</p>
                                         <p class="text-center m-0 cardAddress">{{data.Address }}</p>
                                         <div class="text-center mb-3">
-                                            <mat-icon class="edit_icon ms-1" (click)="openModalEdit(content,data)">edit
-                                            </mat-icon>
-                                            <mat-icon class="delete_icon ms-1" (click)="deleteItem(i)">delete_forever
-                                            </mat-icon>
+                                            <button class="bg-none" (click)="openModalEdit(content,data)">
+                                                <mat-icon class="edit_icon ms-1" >edit</mat-icon>
+                                            </button>
+                                            <button class="bg-none" (click)="deleteItem(i)">
+                                              <mat-icon class="delete_icon ms-1" >delete_forever</mat-icon>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -96,11 +102,13 @@
                                                 <tr class="text-center" *ngFor="let data of dataList let i = index;"
                                                     style="white-space: nowrap;">
                                                     <td style="width: 7%;">
-                                                        <mat-icon class="edit_icon ms-1" data-mdb-toggle="modal"
-                                                            data-mdb-target="#exampleModal"
-                                                            (click)="openModalEdit(content,data)">edit</mat-icon>
-                                                        <mat-icon class="delete_icon ms-1" (click)="deleteItem(i)">
-                                                            delete_forever</mat-icon>
+                                                        <button class="bg-none" (click)="openModalEdit(content,data)">
+                                                            <mat-icon class="edit_icon ms-1" data-mdb-toggle="modal"
+                                                            data-mdb-target="#exampleModal">edit</mat-icon>
+                                                        </button>
+                                                        <button class="bg-none" (click)="deleteItem(i)">
+                                                            <mat-icon class="delete_icon ms-1" > delete_forever</mat-icon>
+                                                        </button>
                                                     </td>
                                                     <td class="text-left">{{ dataList.length - i }}</td>
                                                     <td class="text-left">{{data.Name}}</td>
@@ -138,7 +146,7 @@
 
 <!-- model popup start -->
 <ng-template #content role="document" let-modal>
-    <div class="modal-header" style="height: 50px;">
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
         <h2 class="modal-title header pt-2" id="exampleModalLabel">Shop Info</h2>
         <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
             (click)="modal.dismiss('Cross click');formReset()"></button>
@@ -288,7 +296,7 @@
             <h2 class="header">Bill Format Hide/Show</h2>
             <div class="row ps-3">
                 <div class="col-md-1 col-sm-6 col-6 p-0">
-                    <mat-slide-toggle type="ratio" name="HSNCode" color="primary" [(ngModel)]="data.HSNCode" class="example-margin">
+                    <mat-slide-toggle type="ratio"  name="HSNCode" color="primary" [(ngModel)]="data.HSNCode" class="example-margin">
                         HSN</mat-slide-toggle>
                 </div>
                 <div class="col-md-1 col-sm-6 col-6 p-0">

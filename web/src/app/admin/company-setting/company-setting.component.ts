@@ -39,7 +39,7 @@ export class CompanySettingComponent implements OnInit {
   env = environment;
   companyImage: any;
   dataList: any;
-  loggedInCompany = (localStorage.getItem('LoggedINCompany'));
+  companysetting:any = JSON?.parse(localStorage.getItem('companysetting') || '');
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
    
    
@@ -60,11 +60,9 @@ export class CompanySettingComponent implements OnInit {
   wlcmArray1: any;
 
   ngOnInit(): void {
-    this.data = this.user.CompanySetting
-     this.wlcmArray1 = JSON.parse(this.data.WelComeNote) || ''
+   
+     this.wlcmArray1 = this.companysetting.WelComeNote 
 
-    console.log(this.wlcmArray1);
-    
   }
 
   uploadImage(e:any, mode:any){
