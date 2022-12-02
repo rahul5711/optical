@@ -1,0 +1,10 @@
+.mat-icon {
+    pointer-events: none;
+  }
+
+.bg-none{
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    padding: 0;
+    height: 35px;
+  }

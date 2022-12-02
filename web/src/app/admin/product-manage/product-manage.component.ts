@@ -56,6 +56,7 @@ i: any;
   }
 
   saveProduct() {
+    this.sp.show();
     let count = 0;
     this.prodList.forEach((element: { Name: string; }) => {
       if (element.Name.toLowerCase() === this.newProduct.Name.toLowerCase().trim()){count = count + 1; }
@@ -98,9 +99,11 @@ i: any;
     });
     this.newProduct.Name = ""; 
     }
+    this.sp.hide();
   } 
 
   getProductList(){
+    this.sp.show();
       const subs: Subscription =  this.ps.getList().subscribe({
         next: (res: any) => {
           this.prodList = res.data;
@@ -109,6 +112,7 @@ i: any;
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
+    this.sp.hide();
   }
 
   getfieldList(){
@@ -200,6 +204,7 @@ i: any;
   }
 
   saveSpec(){
+    this.sp.show();
     let count = 0;
     this.specList.forEach((element: { Name: string; }) => {
       if (element.Name.toLowerCase() === this.newSpec.Name.toLowerCase() ){
@@ -246,6 +251,7 @@ i: any;
         footer: ''
       });
      }
+     this.sp.hide();
 
   }
 

@@ -11,25 +11,24 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs'
 import { ExcelService } from '../../service/excel.service';
-import { ExpenseService } from 'src/app/service/expense.service';
-import { ShopService } from 'src/app/service/shop.service';
 import { SupportService } from 'src/app/service/support.service';
-import { ExpenseModel} from '../../interface/Expense';
+import { PayrollService } from 'src/app/service/payroll.service';
+import { EmployeeService } from 'src/app/service/employee.service';
+import { PayrollModel} from '../../interface/Payroll';
 
 @Component({
-  selector: 'app-expense',
-  templateUrl: './expense.component.html',
-  styleUrls: ['./expense.component.css']
+  selector: 'app-payroll',
+  templateUrl: './payroll.component.html',
+  styleUrls: ['./payroll.component.css']
 })
-export class ExpenseComponent implements OnInit {
+export class PayrollComponent implements OnInit {
 
   user = JSON.parse(localStorage.getItem('user') || '');
   @ViewChild('searching') searching: ElementRef | any;
   term:any;
   dataList:any;
-  dropShoplist:any;
+  dropUserlist:any;
   PaymentModesList:any;
-  ExpenseTypeList:any;
   currentPage = 1;
   itemsPerPage = 10;
   pageSize!: number;
@@ -43,29 +42,30 @@ export class ExpenseComponent implements OnInit {
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     public as: AlertService,
-    private expen: ExpenseService,
+    private pay: PayrollService,
     private sp: NgxSpinnerService,
     private modalService: NgbModal,
     private excelService: ExcelService,
-    private ss: ShopService,
     private supps: SupportService,
-
+    private es: EmployeeService,
   ) {this.id = this.route.snapshot.params['id']; }
 
 
-  data: ExpenseModel = { ID : 0, CompanyID : 0, ShopID : 0, Name:'', InvoiceNo: '', Category : '', SubCategory : '', Amount : '', PaymentMode : '',  CashType: '', PaymentRefereceNo : '', Comments : '', Status : 1, CreatedBy: '', UpdatedBy: '', CreatedOn: '', UpdatedOn: '',};
+  data: PayrollModel = { ID : '', CompanyID : '' , EmployeeID : '', Month : '', Year : '', LeaveDays : '', Salary : '',
+  Comments : '',  PaymentMode: '', Status : 1, CreatedBy: '', UpdatedBy:'' , CreatedOn: '', UpdatedOn: '',
+  InvoiceNo:'', CashType:'' };
+
 
   ngOnInit(): void {
     this.getList();
-    this.dropdownShoplist();
+    this.dropdownUserlist();
     this.getPaymentModesList();
-    this.getExpenseTypeList();
   }
 
-  dropdownShoplist(){
-    const subs: Subscription = this.ss.dropdownShoplist(this.data).subscribe({
+  dropdownUserlist(){
+    const subs: Subscription = this.es.dropdownUserlist().subscribe({
       next: (res: any) => {
-        this.dropShoplist = res.data
+        this.dropUserlist = res.data
         this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
@@ -73,16 +73,6 @@ export class ExpenseComponent implements OnInit {
     });
   }
 
-  getExpenseTypeList(){
-    const subs: Subscription = this.supps.getList('ExpenseType').subscribe({
-      next: (res: any) => {
-        this.ExpenseTypeList = res.data
-      },
-    error: (err: any) => console.log(err.message),
-    complete: () => subs.unsubscribe(),
-    });
-  }
-  
   getPaymentModesList(){
     const subs: Subscription = this.supps.getList('PaymentModeType').subscribe({
       next: (res: any) => {
@@ -99,7 +89,7 @@ export class ExpenseComponent implements OnInit {
       currentPage: this.currentPage,
       itemsPerPage: this.itemsPerPage
     }
-    const subs: Subscription = this.expen.getList(dtm).subscribe({
+    const subs: Subscription = this.pay.getList(dtm).subscribe({
       next: (res: any) => {
         this.collectionSize = res.count;
         this.dataList = res.data;
@@ -114,7 +104,7 @@ export class ExpenseComponent implements OnInit {
   }
 
   onsubmit() {
-    const subs: Subscription =  this.expen.saveExpense(this.data).subscribe({
+    const subs: Subscription =  this.pay.savePayroll(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.formReset();
@@ -149,8 +139,7 @@ export class ExpenseComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
-
-        const subs: Subscription = this.expen.deleteData(this.dataList[i].ID).subscribe({
+        const subs: Subscription = this.pay.deleteData(this.dataList[i].ID).subscribe({
           next: (res: any) => {
             this.dataList.splice(i, 1);
             this.as.successToast(res.message)
@@ -170,8 +159,8 @@ export class ExpenseComponent implements OnInit {
     })
   }
 
-  updateExpense(){
-    const subs: Subscription =  this.expen.updateExpense( this.data).subscribe({
+  updatePayroll(){
+    const subs: Subscription =  this.pay.updatePayroll(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.formReset();
@@ -196,19 +185,20 @@ export class ExpenseComponent implements OnInit {
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
-    if (this.user.CompanySetting?.DataFormat === '1') {
+    if (this.user.CompanySetting.DataFormat === '1') {
       event = event.toUpperCase()
-    } else if (this.user.CompanySetting?.DataFormat == '2') {
+    } else if (this.user.CompanySetting.DataFormat == '2') {
       event = event.toTitleCase()
     }
     return event;
   }
 
   openEditModal(content: any,datas:any) {
+    console.log(datas);
+    
     this.suBtn = true;
     this.data = datas
-    this.data.ShopID = Number(datas.ShopID);
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'xl'});
+     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'xl'});
   }
 
   openModal(content: any) {
@@ -218,7 +208,7 @@ export class ExpenseComponent implements OnInit {
   }
 
   exportAsXLSX(): void {
-    this.excelService.exportAsExcelFile(this.dataList, 'expense_list');
+    this.excelService.exportAsExcelFile(this.dataList, 'payroll_list');
   }
 
   ngAfterViewInit() {
@@ -253,7 +243,7 @@ export class ExpenseComponent implements OnInit {
         itemsPerPage: 50000,
         searchQuery: data.searchQuery 
       }
-      const subs: Subscription = this.expen.searchByFeild(dtm).subscribe({
+      const subs: Subscription = this.pay.searchByFeild(dtm).subscribe({
         next: (res: any) => {
           this.collectionSize = res.count;
           this.page = 1;
@@ -271,7 +261,9 @@ export class ExpenseComponent implements OnInit {
   }
 
   formReset() {
-    this.data = { ID : 0, CompanyID : 0, ShopID : '', Name:'', InvoiceNo: '', Category : '', SubCategory : '', Amount : '', PaymentMode : '',  CashType: '', PaymentRefereceNo : '', Comments : '', Status : 1, CreatedBy: '', UpdatedBy: '', CreatedOn: '', UpdatedOn: '',};
+    this.data = { ID : '', CompanyID : '' , EmployeeID : '', Month : '', Year : '', LeaveDays : '', Salary : '',
+    Comments : '',  PaymentMode: '', Status : 1, CreatedBy: '', UpdatedBy:'' , CreatedOn: '', UpdatedOn: '',
+    InvoiceNo:'', CashType:'' }
   }
 
 }

@@ -21,11 +21,13 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { CompanyPaymentRoutingModule } from './company-payment-routing.module';
 import { ExpenseComponent } from './expense/expense.component';
+import { PayrollComponent } from './payroll/payroll.component';
 
 
 @NgModule({
   declarations: [
-    ExpenseComponent
+    ExpenseComponent,
+    PayrollComponent
   ],
   imports: [
     CommonModule,

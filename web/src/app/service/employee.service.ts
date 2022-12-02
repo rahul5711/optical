@@ -25,6 +25,13 @@ export class EmployeeService {
     .pipe(catchError(this.handleError));
   }
 
+  dropdownUserlist(): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.get<any>(this.url + '/dropdownlist' )
+    .pipe(catchError(this.handleError));
+  }
+
   deleteData(ID:any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams();
