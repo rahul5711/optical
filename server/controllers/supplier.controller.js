@@ -4,6 +4,7 @@ const _ = require("lodash")
 const bcrypt = require('bcrypt')
 const { now } = require('lodash')
 const chalk = require('chalk');
+// const {shopID} = require('../helpers/helper_function')
 const connected = chalk.bold.cyan;
 
 
@@ -90,6 +91,8 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
             const Body = req.body;
+        //     const shopid = await shopID(req.headers)
+        //   console.log(shopid,'shopid');
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 

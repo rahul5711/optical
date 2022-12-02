@@ -36,7 +36,7 @@ export class TokenInterceptor implements HttpInterceptor {
           headersConfig['Access-Control-Allow-Headers'] =  'Content-Type';
           headersConfig['ip'] = ip;
           headersConfig['UserGroup'] = this.tokenService.getUser().UserGroup || '';
-          headersConfig['selectedShop'] = localStorage.getItem('selectedShop')|| '0';
+          headersConfig['selectedShop'] = localStorage.getItem('selectedShop')|| ['0'];
 
         }
         req = req.clone({ setHeaders: headersConfig });

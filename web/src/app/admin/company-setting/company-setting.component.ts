@@ -29,7 +29,7 @@ export class CompanySettingComponent implements OnInit {
   data: any = {ID: null, CompanyLanguage: 'English', Locale: 'en-IN', CompanyCurrency: '', CurrencyFormat: null, DateFormat: null,CompanyTagline: '', BillHeader: '', BillFooter: '', RewardsPointValidity: '', EmailReport: null,
      WholeSalePrice: false, Composite: false, RetailRate: false,  Color1: '', FontApi:'', FontsStyle: '', HSNCode: false, Discount: false, GSTNo: false, Rate: false, SubTotal: false, Total: false, CGSTSGST: false, 
      WelComeNote: '',BillFormat:null,SenderID: '',MsgAPIKey:'', SmsSetting: '',DataFormat: 0,RewardPercentage:0, RewardExpiryDate: '30',AppliedReward:0, MobileNo:'2', MessageReport: null, LogoURL: '', WatermarkLogoURL: '', 
-     InvoiceFormat: 'option.ejs', LoginTimeStart: '', LoginTimeEnd: '', year: false, month: false, partycode: false, type: false , BarCode:'', FeedbackDate:'', ServiceDate:'',DeliveryDay:''
+     InvoiceFormat: 'option.ejs', LoginTimeStart: '', LoginTimeEnd: '', year: false, month: false, partycode: false, type: false , BarCode:'', FeedbackDate:'', ServiceDate:'',DeliveryDay:'',UpdatedBy:null
   }; 
 
 
@@ -39,7 +39,7 @@ export class CompanySettingComponent implements OnInit {
   env = environment;
   companyImage: any;
   dataList: any;
-  companysetting:any = JSON?.parse(localStorage.getItem('companysetting') || '');
+  companysetting:any = JSON.parse(localStorage.getItem('companysetting') || '');
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
    
    
@@ -60,8 +60,8 @@ export class CompanySettingComponent implements OnInit {
   wlcmArray1: any;
 
   ngOnInit(): void {
-   
-     this.wlcmArray1 = this.companysetting.WelComeNote 
+       JSON.parse(localStorage.getItem('companysetting') || '');
+     this.wlcmArray1 = JSON.parse(this.companysetting.WelComeNote) || '' 
 
   }
 

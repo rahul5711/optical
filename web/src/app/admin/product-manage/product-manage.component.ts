@@ -256,7 +256,7 @@ i: any;
   }
 
   deleteItem(i:any){
-      const subs: Subscription =   this.ps.deleteSpec('productspec', this.specList[i].ID).subscribe({
+      const subs: Subscription = this.ps.deleteSpec('productspec', this.specList[i].ID).subscribe({
         next: (res: any) => {
           this.specList.splice(i, 1);
           if (res.success) {

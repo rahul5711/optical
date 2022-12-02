@@ -213,5 +213,6 @@ export class EmpolyeeListComponent implements OnInit {
 
   exportAsXLSX(): void {
     this.excelService.exportAsExcelFile(this.dataList, 'empolyee_list');
+    
   }
 }

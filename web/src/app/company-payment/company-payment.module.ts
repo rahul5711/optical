@@ -22,12 +22,14 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { CompanyPaymentRoutingModule } from './company-payment-routing.module';
 import { ExpenseComponent } from './expense/expense.component';
 import { PayrollComponent } from './payroll/payroll.component';
+import { PettyCashComponent } from './petty-cash/petty-cash.component';
 
 
 @NgModule({
   declarations: [
     ExpenseComponent,
-    PayrollComponent
+    PayrollComponent,
+    PettyCashComponent
   ],
   imports: [
     CommonModule,

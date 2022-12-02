@@ -100,15 +100,12 @@ export class CompanyListComponent implements OnInit {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!',
       backdrop: 'static',
-
-
     }).then((result) => {
+    this.sp.show();
       if (result.isConfirmed) {
-        this.sp.show();
         const subs: Subscription = this.cs.deleteData(this.dataList[i].ID).subscribe({
           next: (res: any) => {
             this.dataList.splice(i, 1);
-            this.sp.hide();
             this.as.successToast(res.message)
           },
           error: (err: any) => console.log(err.message),
@@ -122,9 +119,10 @@ export class CompanyListComponent implements OnInit {
           timer: 1000
         })
       }
+      this.sp.hide();
     })
 
-
+  
 
   }
 
@@ -164,7 +162,6 @@ export class CompanyListComponent implements OnInit {
             } else {
               console.log('not login compnay');
             }
-
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),

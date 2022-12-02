@@ -76,9 +76,10 @@ export class LoginComponent implements OnInit {
     if (this.data.Password === "") {
       return this.as.errorToast("please fill up password")
     }
-    this.sp.show()
+    
     const subs: Subscription = this.auth.login(this.data).subscribe({
       next: (res: any) => {
+        this.sp.show()
         if (res.success == true) {
           this.as.successToast(res.message)
           this.token.setToken(res.accessToken);
@@ -162,12 +163,12 @@ export class LoginComponent implements OnInit {
         else {
           this.as.errorToast(res.message);          
         }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
-  
+   
   }
 
   saveSelectedShop() {
