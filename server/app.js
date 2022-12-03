@@ -10,18 +10,32 @@ const getConnection = require('./helpers/db')
 const JWT = require('jsonwebtoken')
 var moment = require("moment-timezone");
 var logger = require('morgan');
-var indexRouter = require('./routes/index');
+var indexRouter = require('./routes/index'); 
 var usersRouter = require('./routes/users');
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
-const loggerss = require("./logger");
+const morgan = require('morgan') 
+
+const loggerss = require("./helpers/logger");
 var app = express();
 app.use(express.static(path.join(__dirname, '')));
 
 const http = require('http').Server(app)
 
 app.use(cors())
+morgan.token("custom", `:remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" `)
 
+//use the log format by api
+app.use(morgan("custom", { stream: loggerss.getLogFileStream('access') }))
+app.use(
+  logger('combined', {
+    skip: (req, res) => {
+      return res.statusCode < 400 
+    },
+    stream: loggerss.getLogFileStream('error')
+  })
+)
+//use the new format by name
 app.use(function(req, res, next) {
   if (req.headers.authorization !== undefined) {
     const authHeader = req.headers['authorization']
@@ -36,7 +50,7 @@ app.use(function(req, res, next) {
 
       const connection = await getConnection.connection();
       const user = await connection.query(`select * from user where ID = ${payload.aud}`)
-      console.log(user);
+     
       if ( user && ( user[0].UserGroup !== 'CompanyAdmin' && user[0].UserGroup !== 'SuperAdmin')) {
         const companysetting = await connection.query(`select * from companysetting where Status = 1 and CompanyID = ${user[0].CompanyID}`)
         var currentTime = moment().tz("Asia/Kolkata").format("HH:mm");
@@ -47,7 +61,6 @@ app.use(function(req, res, next) {
       } else {
         return res.status(999).send({success: false, message: `your session has been expired`})
       }
-       
       } else {
         next()
       }
@@ -115,9 +128,7 @@ app.use(function(err, req, res, next) {
 const PORT = process.env.PORT || 3000
 
 http.listen(PORT, () => {
-   
-  loggerss.info(( `server running on port ${PORT}`))
-  console.log(connected(`server running on port ${PORT}`))
+  connected(`server running on port ${PORT}`)
 })
 
 module.exports = app;
