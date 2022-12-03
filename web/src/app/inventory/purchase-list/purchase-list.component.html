@@ -36,9 +36,13 @@
                     </div>
                   </div>
                   <div class="col-md-1 col-1" style="width: 70px;padding: 0;">
-                    <mat-icon class="col-white plus_icon me-1" [routerLink]="['/inventory/purchase',0]"> add</mat-icon>
-                    <mat-icon class="col-white Grid_icon" (click)="gridview = !gridview" title="Grid View">grid_on
-                    </mat-icon>
+                    <button class="bg-none"  [routerLink]="['/inventory/purchase',0]">
+                      <mat-icon class="col-white plus_icon me-1" > add</mat-icon>
+                  </button>
+                    <button class="bg-none" (click)="gridview = !gridview">
+                      <mat-icon class="col-white Grid_icon"  title="Grid View"
+                          style="font-size: 22px;padding: 4px;">grid_on</mat-icon>
+                      </button>
                   </div>
                 </div>
               </div>

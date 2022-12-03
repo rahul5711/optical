@@ -198,10 +198,10 @@ export class PurchaseComponent implements OnInit {
   }
 
   getSupplierDetails(event:any){
-      const index = this.supplierList.findIndex((element: { Name: any; }) => element.Name === event.value);
+      const index = this.supplierList.findIndex((element:any) => element.Name === event.value);
       this.selectedPurchaseMaster.SupplierID = this.supplierList[index].ID;
       this.selectedPurchaseMaster.SupplierName = this.supplierList[index].Name;
-      this.item.GSTType = this.supplierList[index].GSTNo; 
+      this.item.GSTType = this.supplierList[index].GSTType; 
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {

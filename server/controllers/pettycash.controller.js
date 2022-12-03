@@ -1,0 +1,249 @@
+const createError = require('http-errors')
+const getConnection = require('../helpers/db')
+const _ = require("lodash")
+const chalk = require('chalk');
+const connected = chalk.bold.cyan;
+const _Query = require('../helpers/queryBuilder')
+const {shopID} = require('../helpers/helper_function')
+
+
+module.exports = {
+    save: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers)
+            const datum = {
+                Name: Body.Name ? Body.Name : '',
+                ShopID: Body.ShopID ? Body.ShopID : 0,
+                EmployeeID: Body.EmployeeID ? Body.EmployeeID : 0,
+                InvoiceNo: Body.InvoiceNo ? Body.InvoiceNo : '',
+                Amount: Body.Amount ? Body.Amount : 0,
+                CashType: Body.CashType ? Body.CashType : '',
+                CreditType: Body.CreditType ? Body.CreditType : '',
+                Comments: Body.Comments ? Body.Comments : '',
+                Status: Body.Status ? Body.Status : 1,
+            }
+
+            datum.ShopID = shopid;
+        
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (Body.EmployeeID === null || Body.EmployeeID === undefined || !Body.EmployeeID) return res.send({ message: "Invalid Query Data" })
+            if (datum.ShopID == 0) return res.send({ message: "Select The Shop" })
+
+            var newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
+            let rw = "P";
+
+            let lastInvoiceID = await connection.query(`select * from pettycash where CompanyID = ${CompanyID} and InvoiceNo LIKE '${newInvoiceID}%' order by ID desc`);
+
+            if (lastInvoiceID[0]?.InvoiceNo.substring(0, 4) !== newInvoiceID) {
+                newInvoiceID = newInvoiceID + rw + "00001";
+            } else {
+                let temp3 = lastInvoiceID[0]?.InvoiceNo;
+                let temp1 = parseInt(temp3.substring(10, 5)) + 1;
+                let temp2 = "0000" + temp1;
+                newInvoiceID = newInvoiceID + rw + temp2.slice(-5);
+            }
+
+            datum.InvoiceNo = newInvoiceID;
+
+            const saveData = await connection.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo ) values (${CompanyID},${datum.ShopID}, ${datum.EmployeeID}, '${datum.CashType}', '${datum.CreditType}', ${datum.Amount},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${datum.InvoiceNo}')`)
+
+            let CreditType
+            if(datum.CreditType === 'Withdrawal'){
+                CreditType = 'Debit'
+            }
+            else if(datum.CreditType === 'Deposit'){
+                CreditType = 'Credit'
+            }
+             
+            const paymentMaster = await connection.query(`insert into paymentmaster(CustomerID,CompanyID,ShopID,PaymentType,CreditType,PaymentDate,PaymentMode,CardNo,PaymentReferenceNo,PayableAmount,PaidAmount,Comments,Status,CreatedBy,CreatedOn) values (${saveData.insertId}, ${CompanyID}, ${datum.ShopID},'PettyCash','${CreditType}',now(),'${datum.CashType}','','',${datum.Amount},${datum.Amount},'${datum.Comments}',1, ${LoggedOnUser}, now())`)
+
+            const paymentDetail = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn) values (${paymentMaster.insertId},'${datum.InvoiceNo}',${saveData.insertId},${saveData.insertId},${CompanyID},${datum.Amount},0,'PettyCash','${CreditType}',1,${LoggedOnUser}, now())`)
+
+            console.log(connected("Data Save SuccessFUlly !!!"));
+            response.message = "data save sucessfully"
+            response.data = await connection.query(`select * from pettycash where CompanyID = ${CompanyID} and Status = 1 order by ID desc`)
+            connection.release()
+            return res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+    list: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+
+            let page = Body.currentPage;
+            let limit = Body.itemsPerPage;
+            let skip = page * limit - limit;
+
+            let qry = `SELECT pettycash.*, users2.Name AS EmployeeName, users1.Name AS CreatedPerson, users.Name AS UpdatedPerson FROM pettycash  LEFT JOIN user AS users1 ON users1.ID = pettycash.CreatedBy  LEFT JOIN user AS users ON users.ID = pettycash.UpdatedBy  LEFT JOIN user AS users2 ON users2.ID = pettycash.EmployeeID WHERE pettycash.Status = 1 AND pettycash.CompanyID = ${CompanyID}  ORDER BY pettycash.ID DESC`
+            let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
+
+
+            let finalQuery = qry + skipQuery;
+
+            let data = await connection.query(finalQuery);
+            let count = await connection.query(qry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = count.length
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+    delete: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+
+            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+
+            const doesExist = await connection.query(`select * from pettycash where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "pettycash doesnot exist from this id " })
+            }
+
+            const payment = await connection.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and PaymentType = 'PettyCash'`)
+
+
+            const deletePayroll = await connection.query(`update pettycash set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+
+            const deletePaymentMaster = await connection.query(`update paymentmaster set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where CustomerID = ${Body.ID} and CompanyID = ${CompanyID} and PaymentType = 'PettyCash' and ID = ${payment[0].PaymentMasterID}`)
+
+            const deletePaymentDetail = await connection.query(`update paymentdetail set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where BillMasterID = ${Body.ID} and CompanyID = ${CompanyID} and PaymentType = 'PettyCash' and BillID = '${doesExist[0].InvoiceNo}'`)
+
+            console.log("PettyCash Delete SuccessFUlly !!!");
+
+            response.message = "data delete sucessfully"
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            return error
+        }
+    },
+    getById: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+            if (!Body.ID) res.send({ message: "Invalid Query Data" })
+
+            const Pettycash = await connection.query(`select * from pettycash where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
+
+            response.message = "data fetch sucessfully"
+            response.data = Pettycash
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            return error
+        }
+    },
+    update: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const Body = req.body;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+
+            const doesExist = await connection.query(`select * from pettycash where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "pettycash doesnot exist from this id " })
+            }
+
+            const datum = {
+                Name: Body.Name ? Body.Name : '',
+                ShopID: Body.ShopID ? Body.ShopID : 0,
+                EmployeeID: Body.EmployeeID ? Body.EmployeeID : 0,
+                InvoiceNo: Body.InvoiceNo ? Body.InvoiceNo : '',
+                Amount: Body.Amount ? Body.Amount : 0,
+                CashType: Body.CashType ? Body.CashType : '',
+                CreditType: Body.CreditType ? Body.CreditType : '',
+                Comments: Body.Comments ? Body.Comments : '',
+                Status: Body.Status ? Body.Status : 1,
+            }
+
+
+            const update = await connection.query(`update pettycash set EmployeeID=${datum.EmployeeID}, CashType='${datum.CashType}',CreditType='${datum.CreditType}',Amount='${datum.Amount}',Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+
+            let CreditType = ''
+            if(datum.CreditType === 'Withdrawal'){
+                CreditType = 'Debit'
+            }
+            else if(datum.CreditType === 'Deposit'){
+                CreditType = 'Credit'
+            }
+
+            const payment = await connection.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and PaymentType = 'PettyCash'`)
+
+            const updatePaymentMaster = await connection.query(`update paymentmaster set PayableAmount=${datum.Amount},PaidAmount=${datum.Amount},
+            CreditType='${CreditType}', Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where CustomerID=${Body.ID} and PaymentType = 'PettyCash' and CompanyID = ${CompanyID} and ID =${payment[0].PaymentMasterID}`)
+
+            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount=${datum.Amount}, Credit='${CreditType}' where BillMasterID =${Body.ID} and PaymentType = 'PettyCash' and CompanyID = ${CompanyID} and BillID = '${doesExist[0].InvoiceNo}'`)
+
+            console.log("PettyCash Updated SuccessFUlly !!!");
+
+            response.message = "data update sucessfully"
+            connection.release()
+            return res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+    searchByFeild: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "", count: 0 }
+            const connection = await getConnection.connection();
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
+
+            let qry = `select pettycash.*, users2.Name as EmployeeName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from pettycash left join user as users1 on users1.ID = pettycash.CreatedBy left join user as users on users.ID = pettycash.UpdatedBy left join user as users2 on users2.ID = pettycash.EmployeeID where pettycash.Status = 1 and  pettycash.CompanyID = '${CompanyID}' and users2.Name like '%${Body.searchQuery}%' OR pettycash.Status = 1 and pettycash.CompanyID = '${CompanyID}' and pettycash.CashType like '%${Body.searchQuery}%' OR pettycash.Status = 1 and pettycash.CompanyID = '${CompanyID}' and pettycash.CreditType like '%${Body.searchQuery}%' `
+
+
+            let data = await connection.query(qry);
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = data.length
+            connection.release()
+            res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+
+        }
+    },
+}

@@ -1,4 +1,3 @@
-<p>petty-cash works!</p>
 <section class="content">
     <div class="container-fluid">
         <div class="block-header"></div>
@@ -8,17 +7,175 @@
                     <div class="header p-0 py-0 pt-1">
                         <div class="row">
                             <div class="col-md-1 col-6 p-0 ms-3">
-                                <h2>PettyCash List </h2>
+                                <h2>PettyCashList</h2>
                             </div>
-                           
+                            <div class="ps-md-0 ps-0 pt-1" style="width: 40px;">
+                                <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"
+                                    (click)="exportAsXLSX()"></i>
+                            </div>
+                            <div class="col-md-2 col-1 ps-md-0 ps-1">
+                                <select class=" form-control"
+                                    style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
+                                    [(ngModel)]="itemsPerPage" (change)="getList();">
+                                    <option [ngValue]="10">Show 10 Row</option>
+                                    <option [ngValue]="25">Show 25 Row</option>
+                                    <option [ngValue]="50">Show 50 Row</option>
+                                    <option [ngValue]="100">Show 100 Row</option>
+                                    <option [ngValue]="250">Show 250Row</option>
+                                    <option [ngValue]="500">Show 500 Row</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 col-4 mx-md-auto" style="margin-top:0px;">
+                                <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false"
+                                    ngbPaginationEllipsis [collectionSize]="collectionSize" #numPages
+                                    [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="getList()"
+                                    [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                                </ngb-pagination>
+                            </div>
+                            <div class="col-md-2 col-4 ms-auto">
+                                <div class="input-group">
+                                    <input placeholder="Search" [(ngModel)]="term" #searching mdbInput type="search"
+                                        id="form1" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-1 col-1" style="width: 40px;padding: 0;">
+                                <button class="bg-none" (click)="openModal(content)">
+                                    <mat-icon class="col-white plus_icon me-1" data-mdb-toggle="modal"
+                                        data-mdb-target="#exampleModal"> add</mat-icon>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
                     <!-- table list start -->
-                 
+                    <div class="row mt-md-3 mt-5 ">
+                        <div style="overflow-x:auto;overflow:auto;height:530px; " class="table-responsive mt-md-0 mt-3">
+                            <table style="width:100%;" id="exportsss"
+                                class="table table-striped table-hover table-sm table-bordered"
+                                style="border: 2px solid #fff !important;">
+                                <thead class="thead-light" style="width:100%;">
+                                    <tr>
+                                        <th>Action</th>
+                                        <th>S.No</th>
+                                        <th>InvoiceNo</th>
+                                        <th>EmployeeName</th>
+                                        <th>CashType</th>
+                                        <th>CreditType</th>
+                                        <th>Amount</th>
+                                        <th>Comments</th>
+                                        <th>Date</th>
+                                        <th>CreatedBy</th>
+                                        <th>UpdatedBy</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let data of dataList  let i = index;">
+                                        <td class="text-center" style="width: 7%;">
+                                            <button class="bg-none" (click)="openEditModal(content,data)">
+                                                <mat-icon class="edit_icon ms-1" data-mdb-toggle="modal"
+                                                    data-mdb-target="#exampleModal">
+                                                    edit
+                                                </mat-icon>
+                                            </button>
+                                            <button class="bg-none" (click)="deleteItem(i)">
+                                                <mat-icon class="delete_icon ms-1">delete_forever</mat-icon>
+                                            </button>
+                                        </td>
+                                        <td  class="text-center">{{ i + 1 }}</td>
+                                        <td  class="text-center">{{data.InvoiceNo }}</td>
+                                        <td  class="text-center">{{data.EmployeeName }}</td>
+                                        <td  class="text-center">{{data.CashType}}</td>
+                                        <td  class="text-center">{{data.CreditType}}</td>
+                                        <td  class="text-center">{{data.Amount}}</td>
+                                        <td  class="text-center">{{data.Comments}}</td>
+                                        <td  class="text-center">{{data.CreatedOn }}</td>
+                                        <td  class="text-center">{{data.CreatedPerson}}</td>
+                                        <td  class="text-center">{{data.UpdatedPerson}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                     <!-- table list end -->
                 </div>
             </div>
         </div>
     </div>
 </section>
+<!-- model popup start -->
+<ng-template #content role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+        <h2 class="modal-title header pt-2" id="exampleModalLabel">PettyCash Info </h2>
+        <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
+            (click)="modal.dismiss('Cross click')">
+        </button>
+    </div>
+    <div class="modal-body ">
+        <form #f="ngForm" autocomplete="off">
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Employee</mat-label>
+                                <mat-select name="EmployeeID" [(ngModel)]="data.EmployeeID" appAutoFoucsDirectives required>
+                                    <mat-option [value]="e.ID" *ngFor="let e of dropUserlist "> {{e.Name}} </mat-option>
+                                </mat-select>
+                                <mat-error>Employee Name is required</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div  class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Cash Type</mat-label>
+                                <mat-select name="Duration" [(ngModel)]="data.CashType" required >
+                                    <mat-option ></mat-option>
+                                    <mat-option value="CashCounter" >Cash Counter</mat-option>
+                                    <mat-option value="PettyCash" >Petty Cash</mat-option>
+                                </mat-select>
+                                <mat-error>
+                                    CashType is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div  class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Credit Type</mat-label>
+                                <mat-select name="CreditType" [(ngModel)]="data.CreditType" required>
+                                    <mat-option></mat-option>
+                                    <mat-option  value="Withdrawal">Withdrawal</mat-option>
+                                    <mat-option   value="Deposit">Deposit</mat-option>
+                                    <!-- *ngIf="data1.CashType !== 'CashCounter'" -->
+                                </mat-select>
+                                <mat-error>Credit Type is required</mat-error>
+                            </mat-form-field>
+                        </div>
+                        
+                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Amount</mat-label>
+                                <input matInput name="Amount" type="number" [(ngModel)]="data.Amount" required />
+                                <mat-error>Amount is required</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Comments</mat-label>
+                                <input matInput name="Comments" type="text" [(ngModel)]="data.Comments" (ngModelChange)="data.Comments = onChange($event)" />
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
+                            <button *ngIf="suBtn === false" (click)="onsubmit()" class="me-3" mat-raised-button color="primary"
+                            [disabled]=!f.valid>Save</button>
+                        <button *ngIf="suBtn === true" (click)="updatePetty()" class="me-3" mat-raised-button
+                            color="primary" [disabled]=!f.valid>Update</button>
+                        <button type="button" mat-raised-button> Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</ng-template>
+<!-- model popup ent -->
