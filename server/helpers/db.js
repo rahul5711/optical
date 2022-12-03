@@ -15,6 +15,7 @@ const connection = () => {
          connection.query(sql, binding, (err, result) => {
            if (err) reject(err);
            resolve(result);
+           
            });
          });
        };
@@ -26,6 +27,7 @@ const connection = () => {
          });
        };
        resolve({ query, release });
+       
      });
    });
  };

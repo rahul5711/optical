@@ -9,12 +9,12 @@ const cors = require('cors')
 const getConnection = require('./helpers/db')
 const JWT = require('jsonwebtoken')
 var moment = require("moment-timezone");
-
+var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
-
+const loggerss = require("./logger");
 var app = express();
 app.use(express.static(path.join(__dirname, '')));
 
@@ -67,6 +67,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+
 // app.use('/users', usersRouter);
 app.use('/company', require('./routes/company.route'));
 app.use('/login', require('./routes/login.route'));
@@ -113,6 +114,8 @@ app.use(function(err, req, res, next) {
 const PORT = process.env.PORT || 3000
 
 http.listen(PORT, () => {
+   
+  loggerss.info(( `server running on port ${PORT}`))
   console.log(connected(`server running on port ${PORT}`))
 })
 
