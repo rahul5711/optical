@@ -16,31 +16,36 @@ import { ProductMasterComponent } from './product-master/product-master.componen
 import { RoleComponent } from './role/role.component';
 import { ShopListComponent } from './shop-list/shop-list.component';
 import { ShopComponent } from './shop/shop.component';
+import { SmsSettingComponent } from './sms-setting/sms-setting.component';
 import { UserUpdatePasswordComponent } from './user-update-password/user-update-password.component';
 
 
 const routes: Routes = [
 { path: '',
 children: [
+  // SuperAdmin start routes
   { path: 'adminDashborad', component: AdminDashboradComponent },
-  { path: 'CompanyDashborad', component: DashboradComponent },
   { path: 'company/:id', component: CompanyComponent },
   { path: 'companyList', component: CompanyListComponent },
   { path: 'userList', component: UserUpdatePasswordComponent },
   { path: 'loginHistory', component: LoginHistoryComponent },
-  { path: 'shop/:id', component: ShopComponent },
-  { path: 'shopList', component: ShopListComponent },
+  { path: 'addTypeAssign', component: AddTypeComponent },
+  { path: 'productMasterAssign', component: ProductMasterComponent },
+  { path: 'productManageAssign', component: ProductManageComponent },
+  { path: 'deactiveList', component: DeactiveListComponent },
+  // SuperAdmin end routes
+  
+  // CompanyAdmin start routes
+  { path: 'CompanyDashborad', component: DashboradComponent },
   { path: 'employee/:id', component: EmployeeComponent },
   { path: 'employeeList', component: EmpolyeeListComponent },
+  { path: 'shop/:id', component: ShopComponent },
+  { path: 'shopList', component: ShopListComponent },
   { path: 'rolePermission', component: RoleComponent },
   { path: 'companySetting', component: CompanySettingComponent },
-  { path: 'addTypeAssign', component: AddTypeComponent },
-  { path: 'productManageAssign', component: ProductManageComponent },
-  { path: 'productMasterAssign', component: ProductMasterComponent },
+  { path: 'smsSetting', component: SmsSettingComponent },
   { path: 'companyLoginHistory', component: CompanyLoginHistoryComponent },
-  { path: 'deactiveList', component: DeactiveListComponent },
-
-   
+  // ComapnyAdmin end routes 
 ]}
 ]
 

@@ -12,9 +12,8 @@ import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators'
 import { fromEvent   } from 'rxjs'
 import { ExcelService } from '../../service/excel.service';
 import { SupportService } from 'src/app/service/support.service';
-import { PayrollService } from 'src/app/service/payroll.service';
 import { EmployeeService } from 'src/app/service/employee.service';
-import { PayrollModel} from '../../interface/Payroll';
+import { PettycashModel} from '../../interface/pettycash';
 import { PettycashService } from 'src/app/service/pettycash.service';
 
 @Component({
@@ -25,6 +24,7 @@ import { PettycashService } from 'src/app/service/pettycash.service';
 export class PettyCashComponent implements OnInit {
 
   user = JSON.parse(localStorage.getItem('user') || '');
+  companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   @ViewChild('searching') searching: ElementRef | any;
   term:any;
   dataList:any;
@@ -51,7 +51,7 @@ export class PettyCashComponent implements OnInit {
     private es: EmployeeService,
   ) {this.id = this.route.snapshot.params['id']; }
 
-  data: any = {  ID: '', CompanyID: '', ShopID: '', EmployeeID: null,CashType:'', CreditType: '', Amount: 0.00,
+  data: PettycashModel = {  ID: '', CompanyID: '', ShopID: '', EmployeeID: '', InvoiceNo: '', CashType:'', CreditType: '', Amount: 0.00,
   Comments: '', Status: 1, CreatedBy: '', UpdatedBy: '', CreatedOn: '', UpdatedOn: '', };
 
 
@@ -173,9 +173,9 @@ export class PettyCashComponent implements OnInit {
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
-    if (this.user.CompanySetting.DataFormat === '1') {
+    if (this.companysetting.DataFormat === '1') {
       event = event.toUpperCase()
-    } else if (this.user.CompanySetting.DataFormat == '2') {
+    } else if (this.companysetting.DataFormat == '2') {
       event = event.toTitleCase()
     }
     return event;
@@ -249,8 +249,8 @@ export class PettyCashComponent implements OnInit {
   }
 
   formReset() {
-    this.data = { ID: '', CompanyID: '', ShopID: '', EmployeeID: null,CashType:'', CreditType: '', Amount: 0.00,
-    Comments: '', Status: 1, CreatedBy: '', UpdatedBy: '', CreatedOn: '', UpdatedOn: '', }
+    this.data = { ID: '', CompanyID: '', ShopID: '', EmployeeID: '', InvoiceNo: '', CashType:'', CreditType: '', Amount: 0.00,
+    Comments: '', Status: 1, CreatedBy: '', UpdatedBy: '', CreatedOn: '', UpdatedOn: '',  }
   }
 
 }

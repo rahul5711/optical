@@ -30,6 +30,7 @@ export class EmployeeComponent implements OnInit {
   dropShoplist: any;
   userList: any;
   saveUpdateHide:any
+  v = "^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" 
   constructor(
     private router: Router,      
     private route: ActivatedRoute,

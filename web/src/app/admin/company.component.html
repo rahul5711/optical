@@ -48,7 +48,7 @@
                                         <div class="col-xl-4 col-lg-4 col-md-2 col-sm-12 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Email</mat-label>
-                                                <input matInput name="Email1" [(ngModel)]="data.Email"
+                                                <input matInput name="Email1" [(ngModel)]="data.Email" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
                                                     required #Emailcontrol [disabled]=" id != 0">
                                                 <mat-error>
                                                     Invalid Email Id
@@ -209,7 +209,7 @@
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                             <mat-slide-toggle type="button" name="EmailMsg" color="primary"
-                                                [(ngModel)]="data.EmailMsg" class="example-margin" #EmailMsgcontrol [disabled]="user?.UserGroup !== 'SuperAdmin'">
+                                                [(ngModel)]="data.EmailMsg" class="example-margin" #EmailMsgcontrol [disabled]="user?.UserGroup !== 'SuperAdmin'" >
                                                 Email
                                             </mat-slide-toggle>
                                         </div>
@@ -314,7 +314,7 @@
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Email</mat-label>
                                                     <input matInput name="Email"  ngModel email="true"
-                                                        [(ngModel)]="data.Email"  [disabled]=" id != 0" required #Emailcontrol1>
+                                                    pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"  [(ngModel)]="data.Email"  [disabled]=" id != 0" required #Emailcontrol1>
                                                     <mat-error>
                                                         Invalid Email Id
                                                     </mat-error>

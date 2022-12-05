@@ -20,7 +20,8 @@ export class PurchaseComponent implements OnInit {
 
   user = JSON.parse(localStorage.getItem('user') || '');
   company = JSON.parse(localStorage.getItem('company') || '');
-  specList: any;
+  companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  
 
   constructor(
     private router: Router,
@@ -57,12 +58,13 @@ export class PurchaseComponent implements OnInit {
   supplierList:any;
   category = 'Product';
   selectedProduct :any;
-  prodList :any
+  prodList:any;
+  specList: any;
   disableAddButtons = false;
-  gstperLock:any
-  gstLock:any
-  gstList:any
-  chargeOptions:any
+  gstperLock:any;
+  gstLock:any;
+  gstList:any;
+  chargeOptions:any;
   gstdividelist = [];
   sgst = 0;
   cgst = 0;
@@ -205,9 +207,9 @@ export class PurchaseComponent implements OnInit {
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
-    if (this.user.CompanySetting.DataFormat === '1') {
+    if (this.companysetting.DataFormat === '1') {
       event = event.toUpperCase()
-    } else if (this.user.CompanySetting.DataFormat == '2') {
+    } else if (this.companysetting.DataFormat == '2') {
       event = event.toTitleCase()
     }
     return event;

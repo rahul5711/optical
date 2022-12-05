@@ -39,6 +39,7 @@ import { CompanyLoginHistoryComponent } from './company-login-history/company-lo
 import { ProductMasterComponent } from './product-master/product-master.component';
 import { DeactiveListComponent } from './deactive-list/deactive-list.component';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { SmsSettingComponent } from './sms-setting/sms-setting.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     CompanyLoginHistoryComponent,
     ProductMasterComponent,
     DeactiveListComponent,
+    SmsSettingComponent,
   ],
 
   imports: [

@@ -32,6 +32,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { BrowserModule } from '@angular/platform-browser';
 import { ModalModule } from 'ngb-modal';
+import { Page404Component } from './common/page404.component';
 // import { NgxPaginationModule } from 'ngx-pagination';
 
 
@@ -40,6 +41,7 @@ import { ModalModule } from 'ngb-modal';
     AppComponent,
     LoginComponent,
     CommonComponent,
+    Page404Component,
     
   ],
   imports: [

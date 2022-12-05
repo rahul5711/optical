@@ -221,7 +221,7 @@
                         <div class="col-md-3 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Email</mat-label>
-                                <input matInput name="email" type="email" ngModel [email]="true"
+                                <input matInput name="email" type="email" ngModel [email]="true" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
                                     [(ngModel)]="data.Email" #Emailcontrol>
                                 <mat-error>
                                     Invalid EmailId.
