@@ -4,7 +4,7 @@ const _ = require("lodash")
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const _Query = require('../helpers/queryBuilder')
-const {shopID} = require('../helpers/helper_function')
+const { shopID } = require('../helpers/helper_function')
 
 
 module.exports = {
@@ -35,6 +35,18 @@ module.exports = {
             if (Body.EmployeeID === null || Body.EmployeeID === undefined || !Body.EmployeeID) return res.send({ message: "Invalid Query Data" })
             if (datum.ShopID == 0) return res.send({ message: "Invalid Shop" })
 
+            if (datum.CashType === 'PettyCash' && datum.CreditType === 'Withdrawal') {
+                const DepositBalance = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Deposit'`)
+
+                const WithdrawalBalance = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Withdrawal'`)
+
+                const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
+
+                if (Balance < datum.Amount) {
+                    return res.send({message: `you can not withdrawal greater than ${Balance}`})
+                }
+            }
+
             var newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
             let rw = "P";
 
@@ -54,10 +66,10 @@ module.exports = {
             const saveData = await connection.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo ) values (${CompanyID},${datum.ShopID}, ${datum.EmployeeID}, '${datum.CashType}', '${datum.CreditType}', ${datum.Amount},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${datum.InvoiceNo}')`)
 
             let CreditType
-            if(datum.CreditType === 'Withdrawal'){
+            if (datum.CreditType === 'Withdrawal') {
                 CreditType = 'Debit'
             }
-            else if(datum.CreditType === 'Deposit'){
+            else if (datum.CreditType === 'Deposit') {
                 CreditType = 'Credit'
             }
 
@@ -178,9 +190,11 @@ module.exports = {
             const Body = req.body;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers)
 
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+            if (shopid == 0) return res.send({ message: "Invalid Shop" })
 
             const doesExist = await connection.query(`select * from pettycash where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
@@ -200,14 +214,26 @@ module.exports = {
                 Status: Body.Status ? Body.Status : 1,
             }
 
+            if (datum.CashType === 'PettyCash' && datum.CreditType === 'Withdrawal') {
+                const DepositBalance = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Deposit'`)
+
+                const WithdrawalBalance = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Withdrawal'`)
+
+                const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
+
+                if (Balance < datum.Amount) {
+                    return res.send({message: `you can not withdrawal greater than ${Balance}`})
+                }
+            }
+
 
             const update = await connection.query(`update pettycash set EmployeeID=${datum.EmployeeID}, CashType='${datum.CashType}',CreditType='${datum.CreditType}',Amount='${datum.Amount}',Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             let CreditType = ''
-            if(datum.CreditType === 'Withdrawal'){
+            if (datum.CreditType === 'Withdrawal') {
                 CreditType = 'Debit'
             }
-            else if(datum.CreditType === 'Deposit'){
+            else if (datum.CreditType === 'Deposit') {
                 CreditType = 'Credit'
             }
 
@@ -262,4 +288,37 @@ module.exports = {
 
         }
     },
+
+    getPettyCashBalance: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers)
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (!Body.CashType || Body.CashType.trim() === "" || Body.CashType === undefined) return res.send({ message: "Invalid Query Data" })
+            if (!Body.CreditType || Body.CreditType.trim() === "" || Body.CreditType === undefined) return res.send({ message: "Invalid Query Data" })
+            if (Body.CreditType !== "Deposit") return res.send({ message: "Invalid Query Data" })
+            if (Body.CashType !== "PettyCash") return res.send({ message: "Invalid Query Data" })
+            if (shopid == 0) return res.send({ message: "Invalid Shop" })
+
+            const DepositBalance = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='${Body.CreditType}'`)
+
+            const WithdrawalBalance = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Withdrawal'`)
+
+            response.message = "data fetch sucessfully"
+            response.data = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
+            connection.release()
+            res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    }
+
 }
