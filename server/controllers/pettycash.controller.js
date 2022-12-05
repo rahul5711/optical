@@ -30,10 +30,10 @@ module.exports = {
             }
 
             datum.ShopID = shopid;
-        
+
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.EmployeeID === null || Body.EmployeeID === undefined || !Body.EmployeeID) return res.send({ message: "Invalid Query Data" })
-            if (datum.ShopID == 0) return res.send({ message: "Select The Shop" })
+            if (datum.ShopID == 0) return res.send({ message: "Invalid Shop" })
 
             var newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
             let rw = "P";
@@ -60,7 +60,7 @@ module.exports = {
             else if(datum.CreditType === 'Deposit'){
                 CreditType = 'Credit'
             }
-             
+
             const paymentMaster = await connection.query(`insert into paymentmaster(CustomerID,CompanyID,ShopID,PaymentType,CreditType,PaymentDate,PaymentMode,CardNo,PaymentReferenceNo,PayableAmount,PaidAmount,Comments,Status,CreatedBy,CreatedOn) values (${saveData.insertId}, ${CompanyID}, ${datum.ShopID},'PettyCash','${CreditType}',now(),'${datum.CashType}','','',${datum.Amount},${datum.Amount},'${datum.Comments}',1, ${LoggedOnUser}, now())`)
 
             const paymentDetail = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn) values (${paymentMaster.insertId},'${datum.InvoiceNo}',${saveData.insertId},${saveData.insertId},${CompanyID},${datum.Amount},0,'PettyCash','${CreditType}',1,${LoggedOnUser}, now())`)
@@ -82,13 +82,21 @@ module.exports = {
             const connection = await getConnection.connection();
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers)
+
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
             let page = Body.currentPage;
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `SELECT pettycash.*, users2.Name AS EmployeeName, users1.Name AS CreatedPerson, users.Name AS UpdatedPerson FROM pettycash  LEFT JOIN user AS users1 ON users1.ID = pettycash.CreatedBy  LEFT JOIN user AS users ON users.ID = pettycash.UpdatedBy  LEFT JOIN user AS users2 ON users2.ID = pettycash.EmployeeID WHERE pettycash.Status = 1 AND pettycash.CompanyID = ${CompanyID}  ORDER BY pettycash.ID DESC`
+            let shop = ``;
+
+            if (shopid !== 0) {
+                shop = ` and pettycash.ShopID = ${shopid}`
+            }
+
+            let qry = `SELECT pettycash.*, users2.Name AS EmployeeName, users1.Name AS CreatedPerson, users.Name AS UpdatedPerson FROM pettycash  LEFT JOIN user AS users1 ON users1.ID = pettycash.CreatedBy  LEFT JOIN user AS users ON users.ID = pettycash.UpdatedBy  LEFT JOIN user AS users2 ON users2.ID = pettycash.EmployeeID WHERE pettycash.Status = 1 AND pettycash.CompanyID = ${CompanyID} ${shop} ORDER BY pettycash.ID DESC`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -115,9 +123,9 @@ module.exports = {
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const shopid = await shopID(req.headers)
 
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
-
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
             const doesExist = await connection.query(`select * from pettycash where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
@@ -126,10 +134,10 @@ module.exports = {
                 return res.send({ message: "pettycash doesnot exist from this id " })
             }
 
-            const payment = await connection.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and PaymentType = 'PettyCash'`)
+            const payment = await connection.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'PettyCash'`)
 
 
-            const deletePayroll = await connection.query(`update pettycash set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const deletePayroll = await connection.query(`update pettycash set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
             const deletePaymentMaster = await connection.query(`update paymentmaster set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where CustomerID = ${Body.ID} and CompanyID = ${CompanyID} and PaymentType = 'PettyCash' and ID = ${payment[0].PaymentMasterID}`)
 
@@ -203,12 +211,12 @@ module.exports = {
                 CreditType = 'Credit'
             }
 
-            const payment = await connection.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and PaymentType = 'PettyCash'`)
+            const payment = await connection.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'PettyCash'`)
 
             const updatePaymentMaster = await connection.query(`update paymentmaster set PayableAmount=${datum.Amount},PaidAmount=${datum.Amount},
             CreditType='${CreditType}', Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where CustomerID=${Body.ID} and PaymentType = 'PettyCash' and CompanyID = ${CompanyID} and ID =${payment[0].PaymentMasterID}`)
 
-            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount=${datum.Amount}, Credit='${CreditType}' where BillMasterID =${Body.ID} and PaymentType = 'PettyCash' and CompanyID = ${CompanyID} and BillID = '${doesExist[0].InvoiceNo}'`)
+            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount=${datum.Amount}, Credit='${CreditType}',UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where BillMasterID =${Body.ID} and PaymentType = 'PettyCash' and CompanyID = ${CompanyID} and BillID = '${doesExist[0].InvoiceNo}'`)
 
             console.log("PettyCash Updated SuccessFUlly !!!");
 
@@ -227,10 +235,18 @@ module.exports = {
             const connection = await getConnection.connection();
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers)
+
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            let qry = `select pettycash.*, users2.Name as EmployeeName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from pettycash left join user as users1 on users1.ID = pettycash.CreatedBy left join user as users on users.ID = pettycash.UpdatedBy left join user as users2 on users2.ID = pettycash.EmployeeID where pettycash.Status = 1 and  pettycash.CompanyID = '${CompanyID}' and users2.Name like '%${Body.searchQuery}%' OR pettycash.Status = 1 and pettycash.CompanyID = '${CompanyID}' and pettycash.CashType like '%${Body.searchQuery}%' OR pettycash.Status = 1 and pettycash.CompanyID = '${CompanyID}' and pettycash.CreditType like '%${Body.searchQuery}%' `
+            let shop = ``;
+
+            if (shopid !== 0) {
+                shop = ` and pettycash.ShopID = ${shopid}`
+            }
+
+            let qry = `select pettycash.*, users2.Name as EmployeeName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from pettycash left join user as users1 on users1.ID = pettycash.CreatedBy left join user as users on users.ID = pettycash.UpdatedBy left join user as users2 on users2.ID = pettycash.EmployeeID where pettycash.Status = 1 and  pettycash.CompanyID = ${CompanyID} ${shop} and users2.Name like '%${Body.searchQuery}%' OR pettycash.Status = 1 and pettycash.CompanyID = ${CompanyID} ${shop} and pettycash.CashType like '%${Body.searchQuery}%' OR pettycash.Status = 1 and pettycash.CompanyID = ${CompanyID} ${shop} and pettycash.CreditType like '%${Body.searchQuery}%' `
 
 
             let data = await connection.query(qry);

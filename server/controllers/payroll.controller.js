@@ -118,7 +118,7 @@ module.exports = {
                 return res.send({ message: "payroll doesnot exist from this id " })
             }
 
-            const payment = await connection.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and PaymentType = 'Employee'`)
+            const payment = await connection.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'Employee'`)
 
 
             const deletePayroll = await connection.query(`update payroll set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
@@ -189,12 +189,12 @@ module.exports = {
 
             const update = await connection.query(`update payroll set EmployeeID=${datum.EmployeeID},Month='${datum.Month}', Year='${datum.Year}',LeaveDays=${datum.LeaveDays},Salary=${datum.Salary},PaymentMode='${datum.PaymentMode}',CashType='${datum.CashType}',Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
-            const payment = await connection.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and PaymentType = 'Employee'`)
+            const payment = await connection.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'Employee'`)
 
 
             const updatePaymentMaster = await connection.query(`update paymentmaster set PaymentMode='${datum.PaymentMode}',PayableAmount=${datum.Salary},PaidAmount=${datum.Salary},Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where CustomerID=${Body.ID} and PaymentType = 'Employee' and CompanyID = ${CompanyID} and ID =${payment[0].PaymentMasterID}`)
 
-            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount=${datum.Salary} where BillMasterID =${Body.ID} and PaymentType = 'Employee' and CompanyID = ${CompanyID} and BillID = '${doesExist[0].InvoiceNo}'`)
+            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount=${datum.Salary}, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where BillMasterID =${Body.ID} and PaymentType = 'Employee' and CompanyID = ${CompanyID} and BillID = '${doesExist[0].InvoiceNo}'`)
 
             console.log("Payroll Updated SuccessFUlly !!!");
 
