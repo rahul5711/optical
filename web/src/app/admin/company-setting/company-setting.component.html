@@ -26,7 +26,7 @@
                                     </li>
                                     <li class="nav-item" role="presentation">
                                         <a class="nav-link" id="ex1-tab-3" data-mdb-toggle="tab" href="#ex1-tabs-3"
-                                            role="tab" aria-controls="ex1-tabs-3" aria-selected="false">Tab 3</a>
+                                            role="tab" aria-controls="ex1-tabs-3" aria-selected="false">BillFormat</a>
                                     </li>
                                 </ul>
                                 <!-- Tabs navs -->
@@ -227,7 +227,8 @@
                                             </div>
                                             <div class="col-2">
                                                 <div class="col-12 ">
-                                                    <img class="fit-picture" width="170" height="170" [src]="companyImage">
+                                                    <img class="fit-picture" width="170" height="170"
+                                                        [src]="companyImage">
                                                 </div>
                                                 <div class="col-xl-11 col-lg-11 col-md-11 col-sm-12 mb-0 "
                                                     (click)="fileInput.click()" style="cursor: pointer;">
@@ -236,8 +237,7 @@
                                                             Logo</span>
                                                     </i>
                                                     <input #fileInput id="my-input" name='LogoURL' type="file"
-                                                        (change)="uploadImage($event, 'company')" 
-                                                        style="display:none;">
+                                                        (change)="uploadImage($event, 'company')" style="display:none;">
                                                 </div>
                                                 <div class="col-12 mt-1">
                                                     <img class="fit-picture" width="170" height="170"
@@ -249,7 +249,7 @@
                                                         <span
                                                             style="font-size: 10px;letter-spacing: 2px;">WatermarkLogoURL</span>
                                                     </i>
-                                                    <input #fileInputs  id="my-input" name='WatermarkLogoURL' type="file"
+                                                    <input #fileInputs id="my-input" name='WatermarkLogoURL' type="file"
                                                         [(ngModel)]="data.WatermarkLogoURL"
                                                         (change)="uploadImage($event, '')" accept="/*"
                                                         style="display:none;">
@@ -263,43 +263,49 @@
                                             <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Company Tagline</mat-label>
-                                                    <input matInput name="CompanyTagline" maxlength="50" [(ngModel)]="data.CompanyTagline" />
+                                                    <input matInput name="CompanyTagline" maxlength="50"
+                                                        [(ngModel)]="data.CompanyTagline" />
                                                     <mat-error>Company Tagline required</mat-error>
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Bill Format</mat-label>
-                                                    <mat-select name="BillFormat" [(ngModel)]="data.BillFormat" required>
+                                                    <mat-select name="BillFormat" [(ngModel)]="data.BillFormat"
+                                                        required>
                                                         <mat-option value="Bill">1</mat-option>
                                                     </mat-select>
                                                     <mat-error>Bill Format </mat-error>
                                                 </mat-form-field>
                                             </div>
-                                               <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
-                                                        <mat-form-field class="example-full-width mb-0">
-                                                            <mat-label>Bill Herder </mat-label>
-                                                            <mat-select name="BillHeader" required [(ngModel)]="data.BillHeader" required>
-                                                                <mat-option ></mat-option>
-                                                                <mat-option value="0">Center Logo</mat-option>
-                                                                <mat-option value="1">Right Logo</mat-option>
-                                                                <mat-option value="2">Left Logo</mat-option>
-                                                                <mat-option value="3">50-50</mat-option>
-                                                            </mat-select>
-                                                            <mat-error>Select Mobile  </mat-error>
-                                                        </mat-form-field>
-                                                    </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Bill Herder </mat-label>
+                                                    <mat-select name="BillHeader" required [(ngModel)]="data.BillHeader"
+                                                        required>
+                                                        <mat-option></mat-option>
+                                                        <mat-option value="0">Center Logo</mat-option>
+                                                        <mat-option value="1">Right Logo</mat-option>
+                                                        <mat-option value="2">Left Logo</mat-option>
+                                                        <mat-option value="3">50-50</mat-option>
+                                                    </mat-select>
+                                                    <mat-error>Select Mobile </mat-error>
+                                                </mat-form-field>
+                                            </div>
                                             <div class="col-xl-2 col-lg-2">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Bill Delivery Days</mat-label>
-                                                    <input matInput type="number" min="0" name="DeliveryDay" [(ngModel)]="data.DeliveryDay" />
+                                                    <input matInput type="number" min="0" name="DeliveryDay"
+                                                        [(ngModel)]="data.DeliveryDay" />
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2" style="padding:0; padding-left: 21px;">
-                                                <mat-slide-toggle name="AppliedDiscount" color="primary" #Multiplecontrol [(ngModel)]="data.AppliedDiscount" class="example-margin">Add Discount</mat-slide-toggle>
+                                                <mat-slide-toggle name="AppliedDiscount" color="primary"
+                                                    #Multiplecontrol [(ngModel)]="data.AppliedDiscount"
+                                                    class="example-margin">Add Discount</mat-slide-toggle>
                                             </div>
                                         </div>
-                                      
+
                                         <div class="row">
                                             <div class="col-xl-12 col-lg-12 header">
                                                 <h2> Bill Color/FontStyle</h2>
@@ -307,7 +313,7 @@
                                             <div class="col-xl-3 col-lg-3">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>colorPicker</mat-label>
-                                                    <input matInput name="Color1" [(ngModel)]="data.Color1"  />
+                                                    <input matInput name="Color1" [(ngModel)]="data.Color1" />
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 mb-0">
@@ -323,19 +329,22 @@
                                                 </mat-form-field>
                                             </div>
                                         </div>
-                                      
-                                        <div class="col-md-3" >
-                                            <button  mat-raised-button color="primary" [disabled]="!settingForm.valid" (click)="updatecompanysetting()"> Update</button>
-                                            <button class="ms-3" type="button" mat-raised-button (click)="settingForm.reset()"> Cancel</button>
+
+                                        <div class="col-md-3">
+                                            <button mat-raised-button color="primary" [disabled]="!settingForm.valid"
+                                                (click)="updatecompanysetting()"> Update</button>
+                                            <button class="ms-3" type="button" mat-raised-button
+                                                (click)="settingForm.reset()"> Cancel</button>
                                         </div>
-                                        <div class="row mt-3" >
+                                        <div class="row mt-3">
                                             <div class="col-sm-12 header">
                                                 <h2>Welcome Note
-                                                    <mat-icon class="col-white plus_icon" (click)="addRow()" > add</mat-icon>
-                                                  </h2>
+                                                    <mat-icon class="col-white plus_icon" (click)="addRow()"> add
+                                                    </mat-icon>
+                                                </h2>
                                             </div>
                                         </div>
-                                        <div class="row mt-3" >
+                                        <div class="row mt-3">
                                             <div class="col-sm-12 table-container" style="overflow:auto;height:300px;">
                                                 <table class="table">
                                                     <thead class="thead-light">
@@ -350,12 +359,17 @@
                                                         <tr *ngFor="let data of wlcmArray1; let i = index;">
                                                             <td class="text-center">{{i+1}}</td>
                                                             <td class="text-center">
-                                                                <mat-form-field class="example-full-width" appearance="outline" [style.width.px]=150>
-                                                                    <mat-select [(ngModel)]="data.NoteType" name="{{data.NoteType + i}}">
-                                                                        <mat-option value="wholesale">Wholesale</mat-option>
+                                                                <mat-form-field class="example-full-width"
+                                                                    appearance="outline" [style.width.px]=150>
+                                                                    <mat-select [(ngModel)]="data.NoteType"
+                                                                        name="{{data.NoteType + i}}">
+                                                                        <mat-option value="wholesale">Wholesale
+                                                                        </mat-option>
                                                                         <mat-option value="retail">Retail</mat-option>
-                                                                        <mat-option value="CustomerCredit">CustomerCredit</mat-option>
-                                                                        <mat-option value="CustomerPower">CustomerPower</mat-option>
+                                                                        <mat-option value="CustomerCredit">
+                                                                            CustomerCredit</mat-option>
+                                                                        <mat-option value="CustomerPower">CustomerPower
+                                                                        </mat-option>
                                                                     </mat-select>
                                                                 </mat-form-field>
                                                             </td>
@@ -365,13 +379,18 @@
                                                                 </mat-form-field>
                                                             </td> -->
                                                             <td class="text-center">
-                                                                <mat-form-field class="example-full-width" appearance="outline">
-                                                                    <input matInput [(ngModel)]="data.Content" name="{{data.Content + i}}">
+                                                                <mat-form-field class="example-full-width"
+                                                                    appearance="outline">
+                                                                    <input matInput [(ngModel)]="data.Content"
+                                                                        name="{{data.Content + i}}">
                                                                 </mat-form-field>
                                                             </td>
                                                             <td class="text-center">
                                                                 <ul class="header-dropdown list-inline-item m-r--5">
-                                                                    <li class="d-inline"><i (click)="delete(i)" class="material-icons" style="cursor: pointer;  color:red;">delete</i></li>
+                                                                    <li class="d-inline"><i (click)="delete(i)"
+                                                                            class="material-icons"
+                                                                            style="cursor: pointer;  color:red;">delete</i>
+                                                                    </li>
                                                                 </ul>
                                                             </td>
                                                         </tr>
@@ -382,7 +401,164 @@
                                     </div>
                                     <div class="tab-pane fade" id="ex1-tabs-3" role="tabpanel"
                                         aria-labelledby="ex1-tab-3">
-                                        Tab 3 content
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <form>
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <div class="row">
+                                                          
+                                                        <div class=" col-md-5  mb-0">
+                                                            <mat-form-field class="example-full-width mb-0">
+                                                                <mat-label>Bill Herder </mat-label>
+                                                                <mat-select name="BillHeader" required [(ngModel)]="bill.BillHeader" required>
+                                                                    <mat-option ></mat-option>
+                                                                    <mat-option value="0">Center Logo</mat-option>
+                                                                    <mat-option value="1">Right Logo</mat-option>
+                                                                    <mat-option value="2">Left Logo</mat-option>
+                                                                    <mat-option value="3">50-50</mat-option>
+                                                                </mat-select>
+                                                                <mat-error>Select Mobile  </mat-error>
+                                                            </mat-form-field>
+                                                        </div>
+                                                                <div class="col-md-5 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>header width</mat-label>
+                                                                        <input matInput name="headerwidth"
+                                                                            [(ngModel)]="bill.headerwidth">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-5 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>header height</mat-label>
+                                                                        <input matInput name="headerheight"
+                                                                            [(ngModel)]="bill.headerheight">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-5 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>header padding</mat-label>
+                                                                        <input matInput name="headerpadding"
+                                                                            [(ngModel)]="bill.headerpadding">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-5 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>header margin</mat-label>
+                                                                        <input matInput name="headermargin"
+                                                                            [(ngModel)]="bill.headermargin">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-5 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>image width</mat-label>
+                                                                        <input matInput name="imagewidth"
+                                                                            [(ngModel)]="bill.imagewidth">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-5 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>image height</mat-label>
+                                                                        <input matInput name="imageheight"
+                                                                            [(ngModel)]="bill.imageheight">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-5 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>ShopName Font</mat-label>
+                                                                        <input matInput name="ShopNameFont"
+                                                                            [(ngModel)]="bill.ShopNameFont">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-5 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>ShopName Bold</mat-label>
+                                                                        <input matInput name="ShopNameBold"
+                                                                            [(ngModel)]="bill.ShopNameBold">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-5 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>Color </mat-label>
+                                                                        <input matInput name="color"
+                                                                            [(ngModel)]="bill.color">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-5 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>ShopDateil Font</mat-label>
+                                                                        <input matInput name="addfont" [(ngModel)]="bill.addfont"  >
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-5 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>line spece </mat-label>
+                                                                        <input matInput name="linespece"
+                                                                            [(ngModel)]="bill.linespece">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                      <span *ngIf="this.bill.BillHeader === '3'">
+                                                        <header
+                                                            style="width:{{this.bill.headerwidth}}; height: {{this.bill.headerheight}}; padding: {{this.bill.headerpadding}}; margin: {{this.bill.headermargin}};  border: 1px solid #000">
+                                                            <span style="width: 43%; float: left; height: 90px; ">
+                                                                <img src="../../../assets/images/OGorange.png" alt=""
+                                                                    style="width:{{this.bill.imagewidth}}; height: {{this.bill.imageheight}};">
+                                                            </span>
+                                                            <div style="width: 43%; float: right;line-height: {{this.bill.linespece}}; ">
+                                                                <div style=" font-weight: {{this.bill.ShopNameBold}}; font-size: {{this.bill.ShopNameFont}};color:{{this.bill.color}}">
+                                                                    RELINKSYS SOFTWARE
+                                                                </div>
+                                                                <span style="font-size: {{this.bill.addfont}};">
+
+                                                               
+                                                                <div style=" font-weight: 400; padding-top:5px">
+                                                                    TH SCHONEAR SAMAROL, OPP-RAOSAHEB PATWARDHAN
+                                                                    SMARAK, BHISBAUG ROAD, PROFESSOR CHOWK, SAVEDI,
+                                                                    A.NAGAR-414003
+                                                                </div>
+                                                                <div style="font-weight: 400;">9766666248 , 9175773955
+                                                                </div>
+                                                                <div style="font-weight: 400;">RELINKSYS@GMAIL.COM
+                                                                </div>
+                                                                <div style="font-weight: 400;"> 9766666248</div>
+                                                            </span>
+                                                            </div>
+                                                        </header>
+                                                      </span>
+                                                      <span *ngIf="this.bill.BillHeader === '0'">
+                                                        <header style="width:{{this.bill.headerwidth}}; height: {{this.bill.headerheight}}; padding: {{this.bill.headerpadding}}; margin: {{this.bill.headermargin}};  border: 1px solid #000 ;ltext-align: center;" >
+                                                            <div style="width:100% ; text-align: center;margin-bottom: 15px">
+                                                                <img src="../../../assets/images/OGorange.png" alt=""
+                                                                    style="width:{{this.bill.imagewidth}}; height: {{this.bill.imageheight}};">
+                                                    
+                                                            </div>
+                                                                
+                                                              <span style=" font-weight: 400;text-align: center; font-size: {{this.bill.addfont}}; ">  TH SCHONEAR SAMAROL, OPP-RAOSAHEB PATWARDHAN
+                                                                SMARAK, BHISBAUG ROAD, PROFESSOR CHOWK, SAVEDI,
+                                                                A.NAGAR-414003 </span>  
+
+                                                              <div style="padding-top: 0%;   width: 100%; font-size: {{this.bill.addfont}}; ">
+                                                    
+                                                                <div style="font-weight: 400;width: 33%;  float: left;text-align: left;">MobileNo - 9766666248 , 9175773955</div>
+                                                               <div style="font-weight: 400; width: 25%;  float: right; text-align: right; ">PhoneNo - 9175773955</div>
+                                                      
+                                                               <div style="font-weight: 400; width: 41%;  margin: 0px 2px; float: right; text-align: center;">Email - RELINKSYS@GMAIL.COM</div>
+                                                              </div>
+                                                        </header>
+                                                      </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- Tabs content -->

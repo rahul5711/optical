@@ -105,20 +105,20 @@
 <!-- model popup start -->
 <ng-template #content role="document" let-modal>
     <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
-        <h2 class="modal-title header pt-2" id="exampleModalLabel">PettyCash Info </h2>
+        <h2 class="modal-title header pt-2" id="exampleModalLabel">PettyCash Info  </h2>
         <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
             (click)="modal.dismiss('Cross click')">
         </button>
     </div>
     <div class="modal-body ">
-        <form #f="ngForm" autocomplete="off">
+        <form #f="ngForm"  autocomplete="off">
             <div class="row">
                 <div class="col-12">
                     <div class="row">
                         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Employee</mat-label>
-                                <mat-select name="EmployeeID" [(ngModel)]="data.EmployeeID" appAutoFoucsDirectives required>
+                                <mat-select name="EmployeeID" [(ngModel)]="data.EmployeeID" appAutoFoucsDirectives required >
                                     <mat-option [value]="e.ID" *ngFor="let e of dropUserlist "> {{e.Name}} </mat-option>
                                 </mat-select>
                                 <mat-error>Employee Name is required</mat-error>
@@ -127,7 +127,7 @@
                         <div  class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Cash Type</mat-label>
-                                <mat-select name="Duration" [(ngModel)]="data.CashType" required >
+                                <mat-select name="Duration" [(ngModel)]="data.CashType" required>
                                     <mat-option ></mat-option>
                                     <mat-option value="CashCounter" >Cash Counter</mat-option>
                                     <mat-option value="PettyCash" >Petty Cash</mat-option>
@@ -140,7 +140,7 @@
                         <div  class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Credit Type</mat-label>
-                                <mat-select name="CreditType" [(ngModel)]="data.CreditType" required>
+                                <mat-select name="CreditType" [(ngModel)]="data.CreditType" required >
                                     <mat-option></mat-option>
                                     <mat-option  value="Withdrawal">Withdrawal</mat-option>
                                     <mat-option   value="Deposit">Deposit</mat-option>
@@ -149,7 +149,13 @@
                                 <mat-error>Credit Type is required</mat-error>
                             </mat-form-field>
                         </div>
-                        
+                        <div *ngIf="this.data.CreditType === 'Withdrawal'" class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>PettyCashBalance</mat-label>
+                                <input matInput  name="PettyCashBalance" value="{{this.PettyCashBalance}}" [disabled]="true" />
+                                <mat-error>Amount is required</mat-error>
+                            </mat-form-field>
+                        </div>
                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Amount</mat-label>
@@ -166,9 +172,9 @@
                     </div>
                     <div class="row">
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
-                            <button *ngIf="suBtn === false" (click)="onsubmit()" class="me-3" mat-raised-button color="primary"
+                            <button type="submit" *ngIf="suBtn === false" (click)="onsubmit()" class="me-3" mat-raised-button color="primary"
                             [disabled]=!f.valid>Save</button>
-                        <button *ngIf="suBtn === true" (click)="updatePetty()" class="me-3" mat-raised-button
+                        <button type="button" *ngIf="suBtn === true" (click)="updatePetty()" class="me-3" mat-raised-button
                             color="primary" [disabled]=!f.valid>Update</button>
                         <button type="button" mat-raised-button> Cancel</button>
                         </div>

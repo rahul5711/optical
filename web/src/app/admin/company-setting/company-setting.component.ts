@@ -32,6 +32,7 @@ export class CompanySettingComponent implements OnInit {
      InvoiceFormat: 'option.ejs', LoginTimeStart: '', LoginTimeEnd: '', year: false, month: false, partycode: false, type: false , BarCode:'', FeedbackDate:'', ServiceDate:'',DeliveryDay:'',UpdatedBy:null
   }; 
 
+  bill : any ={addfont:'15px', BillHeader:'0',headerwidth:'100vh', headerheight:'25vh', headerpadding:'5px',headermargin:'5px',imagewidth:'200px',imageheight:'100px',ShopNameFont:'25px',ShopNameBold:'400',color:'#000000',linespece:'20px' }
 
   companyWatermark: any;
   companyWholeSalePrice: any;
@@ -60,7 +61,7 @@ export class CompanySettingComponent implements OnInit {
   wlcmArray1: any;
 
   ngOnInit(): void {
-       JSON.parse(localStorage.getItem('companysetting') || '');
+     this.data=  JSON.parse(localStorage.getItem('companysetting') || '');
      this.wlcmArray1 = JSON.parse(this.companysetting.WelComeNote) || '' 
 
   }

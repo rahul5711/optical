@@ -37,7 +37,7 @@ export class PettyCashComponent implements OnInit {
   page = 4;
   id: any;
   suBtn = false;
-
+  PettyCashBalance :any;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -57,6 +57,7 @@ export class PettyCashComponent implements OnInit {
 
   ngOnInit(): void {
     this.dropdownUserlist();
+    this.getPettyCashBalance();
     this.getList();
   }
 
@@ -65,6 +66,18 @@ export class PettyCashComponent implements OnInit {
       next: (res: any) => {
         this.dropUserlist = res.data
         this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getPettyCashBalance(){
+    this.data.CashType = 'PettyCash'
+    this.data.CreditType = 'Deposit'
+    const subs: Subscription = this.petty.getPettyCashBalance(this.data).subscribe({
+      next: (res: any) => {
+        this.PettyCashBalance = res.data
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -97,6 +110,7 @@ export class PettyCashComponent implements OnInit {
         if (res.success) {
           this.formReset();
           this.modalService.dismissAll();
+          this.getPettyCashBalance();
           this.getList();
           Swal.fire({
             position: 'center',
@@ -107,6 +121,12 @@ export class PettyCashComponent implements OnInit {
           }) 
         } else {
           this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'you can not withdrawal greater than.',
+            showConfirmButton: true,
+          })
         }
       },
       error: (err: any) => {

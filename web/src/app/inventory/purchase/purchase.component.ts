@@ -61,8 +61,8 @@ export class PurchaseComponent implements OnInit {
   prodList:any;
   specList: any;
   disableAddButtons = false;
-  gstperLock:any;
-  gstLock:any;
+  gstperLock = false;
+  gstLock = false;
   gstList:any;
   chargeOptions:any;
   gstdividelist = [];
@@ -78,6 +78,8 @@ export class PurchaseComponent implements OnInit {
       this.selectedPurchaseMaster.PurchaseDate = moment().format('YYYY-MM-DD');
     }
   }
+
+
 
   getdropdownSupplierlist(){
     const subs: Subscription =  this.ss.dropdownSupplierlist().subscribe({
@@ -174,7 +176,7 @@ export class PurchaseComponent implements OnInit {
        const subss: Subscription =  this.ps.getProductSupportData(RefValue,this.specList[i].SptTableName).subscribe({
          next: (res: any) => {
            this.specList[i].SptTableData = res.data;
-             this.specList[i].SptFilterData = res.data; 
+           this.specList[i].SptFilterData = res.data; 
            this.as.successToast(res.message)
          },
          error: (err: any) => console.log(err.message),
@@ -239,7 +241,45 @@ export class PurchaseComponent implements OnInit {
   }
 
   calculateFields(fieldName:any,mode:any){
+    // this.item.UnitPrice = 0 ? '' : this.item.UnitPrice;
    this.calculation.calculateFields(fieldName,mode,this.item,this.charge)
   }
 
+  addItem(){
+    this.specList.forEach((element: { CheckBoxValue: boolean | undefined; SelectedValue: string; }) => {
+      if(element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
+        element.SelectedValue = '';
+      } else {
+        element.SelectedValue = element.SelectedValue;
+      }
+    });
+
+    if(this.gstLock === false && this.gstperLock === false ) {
+      this.item = {
+        ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale:this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: false, UniqueBarcode: ''
+      };
+    } else if (this.gstLock === true && this.gstperLock === false) {
+      this.item = {
+        ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale:this.item.WholeSale,BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: false, UniqueBarcode: ''
+      };
+    } else if (this.gstLock === false && this.gstperLock === true) {
+      this.item = {
+        ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale:this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: false, UniqueBarcode: ''
+      };
+    } else {
+      this.item = {
+      ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale:this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: false, UniqueBarcode: ''
+      }
+    }
+
+
+  }
+
+  notifyGst() {
+    if(this.item.GSTPercentage !== 0 && this.item.GSTPercentage !== "0") {
+     if(this.item.GSTType === 'None') {
+      alert("please select GstType");
+     }
+    }
+  }
 }
