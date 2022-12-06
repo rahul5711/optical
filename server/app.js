@@ -13,7 +13,7 @@ var logger = require('morgan');
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const morgan = require('morgan') 
-
+const { addRoutes } = require('./helpers/routes')
 const loggerss = require("./helpers/logger");
 var app = express();
 app.use(express.static(path.join(__dirname, '')));
@@ -77,22 +77,22 @@ app.use(express.urlencoded({ limit: '100mb', extended: true }))
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', require('./routes/index'));
-app.use('/company', require('./routes/company.route'));
-app.use('/login', require('./routes/login.route'));
-app.use('/product', require('./routes/product.route'));
-app.use('/file', require('./routes/file.route'));
-app.use('/support', require('./routes/support.route'));
-app.use('/shop', require('./routes/shop.route'));
-app.use('/role', require('./routes/role.route'));
-app.use('/employee', require('./routes/employee.route'));
-app.use('/supplier', require('./routes/supplier.route'));
-app.use('/doctor', require('./routes/doctor.route'));
-app.use('/fitter', require('./routes/fitter.route'));
-app.use('/expense', require('./routes/expense.route'));
-app.use('/payroll', require('./routes/payroll.route'));
-app.use('/pettycash', require('./routes/pettycash.route'));
-
+// app.use('/', require('./routes/index'));
+// app.use('/company', require('./routes/company.route'));
+// app.use('/login', require('./routes/login.route'));
+// app.use('/product', require('./routes/product.route'));
+// app.use('/file', require('./routes/file.route'));
+// app.use('/support', require('./routes/support.route'));
+// app.use('/shop', require('./routes/shop.route'));
+// app.use('/role', require('./routes/role.route'));
+// app.use('/employee', require('./routes/employee.route'));
+// app.use('/supplier', require('./routes/supplier.route'));
+// app.use('/doctor', require('./routes/doctor.route'));
+// app.use('/fitter', require('./routes/fitter.route'));
+// app.use('/expense', require('./routes/expense.route'));
+// app.use('/payroll', require('./routes/payroll.route'));
+// app.use('/pettycash', require('./routes/pettycash.route'));
+addRoutes(app)
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

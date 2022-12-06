@@ -40,7 +40,7 @@ module.exports = {
 
                 const WithdrawalBalance = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Withdrawal'`)
 
-                const Balance = DepositBalance[0].Amount ? DepositBalance[0].Amount : 0 - WithdrawalBalance[0].Amount ? WithdrawalBalance[0].Amount : 0
+                const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
 
                 if (Balance < datum.Amount) {
                     return res.send({message: `you can not withdrawal greater than ${Balance}`})
@@ -219,7 +219,7 @@ module.exports = {
 
                 const WithdrawalBalance = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Withdrawal'`)
 
-                const Balance = DepositBalance[0].Amount ? DepositBalance[0].Amount : 0 - WithdrawalBalance[0].Amount ? WithdrawalBalance[0].Amount : 0
+                const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
 
                 if (Balance < datum.Amount) {
                     return res.send({message: `you can not withdrawal greater than ${Balance}`})
@@ -311,7 +311,7 @@ module.exports = {
             const WithdrawalBalance = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Withdrawal'`)
 
             response.message = "data fetch sucessfully"
-            response.data = DepositBalance[0].Amount ? DepositBalance[0].Amount : 0  - WithdrawalBalance[0].Amount ? WithdrawalBalance[0].Amount : 0
+            response.data = DepositBalance[0].Amount  - WithdrawalBalance[0].Amount
             connection.release()
             res.send(response)
 

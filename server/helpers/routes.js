@@ -1,0 +1,19 @@
+const addRoutes = (app) => {
+app.use('/', require('../routes/index'));
+app.use('/company', require('../routes/company.route'));
+app.use('/login', require('../routes/login.route'));
+app.use('/product', require('../routes/product.route'));
+app.use('/file', require('../routes/file.route'));
+app.use('/support', require('../routes/support.route'));
+app.use('/shop', require('../routes/shop.route'));
+app.use('/role', require('../routes/role.route'));
+app.use('/employee', require('../routes/employee.route'));
+app.use('/supplier', require('../routes/supplier.route'));
+app.use('/doctor', require('../routes/doctor.route'));
+app.use('/fitter', require('../routes/fitter.route'));
+app.use('/expense', require('../routes/expense.route'));
+app.use('/payroll', require('../routes/payroll.route'));
+app.use('/pettycash', require('../routes/pettycash.route'));
+}
+
+module.exports = { addRoutes };
