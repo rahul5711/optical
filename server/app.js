@@ -124,7 +124,9 @@ app.use(function(err, req, res, next) {
 const PORT = process.env.PORT || 3000
 
 http.listen(PORT, () => {
-  connected(`server running on port ${PORT}`)
-})
+    loggerss.loggers.info(`server running on port : ${PORT}`)
+  // connected(`server running on port ${PORT}`)
+});
+
 
 module.exports = app;

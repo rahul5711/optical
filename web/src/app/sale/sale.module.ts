@@ -22,12 +22,14 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { DoctorListComponent } from './doctor-list/doctor-list.component';
+import { BillingComponent } from './billing/billing.component';
 
 
 @NgModule({
   declarations: [
     DoctorComponent,
-    DoctorListComponent
+    DoctorListComponent,
+    BillingComponent
   ],
   imports: [
     CommonModule,

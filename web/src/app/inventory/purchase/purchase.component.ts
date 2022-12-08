@@ -256,6 +256,10 @@ export class PurchaseComponent implements OnInit {
       }
     });
 
+    this.itemList.unshift(this.item);
+    console.log(this.itemList);
+    this.tempItem = { Item: null, Spec: null };
+
     if(this.gstLock === false && this.gstperLock === false ) {
       this.item = {
         ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale:this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: false, UniqueBarcode: ''
@@ -274,9 +278,7 @@ export class PurchaseComponent implements OnInit {
       }
     }
    
-    this.itemList.unshift(this.item);
-    
-    this.tempItem = { Item: null, Spec: null };
+  
   }
 
   notifyGst() {
