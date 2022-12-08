@@ -14,6 +14,7 @@ app.use('/fitter', require('../routes/fitter.route'));
 app.use('/expense', require('../routes/expense.route'));
 app.use('/payroll', require('../routes/payroll.route'));
 app.use('/pettycash', require('../routes/pettycash.route'));
+app.use('/customer', require('../routes/customer.route'));
 }
 
 module.exports = { addRoutes };
