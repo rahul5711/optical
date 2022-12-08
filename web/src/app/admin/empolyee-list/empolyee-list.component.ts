@@ -8,8 +8,9 @@ import { EmployeeService } from 'src/app/service/employee.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
-import { ExcelService } from '../../service/excel.service';
-import { environment } from '../../../environments/environment';
+import { ExcelService } from 'src/app/service/excel.service';
+import { environment } from 'src/environments/environment';
+
 
 @Component({
   selector: 'app-empolyee-list',

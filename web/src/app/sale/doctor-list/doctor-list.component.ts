@@ -8,8 +8,8 @@ import { AlertService } from 'src/app/service/alert.service';
 import { DoctorService } from 'src/app/service/doctor.service';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
-import { ExcelService } from '../../service/excel.service';
 import { environment } from 'src/environments/environment';
+import { ExcelService } from 'src/app/service/excel.service';
 
 @Component({
   selector: 'app-doctor-list',

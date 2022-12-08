@@ -12,8 +12,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FitterService } from 'src/app/service/fitter.service';
 import { SupportService } from 'src/app/service/support.service';
 import { ShopService } from 'src/app/service/shop.service';
-import {CompressImageService} from '../../service/compress-image.service'
 import { take } from 'rxjs/operators';
+import { CompressImageService } from 'src/app/service/compress-image.service';
 
 @Component({
   selector: 'app-fitter',

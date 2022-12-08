@@ -3,11 +3,11 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,Reacti
 import { NgForm } from '@angular/forms';
 import { CompanyService } from '../../service/company.service';
 import { Subscription } from 'rxjs';
-import { AlertService } from '../../service/alert.service';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
+import { AlertService } from 'src/app/service/alert.service';
 
 @Component({
   selector: 'app-login-history',

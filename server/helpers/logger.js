@@ -3,26 +3,25 @@ var moment = require('moment')
 var fs = require('fs')
 var path = require('path')
 
-// module.exports=loggers = createLogger({
-//   transports: [
-//     new transports.File({
-//       level: 'info',
-//       filename :'filelog-info.log',
-//       json: true,
-//       timestampFormat:'YYYY-MM-DD HH:mm:ss.SSS', 
-//       format: format.combine(format.timestamp(), format.simple())
-//     }),
-//     new transports.File({
-//       level: 'error',
-//       filename: 'filelog-error.log',
-//       json: true,
-//       format: format.combine(format.timestamp(), format.json())
-//     })
-//   ]
-// });
+module.exports=loggers = createLogger({
+  transports: [
+    new transports.File({
+      level: 'info',
+      filename :'filelog-info.log',
+      json: true,
+      timestampFormat:'YYYY-MM-DD HH:mm:ss.SSS', 
+      format: format.combine(format.timestamp(), format.simple())
+    }),
+    new transports.File({
+      level: 'error',
+      filename: 'filelog-error.log',
+      json: true,
+      format: format.combine(format.timestamp(), format.json())
+    })
+  ]
+});
 
-// module.exports = loggers
-
+module.exports = loggers
 
 module.exports.getLogFileStream = (logType = 'unknown') => {
   if (!fs.existsSync(path.join(__dirname, '../logs/')))

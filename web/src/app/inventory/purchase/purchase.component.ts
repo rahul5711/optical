@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { AlertService } from 'src/app/service/alert.service';
 import { ProductService } from 'src/app/service/product.service';
 import { Subscription } from 'rxjs';
-import { environment } from 'src/environments/environment';
-import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { SupportService } from 'src/app/service/support.service';
 import { CalculationService } from 'src/app/service/calculation.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-purchase',
@@ -68,6 +68,8 @@ export class PurchaseComponent implements OnInit {
   gstdividelist = [];
   sgst = 0;
   cgst = 0;
+  tempItem = { Item: null, Spec: null };
+  itemList:any = [];
 
   ngOnInit(): void {
     this.getProductList();
@@ -271,8 +273,10 @@ export class PurchaseComponent implements OnInit {
       ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale:this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: false, UniqueBarcode: ''
       }
     }
-
-
+   
+    this.itemList.unshift(this.item);
+    
+    this.tempItem = { Item: null, Spec: null };
   }
 
   notifyGst() {

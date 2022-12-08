@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CompanyService } from '../../service/company.service';
 import { Subscription } from 'rxjs';
-import { AlertService } from '../../service/alert.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2'; 
-import { environment } from '../../../environments/environment';
+import { environment } from 'src/environments/environment';
+import { CompanyService } from 'src/app/service/company.service';
+import { AlertService } from 'src/app/service/alert.service';
+
 
 @Component({
   selector: 'app-user-update-password',

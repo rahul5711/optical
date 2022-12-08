@@ -5,12 +5,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { CompanyService } from '../service/company.service';
 import { FileUploadService } from '../service/file-upload.service';
 import { Subscription } from 'rxjs';
-import { AlertService } from '../service/alert.service';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
 import * as moment from 'moment';
 import { CompanyModel} from '../interface/Company';
+import { AlertService } from '../service/alert.service';
 
 
 @Component({

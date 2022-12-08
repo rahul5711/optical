@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { SaleRoutingModule } from './sale-routing.module';
 import { DoctorComponent } from './doctor/doctor.component';
 import { FormsModule, ReactiveFormsModule, } from '@angular/forms';

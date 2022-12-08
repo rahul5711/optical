@@ -10,11 +10,11 @@ import { AlertService } from 'src/app/service/alert.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs'
-import { ExcelService } from '../../service/excel.service';
 import { SupportService } from 'src/app/service/support.service';
 import { PayrollService } from 'src/app/service/payroll.service';
 import { EmployeeService } from 'src/app/service/employee.service';
-import { PayrollModel} from '../../interface/Payroll';
+import { PayrollModel} from 'src/app/interface/Payroll';
+import { ExcelService } from 'src/app/service/excel.service';
 
 @Component({
   selector: 'app-payroll',

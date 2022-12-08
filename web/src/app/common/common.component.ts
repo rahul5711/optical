@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import Swal from 'sweetalert2'; 
 import { Subscription } from 'rxjs';
-import { ShopService } from '../service/shop.service';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ShopService } from '../service/shop.service';
 
 @Component({
   selector: 'app-common',

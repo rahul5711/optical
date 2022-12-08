@@ -10,8 +10,8 @@ import { AlertService } from 'src/app/service/alert.service';
 import { FileUploadService } from 'src/app/service/file-upload.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DoctorService } from 'src/app/service/doctor.service';
-import {CompressImageService} from '../../service/compress-image.service'
 import { take } from 'rxjs/operators';
+import { CompressImageService } from 'src/app/service/compress-image.service';
 
 @Component({
   selector: 'app-doctor',

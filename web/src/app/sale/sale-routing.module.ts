@@ -7,7 +7,7 @@ const routes: Routes = [ { path: '',
 children: [
   { path: 'doctor/:id', component: DoctorComponent },  
   { path: 'doctorList', component: DoctorListComponent },  
-]}
+ ]}
 ];
 
 @NgModule({

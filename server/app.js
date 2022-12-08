@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, '')));
 const http = require('http').Server(app)
 
 app.use(cors())
-morgan.token("custom", `:remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" `)
+morgan.token("custom", `:remote-addr - :remote-user [:date[iso]] ":method :url" :status :res[content-length] ms" :referrer" `)
 
 //use the log format by api
 app.use(morgan("custom", { stream: loggerss.getLogFileStream('access') }))

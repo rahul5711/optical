@@ -6,9 +6,9 @@ import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
-import { ProductService } from '../../service/product.service';
 import { AlertService } from 'src/app/service/alert.service';
 import { MatSelect } from '@angular/material/select';
+import { ProductService } from 'src/app/service/product.service';
 @Component({
   selector: 'app-product-master',
   templateUrl: './product-master.component.html',

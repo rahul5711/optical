@@ -1,16 +1,17 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
-import { CompanyService } from '../service/company.service';
-import { AlertService } from '../service/alert.service';
 import Swal from 'sweetalert2';
-import { AuthServiceService } from '../service/auth-service.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TokenService } from '../service/token.service';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { TokenService } from '../service/token.service';
+import { CompanyService } from '../service/company.service';
+import { AlertService } from '../service/alert.service';
+import { AuthServiceService } from '../service/auth-service.service';
 import { ExcelService } from '../service/excel.service';
-import { environment } from '../../environments/environment';
+
 
 @Component({
   selector: 'app-company-list',
@@ -46,6 +47,7 @@ export class CompanyListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+   
     this.user = JSON.parse(localStorage.getItem('user') || '')
     if (this.user.UserGroup !== 'SuperAdmin') {
       localStorage.clear();
@@ -54,6 +56,7 @@ export class CompanyListComponent implements OnInit {
     } else {
       this.getList();
     }
+   
   }
 
   onPageChange(pageNum: number): void {
@@ -244,7 +247,7 @@ export class CompanyListComponent implements OnInit {
       if (result.isConfirmed) {
         const subs: Subscription = this.cs.deactive(this.dataList[i].ID).subscribe({
           next: (res: any) => {
-            this.dataList.splice(i, 1);
+            this.getList();
             this.as.successToast(res.message)
           },
           error: (err: any) => console.log(err.message),
@@ -260,6 +263,40 @@ export class CompanyListComponent implements OnInit {
       }
     })
 
+
+  }
+
+  activecompany(i:any) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Do You Want To Active This Company",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Active',
+      backdrop: false
+
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const subs: Subscription = this.cs.activecompany(this.dataList[i].ID).subscribe({
+          next: (res: any) => {
+            this.getList();
+            this.as.successToast(res.message)
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Company has been Active.',
+          showConfirmButton: false,
+          timer: 1500
+        })
+      }
+    })
+  
 
   }
 
