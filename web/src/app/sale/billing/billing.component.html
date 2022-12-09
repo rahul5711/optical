@@ -14,7 +14,7 @@
                                 <label style="font-size: 14px; margin-right:10px">Visit Date </label>
                                 <input style="border-bottom: 1px solid; height: 19px;width: 95px;" matInput
                                     name="VisitDate" type="date" [(ngModel)]="data.VisitDate">
-                                <button class="extra">EXT</button>
+                                <button class="extra" (click)="openModal(customer)">EXT</button>
                             </div>
                             <div class="col-md-6 col-12 ms-auto">
                                 <!-- nav-tabs start -->
@@ -39,246 +39,991 @@
                         </div>
                     </div>
                     <div class="body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-2 col-2 mb-0">
-                                        <mat-form-field class="example-full-width mb-0">
-                                            <mat-label>Select Position </mat-label>
-                                            <mat-select name="Position" [(ngModel)]="data.Gender" #Gendercontrol
-                                                required>
-                                                <mat-option value="MR">MR.</mat-option>
-                                                <mat-option value="Miss">Miss.</mat-option>
-                                                <mat-option value="DR">DR.</mat-option>
-                                                <mat-option value="ADV">ADV.</mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-10 col-10 mb-0">
-                                        <mat-form-field class="example-full-width mb-0">
-                                            <mat-label> Name</mat-label>
-                                            <input matInput name="Name" minlength="3" [(ngModel)]="data.Name" required
-                                                #UserNamecontrol appAutoFoucsDirectives />
-                                            <mat-error>
-                                                Name is required
-                                            </mat-error>
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-4 mb-0">
-                                        <mat-form-field class="example-full-width mb-0">
-                                            <mat-label>Mobile No1</mat-label>
-                                            <input matInput name="MobileNo1" type="text" [(ngModel)]="data.MobileNo1"
-                                                #MobileNo1control />
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-4 mb-0">
-                                        <mat-form-field class="example-full-width mb-0">
-                                            <mat-label>DOB</mat-label>
-                                            <input matInput name="DOB" type="date" [(ngModel)]="data.DOB">
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-4  mb-0">
-                                        <mat-form-field class="example-full-width mb-0">
-                                            <mat-label>Anniversary</mat-label>
-                                            <input matInput name="Anniversary" type="date"
-                                                [(ngModel)]="data.Anniversary">
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="col-xl-5 col-lg-5 col-md-6 col-sm-12 mb-0">
-                                        <mat-form-field class="example-full-width mb-0">
-                                            <mat-label>Address</mat-label>
-                                            <input matInput name="Address" minlength="2" [(ngModel)]="data.Address"
-                                                #Addresscontrol />
-                                            <mat-error>
-                                                Atleast 2 characters required
-                                            </mat-error>
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-0">
-                                        <mat-form-field class="example-full-width mb-0">
-                                            <mat-label>Gender </mat-label>
-                                            <mat-select name="Gender" [(ngModel)]="data.Gender" #Gendercontrol>
-                                                <mat-option></mat-option>
-                                                <mat-option value="KIDS">KIDS</mat-option>
-                                                <mat-option value="MALE">MALE</mat-option>
-                                                <mat-option value="FEMALE">FEMALE</mat-option>
-                                                <mat-option value="TRANSGENDER">TRANSGENDER</mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-0">
-                                        <mat-form-field class="example-full-width mb-0">
-                                            <mat-label>SR/MRD No. </mat-label>
-                                            <input matInput name="Remarks" [(ngModel)]="data.Remarks" #Remarkscontrol />
-                                            <mat-error>
-                                                Remarks is required
-                                            </mat-error>
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
-                                        <mat-form-field class="example-full-width mb-0">
-                                            <mat-label>Remark/TLN </mat-label>
-                                            <input matInput name="Remarks" [(ngModel)]="data.Remarks" #Remarkscontrol />
-                                            <mat-error>
-                                                Remarks is required
-                                            </mat-error>
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="col-xl-3 col-lg-2 col-md-6 col-sm-12 mb-0 ms-auto">
-                                        <button  mat-raised-button color="primary" style="padding: 0px 40px;">Save</button>
+                        <form #f="ngForm" autocomplete="off" (ngSubmit)="onsubmit()">
+                            <div class="row">
+                                <!-- Customer from start  -->
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-2 col-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Select Position </mat-label>
+                                                <mat-select name="Position" [(ngModel)]="data.Gender" #Gendercontrol
+                                                    required>
+                                                    <mat-option value="MR">MR.</mat-option>
+                                                    <mat-option value="Miss">Miss.</mat-option>
+                                                    <mat-option value="DR">DR.</mat-option>
+                                                    <mat-option value="ADV">ADV.</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-10 col-10 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label> Name</mat-label>
+                                                <input matInput name="Name" minlength="3" [(ngModel)]="data.Name"
+                                                    required #UserNamecontrol appAutoFoucsDirectives />
+                                                <mat-error>
+                                                    Name is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-4 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Mobile No1</mat-label>
+                                                <input matInput name="MobileNo1" type="number"
+                                                    [(ngModel)]="data.MobileNo1" #MobileNo1control />
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-4 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>DOB</mat-label>
+                                                <input matInput name="DOB" type="date" [(ngModel)]="data.DOB">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-4  mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Anniversary</mat-label>
+                                                <input matInput name="Anniversary" type="date"
+                                                    [(ngModel)]="data.Anniversary">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-5 col-lg-5 col-md-6 col-sm-12 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Address</mat-label>
+                                                <input matInput name="Address" minlength="2" [(ngModel)]="data.Address"
+                                                    #Addresscontrol />
+                                                <mat-error>
+                                                    Atleast 2 characters required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>SR/MRD No. </mat-label>
+                                                <input matInput name="Remarks" [(ngModel)]="data.Sno" #Snocontrol />
+                                                <mat-error>
+                                                    SR/MRD No. is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Remark/TLN </mat-label>
+                                                <input matInput name="Remarks" [(ngModel)]="data.Remarks"
+                                                    #Remarkscontrol />
+                                                <mat-error>
+                                                    Remarks is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-2 col-md-6 col-sm-12 mb-0 ms-auto">
+                                            <button mat-raised-button color="primary"
+                                                style="padding: 0px 40px;">Save</button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <!-- Tabs content -->
-                                    <div class="tab-content mt-1" id="ex1-content">
-                                        <div class="tab-pane fade show active p-2 " id="ex1-tabs-1" role="tabpanel"
-                                            aria-labelledby="ex1-tab-1" style="border: 1px solid #0027ff">
-                                            <div class="row  powerRow" >
-                                                <div class="col-1 m-0 p-0 ps-1">
-                                                    <button class="extra m-0">EXTRA</button>
-                                                 </div>
-                                                <div class="col-3">
-                                                   <span class="right_letf">Right Eye</span> 
-                                                </div>
-                                                <div class="col-4 ">
-                                                  <span class="right_letf">Left Eye</span>  
-                                                </div>
-                                            </div>
-                                            <div class="row mt-1 powerRow" >
-                                                <div class="col-1"> </div>
-                                                <div class="col-1">SPH </div>
-                                                <div class="col-1">CYL </div>
-                                                <div class="col-1">AXIS </div>
-                                                <div class="col-1">VA </div>
-                                                <div class="col-1">ADD </div>
-                                                <div class="col-1">SPH </div>
-                                                <div class="col-1">CYL </div>
-                                                <div class="col-1">AXIS </div>
-                                                <div class="col-1">VA </div>
-                                                <div class="col-1">ADD </div>
-                                            </div>
-                                            <div class="row" style="justify-content: space-between;margin-right: 12px;">
-                                                <div class="col-1 fw-bold pe-0">Distan.</div>
-                                                <div class="col-1">
-                                                  <input  class="inputWidth box"  type="text" name="REDPSPH" #myDiv2 [(ngModel)]="spectacle.REDPSPH" id="REDPSPH"  list="dpsphList">
-                                                    <datalist id="dpsphList">
-                                                        <option [value]="d.Name" *ngFor="let d of dataSPH">{{d.Name}} </option>
-                                                    </datalist>
-                                                </div>
-                                                <div class="col-1">
-                                                  <input  class="inputWidth box "  type="text" name="REDPCYL"  [(ngModel)]="spectacle.REDPCYL" id="REDPCYL"  list="dpcylList">
-                                                    <datalist id="dpcylList">
-                                                        <option [value]="c.Name" *ngFor="let c of dataCYL">{{c.Name}} </option>
-                                                    </datalist>
-                                                </div>
-                                                <div class="col-1">
-                                                  <input  class="inputWidth box"  type="text" name="REDPAxis" [(ngModel)]="spectacle.REDPAxis">
-                                                </div>
-                                                <div class="col-1">
-                                                  <input  class="inputWidth box"  type="text" name="REDPVA" #myDiv2 [(ngModel)]="spectacle.REDPVA" id="REDPVA"  list="dpvaList">
-                                                    <datalist id="dpvaList">
-                                                        <option [value]="d.Name" *ngFor="let d of dataPVA">{{d.Name}} </option>
-                                                    </datalist>
-                                                </div>
-                                                <div class="col-1">
-                                                  <input  class="inputWidth box"  type="text" name="R_Addition" [(ngModel)]="spectacle.R_Addition">
-                                                </div>
-                                                <div class="col-1">
-                                                  <input  class="inputWidth box"  type="text" name="LEDPSPH" #myDiv2 [(ngModel)]="spectacle.LEDPSPH" id="LEDPSPH"  list="dpsphList">
-                                                    <datalist id="dpsphList">
-                                                        <option [value]="d.Name" *ngFor="let d of dataSPH">{{d.Name}} </option>
-                                                    </datalist>
-                                                </div>
-                                                <div class="col-1">
-                                                    <input  class="inputWidth box "  type="text" name="LEDPCYL"  [(ngModel)]="spectacle.LEDPCYL" id="LEDPCYL"  list="dpcylList">
-                                                    <datalist id="dpcylList">
-                                                        <option [value]="c.Name" *ngFor="let c of dataCYL">{{c.Name}} </option>
-                                                    </datalist>
-                                                </div>
-                                                <div class="col-1">
-                                                <input  class="inputWidth box"  type="text" name="LEDPAxis" [(ngModel)]="spectacle.LEDPAxis">
-                                                </div>
-                                                <div class="col-1">
-                                                    <input  class="inputWidth box"  type="text" name="LEDPVA" #myDiv2 [(ngModel)]="spectacle.LEDPVA" id="LEDPVA"  list="dpvaList">
-                                                    <datalist id="dpvaList">
-                                                        <option [value]="d.Name" *ngFor="let d of dataPVA">{{d.Name}} </option>
-                                                    </datalist>
-                                                </div>
-                                                <div class="col-1">
-                                                 <input  class="inputWidth box"  type="text" name="L_Addition" [(ngModel)]="spectacle.L_Addition">
-                                                </div>
-                                            </div>
+                                <!-- Customer from end  -->
+                                <!-- power box start  -->
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <!-- Tabs content -->
+                                        <div class="tab-content mt-1" id="ex1-content">
 
-                                            <div class="row mt-2 " style="justify-content: space-between;margin-right: 12px;">
-                                                <div class="col-1 fw-bold">Near</div>
-
-                                                <div class="col-1">
-                                                  <input  class="inputWidth box"  type="text" name="RENPSPH" #myDiv2 [(ngModel)]="spectacle.RENPSPH" id="RENPSPH"  list="dpsphList">
-                                                    <datalist id="dpsphList">
-                                                        <option [value]="d.Name" *ngFor="let d of dataSPH">{{d.Name}} </option>
-                                                    </datalist>
+                                            <!-- spectacle start -->
+                                            <div class="tab-pane fade show active p-1 pb-0" id="ex1-tabs-1" role="tabpanel"
+                                                aria-labelledby="ex1-tab-1" style="border: 1px solid #0027ff">
+                                                <div class="row  powerRow">
+                                                    <div class="col-1 m-0 p-0 ps-1">
+                                                        <button class="extra m-0" (click)="openModal(Spectacle)">EXTRA</button>
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <span class="right_letf">Right Eye</span>
+                                                    </div>
+                                                    <div class="col-4 ">
+                                                        <span class="right_letf">Left Eye</span>
+                                                    </div>
                                                 </div>
-                                                <div class="col-1">
-                                                    <input  class="inputWidth box "  type="text" name="RENPCYL"  [(ngModel)]="spectacle.RENPCYL" id="RENPCYL"  list="dpcylList">
-                                                      <datalist id="dpcylList">
-                                                          <option [value]="c.Name" *ngFor="let c of dataCYL">{{c.Name}} </option>
-                                                      </datalist>
-                                                  </div>
-                                                  <div class="col-1">
-                                                    <input  class="inputWidth box"  type="text" name="RENPAxis" [(ngModel)]="spectacle.RENPAxis">
-                                                  </div>
-                                                  <div class="col-1">
-                                                    <input  class="inputWidth box"  type="text" name="RENPVA" #myDiv2 [(ngModel)]="spectacle.RENPVA" id="RENPVA"  list="dpvaList">
-                                                      <datalist id="dpvaList">
-                                                          <option [value]="d.Name" *ngFor="let d of dataPVA">{{d.Name}} </option>
-                                                      </datalist>
-                                                  </div>
-                                                  <div class="col-1">
-                                                    <!-- <input  class="inputWidth box"  type="text" name="R_Addition" [(ngModel)]="spectacle.R_Addition"> -->
-                                                  </div>
-
-                                                  <div class="col-1">
-                                                    <input  class="inputWidth box"  type="text" name="LENPSPH"  [(ngModel)]="spectacle.LENPSPH" id="LENPSPH"  list="dpsphList">
-                                                      <datalist id="dpsphList">
-                                                          <option [value]="d.Name" *ngFor="let d of dataSPH">{{d.Name}} </option>
-                                                      </datalist>
-                                                  </div>
-
-                                                  <div class="col-1">
-                                                      <input  class="inputWidth box "  type="text" name="LENPCYL"  [(ngModel)]="spectacle.LENPCYL" id="LENPCYL"  list="dpcylList">
+                                                <!-- herder label start -->
+                                                <div class="row mt-1 powerRow">
+                                                    <div class="col-1"> </div>
+                                                    <div class="col-1">SPH </div>
+                                                    <div class="col-1">CYL </div>
+                                                    <div class="col-1">AXIS </div>
+                                                    <div class="col-1">VA </div>
+                                                    <div class="col-1">ADD </div>
+                                                    <div class="col-1">SPH </div>
+                                                    <div class="col-1">CYL </div>
+                                                    <div class="col-1">AXIS </div>
+                                                    <div class="col-1">VA </div>
+                                                    <div class="col-1 ps-0">ADD </div>
+                                                </div>
+                                                <!-- herder label end -->
+                                                <!-- distance input box start -->
+                                                <div class="row"
+                                                    style="justify-content: space-between;margin-right: 12px;">
+                                                    <div class="col-1 fw-bold pe-0">Dis.</div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="REDPSPH" #myDiv2
+                                                            [(ngModel)]="spectacle.REDPSPH" id="REDPSPH"
+                                                            list="dpsphList">
+                                                        <datalist id="dpsphList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataSPH">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box " type="text" name="REDPCYL"
+                                                            [(ngModel)]="spectacle.REDPCYL" id="REDPCYL"
+                                                            list="dpcylList">
                                                         <datalist id="dpcylList">
-                                                            <option [value]="c.Name" *ngFor="let c of dataCYL">{{c.Name}} </option>
+                                                            <option [value]="c.Name" *ngFor="let c of dataCYL">
+                                                                {{c.Name}} </option>
                                                         </datalist>
                                                     </div>
                                                     <div class="col-1">
-                                                      <input  class="inputWidth box"  type="text" name="LENPAxis" [(ngModel)]="spectacle.LENPAxis">
+                                                        <input class="inputWidth box" type="text" name="REDPAxis"
+                                                            [(ngModel)]="spectacle.REDPAxis">
                                                     </div>
                                                     <div class="col-1">
-                                                      <input  class="inputWidth box"  type="text" name="LENPVA" #myDiv2 [(ngModel)]="spectacle.LENPVA" id="LENPVA"  list="dpvaList">
+                                                        <input class="inputWidth box" type="text" name="REDPVA" #myDiv2
+                                                            [(ngModel)]="spectacle.REDPVA" id="REDPVA" list="dpvaList">
                                                         <datalist id="dpvaList">
-                                                            <option [value]="d.Name" *ngFor="let d of dataPVA">{{d.Name}} </option>
+                                                            <option [value]="d.Name" *ngFor="let d of dataPVA">
+                                                                {{d.Name}} </option>
                                                         </datalist>
                                                     </div>
                                                     <div class="col-1">
-                                                      <!-- <input  class="inputWidth box"  type="text" name="R_Addition" [(ngModel)]="spectacle.R_Addition"> -->
-                                                    </div>                                                  
+                                                        <input class="inputWidth box" type="text" name="R_Addition"
+                                                            [(ngModel)]="spectacle.R_Addition">
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="LEDPSPH" #myDiv2
+                                                            [(ngModel)]="spectacle.LEDPSPH" id="LEDPSPH"
+                                                            list="dpsphList">
+                                                        <datalist id="dpsphList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataSPH">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box " type="text" name="LEDPCYL"
+                                                            [(ngModel)]="spectacle.LEDPCYL" id="LEDPCYL"
+                                                            list="dpcylList">
+                                                        <datalist id="dpcylList">
+                                                            <option [value]="c.Name" *ngFor="let c of dataCYL">
+                                                                {{c.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="LEDPAxis"
+                                                            [(ngModel)]="spectacle.LEDPAxis">
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="LEDPVA" #myDiv2
+                                                            [(ngModel)]="spectacle.LEDPVA" id="LEDPVA" list="dpvaList">
+                                                        <datalist id="dpvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="L_Addition"
+                                                            [(ngModel)]="spectacle.L_Addition">
+                                                    </div>
+                                                </div>
+                                                <!-- distance input box label end -->
+                                                <!-- Near input box start -->
+                                                <div class="row mt-2 "
+                                                    style="justify-content: space-between;margin-right: 12px;">
+                                                    <div class="col-1 fw-bold">Near</div>
+
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="RENPSPH" #myDiv2
+                                                            [(ngModel)]="spectacle.RENPSPH" id="RENPSPH"
+                                                            list="dpsphList">
+                                                        <datalist id="dpsphList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataSPH">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box " type="text" name="RENPCYL"
+                                                            [(ngModel)]="spectacle.RENPCYL" id="RENPCYL"
+                                                            list="dpcylList">
+                                                        <datalist id="dpcylList">
+                                                            <option [value]="c.Name" *ngFor="let c of dataCYL">
+                                                                {{c.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="RENPAxis"
+                                                            [(ngModel)]="spectacle.RENPAxis">
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="RENPVA" #myDiv2
+                                                            [(ngModel)]="spectacle.RENPVA" id="RENPVA" list="dpvaList">
+                                                        <datalist id="dpvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <!-- <input  class="inputWidth box"  type="text" name="R_Addition" [(ngModel)]="spectacle.R_Addition"> -->
+                                                    </div>
+
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="LENPSPH"
+                                                            [(ngModel)]="spectacle.LENPSPH" id="LENPSPH"
+                                                            list="dpsphList">
+                                                        <datalist id="dpsphList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataSPH">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box " type="text" name="LENPCYL"
+                                                            [(ngModel)]="spectacle.LENPCYL" id="LENPCYL"
+                                                            list="dpcylList">
+                                                        <datalist id="dpcylList">
+                                                            <option [value]="c.Name" *ngFor="let c of dataCYL">
+                                                                {{c.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="LENPAxis"
+                                                            [(ngModel)]="spectacle.LENPAxis">
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="LENPVA" #myDiv2
+                                                            [(ngModel)]="spectacle.LENPVA" id="LENPVA" list="dpvaList">
+                                                        <datalist id="dpvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <!-- <input  class="inputWidth box"  type="text" name="R_Addition" [(ngModel)]="spectacle.R_Addition"> -->
+                                                    </div>
+                                                </div>
+                                                <!-- Near input box end -->
+                                                <div class="row mt-1 powerRow">
+                                                    <div class="col-3 p-0 ps-2"> 
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Rx By</mat-label>
+                                                            <input matInput class="inputWidth"  type="text" name="RefferedByDoc" [(ngModel)]="spectacle.RefferedByDoc" id="RefferedByDoc"  list="docList">
+                                                            <datalist id="docList">
+                                                                <option value="Self">Self</option>
+                                                                <option *ngFor="let doc of docList let i = index;" [value]="doc.Name">
+                                                                    {{doc.Name}}
+                                                                </option>
+                                                            </datalist>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-1 p-0 ps-1">  
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                         <mat-label>PD_R</mat-label>
+                                                         <input matInput name="REPD" [(ngModel)]="spectacle.REPD" />
+                                                        </mat-form-field> 
+                                                    </div>
+                                                    <div class="col-1 p-0"> 
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                         <mat-label>PD_L</mat-label>
+                                                         <input matInput name="LEPD" [(ngModel)]="spectacle.LEPD" />
+                                                         </mat-form-field>
+                                                    </div>
+                                                    <div class="col-1 p-0"> 
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                         <mat-label>Prism_R</mat-label>
+                                                         <input matInput name="R_Prism" [(ngModel)]="spectacle.R_Prism" />
+                                                        </mat-form-field> 
+                                                    </div>
+                                                    <div class="col-1 p-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                         <mat-label>Prism_L</mat-label>
+                                                         <input matInput name="L_Prism" [(ngModel)]="spectacle.L_Prism" />
+                                                        </mat-form-field>
+                                                    </div>
+
+                                                    <div class="col-1 p-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>VertexDis</mat-label>
+                                                            <input matInput name="VertexDistance" [(ngModel)]="spectacle.VertexDistance" />
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-1 p-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>RefractiveIn</mat-label>
+                                                            <input matInput name="RefractiveIndex" [(ngModel)]="spectacle.RefractiveIndex" />
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-2 p-0 pe-3">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>FittingHeight</mat-label>
+                                                            <input matInput name="FittingHeight" [(ngModel)]="spectacle.FittingHeight" />
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- spectacle end -->
+
+                                            <!-- COntact start -->
+                                            <div class="tab-pane fade  p-1 pb-0 " id="ex1-tabs-2"
+                                                style="border: 1px solid #0027ff" role="tabpanel"
+                                                aria-labelledby="ex1-tab-2">
+                                                <div class="row  powerRow">
+                                                    <div class="col-1 m-0 p-0 ps-1">
+                                                        <button class="extra m-0" (click)="openModal(Contact)">EXTRA</button>
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <span class="right_letf">Right Eye</span>
+                                                    </div>
+                                                    <div class="col-4 ">
+                                                        <span class="right_letf">Left Eye</span>
+                                                    </div>
+                                                </div>
+                                                <!-- herder label start -->
+                                                <div class="row mt-1 powerRow">
+                                                    <div class="col-1"> </div>
+                                                    <div class="col-1">SPH </div>
+                                                    <div class="col-1">CYL </div>
+                                                    <div class="col-1">AXIS </div>
+                                                    <div class="col-1">VA </div>
+                                                    <div class="col-1">ADD </div>
+                                                    <div class="col-1">SPH </div>
+                                                    <div class="col-1">CYL </div>
+                                                    <div class="col-1">AXIS </div>
+                                                    <div class="col-1">VA </div>
+                                                    <div class="col-1 ps-1">ADD </div>
+                                                </div>
+                                                <!-- herder label end -->
+                                                <!-- distance input box start -->
+                                                <div class="row"
+                                                    style="justify-content: space-between;margin-right: 12px;">
+                                                    <div class="col-1 fw-bold pe-0">Dis.</div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="REDPSPH"
+                                                            [(ngModel)]="clens.REDPSPH" id="REDPSPH" list="dpsphList">
+                                                        <datalist id="dpsphList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataSPH">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box " type="text" name="REDPCYL"
+                                                            [(ngModel)]="clens.REDPCYL" id="REDPCYL" list="dpcylList">
+                                                        <datalist id="dpcylList">
+                                                            <option [value]="c.Name" *ngFor="let c of dataCYL">
+                                                                {{c.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="REDPAxis"
+                                                            [(ngModel)]="clens.REDPAxis">
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="REDPVA"
+                                                            [(ngModel)]="clens.REDPVA" id="REDPVA" list="dpvaList">
+                                                        <datalist id="dpvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="R_Addition"
+                                                            [(ngModel)]="clens.R_Addition">
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="LEDPSPH" #myDiv2
+                                                            [(ngModel)]="clens.LEDPSPH" id="LEDPSPH" list="dpsphList">
+                                                        <datalist id="dpsphList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataSPH">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box " type="text" name="LEDPCYL"
+                                                            [(ngModel)]="clens.LEDPCYL" id="LEDPCYL" list="dpcylList">
+                                                        <datalist id="dpcylList">
+                                                            <option [value]="c.Name" *ngFor="let c of dataCYL">
+                                                                {{c.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="LEDPAxis"
+                                                            [(ngModel)]="clens.LEDPAxis">
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="LEDPVA" #myDiv2
+                                                            [(ngModel)]="clens.LEDPVA" id="LEDPVA" list="dpvaList">
+                                                        <datalist id="dpvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+                                                    <div class="col-1">
+                                                    <input class="inputWidth box" type="text" name="R_Addition"
+                                                        [(ngModel)]="clens.L_Addition">
+                                                </div>
+                                                </div>
+                                                <!-- distance input box end -->
+                                                <!-- Near input box start -->
+                                                <div class="row mt-2 "
+                                                    style="justify-content: space-between;margin-right: 12px;">
+                                                    <div class="col-1 fw-bold">Near</div>
+
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="RENPSPH"
+                                                            [(ngModel)]="clens.RENPSPH" id="RENPSPH" list="dpsphList">
+                                                        <datalist id="dpsphList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataSPH">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box " type="text" name="RENPCYL"
+                                                            [(ngModel)]="clens.RENPCYL" id="RENPCYL" list="dpcylList">
+                                                        <datalist id="dpcylList">
+                                                            <option [value]="c.Name" *ngFor="let c of dataCYL">
+                                                                {{c.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="RENPAxis"
+                                                            [(ngModel)]="clens.RENPAxis">
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="RENPVA" #myDiv2
+                                                            [(ngModel)]="clens.RENPVA" id="RENPVA" list="dpvaList">
+                                                        <datalist id="dpvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <!-- <input  class="inputWidth box"  type="text" name="R_Addition" [(ngModel)]="spectacle.R_Addition"> -->
+                                                    </div>
+
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="LENPSPH"
+                                                            [(ngModel)]="clens.LENPSPH" id="LENPSPH" list="dpsphList">
+                                                        <datalist id="dpsphList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataSPH">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box " type="text" name="LENPCYL"
+                                                            [(ngModel)]="clens.LENPCYL" id="LENPCYL" list="dpcylList">
+                                                        <datalist id="dpcylList">
+                                                            <option [value]="c.Name" *ngFor="let c of dataCYL">
+                                                                {{c.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="LENPAxis"
+                                                            [(ngModel)]="clens.LENPAxis">
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <input class="inputWidth box" type="text" name="LENPVA" #myDiv2
+                                                            [(ngModel)]="clens.LENPVA" id="LENPVA" list="dpvaList">
+                                                        <datalist id="dpvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <!-- <input  class="inputWidth box"  type="text" name="R_Addition" [(ngModel)]="spectacle.R_Addition"> -->
+                                                    </div>
+                                                </div>
+                                                <!-- Near input box end -->
+                                                <div class="row mt-1 powerRow">
+                                                    <div class="col-3 p-0 ps-2"> 
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Rx By</mat-label>
+                                                            <input matInput class="inputWidth"  type="text" name="RefferedByDoc" [(ngModel)]="clens.RefferedByDoc" id="RefferedByDoc"  list="docList">
+                                                            <datalist id="docList">
+                                                                <option value="Self">Self</option>
+                                                                <option *ngFor="let doc of docList let i = index;" [value]="doc.Name">
+                                                                    {{doc.Name}}
+                                                                </option>
+                                                            </datalist>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-1 p-0 ps-1">  
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                         <mat-label>PD_R</mat-label>
+                                                         <input matInput name="REPD" [(ngModel)]="clens.REPD" />
+                                                        </mat-form-field> 
+                                                    </div>
+                                                    <div class="col-1 p-0"> 
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                         <mat-label>PD_L</mat-label>
+                                                         <input matInput name="LEPD" [(ngModel)]="clens.LEPD" />
+                                                         </mat-form-field>
+                                                    </div>
+                                                    <div class="col-1 p-0"> 
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                         <mat-label>BC_R</mat-label>
+                                                         <input matInput name="R_Prism" [(ngModel)]="clens.R_BC" />
+                                                        </mat-form-field> 
+                                                    </div>
+                                                    <div class="col-1 p-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                         <mat-label>BC_L</mat-label>
+                                                         <input matInput name="L_Prism" [(ngModel)]="clens.L_BC" />
+                                                        </mat-form-field>
+                                                    </div>
+
+                                                    <div class="col-1 p-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>DiaMe_R</mat-label>
+                                                            <input matInput name="VertexDistance" [(ngModel)]="clens.R_Diameter" />
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-1 p-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>DiaMe_L</mat-label>
+                                                            <input matInput name="RefractiveIndex" [(ngModel)]="clens.R_Diameter" />
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-2 p-0 pe-3">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Modality</mat-label>
+                                                            <input matInput name="RefractiveIndex" [(ngModel)]="clens.Modality" />
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- COntact end -->
+
+                                            <!-- Other start -->
+                                            <div class="tab-pane fade" id="ex1-tabs-3" role="tabpanel"
+                                                aria-labelledby="ex1-tab-3"  style="border: 1px solid #0027ff">
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>VN_R</mat-label>
+                                                            <input matInput name="R_VN" [(ngModel)]="other.R_VN" />
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>VN_L</mat-label>
+                                                            <input matInput name="L_VN" [(ngModel)]="other.L_VN" />
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>TN_R</mat-label>
+                                                            <input matInput name="R_TN" [(ngModel)]="other.R_TN" />
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>TN_L</mat-label>
+                                                            <input matInput name="L_TN" [(ngModel)]="other.L_TN" />
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>SY/KY_R</mat-label>
+                                                            <input matInput name="R_KR" [(ngModel)]="other.R_KR" />
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>SY/KY_L</mat-label>
+                                                            <input matInput name="L_KR" [(ngModel)]="other.L_KR" />
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>BP</mat-label>
+                                                            <input matInput name="BP" [(ngModel)]="other.BP" />
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Sugar</mat-label>
+                                                            <input matInput name="Sugar" [(ngModel)]="other.Sugar" />
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>IOL Power</mat-label>
+                                                            <input matInput name="IOL_Power" [(ngModel)]="other.IOL_Power" />
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Diagnosis</mat-label>
+                                                              <input matInput type="text" name="Diagnosis" [(ngModel)]="other.Diagnosis">
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Family Name</mat-label>
+                                                            <mat-select name="FamilyName" required [(ngModel)]="other.Family">
+                                                                <mat-option value="Self">Self</mat-option>
+                                                                <mat-option [value]="f.Name" *ngFor="let f of familyList"> {{f.Name}}
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Reffered By Doc</mat-label>
+                                                            <mat-select name="Field Type" [(ngModel)]="other.RefferedByDoc" required #Typecontrol>
+                                                                <mat-option [value]=""></mat-option>
+                                                                <mat-option *ngFor="let doc of docList let i = index;" [value]="doc.Name">
+                                                                    {{doc.Name}}
+                                                                </mat-option>
+                                                            </mat-select>
+                                                            <mat-error>
+                                                                Select Doctor
+                                                            </mat-error>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-md-3 mb-0" style="margin: 0; ">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Treatment</mat-label>
+                                                            <input matInput type="text" name="Treatment" [(ngModel)]="other.Treatment">
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-md-3 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Operation</mat-label>
+                                                            <input matInput name="Operation" [(ngModel)]="other.Operation" />
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Other end -->
+                                        </div>
+                                        <!-- Tabs content -->
+                                    </div>
+                                </div>
+                                <!-- power box end  -->
+                            </div>
+
+                            <!--Customer Extra model popup start -->
+                            <ng-template #customer role="document" let-modal>
+                                <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+                                    <h2 class="modal-title header pt-2" id="exampleModalLabel">Customer Extra Fields
+                                        <span class="ms-md-5 me-md-5 ms-0 pe-5 pt-3 pt-md-0">Cust_ID</span>
+                                        <span class="ms-5 me-5 pt-3 pt-md-0">Cust_Category</span>
+                                    </h2>
+                                    <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
+                                        (click)="modal.dismiss('Cross click')"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row mt-3 mt-md-0">
+                                        <div class="col-md-9 col-12">
+                                            <div class="row ">
+                                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Mobile No2</mat-label>
+                                                        <input matInput type="number" name="MobileNo2"
+                                                            [(ngModel)]="data.MobileNo2" #MobileNo2control />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>PhoneNo</mat-label>
+                                                        <input matInput type="number" name="PhoneNo"
+                                                            [(ngModel)]="data.PhoneNo" #PhoneNocontrol />
+                                                        <mat-error>
+                                                            Phone Number required
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Email</mat-label>
+                                                        <input matInput name="Email" [(ngModel)]="data.Email"
+                                                            pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+                                                            #Emailcontrol />
+                                                        <mat-error>
+                                                            Invalid EmailID
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Gender </mat-label>
+                                                        <mat-select name="Gender" [(ngModel)]="data.Gender"
+                                                            #Gendercontrol>
+                                                            <mat-option></mat-option>
+                                                            <mat-option value="KIDS">KIDS</mat-option>
+                                                            <mat-option value="MALE">MALE</mat-option>
+                                                            <mat-option value="FEMALE">FEMALE</mat-option>
+                                                            <mat-option value="TRANSGENDER">TRANSGENDER</mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Reference Type </mat-label>
+                                                        <mat-select name="ReferenceType"
+                                                            [(ngModel)]="data.ReferenceType" #ReferenceTypecontrol>
+                                                            <mat-option></mat-option>
+                                                            <mat-option [value]="r.Name"
+                                                                *ngFor="let r of ReferenceList"> {{r.Name}}
+                                                            </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>GST/VAT No</mat-label>
+                                                        <input matInput name="GSTNo" [(ngModel)]="data.GSTNo"
+                                                            #GSTNocontrol />
+                                                        <mat-error>
+                                                            GST No is required
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label> Other </mat-label>
+                                                        <mat-select name="Other" [(ngModel)]="data.Other" #Othercontrol>
+                                                            <mat-option></mat-option>
+                                                            <mat-option [value]="o.Name" *ngFor="let o of OtherList">
+                                                                {{o.Name}} </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="tab-pane fade" id="ex1-tabs-2" role="tabpanel"
-                                            aria-labelledby="ex1-tab-2">
-                                            con
+                                        <div class="col-md-2 col-12 ms-md-auto">
+                                            <div class="row ">
+                                                <div class="col-10 mt-md-3 ">
+                                                    <img class="fit-picture" width="170" height="170"
+                                                        [src]="customerImage">
+                                                </div>
+                                                <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 "
+                                                    (click)="fileInput.click()" style="cursor: pointer;">
+                                                    <i class="fa-solid fa-cloud-arrow-up upload_icon">
+                                                        <span style="font-size: 10px;letter-spacing: 2px;"> Image
+                                                        </span>
+                                                    </i>
+                                                    <input #fileInput id="my-input" name='PhotoURL' type="file"
+                                                        (change)="uploadImage($event, 'User')" style="display:none;">
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="tab-pane fade" id="ex1-tabs-3" role="tabpanel"
-                                            aria-labelledby="ex1-tab-3">
-                                            other
-                                        </div>
+
                                     </div>
-                                    <!-- Tabs content -->
                                 </div>
-                            </div>
-                        </div>
+                            </ng-template>
+                            <!--Customer Extra model popup end -->
+
+                            <!--spectacle Extra model popup start -->
+                            <ng-template #Spectacle role="document" let-modal>
+                                <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+                                    <h2 class="modal-title header pt-2" id="exampleModalLabel">Spectacle Extra Fields </h2>
+                                    <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
+                                        (click)="modal.dismiss('Cross click')"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row mt-3 mt-md-0">
+                                        <div class="col-md-9 col-12">
+                                            <div class="row ">
+                                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Family Name</mat-label>
+                                                        <input matInput class="inputWidth"  type="text" name="Family" [(ngModel)]="spectacle.Family" required id="Family"  list="familyList">
+                                                        <datalist id="familyList">
+                                                            <option value="Self">Self</option>
+                                                            <option [value]="f.Name" *ngFor="let f of familyList">
+                                                                {{f.Name}}
+                                                            </option>
+                                                        </datalist>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-3 col-lg-3  col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Shade</mat-label>
+                                                        <input matInput name="Shade" [(ngModel)]="spectacle.Shade" />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-3 col-lg-3  col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Frame</mat-label>
+                                                        <input matInput name="Frame" [(ngModel)]="spectacle.Frame" />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-3 col-lg-3  col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Lens</mat-label>
+                                                        <input matInput name="Lens" [(ngModel)]="spectacle.Lens" />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-3 col-lg-3  col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-slide-toggle name="ConstantUse" color="primary" [(ngModel)]="spectacle.ConstantUse">  
+                                                           Constant Use
+                                                    </mat-slide-toggle>
+                                                    <mat-slide-toggle name="NearWork" color="primary" [(ngModel)]="spectacle.NearWork"> 
+                                                        Near Work
+                                                    </mat-slide-toggle>
+                                                    <mat-slide-toggle name="DistanceWork" color="primary" [(ngModel)]="spectacle.DistanceWork">
+                                                        Distance Work
+                                                    </mat-slide-toggle>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-2  col-md-6 col-sm-6 col-6 mb-0 ">
+                                                <mat-radio-group aria-label="Select an option" name="Reminder" [(ngModel)]="spectacle.Reminder">
+                                                            <mat-radio-button value="3">3 Month</mat-radio-button>
+                                                            <mat-radio-button value="6" class="mt-1 mb-1">6 Month</mat-radio-button>
+                                                            <mat-radio-button value="12">1 Year</mat-radio-button>
+                                                            <!-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-0 mt-2"> 
+                                                                <mat-radio-button value="Mannual" >Mannual</mat-radio-button>
+                                                            </div> -->
+                                                        </mat-radio-group>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-12 ms-md-auto">
+                                            <div class="row ">
+                                                <div class="col-10 mt-md-3 ">
+                                                    <img class="fit-picture" width="170" height="170"
+                                                        [src]="spectacleImage">
+                                                </div>
+                                                <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 "
+                                                    (click)="fileInput.click()" style="cursor: pointer;">
+                                                    <i class="fa-solid fa-cloud-arrow-up upload_icon">
+                                                        <span style="font-size: 10px;letter-spacing: 2px;"> Image
+                                                        </span>
+                                                    </i>
+                                                    <input #fileInput id="my-input" name='PhotoURL' type="file"
+                                                        (change)="uploadImage($event, 'spectacle')" style="display:none;">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <!--spectacle Extra model popup end -->
+
+                            <!--Contact Extra model popup start -->
+                            <ng-template #Contact role="document" let-modal>
+                                <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+                                    <h2 class="modal-title header pt-2" id="exampleModalLabel">Contact Extra Fields </h2>
+                                    <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
+                                        (click)="modal.dismiss('Cross click')"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row mt-3 mt-md-0">
+                                        <div class="col-md-9 col-12">
+                                            <div class="row ">
+                                                <div class="col-xl-2 col-lg-2  col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>KR_R</mat-label>
+                                                        <input matInput name="R_KR" [(ngModel)]="clens.R_KR" />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-2  col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>KR_L</mat-label>
+                                                        <input matInput name="L_KR" [(ngModel)]="clens.L_KR" />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-2  col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>HVID_R</mat-label>
+                                                        <input matInput name="R_HVID" [(ngModel)]="clens.R_HVID" />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-2  col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>HVID_L</mat-label>
+                                                        <input matInput name="L_HVID" [(ngModel)]="clens.L_HVID" />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-2  col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>CS_R</mat-label>
+                                                        <input matInput name="R_CS" [(ngModel)]="clens.R_CS" />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-2  col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>CS_L</mat-label>
+                                                        <input matInput name="L_CS" [(ngModel)]="clens.L_CS" />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-2  col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>BR</mat-label>
+                                                        <input matInput name="BR" [(ngModel)]="clens.BR" />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-2  col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Other</mat-label>
+                                                        <input matInput name="Other" [(ngModel)]="clens.Other" />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-2  col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Material</mat-label>
+                                                        <input matInput name="BR" [(ngModel)]="clens.Material" />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Family Name</mat-label>
+                                                        <input matInput class="inputWidth"  type="text" name="Family" [(ngModel)]="clens.Family" required id="Family"  list="familyList">
+                                                        <datalist id="familyList">
+                                                            <option value="Self">Self</option>
+                                                            <option [value]="f.Name" *ngFor="let f of familyList">
+                                                                {{f.Name}}
+                                                            </option>
+                                                        </datalist>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-3 col-lg-3  col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-slide-toggle name="ConstantUse" color="primary" [(ngModel)]="clens.ConstantUse">  
+                                                           Constant Use
+                                                    </mat-slide-toggle>
+                                                    <mat-slide-toggle name="NearWork" color="primary" [(ngModel)]="clens.NearWork"> 
+                                                        Near Work
+                                                    </mat-slide-toggle>
+                                                    <mat-slide-toggle name="DistanceWork" color="primary" [(ngModel)]="clens.DistanceWork">
+                                                        Distance Work
+                                                    </mat-slide-toggle>
+                                                    <mat-slide-toggle name="Multifocal" color="primary" [(ngModel)]="clens.Multifocal">
+                                                        Multifocal Work
+                                                    </mat-slide-toggle>
+                                                </div>
+                                               
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-12 ms-md-auto">
+                                            <div class="row ">
+                                                <div class="col-10 mt-md-3 ">
+                                                    <img class="fit-picture" width="170" height="170"
+                                                        [src]="clensImage">
+                                                </div>
+                                                <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 "
+                                                    (click)="fileInput1.click()" style="cursor: pointer;">
+                                                    <i class="fa-solid fa-cloud-arrow-up upload_icon">
+                                                        <span style="font-size: 10px;letter-spacing: 2px;"> Image
+                                                        </span>
+                                                    </i>
+                                                    <input #fileInput1 id="my-input" name='PhotoURL' type="file"
+                                                        (change)="uploadImage($event, 'clens')" style="display:none;">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <!--Contact Extra model popup end -->
+
+                        </form>
                     </div>
                 </div>
             </div>

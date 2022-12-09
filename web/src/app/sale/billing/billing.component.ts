@@ -1,5 +1,19 @@
 import { Component, OnInit } from '@angular/core';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
+import { NgForm } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { NgxSpinnerService } from 'ngx-spinner';
+import Swal from 'sweetalert2'; 
+import { AlertService } from 'src/app/service/alert.service';
+import { FileUploadService } from 'src/app/service/file-upload.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { take } from 'rxjs/operators';
+import { CompressImageService } from 'src/app/service/compress-image.service';
 import * as moment from 'moment';
+import { CustomerModel,SpectacleModel,ContactModel,OtherModel} from 'src/app/interface/Customer';
+
 
 @Component({
   selector: 'app-billing',
@@ -7,21 +21,58 @@ import * as moment from 'moment';
   styleUrls: ['./billing.component.css']
 })
 export class BillingComponent implements OnInit {
+  user = JSON.parse(localStorage.getItem('user') || '');
+  companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  env = environment;
 
-  constructor() { }
+  id: any;
+  customerImage: any;
+  clensImage: any;
+  spectacleImage: any;
+  img: any;
+  familyList: any;
+  docList: any;
+  ReferenceList :any;
+  OtherList :any;
 
-  data: any = {
-    ID: null, Idd:0, Sno:"", TotalCustomer:"",VisitDate:"", Name: null, CompanyID: null, MobileNo1: "", MobileNo2: "", PhoneNo: "", Address: "", GSTNo: "", Email: "",PhotoURL: "", DOB: "", Age:"", Anniversary: "", RefferedByDoc: "", ReferenceType: "",Gender: "", Category: "", Other:"", Remarks:"", Status: 1, CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private formBuilder: FormBuilder,
+    public as: AlertService,
+    private fu: FileUploadService,
+    private sp: NgxSpinnerService,
+    private modalService: NgbModal,
+    private compressImage: CompressImageService
+  ) { 
+    this.id = this.route.snapshot.params['id'];
+  }
+
+  data: CustomerModel = {
+    ID: '', CompanyID: '', Idd:0, Sno:'', TotalCustomer:'',VisitDate:'', Name: '',  MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '',PhotoURL: '', DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '',Gender: '', Category: '', Other:'', Remarks:'', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: ''
   };
 
-  spectacle: any = {
-    ID: null, CustomerID: '', REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
+  spectacle: SpectacleModel = {
+    ID: '', CustomerID: '', REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
     LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
-    R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '',
-    FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: '', FileURL: '', Family: 'Self',
-    ExpiryDate: null
+    R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: '', FileURL: '', Family: 'Self', ExpiryDate: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
   };
 
+  clens: ContactModel = {
+    ID: ' ', CustomerID: '', REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
+    LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
+    R_Addition: '', L_Addition: '', R_KR: '', L_KR: '', R_HVID: '', L_HVID: '', R_CS: '', L_CS: '', R_BC: '', L_BC: '',
+    R_Diameter: '', L_Diameter: '', BR: '', Material: '', Modality: '', RefferedByDoc: 'Self', Other: '', ConstantUse: false,
+    NearWork: false, DistanceWork: false, Multifocal: false, PhotoURL: '', FileURL: '', Family: 'Self', Status: 1, CreatedBy: 0,
+    CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
+  };
+
+  other: OtherModel = {
+    ID: '', CustomerID: '', BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '',
+    R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
+  };
+
+  // dropdown values in satics
   dataSPH: any = [
     { Name: '+25.00'},
     { Name: '+24.75'},
@@ -330,9 +381,46 @@ export class BillingComponent implements OnInit {
 { Name: '6/60 P'},
 
   ];
+  // dropdown values in satics 
+
 
   ngOnInit(): void {
     this.data.VisitDate = moment().format('YYYY-MM-DD')
+  }
+
+  onsubmit(){
+    console.log(this.data ,'data');
+    console.log(this.spectacle,'spectacle' );
+    console.log(this.clens,'clens' );
+  }
+
+  openModal(content: any) {
+     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'md'});
+  }
+
+   uploadImage(e:any, mode:any){
+    this.img = e.target.files[0];
+      // console.log(`Image size before compressed: ${this.img.size} bytes.`)
+    this.compressImage.compress(this.img).pipe(take(1)).subscribe((compressedImage: any) => {
+      // console.log(`Image size after compressed: ${compressedImage.size} bytes.`)
+    this.fu.uploadFileComapny(compressedImage).subscribe((data:any) => {
+       if (data.body !== undefined && mode === 'User') {
+        this.customerImage = this.env.apiUrl + data.body?.download;
+        this.data.PhotoURL = data.body?.download;
+        this.as.successToast(data.body?.message)
+      }
+      else if (data.body !== undefined && mode === 'spectacle') {
+        this.spectacleImage = this.env.apiUrl + data.body?.download;
+        this.spectacle.PhotoURL = data.body?.download;
+        this.as.successToast(data.body?.message)
+      }
+      else if (data.body !== undefined && mode === 'clens') {
+        this.clensImage = this.env.apiUrl + data.body?.download;
+        this.clens.PhotoURL = data.body?.download;
+        this.as.successToast(data.body?.message)
+      }
+     });
+   })
   }
 
 }
