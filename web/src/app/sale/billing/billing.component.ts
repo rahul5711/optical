@@ -34,7 +34,7 @@ export class BillingComponent implements OnInit {
   docList: any;
   ReferenceList :any;
   OtherList :any;
-
+  
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -47,6 +47,7 @@ export class BillingComponent implements OnInit {
   ) { 
     this.id = this.route.snapshot.params['id'];
   }
+
 
   data: CustomerModel = {
     ID: '', CompanyID: '', Idd:0, Sno:'', TotalCustomer:'',VisitDate:'', Name: '',  MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '',PhotoURL: '', DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '',Gender: '', Category: '', Other:'', Remarks:'', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: ''
@@ -72,6 +73,7 @@ export class BillingComponent implements OnInit {
     R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
   };
 
+  Check: any = { SpectacleCheck:false, ContactCheck :false,  OtherCheck :false, };
   // dropdown values in satics
   dataSPH: any = [
     { Name: '+25.00'},
@@ -389,6 +391,7 @@ export class BillingComponent implements OnInit {
   }
 
   onsubmit(){
+    console.log(this.Check ,'Check');
     console.log(this.data ,'data');
     console.log(this.spectacle,'spectacle' );
     console.log(this.clens,'clens' );
