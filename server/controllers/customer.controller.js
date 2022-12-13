@@ -16,10 +16,13 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
-            const { Name, Sno, MobileNo1, MobileNo2, PhoneNo, Address, GSTNo, Email, PhotoURL, DOB, RefferedByDoc, Age, Anniversary, ReferenceType, Gender, Other, Remarks, VisitDate, spectacle_rx, contact_lens_rx, other_rx } = req.body
+            const { Name, Sno, MobileNo1, MobileNo2, PhoneNo, Address, GSTNo, Email, PhotoURL, DOB, RefferedByDoc, Age, Anniversary, ReferenceType, Gender, Other, Remarks, VisitDate, spectacle_rx, contact_lens_rx, other_rx, tablename } = req.body
 
             if (Name.trim() === "" || Name === undefined) {
                 return res.send({ message: "Invalid Name" })
+            }
+            if (tablename.trim() === "" || tablename === undefined) {
+                return res.send({ message: "Invalid tablename, kindly send tablename spectacle_rx , contact_lens_rx or other_rx" })
             }
 
 
@@ -28,154 +31,160 @@ module.exports = {
 
             console.log(connected("Customer Added SuccessFUlly !!!"));
 
-            //  spectacle_rx object data
 
-            const spectacle = spectacle_rx;
+            if (tablename === 'spectacle_rx') {
+                //  spectacle_rx object data
 
-            const specDatum = {
-                ID: null,
-                VisitNo: 1,
-                CustomerID: customer.insertId,
-                REDPSPH: spectacle.REDPSPH ? spectacle.REDPSPH : '',
-                REDPCYL: spectacle.REDPCYL ? spectacle.REDPCYL : '',
-                REDPAxis: spectacle.REDPAxis ? spectacle.REDPAxis : '',
-                REDPVA: spectacle.REDPVA ? spectacle.REDPVA : '',
-                LEDPSPH: spectacle.LEDPSPH ? spectacle.LEDPSPH : '',
-                LEDPCYL: spectacle.LEDPCYL ? spectacle.LEDPCYL : '',
-                LEDPAxis: spectacle.LEDPAxis ? spectacle.LEDPAxis : '',
-                LEDPVA: spectacle.LEDPVA ? spectacle.LEDPVA : '',
-                RENPSPH: spectacle.RENPSPH ? spectacle.RENPSPH : '',
-                RENPCYL: spectacle.RENPCYL ? spectacle.RENPCYL : '',
-                RENPAxis: spectacle.RENPAxis ? spectacle.RENPAxis : '',
-                RENPVA: spectacle.RENPVA ? spectacle.RENPVA : '',
-                LENPSPH: spectacle.LENPSPH ? spectacle.LENPSPH : '',
-                LENPCYL: spectacle.LENPCYL ? spectacle.LENPCYL : '',
-                LENPAxis: spectacle.LENPAxis ? spectacle.LENPAxis : '',
-                LENPVA: spectacle.LENPVA ? spectacle.LENPVA : '',
-                REPD: spectacle.REPD ? spectacle.REPD : '',
-                LEPD: spectacle.LEPD ? spectacle.LEPD : '',
-                R_Addition: spectacle.R_Addition ? spectacle.R_Addition : '',
-                L_Addition: spectacle.L_Addition ? spectacle.L_Addition : '',
-                R_Prism: spectacle.R_Prism ? spectacle.R_Prism : '',
-                L_Prism: spectacle.L_Prism ? spectacle.L_Prism : '',
-                Lens: spectacle.Lens ? spectacle.Lens : '',
-                Shade: spectacle.Shade ? spectacle.Shade : '',
-                Frame: spectacle.Frame ? spectacle.Frame : '',
-                VertexDistance: spectacle.VertexDistance ? spectacle.VertexDistance : '',
-                RefractiveIndex: spectacle.RefractiveIndex ? spectacle.RefractiveIndex : '',
-                FittingHeight: spectacle.FittingHeight ? spectacle.FittingHeight : '',
-                ConstantUse: spectacle.ConstantUse ? spectacle.ConstantUse : 0,
-                NearWork: spectacle.NearWork ? spectacle.NearWork : 0,
-                DistanceWork: spectacle.DistanceWork ? spectacle.DistanceWork : 0,
-                UploadBy: spectacle.UploadBy ? spectacle.UploadBy : '',
-                PhotoURL: spectacle.PhotoURL ? spectacle.PhotoURL : '',
-                FileURL: spectacle.FileURL ? spectacle.FileURL : '',
-                Family: spectacle.Family ? spectacle.Family : '',
-                RefferedByDoc: spectacle.RefferedByDoc ? spectacle.RefferedByDoc : '',
-                Reminder: spectacle.Reminder ? spectacle.Reminder : '',
-                ExpiryDate: spectacle.ExpiryDate ? spectacle.ExpiryDate : ''
+                const spectacle = spectacle_rx;
+
+                const specDatum = {
+                    ID: null,
+                    VisitNo: 1,
+                    CustomerID: customer.insertId,
+                    REDPSPH: spectacle.REDPSPH ? spectacle.REDPSPH : '',
+                    REDPCYL: spectacle.REDPCYL ? spectacle.REDPCYL : '',
+                    REDPAxis: spectacle.REDPAxis ? spectacle.REDPAxis : '',
+                    REDPVA: spectacle.REDPVA ? spectacle.REDPVA : '',
+                    LEDPSPH: spectacle.LEDPSPH ? spectacle.LEDPSPH : '',
+                    LEDPCYL: spectacle.LEDPCYL ? spectacle.LEDPCYL : '',
+                    LEDPAxis: spectacle.LEDPAxis ? spectacle.LEDPAxis : '',
+                    LEDPVA: spectacle.LEDPVA ? spectacle.LEDPVA : '',
+                    RENPSPH: spectacle.RENPSPH ? spectacle.RENPSPH : '',
+                    RENPCYL: spectacle.RENPCYL ? spectacle.RENPCYL : '',
+                    RENPAxis: spectacle.RENPAxis ? spectacle.RENPAxis : '',
+                    RENPVA: spectacle.RENPVA ? spectacle.RENPVA : '',
+                    LENPSPH: spectacle.LENPSPH ? spectacle.LENPSPH : '',
+                    LENPCYL: spectacle.LENPCYL ? spectacle.LENPCYL : '',
+                    LENPAxis: spectacle.LENPAxis ? spectacle.LENPAxis : '',
+                    LENPVA: spectacle.LENPVA ? spectacle.LENPVA : '',
+                    REPD: spectacle.REPD ? spectacle.REPD : '',
+                    LEPD: spectacle.LEPD ? spectacle.LEPD : '',
+                    R_Addition: spectacle.R_Addition ? spectacle.R_Addition : '',
+                    L_Addition: spectacle.L_Addition ? spectacle.L_Addition : '',
+                    R_Prism: spectacle.R_Prism ? spectacle.R_Prism : '',
+                    L_Prism: spectacle.L_Prism ? spectacle.L_Prism : '',
+                    Lens: spectacle.Lens ? spectacle.Lens : '',
+                    Shade: spectacle.Shade ? spectacle.Shade : '',
+                    Frame: spectacle.Frame ? spectacle.Frame : '',
+                    VertexDistance: spectacle.VertexDistance ? spectacle.VertexDistance : '',
+                    RefractiveIndex: spectacle.RefractiveIndex ? spectacle.RefractiveIndex : '',
+                    FittingHeight: spectacle.FittingHeight ? spectacle.FittingHeight : '',
+                    ConstantUse: spectacle.ConstantUse ? spectacle.ConstantUse : 0,
+                    NearWork: spectacle.NearWork ? spectacle.NearWork : 0,
+                    DistanceWork: spectacle.DistanceWork ? spectacle.DistanceWork : 0,
+                    UploadBy: spectacle.UploadBy ? spectacle.UploadBy : '',
+                    PhotoURL: spectacle.PhotoURL ? spectacle.PhotoURL : '',
+                    FileURL: spectacle.FileURL ? spectacle.FileURL : '',
+                    Family: spectacle.Family ? spectacle.Family : '',
+                    RefferedByDoc: spectacle.RefferedByDoc ? spectacle.RefferedByDoc : '',
+                    Reminder: spectacle.Reminder ? spectacle.Reminder : '',
+                    ExpiryDate: spectacle.ExpiryDate ? spectacle.ExpiryDate : ''
+                }
+
+
+                const saveSpec = await connection.query(`insert into spectacle_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_Prism,L_Prism,Lens,Shade,Frame,VertexDistance,RefractiveIndex,FittingHeight,ConstantUse,NearWork,DistanceWork,UploadBy,PhotoURL,FileURL,Family,RefferedByDoc,Reminder,ExpiryDate,Status,CreatedBy,CreatedOn) values(${specDatum.VisitNo}, ${CompanyID}, ${specDatum.CustomerID},'${specDatum.REDPSPH}','${specDatum.REDPCYL}','${specDatum.REDPAxis}','${specDatum.REDPVA}','${specDatum.LEDPSPH}','${specDatum.LEDPCYL}','${specDatum.LEDPAxis}','${specDatum.LEDPVA}','${specDatum.RENPSPH}','${specDatum.RENPCYL}','${specDatum.RENPAxis}','${specDatum.RENPVA}','${specDatum.LENPSPH}','${specDatum.LENPCYL}','${specDatum.LENPAxis}','${specDatum.LENPVA}','${specDatum.REPD}','${specDatum.LEPD}','${specDatum.R_Addition}','${specDatum.L_Addition}','${specDatum.R_Prism}','${specDatum.L_Prism}','${specDatum.Lens}','${specDatum.Shade}','${specDatum.Frame}','${specDatum.VertexDistance}','${specDatum.RefractiveIndex}','${specDatum.FittingHeight}',${specDatum.ConstantUse},${specDatum.NearWork},${specDatum.DistanceWork},'${specDatum.UploadBy}','${specDatum.PhotoURL}','${specDatum.FileURL}','${specDatum.Family}','${specDatum.RefferedByDoc}','${specDatum.Reminder}','${specDatum.ExpiryDate}',1,${LoggedOnUser},now())`)
+
+                console.log(connected("Customer Spec Added SuccessFUlly !!!"));
+
+                response.spectacle_rx = await connected.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} order by ID desc`)
+
+            } else if (tablename === 'contact_lens_rx') {
+                // contact_lens_rx object data
+
+                const contact = contact_lens_rx
+
+                const contactDatum = {
+                    ID: null,
+                    VisitNo: 1,
+                    CustomerID: customer.insertId,
+                    REDPSPH: contact.REDPSPH ? contact.REDPSPH : '',
+                    REDPCYL: contact.REDPCYL ? contact.REDPCYL : '',
+                    REDPAxis: contact.REDPAxis ? contact.REDPAxis : '',
+                    REDPVA: contact.REDPVA ? contact.REDPVA : '',
+                    LEDPSPH: contact.LEDPSPH ? contact.LEDPSPH : '',
+                    LEDPCYL: contact.LEDPCYL ? contact.LEDPCYL : '',
+                    LEDPAxis: contact.LEDPAxis ? contact.LEDPAxis : '',
+                    LEDPVA: contact.LEDPVA ? contact.LEDPVA : '',
+                    RENPSPH: contact.RENPSPH ? contact.RENPSPH : '',
+                    RENPCYL: contact.RENPCYL ? contact.RENPCYL : '',
+                    RENPAxis: contact.RENPAxis ? contact.RENPAxis : '',
+                    RENPVA: contact.RENPVA ? contact.RENPVA : '',
+                    LENPSPH: contact.LENPSPH ? contact.LENPSPH : '',
+                    LENPCYL: contact.LENPCYL ? contact.LENPCYL : '',
+                    LENPAxis: contact.LENPAxis ? contact.LENPAxis : '',
+                    LENPVA: contact.LENPVA ? contact.LENPVA : '',
+                    REPD: contact.REPD ? contact.REPD : '',
+                    LEPD: contact.LEPD ? contact.LEPD : '',
+                    R_Addition: contact.R_Addition ? contact.R_Addition : '',
+                    L_Addition: contact.L_Addition ? contact.L_Addition : '',
+                    R_KR: contact.R_KR ? contact.R_KR : '',
+                    L_KR: contact.L_KR ? contact.L_KR : '',
+                    R_HVID: contact.R_HVID ? contact.R_HVID : '',
+                    L_HVID: contact.L_HVID ? contact.L_HVID : '',
+                    R_CS: contact.R_CS ? contact.R_CS : '',
+                    L_CS: contact.L_CS ? contact.L_CS : '',
+                    R_BC: contact.R_BC ? contact.R_BC : '',
+                    L_BC: contact.L_BC ? contact.L_BC : '',
+                    R_Diameter: contact.R_Diameter ? contact.R_Diameter : '',
+                    L_Diameter: contact.L_Diameter ? contact.L_Diameter : '',
+                    BR: contact.BR ? contact.BR : '',
+                    Material: contact.Material ? contact.Material : '',
+                    Modality: contact.Modality ? contact.Modality : '',
+                    Other: contact.Other ? contact.Other : '',
+                    ConstantUse: contact.ConstantUse ? contact.ConstantUse : 0,
+                    NearWork: contact.NearWork ? contact.NearWork : 0,
+                    DistanceWork: contact.DistanceWork ? contact.DistanceWork : 0,
+                    Multifocal: contact.Multifocal ? contact.Multifocal : 0,
+                    PhotoURL: contact.PhotoURL ? contact.PhotoURL : '',
+                    FileURL: contact.FileURL ? contact.FileURL : '',
+                    Family: contact.Family ? contact.Family : '',
+                    RefferedByDoc: contact.RefferedByDoc ? contact.RefferedByDoc : ''
+                }
+
+                const saveContact = await connection.query(`insert into contact_lens_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_KR,L_KR,R_HVID,L_HVID,R_CS,L_CS,R_BC,L_BC,R_Diameter,L_Diameter,BR,Material,Modality,Other,ConstantUse,NearWork,DistanceWork,Multifocal,PhotoURL,FileURL,Family,RefferedByDoc,Status,CreatedBy,CreatedOn) values (${contactDatum.VisitNo}, ${CompanyID}, ${contactDatum.CustomerID},'${contactDatum.REDPSPH},'${contactDatum.REDPCYL}','${contactDatum.REDPAxis}','${contactDatum.REDPVA}','${contactDatum.LEDPSPH}','${contactDatum.LEDPCYL}','${contactDatum.LEDPAxis}','${contactDatum.LEDPVA}','${contactDatum.RENPSPH}','${contactDatum.RENPCYL}','${contactDatum.RENPAxis}','${contactDatum.RENPVA}','${contactDatum.LENPSPH}','${contactDatum.LENPCYL}','${contactDatum.LENPAxis}','${contactDatum.LENPVA}','${contactDatum.REPD}','${contactDatum.LEPD}','${contactDatum.R_Addition}','${contactDatum.L_Addition}','${contactDatum.R_KR}','${contactDatum.L_KR}','${contactDatum.R_HVID}','${contactDatum.L_HVID}','${contactDatum.R_CS}','${contactDatum.L_CS}','${contactDatum.R_BC}','${contactDatum.L_BC}','${contactDatum.R_Diameter}','${contactDatum.L_Diameter}','${contactDatum.BR}','${contactDatum.Material}','${contactDatum.Modality}','${contactDatum.Other}',${contactDatum.ConstantUse},${contactDatum.NearWork},${contactDatum.DistanceWork},${contactDatum.Multifocal},'${contactDatum.PhotoURL}','${contactDatum.FileURL}','${contactDatum.Family}','${contactDatum.RefferedByDoc}',1,${LoggedOnUser},now())`)
+
+                console.log(connected("Customer Contact Added SuccessFUlly !!!"));
+
+                response.spectacle_rx = await connected.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} order by ID desc`);
+
+            } else if (tablename === 'other_rx') {
+
+                // other_rx other_rx object
+
+                const other = other_rx
+
+                const otherDatum = {
+                    ID: null,
+                    VisitNo: 1,
+                    CustomerID: customer.insertId,
+                    BP: other.BP ? other.BP : '',
+                    Sugar: other.Sugar ? other.Sugar : '',
+                    IOL_Power: other.IOL_Power ? other.IOL_Power : '',
+                    Operation: other.Operation ? other.Operation : '',
+                    R_VN: other.R_VN ? other.R_VN : '',
+                    L_VN: other.L_VN ? other.L_VN : '',
+                    R_TN: other.R_TN ? other.R_TN : '',
+                    L_TN: other.L_TN ? other.L_TN : '',
+                    R_KR: other.R_KR ? other.R_KR : '',
+                    L_KR: other.L_KR ? other.L_KR : '',
+                    Treatment: other.Treatment ? other.Treatment : '',
+                    Diagnosis: other.Diagnosis ? other.Diagnosis : '',
+                    Family: other.Family ? other.Family : '',
+                    RefferedByDoc: other.RefferedByDoc ? other.RefferedByDoc : '',
+                    FileURL: other.FileURL ? other.FileURL : ''
+                }
+
+                const saveOther = await connection.query(`insert into other_rx(CustomerID,CompanyID,VisitNo,BP,Sugar,IOL_Power,Operation,R_VN,L_VN,R_TN,L_TN,R_KR,L_KR,Treatment,Diagnosis,Family,RefferedByDoc,FileURL,Status,CreatedBy,CreatedOn) values (${otherDatum.CustomerID},${CompanyID},${otherDatum.VisitNo},'${otherDatum.BP}','${otherDatum.Sugar}','${otherDatum.IOL_Power}','${otherDatum.Operation}','${otherDatum.R_VN}','${otherDatum.L_VN}','${otherDatum.R_TN}','${otherDatum.L_TN}','${otherDatum.R_KR}','${otherDatum.L_KR}','${otherDatum.Treatment}','${otherDatum.Diagnosis}','${otherDatum.Family}','${otherDatum.RefferedByDoc}','${otherDatum.FileURL}',1,${LoggedOnUser}, now())`)
+
+                console.log(connected("Customer Other Added SuccessFUlly !!!"));
+
+                response.other_rx = await connected.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} order by ID desc`)
+
             }
-
-
-            const saveSpec = await connection.query(`insert into spectacle_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_Prism,L_Prism,Lens,Shade,Frame,VertexDistance,RefractiveIndex,FittingHeight,ConstantUse,NearWork,DistanceWork,UploadBy,PhotoURL,FileURL,Family,RefferedByDoc,Reminder,ExpiryDate,Status,CreatedBy,CreatedOn) values(${specDatum.VisitNo}, ${CompanyID}, ${specDatum.CustomerID},'${specDatum.REDPSPH}','${specDatum.REDPCYL}','${specDatum.REDPAxis}','${specDatum.REDPVA}','${specDatum.LEDPSPH}','${specDatum.LEDPCYL}','${specDatum.LEDPAxis}','${specDatum.LEDPVA}','${specDatum.RENPSPH}','${specDatum.RENPCYL}','${specDatum.RENPAxis}','${specDatum.RENPVA}','${specDatum.LENPSPH}','${specDatum.LENPCYL}','${specDatum.LENPAxis}','${specDatum.LENPVA}','${specDatum.REPD}','${specDatum.LEPD}','${specDatum.R_Addition}','${specDatum.L_Addition}','${specDatum.R_Prism}','${specDatum.L_Prism}','${specDatum.Lens}','${specDatum.Shade}','${specDatum.Frame}','${specDatum.VertexDistance}','${specDatum.RefractiveIndex}','${specDatum.FittingHeight}',${specDatum.ConstantUse},${specDatum.NearWork},${specDatum.DistanceWork},'${specDatum.UploadBy}','${specDatum.PhotoURL}','${specDatum.FileURL}','${specDatum.Family}','${specDatum.RefferedByDoc}','${specDatum.Reminder}','${specDatum.ExpiryDate}',1,${LoggedOnUser},now())`)
-
-            console.log(connected("Customer Spec Added SuccessFUlly !!!"));
-
-            // contact_lens_rx object data
-
-            const contact = contact_lens_rx
-
-            const contactDatum = {
-                ID: null,
-                VisitNo: 1,
-                CustomerID: customer.insertId,
-                REDPSPH: contact.REDPSPH ? contact.REDPSPH : '',
-                REDPCYL: contact.REDPCYL ? contact.REDPCYL : '',
-                REDPAxis: contact.REDPAxis ? contact.REDPAxis : '',
-                REDPVA: contact.REDPVA ? contact.REDPVA : '',
-                LEDPSPH: contact.LEDPSPH ? contact.LEDPSPH : '',
-                LEDPCYL: contact.LEDPCYL ? contact.LEDPCYL : '',
-                LEDPAxis: contact.LEDPAxis ? contact.LEDPAxis : '',
-                LEDPVA: contact.LEDPVA ? contact.LEDPVA : '',
-                RENPSPH: contact.RENPSPH ? contact.RENPSPH : '',
-                RENPCYL: contact.RENPCYL ? contact.RENPCYL : '',
-                RENPAxis: contact.RENPAxis ? contact.RENPAxis : '',
-                RENPVA: contact.RENPVA ? contact.RENPVA : '',
-                LENPSPH: contact.LENPSPH ? contact.LENPSPH : '',
-                LENPCYL: contact.LENPCYL ? contact.LENPCYL : '',
-                LENPAxis: contact.LENPAxis ? contact.LENPAxis : '',
-                LENPVA: contact.LENPVA ? contact.LENPVA : '',
-                REPD: contact.REPD ? contact.REPD : '',
-                LEPD: contact.LEPD ? contact.LEPD : '',
-                R_Addition: contact.R_Addition ? contact.R_Addition : '',
-                L_Addition: contact.L_Addition ? contact.L_Addition : '',
-                R_KR: contact.R_KR ? contact.R_KR : '',
-                L_KR: contact.L_KR ? contact.L_KR : '',
-                R_HVID: contact.R_HVID ? contact.R_HVID : '',
-                L_HVID: contact.L_HVID ? contact.L_HVID : '',
-                R_CS: contact.R_CS ? contact.R_CS : '',
-                L_CS: contact.L_CS ? contact.L_CS : '',
-                R_BC: contact.R_BC ? contact.R_BC : '',
-                L_BC: contact.L_BC ? contact.L_BC : '',
-                R_Diameter: contact.R_Diameter ? contact.R_Diameter : '',
-                L_Diameter: contact.L_Diameter ? contact.L_Diameter : '',
-                BR: contact.BR ? contact.BR : '',
-                Material: contact.Material ? contact.Material : '',
-                Modality: contact.Modality ? contact.Modality : '',
-                Other: contact.Other ? contact.Other : '',
-                ConstantUse: contact.ConstantUse ? contact.ConstantUse : 0,
-                NearWork: contact.NearWork ? contact.NearWork : 0,
-                DistanceWork: contact.DistanceWork ? contact.DistanceWork : 0,
-                Multifocal: contact.Multifocal ? contact.Multifocal : 0,
-                PhotoURL: contact.PhotoURL ? contact.PhotoURL : '',
-                FileURL: contact.FileURL ? contact.FileURL : '',
-                Family: contact.Family ? contact.Family : '',
-                RefferedByDoc: contact.RefferedByDoc ? contact.RefferedByDoc : ''
-            }
-
-            const saveContact = await connection.query(`insert into contact_lens_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_KR,L_KR,R_HVID,L_HVID,R_CS,L_CS,R_BC,L_BC,R_Diameter,L_Diameter,BR,Material,Modality,Other,ConstantUse,NearWork,DistanceWork,Multifocal,PhotoURL,FileURL,Family,RefferedByDoc,Status,CreatedBy,CreatedOn) values (${contactDatum.VisitNo}, ${CompanyID}, ${contactDatum.CustomerID},'${contactDatum.REDPSPH},'${contactDatum.REDPCYL}','${contactDatum.REDPAxis}','${contactDatum.REDPVA}','${contactDatum.LEDPSPH}','${contactDatum.LEDPCYL}','${contactDatum.LEDPAxis}','${contactDatum.LEDPVA}','${contactDatum.RENPSPH}','${contactDatum.RENPCYL}','${contactDatum.RENPAxis}','${contactDatum.RENPVA}','${contactDatum.LENPSPH}','${contactDatum.LENPCYL}','${contactDatum.LENPAxis}','${contactDatum.LENPVA}','${contactDatum.REPD}','${contactDatum.LEPD}','${contactDatum.R_Addition}','${contactDatum.L_Addition}','${contactDatum.R_KR}','${contactDatum.L_KR}','${contactDatum.R_HVID}','${contactDatum.L_HVID}','${contactDatum.R_CS}','${contactDatum.L_CS}','${contactDatum.R_BC}','${contactDatum.L_BC}','${contactDatum.R_Diameter}','${contactDatum.L_Diameter}','${contactDatum.BR}','${contactDatum.Material}','${contactDatum.Modality}','${contactDatum.Other}',${contactDatum.ConstantUse},${contactDatum.NearWork},${contactDatum.DistanceWork},${contactDatum.Multifocal},'${contactDatum.PhotoURL}','${contactDatum.FileURL}','${contactDatum.Family}','${contactDatum.RefferedByDoc}',1,${LoggedOnUser},now())`)
-
-            console.log(connected("Customer Contact Added SuccessFUlly !!!"));
-
-
-            // other_rx other_rx object
-
-            const other = other_rx
-
-            const otherDatum = {
-                ID: null,
-                VisitNo: 1,
-                CustomerID: customer.insertId,
-                BP: other.BP ? other.BP : '',
-                Sugar: other.Sugar ? other.Sugar : '',
-                IOL_Power: other.IOL_Power ? other.IOL_Power : '',
-                Operation: other.Operation ? other.Operation : '',
-                R_VN: other.R_VN ? other.R_VN : '',
-                L_VN: other.L_VN ? other.L_VN : '',
-                R_TN: other.R_TN ? other.R_TN : '',
-                L_TN: other.L_TN ? other.L_TN : '',
-                R_KR: other.R_KR ? other.R_KR : '',
-                L_KR: other.L_KR ? other.L_KR : '',
-                Treatment: other.Treatment ? other.Treatment : '',
-                Diagnosis: other.Diagnosis ? other.Diagnosis : '',
-                Family: other.Family ? other.Family : '',
-                RefferedByDoc: other.RefferedByDoc ? other.RefferedByDoc : '',
-                FileURL: other.FileURL ? other.FileURL : ''
-            }
-
-            const saveOther = await connection.query(`insert into other_rx(CustomerID,CompanyID,VisitNo,BP,Sugar,IOL_Power,Operation,R_VN,L_VN,R_TN,L_TN,R_KR,L_KR,Treatment,Diagnosis,Family,RefferedByDoc,FileURL,Status,CreatedBy,CreatedOn) values (${otherDatum.CustomerID},${CompanyID},${otherDatum.VisitNo},'${otherDatum.BP}','${otherDatum.Sugar}','${otherDatum.IOL_Power}','${otherDatum.Operation}','${otherDatum.R_VN}','${otherDatum.L_VN}','${otherDatum.R_TN}','${otherDatum.L_TN}','${otherDatum.R_KR}','${otherDatum.L_KR}','${otherDatum.Treatment}','${otherDatum.Diagnosis}','${otherDatum.Family}','${otherDatum.RefferedByDoc}','${otherDatum.FileURL}',1,${LoggedOnUser}, now())`)
-
-            console.log(connected("Customer Other Added SuccessFUlly !!!"));
 
             response.CustomerID = customer.insertId,
                 response.message = "data save sucessfully",
-                response.spectacle_rx = await connected.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} order by ID desc`);
-
-            response.spectacle_rx = await connected.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} order by ID desc`)
-
-            response.other_rx = await connected.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} order by ID desc`)
-
-            response.data = await connected.query(`select * from customer where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId}`)
+                response.data = await connected.query(`select * from customer where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId}`)
 
         } catch (error) {
             console.log(error);
@@ -302,4 +311,87 @@ module.exports = {
 
         }
     },
+
+    getCustomerById: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "", spectacle_rx: [], contact_lens_rx: [], other_rx: [] }
+            const connection = await getConnection.connection();
+            const { CustomerID } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (_.isEmpty(req.body)) return res.send({ message: "Invalid Query Data" })
+            if (!CustomerID) return res.send({ message: "Invalid Query Data" })
+
+            const doesExist = await connection.query(`select * from customer where Status = 1 and CompanyID = '${CompanyID}' and ID = '${CustomerID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "customer doesnot exist from this id " })
+            }
+
+            response.data = doesExist;
+            response.spectacle_rx = await connected.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} order by ID desc`);
+            response.contact_lens_rx = await connected.query(`select * from contact_lens_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} order by ID desc`);
+            response.other_rx = await connected.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} order by ID desc`);
+            data.message = 'data fetch successfully'
+
+        } catch (error) {
+            return error
+
+        }
+    },
+    deleteSpec: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const { ID, tablename, CustomerID } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (_.isEmpty(req.body)) return res.send({ message: "Invalid Query Data" })
+            if (!ID) return res.send({ message: "Invalid Query Data" })
+            if (!CustomerID) return res.send({ message: "Invalid Query Data" })
+            if (tablename.trim() === "" || tablename === undefined) {
+                return res.send({ message: "Invalid tablename, kindly send tablename spectacle_rx , contact_lens_rx or other_rx" })
+            }
+
+            if (tablename === 'spectacle_rx') {
+                const deletespectacle_rx = await connection.query(`update spectacle_rx set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${ID} and CompanyID = ${CompanyID}`)
+                response.spectacle_rx = await connected.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} order by ID desc`);
+
+            } else if (tablename === 'contact_lens_rx') {
+                const deletecontact_lens_rx = await connection.query(`update contact_lens_rx set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${ID} and CompanyID = ${CompanyID}`)
+                response.contact_lens_rx = await connected.query(`select * from contact_lens_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} order by ID desc`);
+            } else if (tablename === 'other_rx') {
+                const deleteother_rx = await connection.query(`update other_rx set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${ID} and CompanyID = ${CompanyID}`)
+                response.other_rx = await connected.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} order by ID desc`);
+            }
+
+            data.message = 'data delete successfully'
+
+        } catch (error) {
+            return error
+        }
+    },
+
+    update: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "", CustomerID: null, spectacle_rx: [], contact_lens_rx: [], other_rx: [] }
+            const connection = await getConnection.connection();
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            const { Name, Sno, MobileNo1, MobileNo2, PhoneNo, Address, GSTNo, Email, PhotoURL, DOB, RefferedByDoc, Age, Anniversary, ReferenceType, Gender, Other, Remarks, VisitDate, spectacle_rx, contact_lens_rx, other_rx, tablename } = req.body
+
+            if (Name.trim() === "" || Name === undefined) {
+                return res.send({ message: "Invalid Name" })
+            }
+            if (tablename.trim() === "" || tablename === undefined) {
+                return res.send({ message: "Invalid tablename, kindly send tablename spectacle_rx , contact_lens_rx or other_rx" })
+            }
+
+        } catch (error) {
+            return error
+        }
+    }
+
+
 }
