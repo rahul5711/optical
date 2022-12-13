@@ -21,7 +21,7 @@ module.exports = {
             if (Name.trim() === "" || Name === undefined) {
                 return res.send({ message: "Invalid Name" })
             }
-            if (tablename.trim() === "" || tablename === undefined) {
+            if (tablename === undefined || tablename.trim() === "") {
                 return res.send({ message: "Invalid tablename, kindly send tablename spectacle_rx , contact_lens_rx or other_rx" })
             }
 
@@ -86,7 +86,7 @@ module.exports = {
 
                 console.log(connected("Customer Spec Added SuccessFUlly !!!"));
 
-                response.spectacle_rx = await connected.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} order by ID desc`)
+                response.spectacle_rx = await connection.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} order by ID desc`)
 
             } else if (tablename === 'contact_lens_rx') {
                 // contact_lens_rx object data
@@ -145,7 +145,7 @@ module.exports = {
 
                 console.log(connected("Customer Contact Added SuccessFUlly !!!"));
 
-                response.spectacle_rx = await connected.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} order by ID desc`);
+                response.spectacle_rx = await connection.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} order by ID desc`);
 
             } else if (tablename === 'other_rx') {
 
@@ -178,13 +178,15 @@ module.exports = {
 
                 console.log(connected("Customer Other Added SuccessFUlly !!!"));
 
-                response.other_rx = await connected.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} order by ID desc`)
+                response.other_rx = await connection.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} order by ID desc`)
 
             }
 
-            response.CustomerID = customer.insertId,
+                response.CustomerID = customer.insertId,
                 response.message = "data save sucessfully",
-                response.data = await connected.query(`select * from customer where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId}`)
+                response.data = await connection.query(`select * from customer where CompanyID = ${CompanyID} and ID = ${customer.insertId}`)
+
+                return res.send(response)
 
         } catch (error) {
             console.log(error);
@@ -203,7 +205,7 @@ module.exports = {
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select customer.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from customer left join user as users1 on users1.ID = user.CreatedBy left join user as users on users.ID = user.UpdatedBy where customer.Status = 1 and customer.CompanyID = '${CompanyID}'  order by customer.ID desc`
+            let qry = `select customer.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy where customer.Status = 1 and customer.CompanyID = '${CompanyID}'  order by customer.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -218,6 +220,7 @@ module.exports = {
             connection.release()
             res.send(response)
         } catch (error) {
+            console.log(error);
             return error
         }
     },
@@ -295,7 +298,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            let qry = `select customer.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from customer left join user as users1 on users1.ID = user.CreatedBy left join user as users on users.ID = user.UpdatedBy where customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.Name like '%${Body.searchQuery}%' OR customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.MobileNo1 like '%${Body.searchQuery}%' `
+            let qry = `select customer.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy where customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.Name like '%${Body.searchQuery}%' OR customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.MobileNo1 like '%${Body.searchQuery}%' `
 
             let data = await connection.query(qry);
 
@@ -329,12 +332,13 @@ module.exports = {
             }
 
             response.data = doesExist;
-            response.spectacle_rx = await connected.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} order by ID desc`);
-            response.contact_lens_rx = await connected.query(`select * from contact_lens_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} order by ID desc`);
-            response.other_rx = await connected.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} order by ID desc`);
-            data.message = 'data fetch successfully'
-
+            response.spectacle_rx = await connection.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} order by ID desc`);
+            response.contact_lens_rx = await connection.query(`select * from contact_lens_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} order by ID desc`);
+            response.other_rx = await connection.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} order by ID desc`);
+            response.message = 'data fetch successfully'
+            return res.send(response)
         } catch (error) {
+            console.log(error);
             return error
 
         }
@@ -345,29 +349,31 @@ module.exports = {
             const connection = await getConnection.connection();
             const { ID, tablename, CustomerID } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
 
             if (_.isEmpty(req.body)) return res.send({ message: "Invalid Query Data" })
             if (!ID) return res.send({ message: "Invalid Query Data" })
             if (!CustomerID) return res.send({ message: "Invalid Query Data" })
-            if (tablename.trim() === "" || tablename === undefined) {
+            if (tablename === undefined || tablename.trim() === "" ) {
                 return res.send({ message: "Invalid tablename, kindly send tablename spectacle_rx , contact_lens_rx or other_rx" })
             }
 
             if (tablename === 'spectacle_rx') {
                 const deletespectacle_rx = await connection.query(`update spectacle_rx set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${ID} and CompanyID = ${CompanyID}`)
-                response.spectacle_rx = await connected.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} order by ID desc`);
+                response.spectacle_rx = await connection.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`);
 
             } else if (tablename === 'contact_lens_rx') {
                 const deletecontact_lens_rx = await connection.query(`update contact_lens_rx set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${ID} and CompanyID = ${CompanyID}`)
-                response.contact_lens_rx = await connected.query(`select * from contact_lens_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} order by ID desc`);
+                response.contact_lens_rx = await connection.query(`select * from contact_lens_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`);
             } else if (tablename === 'other_rx') {
                 const deleteother_rx = await connection.query(`update other_rx set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${ID} and CompanyID = ${CompanyID}`)
-                response.other_rx = await connected.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} order by ID desc`);
+                response.other_rx = await connection.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`);
             }
 
-            data.message = 'data delete successfully'
-
+            response.message = 'data delete successfully'
+            return res.send(response)
         } catch (error) {
+            console.log(error);
             return error
         }
     },
