@@ -1,0 +1,788 @@
+{
+	"info": {
+		"_postman_id": "48a6a27c-4436-469c-8fce-659e204de798",
+		"name": "Customer",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "save",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzA5NTQxNzYsImV4cCI6MTY3MTA0MDU3NiwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.fj5yWW9ArjVkzhPhhob4HFw4rikE2Y287cj9owwju-4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Name\":\"Rahul Customer\",\r\n    \"MobileNo1\":\"\",\r\n    \"MobileNo2\":\"\",\r\n    \"PhoneNo\":\"\",\r\n    \"Address\":\"\",\r\n    \"GSTNo\":\"\",\r\n    \"Email\":\"\",\r\n    \"PhotoURL\":\"\",\r\n    \"DOB\":\"\",\r\n    \"RefferedByDoc\":\"\",\r\n    \"Age\":\"\",\r\n    \"Anniversary\":\"\",\r\n    \"ReferenceType\":\"\",\r\n    \"Gender\":\"\",\r\n    \"Other\":\"\",\r\n    \"Remarks\":\"\",\r\n    \"Sno\":\"\",\r\n    \"VisitDate\":\"2022-12-08\",\r\n    \"tablename\": \"spectacle_rx\",\r\n    \"spectacle_rx\": {\r\n        \"REDPSPH\" : \"1\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/customer/save",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"customer",
+						"save"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "save",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\":\"Rahul Customer\",\r\n    \"MobileNo1\":\"\",\r\n    \"MobileNo2\":\"\",\r\n    \"PhoneNo\":\"\",\r\n    \"Address\":\"\",\r\n    \"GSTNo\":\"\",\r\n    \"Email\":\"\",\r\n    \"PhotoURL\":\"\",\r\n    \"DOB\":\"\",\r\n    \"RefferedByDoc\":\"\",\r\n    \"Age\":\"\",\r\n    \"Anniversary\":\"\",\r\n    \"ReferenceType\":\"\",\r\n    \"Gender\":\"\",\r\n    \"Other\":\"\",\r\n    \"Remarks\":\"\",\r\n    \"Sno\":\"\",\r\n    \"VisitDate\":\"2022-12-08\",\r\n    \"tablename\": \"spectacle_rx\",\r\n    \"spectacle_rx\": {\r\n        \"REDPSPH\" : \"1\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/customer/save",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"customer",
+								"save"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1253"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"4e5-TEHrWkBmYPvhx/y0qWih26VKKJc\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 13 Dec 2022 18:07:11 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 1,\n            \"Idd\": \"1\",\n            \"Sno\": \"\",\n            \"Name\": \"Rahul Customer\",\n            \"CompanyID\": 129,\n            \"MobileNo1\": \"\",\n            \"MobileNo2\": \"\",\n            \"PhoneNo\": \"\",\n            \"Address\": \"\",\n            \"GSTNo\": \"\",\n            \"Email\": \"\",\n            \"PhotoURL\": \"\",\n            \"DOB\": \"\",\n            \"RefferedByDoc\": \"\",\n            \"Age\": \"\",\n            \"Anniversary\": \"\",\n            \"ReferenceType\": \"\",\n            \"Gender\": \"\",\n            \"Category\": null,\n            \"Other\": \"\",\n            \"Remarks\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 450,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2022-12-13 23:37:11\",\n            \"UpdatedOn\": null,\n            \"TotalCustomer\": null,\n            \"VisitDate\": \"2022-12-08\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data save sucessfully\",\n    \"CustomerID\": 1,\n    \"spectacle_rx\": [\n        {\n            \"ID\": 1,\n            \"VisitNo\": 1,\n            \"CompanyID\": 129,\n            \"CustomerID\": 1,\n            \"REDPSPH\": \"1\",\n            \"REDPCYL\": \"\",\n            \"REDPAxis\": \"\",\n            \"REDPVA\": \"\",\n            \"LEDPSPH\": \"\",\n            \"LEDPCYL\": \"\",\n            \"LEDPAxis\": \"\",\n            \"LEDPVA\": \"\",\n            \"RENPSPH\": \"\",\n            \"RENPCYL\": \"\",\n            \"RENPAxis\": \"\",\n            \"RENPVA\": \"\",\n            \"LENPSPH\": \"\",\n            \"LENPCYL\": \"\",\n            \"LENPAxis\": \"\",\n            \"LENPVA\": \"\",\n            \"REPD\": \"\",\n            \"LEPD\": \"\",\n            \"R_Addition\": \"\",\n            \"L_Addition\": \"\",\n            \"R_Prism\": \"\",\n            \"L_Prism\": \"\",\n            \"Lens\": \"\",\n            \"Shade\": \"\",\n            \"Frame\": \"\",\n            \"VertexDistance\": \"\",\n            \"RefractiveIndex\": \"\",\n            \"FittingHeight\": \"\",\n            \"ConstantUse\": 0,\n            \"NearWork\": 0,\n            \"DistanceWork\": 0,\n            \"UploadBy\": \"\",\n            \"PhotoURL\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 450,\n            \"CreatedOn\": \"2022-12-13 23:37:11\",\n            \"UpdatedBy\": null,\n            \"Updatedon\": \"0000-00-00 00:00:00\",\n            \"FileURL\": \"\",\n            \"Family\": \"\",\n            \"RefferedByDoc\": \"\",\n            \"Reminder\": \"\",\n            \"ExpiryDate\": \"0000-00-00\"\n        }\n    ],\n    \"contact_lens_rx\": [],\n    \"other_rx\": []\n}"
+				}
+			]
+		},
+		{
+			"name": "customer list",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzA5NTQxNzYsImV4cCI6MTY3MTA0MDU3NiwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.fj5yWW9ArjVkzhPhhob4HFw4rikE2Y287cj9owwju-4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/customer/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"customer",
+						"list"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "customer list",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/customer/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"customer",
+								"list"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "547"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"223-QqFcdTw+HucK/jPYlmkvKSj5o44\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 13 Dec 2022 18:10:43 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 1,\n            \"Idd\": \"1\",\n            \"Sno\": \"\",\n            \"Name\": \"Rahul Customer\",\n            \"CompanyID\": 129,\n            \"MobileNo1\": \"\",\n            \"MobileNo2\": \"\",\n            \"PhoneNo\": \"\",\n            \"Address\": \"\",\n            \"GSTNo\": \"\",\n            \"Email\": \"\",\n            \"PhotoURL\": \"\",\n            \"DOB\": \"\",\n            \"RefferedByDoc\": \"\",\n            \"Age\": \"\",\n            \"Anniversary\": \"\",\n            \"ReferenceType\": \"\",\n            \"Gender\": \"\",\n            \"Category\": null,\n            \"Other\": \"\",\n            \"Remarks\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 450,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2022-12-13 23:37:11\",\n            \"UpdatedOn\": null,\n            \"TotalCustomer\": null,\n            \"VisitDate\": \"2022-12-08\",\n            \"CreatedPerson\": \"rahul gothi\",\n            \"UpdatedPerson\": null\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\",\n    \"count\": 1\n}"
+				}
+			]
+		},
+		{
+			"name": "getCustomerById",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzA5NTQxNzYsImV4cCI6MTY3MTA0MDU3NiwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.fj5yWW9ArjVkzhPhhob4HFw4rikE2Y287cj9owwju-4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"CustomerID\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/customer/getCustomerById",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"customer",
+						"getCustomerById"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getCustomerById",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"CustomerID\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/customer/getCustomerById",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"customer",
+								"getCustomerById"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1240"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"4d8-7tpHZD2jfdNc9RJAwehgebF9ji8\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 13 Dec 2022 18:14:15 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 1,\n            \"Idd\": \"1\",\n            \"Sno\": \"\",\n            \"Name\": \"Rahul Customer\",\n            \"CompanyID\": 129,\n            \"MobileNo1\": \"\",\n            \"MobileNo2\": \"\",\n            \"PhoneNo\": \"\",\n            \"Address\": \"\",\n            \"GSTNo\": \"\",\n            \"Email\": \"\",\n            \"PhotoURL\": \"\",\n            \"DOB\": \"\",\n            \"RefferedByDoc\": \"\",\n            \"Age\": \"\",\n            \"Anniversary\": \"\",\n            \"ReferenceType\": \"\",\n            \"Gender\": \"\",\n            \"Category\": null,\n            \"Other\": \"\",\n            \"Remarks\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 450,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2022-12-13 23:37:11\",\n            \"UpdatedOn\": null,\n            \"TotalCustomer\": null,\n            \"VisitDate\": \"2022-12-08\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch successfully\",\n    \"spectacle_rx\": [\n        {\n            \"ID\": 1,\n            \"VisitNo\": 1,\n            \"CompanyID\": 129,\n            \"CustomerID\": 1,\n            \"REDPSPH\": \"1\",\n            \"REDPCYL\": \"\",\n            \"REDPAxis\": \"\",\n            \"REDPVA\": \"\",\n            \"LEDPSPH\": \"\",\n            \"LEDPCYL\": \"\",\n            \"LEDPAxis\": \"\",\n            \"LEDPVA\": \"\",\n            \"RENPSPH\": \"\",\n            \"RENPCYL\": \"\",\n            \"RENPAxis\": \"\",\n            \"RENPVA\": \"\",\n            \"LENPSPH\": \"\",\n            \"LENPCYL\": \"\",\n            \"LENPAxis\": \"\",\n            \"LENPVA\": \"\",\n            \"REPD\": \"\",\n            \"LEPD\": \"\",\n            \"R_Addition\": \"\",\n            \"L_Addition\": \"\",\n            \"R_Prism\": \"\",\n            \"L_Prism\": \"\",\n            \"Lens\": \"\",\n            \"Shade\": \"\",\n            \"Frame\": \"\",\n            \"VertexDistance\": \"\",\n            \"RefractiveIndex\": \"\",\n            \"FittingHeight\": \"\",\n            \"ConstantUse\": 0,\n            \"NearWork\": 0,\n            \"DistanceWork\": 0,\n            \"UploadBy\": \"\",\n            \"PhotoURL\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 450,\n            \"CreatedOn\": \"2022-12-13 23:37:11\",\n            \"UpdatedBy\": null,\n            \"Updatedon\": \"0000-00-00 00:00:00\",\n            \"FileURL\": \"\",\n            \"Family\": \"\",\n            \"RefferedByDoc\": \"\",\n            \"Reminder\": \"\",\n            \"ExpiryDate\": \"0000-00-00\"\n        }\n    ],\n    \"contact_lens_rx\": [],\n    \"other_rx\": []\n}"
+				}
+			]
+		},
+		{
+			"name": "customer delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzA5NTQxNzYsImV4cCI6MTY3MTA0MDU3NiwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.fj5yWW9ArjVkzhPhhob4HFw4rikE2Y287cj9owwju-4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/customer/delete",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"customer",
+						"delete"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "customer delete",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/customer/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"customer",
+								"delete"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "64"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"40-FiAp+ZTVGYKaaYIR7dJfRmVyGcU\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 13 Dec 2022 18:15:40 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": null,\n    \"success\": true,\n    \"message\": \"data delete sucessfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "customer restore",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzA5NTQxNzYsImV4cCI6MTY3MTA0MDU3NiwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.fj5yWW9ArjVkzhPhhob4HFw4rikE2Y287cj9owwju-4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/customer/restore",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"customer",
+						"restore"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "customer restore",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/customer/restore",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"customer",
+								"restore"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "65"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"41-N9qAqh8tvy/10msQjQ1eCntRtBM\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 13 Dec 2022 18:16:49 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": null,\n    \"success\": true,\n    \"message\": \"data restore sucessfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "customer searchByFeild",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzA5NTQxNzYsImV4cCI6MTY3MTA0MDU3NiwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.fj5yWW9ArjVkzhPhhob4HFw4rikE2Y287cj9owwju-4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"searchQuery\": \"rahul\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/customer/searchByFeild",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"customer",
+						"searchByFeild"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "customer searchByFeild",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": \"1\",\r\n    \"CustomerID\": \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/customer/deleteSpec",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"customer",
+								"deleteSpec"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "572"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"23c-Q7E22HzJpNxDEqLtTw+0jlgSu98\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 13 Dec 2022 18:18:47 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 1,\n            \"Idd\": \"1\",\n            \"Sno\": \"\",\n            \"Name\": \"Rahul Customer\",\n            \"CompanyID\": 129,\n            \"MobileNo1\": \"\",\n            \"MobileNo2\": \"\",\n            \"PhoneNo\": \"\",\n            \"Address\": \"\",\n            \"GSTNo\": \"\",\n            \"Email\": \"\",\n            \"PhotoURL\": \"\",\n            \"DOB\": \"\",\n            \"RefferedByDoc\": \"\",\n            \"Age\": \"\",\n            \"Anniversary\": \"\",\n            \"ReferenceType\": \"\",\n            \"Gender\": \"\",\n            \"Category\": null,\n            \"Other\": \"\",\n            \"Remarks\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 450,\n            \"UpdatedBy\": 450,\n            \"CreatedOn\": \"2022-12-13 23:37:11\",\n            \"UpdatedOn\": \"2022-12-13 23:46:49\",\n            \"TotalCustomer\": null,\n            \"VisitDate\": \"2022-12-08\",\n            \"CreatedPerson\": \"rahul gothi\",\n            \"UpdatedPerson\": \"rahul gothi\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\",\n    \"count\": 1\n}"
+				}
+			]
+		},
+		{
+			"name": "customer deleteSpec",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzA5NTQxNzYsImV4cCI6MTY3MTA0MDU3NiwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.fj5yWW9ArjVkzhPhhob4HFw4rikE2Y287cj9owwju-4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"ID\": \"1\",\r\n  \"CustomerID\": \"1\",\r\n  \"tablename\": \"spectacle_rx\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/customer/deleteSpec",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"customer",
+						"deleteSpec"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "customer deleteSpec",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"ID\": \"1\",\r\n  \"CustomerID\": \"1\",\r\n  \"tablename\": \"spectacle_rx\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/customer/deleteSpec",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"customer",
+								"deleteSpec"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "83"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"53-nCNLPPOdLSSa4L7hTWZLnxRs8l8\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 13 Dec 2022 18:25:31 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": null,\n    \"success\": true,\n    \"message\": \"data delete successfully\",\n    \"spectacle_rx\": []\n}"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzA1MTc0MzcsImV4cCI6MTY3MDYwMzgzNywiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.H1_-6wcavekSLJ-vsH8ZcuOK4nwX2lPXX24QAsxM8Uk",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
