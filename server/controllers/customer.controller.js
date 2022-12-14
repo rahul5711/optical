@@ -18,7 +18,7 @@ module.exports = {
 
             const { Name, Sno, MobileNo1, MobileNo2, PhoneNo, Address, GSTNo, Email, PhotoURL, DOB, RefferedByDoc, Age, Anniversary, ReferenceType, Gender, Other, Remarks, VisitDate, spectacle_rx, contact_lens_rx, other_rx, tablename } = req.body
 
-            if (Name.trim() === "" || Name === undefined) {
+            if (Name.trim() == "" || Name === undefined) {
                 return res.send({ message: "Invalid Name" })
             }
             if (tablename === undefined || tablename.trim() === "") {

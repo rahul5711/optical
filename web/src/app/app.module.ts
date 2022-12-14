@@ -46,7 +46,6 @@ import { Page404Component } from './common/page404.component';
   ],
   imports: [
     CommonModule,
-   
     MatSnackBarModule,
     MatSelectModule,
     BrowserModule,

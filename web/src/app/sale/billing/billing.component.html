@@ -51,7 +51,7 @@
                                 <!-- Customer from start  -->
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-2 col-2 mb-0">
+                                        <!-- <div class="col-xl-2 col-lg-2 col-md-6 col-sm-2 col-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Select Position </mat-label>
                                                 <mat-select name="Position" [(ngModel)]="data.Gender" #Gendercontrol
@@ -62,7 +62,7 @@
                                                     <mat-option value="ADV">ADV.</mat-option>
                                                 </mat-select>
                                             </mat-form-field>
-                                        </div>
+                                        </div> -->
                                         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-10 col-10 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label> Name</mat-label>
@@ -83,7 +83,13 @@
                                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-4 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>DOB</mat-label>
-                                                <input matInput name="DOB" type="date" [(ngModel)]="data.DOB">
+                                                <input matInput name="DOB" type="date" [(ngModel)]="data.DOB" (blur)="calculateAge()">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-1 col-lg-1 col-md-1 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Age</mat-label>
+                                                <input matInput name="Age" [(ngModel)]="data.Age"  >
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-4  mb-0">
@@ -112,7 +118,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0">
+                                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Remark/TLN </mat-label>
                                                 <input matInput name="Remarks" [(ngModel)]="data.Remarks"
@@ -122,7 +128,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-2 col-md-6 col-sm-12 mb-0 ms-auto">
+                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0 ms-auto">
                                             <button mat-raised-button color="primary"
                                                 style="padding: 0px 40px;">Save</button>
                                         </div>
@@ -140,7 +146,7 @@
                                                 aria-labelledby="ex1-tab-1" style="border: 1px solid #0027ff">
                                                 <div class="row  powerRow">
                                                     <div class="col-1 m-0 p-0 ps-1">
-                                                        <button class="extra m-0" (click)="openModal(Spectacle)">EXTRA</button>
+                                                        <button class="extra m-0" (click)="openModal(Spectacles)">EXTRA</button>
                                                     </div>
                                                     <div class="col-3">
                                                         <span class="right_letf">Right Eye</span>
@@ -169,7 +175,7 @@
                                                     style="justify-content: space-between;margin-right: 12px;">
                                                     <div class="col-1 fw-bold pe-0">Dis.</div>
                                                     <div class="col-1">
-                                                        <input class="inputWidth box" type="text" name="REDPSPH" #myDiv2
+                                                        <input class="inputWidth box" type="text"  name="REDPSPH" #myDiv2
                                                             [(ngModel)]="spectacle.REDPSPH" id="REDPSPH"
                                                             list="dpsphList">
                                                         <datalist id="dpsphList">
@@ -827,7 +833,7 @@
                             <!--Customer Extra model popup end -->
 
                             <!--spectacle Extra model popup start -->
-                            <ng-template #Spectacle role="document" let-modal>
+                            <ng-template #Spectacles role="document" let-modal>
                                 <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
                                     <h2 class="modal-title header pt-2" id="exampleModalLabel">Spectacle Extra Fields </h2>
                                     <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"

@@ -27,6 +27,10 @@ export class CustomerModel {
   'CreatedOn': any;
   'UpdatedBy': number;
   'UpdatedOn': any;
+  'tablename': any;
+  'spectacle_rx': any;
+  'contact_lens_rx': any;
+  'other_rx': any;
 }
 
 export class SpectacleModel {

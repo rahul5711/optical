@@ -23,13 +23,15 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { DoctorListComponent } from './doctor-list/doctor-list.component';
 import { BillingComponent } from './billing/billing.component';
+import { CustomerListComponent } from './customer-list/customer-list.component';
 
 
 @NgModule({
   declarations: [
     DoctorComponent,
     DoctorListComponent,
-    BillingComponent
+    BillingComponent,
+    CustomerListComponent
   ],
   imports: [
     CommonModule,
