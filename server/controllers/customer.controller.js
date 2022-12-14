@@ -581,7 +581,7 @@ module.exports = {
             }
 
                 response.CustomerID = ID,
-                response.message = "data save sucessfully",
+                response.message = "data update sucessfully",
                 response.data = await connection.query(`select * from customer where CompanyID = ${CompanyID} and ID = ${ID}`)
 
             return res.send(response)
