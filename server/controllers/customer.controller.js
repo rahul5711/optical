@@ -332,9 +332,9 @@ module.exports = {
             }
 
             response.data = doesExist;
-            response.spectacle_rx = await connection.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} order by ID desc`);
-            response.contact_lens_rx = await connection.query(`select * from contact_lens_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} order by ID desc`);
-            response.other_rx = await connection.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} order by ID desc`);
+            response.spectacle_rx = await connection.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`);
+            response.contact_lens_rx = await connection.query(`select * from contact_lens_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`);
+            response.other_rx = await connection.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`);
             response.message = 'data fetch successfully'
             return res.send(response)
         } catch (error) {
