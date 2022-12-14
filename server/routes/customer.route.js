@@ -11,7 +11,7 @@ router.post('/restore', verifyAccessTokenAdmin, Controller.restore)
 router.post('/getCustomerById',verifyAccessTokenAdmin, Controller.getCustomerById)
 router.post('/deleteSpec', verifyAccessTokenAdmin, Controller.deleteSpec)
 
-// router.post('/update',verifyAccessTokenAdmin, Controller.update)
+router.post('/update',verifyAccessTokenAdmin, Controller.update)
 
 
 // Regex search

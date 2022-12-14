@@ -1,7 +1,7 @@
 const createError = require('http-errors')
 const getConnection = require('../helpers/db')
 const pass_init = require('../helpers/generate_password')
-const { Idd } = require('../helpers/helper_function')
+const { Idd , generateVisitNo } = require('../helpers/helper_function')
 const _ = require("lodash")
 const bcrypt = require('bcrypt')
 const { now } = require('lodash')
@@ -86,7 +86,7 @@ module.exports = {
 
                 console.log(connected("Customer Spec Added SuccessFUlly !!!"));
 
-                response.spectacle_rx = await connection.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} order by ID desc`)
+                response.spectacle_rx = await connection.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} and Status = 1 order by ID desc`)
 
             } else if (tablename === 'contact_lens_rx') {
                 // contact_lens_rx object data
@@ -145,7 +145,7 @@ module.exports = {
 
                 console.log(connected("Customer Contact Added SuccessFUlly !!!"));
 
-                response.spectacle_rx = await connection.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} order by ID desc`);
+                response.spectacle_rx = await connection.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} and Status = 1 order by ID desc`);
 
             } else if (tablename === 'other_rx') {
 
@@ -178,7 +178,7 @@ module.exports = {
 
                 console.log(connected("Customer Other Added SuccessFUlly !!!"));
 
-                response.other_rx = await connection.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} order by ID desc`)
+                response.other_rx = await connection.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} and Status = 1 order by ID desc`)
 
             }
 
@@ -385,7 +385,7 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
-            const { Name, Sno, MobileNo1, MobileNo2, PhoneNo, Address, GSTNo, Email, PhotoURL, DOB, RefferedByDoc, Age, Anniversary, ReferenceType, Gender, Other, Remarks, VisitDate, spectacle_rx, contact_lens_rx, other_rx, tablename } = req.body
+            const { ID, Name, Sno, MobileNo1, MobileNo2, PhoneNo, Address, GSTNo, Email, PhotoURL, DOB, RefferedByDoc, Age, Anniversary, ReferenceType, Gender, Other, Remarks, VisitDate, spectacle_rx, contact_lens_rx, other_rx, tablename } = req.body
 
             if (Name.trim() === "" || Name === undefined) {
                 return res.send({ message: "Invalid Name" })
@@ -393,6 +393,11 @@ module.exports = {
             if (tablename.trim() === "" || tablename === undefined) {
                 return res.send({ message: "Invalid tablename, kindly send tablename spectacle_rx , contact_lens_rx or other_rx" })
             }
+
+            if (!ID) return res.send({ message: "Invalid Query Data" })
+
+            // const visitNo = await generateVisitNo(CompanyID, ID, tablename);
+
 
         } catch (error) {
             return error

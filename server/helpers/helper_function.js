@@ -11,5 +11,11 @@ module.exports = {
       const customer = await connection.query(`select * from customer where CompanyID = ${CompanyID}`)
       let Idd = customer.length
       return Idd + 1;
+    },
+    generateVisitNo : async(CompanyID, CustomerID, TableName) => {
+      const connection = await getConnection.connection();
+      const visitNo = await connection.query(`select * from ${TableName} where CompanyID = ${CompanyID} and CustomerID = ${CustomerID}`)
+
+      return visitNo.length + 1;
     }
   }
