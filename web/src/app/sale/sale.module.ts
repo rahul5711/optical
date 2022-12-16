@@ -24,6 +24,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { DoctorListComponent } from './doctor-list/doctor-list.component';
 import { BillingComponent } from './billing/billing.component';
 import { CustomerListComponent } from './customer-list/customer-list.component';
+import { CustomerPowerListComponent } from './customer-power-list/customer-power-list.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { CustomerListComponent } from './customer-list/customer-list.component';
     DoctorComponent,
     DoctorListComponent,
     BillingComponent,
-    CustomerListComponent
+    CustomerListComponent,
+    CustomerPowerListComponent
   ],
   imports: [
     CommonModule,

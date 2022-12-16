@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -22,6 +22,7 @@ import { CustomerService } from 'src/app/service/customer.service';
   styleUrls: ['./billing.component.css']
 })
 export class BillingComponent implements OnInit {
+  
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   env = environment;
@@ -35,6 +36,12 @@ export class BillingComponent implements OnInit {
   docList: any;
   ReferenceList: any;
   OtherList: any;
+  spectacleLists:any=[]
+  contactList: any=[]
+  otherList: any=[]
+
+
+
 
   constructor(
     private router: Router,
@@ -50,13 +57,12 @@ export class BillingComponent implements OnInit {
     this.id = this.route.snapshot.params['id'];
   }
 
-
   data: CustomerModel = {
     ID: '', CompanyID: '',  Idd: 0, Name: '', Sno: '', TotalCustomer: '', VisitDate: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: '', DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
   };
 
   spectacle: SpectacleModel = {
-    ID: '', CustomerID: '', REDPSPH: 0, Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
+    ID: '', CustomerID: '', REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
     LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
     R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: '', FileURL: '', Family: 'Self', ExpiryDate: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
   };
@@ -388,11 +394,14 @@ export class BillingComponent implements OnInit {
   ];
   // dropdown values in satics 
 
+
   ngOnInit(): void {
     this.data.VisitDate = moment().format('YYYY-MM-DD');
     if (this.id != 0) {
       this.getCustomerById(); 
+
     }
+ 
   }
 
   calculateAge() {
@@ -419,7 +428,7 @@ export class BillingComponent implements OnInit {
       this.data.tablename = 'other_rx'
       this.data.other_rx = this.other
     }
-
+    
     const subs: Subscription = this.cs.saveCustomer(this.data).subscribe({
       next: (res: any) => {
         this.formReset()
@@ -431,7 +440,6 @@ export class BillingComponent implements OnInit {
             showConfirmButton: false,
             timer: 1200
           })
-          
         } else {
           this.as.errorToast(res.message)
         }
@@ -448,10 +456,19 @@ export class BillingComponent implements OnInit {
     const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.as.successToast(res.message)
           this.data = res.data[0]
           this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
 
+          this.spectacle = res.spectacle_rx[0];
+          this.spectacleImage = this.env.apiUrl + res.spectacle_rx[0].PhotoURL;
+
+          // this.clens = res.contact_lens_rx[0];
+          // this.clensImage = this.env.apiUrl + res.contact_lens_rx[0].PhotoURL;
+
+          this.as.successToast(res.message)
+          this.spectacleLists.push(res.spectacle_rx);
+          this.contactList.push(res.contact_lens_rx);
+          this.otherList.push(res.other_rx );
         } else {
           this.as.errorToast(res.message)
         }
@@ -461,6 +478,8 @@ export class BillingComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     })
+ 
+    
   }
 
   uploadImage(e: any, mode: any) {
@@ -494,7 +513,7 @@ export class BillingComponent implements OnInit {
     };
   
     this.spectacle = {
-      ID: '', CustomerID: '', REDPSPH: 0, Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
+      ID: '', CustomerID: '', REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
       LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
       R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: '', FileURL: '', Family: 'Self', ExpiryDate: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
     };
@@ -514,6 +533,40 @@ export class BillingComponent implements OnInit {
     };
   
     this.Check = { SpectacleCheck: false, ContactCheck: false, OtherCheck: false, };
+   }
+
+   updateCustomer(){
+    if(this.Check.SpectacleCheck === true) {
+      this.data.tablename = 'spectacle_rx'
+      this.data.spectacle_rx = this.spectacle
+    }
+    if(this.Check.ContactCheck === true) {
+      this.data.tablename = 'contact_lens_rx'
+      this.data.contact_lens_rx = this.clens
+    }
+    if(this.Check.OtherCheck === true) {
+      this.data.tablename = 'other_rx'
+      this.data.other_rx = this.other
+    }
+    const subs: Subscription = this.cs.updateCustomer(this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your Customer has been update.',
+            showConfirmButton: false,
+            timer: 1200
+          })
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
    }
 
 }

@@ -33,10 +33,10 @@ export class CustomerService {
     .pipe(catchError(this.handleError));
   }
 
-  deleteSpec(ID:any): Observable<any> {
+  deleteSpec(ID:any,CustomerID:any,tablename:any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams();
-    return this.httpClient.post<any>(this.url + '/deleteSpec', {ID: ID},  { headers, params })
+    return this.httpClient.post<any>(this.url + '/deleteSpec', {ID: ID,CustomerID: CustomerID,tablename: tablename},  { headers, params })
     .pipe(catchError(this.handleError));
   }
 
@@ -49,6 +49,13 @@ export class CustomerService {
   
   searchByFeild(searchQuery: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/searchByFeild', searchQuery)
+    .pipe(catchError(this.handleError));
+  }
+
+  updateCustomer( Body: any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/update', Body, { headers, params })
     .pipe(catchError(this.handleError));
   }
 
