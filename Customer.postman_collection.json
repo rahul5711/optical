@@ -8,16 +8,6 @@
 		{
 			"name": "save",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzA5NTQxNzYsImV4cCI6MTY3MTA0MDU3NiwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.fj5yWW9ArjVkzhPhhob4HFw4rikE2Y287cj9owwju-4",
-							"type": "string"
-						}
-					]
-				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -115,16 +105,6 @@
 		{
 			"name": "customer list",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzA5NTQxNzYsImV4cCI6MTY3MTA0MDU3NiwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.fj5yWW9ArjVkzhPhhob4HFw4rikE2Y287cj9owwju-4",
-							"type": "string"
-						}
-					]
-				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -222,16 +202,6 @@
 		{
 			"name": "getCustomerById",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzA5NTQxNzYsImV4cCI6MTY3MTA0MDU3NiwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.fj5yWW9ArjVkzhPhhob4HFw4rikE2Y287cj9owwju-4",
-							"type": "string"
-						}
-					]
-				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -329,16 +299,6 @@
 		{
 			"name": "customer delete",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzA5NTQxNzYsImV4cCI6MTY3MTA0MDU3NiwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.fj5yWW9ArjVkzhPhhob4HFw4rikE2Y287cj9owwju-4",
-							"type": "string"
-						}
-					]
-				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -436,16 +396,6 @@
 		{
 			"name": "customer restore",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzA5NTQxNzYsImV4cCI6MTY3MTA0MDU3NiwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.fj5yWW9ArjVkzhPhhob4HFw4rikE2Y287cj9owwju-4",
-							"type": "string"
-						}
-					]
-				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -543,16 +493,6 @@
 		{
 			"name": "customer searchByFeild",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzA5NTQxNzYsImV4cCI6MTY3MTA0MDU3NiwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.fj5yWW9ArjVkzhPhhob4HFw4rikE2Y287cj9owwju-4",
-							"type": "string"
-						}
-					]
-				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -650,21 +590,11 @@
 		{
 			"name": "customer deleteSpec",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzA5NTQxNzYsImV4cCI6MTY3MTA0MDU3NiwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.fj5yWW9ArjVkzhPhhob4HFw4rikE2Y287cj9owwju-4",
-							"type": "string"
-						}
-					]
-				},
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n   \"ID\": \"1\",\r\n  \"CustomerID\": \"1\",\r\n  \"tablename\": \"spectacle_rx\"\r\n}\r\n",
+					"raw": "{\r\n   \"ID\": \"2\",\r\n  \"CustomerID\": \"1\",\r\n  \"tablename\": \"spectacle_rx\"\r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -753,6 +683,170 @@
 					"body": "{\n    \"data\": null,\n    \"success\": true,\n    \"message\": \"data delete successfully\",\n    \"spectacle_rx\": []\n}"
 				}
 			]
+		},
+		{
+			"name": "update",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": 1,\r\n    \"Name\":\"Rahul Customer 1 \",\r\n    \"MobileNo1\":\"9752885711\",\r\n    \"MobileNo2\":\"\",\r\n    \"PhoneNo\":\"\",\r\n    \"Address\":\"\",\r\n    \"GSTNo\":\"\",\r\n    \"Email\":\"\",\r\n    \"PhotoURL\":\"\",\r\n    \"DOB\":\"\",\r\n    \"RefferedByDoc\":\"\",\r\n    \"Age\":\"\",\r\n    \"Anniversary\":\"\",\r\n    \"ReferenceType\":\"\",\r\n    \"Gender\":\"\",\r\n    \"Other\":\"\",\r\n    \"Remarks\":\"\",\r\n    \"Sno\":\"\",\r\n    \"VisitDate\":\"2022-12-08\",\r\n    \"tablename\": \"spectacle_rx\",\r\n    \"spectacle_rx\": {\r\n        \"ID\": 3,\r\n        \"REDPSPH\" : \"4\",\r\n        \"REDPCYL\" : \"18\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/customer/update",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"customer",
+						"update"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "update",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 1,\r\n    \"Name\":\"Rahul Customer 1 \",\r\n    \"MobileNo1\":\"9752885711\",\r\n    \"MobileNo2\":\"\",\r\n    \"PhoneNo\":\"\",\r\n    \"Address\":\"\",\r\n    \"GSTNo\":\"\",\r\n    \"Email\":\"\",\r\n    \"PhotoURL\":\"\",\r\n    \"DOB\":\"\",\r\n    \"RefferedByDoc\":\"\",\r\n    \"Age\":\"\",\r\n    \"Anniversary\":\"\",\r\n    \"ReferenceType\":\"\",\r\n    \"Gender\":\"\",\r\n    \"Other\":\"\",\r\n    \"Remarks\":\"\",\r\n    \"Sno\":\"\",\r\n    \"VisitDate\":\"2022-12-08\",\r\n    \"tablename\": \"spectacle_rx\",\r\n    \"spectacle_rx\": {\r\n        \"ID\": 3,\r\n        \"REDPSPH\" : \"4\",\r\n        \"REDPCYL\" : \"13\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/customer/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"customer",
+								"update"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2687"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"a7f-2jJNDlgh8RiGTHteh2APkFc3VNY\""
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 16 Dec 2022 17:05:06 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 1,\n            \"Idd\": \"1\",\n            \"Sno\": \"\",\n            \"Name\": \"Rahul Customer 1 \",\n            \"CompanyID\": 129,\n            \"MobileNo1\": \"9752885711\",\n            \"MobileNo2\": \"\",\n            \"PhoneNo\": \"\",\n            \"Address\": \"\",\n            \"GSTNo\": \"\",\n            \"Email\": \"\",\n            \"PhotoURL\": \"\",\n            \"DOB\": \"\",\n            \"RefferedByDoc\": \"\",\n            \"Age\": \"\",\n            \"Anniversary\": \"\",\n            \"ReferenceType\": \"\",\n            \"Gender\": \"\",\n            \"Category\": null,\n            \"Other\": \"\",\n            \"Remarks\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 450,\n            \"UpdatedBy\": 450,\n            \"CreatedOn\": \"2022-12-16 22:19:11\",\n            \"UpdatedOn\": \"2022-12-16 22:35:06\",\n            \"TotalCustomer\": null,\n            \"VisitDate\": \"2022-12-08\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data update sucessfully\",\n    \"CustomerID\": 1,\n    \"spectacle_rx\": [\n        {\n            \"ID\": 3,\n            \"VisitNo\": 3,\n            \"CompanyID\": 129,\n            \"CustomerID\": 1,\n            \"REDPSPH\": \"4\",\n            \"REDPCYL\": \"15\",\n            \"REDPAxis\": \"\",\n            \"REDPVA\": \"\",\n            \"LEDPSPH\": \"\",\n            \"LEDPCYL\": \"\",\n            \"LEDPAxis\": \"\",\n            \"LEDPVA\": \"\",\n            \"RENPSPH\": \"\",\n            \"RENPCYL\": \"\",\n            \"RENPAxis\": \"\",\n            \"RENPVA\": \"\",\n            \"LENPSPH\": \"\",\n            \"LENPCYL\": \"\",\n            \"LENPAxis\": \"\",\n            \"LENPVA\": \"\",\n            \"REPD\": \"\",\n            \"LEPD\": \"\",\n            \"R_Addition\": \"\",\n            \"L_Addition\": \"\",\n            \"R_Prism\": \"\",\n            \"L_Prism\": \"\",\n            \"Lens\": \"\",\n            \"Shade\": \"\",\n            \"Frame\": \"\",\n            \"VertexDistance\": \"\",\n            \"RefractiveIndex\": \"\",\n            \"FittingHeight\": \"\",\n            \"ConstantUse\": 0,\n            \"NearWork\": 0,\n            \"DistanceWork\": 0,\n            \"UploadBy\": \"\",\n            \"PhotoURL\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 450,\n            \"CreatedOn\": \"2022-12-16 22:35:06\",\n            \"UpdatedBy\": null,\n            \"Updatedon\": \"0000-00-00 00:00:00\",\n            \"FileURL\": \"\",\n            \"Family\": \"\",\n            \"RefferedByDoc\": \"\",\n            \"Reminder\": \"\",\n            \"ExpiryDate\": \"0000-00-00\"\n        },\n        {\n            \"ID\": 2,\n            \"VisitNo\": 2,\n            \"CompanyID\": 129,\n            \"CustomerID\": 1,\n            \"REDPSPH\": \"4\",\n            \"REDPCYL\": \"5\",\n            \"REDPAxis\": \"\",\n            \"REDPVA\": \"\",\n            \"LEDPSPH\": \"\",\n            \"LEDPCYL\": \"\",\n            \"LEDPAxis\": \"\",\n            \"LEDPVA\": \"\",\n            \"RENPSPH\": \"\",\n            \"RENPCYL\": \"\",\n            \"RENPAxis\": \"\",\n            \"RENPVA\": \"\",\n            \"LENPSPH\": \"\",\n            \"LENPCYL\": \"\",\n            \"LENPAxis\": \"\",\n            \"LENPVA\": \"\",\n            \"REPD\": \"\",\n            \"LEPD\": \"\",\n            \"R_Addition\": \"\",\n            \"L_Addition\": \"\",\n            \"R_Prism\": \"\",\n            \"L_Prism\": \"\",\n            \"Lens\": \"\",\n            \"Shade\": \"\",\n            \"Frame\": \"\",\n            \"VertexDistance\": \"\",\n            \"RefractiveIndex\": \"\",\n            \"FittingHeight\": \"\",\n            \"ConstantUse\": 0,\n            \"NearWork\": 0,\n            \"DistanceWork\": 0,\n            \"UploadBy\": \"\",\n            \"PhotoURL\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 450,\n            \"CreatedOn\": \"2022-12-16 22:29:03\",\n            \"UpdatedBy\": 450,\n            \"Updatedon\": \"2022-12-16 22:34:39\",\n            \"FileURL\": \"\",\n            \"Family\": \"\",\n            \"RefferedByDoc\": \"\",\n            \"Reminder\": \"\",\n            \"ExpiryDate\": \"0000-00-00\"\n        },\n        {\n            \"ID\": 1,\n            \"VisitNo\": 1,\n            \"CompanyID\": 129,\n            \"CustomerID\": 1,\n            \"REDPSPH\": \"2\",\n            \"REDPCYL\": \"\",\n            \"REDPAxis\": \"\",\n            \"REDPVA\": \"\",\n            \"LEDPSPH\": \"\",\n            \"LEDPCYL\": \"\",\n            \"LEDPAxis\": \"\",\n            \"LEDPVA\": \"\",\n            \"RENPSPH\": \"\",\n            \"RENPCYL\": \"\",\n            \"RENPAxis\": \"\",\n            \"RENPVA\": \"\",\n            \"LENPSPH\": \"\",\n            \"LENPCYL\": \"\",\n            \"LENPAxis\": \"\",\n            \"LENPVA\": \"\",\n            \"REPD\": \"\",\n            \"LEPD\": \"\",\n            \"R_Addition\": \"\",\n            \"L_Addition\": \"\",\n            \"R_Prism\": \"\",\n            \"L_Prism\": \"\",\n            \"Lens\": \"\",\n            \"Shade\": \"\",\n            \"Frame\": \"\",\n            \"VertexDistance\": \"\",\n            \"RefractiveIndex\": \"\",\n            \"FittingHeight\": \"\",\n            \"ConstantUse\": 0,\n            \"NearWork\": 0,\n            \"DistanceWork\": 0,\n            \"UploadBy\": \"\",\n            \"PhotoURL\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 450,\n            \"CreatedOn\": \"2022-12-16 22:19:11\",\n            \"UpdatedBy\": 450,\n            \"Updatedon\": \"2022-12-16 22:23:56\",\n            \"FileURL\": \"\",\n            \"Family\": \"\",\n            \"RefferedByDoc\": \"\",\n            \"Reminder\": \"\",\n            \"ExpiryDate\": \"0000-00-00\"\n        }\n    ],\n    \"contact_lens_rx\": [],\n    \"other_rx\": []\n}"
+				},
+				{
+					"name": "update",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 1,\r\n    \"Name\":\"Rahul Customer 1 \",\r\n    \"MobileNo1\":\"9752885711\",\r\n    \"MobileNo2\":\"\",\r\n    \"PhoneNo\":\"\",\r\n    \"Address\":\"\",\r\n    \"GSTNo\":\"\",\r\n    \"Email\":\"\",\r\n    \"PhotoURL\":\"\",\r\n    \"DOB\":\"\",\r\n    \"RefferedByDoc\":\"\",\r\n    \"Age\":\"\",\r\n    \"Anniversary\":\"\",\r\n    \"ReferenceType\":\"\",\r\n    \"Gender\":\"\",\r\n    \"Other\":\"\",\r\n    \"Remarks\":\"\",\r\n    \"Sno\":\"\",\r\n    \"VisitDate\":\"2022-12-08\",\r\n    \"tablename\": \"spectacle_rx\",\r\n    \"spectacle_rx\": {\r\n        \"ID\": 3,\r\n        \"REDPSPH\" : \"4\",\r\n        \"REDPCYL\" : \"18\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/customer/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"customer",
+								"update"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2686"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"a7e-dRABfchXIwXYOxILwmqQZefOpjU\""
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 16 Dec 2022 17:06:00 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 1,\n            \"Idd\": \"1\",\n            \"Sno\": \"\",\n            \"Name\": \"Rahul Customer 1 \",\n            \"CompanyID\": 129,\n            \"MobileNo1\": \"9752885711\",\n            \"MobileNo2\": \"\",\n            \"PhoneNo\": \"\",\n            \"Address\": \"\",\n            \"GSTNo\": \"\",\n            \"Email\": \"\",\n            \"PhotoURL\": \"\",\n            \"DOB\": \"\",\n            \"RefferedByDoc\": \"\",\n            \"Age\": \"\",\n            \"Anniversary\": \"\",\n            \"ReferenceType\": \"\",\n            \"Gender\": \"\",\n            \"Category\": null,\n            \"Other\": \"\",\n            \"Remarks\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 450,\n            \"UpdatedBy\": 450,\n            \"CreatedOn\": \"2022-12-16 22:19:11\",\n            \"UpdatedOn\": \"2022-12-16 22:36:00\",\n            \"TotalCustomer\": null,\n            \"VisitDate\": \"2022-12-08\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data update sucessfully\",\n    \"CustomerID\": 1,\n    \"spectacle_rx\": [\n        {\n            \"ID\": 3,\n            \"VisitNo\": 3,\n            \"CompanyID\": 129,\n            \"CustomerID\": 1,\n            \"REDPSPH\": \"4\",\n            \"REDPCYL\": \"18\",\n            \"REDPAxis\": \"\",\n            \"REDPVA\": \"\",\n            \"LEDPSPH\": \"\",\n            \"LEDPCYL\": \"\",\n            \"LEDPAxis\": \"\",\n            \"LEDPVA\": \"\",\n            \"RENPSPH\": \"\",\n            \"RENPCYL\": \"\",\n            \"RENPAxis\": \"\",\n            \"RENPVA\": \"\",\n            \"LENPSPH\": \"\",\n            \"LENPCYL\": \"\",\n            \"LENPAxis\": \"\",\n            \"LENPVA\": \"\",\n            \"REPD\": \"\",\n            \"LEPD\": \"\",\n            \"R_Addition\": \"\",\n            \"L_Addition\": \"\",\n            \"R_Prism\": \"\",\n            \"L_Prism\": \"\",\n            \"Lens\": \"\",\n            \"Shade\": \"\",\n            \"Frame\": \"\",\n            \"VertexDistance\": \"\",\n            \"RefractiveIndex\": \"\",\n            \"FittingHeight\": \"\",\n            \"ConstantUse\": 0,\n            \"NearWork\": 0,\n            \"DistanceWork\": 0,\n            \"UploadBy\": \"\",\n            \"PhotoURL\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 450,\n            \"CreatedOn\": \"2022-12-16 22:35:06\",\n            \"UpdatedBy\": 450,\n            \"Updatedon\": \"2022-12-16 22:36:00\",\n            \"FileURL\": \"\",\n            \"Family\": \"\",\n            \"RefferedByDoc\": \"\",\n            \"Reminder\": \"\",\n            \"ExpiryDate\": \"0000-00-00\"\n        },\n        {\n            \"ID\": 2,\n            \"VisitNo\": 2,\n            \"CompanyID\": 129,\n            \"CustomerID\": 1,\n            \"REDPSPH\": \"4\",\n            \"REDPCYL\": \"5\",\n            \"REDPAxis\": \"\",\n            \"REDPVA\": \"\",\n            \"LEDPSPH\": \"\",\n            \"LEDPCYL\": \"\",\n            \"LEDPAxis\": \"\",\n            \"LEDPVA\": \"\",\n            \"RENPSPH\": \"\",\n            \"RENPCYL\": \"\",\n            \"RENPAxis\": \"\",\n            \"RENPVA\": \"\",\n            \"LENPSPH\": \"\",\n            \"LENPCYL\": \"\",\n            \"LENPAxis\": \"\",\n            \"LENPVA\": \"\",\n            \"REPD\": \"\",\n            \"LEPD\": \"\",\n            \"R_Addition\": \"\",\n            \"L_Addition\": \"\",\n            \"R_Prism\": \"\",\n            \"L_Prism\": \"\",\n            \"Lens\": \"\",\n            \"Shade\": \"\",\n            \"Frame\": \"\",\n            \"VertexDistance\": \"\",\n            \"RefractiveIndex\": \"\",\n            \"FittingHeight\": \"\",\n            \"ConstantUse\": 0,\n            \"NearWork\": 0,\n            \"DistanceWork\": 0,\n            \"UploadBy\": \"\",\n            \"PhotoURL\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 450,\n            \"CreatedOn\": \"2022-12-16 22:29:03\",\n            \"UpdatedBy\": 450,\n            \"Updatedon\": \"2022-12-16 22:34:39\",\n            \"FileURL\": \"\",\n            \"Family\": \"\",\n            \"RefferedByDoc\": \"\",\n            \"Reminder\": \"\",\n            \"ExpiryDate\": \"0000-00-00\"\n        },\n        {\n            \"ID\": 1,\n            \"VisitNo\": 1,\n            \"CompanyID\": 129,\n            \"CustomerID\": 1,\n            \"REDPSPH\": \"2\",\n            \"REDPCYL\": \"\",\n            \"REDPAxis\": \"\",\n            \"REDPVA\": \"\",\n            \"LEDPSPH\": \"\",\n            \"LEDPCYL\": \"\",\n            \"LEDPAxis\": \"\",\n            \"LEDPVA\": \"\",\n            \"RENPSPH\": \"\",\n            \"RENPCYL\": \"\",\n            \"RENPAxis\": \"\",\n            \"RENPVA\": \"\",\n            \"LENPSPH\": \"\",\n            \"LENPCYL\": \"\",\n            \"LENPAxis\": \"\",\n            \"LENPVA\": \"\",\n            \"REPD\": \"\",\n            \"LEPD\": \"\",\n            \"R_Addition\": \"\",\n            \"L_Addition\": \"\",\n            \"R_Prism\": \"\",\n            \"L_Prism\": \"\",\n            \"Lens\": \"\",\n            \"Shade\": \"\",\n            \"Frame\": \"\",\n            \"VertexDistance\": \"\",\n            \"RefractiveIndex\": \"\",\n            \"FittingHeight\": \"\",\n            \"ConstantUse\": 0,\n            \"NearWork\": 0,\n            \"DistanceWork\": 0,\n            \"UploadBy\": \"\",\n            \"PhotoURL\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 450,\n            \"CreatedOn\": \"2022-12-16 22:19:11\",\n            \"UpdatedBy\": 450,\n            \"Updatedon\": \"2022-12-16 22:23:56\",\n            \"FileURL\": \"\",\n            \"Family\": \"\",\n            \"RefferedByDoc\": \"\",\n            \"Reminder\": \"\",\n            \"ExpiryDate\": \"0000-00-00\"\n        }\n    ],\n    \"contact_lens_rx\": [],\n    \"other_rx\": []\n}"
+				}
+			]
 		}
 	],
 	"auth": {
@@ -760,7 +854,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzA1MTc0MzcsImV4cCI6MTY3MDYwMzgzNywiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.H1_-6wcavekSLJ-vsH8ZcuOK4nwX2lPXX24QAsxM8Uk",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzEyMDkzMTAsImV4cCI6MTY3MTI5NTcxMCwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.QyuP952-dzLvYry4EfRchjwvHFbFogsYIe8jVYSGBNk",
 				"type": "string"
 			}
 		]
