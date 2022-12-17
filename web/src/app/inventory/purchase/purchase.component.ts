@@ -87,6 +87,7 @@ export class PurchaseComponent implements OnInit {
     const subs: Subscription =  this.ss.dropdownSupplierlist().subscribe({
       next: (res: any) => {
         this.supplierList = res.data;
+        this.supplierList.sort((a:any, b:any) => (a.Name < b.Name)? -1 : 1)
         this.as.successToast(res.message)
       },
       error: (err: any) => console.log(err.message),
@@ -97,7 +98,9 @@ export class PurchaseComponent implements OnInit {
   getProductList(){
     const subs: Subscription =  this.ps.getList().subscribe({
       next: (res: any) => {
+        // this.prodList = res.data;
         this.prodList = res.data;
+        this.prodList.sort((a:any, b:any) => (a.Name < b.Name)? -1 : 1)
         this.as.successToast(res.message)
       },
       error: (err: any) => console.log(err.message),
@@ -148,7 +151,7 @@ export class PurchaseComponent implements OnInit {
      if (element.Ref === this.specList[index].FieldName.toString() ) {
        const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
          next: (res: any) => {
-           element.SptTableData = res.data;   
+           element.SptTableData = res.data; 
            element.SptFilterData = res.data;   
            this.as.successToast(res.message)
          },
@@ -223,6 +226,7 @@ export class PurchaseComponent implements OnInit {
     const subs: Subscription = this.supps.chargelist(this.charge).subscribe({
       next: (res: any) => {
         this.chargeOptions = res.data 
+        this.chargeOptions.sort((a:any, b:any) => (a.Name < b.Name)? -1 : 1)
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),

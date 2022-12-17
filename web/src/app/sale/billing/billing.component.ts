@@ -39,7 +39,7 @@ export class BillingComponent implements OnInit {
   spectacleLists:any=[]
   contactList: any=[]
   otherList: any=[]
-
+  toggleChecked = false;
 
 
 
@@ -62,13 +62,13 @@ export class BillingComponent implements OnInit {
   };
 
   spectacle: SpectacleModel = {
-    ID: '', CustomerID: '', REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
+    ID: 'null', CustomerID: '', REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
     LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
     R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: '', FileURL: '', Family: 'Self', ExpiryDate: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
   };
 
-  clens: ContactModel = {
-    ID: ' ', CustomerID: '', REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
+  clens: ContactModel   = {
+    ID: 'null', CustomerID: '', REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
     LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
     R_Addition: '', L_Addition: '', R_KR: '', L_KR: '', R_HVID: '', L_HVID: '', R_CS: '', L_CS: '', R_BC: '', L_BC: '',
     R_Diameter: '', L_Diameter: '', BR: '', Material: '', Modality: '', RefferedByDoc: 'Self', Other: '', ConstantUse: false,
@@ -77,11 +77,10 @@ export class BillingComponent implements OnInit {
   };
 
   other: OtherModel = {
-    ID: '', CustomerID: '', BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '',
-    R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
+    ID: 'null', CustomerID: '', BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
   };
 
-  Check: any = { SpectacleCheck: false, ContactCheck: false, OtherCheck: false, };
+  Check: any = { SpectacleCheck: true, ContactCheck: false, OtherCheck: false, };
 
   // dropdown values in satics
   dataSPH: any = [
@@ -404,6 +403,30 @@ export class BillingComponent implements OnInit {
  
   }
 
+  copyPower(val: any){
+    if (val) {
+      this.spectacle.LEDPSPH = this.spectacle.REDPSPH;
+      this.spectacle.LEDPCYL = this.spectacle.REDPCYL;
+      this.spectacle.LEDPAxis = this.spectacle.REDPAxis;
+      this.spectacle.LEDPVA = this.spectacle.REDPVA;
+      this.spectacle.L_Addition = this.spectacle.R_Addition;
+      this.spectacle.LENPSPH = this.spectacle.RENPSPH;
+      this.spectacle.LENPCYL = this.spectacle.RENPCYL;
+      this.spectacle.LENPAxis = this.spectacle.RENPAxis;
+      this.spectacle.LENPVA = this.spectacle.RENPVA;
+    }else{
+      this.spectacle.LEDPSPH = '';
+      this.spectacle.LEDPCYL = '';
+      this.spectacle.LEDPAxis = '';
+      this.spectacle.LEDPVA = '';
+      this.spectacle.L_Addition = '';
+      this.spectacle.LENPSPH = '';
+      this.spectacle.LENPCYL ='';
+      this.spectacle.LENPAxis = '';
+      this.spectacle.LENPVA = '';
+    }
+  }
+
   calculateAge() {
     if (this.data.DOB) {
       var timeDiff = Math.abs(Date.now() - new Date(this.data.DOB).getTime());
@@ -431,7 +454,6 @@ export class BillingComponent implements OnInit {
     
     const subs: Subscription = this.cs.saveCustomer(this.data).subscribe({
       next: (res: any) => {
-        this.formReset()
         if (res.success) {
           Swal.fire({
             position: 'center',
@@ -456,19 +478,23 @@ export class BillingComponent implements OnInit {
     const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
       next: (res: any) => {
         if (res.success) {
+          this.contactList = res.contact_lens_rx
+          if(this.contactList.length !== 0){
+            this.clens = res.contact_lens_rx[0] 
+            this.clensImage = this.env.apiUrl + res.contact_lens_rx[0].PhotoURL;
+          }
           this.data = res.data[0]
           this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
-
-          this.spectacle = res.spectacle_rx[0];
-          this.spectacleImage = this.env.apiUrl + res.spectacle_rx[0].PhotoURL;
-
-          // this.clens = res.contact_lens_rx[0];
-          // this.clensImage = this.env.apiUrl + res.contact_lens_rx[0].PhotoURL;
-
+          this.otherList = res.other_rx
+          if(this.otherList.length !== 0){
+            this.other = res.other_rx[0] 
+          }
+          this.spectacleLists = res.spectacle_rx
+          if(this.spectacleLists.length !== 0){
+            this.spectacle =  res.spectacle_rx[0]
+            this.spectacleImage = this.env.apiUrl + res.spectacle_rx[0].PhotoURL;
+          }
           this.as.successToast(res.message)
-          this.spectacleLists.push(res.spectacle_rx);
-          this.contactList.push(res.contact_lens_rx);
-          this.otherList.push(res.other_rx );
         } else {
           this.as.errorToast(res.message)
         }
@@ -478,8 +504,6 @@ export class BillingComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     })
- 
-    
   }
 
   uploadImage(e: any, mode: any) {
@@ -507,7 +531,7 @@ export class BillingComponent implements OnInit {
     })
   }
 
-   formReset(){
+  clearFrom(){
     this.data = {
       ID: '', CompanyID: '', Idd: 0, Name: '', Sno: '', TotalCustomer: '', VisitDate: this.data.VisitDate, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: '', DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
     };
@@ -532,7 +556,85 @@ export class BillingComponent implements OnInit {
       R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
     };
   
-    this.Check = { SpectacleCheck: false, ContactCheck: false, OtherCheck: false, };
+    this.Check = { SpectacleCheck: true, ContactCheck: false, OtherCheck: false, };
+  }
+
+  NewVisit(){
+    this.spectacle = {
+      ID: 'null', CustomerID: this.id, REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '', R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: '', FileURL: '', Family: 'Self', ExpiryDate: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
+    };
+  
+    this.clens = {
+      ID: 'null', CustomerID: this.id, REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
+      LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
+      R_Addition: '', L_Addition: '', R_KR: '', L_KR: '', R_HVID: '', L_HVID: '', R_CS: '', L_CS: '', R_BC: '', L_BC: '',
+      R_Diameter: '', L_Diameter: '', BR: '', Material: '', Modality: '', RefferedByDoc: 'Self', Other: '', ConstantUse: false,
+      NearWork: false, DistanceWork: false, Multifocal: false, PhotoURL: '', FileURL: '', Family: 'Self', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
+    };
+  
+    this.other = {
+      ID: 'null', CustomerID: this.id, BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: '',  Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
+    };
+  }
+
+   deleteSpec(i:any,mode:any){
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if(mode === 'spectacle_rx'){
+          const subs: Subscription = this.cs.deleteSpec(this.spectacleLists[i].ID,this.spectacleLists[i].CustomerID,'spectacle_rx').subscribe({
+            next: (res: any) => {
+              this.spectacleLists.splice(i, 1);
+              this.as.successToast(res.message)
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subs.unsubscribe(),
+          });
+        }else if(mode === 'contact'){
+          const subs: Subscription = this.cs.deleteSpec(this.contactList[i].ID,this.contactList[i].CustomerID,'contact_lens_rx').subscribe({
+            next: (res: any) => {
+              this.contactList.splice(i, 1);
+              this.as.successToast(res.message)
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subs.unsubscribe(),
+          });
+        }else if(mode === 'other'){
+          const subs: Subscription = this.cs.deleteSpec(this.otherList[i].ID,this.otherList[i].CustomerID,'other_rx').subscribe({
+            next: (res: any) => {
+              this.otherList.splice(i, 1);
+              this.as.successToast(res.message)
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subs.unsubscribe(),
+          });
+        }
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Your file has been deleted.',
+          showConfirmButton: false,
+          timer: 1000
+        })
+      }
+    })
+   }
+
+   edits(data:any,mode:any){
+     if(mode === 'spectacle_rx'){
+       this.spectacle = data;
+     }if(mode === 'contact'){
+       this.clens = data;
+     } if(mode === 'other'){
+       this.other = data;
+     }
    }
 
    updateCustomer(){
@@ -550,6 +652,7 @@ export class BillingComponent implements OnInit {
     }
     const subs: Subscription = this.cs.updateCustomer(this.data).subscribe({
       next: (res: any) => {
+        this.getCustomerById()
         if (res.success) {
           Swal.fire({
             position: 'center',
@@ -567,6 +670,93 @@ export class BillingComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
+
    }
+
+
+   calculate(mode:any, x:any, y:any){
+    let k = 0.00;
+    let a = 0.00;
+
+    if (mode === 'Lens'){
+    if (x === 'R' && y === 1)
+    { 
+      this.spectacle.R_Addition = Math.abs(Number(this.spectacle.RENPSPH) - Number(this.spectacle.REDPSPH));
+      this.spectacle.RENPCYL = this.spectacle.REDPCYL;
+      this.spectacle.RENPAxis = this.spectacle.REDPAxis;
+    }    
+
+    if (x === 'L' && y === 1)
+    {  
+      this.spectacle.L_Addition =
+      Math.abs(Number(this.spectacle.LENPSPH) - Number(this.spectacle.LEDPSPH));
+      this.spectacle.LENPCYL = this.spectacle.LEDPCYL;
+      this.spectacle.LENPAxis = this.spectacle.LEDPAxis;
+    }
+  
+    if (x === 'R' && y === 0){
+      
+      if (this.spectacle.RENPSPH === ''){
+         k =  Number(this.spectacle.REDPSPH) + Number(this.spectacle.R_Addition) 
+         this.spectacle.RENPSPH = '+' + k.toFixed(2).toString()
+       }else if(this.spectacle.R_Addition !== '' && this.spectacle.REDPSPH !== ''){
+        k =  Number(this.spectacle.REDPSPH) + Number(this.spectacle.R_Addition) 
+         this.spectacle.RENPSPH = '+' + k.toFixed(2).toString()
+      }else{
+         a  =  Number(this.spectacle.RENPSPH) - Number(this.spectacle.REDPSPH) 
+         this.spectacle.R_Addition = '+' + a.toFixed(2).toString()
+        
+       }
+
+
+     
+
+      
+      
+        this.spectacle.RENPCYL = this.spectacle.REDPCYL;
+        this.spectacle.RENPAxis = this.spectacle.REDPAxis; 
+      }
+
+    if (x === 'L' && y === 0){
+      if(Number(this.spectacle.L_Addition != '')){
+        k = Number(this.spectacle.L_Addition) + Number(this.spectacle.LEDPSPH);
+      }else{
+        Number(this.spectacle.L_Addition) 
+      }
+
+     
+      if (k >= 0)
+      {this.spectacle.LENPSPH = '+' + k.toFixed(2).toString(); } 
+      else { 
+        this.spectacle.LENPSPH =  k.toFixed(2).toString(); } 
+        this.spectacle.LENPCYL = this.spectacle.LEDPCYL;
+        this.spectacle.LENPAxis = this.spectacle.LEDPAxis;}
+
+   }else {
+    if (x === 'R' && y === 1)
+    { this.clens.R_Addition =
+      Math.abs(Number(this.clens.RENPSPH) - Number(this.clens.REDPSPH)); 
+      this.clens.RENPCYL = this.clens.REDPCYL;
+      this.clens.RENPAxis = this.clens.REDPAxis;
+    }
+    if (x === 'L' && y === 1){ 
+       this.clens.L_Addition =
+      Math.abs(Number(this.clens.LENPSPH) - Number(this.clens.LEDPSPH));
+      this.clens.LENPCYL = this.clens.LEDPCYL;
+      this.clens.LENPAxis = this.clens.LEDPAxis; }
+    if (x === 'R' && y === 0){
+      k = Number(this.clens.R_Addition) + Number(this.clens.REDPSPH);
+      if (k >= 0){this.clens.RENPSPH = '+' +  k.toFixed(2).toString(); } else { 
+        this.clens.RENPSPH = k.toFixed(2).toString(); }
+        this.clens.RENPCYL = this.clens.REDPCYL;
+        this.clens.RENPAxis = this.clens.REDPAxis; }
+    if (x === 'L' && y === 0){
+      k = Number(this.clens.L_Addition) + Number(this.clens.LEDPSPH);
+      if (k >= 0){this.clens.LENPSPH = '+' + k.toFixed(2).toString(); } else { 
+        this.clens.LENPSPH =  k.toFixed(2).toString(); } 
+        this.clens.LENPCYL = this.clens.LEDPCYL;
+        this.clens.LENPAxis = this.clens.LEDPAxis;}
+   }
+  }
 
 }

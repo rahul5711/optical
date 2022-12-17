@@ -17,7 +17,7 @@
     color: #fff;
     height: 21px;
     font-weight: 500;
-    border-radius: 3px;
+    border-radius: 0px;
 }
 
 
@@ -68,7 +68,7 @@
     color: #f7f7f7;
     background: #ff5100;
     padding: 3px;
-    border-radius: 4px;
+    border-radius: 0px;
 }
 
 .powerRow {
@@ -109,5 +109,47 @@
 /* Add a thumb */
 .mostly-customized-scrollbar::-webkit-scrollbar-thumb {
   background: rgb(62, 79, 173);
+}
+
+.table thead tr th {
+    padding: 4px;
+    border-bottom: 1px solid #eee;
+    color: #000 !important;
+    font-weight: bolder;
+    font-size: 13px;
+    text-align: center;
+    vertical-align: text-top;
+}
+
+.table tbody tr td {
+    padding: 0px;
+    font-size: 12px !important;
+}
+
+.edits_icon {
+    background: #393497e8;
+    color: #fff;
+    padding: 2px;
+    border-radius: 24px;
+    font-size: 16px;
+    height: 23px !important;
+    width: 23px !important;
+    transition: 0.5s;
+    cursor: pointer;
+    box-shadow: 2px 2px 6px #9c9795fa;
+    
+}
+
+.deletes_icon {
+    background: #ff0000;
+    color: #fff;
+    padding: 2px;
+    border-radius: 24px;
+    font-size: 18px;
+    height: 24px !important;
+    width: 24px !important;
+    cursor: pointer;
+    transition: 0.5s;
+    box-shadow: 2px 2px 6px #9c9795fa;
 }
 

@@ -566,3 +566,7 @@ user-select: none;
 }
 
 //grid card end
+
+.mat-checkbox-indeterminate.mat-primary .mat-checkbox-background, .mat-checkbox-checked.mat-primary .mat-checkbox-background {
+    background-color: #ff5100 ;
+}

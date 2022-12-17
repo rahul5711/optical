@@ -34,8 +34,8 @@ export class CustomerModel {
 }
 
 export class SpectacleModel {
-  'ID': number | string;
-  'CustomerID': number | string;
+  'ID': any;
+  'CustomerID': any;
   'REDPSPH': number | string;
   'REDPCYL': number | string;
   'REDPAxis': number | string;

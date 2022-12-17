@@ -147,6 +147,6 @@ export class CustomerPowerListComponent implements OnInit {
   }
   
   edits(data:any){
-    // this.spectacleChild[0] = data;
+    this.spectacleChild = data;
   }
 }
