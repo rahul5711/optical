@@ -31,5 +31,13 @@ module.exports = {
         const updateBarcode = await connection.query(`update barcode set ${BarcodeType} = ${Number(barcode[0].MB) + 1}`)
         return Number(barcode[0].MB)
       }
+    },
+    doesExistProduct: async(Body) => {
+      const connection = await getConnection.connection();
+      let qry = `SELECT MAX(Barcode) AS MaxBarcode FROM PurchaseDetail LEFT JOIN BarcodeMaster ON BarcodeMaster.PurchaseDetailID = PurchaseDetail.ID WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND PurchaseDetail.RetailPrice = '${Body.RetailPrice}' AND PurchaseDetail.UnitPrice = '${Body.UnitPrice}' AND PurchaseDetail.MultipleBarcode = ${Body.Multiple} AND PurchaseDetail.CompanyID = '${CompanyID}'AND PurchaseDetail.Status = 1`;
+
+      const barcode = await connection.query(qry)
+      return barcode[0].MaxBarcode
+
     }
   }
