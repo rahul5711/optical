@@ -212,6 +212,14 @@ module.exports = {
             }
 
 
+            //  barcode initiated for company
+
+            const barcode = {CompanyID : saveCompany.insertId , SB: '10000', PB: '90000', MB: '00001'}
+
+            const savebarcode = await connection.query(`insert into barcode(CompanyID, SB, PB, MB, Status, CreatedBy, CreatedOn)values(${barcode.CompanyID}, '${barcode.SB}', '${barcode.PB}', '${barcode.MB}',1,0,now())`)
+
+            console.log(connected("Barcode Initiated SuccessFully !!!"));
+
             const Company = await connection.query(`select * from company where ID = ${saveCompany.insertId}`)
             const User = await connection.query(`select * from User where ID = ${saveUser.insertId}`)
 
