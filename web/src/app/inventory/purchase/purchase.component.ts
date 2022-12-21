@@ -252,16 +252,21 @@ export class PurchaseComponent implements OnInit {
   }
 
   addItem(){
-    this.specList.forEach((element: { CheckBoxValue: boolean | undefined; SelectedValue: string; }) => {
-      if(element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
-        element.SelectedValue = '';
-      } else {
-        element.SelectedValue = element.SelectedValue;
+    if (this.category === 'Product'){
+      if (this.selectedPurchaseMaster.ID !== null){this.item.Status = 2; }
+        this.item.ProductName = "";
+        this.item.ProductExpDate = "0000-00-00";
+        this.specList.forEach((element: any) => {
+      if(element.SelectedValue !== "") {
+        this.item.ProductName = this.item.ProductName  + element.SelectedValue + "/";
       }
-    });
-
+      if(element.FieldType === "Date") {
+        this.item.ProductExpDate = element.SelectedValue;
+      }
+     });
+    }
+    this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
     this.itemList.unshift(this.item);
-    console.log(this.itemList);
     this.tempItem = { Item: null, Spec: null };
 
     if(this.gstLock === false && this.gstperLock === false ) {
@@ -282,7 +287,14 @@ export class PurchaseComponent implements OnInit {
       }
     }
    
-  
+    this.specList.forEach((element: any) => {
+      if(element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
+        element.SelectedValue = '';
+      } else {
+        element.SelectedValue = element.SelectedValue;
+      }
+    });
+
   }
 
   notifyGst() {
