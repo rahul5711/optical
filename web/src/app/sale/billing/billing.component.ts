@@ -15,12 +15,12 @@ import * as moment from 'moment';
 import { CustomerModel, SpectacleModel, ContactModel, OtherModel } from 'src/app/interface/Customer';
 import { CustomerService } from 'src/app/service/customer.service';
 
-
 @Component({
   selector: 'app-billing',
   templateUrl: './billing.component.html',
   styleUrls: ['./billing.component.css']
 })
+
 export class BillingComponent implements OnInit {
   
   user = JSON.parse(localStorage.getItem('user') || '');
@@ -40,8 +40,6 @@ export class BillingComponent implements OnInit {
   contactList: any=[]
   otherList: any=[]
   toggleChecked = false;
-
-
 
   constructor(
     private router: Router,
@@ -184,7 +182,7 @@ export class BillingComponent implements OnInit {
     { Name: '+0.75' },
     { Name: '+0.50' },
     { Name: '+0.25' },
-    { Name: 'PLANO' },
+    { Name: ' ' },
     { Name: '-0.25' },
     { Name: '-0.50' },
     { Name: '-0.75' },
@@ -395,12 +393,12 @@ export class BillingComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.spectacle.REDPSPH = ' '
     this.data.VisitDate = moment().format('YYYY-MM-DD');
     if (this.id != 0) {
       this.getCustomerById(); 
-
     }
- 
+    
   }
 
   copyPower(val: any){
@@ -425,6 +423,27 @@ export class BillingComponent implements OnInit {
       this.spectacle.LENPAxis = '';
       this.spectacle.LENPVA = '';
     }
+    if (val) {
+      this.clens.LEDPSPH = this.clens.REDPSPH;
+      this.clens.LEDPCYL = this.clens.REDPCYL;
+      this.clens.LEDPAxis = this.clens.REDPAxis;
+      this.clens.LEDPVA = this.clens.REDPVA;
+      this.clens.L_Addition = this.clens.R_Addition;
+      this.clens.LENPSPH = this.clens.RENPSPH;
+      this.clens.LENPCYL = this.clens.RENPCYL;
+      this.clens.LENPAxis = this.clens.RENPAxis;
+      this.clens.LENPVA = this.clens.RENPVA;
+    }else{
+      this.clens.LEDPSPH = '';
+      this.clens.LEDPCYL = '';
+      this.clens.LEDPAxis = '';
+      this.clens.LEDPVA = '';
+      this.clens.L_Addition = '';
+      this.clens.LENPSPH = '';
+      this.clens.LENPCYL ='';
+      this.clens.LENPAxis = '';
+      this.clens.LENPVA = '';
+    }
   }
 
   calculateAge() {
@@ -442,6 +461,7 @@ export class BillingComponent implements OnInit {
     if(this.Check.SpectacleCheck === true) {
       this.data.tablename = 'spectacle_rx'
       this.data.spectacle_rx = this.spectacle
+      this.spectacle.ExpiryDate = moment().add(Number(this.spectacle.Reminder), 'M').format('YYYY-MM-DD');
     }
     if(this.Check.ContactCheck === true) {
       this.data.tablename = 'contact_lens_rx'
@@ -455,12 +475,20 @@ export class BillingComponent implements OnInit {
     const subs: Subscription = this.cs.saveCustomer(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
+        if(res.data[0].ID !== 0) {
+          this.id = res.data[0].ID;
+          this.spectacle.CustomerID = this.id;
+          this.clens.CustomerID = this.id;
+          this.other.CustomerID = this.id;
+          this.router.navigate(['/sale/billing', res.data[0].ID ]); 
+          this.getCustomerById();
+        }
           Swal.fire({
             position: 'center',
             icon: 'success',
             title: 'Your Customer has been Save.',
             showConfirmButton: false,
-            timer: 1200
+            timer: 1500
           })
         } else {
           this.as.errorToast(res.message)
@@ -471,7 +499,7 @@ export class BillingComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-
+    this.contactList
   }
 
   getCustomerById(){
@@ -532,6 +560,7 @@ export class BillingComponent implements OnInit {
   }
 
   clearFrom(){
+    this.sp.show();
     this.data = {
       ID: '', CompanyID: '', Idd: 0, Name: '', Sno: '', TotalCustomer: '', VisitDate: this.data.VisitDate, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: '', DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
     };
@@ -555,29 +584,39 @@ export class BillingComponent implements OnInit {
       ID: '', CustomerID: '', BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '',
       R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
     };
-  
+
     this.Check = { SpectacleCheck: true, ContactCheck: false, OtherCheck: false, };
+    this.id = 0;
+    this.router.navigate(['/sale/billing', 0 ]);
+    this.ngOnInit();
+    this.spectacleLists = [];
+    this.contactList = [];
+    this.otherList = [];
+    this.sp.hide();
   }
 
-  NewVisit(){
-    this.spectacle = {
-      ID: 'null', CustomerID: this.id, REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '', R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: '', FileURL: '', Family: 'Self', ExpiryDate: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
-    };
-  
-    this.clens = {
-      ID: 'null', CustomerID: this.id, REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
-      LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
-      R_Addition: '', L_Addition: '', R_KR: '', L_KR: '', R_HVID: '', L_HVID: '', R_CS: '', L_CS: '', R_BC: '', L_BC: '',
-      R_Diameter: '', L_Diameter: '', BR: '', Material: '', Modality: '', RefferedByDoc: 'Self', Other: '', ConstantUse: false,
-      NearWork: false, DistanceWork: false, Multifocal: false, PhotoURL: '', FileURL: '', Family: 'Self', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
-    };
-  
+  NewVisit(mode:any){
+    if(mode === 'spectacle'){
+      this.spectacle = {
+        ID: 'null', CustomerID: this.id, REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '', R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: '', FileURL: '', Family: 'Self', ExpiryDate: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
+      };
+    }
+   
+    if(mode === 'contact'){
+      this.clens = {
+        ID: 'null', CustomerID: this.id, REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
+        LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '', R_Addition: '', L_Addition: '', R_KR: '', L_KR: '', R_HVID: '', L_HVID: '', R_CS: '', L_CS: '', R_BC: '', L_BC: '',
+        R_Diameter: '', L_Diameter: '', BR: '', Material: '', Modality: '', RefferedByDoc: 'Self', Other: '', ConstantUse: false,
+        NearWork: false, DistanceWork: false, Multifocal: false, PhotoURL: '', FileURL: '', Family: 'Self', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
+      };
+    }
+   
     this.other = {
       ID: 'null', CustomerID: this.id, BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: '',  Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
     };
   }
 
-   deleteSpec(i:any,mode:any){
+  deleteSpec(i:any,mode:any){
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -592,15 +631,28 @@ export class BillingComponent implements OnInit {
           const subs: Subscription = this.cs.deleteSpec(this.spectacleLists[i].ID,this.spectacleLists[i].CustomerID,'spectacle_rx').subscribe({
             next: (res: any) => {
               this.spectacleLists.splice(i, 1);
+              if(this.spectacleLists.length === 0){
+                let spec:any = []
+                this.spectacle = spec
+              }else{
+                this.getCustomerById()
+              }
               this.as.successToast(res.message)
             },
             error: (err: any) => console.log(err.message),
             complete: () => subs.unsubscribe(),
           });
+         
         }else if(mode === 'contact'){
           const subs: Subscription = this.cs.deleteSpec(this.contactList[i].ID,this.contactList[i].CustomerID,'contact_lens_rx').subscribe({
             next: (res: any) => {
               this.contactList.splice(i, 1);
+              if(this.contactList.length === 0){
+                let con:any = []
+                this.clens = con
+              }else{
+                this.getCustomerById()
+              }
               this.as.successToast(res.message)
             },
             error: (err: any) => console.log(err.message),
@@ -610,6 +662,12 @@ export class BillingComponent implements OnInit {
           const subs: Subscription = this.cs.deleteSpec(this.otherList[i].ID,this.otherList[i].CustomerID,'other_rx').subscribe({
             next: (res: any) => {
               this.otherList.splice(i, 1);
+              if(this.otherList.length === 0){
+                let orx:any = []
+                this.other = orx
+              }else{
+                this.getCustomerById()
+              }
               this.as.successToast(res.message)
             },
             error: (err: any) => console.log(err.message),
@@ -625,9 +683,9 @@ export class BillingComponent implements OnInit {
         })
       }
     })
-   }
+  }
 
-   edits(data:any,mode:any){
+  edits(data:any,mode:any){
      if(mode === 'spectacle_rx'){
        this.spectacle = data;
      }if(mode === 'contact'){
@@ -635,9 +693,9 @@ export class BillingComponent implements OnInit {
      } if(mode === 'other'){
        this.other = data;
      }
-   }
+  }
 
-   updateCustomer(){
+  updateCustomer(){
     if(this.Check.SpectacleCheck === true) {
       this.data.tablename = 'spectacle_rx'
       this.data.spectacle_rx = this.spectacle
@@ -670,93 +728,188 @@ export class BillingComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
+  }
 
-   }
-
-
-   calculate(mode:any, x:any, y:any){
+  calculate(mode:any, x:any, y:any){
     let k = 0.00;
     let a = 0.00;
-
-    if (mode === 'Lens'){
-    if (x === 'R' && y === 1)
-    { 
-      this.spectacle.R_Addition = Math.abs(Number(this.spectacle.RENPSPH) - Number(this.spectacle.REDPSPH));
-      this.spectacle.RENPCYL = this.spectacle.REDPCYL;
-      this.spectacle.RENPAxis = this.spectacle.REDPAxis;
-    }    
-
-    if (x === 'L' && y === 1)
-    {  
-      this.spectacle.L_Addition =
-      Math.abs(Number(this.spectacle.LENPSPH) - Number(this.spectacle.LEDPSPH));
-      this.spectacle.LENPCYL = this.spectacle.LEDPCYL;
-      this.spectacle.LENPAxis = this.spectacle.LEDPAxis;
-    }
   
-    if (x === 'R' && y === 0){
-      
-      if (this.spectacle.RENPSPH === ''){
-         k =  Number(this.spectacle.REDPSPH) + Number(this.spectacle.R_Addition) 
-         this.spectacle.RENPSPH = '+' + k.toFixed(2).toString()
-       }else if(this.spectacle.R_Addition !== '' && this.spectacle.REDPSPH !== ''){
-        k =  Number(this.spectacle.REDPSPH) + Number(this.spectacle.R_Addition) 
-         this.spectacle.RENPSPH = '+' + k.toFixed(2).toString()
-      }else{
-         a  =  Number(this.spectacle.RENPSPH) - Number(this.spectacle.REDPSPH) 
-         this.spectacle.R_Addition = '+' + a.toFixed(2).toString()
-        
-       }
-
-
-     
-
-      
-      
+    if (mode === 'Lens'){
+      // right spectacle calculate start
+      if (x === 'RD')
+      { if(this.spectacle.R_Addition !== ''){
+        this.spectacle.R_Addition  = Number(this.spectacle.RENPSPH)  - Number(this.spectacle.REDPSPH)
+        if(this.spectacle.R_Addition >= 0){
+          this.spectacle.R_Addition = '+' + this.spectacle.R_Addition.toFixed(2).toString()
+        }else{
+          this.spectacle.R_Addition =  this.spectacle.R_Addition.toFixed(2).toString().replace("-", "+")
+        }
         this.spectacle.RENPCYL = this.spectacle.REDPCYL;
-        this.spectacle.RENPAxis = this.spectacle.REDPAxis; 
+        this.spectacle.RENPAxis = this.spectacle.REDPAxis;
       }
-
-    if (x === 'L' && y === 0){
-      if(Number(this.spectacle.L_Addition != '')){
-        k = Number(this.spectacle.L_Addition) + Number(this.spectacle.LEDPSPH);
-      }else{
-        Number(this.spectacle.L_Addition) 
+       
+      } 
+      if (x === 'R' ){
+        if (this.spectacle.R_Addition !== ''){
+          this.spectacle.RENPSPH = Number(this.spectacle.REDPSPH) + Number(this.spectacle.R_Addition)
+          if(this.spectacle.RENPSPH >= 0){
+            this.spectacle.RENPSPH = '+' + this.spectacle.RENPSPH.toFixed(2).toString()
+          }else{
+            this.spectacle.RENPSPH =  this.spectacle.RENPSPH.toFixed(2).toString()
+          }
+           this.spectacle.RENPCYL = this.spectacle.REDPCYL;
+           this.spectacle.RENPAxis = this.spectacle.REDPAxis; 
+        }else{
+          this.spectacle.RENPSPH = this.spectacle.REDPSPH
+        }
       }
-
-     
-      if (k >= 0)
-      {this.spectacle.LENPSPH = '+' + k.toFixed(2).toString(); } 
-      else { 
-        this.spectacle.LENPSPH =  k.toFixed(2).toString(); } 
+      if (x === 'RN' ){
+        if (this.spectacle.RENPSPH !== '' ){
+          this.spectacle.R_Addition  =  Number(this.spectacle.REDPSPH) -  Number(this.spectacle.RENPSPH) 
+          if(this.spectacle.R_Addition >= 0){
+            this.spectacle.R_Addition = '+' + this.spectacle.R_Addition.toFixed(2).toString().replace("-", "+")
+          }else{
+            this.spectacle.R_Addition =   this.spectacle.R_Addition.toFixed(2).toString().replace("-", "+")
+          }
+          this.spectacle.RENPCYL = this.spectacle.REDPCYL;
+          this.spectacle.RENPAxis = this.spectacle.REDPAxis; 
+        } else{
+          this.spectacle.R_Addition = ''
+        }
+      }
+      // right spectacle calculate end
+      // left spectacle calculate start
+      if (x === 'LD')
+      { if(this.spectacle.L_Addition !== ''){
+        this.spectacle.L_Addition  = Number(this.spectacle.LENPSPH)  - Number(this.spectacle.LEDPSPH)
+        if(this.spectacle.L_Addition >= 0){
+          this.spectacle.L_Addition = '+' + this.spectacle.L_Addition.toFixed(2).toString()
+        }else{
+          this.spectacle.L_Addition =  this.spectacle.L_Addition.toFixed(2).toString().replace("-", "+")
+        }
         this.spectacle.LENPCYL = this.spectacle.LEDPCYL;
-        this.spectacle.LENPAxis = this.spectacle.LEDPAxis;}
+        this.spectacle.LENPAxis = this.spectacle.LEDPAxis;
+      }
+       
+      } 
+      if (x === 'L' ){
+        if (this.spectacle.L_Addition !== ''){
+          this.spectacle.LENPSPH = Number(this.spectacle.LEDPSPH) + Number(this.spectacle.L_Addition)
+          if(this.spectacle.LENPSPH >= 0){
+            this.spectacle.LENPSPH = '+' + this.spectacle.LENPSPH.toFixed(2).toString()
+          }else{
+            this.spectacle.LENPSPH =  this.spectacle.LENPSPH.toFixed(2).toString()
+          }
+           this.spectacle.LENPCYL = this.spectacle.LEDPCYL;
+           this.spectacle.LENPAxis = this.spectacle.LEDPAxis; 
+        }else{
+          this.spectacle.LENPSPH = this.spectacle.LEDPSPH
+        }
+       }
+      if (x === 'LN'){
+       if (this.spectacle.LENPSPH !== '' ){
+          this.spectacle.L_Addition  =  Number(this.spectacle.LEDPSPH) -  Number(this.spectacle.LENPSPH) 
+          if(this.spectacle.L_Addition >= 0){
+            this.spectacle.L_Addition = '+' + this.spectacle.L_Addition.toFixed(2).toString().replace("-", "+")
+          }else{
+            this.spectacle.L_Addition =   this.spectacle.L_Addition.toFixed(2).toString().replace("-", "+")
+          }
+          this.spectacle.LENPCYL = this.spectacle.LEDPCYL;
+          this.spectacle.LENPAxis = this.spectacle.LEDPAxis; 
+        } else{
+          this.spectacle.L_Addition = ''
+        }
+      }
+      // left spectacle calculate end
 
-   }else {
-    if (x === 'R' && y === 1)
-    { this.clens.R_Addition =
-      Math.abs(Number(this.clens.RENPSPH) - Number(this.clens.REDPSPH)); 
-      this.clens.RENPCYL = this.clens.REDPCYL;
-      this.clens.RENPAxis = this.clens.REDPAxis;
-    }
-    if (x === 'L' && y === 1){ 
-       this.clens.L_Addition =
-      Math.abs(Number(this.clens.LENPSPH) - Number(this.clens.LEDPSPH));
-      this.clens.LENPCYL = this.clens.LEDPCYL;
-      this.clens.LENPAxis = this.clens.LEDPAxis; }
-    if (x === 'R' && y === 0){
-      k = Number(this.clens.R_Addition) + Number(this.clens.REDPSPH);
-      if (k >= 0){this.clens.RENPSPH = '+' +  k.toFixed(2).toString(); } else { 
-        this.clens.RENPSPH = k.toFixed(2).toString(); }
+    }else{
+      // right contact calculate end
+      if (x === 'CRD' && y === 0)
+        { if(this.clens.R_Addition !== ''){
+        this.clens.R_Addition  = Number(this.clens.RENPSPH)  - Number(this.clens.REDPSPH)
+        if(this.clens.R_Addition >= 0){
+          this.clens.R_Addition = '+' + this.clens.R_Addition.toFixed(2).toString()
+        }else{
+          this.clens.R_Addition =  this.clens.R_Addition.toFixed(2).toString().replace("-", "+")
+        }
         this.clens.RENPCYL = this.clens.REDPCYL;
-        this.clens.RENPAxis = this.clens.REDPAxis; }
-    if (x === 'L' && y === 0){
-      k = Number(this.clens.L_Addition) + Number(this.clens.LEDPSPH);
-      if (k >= 0){this.clens.LENPSPH = '+' + k.toFixed(2).toString(); } else { 
-        this.clens.LENPSPH =  k.toFixed(2).toString(); } 
+        this.clens.RENPAxis = this.clens.REDPAxis;
+        }
+      } 
+      if (x === 'CR' && y === 0){
+      let CR = 0.00
+         if (this.clens.R_Addition !== ''){
+        this.clens.RENPSPH = Number(this.clens.REDPSPH) + Number(this.clens.R_Addition)
+        if(this.clens.RENPSPH >= 0){
+          this.clens.RENPSPH = '+' + this.clens.RENPSPH.toFixed(2).toString()
+        }else{
+          this.clens.RENPSPH =  this.clens.RENPSPH.toFixed(2).toString()
+        }
+        this.clens.RENPCYL = this.clens.REDPCYL;
+        this.clens.RENPAxis = this.clens.REDPAxis; 
+         }else{
+          this.clens.RENPSPH = this.clens.REDPSPH
+         }
+      }
+      if (x === 'CRN' && y === 0){
+        if (this.clens.RENPSPH !== '' ){
+        this.clens.R_Addition  =  Number(this.clens.REDPSPH) -  Number(this.clens.RENPSPH) 
+        if(this.clens.R_Addition >= 0){
+          this.clens.R_Addition = '+' + this.clens.R_Addition.toFixed(2).toString().replace("-", "+")
+        }else{
+          this.clens.R_Addition =   this.clens.R_Addition.toFixed(2).toString().replace("-", "+")
+        }
+        this.clens.RENPCYL = this.clens.REDPCYL;
+        this.clens.RENPAxis = this.clens.REDPAxis; 
+        } else{
+        this.clens.R_Addition = ''
+        } 
+      }
+      // right contact calculate end
+      // left contact calculate start
+      if (x === 'CLD' && y === 0)
+      { if(this.clens.L_Addition !== ''){
+        this.clens.L_Addition  = Number(this.clens.LENPSPH)  - Number(this.clens.LEDPSPH)
+        if(this.clens.L_Addition >= 0){
+          this.clens.L_Addition = '+' + this.clens.L_Addition.toFixed(2).toString()
+        }else{
+          this.clens.L_Addition =  this.clens.L_Addition.toFixed(2).toString().replace("-", "+")
+        }
         this.clens.LENPCYL = this.clens.LEDPCYL;
-        this.clens.LENPAxis = this.clens.LEDPAxis;}
-   }
+        this.clens.LENPAxis = this.clens.LEDPAxis;
+      }
+       
+      } 
+      if (x === 'CL' && y === 0){
+        if (this.clens.L_Addition !== ''){
+          this.clens.LENPSPH = Number(this.clens.LEDPSPH) + Number(this.clens.L_Addition)
+          if(this.clens.LENPSPH >= 0){
+            this.clens.LENPSPH = '+' + this.clens.LENPSPH.toFixed(2).toString()
+          }else{
+            this.clens.LENPSPH =  this.clens.LENPSPH.toFixed(2).toString()
+          }
+           this.clens.LENPCYL = this.clens.LEDPCYL;
+           this.clens.LENPAxis = this.clens.LEDPAxis; 
+        }else{
+          this.spectacle.LENPSPH = this.spectacle.LEDPSPH
+        }
+       }
+      if (x === 'CLN' && y === 0){
+       if (this.clens.LENPSPH !== '' ){
+          this.clens.L_Addition  =  Number(this.clens.LEDPSPH) -  Number(this.clens.LENPSPH) 
+          if(this.clens.L_Addition >= 0){
+            this.clens.L_Addition = '+' + this.clens.L_Addition.toFixed(2).toString().replace("-", "+")
+          }else{
+            this.clens.L_Addition =   this.clens.L_Addition.toFixed(2).toString().replace("-", "+")
+          }
+          this.clens.LENPCYL = this.clens.LEDPCYL;
+          this.clens.LENPAxis = this.clens.LEDPAxis; 
+        } else{
+          this.clens.L_Addition = ''
+        }
+      }
+      // left contact calculate end
+    }  
   }
 
 }

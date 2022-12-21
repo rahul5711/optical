@@ -19,4 +19,7 @@ Note - 2 value selected in  dorpdown
   Note:-** we have to add column in database GSTType,  in supplier table
   Note:-** we have to add column in database InvoiceNo, CashType in payroll table
   Note:-** we have to add column in database paymentType = pettyCash in table paymentMaster and paymentDetail, invoiceNo in pettyCash table
+
+
+  note customer ka bill bana ho to customer delete nhi hoga.
   

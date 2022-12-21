@@ -21,21 +21,20 @@
                                 <ul class="nav nav-tabs mb-3" id="ex1" role="tablist"
                                     style="justify-content: space-between;">
                                     
-                                    <li class="nav-item d-flex" role="presentation" >
-                                        <mat-checkbox class="example-margin ps-1" color="primary" [(ngModel)]="Check.SpectacleCheck" style="position: absolute;z-index: 9;" > </mat-checkbox>
-                                        <a class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab" href="#ex1-tabs-1" role="tab" aria-controls="ex1-tabs-1"aria-selected="true">Spectacle Rx </a>
+                                    <li   class="nav-item d-flex" role="presentation" >
+                                        <mat-checkbox class="example-margin ps-1" color="primary" [(ngModel)]="Check.SpectacleCheck" style="position: absolute;z-index: 9;" class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab" href="#ex1-tabs-1" role="tab" aria-controls="ex1-tabs-1"aria-selected="true" [disabled]="this.Check.ContactCheck === true || this.Check.OtherCheck === true" >Spectacle Rx </mat-checkbox>
+                                      
                                     </li>
-                                    <li class="nav-item d-flex"  role="presentation">
+                                    <li  class="nav-item d-flex"  role="presentation">
                                         <mat-checkbox class="example-margin ps-1" color="primary" [(ngModel)]="Check.ContactCheck" style="position: absolute;
-                                        z-index: 9;" ></mat-checkbox>
-                                        <a class="nav-link" id="ex1-tab-2" data-mdb-toggle="tab" href="#ex1-tabs-2"
-                                            role="tab" aria-controls="ex1-tabs-2" aria-selected="false">Contact Rx</a>
+                                        z-index: 9;" class="nav-link" id="ex1-tab-2" data-mdb-toggle="tab" href="#ex1-tabs-2"
+                                            role="tab" aria-controls="ex1-tabs-2" aria-selected="false" [disabled]="this.Check.SpectacleCheck === true || this.Check.OtherCheck === true"> Contact Rx</mat-checkbox>
+                                     
                                     </li>
-                                    <li class="nav-item d-flex" role="presentation">
+                                    <li   class="nav-item d-flex" role="presentation">
                                         <mat-checkbox class="example-margin ps-1" color="primary" [(ngModel)]="Check.OtherCheck" style="position: absolute;
-                                        z-index: 9;" ></mat-checkbox>
-                                        <a class="nav-link" id="ex1-tab-3" data-mdb-toggle="tab" href="#ex1-tabs-3"
-                                            role="tab" aria-controls="ex1-tabs-3" aria-selected="false">Other Rx</a>
+                                        z-index: 9;" class="nav-link" id="ex1-tab-3" data-mdb-toggle="tab" href="#ex1-tabs-3"
+                                            role="tab" aria-controls="ex1-tabs-3" aria-selected="false" [disabled]="this.Check.SpectacleCheck === true || this.Check.ContactCheck === true">Other Rx</mat-checkbox>
                                     </li>
                                 </ul>
                                 <!-- nav-tabs end -->
@@ -80,7 +79,7 @@
                                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-4 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>DOB</mat-label>
-                                                <input matInput name="DOB" type="date" [(ngModel)]="data.DOB" (blur)="calculateAge()">
+                                                <input matInput name="DOB" type="date" [(ngModel)]="data.DOB" (change)="calculateAge()">
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-1 col-lg-1 col-md-1 col-sm-3 mb-0">
@@ -166,7 +165,7 @@
                                                 </div>
                                                 <!-- herder label start -->
                                                 <div class="row mt-1 powerRow">
-                                                    <div class="col-1 p-0"><b class="extra m-0  ms-1" style="padding: 2px;cursor: pointer;" (click)="NewVisit()">N_Visit</b> </div>
+                                                    <div class="col-1 p-0"><b class="extra m-0  ms-1" style="padding: 2px;cursor: pointer;" (click)="NewVisit('spectacle')">N_Visit</b> </div>
                                                     <div class="col-1">SPH </div>
                                                     <div class="col-1">CYL </div>
                                                     <div class="col-1">AXIS </div>
@@ -184,9 +183,17 @@
                                                     style="justify-content: space-between;margin-right: 12px;">
                                                     <div class="col-1 fw-bold pe-0">Dis.</div>
                                                     <div class="col-1">
+                                                        
+                                                        <!-- <ng-select style="height: 40px;
+                                                        border: 1px solid;"  class="inputWidth box" bindLabel="REDPSPH" name="REDPSPH"  type="text" [(ngModel)]="spectacle.REDPSPH" [required]="true" #REDPSPH="ngModel" id="REDPSPH" [closeOnSelect]="true" [searchable]="true" [clearable]="false">
+                                                         <ng-option [value]="d.Name" *ngFor="let d of dataSPH" >
+                                                                {{d.Name}} 
+                                                        </ng-option>
+                                                         </ng-select> -->
+
                                                         <input class="inputWidth box" type="text"  name="REDPSPH"  
                                                             [(ngModel)]="spectacle.REDPSPH" id="REDPSPH"
-                                                            list="dpsphList">
+                                                            list="dpsphList" (change)="calculate('Lens', 'RD', 0.00)">
                                                         <datalist id="dpsphList">
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH" >
                                                                 {{d.Name}} </option>
@@ -219,7 +226,7 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="LEDPSPH"  
-                                                            [(ngModel)]="spectacle.LEDPSPH" id="LEDPSPH"
+                                                            [(ngModel)]="spectacle.LEDPSPH" id="LEDPSPH" (change)="calculate('Lens', 'LD', 0.00)"
                                                             list="dpsphList">
                                                         <datalist id="dpsphList">
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH">
@@ -249,7 +256,7 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="L_Addition"
-                                                            [(ngModel)]="spectacle.L_Addition">
+                                                            [(ngModel)]="spectacle.L_Addition" (change)="calculate('Lens', 'L', 0.00)">
                                                     </div>
                                                 </div>
                                                 <!-- distance input box label end -->
@@ -261,7 +268,7 @@
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="RENPSPH"  
                                                             [(ngModel)]="spectacle.RENPSPH" id="RENPSPH"
-                                                            list="dpsphList" (change)="calculate('Lens', 'R', 0.00)">
+                                                            list="dpsphList" (change)="calculate('Lens', 'RN', 0.00)">
                                                         <datalist id="dpsphList">
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH">
                                                                 {{d.Name}} </option>
@@ -295,7 +302,7 @@
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="LENPSPH"
                                                             [(ngModel)]="spectacle.LENPSPH" id="LENPSPH"
-                                                            list="dpsphList">
+                                                            list="dpsphList" (change)="calculate('Lens', 'LN', 0.00)">
                                                         <datalist id="dpsphList">
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH">
                                                                 {{d.Name}} </option>
@@ -496,16 +503,21 @@
                                                     <div class="col-1 m-0 p-0 ps-1">
                                                         <button class="extra m-0" (click)="openModal(Contact)">EXTRA</button>
                                                     </div>
-                                                    <div class="col-3">
+                                                    <div class="col-2">
                                                         <span class="right_letf">Right Eye</span>
                                                     </div>
-                                                    <div class="col-4 ">
+                                                    <div class="col-2">
+                                                        
+                                                        <mat-slide-toggle   [checked]="toggleChecked" (change)="copyPower($event.checked)"
+                                                        [disabled]="false" color="primary" class="example-margin" #Multiplecontrol></mat-slide-toggle>
+                                                    </div>
+                                                    <div class="col-3 ">
                                                         <span class="right_letf">Left Eye</span>
                                                     </div>
                                                 </div>
                                                 <!-- herder label start -->
                                                 <div class="row mt-1 powerRow">
-                                                    <div class="col-1"> </div>
+                                                    <div class="col-1 p-0"><b class="extra m-0  ms-1" style="padding: 2px;cursor: pointer;" (click)="NewVisit('contact')">N_Visit</b> </div>
                                                     <div class="col-1">SPH </div>
                                                     <div class="col-1">CYL </div>
                                                     <div class="col-1">AXIS </div>
@@ -524,8 +536,8 @@
                                                     <div class="col-1 fw-bold pe-0">Dis.</div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="CREDPSPH"
-                                                            [(ngModel)]="clens.REDPSPH" id="CREDPSPH" list="cdpsphList">
-                                                        <datalist id="cdpsphList">
+                                                            [(ngModel)]="clens.REDPSPH" id="CREDPSPH" list="cdpsphList" (change)="calculate('', 'CRD', 0.00)">
+                                                        <datalist id="cdpsphList">c
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH">
                                                                 {{d.Name}} </option>
                                                         </datalist>
@@ -552,11 +564,11 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="CR_Addition"
-                                                            [(ngModel)]="clens.R_Addition">
+                                                            [(ngModel)]="clens.R_Addition" (change)="calculate(' ', 'CR', 0.00)">
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="CLEDPSPH"  
-                                                            [(ngModel)]="clens.LEDPSPH" id="CLEDPSPH" list="CdpsphList">
+                                                            [(ngModel)]="clens.LEDPSPH" id="CLEDPSPH" list="CdpsphList" (change)="calculate('', 'CLD', 0.00)">
                                                         <datalist id="CdpsphList">
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH">
                                                                 {{d.Name}} </option>
@@ -583,8 +595,8 @@
                                                         </datalist>
                                                     </div>
                                                     <div class="col-1">
-                                                    <input class="inputWidth box" type="text" name="CR_Addition"
-                                                        [(ngModel)]="clens.L_Addition">
+                                                    <input class="inputWidth box" type="text" name="CL_Addition"
+                                                        [(ngModel)]="clens.L_Addition" (change)="calculate('', 'CL', 0.00)">
                                                 </div>
                                                 </div>
                                                 <!-- distance input box end -->
@@ -595,7 +607,7 @@
 
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="CRENPSPH"
-                                                            [(ngModel)]="clens.RENPSPH" id="CRENPSPH" list="CdpsphList">
+                                                            [(ngModel)]="clens.RENPSPH" id="CRENPSPH" list="CdpsphList" (change)="calculate(' ', 'CRN', 0.00)">
                                                         <datalist id="CdpsphList">
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH">
                                                                 {{d.Name}} </option>
@@ -627,7 +639,7 @@
 
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="CLENPSPH"
-                                                            [(ngModel)]="clens.LENPSPH" id="CLENPSPH" list="CdpsphList">
+                                                            [(ngModel)]="clens.LENPSPH" id="CLENPSPH" list="CdpsphList" (change)="calculate('', 'CLN', 0.00)">
                                                         <datalist id="CdpsphList">
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH">
                                                                 {{d.Name}} </option>

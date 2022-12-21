@@ -25,6 +25,7 @@ import { DoctorListComponent } from './doctor-list/doctor-list.component';
 import { BillingComponent } from './billing/billing.component';
 import { CustomerListComponent } from './customer-list/customer-list.component';
 import { CustomerPowerListComponent } from './customer-power-list/customer-power-list.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 @NgModule({
@@ -58,6 +59,7 @@ import { CustomerPowerListComponent } from './customer-power-list/customer-power
     MatCheckboxModule,
     MatTabsModule,
     NgbModule,
+    NgSelectModule
   ]
 })
 export class SaleModule { }

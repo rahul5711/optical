@@ -19,7 +19,15 @@
     font-weight: 500;
     border-radius: 0px;
 }
+@import "~@ng-select/ng-select/themes/default.theme.css";
 
+@import "~@ng-select/ng-select/themes/material.theme.css";
+
+.ng-select .ng-select-container {
+    color: rgba(0, 0, 0, 0.87);
+    align-items: baseline;
+    min-height: 30.5px !important;
+}
 
 .mat-raised-button {
     box-sizing: border-box;
@@ -153,3 +161,38 @@
     box-shadow: 2px 2px 6px #9c9795fa;
 }
 
+.ng-select .ng-select-container {
+    color: #333;
+    background-color: #fff;
+    border-radius: 0px !important;
+    border: 1px solid #ccc !important;
+    height: 26px !important;
+    align-items: top;
+}
+
+.ng-select {
+    padding-bottom: 0em !important;
+}
+
+.ng-select.ng-select-single .ng-select-container .ng-value-container .ng-input {
+    top: 0px !important;
+    left: 0;
+    /* padding-left: 0px !important; */
+    padding-right: 0px !important;
+}
+
+.ng-select .ng-arrow-wrapper {
+    width: 0px !important;
+    padding-right: 0px !important;
+}
+
+.ng-select .ng-select-container .ng-value-container {
+    display: inline-table !important;
+    flex: 1;
+}
+
+.ng-select .ng-select-container {
+    color: rgba(0,0,0,0.87);
+    align-items: baseline !important;
+    min-height: 51.5px !important;
+}

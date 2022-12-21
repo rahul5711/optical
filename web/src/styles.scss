@@ -450,8 +450,6 @@ user-select: none;
     background-color: #fff;
      border-radius: 0px !important;
     border: 0px  !important; 
-    min-height: 36px;
-    align-items: center;
 }
 
 .ng-select .ng-select-container .ng-value-container .ng-placeholder {
@@ -570,3 +568,9 @@ user-select: none;
 .mat-checkbox-indeterminate.mat-primary .mat-checkbox-background, .mat-checkbox-checked.mat-primary .mat-checkbox-background {
     background-color: #ff5100 ;
 }
+
+.ng-select .ng-arrow-wrapper {
+    width: 13px !important;
+    padding-right: 1px;
+}
+
