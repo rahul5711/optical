@@ -58,7 +58,7 @@ module.exports = {
                 CompanyID: CompanyID,
                 ShopID: shopid,
                 PurchaseDate: PurchaseMaster.PurchaseDate ? PurchaseMaster.PurchaseDate : now(),
-                PaymentStatus : paymentStatus,
+                PaymentStatus: paymentStatus,
                 InvoiceNo: PurchaseMaster.InvoiceNo,
                 GSTNo: PurchaseMaster.GSTNo ? PurchaseMaster.GSTNo : '',
                 Quantity: PurchaseMaster.Quantity,
@@ -71,32 +71,55 @@ module.exports = {
                 DueAmount: PurchaseMaster.DueAmount
             }
 
-            // console.log(purchase , 'purchase');
-            // console.log(purchaseDetail , 'purchaseDetail');
+            const supplierId = purchase.SupplierID;
 
-            // const savePurchase = await connection.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${paymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,1,${purchase.DueAmount}, ${LoggedOnUser}, now())`);
+            //  save purchase data
+            const savePurchase = await connection.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${paymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,0,${purchase.TotalAmount}, ${LoggedOnUser}, now())`);
 
-            // console.log(connected("Data Save SuccessFUlly !!!"));
+            console.log(connected("Data Save SuccessFUlly !!!"));
 
+            //  save purchase detail data
             for (const item of purchaseDetail) {
-                const doesProduct = await doesExistProduct(CompanyID,item)
+                const doesProduct = await doesExistProduct(CompanyID, item)
 
                 // generate unique barcode
-                 item.uniqueBarcode = await generateUniqueBarcode(CompanyID,purchase.SupplierID,item)
+                item.UniqueBarcode = await generateUniqueBarcode(CompanyID, supplierId, item)
 
                 // baseBarcode initiated if same product exist or not condition
                 let baseBarCode = 0;
                 if (doesProduct !== 0) {
-                    baseBarCode =  doesProduct
+                    baseBarCode = doesProduct
                 } else {
                     baseBarCode = await generateBarcode(CompanyID, 'SB')
                 }
 
-                console.log(uniqueBarcode);
+                const savePurchaseDetail = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},now())`)
 
 
             }
+            console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
 
+            //  save barcode
+
+            let detailDataForBarCode = await connection.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId}`)
+
+            if (detailDataForBarCode.length) {
+                for (const item of detailDataForBarCode) {
+                    const barcode = Number(item.BaseBarCode) * 1000
+                    let count = 0;
+                    count = item.Quantity;
+                    for (j = 0; j < count; j++) {
+                        const saveBarcode = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, now())`)
+                    }
+                }
+            }
+
+            console.log(connected("Barcode Data Save SuccessFUlly !!!"));
+
+            response.message = "data save sucessfully"
+            response.data = savePurchase.insertId
+            connection.release()
+            return res.send(response)
 
         } catch (error) {
             console.log(error);
