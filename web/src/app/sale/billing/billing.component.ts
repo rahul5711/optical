@@ -393,7 +393,7 @@ export class BillingComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.spectacle.REDPSPH = ' '
+    this.spectacle.REDPSPH = this.dataSPH[100].Name
     this.data.VisitDate = moment().format('YYYY-MM-DD');
     if (this.id != 0) {
       this.getCustomerById(); 
@@ -911,5 +911,6 @@ export class BillingComponent implements OnInit {
       // left contact calculate end
     }  
   }
+ 
 
 }

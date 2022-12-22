@@ -35,7 +35,7 @@
                                         <a class="nav-link" id="ex1-tab-3" data-mdb-toggle="tab" href="#ex1-tabs-3"
                                         role="tab" aria-controls="ex1-tabs-3" aria-selected="false">Other Rx</a>
                                     </li>
-                                    
+
                                 </ul>
                                 <!-- nav-tabs end -->
                             </div>
@@ -45,7 +45,7 @@
                         <form #f="ngForm" autocomplete="off" >
                             <div class="row">
                                 <!-- Customer from start  -->
-                                <div class="col-md-6">
+                                <div class="col-md-6 col-12">
                                     <div class="row">
                                         <!-- <div class="col-xl-2 col-lg-2 col-md-6 col-sm-2 col-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
@@ -138,7 +138,7 @@
                                 </div>
                                 <!-- Customer from end  -->
                                 <!-- power box start  -->
-                                <div class="col-md-6">
+                                <div class="col-md-6 col-12">
                                     <div class="row p-0 m-0">
                                         <!-- Tabs content -->
                                         <div class="tab-content mt-1 p-0 pe-2 ps-0 mostly-customized-scrollbar" id="ex1-content" style="overflow: auto; height: 163px;">
@@ -147,35 +147,33 @@
                                             <div  class="tab-pane fade show active p-1 pb-0" id="ex1-tabs-1" role="tabpanel"
                                                 aria-labelledby="ex1-tab-1" style="border: 1px solid #0027ff">
                                                 <div class="row  powerRow">
-                                                    <div class="col-1 m-0 p-0 ps-1">
+                                                    <div class="col-md-1 col-3 m-0 p-0 ps-1">
                                                         <b class="extra m-0" style="padding: 2px; cursor: pointer;" (click)="openModal(Spectacles)">EXTRA</b>
-                                                        
                                                     </div>
-                                                    <div class="col-2">
+                                                    <div class="col-md-2 col-3">
                                                         <span class="right_letf">Right Eye</span>
                                                     </div>
-                                                    <div class="col-2">
-                                                        
+                                                    <div class="col-md-2 col-2">
                                                         <mat-slide-toggle   [checked]="toggleChecked" (change)="copyPower($event.checked)"
                                                         [disabled]="false" color="primary" class="example-margin" #Multiplecontrol></mat-slide-toggle>
                                                     </div>
-                                                    <div class="col-3 ">
+                                                    <div class="col-md-3 col-3 ">
                                                         <span class="right_letf">Left Eye</span>
                                                     </div>
                                                 </div>
                                                 <!-- herder label start -->
                                                 <div class="row mt-1 powerRow">
-                                                    <div class="col-1 p-0"><b class="extra m-0  ms-1" style="padding: 2px;cursor: pointer;" (click)="NewVisit('spectacle')">N_Visit</b> </div>
-                                                    <div class="col-1">SPH </div>
-                                                    <div class="col-1">CYL </div>
-                                                    <div class="col-1">AXIS </div>
-                                                    <div class="col-1">VA </div>
-                                                    <div class="col-1">ADD </div>
-                                                    <div class="col-1">SPH </div>
-                                                    <div class="col-1">CYL </div>
-                                                    <div class="col-1">AXIS </div>
-                                                    <div class="col-1">VA </div>
-                                                    <div class="col-1 ps-0">ADD </div>
+                                                    <div class="col-md-1 col-2 p-0"><b class="extra m-0  ms-1" style="padding: 2px;cursor: pointer;" (click)="NewVisit('spectacle')">N_Visit</b> </div>
+                                                    <div class="col-md-1 col-2">SPH </div>
+                                                    <div class="col-md-1 col-2">CYL </div>
+                                                    <div class="col-md-1 col-2">AXIS </div>
+                                                    <div class="col-md-1 col-2">VA </div>
+                                                    <div class="col-md-1 col-2">ADD </div>
+                                                    <div class="col-md-1 col-2">SPH </div>
+                                                    <div class="col-md-1 col-2">CYL </div>
+                                                    <div class="col-md-1 col-2">AXIS </div>
+                                                    <div class="col-md-1 col-2">VA </div>
+                                                    <div class="col-md-1 col-2 ps-0">ADD </div>
                                                 </div>
                                                 <!-- herder label end -->
                                                 <!-- distance input box start -->
@@ -192,11 +190,11 @@
                                                          </ng-select> -->
 
                                                         <input class="inputWidth box" type="text"  name="REDPSPH"  
-                                                            [(ngModel)]="spectacle.REDPSPH" id="REDPSPH"
-                                                            list="dpsphList" (change)="calculate('Lens', 'RD', 0.00)">
-                                                        <datalist id="dpsphList">
+                                                            [(ngModel)]="spectacle.REDPSPH" id="REDPSPH" 
+                                                            list="dpsphList"  (change)="calculate('Lens', 'RD', 0.00)">
+                                                        <datalist  id="dpsphList">
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH" >
-                                                                {{d.Name}} </option>
+                                                                {{d.Name}}</option>
                                                         </datalist>
                                                     </div>
                                                     <div class="col-1">
@@ -268,7 +266,7 @@
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="RENPSPH"  
                                                             [(ngModel)]="spectacle.RENPSPH" id="RENPSPH"
-                                                            list="dpsphList" (change)="calculate('Lens', 'RN', 0.00)">
+                                                            list="dpsphList"  (change)="calculate('Lens', 'RN', 0.00)">
                                                         <datalist id="dpsphList">
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH">
                                                                 {{d.Name}} </option>

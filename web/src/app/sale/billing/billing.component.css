@@ -196,3 +196,16 @@
     align-items: baseline !important;
     min-height: 51.5px !important;
 }
+
+.ng-select.ng-select-single .ng-select-container .ng-value-container .ng-input {
+    top: 0px !important;
+    left: 0;
+    padding-left: 0px !important;
+    padding-right: 50px;
+}
+
+.ng-select .ng-select-container .ng-value-container {
+    align-items: stretch;
+    padding: 0 !important;
+    border-top: 0em solid transparent !important;
+}
