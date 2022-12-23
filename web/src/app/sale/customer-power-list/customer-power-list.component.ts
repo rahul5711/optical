@@ -7,14 +7,14 @@ import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/alert.service';
-import { FileUploadService } from 'src/app/service/file-upload.service';
+import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { take } from 'rxjs/operators';
-import { CompressImageService } from 'src/app/service/compress-image.service';
 import * as moment from 'moment';
 import { CustomerModel, SpectacleModel, ContactModel, OtherModel } from 'src/app/interface/Customer';
 import { CustomerService } from 'src/app/service/customer.service';
 import { outputAst } from '@angular/compiler';
+import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
 
 @Component({
   selector: 'app-customer-power-list',

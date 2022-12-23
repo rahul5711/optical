@@ -7,13 +7,15 @@ import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/alert.service';
-import { FileUploadService } from 'src/app/service/file-upload.service';
+import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { take } from 'rxjs/operators';
-import { CompressImageService } from 'src/app/service/compress-image.service';
+import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
 import * as moment from 'moment';
 import { CustomerModel, SpectacleModel, ContactModel, OtherModel } from 'src/app/interface/Customer';
 import { CustomerService } from 'src/app/service/customer.service';
+import { CalculationService } from 'src/app/service/helpers/calculation.service';
+import { CustomerPowerCalculationService } from 'src/app/service/helpers/customer-power-calculation.service';
 
 @Component({
   selector: 'app-billing',
@@ -50,7 +52,8 @@ export class BillingComponent implements OnInit {
     private sp: NgxSpinnerService,
     private modalService: NgbModal,
     private compressImage: CompressImageService,
-    private cs: CustomerService
+    private cs: CustomerService,
+    public calculation: CustomerPowerCalculationService,
   ) {
     this.id = this.route.snapshot.params['id'];
   }
@@ -401,51 +404,6 @@ export class BillingComponent implements OnInit {
     
   }
 
-  copyPower(val: any){
-    if (val) {
-      this.spectacle.LEDPSPH = this.spectacle.REDPSPH;
-      this.spectacle.LEDPCYL = this.spectacle.REDPCYL;
-      this.spectacle.LEDPAxis = this.spectacle.REDPAxis;
-      this.spectacle.LEDPVA = this.spectacle.REDPVA;
-      this.spectacle.L_Addition = this.spectacle.R_Addition;
-      this.spectacle.LENPSPH = this.spectacle.RENPSPH;
-      this.spectacle.LENPCYL = this.spectacle.RENPCYL;
-      this.spectacle.LENPAxis = this.spectacle.RENPAxis;
-      this.spectacle.LENPVA = this.spectacle.RENPVA;
-    }else{
-      this.spectacle.LEDPSPH = '';
-      this.spectacle.LEDPCYL = '';
-      this.spectacle.LEDPAxis = '';
-      this.spectacle.LEDPVA = '';
-      this.spectacle.L_Addition = '';
-      this.spectacle.LENPSPH = '';
-      this.spectacle.LENPCYL ='';
-      this.spectacle.LENPAxis = '';
-      this.spectacle.LENPVA = '';
-    }
-    if (val) {
-      this.clens.LEDPSPH = this.clens.REDPSPH;
-      this.clens.LEDPCYL = this.clens.REDPCYL;
-      this.clens.LEDPAxis = this.clens.REDPAxis;
-      this.clens.LEDPVA = this.clens.REDPVA;
-      this.clens.L_Addition = this.clens.R_Addition;
-      this.clens.LENPSPH = this.clens.RENPSPH;
-      this.clens.LENPCYL = this.clens.RENPCYL;
-      this.clens.LENPAxis = this.clens.RENPAxis;
-      this.clens.LENPVA = this.clens.RENPVA;
-    }else{
-      this.clens.LEDPSPH = '';
-      this.clens.LEDPCYL = '';
-      this.clens.LEDPAxis = '';
-      this.clens.LEDPVA = '';
-      this.clens.L_Addition = '';
-      this.clens.LENPSPH = '';
-      this.clens.LENPCYL ='';
-      this.clens.LENPAxis = '';
-      this.clens.LENPVA = '';
-    }
-  }
-
   calculateAge() {
     if (this.data.DOB) {
       var timeDiff = Math.abs(Date.now() - new Date(this.data.DOB).getTime());
@@ -730,186 +688,12 @@ export class BillingComponent implements OnInit {
     });
   }
 
-  calculate(mode:any, x:any, y:any){
-    let k = 0.00;
-    let a = 0.00;
-  
-    if (mode === 'Lens'){
-      // right spectacle calculate start
-      if (x === 'RD')
-      { if(this.spectacle.R_Addition !== ''){
-        this.spectacle.R_Addition  = Number(this.spectacle.RENPSPH)  - Number(this.spectacle.REDPSPH)
-        if(this.spectacle.R_Addition >= 0){
-          this.spectacle.R_Addition = '+' + this.spectacle.R_Addition.toFixed(2).toString()
-        }else{
-          this.spectacle.R_Addition =  this.spectacle.R_Addition.toFixed(2).toString().replace("-", "+")
-        }
-        this.spectacle.RENPCYL = this.spectacle.REDPCYL;
-        this.spectacle.RENPAxis = this.spectacle.REDPAxis;
-      }
-       
-      } 
-      if (x === 'R' ){
-        if (this.spectacle.R_Addition !== ''){
-          this.spectacle.RENPSPH = Number(this.spectacle.REDPSPH) + Number(this.spectacle.R_Addition)
-          if(this.spectacle.RENPSPH >= 0){
-            this.spectacle.RENPSPH = '+' + this.spectacle.RENPSPH.toFixed(2).toString()
-          }else{
-            this.spectacle.RENPSPH =  this.spectacle.RENPSPH.toFixed(2).toString()
-          }
-           this.spectacle.RENPCYL = this.spectacle.REDPCYL;
-           this.spectacle.RENPAxis = this.spectacle.REDPAxis; 
-        }else{
-          this.spectacle.RENPSPH = this.spectacle.REDPSPH
-        }
-      }
-      if (x === 'RN' ){
-        if (this.spectacle.RENPSPH !== '' ){
-          this.spectacle.R_Addition  =  Number(this.spectacle.REDPSPH) -  Number(this.spectacle.RENPSPH) 
-          if(this.spectacle.R_Addition >= 0){
-            this.spectacle.R_Addition = '+' + this.spectacle.R_Addition.toFixed(2).toString().replace("-", "+")
-          }else{
-            this.spectacle.R_Addition =   this.spectacle.R_Addition.toFixed(2).toString().replace("-", "+")
-          }
-          this.spectacle.RENPCYL = this.spectacle.REDPCYL;
-          this.spectacle.RENPAxis = this.spectacle.REDPAxis; 
-        } else{
-          this.spectacle.R_Addition = ''
-        }
-      }
-      // right spectacle calculate end
-      // left spectacle calculate start
-      if (x === 'LD')
-      { if(this.spectacle.L_Addition !== ''){
-        this.spectacle.L_Addition  = Number(this.spectacle.LENPSPH)  - Number(this.spectacle.LEDPSPH)
-        if(this.spectacle.L_Addition >= 0){
-          this.spectacle.L_Addition = '+' + this.spectacle.L_Addition.toFixed(2).toString()
-        }else{
-          this.spectacle.L_Addition =  this.spectacle.L_Addition.toFixed(2).toString().replace("-", "+")
-        }
-        this.spectacle.LENPCYL = this.spectacle.LEDPCYL;
-        this.spectacle.LENPAxis = this.spectacle.LEDPAxis;
-      }
-       
-      } 
-      if (x === 'L' ){
-        if (this.spectacle.L_Addition !== ''){
-          this.spectacle.LENPSPH = Number(this.spectacle.LEDPSPH) + Number(this.spectacle.L_Addition)
-          if(this.spectacle.LENPSPH >= 0){
-            this.spectacle.LENPSPH = '+' + this.spectacle.LENPSPH.toFixed(2).toString()
-          }else{
-            this.spectacle.LENPSPH =  this.spectacle.LENPSPH.toFixed(2).toString()
-          }
-           this.spectacle.LENPCYL = this.spectacle.LEDPCYL;
-           this.spectacle.LENPAxis = this.spectacle.LEDPAxis; 
-        }else{
-          this.spectacle.LENPSPH = this.spectacle.LEDPSPH
-        }
-       }
-      if (x === 'LN'){
-       if (this.spectacle.LENPSPH !== '' ){
-          this.spectacle.L_Addition  =  Number(this.spectacle.LEDPSPH) -  Number(this.spectacle.LENPSPH) 
-          if(this.spectacle.L_Addition >= 0){
-            this.spectacle.L_Addition = '+' + this.spectacle.L_Addition.toFixed(2).toString().replace("-", "+")
-          }else{
-            this.spectacle.L_Addition =   this.spectacle.L_Addition.toFixed(2).toString().replace("-", "+")
-          }
-          this.spectacle.LENPCYL = this.spectacle.LEDPCYL;
-          this.spectacle.LENPAxis = this.spectacle.LEDPAxis; 
-        } else{
-          this.spectacle.L_Addition = ''
-        }
-      }
-      // left spectacle calculate end
+  copyPower(mode:any){
+    this.calculation.copyPower(mode, this.spectacle, this.clens)
+  }
 
-    }else{
-      // right contact calculate end
-      if (x === 'CRD' && y === 0)
-        { if(this.clens.R_Addition !== ''){
-        this.clens.R_Addition  = Number(this.clens.RENPSPH)  - Number(this.clens.REDPSPH)
-        if(this.clens.R_Addition >= 0){
-          this.clens.R_Addition = '+' + this.clens.R_Addition.toFixed(2).toString()
-        }else{
-          this.clens.R_Addition =  this.clens.R_Addition.toFixed(2).toString().replace("-", "+")
-        }
-        this.clens.RENPCYL = this.clens.REDPCYL;
-        this.clens.RENPAxis = this.clens.REDPAxis;
-        }
-      } 
-      if (x === 'CR' && y === 0){
-      let CR = 0.00
-         if (this.clens.R_Addition !== ''){
-        this.clens.RENPSPH = Number(this.clens.REDPSPH) + Number(this.clens.R_Addition)
-        if(this.clens.RENPSPH >= 0){
-          this.clens.RENPSPH = '+' + this.clens.RENPSPH.toFixed(2).toString()
-        }else{
-          this.clens.RENPSPH =  this.clens.RENPSPH.toFixed(2).toString()
-        }
-        this.clens.RENPCYL = this.clens.REDPCYL;
-        this.clens.RENPAxis = this.clens.REDPAxis; 
-         }else{
-          this.clens.RENPSPH = this.clens.REDPSPH
-         }
-      }
-      if (x === 'CRN' && y === 0){
-        if (this.clens.RENPSPH !== '' ){
-        this.clens.R_Addition  =  Number(this.clens.REDPSPH) -  Number(this.clens.RENPSPH) 
-        if(this.clens.R_Addition >= 0){
-          this.clens.R_Addition = '+' + this.clens.R_Addition.toFixed(2).toString().replace("-", "+")
-        }else{
-          this.clens.R_Addition =   this.clens.R_Addition.toFixed(2).toString().replace("-", "+")
-        }
-        this.clens.RENPCYL = this.clens.REDPCYL;
-        this.clens.RENPAxis = this.clens.REDPAxis; 
-        } else{
-        this.clens.R_Addition = ''
-        } 
-      }
-      // right contact calculate end
-      // left contact calculate start
-      if (x === 'CLD' && y === 0)
-      { if(this.clens.L_Addition !== ''){
-        this.clens.L_Addition  = Number(this.clens.LENPSPH)  - Number(this.clens.LEDPSPH)
-        if(this.clens.L_Addition >= 0){
-          this.clens.L_Addition = '+' + this.clens.L_Addition.toFixed(2).toString()
-        }else{
-          this.clens.L_Addition =  this.clens.L_Addition.toFixed(2).toString().replace("-", "+")
-        }
-        this.clens.LENPCYL = this.clens.LEDPCYL;
-        this.clens.LENPAxis = this.clens.LEDPAxis;
-      }
-       
-      } 
-      if (x === 'CL' && y === 0){
-        if (this.clens.L_Addition !== ''){
-          this.clens.LENPSPH = Number(this.clens.LEDPSPH) + Number(this.clens.L_Addition)
-          if(this.clens.LENPSPH >= 0){
-            this.clens.LENPSPH = '+' + this.clens.LENPSPH.toFixed(2).toString()
-          }else{
-            this.clens.LENPSPH =  this.clens.LENPSPH.toFixed(2).toString()
-          }
-           this.clens.LENPCYL = this.clens.LEDPCYL;
-           this.clens.LENPAxis = this.clens.LEDPAxis; 
-        }else{
-          this.spectacle.LENPSPH = this.spectacle.LEDPSPH
-        }
-       }
-      if (x === 'CLN' && y === 0){
-       if (this.clens.LENPSPH !== '' ){
-          this.clens.L_Addition  =  Number(this.clens.LEDPSPH) -  Number(this.clens.LENPSPH) 
-          if(this.clens.L_Addition >= 0){
-            this.clens.L_Addition = '+' + this.clens.L_Addition.toFixed(2).toString().replace("-", "+")
-          }else{
-            this.clens.L_Addition =   this.clens.L_Addition.toFixed(2).toString().replace("-", "+")
-          }
-          this.clens.LENPCYL = this.clens.LEDPCYL;
-          this.clens.LENPAxis = this.clens.LEDPAxis; 
-        } else{
-          this.clens.L_Addition = ''
-        }
-      }
-      // left contact calculate end
-    }  
+  calculate(mode:any,x:any,y:any){
+   this.calculation.calculate(mode, x, y ,this.spectacle , this.clens)
   }
  
 

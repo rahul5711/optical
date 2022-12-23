@@ -7,15 +7,15 @@ import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
 import { AlertService } from 'src/app/service/alert.service';
-import { FileUploadService } from 'src/app/service/file-upload.service';
+import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { SupportService } from 'src/app/service/support.service';
-import { CompressImageService } from 'src/app/service/compress-image.service';
-import { ExcelService } from 'src/app/service/excel.service';
+import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
+import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { SupplierModel} from 'src/app/interface/Supplier';
 
 @Component({

@@ -14,7 +14,7 @@ import { ExpenseService } from 'src/app/service/expense.service';
 import { ShopService } from 'src/app/service/shop.service';
 import { SupportService } from 'src/app/service/support.service';
 import { ExpenseModel} from 'src/app/interface/Expense';
-import { ExcelService } from 'src/app/service/excel.service';
+import { ExcelService } from 'src/app/service/helpers/excel.service';
 
 @Component({
   selector: 'app-expense',

@@ -8,7 +8,7 @@ import { AlertService } from 'src/app/service/alert.service';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { ExcelService } from 'src/app/service/excel.service';
+import { ExcelService } from 'src/app/service/helpers/excel.service';
 
 @Component({
   selector: 'app-purchase-list',

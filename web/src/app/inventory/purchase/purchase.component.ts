@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { SupportService } from 'src/app/service/support.service';
-import { CalculationService } from 'src/app/service/calculation.service';
+import { CalculationService } from 'src/app/service/helpers/calculation.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
@@ -251,6 +251,11 @@ export class PurchaseComponent implements OnInit {
    this.calculation.calculateFields(fieldName,mode,this.item,this.charge)
   }
 
+calculateGrandTotal(){
+    // this.item.UnitPrice = 0 ? '' : this.item.UnitPrice;
+   this.calculation.calculateGrandTotal(this.selectedPurchaseMaster,this.itemList)
+  }
+
   addItem(){
     if (this.category === 'Product'){
       if (this.selectedPurchaseMaster.ID !== null){this.item.Status = 2; }
@@ -294,8 +299,10 @@ export class PurchaseComponent implements OnInit {
         element.SelectedValue = element.SelectedValue;
       }
     });
-
+    this.calculateGrandTotal()
   }
+
+
 
   notifyGst() {
     if(this.item.GSTPercentage !== 0 && this.item.GSTPercentage !== "0") {

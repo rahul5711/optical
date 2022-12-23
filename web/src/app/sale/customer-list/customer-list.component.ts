@@ -9,7 +9,7 @@ import { DoctorService } from 'src/app/service/doctor.service';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { ExcelService } from 'src/app/service/excel.service';
+import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { CustomerService } from 'src/app/service/customer.service';
 
 @Component({

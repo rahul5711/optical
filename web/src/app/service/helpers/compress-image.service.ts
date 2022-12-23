@@ -3,7 +3,7 @@
 import { Injectable, ErrorHandler } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams, HttpRequest, HttpEvent } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { catchError } from 'rxjs/operators';
 
 // in bytes, compress images larger than 1MB

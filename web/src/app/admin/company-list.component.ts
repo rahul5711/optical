@@ -10,7 +10,7 @@ import { TokenService } from '../service/token.service';
 import { CompanyService } from '../service/company.service';
 import { AlertService } from '../service/alert.service';
 import { AuthServiceService } from '../service/auth-service.service';
-import { ExcelService } from '../service/excel.service';
+import { ExcelService } from '../service/helpers/excel.service';
 
 
 @Component({

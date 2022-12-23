@@ -14,7 +14,7 @@ import { Toast } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ShopService } from '../service/shop.service';
 import { RoleService } from '../service/role.service';
-import { DataStorageServiceService } from '../service/data-storage-service.service';
+import { DataStorageServiceService } from '../service/helpers/data-storage-service.service';
 import { environment } from 'src/environments/environment';
 
 @Component({

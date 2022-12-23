@@ -7,12 +7,13 @@ import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
 import { AlertService } from 'src/app/service/alert.service';
-import { FileUploadService } from 'src/app/service/file-upload.service';
+import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { EmployeeService } from 'src/app/service/employee.service';
 import { RoleService } from 'src/app/service/role.service';
 import { ShopService } from 'src/app/service/shop.service';
 import { take } from 'rxjs/operators';
-import { CompressImageService } from 'src/app/service/compress-image.service';
+import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
+
 
 @Component({
   selector: 'app-employee',

@@ -14,7 +14,7 @@ import { EmployeeService } from 'src/app/service/employee.service';
 import { SupportService } from 'src/app/service/support.service';
 import { PettycashModel} from 'src/app/interface/pettycash';
 import { PettycashService } from 'src/app/service/pettycash.service';
-import { ExcelService } from 'src/app/service/excel.service';
+import { ExcelService } from 'src/app/service/helpers/excel.service';
 
 @Component({
   selector: 'app-petty-cash',

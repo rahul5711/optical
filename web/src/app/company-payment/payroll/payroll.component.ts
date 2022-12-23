@@ -14,7 +14,7 @@ import { SupportService } from 'src/app/service/support.service';
 import { PayrollService } from 'src/app/service/payroll.service';
 import { EmployeeService } from 'src/app/service/employee.service';
 import { PayrollModel} from 'src/app/interface/Payroll';
-import { ExcelService } from 'src/app/service/excel.service';
+import { ExcelService } from 'src/app/service/helpers/excel.service';
 
 @Component({
   selector: 'app-payroll',

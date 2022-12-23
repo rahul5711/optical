@@ -6,7 +6,7 @@ import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
 import { AlertService } from 'src/app/service/alert.service';
-import { FileUploadService } from 'src/app/service/file-upload.service';
+import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { CompanyService } from 'src/app/service/company.service';
 
 @Component({

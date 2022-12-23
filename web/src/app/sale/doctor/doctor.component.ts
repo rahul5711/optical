@@ -7,11 +7,12 @@ import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
 import { AlertService } from 'src/app/service/alert.service';
-import { FileUploadService } from 'src/app/service/file-upload.service';
+import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DoctorService } from 'src/app/service/doctor.service';
 import { take } from 'rxjs/operators';
-import { CompressImageService } from 'src/app/service/compress-image.service';
+import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
+
 
 @Component({
   selector: 'app-doctor',

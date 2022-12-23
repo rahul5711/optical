@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,Reacti
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CompanyService } from '../service/company.service';
-import { FileUploadService } from '../service/file-upload.service';
+import { FileUploadService } from '../service/helpers/file-upload.service';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';

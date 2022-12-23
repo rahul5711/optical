@@ -6,14 +6,14 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 import { ShopService } from 'src/app/service/shop.service';
 import { AlertService } from 'src/app/service/alert.service';
-import { FileUploadService } from 'src/app/service/file-upload.service';
+import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { CompressImageService } from 'src/app/service/compress-image.service';
-import { ExcelService } from 'src/app/service/excel.service';
+import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
+import { ExcelService } from 'src/app/service/helpers/excel.service';
 
 
 @Component({
