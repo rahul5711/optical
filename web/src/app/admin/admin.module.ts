@@ -40,64 +40,63 @@ import { ProductMasterComponent } from './product-master/product-master.componen
 import { DeactiveListComponent } from './deactive-list/deactive-list.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { SmsSettingComponent } from './sms-setting/sms-setting.component';
+import { SharedModule } from "../shared/shared.module";
 
 @NgModule({
-  declarations: [
-    CompanyComponent,
-    CompanyListComponent,
-    DashboradComponent,
-    WelcomeComponent,
-    ShopComponent,
-    EmployeeComponent,
-    RoleComponent,
-    LoginHistoryComponent,
-    CompanySettingComponent,
-    ShopListComponent,
-    EmpolyeeListComponent,
-    AdminDashboradComponent,
-    UserUpdatePasswordComponent,
-    ProductManageComponent,
-    AddTypeComponent,
-    CompanyLoginHistoryComponent,
-    ProductMasterComponent,
-    DeactiveListComponent,
-    SmsSettingComponent,
-  ],
+    declarations: [
+        CompanyComponent,
+        CompanyListComponent,
+        DashboradComponent,
+        WelcomeComponent,
+        ShopComponent,
+        EmployeeComponent,
+        RoleComponent,
+        LoginHistoryComponent,
+        CompanySettingComponent,
+        ShopListComponent,
+        EmpolyeeListComponent,
+        AdminDashboradComponent,
+        UserUpdatePasswordComponent,
+        ProductManageComponent,
+        AddTypeComponent,
+        CompanyLoginHistoryComponent,
+        ProductMasterComponent,
+        DeactiveListComponent,
+        SmsSettingComponent,
+    ],
+    exports: [
+        FormsModule, ReactiveFormsModule,
+        NgxSpinnerModule
+    ],
+    imports: [
+        CommonModule,
+        AdminRoutingModule,
+        NgxSpinnerModule,
+        MatRadioModule,
+        AdminRoutingModule,
+        ReactiveFormsModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatFormFieldModule,
+        MatSlideToggleModule,
+        FormsModule,
+        MatInputModule,
+        MatSnackBarModule,
+        MatButtonModule,
+        MatIconModule,
+        MatDialogModule,
+        MatSortModule,
+        MatToolbarModule,
+        MatSelectModule,
+        MatDatepickerModule,
+        MatCheckboxModule,
+        MatTabsModule,
+        AdminRoutingModule,
+        NgbModule,
+        NgSelectModule,
+        SharedModule,
 
-  imports: [
-    CommonModule,
-    AdminRoutingModule,
-    NgxSpinnerModule,
-    MatRadioModule,
-    AdminRoutingModule,
-    ReactiveFormsModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatFormFieldModule,
-    MatSlideToggleModule,
-    FormsModule,
-    MatInputModule,
-    MatSnackBarModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDialogModule,
-    MatSortModule,
-    MatToolbarModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatCheckboxModule,
-    MatTabsModule,
-    AdminRoutingModule,
-    NgbModule,
-    NgSelectModule
-  
-  ],
-
-  exports: [
-    FormsModule, ReactiveFormsModule,
-    NgxSpinnerModule
-
-  ],
+    ]
 })
 
 export class AdminModule { }
