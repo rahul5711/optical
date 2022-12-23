@@ -1,0 +1,350 @@
+{
+	"info": {
+		"_postman_id": "aa7665e5-6506-49a9-993e-70fd16e8da76",
+		"name": "Purchase",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"PurchaseMaster\": {\r\n        \"ID\": null,\r\n        \"SupplierID\": 416,\r\n        \"SupplierName\": \"RAHUL PUNE\",\r\n        \"CompanyID\": null,\r\n        \"GSTNo\": \"\",\r\n        \"ShopID\": 8,\r\n        \"ShopName\": null,\r\n        \"PurchaseDate\": \"2022-12-22\",\r\n        \"PaymentStatus\": null,\r\n        \"InvoiceNo\": \"xxxxx445\",\r\n        \"Status\": 1,\r\n        \"CreatedBy\": null,\r\n        \"Quantity\": 2,\r\n        \"SubTotal\": 400,\r\n        \"DiscountAmount\": 0,\r\n        \"GSTAmount\": 0,\r\n        \"TotalAmount\": 400,\r\n        \"preOrder\": false\r\n    },\r\n    \"PurchaseDetail\": \"[{\\\"ID\\\":null,\\\"PurchaseID\\\":null,\\\"CompanyID\\\":null,\\\"ProductName\\\":\\\"SUPRA/RAYBAN/test1/TR\\\",\\\"ProductTypeName\\\":\\\"FRAME\\\",\\\"ProductTypeID\\\":25,\\\"UnitPrice\\\":\\\"12100\\\",\\\"Quantity\\\":\\\"2000\\\",\\\"SubTotal\\\":400,\\\"DiscountPercentage\\\":0,\\\"DiscountAmount\\\":0,\\\"GSTPercentage\\\":0,\\\"GSTAmount\\\":0,\\\"GSTType\\\":\\\"None\\\",\\\"TotalAmount\\\":400,\\\"Multiple\\\":false,\\\"RetailPrice\\\":0,\\\"WholeSalePrice\\\":0,\\\"Ledger\\\":true,\\\"WholeSale\\\":false,\\\"BaseBarCode\\\":null,\\\"NewBarcode\\\":null,\\\"Status\\\":1,\\\"BrandType\\\":false,\\\"ProductExpDate\\\":\\\"0000-00-00\\\",\\\"Spec\\\":[{\\\"SpecID\\\":2365,\\\"ProductName\\\":\\\"FRAME\\\",\\\"Required\\\":1,\\\"CompanyID\\\":2,\\\"FieldName\\\":\\\"TYPE\\\",\\\"Seq\\\":\\\"1\\\",\\\"FieldType\\\":\\\"DropDown\\\",\\\"Ref\\\":\\\"0\\\",\\\"SptTableName\\\":\\\"TYPE6219151\\\",\\\"SptTableData\\\":[{\\\"ID\\\":17335,\\\"TableName\\\":\\\"TYPE6219151\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"SUPRA\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null},{\\\"ID\\\":17336,\\\"TableName\\\":\\\"TYPE6219151\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"RIMLESS\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null},{\\\"ID\\\":17928,\\\"TableName\\\":\\\"TYPE6219151\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"FULL FRAME\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null}],\\\"SelectedValue\\\":\\\"\\\",\\\"DisplayAdd\\\":0,\\\"EnteredValue\\\":\\\"\\\",\\\"SptFilterData\\\":[{\\\"ID\\\":17335,\\\"TableName\\\":\\\"TYPE6219151\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"SUPRA\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null},{\\\"ID\\\":17336,\\\"TableName\\\":\\\"TYPE6219151\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"RIMLESS\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null},{\\\"ID\\\":17928,\\\"TableName\\\":\\\"TYPE6219151\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"FULL FRAME\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null}]},{\\\"SpecID\\\":2366,\\\"ProductName\\\":\\\"FRAME\\\",\\\"Required\\\":1,\\\"CompanyID\\\":2,\\\"FieldName\\\":\\\"BRAND\\\",\\\"Seq\\\":\\\"2\\\",\\\"FieldType\\\":\\\"DropDown\\\",\\\"Ref\\\":\\\"0\\\",\\\"SptTableName\\\":\\\"BRAND6975361\\\",\\\"SptTableData\\\":[{\\\"ID\\\":17337,\\\"TableName\\\":\\\"BRAND6975361\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"RAYBAN\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null},{\\\"ID\\\":17338,\\\"TableName\\\":\\\"BRAND6975361\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"INDIAN\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null},{\\\"ID\\\":17339,\\\"TableName\\\":\\\"BRAND6975361\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"FASTRACK\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null},{\\\"ID\\\":17340,\\\"TableName\\\":\\\"BRAND6975361\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"TITAN\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null},{\\\"ID\\\":17938,\\\"TableName\\\":\\\"BRAND6975361\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"velocity\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null}],\\\"SelectedValue\\\":\\\"\\\",\\\"DisplayAdd\\\":0,\\\"EnteredValue\\\":\\\"\\\",\\\"SptFilterData\\\":[{\\\"ID\\\":17337,\\\"TableName\\\":\\\"BRAND6975361\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"RAYBAN\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null},{\\\"ID\\\":17338,\\\"TableName\\\":\\\"BRAND6975361\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"INDIAN\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null},{\\\"ID\\\":17339,\\\"TableName\\\":\\\"BRAND6975361\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"FASTRACK\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null},{\\\"ID\\\":17340,\\\"TableName\\\":\\\"BRAND6975361\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"TITAN\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null},{\\\"ID\\\":17938,\\\"TableName\\\":\\\"BRAND6975361\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"velocity\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null}]},{\\\"SpecID\\\":2367,\\\"ProductName\\\":\\\"FRAME\\\",\\\"Required\\\":0,\\\"CompanyID\\\":2,\\\"FieldName\\\":\\\"MODEL NO\\\",\\\"Seq\\\":\\\"3\\\",\\\"FieldType\\\":\\\"Text\\\",\\\"Ref\\\":\\\"0\\\",\\\"SptTableName\\\":\\\"\\\",\\\"SptTableData\\\":null,\\\"SelectedValue\\\":\\\"\\\",\\\"DisplayAdd\\\":0,\\\"EnteredValue\\\":\\\"\\\",\\\"SptFilterData\\\":null},{\\\"SpecID\\\":2429,\\\"ProductName\\\":\\\"FRAME\\\",\\\"Required\\\":0,\\\"CompanyID\\\":2,\\\"FieldName\\\":\\\"MATERIAL\\\",\\\"Seq\\\":\\\"4\\\",\\\"FieldType\\\":\\\"DropDown\\\",\\\"Ref\\\":\\\"0\\\",\\\"SptTableName\\\":\\\"MATERIAL7539871\\\",\\\"SptTableData\\\":[{\\\"ID\\\":17929,\\\"TableName\\\":\\\"MATERIAL7539871\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"TR\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null},{\\\"ID\\\":17930,\\\"TableName\\\":\\\"MATERIAL7539871\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"SHEET\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null},{\\\"ID\\\":17931,\\\"TableName\\\":\\\"MATERIAL7539871\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"PLASTIC\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null},{\\\"ID\\\":17932,\\\"TableName\\\":\\\"MATERIAL7539871\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"METAL\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null}],\\\"SelectedValue\\\":\\\"\\\",\\\"DisplayAdd\\\":0,\\\"EnteredValue\\\":\\\"\\\",\\\"SptFilterData\\\":[{\\\"ID\\\":17929,\\\"TableName\\\":\\\"MATERIAL7539871\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"TR\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null},{\\\"ID\\\":17930,\\\"TableName\\\":\\\"MATERIAL7539871\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"SHEET\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null},{\\\"ID\\\":17931,\\\"TableName\\\":\\\"MATERIAL7539871\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"PLASTIC\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null},{\\\"ID\\\":17932,\\\"TableName\\\":\\\"MATERIAL7539871\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"METAL\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null}]}],\\\"UniqueBarcode\\\":\\\"221235/3500235\\\"}]\",\r\n    \"Charge\": [\r\n    {\r\n        \"ID\": null,\r\n        \"PurchaseID\": null,\r\n        \"ChargeType\": 2,\r\n        \"CompanyID\": null,\r\n        \"Description\": \"1000\",\r\n        \"Amount\": 0,\r\n        \"GSTPercentage\": 18,\r\n        \"GSTAmount\": 18,\r\n        \"GSTType\": \"CGST-SGST\",\r\n        \"TotalAmount\": 118,\r\n        \"Status\": 2,\r\n        \"Price\": 100\r\n    }\r\n]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchase/create",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchase/list",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": 4\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchase/delete",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteProduct",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": 4\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchase/deleteProduct",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"deleteProduct"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteCharge",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": 4\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchase/deleteCharge",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"deleteCharge"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "searchByFeild",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"searchQuery\": \"xxxxxx111\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchase/searchByFeild",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"searchByFeild"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getPurchaseById",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\" : 4\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchase/getPurchaseById",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"getPurchaseById"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getPurchaseById",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\" : 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchase/getPurchaseById",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchase",
+								"getPurchaseById"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1360"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"550-TV2hqCGCnD3t0DC408W+a/p4jjg\""
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 23 Dec 2022 18:19:35 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"result\": {\n        \"PurchaseMaster\": [\n            {\n                \"ID\": 4,\n                \"SupplierID\": 416,\n                \"CompanyID\": 129,\n                \"ShopID\": 1,\n                \"PurchaseDate\": \"2022-12-22\",\n                \"PaymentStatus\": \"Unpaid\",\n                \"InvoiceNo\": \"xxxxx445\",\n                \"GSTNo\": \"\",\n                \"Quantity\": 2,\n                \"SubTotal\": 400,\n                \"DiscountAmount\": 0,\n                \"GSTAmount\": 0,\n                \"TotalAmount\": 400,\n                \"Status\": 1,\n                \"CreatedBy\": 450,\n                \"CreatedOn\": \"2022-12-23 23:25:20\",\n                \"UpdatedBy\": null,\n                \"UpdatedOn\": null,\n                \"PStatus\": 0,\n                \"DueAmount\": 400,\n                \"LastUpdate\": null\n            }\n        ],\n        \"PurchaseDetail\": [\n            {\n                \"ID\": 4,\n                \"PurchaseID\": 4,\n                \"CompanyID\": 129,\n                \"ProductName\": \"SUPRA/RAYBAN/test1/TR\",\n                \"ProductTypeID\": 25,\n                \"ProductTypeName\": \"FRAME\",\n                \"UnitPrice\": 12100,\n                \"Quantity\": 2000,\n                \"SubTotal\": 400,\n                \"DiscountPercentage\": 0,\n                \"DiscountAmount\": 0,\n                \"GSTPercentage\": 0,\n                \"GSTAmount\": 0,\n                \"GSTType\": \"None\",\n                \"TotalAmount\": 400,\n                \"RetailPrice\": 0,\n                \"WholeSalePrice\": 0,\n                \"MultipleBarCode\": 0,\n                \"WholeSale\": 0,\n                \"BaseBarCode\": \"10025\",\n                \"Ledger\": 1,\n                \"Status\": 1,\n                \"CreatedBy\": 450,\n                \"CreatedOn\": \"2022-12-23 23:25:20\",\n                \"UpdatedBy\": null,\n                \"UpdatedOn\": null,\n                \"NewBarcode\": \"10025\",\n                \"ReturnRef\": 0,\n                \"BrandType\": 0,\n                \"UniqueBarcode\": \"22121/1001211\",\n                \"ProductExpDate\": \"0000-00-00\",\n                \"Checked\": 0,\n                \"BillDetailIDForPreOrder\": 0\n            }\n        ],\n        \"Charge\": [\n            {\n                \"ID\": 4,\n                \"PurchaseID\": 4,\n                \"CompanyID\": 129,\n                \"ChargeType\": \"2\",\n                \"Description\": \"1000\",\n                \"Amount\": 100,\n                \"GSTPercentage\": 18,\n                \"GSTAmount\": 18,\n                \"GSTType\": \"CGST-SGST\",\n                \"TotalAmount\": 118,\n                \"Status\": 1,\n                \"CreatedBy\": 450,\n                \"CreatedOn\": \"2022-12-23 23:25:22\",\n                \"UpdatedBy\": null,\n                \"UpdatedOn\": null\n            }\n        ]\n    },\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\"\n}"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzE4MTgwNzIsImV4cCI6MTY3MTkwNDQ3MiwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.4F447DR03YTLU1c_Q6SXozK4TtpUrhRf4OqANVbGBkE",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

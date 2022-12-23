@@ -118,8 +118,13 @@ module.exports = {
 
             //  save charge
 
-            const charge = Charge[0];
-            // const saveCharge
+            if (Charge.length) {
+                for (const c of Charge) {
+                    const saveCharge = await connection.query(`insert into purchasecharge (PurchaseID, ChargeType,CompanyID,Description, Amount, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn ) values (${savePurchase.insertId}, '${c.ChargeType}', ${CompanyID}, '${c.Description}', ${c.Price}, ${c.GSTPercentage}, ${c.GSTAmount}, '${c.GSTType}', ${c.TotalAmount}, 1, ${LoggedOnUser}, now())`)
+                }
+
+                console.log(connected("Charge Data Save SuccessFUlly !!!"));
+            }
 
             response.message = "data save sucessfully"
             response.data = savePurchase.insertId
@@ -130,6 +135,223 @@ module.exports = {
             console.log(error);
             return error
         }
-    }
+    },
+    getPurchaseById: async (req, res, next) => {
+        try {
+            const response = { result: { PurchaseMaster: null, PurchaseDetail: null, Charge: null }, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const { ID } = req.body;
+
+            if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
+
+            const PurchaseMaster = await connection.query(`select * from purchasemasternew where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+
+            const PurchaseDetail = await connection.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${ID} and CompanyID = ${CompanyID}`)
+
+            const Charge = await connection.query(`select * from purchasecharge where Status = 1 and PurchaseID = ${ID} and CompanyID = ${CompanyID}`)
+
+            response.message = "data fetch sucessfully"
+            response.result.PurchaseMaster = PurchaseMaster
+            response.result.PurchaseDetail = PurchaseDetail
+            response.result.Charge = Charge
+            connection.release()
+            return res.send(response)
+
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+    list: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+
+            let page = Body.currentPage;
+            let limit = Body.itemsPerPage;
+            let skip = page * limit - limit;
+
+            let shopId = ``
+
+            if (shopid !== 0) {
+                shopId = `and ShopID = ${shopid}`
+            }
+
+            let qry = `select purchasemasternew.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasemasternew left join user as users1 on users1.ID = purchasemasternew.CreatedBy left join user as users on users.ID = purchasemasternew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID where purchasemasternew.Status = 1 and purchasemasternew.CompanyID = ${CompanyID} ${shopId} order by purchasemasternew.ID desc`
+            let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
+
+
+            let finalQuery = qry + skipQuery;
+
+            let data = await connection.query(finalQuery);
+            let count = await connection.query(qry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = count.length
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+
+    delete: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+
+            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+
+            const doesExist = await connection.query(`select * from purchasemasternew where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "purchase doesnot exist from this id " })
+            }
+
+
+            const doesExistProduct = await connection.query(`select * from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and PurchaseID = '${Body.ID}'`)
+
+            if (doesExistProduct.length) {
+                return res.send({ message: `First you'll have to delete product` })
+            }
+
+
+            const deletePurchase = await connection.query(`update purchasemasternew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+
+            console.log("Purchase Delete SuccessFUlly !!!");
+
+            response.message = "data delete sucessfully"
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            return error
+        }
+    },
+    deleteProduct: async (req, res, next) => {
+        try {
+            const response = { result: { PurchaseDetail: null }, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+
+            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+
+            const doesExist = await connection.query(`select * from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "product doesnot exist from this id " })
+            }
+
+
+            const doesExistProductQty = await connection.query(`select * from barcodemasternew where Status = 1 and CompanyID = '${CompanyID}' and PurchaseDetailID = '${Body.ID}' and CurrentStatus = 'Available'`)
+
+            if (doesExist[0].Quantity !== doesExistProductQty.length) {
+                return res.send({ message: `You have product already sold` })
+            }
+
+
+            const deletePurchasedetail = await connection.query(`update purchasedetailnew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+
+            console.log("Product Delete SuccessFUlly !!!");
+
+            const PurchaseDetail = await connection.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${doesExist[0].PurchaseID} and CompanyID = ${CompanyID}`)
+            response.result.PurchaseDetail = PurchaseDetail;
+            response.message = "data delete sucessfully"
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            return error
+        }
+    },
+    deleteCharge: async (req, res, next) => {
+        try {
+            const response = { result: { Charge: null }, success: true, message: "" }
+            const connection = await getConnection.connection();
+
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+
+            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+
+            const doesExist = await connection.query(`select * from purchasecharge where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "charge doesnot exist from this id " })
+            }
+
+
+
+            const deleteCharge = await connection.query(`update purchasecharge set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+
+            console.log("Charge Delete SuccessFUlly !!!");
+
+            const Charge = await connection.query(`select * from purchasecharge where Status = 1 and PurchaseID = ${doesExist[0].PurchaseID} and CompanyID = ${CompanyID}`)
+            response.result.Charge = Charge;
+            response.message = "data delete sucessfully"
+            connection.release()
+            res.send(response)
+        } catch (error) {
+            return error
+        }
+    },
+
+    searchByFeild: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "", count: 0 }
+            const connection = await getConnection.connection();
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
+
+            let shopId = ``
+
+            if (shopid !== 0) {
+                shopId = `and purchasemasternew.ShopID = ${shopid}`
+            }
+
+
+            let qry = `select purchasemasternew.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasemasternew left join user as users1 on users1.ID = purchasemasternew.CreatedBy left join user as users on users.ID = purchasemasternew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID where purchasemasternew.Status = 1 and purchasemasternew.CompanyID = '${CompanyID}' ${shopId} and purchasemasternew.InvoiceNo like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and purchasemasternew.CompanyID = '${CompanyID}' ${shopId}  and supplier.Name like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and purchasemasternew.CompanyID = '${CompanyID}' ${shopId}  and supplier.GSTNo like '%${Body.searchQuery}%' `
+
+            let data = await connection.query(qry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = data.length
+            connection.release()
+            res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+
+        }
+    },
+
 
 }
