@@ -116,6 +116,11 @@ module.exports = {
 
             console.log(connected("Barcode Data Save SuccessFUlly !!!"));
 
+            //  save charge
+
+            const charge = Charge[0];
+            // const saveCharge
+
             response.message = "data save sucessfully"
             response.data = savePurchase.insertId
             connection.release()
