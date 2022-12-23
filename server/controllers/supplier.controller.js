@@ -141,6 +141,12 @@ module.exports = {
             }
 
 
+            const doesPurchase = await connection.query(`select * from purchasemasternew where Status and CompanyID = ${CompanyID} and SupplierID = ${Body.ID}`)
+
+            if (doesPurchase.length) {
+                return res.send({ message: `You can't delete this supplier because you have inventory of this supplier`})
+            }
+
             const deleteSupplier = await connection.query(`update supplier set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Supplier Delete SuccessFUlly !!!");
