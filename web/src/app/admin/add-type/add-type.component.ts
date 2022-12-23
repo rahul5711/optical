@@ -3,8 +3,8 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,Reacti
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
-import Swal from 'sweetalert2'; 
-import { AlertService } from 'src/app/service/alert.service';
+import Swal from 'sweetalert2';
+import { AlertService } from 'src/app/service/helpers/alert.service';
 import { SupportService } from 'src/app/service/support.service';
 
 @Component({
@@ -82,7 +82,7 @@ export class AddTypeComponent implements OnInit {
       this.newDepartment.Name = "";
       this.getfieldList();
       });
-    }else { 
+    }else {
       Swal.fire({
         icon: 'error',
         title: 'Duplicate or Empty Values are not allowed',
@@ -100,7 +100,7 @@ export class AddTypeComponent implements OnInit {
         title: 'Please Select Value.',
         showConfirmButton: false,
         timer: 2000
-      }) 
+      })
     }else{
     this.depList.forEach((element: { Name: any; ID: any; }) => {
       if(element.Name === this.data1.Category) {
@@ -113,7 +113,7 @@ export class AddTypeComponent implements OnInit {
               title: 'Your file has been deleted.',
               showConfirmButton: false,
               timer: 1200
-            }) 
+            })
           }else {
               this.as.errorToast(res.message)
           }

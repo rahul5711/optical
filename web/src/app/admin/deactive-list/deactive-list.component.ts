@@ -1,11 +1,11 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
 import { CompanyService } from 'src/app/service/company.service';
-import { AlertService } from 'src/app/service/alert.service';
+import { AlertService } from 'src/app/service/helpers/alert.service';
 
 @Component({
   selector: 'app-deactive-list',
@@ -30,7 +30,7 @@ export class DeactiveListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.Deactivelist();    
+    this.Deactivelist();
   }
 
   onPageChange(pageNum: number): void {
@@ -60,7 +60,7 @@ export class DeactiveListComponent implements OnInit {
 
   }
 
-  
+
   activecompany(i:any) {
     Swal.fire({
       title: 'Are you sure?',
@@ -91,7 +91,7 @@ export class DeactiveListComponent implements OnInit {
         })
       }
     })
-  
+
 
   }
 

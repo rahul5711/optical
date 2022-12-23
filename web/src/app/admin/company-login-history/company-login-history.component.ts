@@ -7,7 +7,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { EmployeeService } from 'src/app/service/employee.service';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
-import { AlertService } from 'src/app/service/alert.service';
+import { AlertService } from 'src/app/service/helpers/alert.service';
 
 @Component({
   selector: 'app-company-login-history',
@@ -45,7 +45,7 @@ export class CompanyLoginHistoryComponent implements OnInit {
   changePagesize(num: number): void {
     this.itemsPerPage = this.pageSize + num;
   }
-   
+
   getList() {
     this.sp.show()
     const dtm = {
@@ -89,12 +89,12 @@ export class CompanyLoginHistoryComponent implements OnInit {
   //  const name = e.target.value;
     let data = {
       searchQuery: text.trim(),
-    } 
+    }
     if(data.searchQuery !== "") {
       const dtm = {
         currentPage: 1,
         itemsPerPage: 50000,
-        searchQuery: data.searchQuery 
+        searchQuery: data.searchQuery
       }
       const subs: Subscription = this.es.searchByFeildCompanyAdmin(dtm).subscribe({
         next: (res: any) => {
@@ -109,7 +109,7 @@ export class CompanyLoginHistoryComponent implements OnInit {
       });
     } else {
       this.getList();
-    } 
+    }
     });
   }
 }

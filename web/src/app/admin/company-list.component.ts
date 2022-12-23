@@ -8,7 +8,7 @@ import { fromEvent } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { TokenService } from '../service/token.service';
 import { CompanyService } from '../service/company.service';
-import { AlertService } from '../service/alert.service';
+import { AlertService } from '../service/helpers/alert.service';
 import { AuthServiceService } from '../service/auth-service.service';
 import { ExcelService } from '../service/helpers/excel.service';
 
@@ -47,7 +47,7 @@ export class CompanyListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-   
+
     this.user = JSON.parse(localStorage.getItem('user') || '')
     if (this.user.UserGroup !== 'SuperAdmin') {
       localStorage.clear();
@@ -56,7 +56,7 @@ export class CompanyListComponent implements OnInit {
     } else {
       this.getList();
     }
-   
+
   }
 
   onPageChange(pageNum: number): void {
@@ -125,7 +125,7 @@ export class CompanyListComponent implements OnInit {
       this.sp.hide();
     })
 
-  
+
 
   }
 
@@ -296,7 +296,7 @@ export class CompanyListComponent implements OnInit {
         })
       }
     })
-  
+
 
   }
 

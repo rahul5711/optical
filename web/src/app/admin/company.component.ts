@@ -7,10 +7,10 @@ import { FileUploadService } from '../service/helpers/file-upload.service';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
 import * as moment from 'moment';
 import { CompanyModel} from '../interface/Company';
-import { AlertService } from '../service/alert.service';
+import { AlertService } from '../service/helpers/alert.service';
 
 
 @Component({
@@ -46,14 +46,14 @@ export class CompanyComponent implements OnInit {
     this.env = environment
   }
 
- 
+
   plans: any[] = [
   {ID: 1, Name: 'Trial Plan (15 Days)', days: 15},
-  {ID: 2, Name: 'Monthly Plan (30 Days)', days: 30}, 
+  {ID: 2, Name: 'Monthly Plan (30 Days)', days: 30},
   {ID: 3, Name: 'Half Yearly Plan (180 Days)', days: 180},
   {ID: 4, Name: 'Yearly Plan (365 Days)' , days: 360}];
 
-  
+
   data : any = {
     ID: null, CompanyName: null, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: null, Country: null, State: null, City: null, Email: null, Website: '', GSTNo: '', CINNo: '', LogoURL: null, Remark: '',SRemark:'',CAmount:'', Plan: null, Version: null, NoOfShops: null, EffectiveDate: new Date(), CacellationDate:  null,  WhatsappMsg: false, EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, dataFormat: undefined,
      Name : '', UserGroup : "", DOB : null, Anniversary : null,  Branch : '', FaxNo : '',  PhotoURL : '',LoginName : "", Password : "",
@@ -65,12 +65,12 @@ export class CompanyComponent implements OnInit {
   ngOnInit() {
     this.sp.show();
     if (this.id != 0) {
-      this.getCompanyById(); 
+      this.getCompanyById();
     }
     this.sp.hide();
   }
 
-  onPlanChange(value:any){  
+  onPlanChange(value:any){
     if(this.id !== 0) {
       this.data.EffectiveDate = new Date();
     }
@@ -112,15 +112,15 @@ export class CompanyComponent implements OnInit {
     const subs: Subscription =  this.cs.createCompany( this.data).subscribe({
       next: (res: any) => {
         // this.dataList = res.result;
-        if (res.success) {         
-          this.router.navigate(['/admin/companyList']); 
+        if (res.success) {
+          this.router.navigate(['/admin/companyList']);
           Swal.fire({
             position: 'center',
             icon: 'success',
             title: 'Your file has been Save.',
             showConfirmButton: false,
             timer: 1200
-          }) 
+          })
         } else {
           this.as.errorToast(res.message)
             Swal.fire({
@@ -139,7 +139,7 @@ export class CompanyComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
     this.sp.hide();
-  } 
+  }
 
   getCompanyById(){
     this.sp.show();
@@ -176,8 +176,8 @@ export class CompanyComponent implements OnInit {
               title: 'Your file has been Update.',
               showConfirmButton: false,
               timer: 1200
-            }) 
-           } 
+            })
+           }
         } else {
           this.as.errorToast(res.message)
         }
@@ -220,7 +220,7 @@ export class CompanyComponent implements OnInit {
             timer: 500
           })
         }
-        // this.as.successToast(data.body?.message) 
+        // this.as.successToast(data.body?.message)
       }
     });
     this.sp.hide();

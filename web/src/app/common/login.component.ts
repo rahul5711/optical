@@ -4,12 +4,12 @@ import { NgForm } from '@angular/forms';
 import * as  particlesJS from 'angular-particle';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AlertService } from '../service/alert.service';
+import { AlertService } from '../service/helpers/alert.service';
 import { AuthServiceService } from '../service/auth-service.service';
 import { Subscription } from 'rxjs';
 import { TokenService } from '../service/token.service';
 import { NgxSpinnerService } from 'ngx-spinner';
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
 import { Toast } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ShopService } from '../service/shop.service';
@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
 
   particlesJS: any;
   data:any = { LoginName: '', Password: '' }
- 
+
   user:any =localStorage.getItem('user') || '';
   hide = false
   dropShoplist: any;
@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
 
   }
- 
+
   rolesList(){
     const subs: Subscription = this.role.getList().subscribe({
       next: (res: any) => {
@@ -76,7 +76,7 @@ export class LoginComponent implements OnInit {
     if (this.data.Password === "") {
       return this.as.errorToast("please fill up password")
     }
-    
+
     const subs: Subscription = this.auth.login(this.data).subscribe({
       next: (res: any) => {
         this.sp.show()
@@ -93,7 +93,7 @@ export class LoginComponent implements OnInit {
               let dt = new Date();
               let hours = dt.getHours();
               let min = dt.getMinutes();
-      
+
               if(hours>=1 || hours<=12){
                 Swal.fire({
                   position: 'center',
@@ -145,30 +145,30 @@ export class LoginComponent implements OnInit {
                 showConfirmButton: false,
                 timer: 1500
               })
-            } 
+            }
 
             if( res.data.UserGroup == "Employee"){
                 localStorage.setItem('company', JSON.stringify(res.Company));
                 localStorage.setItem('companysetting', JSON.stringify(res.CompanySetting));
                 localStorage.setItem('user', JSON.stringify(res.data));
                 localStorage.setItem('permission', JSON.stringify(this.moduleList));
-                
+
                 this.dataStorageService.permission = this.moduleList;
                 this.dropShoplist = res.shop
-               
+
                 this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
 
-            }   
-        } 
+            }
+        }
         else {
-          this.as.errorToast(res.message);          
+          this.as.errorToast(res.message);
         }
         this.sp.hide()
       },
       error: (err: any) => console.log(err),
       complete: () => subs.unsubscribe(),
     });
-   
+
   }
 
   saveSelectedShop() {

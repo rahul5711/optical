@@ -5,8 +5,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
-import Swal from 'sweetalert2'; 
-import { AlertService } from 'src/app/service/alert.service';
+import Swal from 'sweetalert2';
+import { AlertService } from 'src/app/service/helpers/alert.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProductService } from 'src/app/service/product.service';
 
@@ -72,7 +72,7 @@ i: any;
              this.specList = data.data;
             });
           }
-        });        
+        });
         if (res.success) {
           Swal.fire({
             position: 'center',
@@ -80,7 +80,7 @@ i: any;
             title: 'Your file has been Save.',
             showConfirmButton: false,
             timer: 1200
-          }) 
+          })
         } else {
           this.as.errorToast(res.message)
         }
@@ -97,10 +97,10 @@ i: any;
       text: '',
       footer: ''
     });
-    this.newProduct.Name = ""; 
+    this.newProduct.Name = "";
     }
     this.sp.hide();
-  } 
+  }
 
   getProductList(){
     this.sp.show();
@@ -118,16 +118,16 @@ i: any;
   getfieldList(){
     this.prodList.forEach((element: { Name: any; HSNCode: any; GSTPercentage: any; GSTType: any; ID: any; }) => {
       if (element.Name === this.selectedProduct) {
-        this.selectedHSNCode = element.HSNCode; 
-        this.selectedGSTPercentage = element.GSTPercentage; 
-        this.selectedGSTType = element.GSTType; 
-        this.selectedProductID = element.ID; 
+        this.selectedHSNCode = element.HSNCode;
+        this.selectedGSTPercentage = element.GSTPercentage;
+        this.selectedGSTType = element.GSTType;
+        this.selectedProductID = element.ID;
       }
     });
 
     if (this.selectedProduct !== null || this.selectedProduct !== '' ){
          this.ps.getSpec(this.selectedProduct).subscribe(data => {
-         this.specList = data.data;        
+         this.specList = data.data;
       });
     }
   }
@@ -148,7 +148,7 @@ i: any;
               title: 'Your file has been deleted.',
               showConfirmButton: false,
               timer: 1200
-            }) 
+            })
           } else {
             this.as.errorToast(res.message)
           }
@@ -164,7 +164,7 @@ i: any;
         title: 'ERROR',
         text: 'First delete related Feild',
         footer: ''
-      }); 
+      });
     }
   }
 
@@ -179,7 +179,7 @@ i: any;
             title: 'Your file has been update Product.',
             showConfirmButton: false,
             timer: 1200,
-          }) 
+          })
         } else {
           this.as.errorToast(res.message)
         }
@@ -188,7 +188,7 @@ i: any;
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
-      
+
     });
      this.selectedProduct = '';
      this.selectedHSNCode = '';
@@ -200,7 +200,7 @@ i: any;
        window.location.reload();
      });
     this.modalService.dismissAll()
- 
+
   }
 
   saveSpec(){
@@ -208,7 +208,7 @@ i: any;
     let count = 0;
     this.specList.forEach((element: { Name: string; }) => {
       if (element.Name.toLowerCase() === this.newSpec.Name.toLowerCase() ){
-        count = count + 1; 
+        count = count + 1;
       }
     });
 
@@ -226,7 +226,7 @@ i: any;
             title: 'Your record has been update Product.',
             showConfirmButton: false,
             timer: 1200
-          }) 
+          })
         } else {
           this.as.errorToast(res.message)
           Swal.fire({
@@ -241,7 +241,7 @@ i: any;
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
-      
+
     });
     } else {
       Swal.fire({
@@ -266,7 +266,7 @@ i: any;
               title: 'Your file has been deleted.',
               showConfirmButton: false,
               timer: 1200
-            }) 
+            })
           } else {
             this.as.errorToast(res.message)
           }
@@ -276,7 +276,7 @@ i: any;
         },
         complete: () => subs.unsubscribe(),
       });
-    
+
 
   }
 
@@ -289,5 +289,5 @@ i: any;
     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'lg' });
     this.getfieldList()
    }
-  
+
 }

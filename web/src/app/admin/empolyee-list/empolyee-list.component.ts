@@ -2,8 +2,8 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
-import Swal from 'sweetalert2'; 
-import { AlertService } from 'src/app/service/alert.service';
+import Swal from 'sweetalert2';
+import { AlertService } from 'src/app/service/helpers/alert.service';
 import { EmployeeService } from 'src/app/service/employee.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -31,7 +31,7 @@ export class EmpolyeeListComponent implements OnInit {
   id:any;
   data = {ID: null, Password :''}
   ConfirmPassword :any;
- 
+
   constructor(
     public as: AlertService,
     private es: EmployeeService,
@@ -44,11 +44,11 @@ export class EmpolyeeListComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    this.getList();  
+    this.getList();
     console.log(this.env.apiUrl);
-    
-    
-     
+
+
+
   }
 
   onPageChange(pageNum: number): void {
@@ -105,7 +105,7 @@ export class EmpolyeeListComponent implements OnInit {
         },
         complete: () => subs.unsubscribe(),
       })
-      
+
       Swal.fire({
         position: 'center',
         icon: 'success',
@@ -126,10 +126,10 @@ export class EmpolyeeListComponent implements OnInit {
         // background: '#fff url(../../../assets/images/relinksyslogo.png)',
         width: 400,
         backdrop: false
-      
+
       })
     }
-    
+
   }
 
   deleteItem(i:any){
@@ -188,12 +188,12 @@ export class EmpolyeeListComponent implements OnInit {
   //  const name = e.target.value;
     let data = {
       searchQuery: text.trim(),
-    } 
+    }
     if(data.searchQuery !== "") {
       const dtm = {
         currentPage: 1,
         itemsPerPage: 50000,
-        searchQuery: data.searchQuery 
+        searchQuery: data.searchQuery
       }
       const subs: Subscription = this.es.searchByFeild(dtm).subscribe({
         next: (res: any) => {
@@ -208,12 +208,12 @@ export class EmpolyeeListComponent implements OnInit {
       });
     } else {
       this.getList();
-    } 
+    }
     });
   }
 
   exportAsXLSX(): void {
     this.excelService.exportAsExcelFile(this.dataList, 'empolyee_list');
-    
+
   }
 }

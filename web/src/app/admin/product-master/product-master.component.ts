@@ -5,8 +5,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
-import Swal from 'sweetalert2'; 
-import { AlertService } from 'src/app/service/alert.service';
+import Swal from 'sweetalert2';
+import { AlertService } from 'src/app/service/helpers/alert.service';
 import { MatSelect } from '@angular/material/select';
 import { ProductService } from 'src/app/service/product.service';
 @Component({
@@ -30,7 +30,7 @@ export class ProductMasterComponent implements OnInit {
   ) {
     this.id = this.route.snapshot.params['id'];
    }
-   
+
    @ViewChild('singleSelect', { static: true }) singleSelect: MatSelect | undefined;
 
    specList: any = [
@@ -61,7 +61,7 @@ export class ProductMasterComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
- 
+
   getFieldList(){
    const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
       next: (res: any) => {
@@ -72,16 +72,16 @@ export class ProductMasterComponent implements OnInit {
      error: (err: any) => console.log(err.message),
      complete: () => subs.unsubscribe(),
    });
-  
+
   }
 
-  getSptTableData() { 
+  getSptTableData() {
    this.specList.forEach((element: any) => {
     if (element.FieldType === 'DropDown' && element.Ref === '0') {
       const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
         next: (res: any) => {
-          element.SptTableData = res.data;   
-          element.SptFilterData = res.data;   
+          element.SptTableData = res.data;
+          element.SptFilterData = res.data;
           // this.as.successToast(res.message)
         },
         error: (err: any) => console.log(err.message),
@@ -96,8 +96,8 @@ export class ProductMasterComponent implements OnInit {
     if (element.Ref === this.specList[index].FieldName.toString() ) {
       const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
         next: (res: any) => {
-          element.SptTableData = res.data;   
-          element.SptFilterData = res.data;   
+          element.SptTableData = res.data;
+          element.SptFilterData = res.data;
           this.as.successToast(res.message)
         },
         error: (err: any) => console.log(err.message),
@@ -126,7 +126,7 @@ saveFieldData(i:any){
       const subss: Subscription =  this.ps.getProductSupportData(RefValue,this.specList[i].SptTableName).subscribe({
         next: (res: any) => {
           this.specList[i].SptTableData = res.data;
-            this.specList[i].SptFilterData = res.data; 
+            this.specList[i].SptFilterData = res.data;
           this.as.successToast(res.message)
         },
         error: (err: any) => console.log(err.message),
@@ -139,18 +139,18 @@ saveFieldData(i:any){
           title: 'Your file has been Save.',
           showConfirmButton: false,
           timer: 1200
-        }) 
+        })
       } else {
         this.as.errorToast(res.message)
       }
     },
-    
+
     error: (err: any) => {
       console.log(err.msg);
     },
     complete: () => subs.unsubscribe(),
   });
- 
+
 }
 
 
@@ -164,7 +164,7 @@ saveFieldData(i:any){
         const subss: Subscription =  this.ps.getProductSupportData(value.Ref,this.specList[i].SptTableName).subscribe({
           next: (res: any) => {
             this.specList[i].SptTableData = res.data;
-              this.specList[i].SptFilterData = res.data; 
+              this.specList[i].SptFilterData = res.data;
             this.as.successToast(res.message)
           },
           error: (err: any) => console.log(err.message),
@@ -177,7 +177,7 @@ saveFieldData(i:any){
             title: 'Your file has been deleted.',
             showConfirmButton: false,
             timer: 1200
-          }) 
+          })
         } else {
           this.as.errorToast(res.message)
         }

@@ -10,7 +10,7 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Router, RouterLink } from '@angular/router';
-import { AlertService } from './alert.service';
+import { AlertService } from './helpers/alert.service';
 import { TokenService } from './token.service';
 import { AuthServiceService } from './auth-service.service';
 

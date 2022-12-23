@@ -4,7 +4,7 @@ import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
-import { AlertService } from 'src/app/service/alert.service';
+import { AlertService } from 'src/app/service/helpers/alert.service';
 import { SupportService } from 'src/app/service/support.service';
 
 @Component({

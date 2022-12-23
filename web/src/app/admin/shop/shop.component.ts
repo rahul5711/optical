@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
 import { ShopService } from 'src/app/service/shop.service';
-import { AlertService } from 'src/app/service/alert.service';
+import { AlertService } from 'src/app/service/helpers/alert.service';
 import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { take } from 'rxjs/operators';
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';

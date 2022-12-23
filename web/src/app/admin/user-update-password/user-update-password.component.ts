@@ -8,7 +8,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2'; 
 import { environment } from 'src/environments/environment';
 import { CompanyService } from 'src/app/service/company.service';
-import { AlertService } from 'src/app/service/alert.service';
+import { AlertService } from 'src/app/service/helpers/alert.service';
 
 
 @Component({

@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
-import { AlertService } from 'src/app/service/alert.service';
+import { AlertService } from 'src/app/service/helpers/alert.service';
 
 @Component({
   selector: 'app-login-history',
@@ -30,7 +30,7 @@ export class LoginHistoryComponent implements OnInit {
     private cs: CompanyService,
     private sp: NgxSpinnerService,
     public as: AlertService,
-  ) { 
+  ) {
     // this.id = this.route.snapshot.params['id'];
   }
   ngOnInit(): void {
@@ -43,7 +43,7 @@ export class LoginHistoryComponent implements OnInit {
   changePagesize(num: number): void {
     this.itemsPerPage = this.pageSize + num;
   }
-   
+
   getList() {
     this.sp.show()
     const dtm = {
@@ -87,12 +87,12 @@ export class LoginHistoryComponent implements OnInit {
   //  const name = e.target.value;
     let data = {
       searchQuery: text.trim(),
-    } 
+    }
     if(data.searchQuery !== "") {
       const dtm = {
         currentPage: 1,
         itemsPerPage: 50000,
-        searchQuery: data.searchQuery 
+        searchQuery: data.searchQuery
       }
       const subs: Subscription = this.cs.searchByFeildAdmin(dtm).subscribe({
         next: (res: any) => {
@@ -107,7 +107,7 @@ export class LoginHistoryComponent implements OnInit {
       });
     } else {
       this.getList();
-    } 
+    }
     });
   }
 

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
-import { AlertService } from 'src/app/service/alert.service';
+import { AlertService } from 'src/app/service/helpers/alert.service';
 import { ProductService } from 'src/app/service/product.service';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';

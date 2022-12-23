@@ -5,8 +5,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { pipe, Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
-import Swal from 'sweetalert2'; 
-import { AlertService } from 'src/app/service/alert.service';
+import Swal from 'sweetalert2';
+import { AlertService } from 'src/app/service/helpers/alert.service';
 import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { EmployeeService } from 'src/app/service/employee.service';
 import { RoleService } from 'src/app/service/role.service';
@@ -31,9 +31,9 @@ export class EmployeeComponent implements OnInit {
   dropShoplist: any;
   userList: any;
   saveUpdateHide:any
-  v = "^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" 
+  v = "^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
   constructor(
-    private router: Router,      
+    private router: Router,
     private route: ActivatedRoute,
     public as: AlertService,
     private es: EmployeeService,
@@ -42,7 +42,7 @@ export class EmployeeComponent implements OnInit {
     private sp: NgxSpinnerService,
     private ss: ShopService,
     private compressImage: CompressImageService
-  ) { 
+  ) {
     this.id = this.route.snapshot.params['id'];
     this.env = environment
   }
@@ -56,12 +56,12 @@ export class EmployeeComponent implements OnInit {
   UserShop: any = {ID: null, UserID: null, ShopID: null, RoleID: null, Status: 1};
 
   ngOnInit(): void {
-    
+
     if (this.id != 0) {
-      this.getUserById(); 
+      this.getUserById();
     }
-    this.rolesList(); 
-    this.dropdownShoplist(); 
+    this.rolesList();
+    this.dropdownShoplist();
   }
 
   onSubmit(){
@@ -69,14 +69,14 @@ export class EmployeeComponent implements OnInit {
       next: (res: any) => {
         // this.dataList = res.result;
         if (res.success) {
-          // this.router.navigate(['/admin/employeeList']); 
+          // this.router.navigate(['/admin/employeeList']);
           Swal.fire({
             position: 'center',
             icon: 'success',
             title: 'Your file has been Save.',
             showConfirmButton: false,
             timer: 1200
-          }) 
+          })
         } else {
           this.as.errorToast(res.message)
           Swal.fire({
@@ -86,19 +86,19 @@ export class EmployeeComponent implements OnInit {
             text:'LoginName Already exist from this LoginName ' + this.data.LoginName,
             showConfirmButton: true,
             backdrop: false
-          }) 
+          })
         }
       },
       error: (err: any) => {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
-      
+
     });
   }
 
   uploadImage(e:any, mode:any){
-   
+
   this.img = e.target.files[0];
    const subs: Subscription = this.compressImage.compress(this.img).pipe(take(1)).subscribe({
     next: (compressedImage: any) => {
@@ -114,7 +114,7 @@ export class EmployeeComponent implements OnInit {
           console.log(err.message);
         },
         complete: () => subss.unsubscribe(),
-      }) 
+      })
     },
     error: (err: any) => {
       console.log(err.message);
@@ -154,7 +154,7 @@ export class EmployeeComponent implements OnInit {
             title: 'Your file has been Update.',
             showConfirmButton: false,
             timer: 1200
-          })   
+          })
         } else {
           this.as.errorToast(res.message)
         }
@@ -164,7 +164,7 @@ export class EmployeeComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    
+
   }
 
   rolesList(){
@@ -194,14 +194,14 @@ export class EmployeeComponent implements OnInit {
     const subs: Subscription =  this.ss.saveUserShop(this.UserShop).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.router.navigate(['/admin/employeeList']); 
+          this.router.navigate(['/admin/employeeList']);
           Swal.fire({
             position: 'center',
             icon: 'success',
             title: 'Your role has been Save.',
             showConfirmButton: false,
             timer: 1200
-          }) 
+          })
         } else {
           this.as.errorToast(res.message)
         }
@@ -210,7 +210,7 @@ export class EmployeeComponent implements OnInit {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
-      
+
     });
   }
 
@@ -218,14 +218,14 @@ export class EmployeeComponent implements OnInit {
     const subs: Subscription =  this.ss.updateUserShop(this.UserShop).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.router.navigate(['/admin/employeeList']); 
+          this.router.navigate(['/admin/employeeList']);
           Swal.fire({
             position: 'center',
             icon: 'success',
             title: 'Your role has been Update.',
             showConfirmButton: false,
             timer: 1200
-          }) 
+          })
         } else {
           this.as.errorToast(res.message)
         }
@@ -234,7 +234,7 @@ export class EmployeeComponent implements OnInit {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
-      
+
     });
   }
 
