@@ -9,6 +9,7 @@ import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators'
 import { fromEvent   } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
+import { PurchaseService } from 'src/app/service/purchase.service';
 
 @Component({
   selector: 'app-purchase-list',
@@ -27,11 +28,13 @@ export class PurchaseListComponent implements OnInit {
   pageSize!: number;
   collectionSize = 0
   page = 4;
+  
   constructor(
     private formBuilder: FormBuilder,
     public as: AlertService,
     private sp: NgxSpinnerService,
     private excelService: ExcelService,
+    private purchaseService: PurchaseService,
   ) { }
 
   ngOnInit(): void {
@@ -48,16 +51,16 @@ export class PurchaseListComponent implements OnInit {
       currentPage: this.currentPage,
       itemsPerPage: this.itemsPerPage
     }
-    // const subs: Subscription = this.fs.getList(dtm).subscribe({
-    //   next: (res: any) => {
-    //     this.collectionSize = res.count;
-    //     this.dataList = res.data;
-    //     this.sp.hide();
-    //     this.as.successToast(res.message)
-    //   },
-    //   error: (err: any) => console.log(err.message),
-    //   complete: () => subs.unsubscribe(),
-    // });
+    const subs: Subscription = this.purchaseService.getList(dtm).subscribe({
+      next: (res: any) => {
+        this.collectionSize = res.count;
+        this.dataList = res.data;
+        this.sp.hide();
+        this.as.successToast(res.message)
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
     this.sp.hide()
 
   }
@@ -73,14 +76,24 @@ export class PurchaseListComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
-        // const subs: Subscription = this.fs.deleteData(this.dataList[i].ID).subscribe({
-        //   next: (res: any) => {
-        //     this.dataList.splice(i, 1);
-        //     this.as.successToast(res.message)
-        //   },
-        //   error: (err: any) => console.log(err.message),
-        //   complete: () => subs.unsubscribe(),
-        // });
+        const subs: Subscription = this.purchaseService.deleteData(this.dataList[i].ID).subscribe({
+          next: (res: any) => {
+            if(res.message === "First you'll have to delete product"){
+              Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: `First you'll have to delete product`,
+                showCancelButton: true,
+              })
+            }else{
+              this.dataList.splice(i, 1);
+              this.as.successToast(res.message)
+            }
+            
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
         Swal.fire({
           position: 'center',
           icon: 'success',
@@ -93,28 +106,13 @@ export class PurchaseListComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    // server-side search
     fromEvent(this.searching.nativeElement, 'keyup').pipe(
-      // get value
       map((event: any) => {
         return event.target.value;
       }),
-
-      // if character length greater then 2
-      // filter(res => res.length > 2),
-
-      // Time in milliseconds between key events
       debounceTime(1000),
-
-      // If previous query is different from current
       distinctUntilChanged(),
-      // tap((event: KeyboardEvent) => {
-      //     console.log(event)
-      //     console.log(this.input.nativeElement.value)
-      //   })
-      // subscription for response
     ).subscribe((text: string) => {
-  //  const name = e.target.value;
     let data = {
       searchQuery: text.trim(),
     } 
@@ -124,17 +122,17 @@ export class PurchaseListComponent implements OnInit {
         itemsPerPage: 50000,
         searchQuery: data.searchQuery 
       }
-      // const subs: Subscription = this.fs.searchByFeild(dtm).subscribe({
-      //   next: (res: any) => {
-      //     this.collectionSize = res.count;
-      //     this.page = 1;
-      //     this.dataList = res.data
-      //     this.sp.hide();
-      //     this.as.successToast(res.message)
-      //   },
-      //   error: (err: any) => console.log(err.message),
-      //   complete: () => subs.unsubscribe(),
-      // });
+      const subs: Subscription = this.purchaseService.searchByFeild(dtm).subscribe({
+        next: (res: any) => {
+          this.collectionSize = res.count;
+          this.page = 1;
+          this.dataList = res.data
+          this.sp.hide();
+          this.as.successToast(res.message)
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     } else {
       this.getList();
      } 

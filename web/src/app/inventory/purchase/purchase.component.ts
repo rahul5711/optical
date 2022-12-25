@@ -10,6 +10,7 @@ import { SupplierService } from 'src/app/service/supplier.service';
 import { SupportService } from 'src/app/service/support.service';
 import { CalculationService } from 'src/app/service/helpers/calculation.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { PurchaseService } from 'src/app/service/purchase.service';
 
 @Component({
   selector: 'app-purchase',
@@ -17,7 +18,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
   styleUrls: ['./purchase.component.css']
 })
 export class PurchaseComponent implements OnInit {
-
+  evn = environment;
   user = JSON.parse(localStorage.getItem('user') || '');
   company = JSON.parse(localStorage.getItem('company') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
@@ -29,9 +30,10 @@ export class PurchaseComponent implements OnInit {
     private ps: ProductService,
     private ss: SupplierService,
     private supps: SupportService,
+    private purchaseService: PurchaseService,
     public as: AlertService,
     public calculation: CalculationService,
-  ) {
+  ){
     this.id = this.route.snapshot.params['id'];
    }
 
@@ -45,7 +47,7 @@ export class PurchaseComponent implements OnInit {
     ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, UnitPrice: 0.00,
     Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0,
     DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: 0.00,
-    WholeSalePrice: 0.00, Ledger: false, WholeSale: false, BaseBarCode: null, NewBarcode: '',  Status: 1, BrandType: false
+    WholeSalePrice: 0.00, Ledger: false, WholeSale: false, BaseBarCode: 'null', NewBarcode: '',  Status: 1, BrandType: false
   };
 
   charge: any = {
@@ -53,6 +55,7 @@ export class PurchaseComponent implements OnInit {
     GSTType: '', TotalAmount: 0.00 , Status: 1
   };
 
+  data:any = { PurchaseMaster: null, Product: null, PurchaseDetail: null, Charge: null };
 
   id: any;
   supplierList:any;
@@ -70,18 +73,39 @@ export class PurchaseComponent implements OnInit {
   cgst = 0;
   tempItem = { Item: null, Spec: null };
   itemList:any = [];
+  chargeList:any  = [];
 
   ngOnInit(): void {
     this.getProductList();
     this.getdropdownSupplierlist();
     this.getGSTList();
     this.chargelist();
-    if (this.id == 0){
+    if (this.id != 0){
+      this.getPurchaseById();
+    }else{
       this.selectedPurchaseMaster.PurchaseDate = moment().format('YYYY-MM-DD');
     }
   }
 
-
+  getPurchaseById(){
+    const subs: Subscription = this.purchaseService.getPurchaseById(this.id).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+          this.selectedPurchaseMaster = res.result.PurchaseMaster[0]
+          this.itemList = res.result.PurchaseDetail
+          this.chargeList = res.result.Charge
+          this.calculateGrandTotal();
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
+  }
 
   getdropdownSupplierlist(){
     const subs: Subscription =  this.ss.dropdownSupplierlist().subscribe({
@@ -251,9 +275,8 @@ export class PurchaseComponent implements OnInit {
    this.calculation.calculateFields(fieldName,mode,this.item,this.charge)
   }
 
-calculateGrandTotal(){
-    // this.item.UnitPrice = 0 ? '' : this.item.UnitPrice;
-   this.calculation.calculateGrandTotal(this.selectedPurchaseMaster,this.itemList)
+  calculateGrandTotal(){
+   this.calculation.calculateGrandTotal(this.selectedPurchaseMaster,this.itemList,this.chargeList)
   }
 
   addItem(){
@@ -261,18 +284,27 @@ calculateGrandTotal(){
       if (this.selectedPurchaseMaster.ID !== null){this.item.Status = 2; }
         this.item.ProductName = "";
         this.item.ProductExpDate = "0000-00-00";
+
         this.specList.forEach((element: any) => {
-      if(element.SelectedValue !== "") {
-        this.item.ProductName = this.item.ProductName  + element.SelectedValue + "/";
-      }
-      if(element.FieldType === "Date") {
-        this.item.ProductExpDate = element.SelectedValue;
-      }
-     });
-    }
-    this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
-    this.itemList.unshift(this.item);
-    this.tempItem = { Item: null, Spec: null };
+          if(element.SelectedValue !== "") {
+            this.item.ProductName = this.item.ProductName  + element.SelectedValue + "/";
+          }
+          if(element.FieldType === "Date") {
+            this.item.ProductExpDate = element.SelectedValue;
+          }
+        });
+
+        this.prodList.forEach((element: any) => {
+          this.item.ProductTypeID =  element.ID
+          this.item.ProductTypeName =  element.Name
+        });
+        this.item.ProductTypeID = this.item.ProductTypeID
+        this.item.ProductTypeName = this.item.ProductTypeName
+        this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
+        this.itemList.unshift(this.item);
+        this.tempItem = { Item: null, Spec: null };
+    
+
 
     if(this.gstLock === false && this.gstperLock === false ) {
       this.item = {
@@ -299,16 +331,130 @@ calculateGrandTotal(){
         element.SelectedValue = element.SelectedValue;
       }
     });
-    this.calculateGrandTotal()
+    this.calculateGrandTotal();
   }
+    if (this.category === 'Charges'){
+      if (this.selectedPurchaseMaster.ID !== null){this.charge.Status = 2; }
+      this.charge.ID = null;
+      this.chargeOptions.forEach((ele: any) => {
+        if(ele.ID !== null){
+          this.charge.ChargeType = ele.Name
+        }
+      });
+      this.chargeList.push(this.charge);
+      this.calculateGrandTotal();
+      this.charge = {
+      ID: null, ChargeType: null, CompanyID: null, Description: '', Amount: 0.00, Price: 0.00, GSTPercentage: 0, GSTAmount: 0.00,
+      GSTType: '', TotalAmount: 0.00, Status: 1 };
+    }
 
-
+  }
 
   notifyGst() {
     if(this.item.GSTPercentage !== 0 && this.item.GSTPercentage !== "0") {
      if(this.item.GSTType === 'None') {
       alert("please select GstType");
      }
+    }
+  }
+
+  onSumbit(){
+    this.data.PurchaseMaster = this.selectedPurchaseMaster;
+    this.data.PurchaseDetail = JSON.stringify(this.itemList);
+    this.data.Charge = this.chargeList;
+    const subs: Subscription =  this.purchaseService.savePurchase(this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          if(res.data !== 0) {
+            this.id = res.data;
+            this.router.navigate(['/inventory/purchase' , this.id]);
+            this.getPurchaseById();
+            this.selectedProduct = "";
+            this.specList = [];
+          }
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Save.',
+            showConfirmButton: false,
+            timer: 1200
+          }) 
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  deleteItem(Category:any ,i:any){
+    if(Category === 'Product'){
+      if(this.itemList[i].ID === null){
+        this.itemList.splice(i, 1);
+      }else{
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const subs: Subscription = this.purchaseService.deleteProduct(this.itemList[i].ID).subscribe({
+              next: (res: any) => {
+                this.itemList[i].Status = 0;
+                this.as.successToast(res.message)
+              },
+              error: (err: any) => console.log(err.message),
+              complete: () => subs.unsubscribe(),
+            });
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been deleted.',
+              showConfirmButton: false,
+              timer: 1000
+            })
+          }
+        })
+      }
+    }else if(Category === 'Charges'){
+      if(this.chargeList[i].ID === null){
+        this.chargeList.splice(i, 1);
+      }else{
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const subs: Subscription = this.purchaseService.deleteCharge(this.chargeList[i].ID).subscribe({
+              next: (res: any) => {
+                this.chargeList[i].Status = 0;
+                this.as.successToast(res.message)
+              },
+              error: (err: any) => console.log(err.message),
+              complete: () => subs.unsubscribe(),
+            });
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been deleted.',
+              showConfirmButton: false,
+              timer: 1000
+            })
+          }
+        })
+      }
     }
   }
 }

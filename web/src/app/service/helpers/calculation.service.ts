@@ -93,7 +93,7 @@ export class CalculationService {
   // purchase details calculation end
 
   // purchase Master calculation start
-  calculateGrandTotal(selectedPurchaseMaster:any,itemList:any){
+  calculateGrandTotal(selectedPurchaseMaster:any,itemList:any,chargeList:any){
     selectedPurchaseMaster.Quantity = 0;
     selectedPurchaseMaster.SubTotal = 0;
     selectedPurchaseMaster.DiscountAmount = 0;
@@ -102,12 +102,25 @@ export class CalculationService {
 
     itemList.forEach((element: any) => {
       if (element.Status !== 0){
-      selectedPurchaseMaster.Quantity = (+selectedPurchaseMaster.Quantity + +element.Quantity).toFixed(2);
+      selectedPurchaseMaster.Quantity = +selectedPurchaseMaster.Quantity + +element.Quantity;
       selectedPurchaseMaster.SubTotal = (+selectedPurchaseMaster.SubTotal + +element.SubTotal).toFixed(2);
       selectedPurchaseMaster.DiscountAmount = (+selectedPurchaseMaster.DiscountAmount + +element.DiscountAmount).toFixed(2);
       selectedPurchaseMaster.GSTAmount = (+selectedPurchaseMaster.GSTAmount + +element.GSTAmount).toFixed(2);
       selectedPurchaseMaster.TotalAmount = (+selectedPurchaseMaster.TotalAmount + +element.TotalAmount).toFixed(2);
        }
+    })
+
+    chargeList.forEach((element: any ) => {
+      if (element.Status !== 0){
+        if(element.ID === null) {
+          selectedPurchaseMaster.SubTotal = (+selectedPurchaseMaster.SubTotal + +element.Price).toFixed(2);
+        }else{
+          selectedPurchaseMaster.SubTotal = (+selectedPurchaseMaster.SubTotal + +element.Amount).toFixed(2);
+        }
+      selectedPurchaseMaster.GSTAmount = (+selectedPurchaseMaster.GSTAmount + +element.GSTAmount).toFixed(2);
+      selectedPurchaseMaster.TotalAmount = (+selectedPurchaseMaster.TotalAmount + +element.TotalAmount).toFixed(2);
+      }
+
     })
   };
  // purchase Master calculation start
