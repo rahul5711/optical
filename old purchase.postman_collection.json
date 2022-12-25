@@ -1,0 +1,54 @@
+{
+	"info": {
+		"_postman_id": "6cc72d27-c782-49ec-b44c-c523ab694037",
+		"name": "old purchase",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "update purchase",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"PurchaseMaster\": {\r\n        \"ID\": 2268,\r\n        \"SupplierID\": 861,\r\n        \"CompanyID\": 96,\r\n        \"ShopID\": 230,\r\n        \"PurchaseDate\": \"2022-12-25\",\r\n        \"PaymentStatus\": \"Unpaid\",\r\n        \"InvoiceNo\": \"old-3\",\r\n        \"GSTNo\": \"null\",\r\n        \"Quantity\": 4,\r\n        \"SubTotal\": 0,\r\n        \"DiscountAmount\": 0,\r\n        \"GSTAmount\": 0,\r\n        \"TotalAmount\": 0,\r\n        \"Status\": 1,\r\n        \"CreatedBy\": 494,\r\n        \"CreatedOn\": \"2022-12-25 17:18:28\",\r\n        \"UpdatedBy\": 494,\r\n        \"UpdatedOn\": \"2022-12-25 17:57:54\",\r\n        \"PStatus\": 1,\r\n        \"DueAmount\": 0,\r\n        \"LastUpdate\": null,\r\n        \"SupplierName\": \"OLD STOCK\"\r\n    },\r\n    \"Product\": null,\r\n    \"PurchaseDetail\": \"[{\\\"ID\\\":null,\\\"PurchaseID\\\":null,\\\"CompanyID\\\":null,\\\"ProductName\\\":\\\"PRODUCT/JORDAN GENTS WATCH\\\",\\\"ProductTypeName\\\":\\\"PRODUCT\\\",\\\"ProductTypeID\\\":648,\\\"UnitPrice\\\":0,\\\"Quantity\\\":\\\"3\\\",\\\"SubTotal\\\":0,\\\"DiscountPercentage\\\":0,\\\"DiscountAmount\\\":0,\\\"GSTPercentage\\\":0,\\\"GSTAmount\\\":0,\\\"GSTType\\\":\\\"None\\\",\\\"TotalAmount\\\":0,\\\"Multiple\\\":false,\\\"RetailPrice\\\":\\\"0\\\",\\\"WholeSalePrice\\\":0,\\\"Ledger\\\":true,\\\"WholeSale\\\":false,\\\"BaseBarCode\\\":null,\\\"NewBarcode\\\":null,\\\"Status\\\":2,\\\"BrandType\\\":false,\\\"ProductExpDate\\\":\\\"0000-00-00\\\",\\\"Spec\\\":[{\\\"SpecID\\\":2478,\\\"ProductName\\\":\\\"PRODUCT\\\",\\\"Required\\\":1,\\\"CompanyID\\\":96,\\\"FieldName\\\":\\\"TYPE\\\",\\\"Seq\\\":\\\"1\\\",\\\"FieldType\\\":\\\"DropDown\\\",\\\"Ref\\\":\\\"0\\\",\\\"SptTableName\\\":\\\"TYPE2389461\\\",\\\"SptTableData\\\":[{\\\"ID\\\":18262,\\\"TableName\\\":\\\"TYPE2389461\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"PRODUCT\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null}],\\\"SelectedValue\\\":\\\"PRODUCT\\\",\\\"DisplayAdd\\\":0,\\\"EnteredValue\\\":\\\"\\\",\\\"SptFilterData\\\":[{\\\"ID\\\":18262,\\\"TableName\\\":\\\"TYPE2389461\\\",\\\"RefID\\\":\\\"0\\\",\\\"TableValue\\\":\\\"PRODUCT\\\",\\\"Status\\\":1,\\\"UpdatedOn\\\":null,\\\"UpdatedBy\\\":null}],\\\"CheckBoxValue\\\":true},{\\\"SpecID\\\":2479,\\\"ProductName\\\":\\\"PRODUCT\\\",\\\"Required\\\":1,\\\"CompanyID\\\":96,\\\"FieldName\\\":\\\"DESCRIPTION\\\",\\\"Seq\\\":\\\"2\\\",\\\"FieldType\\\":\\\"Text\\\",\\\"Ref\\\":\\\"0\\\",\\\"SptTableName\\\":\\\"\\\",\\\"SptTableData\\\":null,\\\"SelectedValue\\\":\\\"-0.5-0.75 BB\\\",\\\"DisplayAdd\\\":0,\\\"EnteredValue\\\":\\\"\\\",\\\"SptFilterData\\\":null,\\\"CheckBoxValue\\\":true}],\\\"UniqueBarcode\\\":\\\"22121/101\\\",\\\"UpdatedBy\\\":494}]\",\r\n    \"Charge\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://opticalguru.relinksys.com:50080/company/updatePurchase?Mode=Purchase&CompanyID=96&LoggedOnUser=%7B%22ID%22:494,%22CompanyID%22:96,%22Name%22:%22MAHALAXMI%20WATCH%20AND%20OPTICS%22,%22UserGroup%22:%22CompanyAdmin%22,%22DOB%22:%220000-00-00%22,%22Anniversary%22:%220000-00-00%22,%22MobileNo1%22:%228888501909%22,%22MobileNo2%22:%22null%22,%22PhoneNo%22:%22null%22,%22Email%22:%22RAJAT14592@GMAIL.COM%22,%22Address%22:%22247,%20DUTTAPRASAD%20APPARTMENT,%20SOMWAR%20PETH%20TANDUL%20AALI,%20SATARA%22,%22Branch%22:%22null%22,%22PhotoURL%22:%22null%22,%22Document%22:%22%22,%22LoginName%22:%22MAHA8888%22,%22Password%22:%22MAHA8888%22,%22Status%22:1,%22CreatedBy%22:0,%22UpdatedBy%22:null,%22CreatedOn%22:%222022-12-24%2015:35:40%22,%22UpdatedOn%22:null,%22CommissionType%22:0,%22CommissionMode%22:0,%22CommissionValue%22:0,%22CommissionValueNB%22:0%7D",
+					"protocol": "http",
+					"host": [
+						"opticalguru",
+						"relinksys",
+						"com"
+					],
+					"port": "50080",
+					"path": [
+						"company",
+						"updatePurchase"
+					],
+					"query": [
+						{
+							"key": "Mode",
+							"value": "Purchase"
+						},
+						{
+							"key": "CompanyID",
+							"value": "96"
+						},
+						{
+							"key": "LoggedOnUser",
+							"value": "%7B%22ID%22:494,%22CompanyID%22:96,%22Name%22:%22MAHALAXMI%20WATCH%20AND%20OPTICS%22,%22UserGroup%22:%22CompanyAdmin%22,%22DOB%22:%220000-00-00%22,%22Anniversary%22:%220000-00-00%22,%22MobileNo1%22:%228888501909%22,%22MobileNo2%22:%22null%22,%22PhoneNo%22:%22null%22,%22Email%22:%22RAJAT14592@GMAIL.COM%22,%22Address%22:%22247,%20DUTTAPRASAD%20APPARTMENT,%20SOMWAR%20PETH%20TANDUL%20AALI,%20SATARA%22,%22Branch%22:%22null%22,%22PhotoURL%22:%22null%22,%22Document%22:%22%22,%22LoginName%22:%22MAHA8888%22,%22Password%22:%22MAHA8888%22,%22Status%22:1,%22CreatedBy%22:0,%22UpdatedBy%22:null,%22CreatedOn%22:%222022-12-24%2015:35:40%22,%22UpdatedOn%22:null,%22CommissionType%22:0,%22CommissionMode%22:0,%22CommissionValue%22:0,%22CommissionValueNB%22:0%7D"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
