@@ -45,9 +45,7 @@ export class PurchaseComponent implements OnInit {
 
   item: any = {
     ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, UnitPrice: 0.00,
-    Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0,
-    DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: 0.00,
-    WholeSalePrice: 0.00, Ledger: false, WholeSale: false, BaseBarCode: 'null', NewBarcode: '',  Status: 1, BrandType: false
+    Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: 0.00, WholeSalePrice: 0.00, Ledger: false, WholeSale: false, BaseBarCode: '', NewBarcode: '',  Status: 1, BrandType: false
   };
 
   charge: any = {
@@ -68,12 +66,13 @@ export class PurchaseComponent implements OnInit {
   gstLock = false;
   gstList:any;
   chargeOptions:any;
-  gstdividelist = [];
-  sgst = 0;
-  cgst = 0;
   tempItem = { Item: null, Spec: null };
   itemList:any = [];
   chargeList:any  = [];
+  
+  gstdividelist:any = [];
+  sgst:any = 0;
+  cgst :any = 0;
 
   ngOnInit(): void {
     this.getProductList();
@@ -111,7 +110,6 @@ export class PurchaseComponent implements OnInit {
     const subs: Subscription =  this.ss.dropdownSupplierlist().subscribe({
       next: (res: any) => {
         this.supplierList = res.data;
-        this.supplierList.sort((a:any, b:any) => (a.Name < b.Name)? -1 : 1)
         this.as.successToast(res.message)
       },
       error: (err: any) => console.log(err.message),
@@ -136,6 +134,14 @@ export class PurchaseComponent implements OnInit {
     const subs: Subscription = this.supps.getList('TaxType').subscribe({
       next: (res: any) => {
         this.gstList = res.data
+        this.gstdividelist = [];
+        res.data.forEach((ele: any) => {
+          if(ele.Name.toUpperCase() !== 'CGST-SGST'){
+            let obj = {GstType: '', Amount: 0};
+            obj.GstType = ele.Name;
+            this.gstdividelist.push(obj);
+          }
+        })
       },
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),
@@ -231,7 +237,7 @@ export class PurchaseComponent implements OnInit {
   }
 
   getSupplierDetails(event:any){
-      const index = this.supplierList.findIndex((element:any) => element.Name === event.value);
+      const index = this.supplierList.findIndex((element:any) => element.ID === event.value);
       this.selectedPurchaseMaster.SupplierID = this.supplierList[index].ID;
       this.selectedPurchaseMaster.SupplierName = this.supplierList[index].Name;
       this.item.GSTType = this.supplierList[index].GSTType; 
@@ -276,7 +282,7 @@ export class PurchaseComponent implements OnInit {
   }
 
   calculateGrandTotal(){
-   this.calculation.calculateGrandTotal(this.selectedPurchaseMaster,this.itemList,this.chargeList)
+    this.calculation.calculateGrandTotal(this.selectedPurchaseMaster, this.itemList, this.chargeList, this.sgst ,this.cgst ,this.gstdividelist)
   }
 
   addItem(){
@@ -302,52 +308,49 @@ export class PurchaseComponent implements OnInit {
         this.item.ProductTypeName = this.item.ProductTypeName
         this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
         this.itemList.unshift(this.item);
+
         this.tempItem = { Item: null, Spec: null };
     
-
-
-    if(this.gstLock === false && this.gstperLock === false ) {
-      this.item = {
-        ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale:this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: false, UniqueBarcode: ''
-      };
-    } else if (this.gstLock === true && this.gstperLock === false) {
-      this.item = {
-        ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale:this.item.WholeSale,BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: false, UniqueBarcode: ''
-      };
-    } else if (this.gstLock === false && this.gstperLock === true) {
-      this.item = {
-        ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale:this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: false, UniqueBarcode: ''
-      };
-    } else {
-      this.item = {
-      ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale:this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: false, UniqueBarcode: ''
-      }
+        if(this.gstLock === false && this.gstperLock === false ) {
+          this.item = {
+            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale:this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: false, UniqueBarcode: ''
+          };
+        } else if (this.gstLock === true && this.gstperLock === false) {
+          this.item = {
+            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale:this.item.WholeSale,BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: false, UniqueBarcode: ''
+          };
+        } else if (this.gstLock === false && this.gstperLock === true) {
+          this.item = {
+            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale:this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: false, UniqueBarcode: ''
+          };
+        } else {
+          this.item = {
+          ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale:this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: false, UniqueBarcode: ''
+          }
+        }
+       
+        this.specList.forEach((element: any) => {
+          if(element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
+            element.SelectedValue = '';
+          } else {
+            element.SelectedValue = element.SelectedValue;
+          }
+        });
     }
-   
-    this.specList.forEach((element: any) => {
-      if(element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
-        element.SelectedValue = '';
-      } else {
-        element.SelectedValue = element.SelectedValue;
-      }
-    });
-    this.calculateGrandTotal();
-  }
     if (this.category === 'Charges'){
       if (this.selectedPurchaseMaster.ID !== null){this.charge.Status = 2; }
       this.charge.ID = null;
       this.chargeOptions.forEach((ele: any) => {
-        if(ele.ID !== null){
-          this.charge.ChargeType = ele.Name
-        }
+      if(ele.ID !== null){
+        this.charge.ChargeType = ele.Name
+      }
       });
       this.chargeList.push(this.charge);
-      this.calculateGrandTotal();
       this.charge = {
       ID: null, ChargeType: null, CompanyID: null, Description: '', Amount: 0.00, Price: 0.00, GSTPercentage: 0, GSTAmount: 0.00,
       GSTType: '', TotalAmount: 0.00, Status: 1 };
     }
-
+    this.calculateGrandTotal();
   }
 
   notifyGst() {
@@ -392,9 +395,6 @@ export class PurchaseComponent implements OnInit {
 
   deleteItem(Category:any ,i:any){
     if(Category === 'Product'){
-      if(this.itemList[i].ID === null){
-        this.itemList.splice(i, 1);
-      }else{
         Swal.fire({
           title: 'Are you sure?',
           text: "You won't be able to revert this!",
@@ -408,6 +408,7 @@ export class PurchaseComponent implements OnInit {
             const subs: Subscription = this.purchaseService.deleteProduct(this.itemList[i].ID).subscribe({
               next: (res: any) => {
                 this.itemList[i].Status = 0;
+                this.calculateGrandTotal();
                 this.as.successToast(res.message)
               },
               error: (err: any) => console.log(err.message),
@@ -422,11 +423,7 @@ export class PurchaseComponent implements OnInit {
             })
           }
         })
-      }
     }else if(Category === 'Charges'){
-      if(this.chargeList[i].ID === null){
-        this.chargeList.splice(i, 1);
-      }else{
         Swal.fire({
           title: 'Are you sure?',
           text: "You won't be able to revert this!",
@@ -440,6 +437,7 @@ export class PurchaseComponent implements OnInit {
             const subs: Subscription = this.purchaseService.deleteCharge(this.chargeList[i].ID).subscribe({
               next: (res: any) => {
                 this.chargeList[i].Status = 0;
+                this.calculateGrandTotal();
                 this.as.successToast(res.message)
               },
               error: (err: any) => console.log(err.message),
@@ -454,7 +452,6 @@ export class PurchaseComponent implements OnInit {
             })
           }
         })
-      }
     }
   }
 }

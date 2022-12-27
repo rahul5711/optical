@@ -1,9 +1,9 @@
 .deleteClass{
-    color:red;
-    text-decoration:line-through;
+    color:red !important;
+    text-decoration:line-through !important; 
 }
 .addClass{
-    color:green;
+    color:green !important;
 }
 
 .delete_icon {
@@ -17,4 +17,19 @@
     cursor: pointer;
     transition: 0.5s;
     box-shadow: 2px 2px 6px #9c9795fa;
+}
+
+.restore{
+    background: #14a44d;
+    border-radius: 24px;
+    color: white;
+    /* padding: 0px; */
+    font-size: 24px;
+}
+
+.bg_none{
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
 }

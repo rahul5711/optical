@@ -38,10 +38,10 @@
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Supplier Name</mat-label>
                                         <mat-select name="Supplier" editable="true"
-                                            [(ngModel)]="selectedPurchaseMaster.SupplierName" required #singleSelect
+                                            [(ngModel)]="selectedPurchaseMaster.SupplierID" required #singleSelect
                                             [disabled]="selectedPurchaseMaster.ID !== null"
                                             (selectionChange)="getSupplierDetails($event)">
-                                            <mat-option [value]="sup.Name" *ngFor="let sup of supplierList let i = index;">
+                                            <mat-option [value]="sup.ID" *ngFor="let sup of supplierList let i = index;">
                                                 {{sup.Name}}
                                             </mat-option>
                                         </mat-select>
@@ -432,25 +432,28 @@
                                                         <mat-checkbox [(ngModel)]="data.Checked" name="{{i + 'name'}}" [checked]="data.Checked" [ngModelOptions]="{standalone: true}" >
                                                         </mat-checkbox>
                                                     </td>
-                                                    <td style="z-index: -999 !important;" *ngIf="this.id !== 0 && data.ID === null && data.Status === 0"></td>
+                                                    <td style="z-index: -999 !important;" *ngIf="this.id !== 0 && data.ID === null || data.Status === 0"></td>
                                                     <td class="text-center">
                                                         <mat-icon *ngIf="data.Status !== 0" class="delete_icon ms-1">print</mat-icon>
                                                         <mat-icon *ngIf="data.Status !== 0" class="delete_icon ms-1" (click)="deleteItem('Product',i)">delete_forever</mat-icon>
+                                                    <button class="bg_none" type="button" *ngIf="data.Status === 0 && data.UpdatedBy == null">
+                                                      <mat-icon class="restore">autorenew</mat-icon>
+                                                    </button>
                                                     </td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status == 0, 'addClass': data.Status == 2 }" class="text-center">{{data.BaseBarCode}}</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.UniqueBarcode}}</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.ProductName}}</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.UnitPrice }}</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.Quantity}}</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.SubTotal}}</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.GSTAmount}}</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.GSTPercentage}}%</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.GSTType}}</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.DiscountAmount}}</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.DiscountPercentage}}%</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.TotalAmount}}</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.RetailPrice}}</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.WholeSalePrice}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.BaseBarCode}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.UniqueBarcode}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.ProductName}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.Quantity}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.SubTotal}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.UnitPrice }}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.GSTAmount}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.GSTPercentage}}%</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.GSTType}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.DiscountAmount}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.DiscountPercentage}}%</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.TotalAmount}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.RetailPrice}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.WholeSalePrice}}</td>
                                                 </tr>
                                                
                                                 <tr *ngFor="let data of chargeList ; let i = index;">
@@ -458,21 +461,21 @@
                                                     <td class="text-center">
                                                         <mat-icon *ngIf="data.Status !== 0" class="delete_icon ms-1" (click)="deleteItem('Charges',i)">delete_forever</mat-icon>
                                                     </td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">--</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">--</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">--</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">--</td>
                                                     <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.ChargeType}}/{{data.Description}}</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">--</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">--</td>
-                                                    <td *ngIf="data.ID !== null" class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.Amount }} </td>
-                                                    <td *ngIf="data.ID === null" class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.Price}} </td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.GSTAmount}}</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.GSTPercentage}}%</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.GSTType}}</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">--</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">--</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.TotalAmount}}</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">--</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">--</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">--</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">--</td>
+                                                    <td *ngIf="data.ID !== null" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.Amount }} </td>
+                                                    <td *ngIf="data.ID === null" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.Price}} </td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.GSTAmount}}</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.GSTPercentage}}%</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.GSTType}}</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">--</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">--</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">{{data.TotalAmount}}</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">--</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">--</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -514,24 +517,24 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0" *ngFor="let gg of gstdividelist">
-                                    <!-- <mat-form-field class="example-full-width mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
                                     <mat-label>{{gg.GstType | titlecase}}</mat-label>
                                     <input matInput name="{{gg.GstType}}" [(ngModel)]="gg.Amount" disabled>
                                     <mat-error>
                                         GST Amt is required
                                     </mat-error>
-                                </mat-form-field> -->
+                                </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>CGST</mat-label>
-                                        <input matInput name="CGST" [(ngModel)]="cgst" disabled>
+                                        <input matInput name="cgst" [(ngModel)]="cgst" disabled>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>SGST</mat-label>
-                                        <input matInput name="SGST" [(ngModel)]="sgst" disabled>
+                                        <input matInput name="sgst" [(ngModel)]="sgst" disabled>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">

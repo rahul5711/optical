@@ -147,7 +147,7 @@ module.exports = {
 
             if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
 
-            const PurchaseMaster = await connection.query(`select * from purchasemasternew where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            const PurchaseMaster = await connection.query(`select * from purchasemasternew  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
             const PurchaseDetail = await connection.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${ID} and CompanyID = ${CompanyID}`)
 
