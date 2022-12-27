@@ -41,7 +41,7 @@ module.exports = {
     return Number(barcode[0].MaxBarcode) ? Number(barcode[0].MaxBarcode) : 0
 
   },
-  generateUniqueBarcode: async (CompanyID,SupplierID, Body) => {
+  generateUniqueBarcode: async (CompanyID, SupplierID, Body) => {
     const connection = await getConnection.connection();
     const fetchcompanysetting = await connection.query(`select * from companysetting where Status = 1 and CompanyID = ${CompanyID} `)
 
@@ -53,7 +53,7 @@ module.exports = {
     const fetchSupplier = await connection.query(`select * from supplier where Status = 1 and CompanyID = ${CompanyID} and ID = ${SupplierID}`)
 
     if (fetchSupplier.length) {
-      if (fetchSupplier[0].Sno !== "" || fetchSupplier[0].Sno !== null || fetchSupplier[0].Sno !== undefined ) {
+      if (fetchSupplier[0].Sno !== "" || fetchSupplier[0].Sno !== null || fetchSupplier[0].Sno !== undefined) {
         partycode = fetchSupplier[0].Sno
       }
     }
@@ -82,5 +82,45 @@ module.exports = {
     NewBarcode = NewBarcode.concat(partycode);
     // Body.UniqueBarcode = NewBarcode;
     return NewBarcode
+  },
+  gstDetail: async (CompanyID, PurchaseID) => {
+    const connection = await getConnection.connection();
+    let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+    gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+    const values = []
+    if (gstTypes.length) {
+      for (const item of gstTypes) {
+        let value = await connection.query(`select SUM(GSTAmount) as Amount, GSTType from purchasedetailnew where CompanyID = ${CompanyID} and PurchaseID = ${PurchaseID} and Status = 1 and GSTType = '${item.Name}'`)
+        value = JSON.parse(JSON.stringify(value)) || []
+        if (value.length) {
+          if ((item.Name).toUpperCase() === 'CGST-SGST') {
+            values.push(
+              {
+                GSTType: `CGST`,
+                Amount: Number(value[0].Amount) / 2
+              },
+              {
+                GSTType: `SGST`,
+                Amount: Number(value[0].Amount) / 2
+              }
+            )
+          }else if(value[0].Amount !== null) {
+            values.push({
+              GSTType: `${item.Name}`,
+              Amount: Number(value[0].Amount)
+            })
+          } else if (value[0].Amount === null) {
+            values.push({
+              GSTType: `${item.Name}`,
+              Amount: 0
+            })
+          }
+        }
+      }
+    }
+
+    return values
+
+
   }
 }
