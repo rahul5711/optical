@@ -104,7 +104,7 @@ module.exports = {
                 Amount: Number(value[0].Amount) / 2
               }
             )
-          }else if(value[0].Amount !== null) {
+          } else if (value[0].Amount !== null) {
             values.push({
               GSTType: `${item.Name}`,
               Amount: Number(value[0].Amount)
@@ -119,8 +119,47 @@ module.exports = {
       }
     }
 
+    const values2 = []
+    if (gstTypes.length) {
+      for (const item of gstTypes) {
+        let value = await connection.query(`select SUM(GSTAmount) as Amount, GSTType from purchasecharge where CompanyID = ${CompanyID} and PurchaseID = ${PurchaseID} and Status = 1 and GSTType = '${item.Name}'`)
+        value = JSON.parse(JSON.stringify(value)) || []
+        if (value.length) {
+          if ((item.Name).toUpperCase() === 'CGST-SGST') {
+            values2.push(
+              {
+                GSTType: `CGST`,
+                Amount: Number(value[0].Amount) / 2
+              },
+              {
+                GSTType: `SGST`,
+                Amount: Number(value[0].Amount) / 2
+              }
+            )
+          } else if (value[0].Amount !== null) {
+            values2.push({
+              GSTType: `${item.Name}`,
+              Amount: Number(value[0].Amount)
+            })
+          } else if (value[0].Amount === null) {
+            values2.push({
+              GSTType: `${item.Name}`,
+              Amount: 0
+            })
+          }
+        }
+      }
+    }
+
+    if (values.length && values2.length) {
+      values.forEach(e => {
+        values2.forEach(el => {
+          if (e.GSTType === el.GSTType) {
+            e.Amount = Number(e.Amount) + Number(el.Amount)
+          }
+        })
+      })
+    }
     return values
-
-
   }
 }
