@@ -93,17 +93,12 @@ export class CalculationService {
   // purchase details calculation end
 
   // purchase Master calculation start
-  calculateGrandTotal(selectedPurchaseMaster:any, itemList:any, chargeList:any,  sgst:any, cgst:any, gstdividelist:any): any {
+  calculateGrandTotal(selectedPurchaseMaster:any, itemList:any, chargeList:any){
     selectedPurchaseMaster.Quantity = 0;
     selectedPurchaseMaster.SubTotal = 0;
     selectedPurchaseMaster.DiscountAmount = 0;
     selectedPurchaseMaster.GSTAmount = 0;
     selectedPurchaseMaster.TotalAmount = 0;
-    sgst = 0;
-    cgst = 0;
-    gstdividelist.forEach((ele:any) => {
-      ele.Amount = 0;
-    })
    
     itemList.forEach((element: any) => {
       if (element.Status !== 0){
@@ -112,15 +107,6 @@ export class CalculationService {
       selectedPurchaseMaster.DiscountAmount = (+selectedPurchaseMaster.DiscountAmount + +element.DiscountAmount).toFixed(2);
       selectedPurchaseMaster.GSTAmount = (+selectedPurchaseMaster.GSTAmount + +element.GSTAmount);
       selectedPurchaseMaster.TotalAmount = (+selectedPurchaseMaster.TotalAmount + +element.TotalAmount).toFixed(2);
-      }
-      gstdividelist.forEach((ele: any) => {
-        if(element.GSTType === ele.GstType && element.Status !== 0 && element.GSTType.toUpperCase() !== 'CGST-SGST') {
-          ele.Amount =+ element.GSTAmount;
-        }
-      })
-      if(element.Status !== 0 || element.GSTType.toUpperCase() === 'CGST-SGST') {
-       sgst +=  element.GSTAmount / 2 ;
-       cgst +=  element.GSTAmount / 2 ;
       }
     })
 
@@ -133,15 +119,6 @@ export class CalculationService {
         }
         selectedPurchaseMaster.GSTAmount = (+selectedPurchaseMaster.GSTAmount + +element.GSTAmount).toFixed(2);
         selectedPurchaseMaster.TotalAmount = (+selectedPurchaseMaster.TotalAmount + +element.TotalAmount).toFixed(2);
-      }
-      gstdividelist.forEach((ele: any) => {
-        if(element.GSTType === ele.GstType && element.Status !== 0 && element.GSTType.toUpperCase() !== 'CGST-SGST') {
-          ele.Amount += element.GSTAmount;
-        } 
-      })
-      if(element.Status !== 0 && element.GSTType.toUpperCase() === 'CGST-SGST') {
-        sgst +=  element.GSTAmount / 2 ;
-        cgst +=  element.GSTAmount / 2 ;
       }
     })
   };

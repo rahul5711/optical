@@ -31,17 +31,17 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
-  deleteProduct(ID:any): Observable<any> {
+  deleteProduct(ID:any,PurchaseMaster:any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams();
-    return this.httpClient.post<any>(this.url + '/deleteProduct', {ID: ID},  { headers, params })
+    return this.httpClient.post<any>(this.url + '/deleteProduct', {ID: ID, PurchaseMaster: PurchaseMaster},  { headers, params })
     .pipe(catchError(this.handleError));
   }
 
-  deleteCharge(ID:any): Observable<any> {
+  deleteCharge(ID:any,PurchaseMaster:any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams();
-    return this.httpClient.post<any>(this.url + '/deleteCharge', {ID: ID},  { headers, params })
+    return this.httpClient.post<any>(this.url + '/deleteCharge', {ID: ID, PurchaseMaster: PurchaseMaster},  { headers, params })
     .pipe(catchError(this.handleError));
   }
 
