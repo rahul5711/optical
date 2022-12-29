@@ -285,7 +285,6 @@
                                         </mat-select>
                                     </mat-form-field>
                                     <mat-checkbox style="padding-top: 14px;" *ngIf="item.GSTType !== 'None' && item.GSTPercentage !== 0 && item.GSTPercentage !== '0'" name="gstLock" color="primary" [(ngModel)]="gstLock"></mat-checkbox>
-
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ms-2">
                                     <mat-form-field class="example-full-width mb-0">
@@ -318,8 +317,10 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ml-auto">
-                                    <button class="mr-3" type="submit" [disabled]="!f.valid || item.Quantity == 0"
+                                    <button *ngIf="editBtn === false" class="mr-3" type="submit" [disabled]="!f.valid || item.Quantity == 0"
                                         mat-raised-button color="primary">Add</button>
+                                    <button *ngIf="editBtn === true" class="mr-3" type="submit" [disabled]="!f.valid || item.Quantity == 0"
+                                        mat-raised-button color="primary" (click)="editUpdate()">Update</button>
                                 </div>
                             </div>
                             <!-- save calculation product end -->
@@ -437,7 +438,7 @@
                                                     <td class="text-center">
                                                         <mat-icon *ngIf="data.Status !== 0" class="delete_icon ms-1">print</mat-icon>
                                                         <mat-icon *ngIf="data.Status !== 0" class="delete_icon ms-1" (click)="deleteItem('Product',i)">delete_forever</mat-icon>
-                                                        <mat-icon class="delete_icon ms-1" (click)="edititem('Product',data)" *ngIf="data.ID !== null && data.Status !== 0">edit </mat-icon>
+                                                        <mat-icon class="delete_icon ms-1" (click)="edititem('Product',data)" *ngIf="data.ID === null">edit </mat-icon>
                                                     </td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.BaseBarCode}}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.UniqueBarcode}}</td>
@@ -458,7 +459,7 @@
                                                 <tr *ngFor="let data of chargeList ; let i = index;">
                                                     <td></td>
                                                     <td class="text-center">
-                                                        <mat-icon *ngIf="data.Status !== 0" class="delete_icon ms-1" (click)="deleteItem('Charges',i)">delete_forever</mat-icon>
+                                                        <mat-icon *ngIf="data.Status !== 0" class="delete_icon ms-1" (click)="deleteCharge('Charges',i)">delete_forever</mat-icon>
                                                     </td>
                                                     <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">--</td>
                                                     <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" class="text-center">--</td>
@@ -515,27 +516,16 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0" >
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0"  *ngFor="let gst of gst_detail">
                                     <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>IGST</mat-label>
-                                    <input matInput name="igstAmt" [(ngModel)]="igstAmt" disabled>
+                                    <mat-label>{{gst.GSTType}}</mat-label>
+                                    <input matInput name="igstAmt"  value="{{gst.Amount | number:'1.0-2'}}" disabled>
                                     <mat-error>
                                         GST Amt is required
                                     </mat-error>
                                 </mat-form-field>
                                 </div>
-                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
-                                    <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>CGST</mat-label>
-                                        <input matInput name="cgst" [(ngModel)]="cgst" disabled>
-                                    </mat-form-field>
-                                </div>
-                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
-                                    <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>SGST</mat-label>
-                                        <input matInput name="sgst" [(ngModel)]="sgst" disabled>
-                                    </mat-form-field>
-                                </div>
+
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>TotalGSTAmt</mat-label>

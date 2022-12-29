@@ -22,6 +22,7 @@ export class PurchaseComponent implements OnInit {
   user = JSON.parse(localStorage.getItem('user') || '');
   company = JSON.parse(localStorage.getItem('company') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  editBtn = false;
   
 
   constructor(
@@ -70,10 +71,12 @@ export class PurchaseComponent implements OnInit {
   itemList:any = [];
   chargeList:any  = [];
   
-  gstdividelist:any = [];
-  sgst:any = 0;
-  cgst :any = 0;
-  igstAmt :any = 0;
+  gst_detail:any = [
+    {GSTType:'CGST',Amount:0}, 
+    {GSTType:'SGST',Amount:0 },
+    {GSTType: 'IGST',Amount:0}
+  ];
+
 
   ngOnInit(): void {
     this.getProductList();
@@ -87,16 +90,6 @@ export class PurchaseComponent implements OnInit {
     }
   }
 
-  edititem(mode:any,data:any){
-    if(mode === 'Product'){
-      this.selectedProduct = data.ProductTypeName
-      this.item.ProductName = data.ProductName 
-      this.item = data
-      console.log(data);
-    }
-  
-  
-  }
 
   getPurchaseById(){
     const subs: Subscription = this.purchaseService.getPurchaseById(this.id).subscribe({
@@ -106,17 +99,7 @@ export class PurchaseComponent implements OnInit {
           this.selectedPurchaseMaster = res.result.PurchaseMaster[0]
           this.itemList = res.result.PurchaseDetail
           this.chargeList = res.result.Charge
-          this.selectedPurchaseMaster.gst_detail.forEach((ele: any) => {
-           if(ele.GSTType === 'CGST'){
-             this.cgst = ele.Amount
-           }
-           if(ele.GSTType === 'SGST'){
-            this.sgst = ele.Amount
-           }
-           if(ele.GSTType === 'IGST'){
-            this.igstAmt = ele.Amount
-           }
-          })
+          this.gst_detail = this.selectedPurchaseMaster.gst_detail
           this.calculateGrandTotal();
         } else {
           this.as.errorToast(res.message)
@@ -166,6 +149,7 @@ export class PurchaseComponent implements OnInit {
     const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
        next: (res: any) => {
        this.specList = res.data;
+       this.getSptTableData();
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -296,7 +280,7 @@ export class PurchaseComponent implements OnInit {
   }
 
   addItem(){
-    if (this.category === 'Product' && this.item.ID === null){
+    if (this.category === 'Product'){
       if (this.selectedPurchaseMaster.ID !== null){this.item.Status = 2; }
         this.item.ProductName = "";
         this.item.ProductExpDate = "0000-00-00";
@@ -347,17 +331,6 @@ export class PurchaseComponent implements OnInit {
             element.SelectedValue = element.SelectedValue;
           }
         });
-    }else{
-      this.itemList.forEach((ele: any) =>{
-        if(ele.ID === this.item.ID){
-          ele = this.item
-        }
-      });
-      this.selectedProduct = ''
-       this.item = {
-        ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, UnitPrice: 0.00,
-        Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: 0.00, WholeSalePrice: 0.00, Ledger: false, WholeSale: false, BaseBarCode: '', NewBarcode: '',  Status: 1, BrandType: false
-      };
     }
     if (this.category === 'Charges'){
       if (this.selectedPurchaseMaster.ID !== null){this.charge.Status = 2; }
@@ -430,26 +403,32 @@ export class PurchaseComponent implements OnInit {
           confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
           if (result.isConfirmed) {
-            this.calculateGrandTotal();
             const subs: Subscription = this.purchaseService.deleteProduct(this.itemList[i].ID,this.selectedPurchaseMaster).subscribe({
               next: (res: any) => {
                 this.itemList[i].Status = 0;
+                this.getPurchaseById()
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Your file has been deleted.',
+                  showConfirmButton: false,
+                  timer: 1000
+                })
                 this.as.successToast(res.message)
               },
               error: (err: any) => console.log(err.message),
               complete: () => subs.unsubscribe(),
             });
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'Your file has been deleted.',
-              showConfirmButton: false,
-              timer: 1000
-            })
+
           }
         })
       }
-    }else if(Category === 'Charges'){
+    }
+   
+  }
+
+  deleteCharge(Category:any ,i:any){
+   if(Category === 'Charges'){
         Swal.fire({
           title: 'Are you sure?',
           text: "You won't be able to revert this!",
@@ -460,24 +439,52 @@ export class PurchaseComponent implements OnInit {
           confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
           if (result.isConfirmed) {
-            this.calculateGrandTotal();
             const subs: Subscription = this.purchaseService.deleteCharge(this.chargeList[i].ID, this.selectedPurchaseMaster).subscribe({
               next: (res: any) => {
                 this.chargeList[i].Status = 0;
+                this.getPurchaseById()
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Your file has been deleted.',
+                  showConfirmButton: false,
+                  timer: 1000
+                })
                 this.as.successToast(res.message)
               },
               error: (err: any) => console.log(err.message),
               complete: () => subs.unsubscribe(),
             });
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'Your file has been deleted.',
-              showConfirmButton: false,
-              timer: 1000
-            })
           }
         })
     }
   }
+
+  edititem(mode:any,data:any){
+    this.editBtn = true
+    if(mode === 'Product'){
+      this.selectedProduct = data.ProductTypeName
+      this.item.ProductName = data.ProductName 
+      this.item = data
+      console.log(data);
+    }
+  }
+
+  editUpdate(){
+    this.itemList.forEach((ele: any) =>{
+      if(ele.ID === null){
+        ele = this.item
+      }
+    });
+    this.calculateGrandTotal()
+    this.selectedProduct = ''
+    this.item = {
+      ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, UnitPrice: 0.00,
+      Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: 0.00, WholeSalePrice: 0.00, Ledger: false, WholeSale: false, BaseBarCode: '', NewBarcode: '',  Status: 1, BrandType: false
+    };
+    this.editBtn = false
+  }
+
+
+
 }

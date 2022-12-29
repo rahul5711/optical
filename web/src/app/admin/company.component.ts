@@ -60,6 +60,7 @@ export class CompanyComponent implements OnInit {
      Document:null, CommissionType :null, CommissionMode :null, CommissionValue :null, CommissionValueNB :null,
   };
 
+ 
   // public id =  this.route.snapshot.paramMap.get('id');
 
 
@@ -110,7 +111,7 @@ export class CompanyComponent implements OnInit {
 
   onsubmit() {
     this.sp.show();
-    const subs: Subscription =  this.cs.createCompany(this.data).subscribe({
+    const subs: Subscription =  this.cs.createCompany( this.data).subscribe({
       next: (res: any) => {
         // this.dataList = res.result;
         if (res.success) {
