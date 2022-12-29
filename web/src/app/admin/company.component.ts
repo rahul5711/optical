@@ -56,9 +56,10 @@ export class CompanyComponent implements OnInit {
 
   data : any = {
     ID: null, CompanyName: null, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: null, Country: null, State: null, City: null, Email: null, Website: '', GSTNo: '', CINNo: '', LogoURL: null, Remark: '',SRemark:'',CAmount:'', Plan: null, Version: null, NoOfShops: null, EffectiveDate: new Date(), CacellationDate:  null,  WhatsappMsg: false, EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, dataFormat: undefined,
-     Name : '', UserGroup : "", DOB : null, Anniversary : null,  Branch : '', FaxNo : '',  PhotoURL : '',LoginName : "", Password : "",
+      Name : '',  DOB : null, Anniversary : null,  Branch : '', FaxNo : '',  PhotoURL : '',LoginName : "", Password : "",
      Document:null, CommissionType :null, CommissionMode :null, CommissionValue :null, CommissionValueNB :null,
   };
+
   // public id =  this.route.snapshot.paramMap.get('id');
 
 
@@ -109,7 +110,7 @@ export class CompanyComponent implements OnInit {
 
   onsubmit() {
     this.sp.show();
-    const subs: Subscription =  this.cs.createCompany( this.data).subscribe({
+    const subs: Subscription =  this.cs.createCompany(this.data).subscribe({
       next: (res: any) => {
         // this.dataList = res.result;
         if (res.success) {

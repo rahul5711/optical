@@ -97,6 +97,7 @@ export class PurchaseComponent implements OnInit {
   
   
   }
+
   getPurchaseById(){
     const subs: Subscription = this.purchaseService.getPurchaseById(this.id).subscribe({
       next: (res: any) => {
@@ -145,7 +146,6 @@ export class PurchaseComponent implements OnInit {
         // this.prodList = res.data;
         this.prodList = res.data;
         this.prodList.sort((a:any, b:any) => (a.Name < b.Name)? -1 : 1)
-        this.as.successToast(res.message)
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -166,8 +166,6 @@ export class PurchaseComponent implements OnInit {
     const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
        next: (res: any) => {
        this.specList = res.data;
-       this.getSptTableData();
-       this.as.successToast(res.message)
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -197,7 +195,6 @@ export class PurchaseComponent implements OnInit {
          next: (res: any) => {
            element.SptTableData = res.data; 
            element.SptFilterData = res.data;   
-           this.as.successToast(res.message)
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
@@ -226,7 +223,6 @@ export class PurchaseComponent implements OnInit {
          next: (res: any) => {
            this.specList[i].SptTableData = res.data;
            this.specList[i].SptFilterData = res.data; 
-           this.as.successToast(res.message)
          },
          error: (err: any) => console.log(err.message),
          complete: () => subss.unsubscribe(),
@@ -434,10 +430,10 @@ export class PurchaseComponent implements OnInit {
           confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
           if (result.isConfirmed) {
+            this.calculateGrandTotal();
             const subs: Subscription = this.purchaseService.deleteProduct(this.itemList[i].ID,this.selectedPurchaseMaster).subscribe({
               next: (res: any) => {
                 this.itemList[i].Status = 0;
-                this.calculateGrandTotal();
                 this.as.successToast(res.message)
               },
               error: (err: any) => console.log(err.message),
@@ -464,10 +460,10 @@ export class PurchaseComponent implements OnInit {
           confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
           if (result.isConfirmed) {
+            this.calculateGrandTotal();
             const subs: Subscription = this.purchaseService.deleteCharge(this.chargeList[i].ID, this.selectedPurchaseMaster).subscribe({
               next: (res: any) => {
                 this.chargeList[i].Status = 0;
-                this.calculateGrandTotal();
                 this.as.successToast(res.message)
               },
               error: (err: any) => console.log(err.message),

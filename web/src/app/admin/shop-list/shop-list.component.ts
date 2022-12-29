@@ -236,7 +236,6 @@ export class ShopListComponent implements OnInit {
       complete: () => subs.unsubscribe(),
 
     });
-
   }
 
   uploadImage(e: any, mode: any) {

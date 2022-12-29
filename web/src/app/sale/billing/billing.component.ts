@@ -695,6 +695,5 @@ export class BillingComponent implements OnInit {
   calculate(mode:any,x:any,y:any){
    this.calculation.calculate(mode, x, y ,this.spectacle , this.clens)
   }
- 
 
 }
