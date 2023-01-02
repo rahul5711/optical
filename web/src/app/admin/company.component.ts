@@ -46,7 +46,6 @@ export class CompanyComponent implements OnInit {
     this.env = environment
   }
 
-
   plans: any[] = [
   {ID: 1, Name: 'Trial Plan (15 Days)', days: 15},
   {ID: 2, Name: 'Monthly Plan (30 Days)', days: 30},
@@ -54,13 +53,14 @@ export class CompanyComponent implements OnInit {
   {ID: 4, Name: 'Yearly Plan (365 Days)' , days: 360}];
 
 
-  data : any = {
-    ID: null, CompanyName: null, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: null, Country: null, State: null, City: null, Email: null, Website: '', GSTNo: '', CINNo: '', LogoURL: null, Remark: '',SRemark:'',CAmount:'', Plan: null, Version: null, NoOfShops: null, EffectiveDate: new Date(), CacellationDate:  null,  WhatsappMsg: false, EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, dataFormat: undefined,
-      Name : '',  DOB : null, Anniversary : null,  Branch : '', FaxNo : '',  PhotoURL : '',LoginName : "", Password : "",
-     Document:null, CommissionType :null, CommissionMode :null, CommissionValue :null, CommissionValueNB :null,
-  };
+data : any = {
+    ID: null, CompanyName: null, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: null, Country: null, State: null, City: null, Email: null, Website: '', GSTNo: '', CINNo: '', LogoURL: null, Remark: '',SRemark:'',CAmount:'', Plan: null, Version: null, NoOfShops: null, EffectiveDate: new Date(), CacellationDate:  null,  WhatsappMsg: false, EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, dataFormat: undefined, User: []
+};
 
- 
+data1: any = { 
+    ID : null, CompanyID : null, Name : "", UserGroup : "", DOB : null, Anniversary : null, MobileNo1 : null, MobileNo2 : null,   PhoneNo  : null, Email : null, Address : null, Branch : null, FaxNo : null, Website : null, PhotoURL : null, LoginName : "", Password : "", Status : 1, CreatedBy : null, UpdatedBy : null, CreatedOn : "", UpdatedOn : null, Document : [], CommissionType : 0, CommissionMode : 0, CommissionValue : 0,CommissionValueNB : 0,
+};
+
   // public id =  this.route.snapshot.paramMap.get('id');
 
 
@@ -100,18 +100,19 @@ export class CompanyComponent implements OnInit {
 
   copyData(val: any) {
     if (val) {
-      this.data.Name = this.data.CompanyName;
-      this.data.MobileNo1 = this.data.MobileNo1;
-      this.data.MobileNo2 = this.data.MobileNo2;
-      this.data.PhoneNo = this.data.PhoneNo;
-      this.data.Address = this.data.Address;
-      this.data.Email = this.data.Email;
+      this.data1.Name = this.data.CompanyName;
+      this.data1.MobileNo1 = this.data.MobileNo1;
+      this.data1.MobileNo2 = this.data.MobileNo2;
+      this.data1.PhoneNo = this.data.PhoneNo;
+      this.data1.Address = this.data.Address;
+      this.data1.Email = this.data.Email;
     }
   }
 
   onsubmit() {
     this.sp.show();
-    const subs: Subscription =  this.cs.createCompany( this.data).subscribe({
+    this.data.User = this.data1
+    const subs: Subscription =  this.cs.createCompany(this.data).subscribe({
       next: (res: any) => {
         // this.dataList = res.result;
         if (res.success) {
@@ -150,6 +151,7 @@ export class CompanyComponent implements OnInit {
         if (res.success) {
           this.as.successToast(res.message)
           this.data = res.data[0]
+          this.data1 = res.user[0]
           this.companyImage = this.env.apiUrl + res.data[0].LogoURL;
           this.userImage = this.env.apiUrl + res.data[0].PhotoURL;
         } else {
@@ -166,7 +168,8 @@ export class CompanyComponent implements OnInit {
 
   updateCompany(){
     this.sp.show();
-    const subs: Subscription =  this.cs.updateCompany( this.data).subscribe({
+    this.data.User = this.data1
+    const subs: Subscription =  this.cs.updateCompany(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
            if(this.user.UserGroup === 'SuperAdmin'){
@@ -227,4 +230,5 @@ export class CompanyComponent implements OnInit {
     });
     this.sp.hide();
   }
+
 }

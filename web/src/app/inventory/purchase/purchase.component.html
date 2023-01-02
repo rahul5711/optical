@@ -10,21 +10,21 @@
                                 <h2>Purchase Info </h2>
                             </div>
                             <!-- togggle btn start -->
-                            <div class="col-xl-3 col-lg-5 col-md-5 col-8 ms-auto">
+                            <div class="col-xl-2 col-lg-5 col-md-5 col-8 ms-auto">
                                 <span style="color: rgb(33, 33, 33);">
                                     <mat-slide-toggle name="BrandType" color="primary" [(ngModel)]="item.BrandType"
-                                        [disabled]="selectedPurchaseMaster.ID !== null" class="example-margin"
-                                        #Multiplecontrol>Branded</mat-slide-toggle>
+                                         class="example-margin"
+                                        #Multiplecontrol>Brand</mat-slide-toggle>
                                 </span>
-                                <span class="ms-2 me-2" style="color: rgb(33, 33, 33);">
+                                <span class="ms-2 " style="color: rgb(33, 33, 33);">
                                     <mat-slide-toggle name="Multiple" color="primary" [(ngModel)]="disableAddButtons"
                                         class="example-margin" #Multiplecontrol>Quick Entry</mat-slide-toggle>
                                 </span>
-                                <span style="color: rgb(33, 33, 33);">
+                                <!-- <span style="color: rgb(33, 33, 33);">
                                     <mat-slide-toggle name="Multiple" color="primary"
                                         [(ngModel)]="selectedPurchaseMaster.preOrder" class="example-margin"
                                         #Multiplecontrol>Pre-Order</mat-slide-toggle>
-                                </span>
+                                </span> -->
                             </div>
                             <!-- togggle btn end -->
                         </div>
@@ -103,28 +103,17 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-lg-3 col-md-6 col-6 ms-auto pt-2 p-0" *ngIf="category !== 'Charges'">
+                                <div class="col-lg-2 col-md-6 col-6 ms-auto pt-2 p-0" *ngIf="category !== 'Charges'">
                                     
                                 <span>
-                                    <mat-slide-toggle name="BrandType" color="primary" [(ngModel)]="item.Ledger"
-                                        [disabled]="selectedPurchaseMaster.ID !== null" class="example-margin"
-                                        #Multiplecontrol>Non-Branded</mat-slide-toggle>
+                                    <mat-slide-toggle name="BrandType" color="primary" [(ngModel)]="item.BrandType"
+                                     class="example-margin"
+                                        #Multiplecontrol>Non-Brand</mat-slide-toggle>
 
                                 </span>
-                                    <span class="me-2 ms-2">
+                                    <span class="me-0 ms-2">
                                         <mat-slide-toggle name="WholeSale" color="primary" [(ngModel)]="item.WholeSale"
                                         class="example-margin" #Multiplecontrol>WholeSale</mat-slide-toggle>
-                                
-                                    </span>
-                                    <!-- <span class="ms-2 me-2">
-                                        <mat-slide-toggle name="Ledger" color="primary" [(ngModel)]="item.Ledger"
-                                            [disabled]="selectedPurchaseMaster.ID !== null" class="example-margin"
-                                            #Multiplecontrol>Ledger Entry</mat-slide-toggle>
-                                    </span> -->
-                                    <span >
-                                        <mat-slide-toggle name="Multiple" color="primary" [(ngModel)]="item.Multiple"
-                                        [disabled]="selectedPurchaseMaster.ID !== null" class="example-margin"
-                                        #Multiplecontrol>Multiple</mat-slide-toggle>
                                     </span>
                                 </div>
                             </div>
@@ -216,7 +205,7 @@
                             <div class="row" *ngIf="category !== 'Charges' ">
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>Unit Price</mat-label>
+                                        <mat-label>Purchase Price</mat-label>
                                         <input matInput name="UnitPrice" [(ngModel)]="item.UnitPrice" required
                                             #UnitPricecontrol [autocomplete]="false" (change)="calculateFields('UnitPrice', 'subTotal')">
                                         <mat-error>
@@ -259,7 +248,7 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 d-flex">
                                     <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>(GST/VAT)% / Amt </mat-label>
+                                        <mat-label>(TAX/VAT)% / Amt </mat-label>
                                         <div class="d-flex">
                                            <div class="d-flex">
                                                <input matInput name="GST" [(ngModel)]="item.GSTPercentage" required #GSTcontrol
@@ -412,20 +401,21 @@
                                                         <mat-checkbox></mat-checkbox>
                                                     </th>
                                                     <th>Action</th>
-                                                    <th>BaseBarCode</th>
+                                                    <th>BarCode</th>
                                                     <th>Code</th>
-                                                    <th>ProductCategory</th>
-                                                    <th>UnitPrice</th>
+                                                    <th>Product</th>
+                                                    <th>PurchasePrice</th>
                                                     <th>Quantity</th>
                                                     <th>SubTotal</th>
-                                                    <th>GSTAmt</th>
-                                                    <th>GSTPer</th>
-                                                    <th>GSTType</th>
-                                                    <th>DiscountAmt</th>
-                                                    <th>DiscountPer</th>
+                                                    <th>TAXAmt</th>
+                                                    <th>TAX%</th>
+                                                    <th>TAXType</th>
+                                                    <th>DisAmt</th>
+                                                    <th>Dis%</th>
                                                     <th>TotalAmt</th>
                                                     <th>SalePrice/Unit</th>
                                                     <th>WholeSalePrice/Unit</th>
+                                                    <th>Brand</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -443,9 +433,9 @@
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.BaseBarCode}}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.UniqueBarcode}}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.ProductName}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.UnitPrice }}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.Quantity}}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.SubTotal}}</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.UnitPrice }}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.GSTAmount}}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.GSTPercentage}}%</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.GSTType}}</td>
@@ -454,6 +444,7 @@
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.TotalAmount}}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.RetailPrice}}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.WholeSalePrice}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" ><span *ngIf="data.BrandType === true">Brand</span> <span *ngIf="data.BrandType === true">Non-Brand</span></td>
                                                 </tr>
                                                
                                                 <tr *ngFor="let data of chargeList ; let i = index;">
@@ -520,15 +511,14 @@
                                     <mat-form-field class="example-full-width mb-0">
                                     <mat-label>{{gst.GSTType}}</mat-label>
                                     <input matInput name="igstAmt"  value="{{gst.Amount | number:'1.0-2'}}" disabled>
-                                    <mat-error>
-                                        GST Amt is required
-                                    </mat-error>
+                                      <mat-error>
+                                         GST Amt is required
+                                      </mat-error>
                                 </mat-form-field>
                                 </div>
-
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>TotalGSTAmt</mat-label>
+                                        <mat-label>TotalTAXAmt</mat-label>
                                         <input matInput name="GSTAmtt" [(ngModel)]="selectedPurchaseMaster.GSTAmount"
                                             disabled #GSTAmttcontrol [autocomplete]="false">
                                         <mat-error>
@@ -552,12 +542,12 @@
                                         color="primary">PrintBarcode</button>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ml-auto">
-                                    <button type="submit"  [disabled]="itemList.length == 0 || id != 0" mat-raised-button color="primary">Save
-                                        PO</button>
+                                    <button type="submit" *ngIf="id == 0"  [disabled]="itemList.length == 0 || id != 0" mat-raised-button color="primary">Save
+                                        </button>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 mr-3">
-                                    <button type="button" *ngIf="selectedPurchaseMaster.ID !== null" mat-raised-button
-                                        color="primary">Update PO</button>
+                                    <button type="button" [disabled]="itemList.length === 0" (click)="updatedPurchase()" *ngIf="selectedPurchaseMaster.ID !== null" mat-raised-button
+                                        color="primary">Update</button>
                                 </div>
                             </div>
                             <!-- Total calculcation end -->

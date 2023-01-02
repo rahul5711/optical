@@ -22,6 +22,7 @@ export class PurchaseComponent implements OnInit {
   user = JSON.parse(localStorage.getItem('user') || '');
   company = JSON.parse(localStorage.getItem('company') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   editBtn = false;
   
 
@@ -71,11 +72,7 @@ export class PurchaseComponent implements OnInit {
   itemList:any = [];
   chargeList:any  = [];
   
-  gst_detail:any = [
-    {GSTType:'CGST',Amount:0}, 
-    {GSTType:'SGST',Amount:0 },
-    {GSTType: 'IGST',Amount:0}
-  ];
+  gst_detail:any = [];
 
 
   ngOnInit(): void {
@@ -89,7 +86,6 @@ export class PurchaseComponent implements OnInit {
       this.selectedPurchaseMaster.PurchaseDate = moment().format('YYYY-MM-DD');
     }
   }
-
 
   getPurchaseById(){
     const subs: Subscription = this.purchaseService.getPurchaseById(this.id).subscribe({
@@ -139,6 +135,16 @@ export class PurchaseComponent implements OnInit {
     const subs: Subscription = this.supps.getList('TaxType').subscribe({
       next: (res: any) => {
         this.gstList = res.data
+        this.gst_detail = [];
+        res.data.forEach((ele: any) => {
+          if(ele.Name !== ' '){
+           let obj = {GSTType: '', Amount: 0};
+            obj.GSTType = ele.Name;    
+            this.gst_detail.push(obj);
+          }
+        })
+        console.log(this.gst_detail);
+        
       },
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),
@@ -485,6 +491,44 @@ export class PurchaseComponent implements OnInit {
     this.editBtn = false
   }
 
+  updatedPurchase(){
+    this.selectedPurchaseMaster.ShopID = this.selectedShop[0];
+    this.data.PurchaseMaster = this.selectedPurchaseMaster;
+    this.data.Charge = this.chargeList;
+    let items:any = [];
+    this.itemList.forEach((ele: any) => {
+      if(ele.ID === null || ele.Status == 0 && ele.UpdatedBy === null) {
+        ele.UpdatedBy = this.user.ID;
+        items.push(ele);
+      }
+    })
+    this.data.PurchaseDetail = JSON.stringify(items) ;
+    const subs: Subscription =  this.purchaseService.updatePurchase(this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          if(res.data !== 0) {
+            this.getPurchaseById();
+            this.selectedProduct = "";
+            this.specList = [];
+          }
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Update.',
+            showConfirmButton: false,
+            timer: 1200
+          }) 
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
 
+
+  }
 
 }

@@ -251,7 +251,7 @@
                                     <div class="col-md-10 col-12">
                                         <div class="row">
                                             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0 pt-3">
-                                                <mat-slide-toggle name="Checked" class="example-margin" 
+                                                <mat-slide-toggle name="Checked" class="example-margin" color="primary"
                                                     [checked]="toggleChecked" (change)="copyData($event.checked)"
                                                     [disabled]="false" #CompanyIDcontrol>
                                                     Copy Data
@@ -260,7 +260,7 @@
                                             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Owner Name</mat-label>
-                                                    <input matInput name="Name" [(ngModel)]="data.Name" required
+                                                    <input matInput name="Name" [(ngModel)]="data1.Name" required
                                                         #Namecontrol [autocomplete]="false">
                                                     <mat-error>
                                                         Company ID is required
@@ -270,21 +270,21 @@
                                             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>DOB</mat-label>
-                                                    <input matInput name="DOB" type="date" [(ngModel)]="data.DOB">
+                                                    <input matInput name="DOB" type="date" [(ngModel)]="data1.DOB">
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Anniversary</mat-label>
                                                     <input matInput name="Anniversary" type="date"
-                                                        [(ngModel)]="data.Anniversary">
+                                                        [(ngModel)]="data1.Anniversary">
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Mobile No1</mat-label>
                                                     <input matInput name="MobileNo11" type="number"
-                                                        [(ngModel)]="data.MobileNo1"
+                                                        [(ngModel)]="data1.MobileNo1"
                                                          required #MobileNo1control1>
                                                     <mat-error>
                                                         Invalid Mobile Number.
@@ -297,14 +297,14 @@
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Mobile No2</mat-label>
                                                     <input matInput name="MobileNo2" type="number"
-                                                        [(ngModel)]="data.MobileNo2">
+                                                        [(ngModel)]="data1.MobileNo2">
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>PhoneNo</mat-label>
                                                     <input matInput name="PhoneNo1" type="number"
-                                                        [(ngModel)]="data.PhoneNo" #PhoneNocontrol1>
+                                                        [(ngModel)]="data1.PhoneNo" #PhoneNocontrol1>
                                                     <mat-error>
                                                         Invalid Phone Number
                                                     </mat-error>
@@ -314,7 +314,7 @@
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Email</mat-label>
                                                     <input matInput name="Email"  ngModel email="true"
-                                                    pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"  [(ngModel)]="data.Email"  [disabled]=" id != 0" required #Emailcontrol1>
+                                                    pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"  [(ngModel)]="data1.Email"  [disabled]=" id != 0" required #Emailcontrol1>
                                                     <mat-error>
                                                         Invalid Email Id
                                                     </mat-error>
@@ -323,7 +323,7 @@
                                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Address</mat-label>
-                                                    <input matInput name="Address1" [(ngModel)]="data.Address" required
+                                                    <input matInput name="Address1" [(ngModel)]="data1.Address" required
                                                         #Addresscontrol1 minlength="2">
                                                     <mat-error>
                                                         Address minimum 2 characters is required.
@@ -335,7 +335,7 @@
                                             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="id == 0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>LoginName</mat-label>
-                                                    <input matInput name="LoginName" [(ngModel)]="data.LoginName"
+                                                    <input matInput name="LoginName" [(ngModel)]="data1.LoginName"
                                                         autocomplete="off" required #LoginNamecontrol
                                                         autocomplete="nope">
                                                     <mat-error>
@@ -346,7 +346,7 @@
                                             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="id == 0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Password</mat-label>
-                                                    <input matInput name="Password" [(ngModel)]="data.Password"
+                                                    <input matInput name="Password" [(ngModel)]="data1.Password"
                                                         required #Passwordcontrol type="password"
                                                         autocomplete="new-password">
                                                     <mat-error>

@@ -22,10 +22,11 @@ module.exports = {
             const connection = await getConnection.connection();
 
             const Body = req.body;
+            console.log(Body);
             const LoggedOnUser = 0;
 
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
-            if (_.isEmpty(Body.Password)) res.send({ message: "Invalid Query Data" })
+            
 
             const doesExist = await connection.query(`select * from company where Email = '${Body.Email}' and Status = 1`)
             if (doesExist.length) return res.send({ message: `Company Already exist from this Email ${Body.Email}` })
@@ -37,11 +38,13 @@ module.exports = {
             const doesExistLoginName = await connection.query(`select * from User where LoginName = '${Body.User.LoginName}'`)
             if (doesExistLoginName.length) return res.send({ message: `LoginName Already exist from this LoginName ${Body.User.LoginName}` })
 
+            if (_.isEmpty(Body.User.Password)) res.send({ message: "Invalid Query Data" })
+
             const saveCompany = await connection.query(`insert into company (Name,  MobileNo1,  MobileNo2,  PhoneNo,  Address, Country, State, City,  Email,  Website,  GSTNo,  CINNo,  LogoURL,  Remark, SRemark, CAmount,  Plan, Version, NoOfShops,  EffectiveDate,  CancellationDate, EmailMsg, WhatsappMsg, WholeSale,RetailPrice,  Status, CreatedBy , CreatedOn ) values ('${Body.CompanyName}', '${Body.MobileNo1}', '${Body.MobileNo2}', '${Body.PhoneNo}', '${Body.Address}', '${Body.Country}', '${Body.State}', '${Body.City}', '${Body.Email}','${Body.Website}','${Body.GSTNo}','${Body.CINNo}','${Body.LogoURL}','${Body.Remark}','${Body.SRemark}','${Body.CAmount}',${Body.Plan},'${Body.Version}',${Body.NoOfShops}, '${Body.EffectiveDate}', '${Body.CancellationDate}', '${Body.EmailMsg}',  '${Body.WhatsappMsg}','${Body.WholeSale}', '${Body.RetailPrice}', 1 , ${LoggedOnUser}, now())`)
 
             console.log(connected("Company Added SuccessFUlly !!!"));
 
-            const pass = await pass_init.hash_password(Body.Password)
+            const pass = await pass_init.hash_password(Body.User.Password)
 
             const saveUser = await connection.query(`insert into User(CompanyID,Name,UserGroup,DOB,Anniversary,MobileNo1,MobileNo2,PhoneNo,Email,Address,Branch,PhotoURL,Document,LoginName,Password,Status,CreatedBy,UpdatedBy,CreatedOn,UpdatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB) values(${saveCompany.insertId},'${Body.User.Name}','CompanyAdmin','${Body.User.DOB}','${Body.User.Anniversary}','${Body.User.MobileNo1}','${Body.User.MobileNo2}','${Body.User.PhoneNo}','${Body.User.Email}','${Body.User.Address}','${Body.User.Branch}','${Body.User.PhotoURL}','${Body.User.Document}','${Body.User.LoginName}','${pass}',1,0,0,now(),now(),${Body.User.CommissionType},${Body.User.CommissionMode},${Body.User.CommissionValue},${Body.User.CommissionValueNB})`)
 
@@ -273,7 +276,7 @@ module.exports = {
     },
     update: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "" }
+            const response = { data: null,  success: true, message: "" }
             const connection = await getConnection.connection();
 
             const Body = req.body;
@@ -298,15 +301,12 @@ module.exports = {
             console.log("Company Updated SuccessFUlly !!!");
 
 
-            const updateUser = await connection.query(`update user set Name = '${Body.User.Name}',DOB = '${Body.User.DOB}',Anniversary = '${Body.User.Anniversary}',PhotoURL = '${Body.User.PhotoURL}',MobileNo1 = '${Body.User.MobileNo1}',MobileNo2 = '${Body.User.MobileNo2}',PhoneNo = '${Body.User.PhoneNo}',Address = '${Body.User.Address}' where CompanyID = ${Body.User.ID} and UserGroup = 'CompanyAdmin'`)
+            const updateUser = await connection.query(`update user set Name = '${Body.User.Name}',DOB = '${Body.User.DOB}',Anniversary = '${Body.User.Anniversary}',PhotoURL = '${Body.User.PhotoURL}',MobileNo1 = '${Body.User.MobileNo1}',MobileNo2 = '${Body.User.MobileNo2}',PhoneNo = '${Body.User.PhoneNo}',Address = '${Body.User.Address}' where CompanyID = ${Body.ID} and UserGroup = 'CompanyAdmin'`)
 
             console.log("User Updated SuccessFUlly !!!");
 
 
-
             const Company = await connection.query(`select * from company where ID = ${Body.ID}`)
-
-
 
             response.message = "data update sucessfully"
             response.data = Company[0]
@@ -413,7 +413,7 @@ module.exports = {
     },
     getCompanyById: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "" }
+            const response = { data: null, user:null, success: true, message: "" }
             const connection = await getConnection.connection();
 
             const Body = req.body;
@@ -422,7 +422,9 @@ module.exports = {
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
 
-            const Company = await connection.query(`select company.*, company.Name as CompanyName, user.DOB, user.Anniversary, user.LoginName, user.PhotoURL, user.Name from company left join user on user.CompanyID = company.ID where company.ID = ${Body.ID} and company.Status = 1`)
+            const Company = await connection.query(`select company.*, company.Name as CompanyName, user.DOB, user.Anniversary, user.LoginName, user.PhotoURL, user.Name  from company left join user on user.CompanyID = company.ID where company.ID = ${Body.ID} and company.Status = 1`)
+
+            const User = await connection.query(`SELECT * FROM user where companyID = ${Body.ID} and user.Status = 1`)
 
             if (Company[0].WhatsappMsg === 'false') {
                 Company[0].WhatsappMsg = false
@@ -449,6 +451,7 @@ module.exports = {
             }
             response.message = "data fetch sucessfully"
             response.data = Company
+            response.user = User
             connection.release()
             res.send(response)
         } catch (error) {

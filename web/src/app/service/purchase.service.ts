@@ -18,6 +18,11 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+ updatePurchase( Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/update', Body, httpOptions )
+    .pipe(catchError(this.handleError));
+  }
+
   getList(Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/list', Body, httpOptions)
     .pipe(catchError(this.handleError));
