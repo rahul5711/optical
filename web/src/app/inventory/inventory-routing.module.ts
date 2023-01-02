@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { FitterListComponent } from './fitter-list/fitter-list.component';
 import { FitterComponent } from './fitter/fitter.component';
+import { ProductTransferComponent } from './product-transfer/product-transfer.component';
 import { PurchaseListComponent } from './purchase-list/purchase-list.component';
 import { PurchaseComponent } from './purchase/purchase.component';
 import { SupplierComponent } from './supplier/supplier.component';
@@ -14,6 +15,7 @@ const routes: Routes = [
     { path: 'purchaseList', component: PurchaseListComponent },  
     { path: 'fitter/:id', component: FitterComponent },  
     { path: 'fitterList', component: FitterListComponent },  
+    { path: 'product-transfer', component: ProductTransferComponent },  
   ]}
   ]
 
