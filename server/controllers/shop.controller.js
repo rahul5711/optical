@@ -25,7 +25,7 @@ module.exports = {
 
             const doesShopCount = await connection.query(`select * from shop where CompanyID = ${CompanyID}`)
 
-            if (doesShopCount.length !== Number(doesCount[0].NoOfShops)) {
+            if (doesShopCount.length === Number(doesCount[0].NoOfShops)) {
                 return res.send({ message: `You Can't Create Shop !! You Have permission Of ${Number(doesCount[0].NoOfShops)} Shop` })
             }
 
