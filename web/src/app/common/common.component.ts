@@ -48,6 +48,7 @@ export class CommonComponent implements OnInit {
   saveSelectedShop() {
    localStorage.removeItem('selectedShop');
    localStorage.setItem('selectedShop', JSON.stringify([`${this.selectedShops}`]));
+   this.router.navigate(['/admin/CompanyDashborad']);
   }
 
   logout() {

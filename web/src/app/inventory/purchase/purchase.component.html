@@ -59,7 +59,8 @@
                                         <mat-label>Invoice Number</mat-label>
                                         <input matInput name="InvoiceNo" [(ngModel)]="selectedPurchaseMaster.InvoiceNo"
                                             (ngModelChange)="selectedPurchaseMaster.InvoiceNo = onChange($event)"
-                                            required #InvoiceNumbercontrol>
+                                            required #InvoiceNumbercontrol 
+                                            [disabled]="user.UserGroup === 'Employee' && selectedPurchaseMaster.ID !== null">
                                         <mat-error>
                                             Invoice is required
                                         </mat-error>
@@ -70,7 +71,7 @@
                                         <mat-label>Invoice Date</mat-label>
                                         <input matInput name="InvoiceDate" type="date"
                                             [(ngModel)]="selectedPurchaseMaster.PurchaseDate" required
-                                            #InvoiceDatecontrol>
+                                            #InvoiceDatecontrol  [disabled]="user.UserGroup === 'Employee' && selectedPurchaseMaster.ID !== null">
                                         <mat-error>
                                             Invoice date is required
                                         </mat-error>

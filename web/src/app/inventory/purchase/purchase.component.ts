@@ -21,6 +21,7 @@ export class PurchaseComponent implements OnInit {
   evn = environment;
   user = JSON.parse(localStorage.getItem('user') || '');
   company = JSON.parse(localStorage.getItem('company') || '');
+  shop = JSON.parse(localStorage.getItem('shop') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   editBtn = false;
@@ -363,6 +364,7 @@ export class PurchaseComponent implements OnInit {
   }
 
   onSumbit(){
+    this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
     this.data.PurchaseMaster = this.selectedPurchaseMaster;
     this.data.PurchaseDetail = JSON.stringify(this.itemList);
     this.data.Charge = this.chargeList;
@@ -492,7 +494,7 @@ export class PurchaseComponent implements OnInit {
   }
 
   updatedPurchase(){
-    this.selectedPurchaseMaster.ShopID = this.selectedShop[0];
+    this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
     this.data.PurchaseMaster = this.selectedPurchaseMaster;
     this.data.Charge = this.chargeList;
     let items:any = [];

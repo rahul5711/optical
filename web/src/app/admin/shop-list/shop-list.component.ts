@@ -228,11 +228,12 @@ export class ShopListComponent implements OnInit {
           })
         } else {
           this.as.errorToast(res.message)
-          if(res.message === "You Can't Create Shop !! You Have permission Of 2 Shop"){
+          if(res.message){
             Swal.fire({
               position: 'center',
               icon: 'warning',
-              title: 'You Can Not Create Shop !! You Have permission Of 2 Shop',
+              title: 'Opps !!',
+              text: 'You Can Not Create Shop !! Your has been permission end',
               showConfirmButton: true,
             }) 
           }
