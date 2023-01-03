@@ -25,8 +25,8 @@ module.exports = {
 
             const doesShopCount = await connection.query(`select * from shop where CompanyID = ${CompanyID}`)
 
-            if (doesShopCount.length !== doesCount[0].NoOfShops) {
-                return res.send({ message: `You Can't Create Shop !! You Have permission Of ${doesCount[0].NoOfShops} Shop` })
+            if (doesShopCount.length !== Number(doesCount[0].NoOfShops)) {
+                return res.send({ message: `You Can't Create Shop !! You Have permission Of ${Number(doesCount[0].NoOfShops)} Shop` })
             }
 
             const saveData = await connection.query(`insert into shop (CompanyID,Name, AreaName,  Address,  MobileNo1, MobileNo2 , PhoneNo, Email, Website, GSTNo,CINNo, BarcodeName, Discount, GSTnumber, LogoURL, ShopTiming, WelcomeNote, Status,CreatedBy,CreatedOn,HSNCode,CustGSTNo,Rate,Discounts,Tax, SubTotal,Total,ShopStatus ) values (${CompanyID},'${Body.Name}', '${Body.AreaName}', '${Body.Address}', '${Body.MobileNo1}','${Body.MobileNo1}','${Body.PhoneNo}','${Body.Email}','${Body.Website}','${Body.GSTNo}','${Body.CINNo}','${Body.BarcodeName}','${Body.Discount}','${Body.GSTnumber}','${Body.LogoURL}','${Body.ShopTiming}','${Body.WelcomeNote}',1,${LoggedOnUser}, now(),'${Body.HSNCode}','${Body.CustGSTNo}','${Body.Rate}','${Body.Discounts}','${Body.Tax}','${Body.SubTotal}','${Body.Total}',${Body.ShopStatus})`)
