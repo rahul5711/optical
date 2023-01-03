@@ -82,6 +82,13 @@ export class CalculationService {
         break;
         // charges calculation end
       }
+      if(item.GSTType !== "") {
+        
+        item.DiscountAmount = +item.UnitPrice * +item.Quantity  * +item.DiscountPercentage / 100; 
+        item.GSTAmount =  (+item.UnitPrice * +item.Quantity - item.DiscountAmount) * +item.GSTPercentage / 100;
+        item.SubTotal = +item.Quantity * +item.UnitPrice - +item.DiscountAmount;
+        item.TotalAmount = +item.SubTotal + +item.GSTAmount;
+      }
 
       item.GSTAmount = this.convertToDecimal(+item.GSTAmount, 2);
       item.GSTPercentage = this.convertToDecimal(+item.GSTPercentage, 0);

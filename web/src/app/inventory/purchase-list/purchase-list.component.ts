@@ -10,6 +10,7 @@ import { fromEvent   } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { PurchaseService } from 'src/app/service/purchase.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-purchase-list',
@@ -28,17 +29,18 @@ export class PurchaseListComponent implements OnInit {
   pageSize!: number;
   collectionSize = 0
   page = 4;
-  
+  paymentHistoryList:any;
   constructor(
     private formBuilder: FormBuilder,
     public as: AlertService,
     private sp: NgxSpinnerService,
     private excelService: ExcelService,
     private purchaseService: PurchaseService,
+    private modalService: NgbModal,
   ) { }
 
   ngOnInit(): void {
-    this.getList()
+    this.getList();
   }
   
   changePagesize(num: number): void {
@@ -142,5 +144,19 @@ export class PurchaseListComponent implements OnInit {
   exportAsXLSX(): void {
     this.excelService.exportAsExcelFile(this.dataList, 'fitter_list');
   }
+
+  openModal(content: any,data:any) {
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
+    const subs: Subscription = this.purchaseService.paymentHistory(data.ID, data.InvoiceNo).subscribe({
+      next: (res: any) => {
+        this.paymentHistoryList = res.data;
+        this.sp.hide();
+        this.as.successToast(res.message)
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
 
 }

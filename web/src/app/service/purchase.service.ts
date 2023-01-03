@@ -53,6 +53,10 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+  paymentHistory(ID:any,InvoiceNo:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/paymentHistory', {ID: ID, InvoiceNo: InvoiceNo}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

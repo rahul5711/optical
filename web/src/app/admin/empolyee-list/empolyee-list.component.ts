@@ -45,10 +45,6 @@ export class EmpolyeeListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getList();
-    console.log(this.env.apiUrl);
-
-
-
   }
 
   onPageChange(pageNum: number): void {

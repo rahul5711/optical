@@ -277,7 +277,6 @@ export class PurchaseComponent implements OnInit {
   }
 
   calculateFields(fieldName:any,mode:any){
-    // this.item.UnitPrice = 0 ? '' : this.item.UnitPrice;
    this.calculation.calculateFields(fieldName,mode,this.item,this.charge)
   }
 
@@ -286,6 +285,7 @@ export class PurchaseComponent implements OnInit {
   }
 
   addItem(){
+   
     if (this.category === 'Product'){
       if (this.selectedPurchaseMaster.ID !== null){this.item.Status = 2; }
         this.item.ProductName = "";
@@ -483,12 +483,12 @@ export class PurchaseComponent implements OnInit {
       }
     });
     this.calculateGrandTotal()
-    this.selectedProduct = ''
     this.item = {
       ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, UnitPrice: 0.00,
       Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: 0.00, WholeSalePrice: 0.00, Ledger: false, WholeSale: false, BaseBarCode: '', NewBarcode: '',  Status: 1, BrandType: false
     };
     this.editBtn = false
+    this.specList = []
   }
 
   updatedPurchase(){
