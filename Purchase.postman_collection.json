@@ -568,6 +568,113 @@
 					"body": "{\n    \"data\": 1,\n    \"success\": true,\n    \"message\": \"data update sucessfully\"\n}"
 				}
 			]
+		},
+		{
+			"name": "payment",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": 1,\r\n    \"InvoiceNo\": \"xxxxx4212\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchase/paymentHistory",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"paymentHistory"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "payment",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 1,\r\n    \"InvoiceNo\": \"xxxxx4212\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchase/paymentHistory",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchase",
+								"paymentHistory"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "639"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"27f-xGPSW/pzOZTYFrLMus1nE43xfB0\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 03 Jan 2023 15:44:39 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 1,\n            \"PaymentMasterID\": 1,\n            \"BillID\": \"xxxxx4212\",\n            \"BillMasterID\": 1,\n            \"CustomerID\": 417,\n            \"CompanyID\": 129,\n            \"Amount\": 5000,\n            \"DueAmount\": 5000,\n            \"PaymentType\": \"Supplier\",\n            \"Credit\": \"Debit\",\n            \"Status\": 1,\n            \"CreatedBy\": 450,\n            \"UpdatedBy\": 450,\n            \"CreatedOn\": \"2023-01-02 22:41:38\",\n            \"UpdatedOn\": \"2023-01-02 22:42:02\",\n            \"SupplierID\": 417,\n            \"ShopID\": 1,\n            \"PurchaseDate\": \"2022-12-22\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"InvoiceNo\": \"xxxxx4212\",\n            \"GSTNo\": \"\",\n            \"Quantity\": 2,\n            \"SubTotal\": 5000,\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 300,\n            \"TotalAmount\": 5000,\n            \"PStatus\": 0,\n            \"LastUpdate\": null,\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"Dueamount\": 5000\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\"\n}"
+				}
+			]
 		}
 	],
 	"auth": {
@@ -575,7 +682,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzI2NzY5NjcsImV4cCI6MTY3Mjc2MzM2NywiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.qphL4YmM8cPMVoWUWKaXH8SkF6nhe6f4dXS1Y3JbPvw",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzI3NTgyMDIsImV4cCI6MTY3Mjg0NDYwMiwiYXVkIjoiJzQ1MCciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.ec88R0LmnuVxf93G30yKVrZ9JjHHoXbDk0cyTabrKlI",
 				"type": "string"
 			}
 		]

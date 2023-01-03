@@ -15,6 +15,8 @@ router.post('/deleteCharge', verifyAccessTokenAdmin, Controller.deleteCharge)
 
 // Regex search
 
+router.post('/paymentHistory', verifyAccessTokenAdmin, Controller.paymentHistory)
+
 router.post('/searchByFeild', verifyAccessTokenAdmin, Controller.searchByFeild)
 
 module.exports = router

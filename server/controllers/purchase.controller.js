@@ -559,6 +559,32 @@ module.exports = {
 
         }
     },
+    paymentHistory: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: ""}
+            const connection = await getConnection.connection();
+            const {ID, InvoiceNo} = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (ID === null || ID === undefined) return res.send({ message: "Invalid Query Data" })
+            if (InvoiceNo === null || InvoiceNo === undefined) return res.send({ message: "Invalid Query Data" })
+
+            let qry = `SELECT paymentdetail.*, purchasemasternew.*, paymentmaster.PaymentType AS PaymentType, paymentmaster.PaymentMode AS PaymentMode, paymentmaster.PaidAmount, paymentdetail.DueAmount AS Dueamount FROM paymentdetail LEFT JOIN purchasemasternew ON purchasemasternew.ID = paymentdetail.BillMasterID LEFT JOIN paymentmaster  ON paymentmaster.ID = paymentdetail.PaymentMasterID WHERE paymentdetail.PaymentType = 'Vendor' AND purchasemasternew.ID = ${ID} AND paymentdetail.BillID = '${InvoiceNo}' and purchasemasternew.CompanyID = ${CompanyID} and purchasemasternew.ShopID = ${shopid}`
+
+            let data = await connection.query(qry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            connection.release()
+            res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+
+        }
+    },
 
 
 }
