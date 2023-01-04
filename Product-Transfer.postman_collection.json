@@ -1,0 +1,253 @@
+{
+	"info": {
+		"_postman_id": "d90a6dab-0e60-4558-b4ab-0e3110386227",
+		"name": "Product-Transfer",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "barCodeListBySearchString",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ShopMode\" : \"false\",\r\n    \"ProductName\": \"testproduct1\",\r\n    \"searchString\": \"pt-1/one\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchase/barCodeListBySearchString",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"barCodeListBySearchString"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "barCodeListBySearchString",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ShopMode\" : \"false\",\r\n    \"ProductName\": \"testproduct1\",\r\n    \"searchString\": \"pt-1/one\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchase/barCodeListBySearchString",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchase",
+								"barCodeListBySearchString"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "759"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"2f7-QQ2u/9l9qhbpb2rQ05YtHu32pk8\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 04 Jan 2023 17:17:18 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"BarCodeCount\": 10,\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"pt-1/one\",\n            \"ID\": 6,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"PurchaseDetailID\": 2,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10001000\",\n            \"AvailableDate\": \"2023-01-04 22:05:12\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSalePrice\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"None\",\n            \"GSTPercentage\": 0,\n            \"PreOrder\": 0,\n            \"TransferID\": 0,\n            \"TransferStatus\": \"\",\n            \"TransferToShop\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-04 22:05:12\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"SupplierID\": 0,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0\n        }\n    ],\n    \"success\": true,\n    \"message\": \"Success\"\n}"
+				}
+			]
+		},
+		{
+			"name": "productDataByBarCodeNo",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ShopMode\" : \"false\",\r\n    \"PreOrder\": \"false\",\r\n    \"Req\": {\r\n        \"SearchBarCode\" : \"10001000\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchase/productDataByBarCodeNo",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"productDataByBarCodeNo"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "productDataByBarCodeNo",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ShopMode\" : \"false\",\r\n    \"PreOrder\": \"false\",\r\n    \"Req\": {\r\n        \"SearchBarCode\" : \"10001000\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchase/productDataByBarCodeNo",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchase",
+								"productDataByBarCodeNo"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "771"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"303-eo3Y5K6N7k+xgzXgN2U0crnTPpI\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 04 Jan 2023 17:43:37 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": {\n        \"BarCodeCount\": 10,\n        \"GSTType\": \"None\",\n        \"GSTPercentage\": 0,\n        \"ProductName\": \"pt-1/one\",\n        \"ProductTypeName\": \"testproduct1\",\n        \"ProductTypeID\": 3,\n        \"ID\": 6,\n        \"CompanyID\": 1,\n        \"ShopID\": 1,\n        \"PurchaseDetailID\": 2,\n        \"BillDetailID\": null,\n        \"Barcode\": \"10001000\",\n        \"AvailableDate\": \"2023-01-04 22:05:12\",\n        \"CurrentStatus\": \"Available\",\n        \"RetailPrice\": 0,\n        \"RetailDiscount\": 0,\n        \"TxCode\": 0,\n        \"MultipleBarcode\": 0,\n        \"ForWholeSale\": 0,\n        \"WholeSalePrice\": 0,\n        \"WholeSaleDiscount\": 0,\n        \"PreOrder\": 0,\n        \"TransferID\": 0,\n        \"TransferStatus\": \"\",\n        \"TransferToShop\": 0,\n        \"Status\": 1,\n        \"CreatedBy\": 2,\n        \"UpdatedBy\": null,\n        \"CreatedOn\": \"2023-01-04 22:05:12\",\n        \"UpdatedOn\": \"0000-00-00 00:00:00\",\n        \"SupplierID\": 0,\n        \"MeasurementID\": null,\n        \"Family\": \"\\\"\\\"\",\n        \"Optionsss\": \"\\\"\\\"\",\n        \"FitterID\": 0,\n        \"LensType\": null,\n        \"FitterCost\": 0,\n        \"Remark\": null,\n        \"Po\": 0\n    },\n    \"success\": true,\n    \"message\": \"Success\"\n}"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzI4NDk3MjUsImV4cCI6MTY3MjkzNjEyNSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.F7LGKe45gU2y1dvsxgZx9Btgu_PigmxU-EsQMuXSVsc",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

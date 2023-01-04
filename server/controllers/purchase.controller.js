@@ -561,9 +561,9 @@ module.exports = {
     },
     paymentHistory: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: ""}
+            const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
-            const {ID, InvoiceNo} = req.body;
+            const { ID, InvoiceNo } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
@@ -585,6 +585,127 @@ module.exports = {
 
         }
     },
+
+    barCodeListBySearchString: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const { searchString, ShopMode, ProductName } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (searchString === "" || searchString === undefined || searchString === null) return res.send({ message: "Invalid Query Data" })
+
+            let SearchString = searchString + "%";
+            let shopMode = ``;
+
+            if (ShopMode === "false" || ShopMode === false) {
+                shopMode = " And barcodemasternew.ShopID = " + shopid;
+            }
+            if (ShopMode === "true" || ShopMode === true) {
+                shopMode = " ";
+            }
+
+            const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, purchasedetailnew.ProductName, barcodemasternew.* FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE purchasedetailnew.ProductTypeName = '${ProductName}' ${shopMode} AND purchasedetailnew.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus = "Available"   AND purchasedetailnew.Status = 1  and shop.Status = 1 And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
+
+            let purchaseData = await connection.query(qry);
+            response.data = purchaseData;
+            response.message = "Success";
+
+            connection.release()
+            res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+
+        }
+    },
+
+    productDataByBarCodeNo: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const { Req, PreOrder, ShopMode } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (Req.SearchBarCode === "" || Req.SearchBarCode === undefined || Req.SearchBarCode === null) return res.send({ message: "Invalid Query Data" })
+
+            let barCode = Req.SearchBarCode;
+            let qry = "";
+            if (PreOrder === "false") {
+                let shopMode = "";
+                if (ShopMode === "false") {
+                    shopMode = " And barcodemasternew.ShopID = " + shopid;
+                } else {
+                    shopMode = " Group By barcodemasternew.ShopID ";
+                }
+                qry = `SELECT COUNT(PurchaseDetailID) AS BarCodeCount, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName,purchasedetailnew.ProductTypeID, barcodemasternew.*  FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE CurrentStatus = "Available" AND barcodemasternew.Barcode = '${barCode}' and purchasedetailnew.Status = 1 and purchasedetailnew.PurchaseID != 0 and  purchasedetailnew.CompanyID = '${CompanyID}' ${shopMode}`;
+            } else {
+                qry = `SELECT COUNT(PurchaseDetailID) AS BarCodeCount, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage,purchasedetailnew.GSTAmount, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice, purchasedetailnew.ProductTypeID, barcodemasternew.*  FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.Barcode = '${barCode}' and PurchaseDetail.Status = 1 AND barcodemasternew.CurrentStatus = 'Pre Order'  and purchasedetailnew.CompanyID = '${CompanyID}'`;
+            }
+
+            let barCodeData = await connection.query(qry);
+            response.data = barCodeData[0];
+            response.message = "Success";
+            connection.release()
+            res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+
+    transferProduct: async (req, res, next) => {
+        try {
+            return
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const { ProductName, BarCode, BarCodeCount, TransferCount, Remark, ToShopID, TransferFromShop } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const TransferStatus = "Transfer Initiated";
+            const AcceptanceCode = Math.floor(Math.random() * 100000000);
+
+            if (ProductName === "" || ProductName === undefined || ProductName === null) return res.send({ message: "Invalid Query Data" })
+            if (BarCode === "" || BarCode === undefined || BarCode === null) return res.send({ message: "Invalid Query Data" })
+            if (BarCodeCount === "" || BarCodeCount === undefined || BarCodeCount === 0) return res.send({ message: "Invalid Query Data" })
+            if (TransferCount === "" || TransferCount === undefined || TransferCount === 0) return res.send({ message: "Invalid Query Data" })
+            if (ToShopID === "" || ToShopID === undefined || ToShopID === null) return res.send({ message: "Invalid Query Data" })
+            if (TransferFromShop === "" || TransferFromShop === undefined || TransferFromShop === null) return res.send({ message: "Invalid Query Data" })
+
+            let qry = `insert into transfermaster ( CompanyID, ProductName, BarCode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop, AcceptanceCode, DateStarted, TransferStatus, CreatedBy, CreatedOn) values (${CompanyID}, '${ProductName}', '${BarCode}', ${BarCodeCount}, ${TransferCount},  '${Remark}',  ${ToShopID},${TransferFromShop}, '${AcceptanceCode}', now(),  '${TransferStatus}',${LoggedOnUser}, now())`;
+
+            let xferData = await connection.query(qry);
+            let xferID = xferData.insertId;
+
+            let selectedRows = await connection.query(
+                `SELECT ID FROM barcodemasternew WHERE CurrentStatus = "Available" AND ShopID = ${TransferFromShop} AND Barcode = '${BarCode}' AND PreOrder = '0' and CompanyID ='${CompanyID}' LIMIT ${TransferCount}`
+            );
+
+            await Promise.all(
+                selectedRows.map(async (ele) => {
+                    await connection.query(
+                        `UPDATE barcodemasternew SET TransferID= ${xferID}, CurrentStatus = 'Transfer Pending', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID}`
+                    );
+                })
+            );
+
+            let qry1 = `SELECT transfermaster.*, shop.Name AS FromShop,ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName,shop.AreaName as FromAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} and transfermaster.TransferStatus = 'Transfer Initiated' and (transfermaster.TransferFromShop = ${TransferFromShop} or transfermaster.TransferToShop = ${TransferFromShop}) Order By transfermaster.ID Desc`
+            let xferList = await connection.query(qry1);
+            response.data = xferList;
+            response.message = "Success";
+            connection.release()
+            res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    }
 
 
 }

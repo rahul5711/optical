@@ -19,4 +19,13 @@ router.post('/paymentHistory', verifyAccessTokenAdmin, Controller.paymentHistory
 
 router.post('/searchByFeild', verifyAccessTokenAdmin, Controller.searchByFeild)
 
+
+// product transfer
+router.post('/barCodeListBySearchString', verifyAccessTokenAdmin, Controller.barCodeListBySearchString)
+
+router.post('/productDataByBarCodeNo', verifyAccessTokenAdmin, Controller.productDataByBarCodeNo)
+
+router.post('/transferProduct', verifyAccessTokenAdmin, Controller.transferProduct)
+
+
 module.exports = router
