@@ -218,6 +218,113 @@
 					"body": "{\n    \"data\": {\n        \"BarCodeCount\": 10,\n        \"GSTType\": \"None\",\n        \"GSTPercentage\": 0,\n        \"ProductName\": \"pt-1/one\",\n        \"ProductTypeName\": \"testproduct1\",\n        \"ProductTypeID\": 3,\n        \"ID\": 6,\n        \"CompanyID\": 1,\n        \"ShopID\": 1,\n        \"PurchaseDetailID\": 2,\n        \"BillDetailID\": null,\n        \"Barcode\": \"10001000\",\n        \"AvailableDate\": \"2023-01-04 22:05:12\",\n        \"CurrentStatus\": \"Available\",\n        \"RetailPrice\": 0,\n        \"RetailDiscount\": 0,\n        \"TxCode\": 0,\n        \"MultipleBarcode\": 0,\n        \"ForWholeSale\": 0,\n        \"WholeSalePrice\": 0,\n        \"WholeSaleDiscount\": 0,\n        \"PreOrder\": 0,\n        \"TransferID\": 0,\n        \"TransferStatus\": \"\",\n        \"TransferToShop\": 0,\n        \"Status\": 1,\n        \"CreatedBy\": 2,\n        \"UpdatedBy\": null,\n        \"CreatedOn\": \"2023-01-04 22:05:12\",\n        \"UpdatedOn\": \"0000-00-00 00:00:00\",\n        \"SupplierID\": 0,\n        \"MeasurementID\": null,\n        \"Family\": \"\\\"\\\"\",\n        \"Optionsss\": \"\\\"\\\"\",\n        \"FitterID\": 0,\n        \"LensType\": null,\n        \"FitterCost\": 0,\n        \"Remark\": null,\n        \"Po\": 0\n    },\n    \"success\": true,\n    \"message\": \"Success\"\n}"
 				}
 			]
+		},
+		{
+			"name": "transferProduct",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"BarCodeCount\": 5,\r\n        \"ProductName\": \"testproduct1/pt-1/two\",\r\n        \"BarCode\": \"10000000\",\r\n        \"TransferFromShop\": 1,\r\n        \"TransferCount\" : 6,\r\n        \"ToShopID\": 1\r\n        \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchase/transferProduct",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"transferProduct"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "transferProduct",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"BarCodeCount\": 20,\r\n        \"ProductName\": \"testproduct1/pt-1/two\",\r\n        \"BarCode\": \"10002000\",\r\n        \"TransferFromShop\": 1,\r\n        \"TransferCount\" : 6,\r\n        \"ToShopID\": 2\r\n        \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchase/transferProduct",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchase",
+								"transferProduct"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1070"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"42e-FOc604J2Xr0Q4yHY632+bhN+jgk\""
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 05 Jan 2023 15:19:29 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 2,\n            \"CompanyID\": 1,\n            \"ProductName\": \"testproduct1/pt-1/two\",\n            \"BarCode\": \"10002000\",\n            \"BarCodeCount\": 20,\n            \"TransferCount\": 6,\n            \"TransferToShop\": 2,\n            \"TransferFromShop\": 1,\n            \"AcceptanceCode\": \"54732479\",\n            \"DateStarted\": \"2023-01-05 20:49:29\",\n            \"DateCompleted\": null,\n            \"TransferStatus\": \"Transfer Initiated\",\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-05 20:49:29\",\n            \"UpdatedOn\": null,\n            \"Remark\": \"undefined\",\n            \"FromShop\": \"shop-1\",\n            \"ToShop\": \"shop-2\",\n            \"ToAreaName\": \"two\",\n            \"FromAreaName\": \"one\",\n            \"CreatedByUser\": \"Rahul Gothi\",\n            \"UpdatedByUser\": null\n        },\n        {\n            \"ID\": 1,\n            \"CompanyID\": 1,\n            \"ProductName\": \"testproduct1/pt-1/two\",\n            \"BarCode\": \"10000000\",\n            \"BarCodeCount\": 5,\n            \"TransferCount\": 4,\n            \"TransferToShop\": 2,\n            \"TransferFromShop\": 1,\n            \"AcceptanceCode\": \"68373742\",\n            \"DateStarted\": \"2023-01-05 20:48:24\",\n            \"DateCompleted\": null,\n            \"TransferStatus\": \"Transfer Initiated\",\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-05 20:48:24\",\n            \"UpdatedOn\": null,\n            \"Remark\": \"undefined\",\n            \"FromShop\": \"shop-1\",\n            \"ToShop\": \"shop-2\",\n            \"ToAreaName\": \"two\",\n            \"FromAreaName\": \"one\",\n            \"CreatedByUser\": \"Rahul Gothi\",\n            \"UpdatedByUser\": null\n        }\n    ],\n    \"success\": true,\n    \"message\": \"Success\"\n}"
+				}
+			]
 		}
 	],
 	"auth": {
@@ -225,7 +332,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzI4NDk3MjUsImV4cCI6MTY3MjkzNjEyNSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.F7LGKe45gU2y1dvsxgZx9Btgu_PigmxU-EsQMuXSVsc",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzI5MzA2NjQsImV4cCI6MTY3MzAxNzA2NCwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.iapiPFq8r69gcoRYrzfFvAfT3w57-6Dt4L0hKETb5PY",
 				"type": "string"
 			}
 		]

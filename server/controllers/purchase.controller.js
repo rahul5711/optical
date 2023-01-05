@@ -660,22 +660,33 @@ module.exports = {
 
     transferProduct: async (req, res, next) => {
         try {
-            return
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
             const { ProductName, BarCode, BarCodeCount, TransferCount, Remark, ToShopID, TransferFromShop } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
 
             const TransferStatus = "Transfer Initiated";
             const AcceptanceCode = Math.floor(Math.random() * 100000000);
 
-            if (ProductName === "" || ProductName === undefined || ProductName === null) return res.send({ message: "Invalid Query Data" })
-            if (BarCode === "" || BarCode === undefined || BarCode === null) return res.send({ message: "Invalid Query Data" })
-            if (BarCodeCount === "" || BarCodeCount === undefined || BarCodeCount === 0) return res.send({ message: "Invalid Query Data" })
-            if (TransferCount === "" || TransferCount === undefined || TransferCount === 0) return res.send({ message: "Invalid Query Data" })
-            if (ToShopID === "" || ToShopID === undefined || ToShopID === null) return res.send({ message: "Invalid Query Data" })
-            if (TransferFromShop === "" || TransferFromShop === undefined || TransferFromShop === null) return res.send({ message: "Invalid Query Data" })
+            if (ProductName === "" || ProductName === undefined || ProductName === null) return res.send({ message: "Invalid Query Data1" })
+            if (BarCode === "" || BarCode === undefined || BarCode === null) return res.send({ message: "Invalid Query Data2" })
+            if (BarCodeCount === "" || BarCodeCount === undefined || BarCodeCount === 0) return res.send({ message: "Invalid Query Data3" })
+            if (TransferCount === "" || TransferCount === undefined || TransferCount === 0) return res.send({ message: "Invalid Query Data4" })
+            if (ToShopID === "" || ToShopID === undefined || ToShopID === null) return res.send({ message: "Invalid Query Data5" })
+            if (TransferFromShop === "" || TransferFromShop === undefined || TransferFromShop === null) return res.send({ message: "Invalid Query Data6" })
+
+            if (shopid !== TransferFromShop) {
+                return res.send({ message: "Invalid TransferFromShop Data" })
+            }
+            if (shopid === ToShopID) {
+                return res.send({ message: "Invalid ToShopID Data" })
+            }
+
+            if (!(BarCodeCount >= TransferCount)) {
+                return res.send({ message: `You Can't Transfer More Than ${BarCodeCount}`})
+            }
 
             let qry = `insert into transfermaster ( CompanyID, ProductName, BarCode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop, AcceptanceCode, DateStarted, TransferStatus, CreatedBy, CreatedOn) values (${CompanyID}, '${ProductName}', '${BarCode}', ${BarCodeCount}, ${TransferCount},  '${Remark}',  ${ToShopID},${TransferFromShop}, '${AcceptanceCode}', now(),  '${TransferStatus}',${LoggedOnUser}, now())`;
 
@@ -689,7 +700,7 @@ module.exports = {
             await Promise.all(
                 selectedRows.map(async (ele) => {
                     await connection.query(
-                        `UPDATE barcodemasternew SET TransferID= ${xferID}, CurrentStatus = 'Transfer Pending', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID}`
+                        `UPDATE barcodemasternew SET TransferID= ${xferID}, CurrentStatus = 'Transfer Pending', TransferStatus = 'Transfer Pending', TransferToShop=${ToShopID}, UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID}`
                     );
                 })
             );
