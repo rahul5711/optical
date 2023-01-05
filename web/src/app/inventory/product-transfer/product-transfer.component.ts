@@ -33,6 +33,7 @@ export class ProductTransferComponent implements OnInit {
   specList: any;
   shopList: any;
   barCodeList: any;
+  xferList: any;
   showAdd = false;
   shopMode = 'false';
   item: any;
@@ -50,13 +51,13 @@ export class ProductTransferComponent implements OnInit {
   }
 
   xferItem: any = {
-    ID: null, ProductName: null, BarCode: null, BarCodeCount: null, TransferCount: null,TransferToShop: null, TransferFromShop: null, AcceptanceCode: null, DateStarted: null, DateCompleted: null, TransferStatus: null, CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null, Remark : ''
+    ID: null, ProductName: null, Barcode: null, BarCodeCount: null, TransferCount: null,ToShopID: null, TransferFromShop: null, AcceptanceCode: null, DateStarted: null, DateCompleted: null, TransferStatus: null, CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null, Remark : ''
   };
-
 
   ngOnInit(): void {
     this.getProductList();
     this.dropdownShoplist();
+    this.getTransferList();
   }
 
   getProductList(){
@@ -136,11 +137,11 @@ export class ProductTransferComponent implements OnInit {
       next: (res: any) => {
         this.item  = res.data;
         this.xferItem.ProductName = (this.item .ProductTypeName + '/' +  this.item.ProductName).toUpperCase();
-        this.xferItem.BarCode = this.item.Barcode;
+        this.xferItem.Barcode = this.item.Barcode;
         this.xferItem.BarCodeCount = this.item.BarCodeCount;
         this.xferItem.TransferCount = 0;
-        this.xferItem.TransferToShop = null;
-        this.xferItem.TransferFromShop = this.selectedShop[0];
+        this.xferItem.ToShopID = null;
+        this.xferItem.TransferFromShop = Number(this.selectedShop[0]);
         this.xferItem.TransferStatus = "";
       },
       error: (err: any) => console.log(err.message),
@@ -178,7 +179,50 @@ export class ProductTransferComponent implements OnInit {
   }
   
   onSubmit(){
-    console.log(this.xferItem);
+    const subs: Subscription =  this.purchaseService.transferProduct(this.xferItem).subscribe({
+      next: (res: any) => {
+        this.xferList = res.data;
+        console.log(this.xferList);
+        
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getTransferList(){
+    const subs: Subscription =  this.purchaseService.getTransferList(this.id).subscribe({
+      next: (res: any) => {
+        this.xferList = res.data;
+        console.log(this.xferList);
+        
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  cancelTransfer(i:any){
+    this.xferList[i].Remark = 'Cancel';
+    const subs: Subscription =  this.purchaseService.cancelTransfer(this.xferList[i]).subscribe({
+      next: (res: any) => {
+        this.xferList = res.data; 
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+
+  acceptTransfer(i:any){
+
+    const subs: Subscription =  this.purchaseService.acceptTransfer(this.xferList[i]).subscribe({
+      next: (res: any) => {
+        this.xferList = res.data;
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
 }

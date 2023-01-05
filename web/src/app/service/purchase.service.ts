@@ -68,6 +68,26 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+  transferProduct(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/transferProduct', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getTransferList(ID:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getTransferList', {ID: ID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  cancelTransfer(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/cancelTransfer', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  acceptTransfer(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/acceptTransfer', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
