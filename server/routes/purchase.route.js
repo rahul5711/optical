@@ -27,5 +27,11 @@ router.post('/productDataByBarCodeNo', verifyAccessTokenAdmin, Controller.produc
 
 router.post('/transferProduct', verifyAccessTokenAdmin, Controller.transferProduct)
 
+router.post('/acceptTransfer', verifyAccessTokenAdmin, Controller.acceptTransfer)
+
+router.post('/cancelTransfer', verifyAccessTokenAdmin, Controller.cancelTransfer)
+
+router.post('/getTransferList', verifyAccessTokenAdmin, Controller.getTransferList)
+
 
 module.exports = router
