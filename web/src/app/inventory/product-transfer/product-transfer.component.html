@@ -8,7 +8,234 @@
                         <h2>Product Transfer </h2>
                     </div>
                     <div class="body">
-                    
+                        <!-- save Product Transfer start -->
+                        <form #f="ngForm" autocomplete="off" #f0="ngForm">
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Search By BarCode</mat-label>
+                                        <input matInput name="SearchBarCode" [(ngModel)]="Req.SearchBarCode"
+                                            (keydown.Tab)="getProductDataByBarCodeNo()" required #SearchBarCodecontrol
+                                            #GSTNocontrol [autocomplete]="false" appAutoFoucsDirectives>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Search By Product</mat-label>
+                                        <mat-select name="FieldType" [(ngModel)]="selectedProduct"
+                                            (selectionChange)="getFieldList()" required #Typecontrol>
+                                            <mat-option *ngFor="let prod of prodList   let i = index;"
+                                                [value]="prod.Name">
+                                                {{prod.Name | uppercase}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            Select Product Type
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 mb-0"
+                                    *ngIf="( selectedProduct !== '' || selectedProduct !== undefined || selectedProduct !== null )">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Select Barcode</mat-label>
+                                        <mat-select name="FieldType" [(ngModel)]="Req.SearchBarCode"
+                                            (selectionChange)="getProductDataByBarCodeNo()" required #Typecontrol>
+                                            <mat-option *ngFor="let bc of barCodeList  let i = index;"
+                                                [value]="bc.Barcode">
+                                                {{bc.Barcode}} # {{bc.BarCodeCount}} | {{bc.ProductName | uppercase}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            Select Product Type
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <!-- save product spec start -->
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0"
+                                    *ngFor="let spec of specList ; let i = index;">
+                                    <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
+                                        <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
+                                            <mat-label>{{spec.FieldName}}</mat-label>
+                                            <mat-select name="{{spec.FieldName+'0'}}" [(ngModel)]="spec.SelectedValue"
+                                                (selectionChange)="getFieldSupportData(i);getBarCodeList(i)"
+                                                editable="true" [required]="spec.Required === 1" #singleSelect>
+                                                <mat-option>
+                                                </mat-option>
+                                                <mat-option *ngFor="let val of spec.SptFilterData "
+                                                    [value]="val.TableValue">
+                                                    {{val.TableValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <mat-error>
+                                                {{spec.FieldName}} is Required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div *ngIf="spec.FieldType === 'Text'" class="d-flex">
+                                        <mat-form-field class=" mr-0 mb-0">
+                                            <mat-label>{{spec.FieldName}}</mat-label>
+                                            <input matInput name="{{spec.FieldName+'2'}}"
+                                                [(ngModel)]="spec.SelectedValue"
+                                                (ngModelChange)="spec.SelectedValue = onChange($event)"
+                                                [required]="spec.Required === 1"
+                                                (blur)="getFieldSupportData(i);getBarCodeList(i)">
+                                            <mat-error>
+                                                {{spec.FieldName}} is Required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
+                                        <mat-form-field class=" mr-0 mb-0">
+                                            <mat-label>{{spec.FieldName}}</mat-label>
+                                            <input type="date" matInput name="{{spec.FieldName+'3'}}"
+                                                [(ngModel)]="spec.SelectedValue"
+                                                (ngModelChange)="spec.SelectedValue = onChange($event)" editable="true"
+                                                [required]="spec.Required === 1">
+                                            <mat-error>
+                                                {{spec.FieldName}} is Required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
+                                        <mat-slide-toggle name="{{spec.FieldName+'3'}}" color="primary"
+                                            class="example-margin" #Multiplecontrolx [(ngModel)]="spec.SelectedValue">
+                                            {{spec.FieldName}}</mat-slide-toggle>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- save product spec end -->
+                        </form>
+                        <form #f="ngForm" (ngSubmit)="onSubmit();">
+                            <div class="row">
+                                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Product Name</mat-label>
+                                        <input matInput name="ProdName" [(ngModel)]="xferItem.ProductName" required
+                                            [disabled]=true>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Barcode</mat-label>
+                                        <input matInput name="ProdBarcode" [(ngModel)]="xferItem.BarCode" required
+                                            [disabled]=true>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Available</mat-label>
+                                        <input matInput name="ProdBarcodecount" disabled
+                                            [(ngModel)]="xferItem.BarCodeCount">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1  col-lg-1 col-md-6 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0"
+                                        [class.has-error]="XferCountControl.invalid && XferCountControl.touched"
+                                        [class.has-success]="XferCountControl.valid">
+                                        <mat-label>Transfer Count</mat-label>
+                                        <input matInput name="ProdBarcodeXfer" type=number min="0"
+                                            #XferCountControl="ngModel" [(ngModel)]="xferItem.TransferCount" required>
+                                        <mat-error *ngIf="XferCountControl.invalid && XferCountControl.touched">
+                                            Tranfer Count is Required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0" style="padding: 0;">
+                                    <mat-form-field class="example-full-width mb-0"
+                                        [class.has-error]="ShopControl.invalid && ShopControl.touched"
+                                        [class.has-success]="ShopControl.valid">
+                                        <mat-label>Transfer To Shop</mat-label>
+                                        <mat-select name="ShopID" [(ngModel)]="xferItem.ToShopID" required
+                                            #ShopControl="ngModel">
+                                            <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}} <span
+                                                    [style.color]="'blue'"
+                                                    *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="ShopControl.invalid && ShopControl.touched">
+                                            Shop is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Code</mat-label>
+                                        <input matInput name="AcceptanceCode" required disabled
+                                            [(ngModel)]="xferItem.AcceptanceCode">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0" style="padding: 0;">
+                                </div>
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Remark</mat-label>
+                                        <input matInput name="Remark" [(ngModel)]="xferItem.Remark"
+                                            (ngModelChange)="xferItem.Remark = onChange($event)" autocomplete="off">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <button class="mr-3" mat-raised-button color="primary"
+                                        [disabled]="! f.valid">Intiate Transfer</button>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ms-3">
+                                    <button type="button" class="mr-3" mat-raised-button color="warn">Reset</button>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row" style="margin: 0;">
+                                <div class="col-md-2 p-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Shop Filter</mat-label>
+                                        <mat-select name="shopID" #shopID>
+                                            <mat-option value="0">All</mat-option>
+                                            <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}} <span
+                                                    [style.color]="'blue'"
+                                                    *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span> </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-1">
+                                    <button style="cursor: pointer;" class="mr-1" type="button" mat-raised-button
+                                        color="primary"><mat-icon>picture_as_pdf</mat-icon></button>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- save Product Transfer end -->
+                        <!-- list start -->
+                        <form>
+                            <div class="row">
+                                <div class="col-sm-12" style="overflow: auto; height: 350px;">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover table-sm table-bordered"
+                                        style="border: 2px solid #fff !important;">
+                                            <thead class="thead-light">
+                                                <tr style="white-space: nowrap;">
+                                                    <th>S.No</th>
+                                                    <th>Product Name</th>
+                                                    <th>Barcode</th>
+                                                    <th>Quantity</th>
+                                                    <th>From Shop</th>
+                                                    <th>To Shop</th>
+                                                    <th>Initiation Date</th>
+                                                    <th>Status</th>
+                                                    <th>Initiated By</th>
+                                                    <th>Secret Code</th>
+                                                    <th>Remark</th>
+                                                    <th>Action</th>
+                                                    <th>PDF</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="text-center">
+                                             
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- list end -->
                     </div>
                 </div>
             </div>
