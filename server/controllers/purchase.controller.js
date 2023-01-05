@@ -824,12 +824,17 @@ module.exports = {
 
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
-            const { ID } = req.body;
+            const { ID, currentPage, itemsPerPage} = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
 
             let shop = ``
+
+            let page = currentPage;
+            let limit = itemsPerPage;
+            let skip = page * limit - limit;
+
 
             if (ID === "" || ID === null || ID === undefined) {
                 shop =  shopid
@@ -837,14 +842,17 @@ module.exports = {
                 shop =  ID
             }
 
-            console.log(shop , 'shop');
-
             qry = `SELECT transfermaster.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName,shop.AreaName as FromAreaName, User.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser
             FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop
             LEFT JOIN User ON User.ID = transfermaster.CreatedBy LEFT JOIN User AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy
             WHERE transfermaster.CompanyID = ${CompanyID} and transfermaster.TransferStatus = 'Transfer Initiated' and (transfermaster.TransferFromShop = ${shop} or transfermaster.TransferToShop = ${shop}) Order By transfermaster.ID Desc`;
 
-            let data = await connection.query(qry);
+            let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
+
+
+            let finalQuery = qry + skipQuery;
+
+            let data = await connection.query(finalQuery);
 
             response.data = data;
             response.success = "Success";
