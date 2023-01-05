@@ -662,7 +662,7 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
-            const { ProductName, BarCode, BarCodeCount, TransferCount, Remark, ToShopID, TransferFromShop } = req.body;
+            const { ProductName, Barcode, BarCodeCount, TransferCount, Remark, ToShopID, TransferFromShop } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -671,7 +671,7 @@ module.exports = {
             const AcceptanceCode = Math.floor(Math.random() * 100000000);
 
             if (ProductName === "" || ProductName === undefined || ProductName === null) return res.send({ message: "Invalid Query Data1" })
-            if (BarCode === "" || BarCode === undefined || BarCode === null) return res.send({ message: "Invalid Query Data2" })
+            if (Barcode === "" || Barcode === undefined || Barcode === null) return res.send({ message: "Invalid Query Data2" })
             if (BarCodeCount === "" || BarCodeCount === undefined || BarCodeCount === 0) return res.send({ message: "Invalid Query Data3" })
             if (TransferCount === "" || TransferCount === undefined || TransferCount === 0) return res.send({ message: "Invalid Query Data4" })
             if (ToShopID === "" || ToShopID === undefined || ToShopID === null) return res.send({ message: "Invalid Query Data5" })
@@ -688,13 +688,13 @@ module.exports = {
                 return res.send({ message: `You Can't Transfer More Than ${BarCodeCount}`})
             }
 
-            let qry = `insert into transfermaster ( CompanyID, ProductName, BarCode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop, AcceptanceCode, DateStarted, TransferStatus, CreatedBy, CreatedOn) values (${CompanyID}, '${ProductName}', '${BarCode}', ${BarCodeCount}, ${TransferCount},  '${Remark}',  ${ToShopID},${TransferFromShop}, '${AcceptanceCode}', now(),  '${TransferStatus}',${LoggedOnUser}, now())`;
+            let qry = `insert into transfermaster ( CompanyID, ProductName, BarCode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop, AcceptanceCode, DateStarted, TransferStatus, CreatedBy, CreatedOn) values (${CompanyID}, '${ProductName}', '${Barcode}', ${BarCodeCount}, ${TransferCount},  '${Remark}',  ${ToShopID},${TransferFromShop}, '${AcceptanceCode}', now(),  '${TransferStatus}',${LoggedOnUser}, now())`;
 
             let xferData = await connection.query(qry);
             let xferID = xferData.insertId;
 
             let selectedRows = await connection.query(
-                `SELECT ID FROM barcodemasternew WHERE CurrentStatus = "Available" AND ShopID = ${TransferFromShop} AND Barcode = '${BarCode}' AND PreOrder = '0' and CompanyID ='${CompanyID}' LIMIT ${TransferCount}`
+                `SELECT ID FROM barcodemasternew WHERE CurrentStatus = "Available" AND ShopID = ${TransferFromShop} AND Barcode = '${Barcode}' AND PreOrder = '0' and CompanyID ='${CompanyID}' LIMIT ${TransferCount}`
             );
 
             await Promise.all(
