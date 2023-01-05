@@ -50,9 +50,7 @@ export class ProductTransferComponent implements OnInit {
   }
 
   xferItem: any = {
-    ID: null, ProductName: null, BarCode: null, BarCodeCount: null, TransferCount: null,
-    TransferToShop: null, TransferFromShop: null, AcceptanceCode: null, DateStarted: null, DateCompleted: null, TransferStatus: null,
-    CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null, Remark : ''
+    ID: null, ProductName: null, BarCode: null, BarCodeCount: null, TransferCount: null,TransferToShop: null, TransferFromShop: null, AcceptanceCode: null, DateStarted: null, DateCompleted: null, TransferStatus: null, CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null, Remark : ''
   };
 
 
@@ -125,7 +123,8 @@ export class ProductTransferComponent implements OnInit {
   dropdownShoplist(){
     const subs: Subscription = this.ss.dropShoplist().subscribe({
       next: (res: any) => {
-        this.shopList = res.data
+        let shop = res.data
+        this.shopList = shop.filter((s:any) => s.ID !== Number(this.selectedShop[0]));
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -141,6 +140,7 @@ export class ProductTransferComponent implements OnInit {
         this.xferItem.BarCodeCount = this.item.BarCodeCount;
         this.xferItem.TransferCount = 0;
         this.xferItem.TransferToShop = null;
+        this.xferItem.TransferFromShop = this.selectedShop[0];
         this.xferItem.TransferStatus = "";
       },
       error: (err: any) => console.log(err.message),
