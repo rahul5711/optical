@@ -136,7 +136,7 @@
                                         [class.has-success]="XferCountControl.valid">
                                         <mat-label>Transfer Count</mat-label>
                                         <input matInput name="ProdBarcodeXfer" type=number min="0"
-                                            #XferCountControl="ngModel" [(ngModel)]="xferItem.TransferCount" required>
+                                            #XferCountControl="ngModel" [(ngModel)]="xferItem.TransferCount" (change)="TransferCountLimit()" required>
                                         <mat-error *ngIf="XferCountControl.invalid && XferCountControl.touched">
                                             Tranfer Count is Required
                                         </mat-error>

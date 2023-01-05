@@ -163,6 +163,19 @@ export class ProductTransferComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+  TransferCountLimit(){
+    if ( this.xferItem.TransferCount > this.xferItem.BarCodeCount ){
+      // alert('Transfer Count can not be more than Available Count');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Opps !!',
+        text: 'Transfer Count can not be more than Available Count',
+        footer: ''
+      });
+      this.xferItem.TransferCount = 0;
+    }
+  }
   
   onSubmit(){
     console.log(this.xferItem);
