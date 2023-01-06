@@ -73,8 +73,8 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
-  getTransferList(ID:any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getTransferList', {ID: ID}, httpOptions)
+  getTransferList(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getTransferList',Body , httpOptions)
     .pipe(catchError(this.handleError));
   }
 

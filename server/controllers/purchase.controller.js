@@ -835,17 +835,13 @@ module.exports = {
             let limit = itemsPerPage;
             let skip = page * limit - limit;
 
-
             if (ID === "" || ID === null || ID === undefined) {
                 shop =  shopid
             } else {
                 shop =  ID
             }
 
-            qry = `SELECT transfermaster.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName,shop.AreaName as FromAreaName, User.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser
-            FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop
-            LEFT JOIN User ON User.ID = transfermaster.CreatedBy LEFT JOIN User AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy
-            WHERE transfermaster.CompanyID = ${CompanyID} and transfermaster.TransferStatus = 'Transfer Initiated' and (transfermaster.TransferFromShop = ${shop} or transfermaster.TransferToShop = ${shop}) Order By transfermaster.ID Desc`;
+            qry = `SELECT transfermaster.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName,shop.AreaName as FromAreaName, User.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN User ON User.ID = transfermaster.CreatedBy LEFT JOIN User AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} and transfermaster.TransferStatus = 'Transfer Initiated' and (transfermaster.TransferFromShop = ${shop} or transfermaster.TransferToShop = ${shop}) Order By transfermaster.ID Desc`;
 
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
@@ -853,8 +849,10 @@ module.exports = {
             let finalQuery = qry + skipQuery;
 
             let data = await connection.query(finalQuery);
+            let count = await connection.query(qry);
 
             response.data = data;
+            response.count = count.length
             response.success = "Success";
 
             connection.release()

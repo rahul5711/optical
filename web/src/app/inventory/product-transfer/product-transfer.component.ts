@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { ShopService } from 'src/app/service/shop.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-product-transfer',
@@ -28,7 +29,6 @@ export class ProductTransferComponent implements OnInit {
   SearchBarCode: any;
   searchValue: any;
   selectedProduct: any;
-  secretCode: any;
   prodList:any;
   specList: any;
   shopList: any;
@@ -39,6 +39,16 @@ export class ProductTransferComponent implements OnInit {
   item: any;
   Req :any= {SearchBarCode : ''}
 
+  ID:any
+  currentPage = 1;
+  itemsPerPage = 10;
+  pageSize!: number;
+  collectionSize = 0
+  page = 4;
+
+  selectedRowID = -1;
+  tempShopArray:any = [];
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -46,6 +56,7 @@ export class ProductTransferComponent implements OnInit {
     private purchaseService: PurchaseService,
     private ss: ShopService,
     public as: AlertService,
+    private modalService: NgbModal,
   ){
     this.id = this.route.snapshot.params['id'];
   }
@@ -54,10 +65,33 @@ export class ProductTransferComponent implements OnInit {
     ID: null, ProductName: null, Barcode: null, BarCodeCount: null, TransferCount: null,ToShopID: null, TransferFromShop: null, AcceptanceCode: null, DateStarted: null, DateCompleted: null, TransferStatus: null, CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null, Remark : ''
   };
 
+  xferAccept:any = {secretCode: '', Remark:''}
+
   ngOnInit(): void {
     this.getProductList();
     this.dropdownShoplist();
-    this.getTransferList();
+    this.getList();
+  }
+
+  changePagesize(num: number): void {
+    this.itemsPerPage = this.pageSize + num;
+  }
+
+  getList() {
+    const dtm = {
+      ID : null,
+      itemsPerPage: this.itemsPerPage,
+      currentPage: this.currentPage,
+    }
+    const subs: Subscription = this.purchaseService.getTransferList(dtm).subscribe({
+      next: (res: any) => {
+        this.collectionSize = res.count;
+        this.xferList = res.data;
+        this.as.successToast(res.message)
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   getProductList(){
@@ -136,13 +170,23 @@ export class ProductTransferComponent implements OnInit {
     const subs: Subscription =  this.purchaseService.productDataByBarCodeNo(this.Req, 'false', 'false').subscribe({
       next: (res: any) => {
         this.item  = res.data;
-        this.xferItem.ProductName = (this.item .ProductTypeName + '/' +  this.item.ProductName).toUpperCase();
-        this.xferItem.Barcode = this.item.Barcode;
-        this.xferItem.BarCodeCount = this.item.BarCodeCount;
-        this.xferItem.TransferCount = 0;
-        this.xferItem.ToShopID = null;
-        this.xferItem.TransferFromShop = Number(this.selectedShop[0]);
-        this.xferItem.TransferStatus = "";
+        if (this.item.Barcode === null) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Product Not Available in this Shop for Selected Barcode for Transfer.',
+            text: ' Please Check the Barcode. ',
+            footer: '',
+            backdrop : false,
+          });
+        }else{
+          this.xferItem.ProductName = (this.item .ProductTypeName + '/' +  this.item.ProductName).toUpperCase();
+          this.xferItem.Barcode = this.item.Barcode;
+          this.xferItem.BarCodeCount = this.item.BarCodeCount;
+          this.xferItem.TransferCount = 0;
+          this.xferItem.ToShopID = null;
+          this.xferItem.TransferFromShop = Number(this.selectedShop[0]);
+          this.xferItem.TransferStatus = "";
+        }
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -167,12 +211,12 @@ export class ProductTransferComponent implements OnInit {
 
   TransferCountLimit(){
     if ( this.xferItem.TransferCount > this.xferItem.BarCodeCount ){
-      // alert('Transfer Count can not be more than Available Count');
       Swal.fire({
         icon: 'warning',
         title: 'Opps !!',
         text: 'Transfer Count can not be more than Available Count',
-        footer: ''
+        footer: '',
+        backdrop : false,
       });
       this.xferItem.TransferCount = 0;
     }
@@ -182,20 +226,6 @@ export class ProductTransferComponent implements OnInit {
     const subs: Subscription =  this.purchaseService.transferProduct(this.xferItem).subscribe({
       next: (res: any) => {
         this.xferList = res.data;
-        console.log(this.xferList);
-        
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
-
-  getTransferList(){
-    const subs: Subscription =  this.purchaseService.getTransferList(this.id).subscribe({
-      next: (res: any) => {
-        this.xferList = res.data;
-        console.log(this.xferList);
-        
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -203,26 +233,102 @@ export class ProductTransferComponent implements OnInit {
   }
 
   cancelTransfer(i:any){
-    this.xferList[i].Remark = 'Cancel';
-    const subs: Subscription =  this.purchaseService.cancelTransfer(this.xferList[i]).subscribe({
-      next: (res: any) => {
-        this.xferList = res.data; 
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+    Swal.fire({
+      title: 'Are you sure Cancel Product?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, Cancel it!',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const subs: Subscription = this.purchaseService.cancelTransfer(this.xferList[i]).subscribe({
+          next: (res: any) => {
+              this.xferList = res.data; 
+              this.as.successToast(res.message)
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Your file has been Cancel.',
+          showConfirmButton: false,
+          timer: 1200
+        })
+      }
+    })
   }
 
+  acceptTransfer(){
+    const n = this.selectedRowID;
+    if (this.xferAccept.secretCode === this.xferList[n].AcceptanceCode) {
+        this.xferList[n].Remark = this.xferList[n].Remark + "  " + this.xferAccept.Remark;
 
-  acceptTransfer(i:any){
+      const subs: Subscription = this.purchaseService.acceptTransfer(this.xferList[n]).subscribe({
+        next: (res: any) => {
+          this.xferList = res.data;
+          this.modalService.dismissAll();
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your Product has been Accepted.',
+            showConfirmButton: false,
+            timer: 1200
+          })
+          this.xferAccept = [];
+          this.getList();
+        },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+      });
+    }else {
+      const message = "Please check with the Sender: " + this.xferList[n].CreatedByUser + " from Shop " + this.xferList[n].FromShop + " for Product: " + this.xferList[n].ProductName;
+      Swal.fire({
+        icon: 'error',
+        title: 'Secret Code ' + `<span style = "font-size:25px;color:red;font-weight:bold;">${this.xferAccept.secretCode}</span>` + ' Does Not Match!!!!',
+        text: `${message}`,
+        footer: '',
+        backdrop : false,
+      });
+      this.xferAccept = [];
+    }
+  }
 
-    const subs: Subscription =  this.purchaseService.acceptTransfer(this.xferList[i]).subscribe({
-      next: (res: any) => {
-        this.xferList = res.data;
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+  openModal(content: any,data:any) {
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+  }
+
+  FilterData(ID:any){
+    if(ID !== '0') {
+      this.tempShopArray = [];
+        const dtm = {
+        ID : ID,
+        currentPage: 1,
+        itemsPerPage: 50000,
+      }
+      const subs: Subscription = this.purchaseService.getTransferList(dtm).subscribe({
+        next: (res: any) => {
+          this.collectionSize = res.count;
+          this.page = 1;
+          this.xferList = res.data
+          this.xferList.forEach((element: any) => {
+            if(element.TransferToShop === ID){
+              this.tempShopArray.push(element);
+            }
+          });
+          this.xferList = this.tempShopArray;
+          this.as.successToast(res.message)
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }else{
+      this.getList()
+    }
   }
 
 }
