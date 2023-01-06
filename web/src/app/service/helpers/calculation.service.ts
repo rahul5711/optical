@@ -16,6 +16,32 @@ export class CalculationService {
  
   // purchase details calculation start
   calculateFields(fieldName:any, mode:any, item:any, charges:any) {
+    if(isNaN(Number(item.UnitPrice)) === true) {
+      alert("please fill up integer value");
+      item.UnitPrice = 0;
+    }
+    if(isNaN(Number(item.Quantity)) === true) {
+      alert("please fill up integer value");
+      item.Quantity = 0;
+    } 
+    if(isNaN(Number(item.DiscountPercentage)) === true) {
+      alert("please fill up integer value");
+      item.DiscountPercentage = 0;
+    }
+    if(isNaN(Number(item.DiscountAmount)) === true) {
+      alert("please fill up integer value");
+      item.DiscountAmount = 0;
+    }
+    if(isNaN(Number(item.GSTPercentage)) === true) {
+      alert("please fill up integer value");
+      item.GSTPercentage = 0;
+    }
+    if(isNaN(Number(item.GSTAmount)) === true) {
+      alert("please fill up integer value");
+      item.GSTAmount = 0;
+      item.GSTPercentage = 0;
+      item.TotalAmount = 0;
+    } else{
       switch (mode) {
 
         case 'subTotal':
@@ -24,14 +50,13 @@ export class CalculationService {
 
         case 'discount':
           if (fieldName === 'DiscountPercentage') { 
-            if(item.DiscountPercentage > 100 ) {
-              alert("you can't give 100% above discount");
+            if(Number(item.DiscountPercentage) > 100 ) {
+              alert("you can't give 100% above Discount Percentage");
               item.DiscountPercentage = 0;
               item.DiscountAmount = 0;
               item.SubTotal = +item.UnitPrice * +item.Quantity - item.DiscountAmount;
             } else {
             item.DiscountAmount = +item.UnitPrice * +item.Quantity  * +item.DiscountPercentage / 100; 
-            // items.DiscountPercentage =  +items.DiscountAmount * 100 / +items.UnitPrice * +items.Quantity; 
             item.SubTotal = +item.UnitPrice * +item.Quantity - +item.DiscountAmount;
             }
           }
@@ -42,18 +67,16 @@ export class CalculationService {
               item.DiscountAmount = 0;
             }else{
               item.DiscountPercentage = 100 * +item.DiscountAmount / (+item.Quantity * +item.UnitPrice);
-              // items.DiscountAmount = +items.UnitPrice * +items.Quantity  * +items.DiscountPercentage / 100; 
               item.SubTotal = +item.UnitPrice * +item.Quantity - item.DiscountAmount;
             }
-            // items.DiscountPercentage =  +items.DiscountAmount * 100 / +items.UnitPrice * +items.Quantity/100; 
           }
         break;
 
         case 'gst':
           if (fieldName === 'GSTPercentage') {
             if(Number(item.GSTPercentage) > 100 ) {
-              alert("you can't give 100% above discount");
-              item.GSTAmount = 0;
+              alert("you can't give 100% above GST Percentage");
+              item.GSTPercentage = 0;
             }else{
               item.GSTAmount =(+item.UnitPrice * +item.Quantity - item.DiscountAmount) * +item.GSTPercentage / 100;
             }
@@ -83,7 +106,6 @@ export class CalculationService {
         // charges calculation end
       }
       if(item.GSTType !== "") {
-        
         item.DiscountAmount = +item.UnitPrice * +item.Quantity  * +item.DiscountPercentage / 100; 
         item.GSTAmount =  (+item.UnitPrice * +item.Quantity - item.DiscountAmount) * +item.GSTPercentage / 100;
         item.SubTotal = +item.Quantity * +item.UnitPrice - +item.DiscountAmount;
@@ -96,6 +118,7 @@ export class CalculationService {
       item.DiscountPercentage = this.convertToDecimal(+item.DiscountPercentage, 2);
       item.TotalAmount = this.convertToDecimal(+item.TotalAmount, 2);
       item.SubTotal = this.convertToDecimal(+item.SubTotal, 2);
+    }
   }
   // purchase details calculation end
 
@@ -129,10 +152,7 @@ export class CalculationService {
       }
     })
   };
-
-
-  
- // purchase Master calculation start
+  // purchase Master calculation start
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
