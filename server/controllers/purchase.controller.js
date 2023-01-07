@@ -312,7 +312,7 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.result.PurchaseMaster = PurchaseMaster
-            response.result.PurchaseMaster[0].gst_detail = gst_detail
+            response.result.PurchaseMaster[0].gst_detail = gst_detail || []
             response.result.PurchaseDetail = PurchaseDetail
             response.result.Charge = Charge
             connection.release()
