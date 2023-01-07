@@ -67,16 +67,18 @@ export class EmployeeComponent implements OnInit {
   onSubmit(){
     const subs: Subscription =  this.es.saveUser(this.data).subscribe({
       next: (res: any) => {
-        // this.dataList = res.result;
         if (res.success) {
-          // this.router.navigate(['/admin/employeeList']);
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Your file has been Save.',
-            showConfirmButton: false,
-            timer: 1200
-          })
+          if(res.data !== 0) {
+            this.id = res.data;
+            this.router.navigate(['/admin/employee/' , this.id]);
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been Save.',
+              showConfirmButton: false,
+              timer: 1200
+            })  
+          }
         } else {
           this.as.errorToast(res.message)
           Swal.fire({

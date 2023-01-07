@@ -173,8 +173,6 @@ export class FitterComponent implements OnInit {
     return event;
   }
 
-
-
   uploadImage(e:any, mode:any){
    
     this.img = e.target.files[0];
@@ -196,8 +194,6 @@ export class FitterComponent implements OnInit {
     const subs: Subscription =  this.fs.saveRateCard(this.rateCard).subscribe({
       next: (res: any) => {
         if (res.success) {
-          // this.router.navigate(['/inventory/fitterList']); 
-
           Swal.fire({
             position: 'center',
             icon: 'success',

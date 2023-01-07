@@ -140,7 +140,7 @@
                                                     <td>{{data.ProductName}}</td>
                                                     <td *ngIf="!UpdateBarcode" >{{data.CurrentStatus}}</td>
                                                     <td *ngIf="UpdateBarcode" style=" width: 120px;text-align: center;">
-                                                        <select style="height: 26px;" name="Status" [(ngModel)]="data.CurrentStatus" >
+                                                        <select style="height: 26px;" name="CurrentStatus" [(ngModel)]="data.CurrentStatus" #name="ngModel" [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                                             <option value="Available">Available</option>
                                                             <option value="Sold">Sold</option>
                                                             <option value="Pre Order">Pre Order</option>
