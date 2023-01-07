@@ -737,7 +737,7 @@ module.exports = {
             const doesExist = await connection.query(`select * from transfermaster where ID = ${ID} and AcceptanceCode  = '${AcceptanceCode}' and CompanyID = ${CompanyID} and TransferStatus = 'Transfer Initiated'`)
 
             if (!doesExist.length) {
-               return res.send({success: true, message : `Invalid AcceptanceCode`})
+                return res.send({ success: true, message: `Invalid AcceptanceCode` })
             }
 
             let qry = `Update transfermaster SET DateCompleted = now(),TransferStatus = '${TransferStatus}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now(), Remark = '${Remark}' where ID = ${ID} and AcceptanceCode = '${AcceptanceCode}'`;
@@ -786,7 +786,7 @@ module.exports = {
             const doesExist = await connection.query(`select * from transfermaster where ID = ${ID} and CompanyID = ${CompanyID} and TransferStatus = 'Transfer Initiated'`)
 
             if (!doesExist.length) {
-               return res.send({success: true, message : `Invalid Query`})
+                return res.send({ success: true, message: `Invalid Query` })
             }
 
             let qry = `Update transfermaster SET DateCompleted = now(),TransferStatus = '${TransferStatus}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now(), Remark = '${Remark}' where ID = ${ID}`;
@@ -824,7 +824,7 @@ module.exports = {
 
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
-            const { ID, currentPage, itemsPerPage} = req.body;
+            const { ID, currentPage, itemsPerPage } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -836,9 +836,9 @@ module.exports = {
             let skip = page * limit - limit;
 
             if (ID === "" || ID === null || ID === undefined) {
-                shop =  shopid
+                shop = shopid
             } else {
-                shop =  ID
+                shop = ID
             }
 
             qry = `SELECT transfermaster.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName,shop.AreaName as FromAreaName, User.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN User ON User.ID = transfermaster.CreatedBy LEFT JOIN User AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} and transfermaster.TransferStatus = 'Transfer Initiated' and (transfermaster.TransferFromShop = ${shop} or transfermaster.TransferToShop = ${shop}) Order By transfermaster.ID Desc`;
@@ -855,6 +855,77 @@ module.exports = {
             response.count = count.length
             response.success = "Success";
 
+            connection.release()
+            res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+
+    // search
+
+    barcodeDataByBarcodeNo: async (req, res, next) => {
+        try {
+
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const { Barcode, mode, ShopMode } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            let shopMode = ``;
+            let mode1 = ``;
+
+            if (Barcode === "" || Barcode === undefined || Barcode === null) return res.send({ message: "Invalid Query Data" })
+
+            if (mode === 'search') {
+                mode1 = `And barcodemasternew.Barcode = '${Barcode}'`;
+
+            }
+            // else {
+            //     mode1 = `And barcodemasternew.PurchaseDetailID = '${PurchaseDetailID}'`;
+            // }
+
+            if (ShopMode === "false" || ShopMode === false) {
+                shopMode = `And barcodemasternew.ShopID = '${shopid}'`;
+            }
+
+            qry = `SELECT barcodemasternew.* , company.Name AS CompanyName, shop.Name AS ShopName, shop.AreaName AS AreaName, shop.BarcodeName AS BarcodeShopName, purchasedetailnew.ProductName , purchasedetailnew.ProductTypeName, purchasedetailnew.BaseBarCode AS BarCode, purchasedetailnew.UniqueBarcode, purchasedetailnew.UnitPrice, purchasedetailnew.ProductName, purchasedetailnew.Quantity ,purchasemasternew.InvoiceNo,supplier.Name AS SupplierName   FROM barcodemasternew LEFT JOIN company ON company.ID = barcodemasternew.CompanyID LEFT JOIN shop ON Shop.ID = barcodemasternew.ShopID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID WHERE barcodemasternew.CurrentStatus != 'Pre Order' and  purchasedetailnew.Status = 1 AND barcodemasternew.CompanyID = ${CompanyID}  ${shopMode} ${mode1}`;
+
+            let barcodelist = await connection.query(qry);
+            response.data = barcodelist;
+            response.message = "success";
+
+            connection.release()
+            res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+
+    updateBarcode: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const { ID, Barcode, Remark, CurrentStatus } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (ID === "" || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
+            if (Barcode === "" || Barcode === undefined || Barcode === null) return res.send({ message: "Invalid Query Data" })
+            if (CurrentStatus === "" || CurrentStatus === undefined || CurrentStatus === null) return res.send({ message: "Invalid Query Data" })
+
+            qry = `Update barcodemasternew set CurrentStatus = '${CurrentStatus}' , Barcode = '${Barcode}' , Remark = '${Remark}' Where ID = ${ID}`;
+
+            let barcode = await connection.query(qry);
+            response.data = [];
+            response.message = "success";
             connection.release()
             res.send(response)
 

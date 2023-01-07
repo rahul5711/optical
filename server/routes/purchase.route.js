@@ -33,5 +33,12 @@ router.post('/cancelTransfer', verifyAccessTokenAdmin, Controller.cancelTransfer
 
 router.post('/getTransferList', verifyAccessTokenAdmin, Controller.getTransferList)
 
+// search barcode
+
+router.post('/barcodeDataByBarcodeNo', verifyAccessTokenAdmin, Controller.barcodeDataByBarcodeNo)
+
+router.post('/updateBarcode', verifyAccessTokenAdmin, Controller.updateBarcode)
+
+
 
 module.exports = router
