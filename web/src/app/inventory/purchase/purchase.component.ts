@@ -113,7 +113,6 @@ export class PurchaseComponent implements OnInit {
     const subs: Subscription =  this.ss.dropdownSupplierlist().subscribe({
       next: (res: any) => {
         this.supplierList = res.data;
-        this.as.successToast(res.message)
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -144,8 +143,6 @@ export class PurchaseComponent implements OnInit {
             this.gst_detail.push(obj);
           }
         })
-        console.log(this.gst_detail);
-        
       },
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),
@@ -309,7 +306,25 @@ export class PurchaseComponent implements OnInit {
         this.item.ProductTypeID = this.item.ProductTypeID
         this.item.ProductTypeName = this.item.ProductTypeName
         this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
-        this.itemList.unshift(this.item);
+
+        let AddQty = 0;
+        if (this.item.Quantity !== 0 && this.item.Quantity !== "0") {
+        this.itemList.forEach((ele: any) => {
+          if(ele.ID === null) {
+            if(ele.ProductName === this.item.ProductName && Number(ele.RetailPrice) === Number(this.item.RetailPrice)  && ele.UnitPrice === this.item.UnitPrice) {
+              ele.Quantity = Number(ele.Quantity) + Number(this.item.Quantity);
+              ele.SubTotal = Number(ele.SubTotal) + Number(this.item.SubTotal);
+              ele.TotalAmount = Number(ele.TotalAmount) + Number(this.item.TotalAmount);
+              ele.GSTAmount = Number(ele.GSTAmount) + Number(this.item.GSTAmount);
+              ele.DiscountAmount = Number(ele.DiscountAmount) + Number(this.item.DiscountAmount);
+              AddQty = 1;
+            }
+          }
+        })
+          if(AddQty === 0){
+          this.itemList.unshift(this.item);
+          }
+        }
 
         this.tempItem = { Item: null, Spec: null };
     
