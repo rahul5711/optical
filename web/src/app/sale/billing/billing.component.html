@@ -22,16 +22,16 @@
                                     style="justify-content: space-between;">
                                     
                                     <li class="nav-item d-flex" role="presentation" >
-                                        <mat-checkbox class="example-margin ps-1" color="primary" [(ngModel)]="Check.SpectacleCheck" style="position: absolute;z-index: 9;" > </mat-checkbox>
+                                        <mat-checkbox class="example-margin ps-1" color="primary" (click)="specCheck('spec')" [(ngModel)]="Check.SpectacleCheck" style="position: absolute;z-index: 9; cursor: pointer;" > </mat-checkbox>
                                         <a class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab" href="#ex1-tabs-1" role="tab" aria-controls="ex1-tabs-1"aria-selected="true">Spectacle Rx </a>
                                     </li>
                                     <li class="nav-item d-flex"  role="presentation">
-                                        <mat-checkbox class="example-margin ps-1" color="primary" [(ngModel)]="Check.ContactCheck" style="position: absolute; z-index: 9;"></mat-checkbox>
+                                        <mat-checkbox class="example-margin ps-1" color="primary" (click)="specCheck('con')" [(ngModel)]="Check.ContactCheck" style="position: absolute; z-index: 9;cursor: pointer;"></mat-checkbox>
                                         <a class="nav-link" id="ex1-tab-2" data-mdb-toggle="tab" href="#ex1-tabs-2"
                                          role="tab" aria-controls="ex1-tabs-2" aria-selected="false">Contact Rx</a>
                                     </li>
                                     <li class="nav-item d-flex" role="presentation">
-                                        <mat-checkbox class="example-margin ps-1" color="primary" [(ngModel)]="Check.OtherCheck" style="position: absolute; z-index: 9;" ></mat-checkbox>
+                                        <mat-checkbox class="example-margin ps-1" color="primary" (click)="specCheck('other')" [(ngModel)]="Check.OtherCheck" style="position: absolute; z-index: 9;cursor: pointer;" ></mat-checkbox>
                                         <a class="nav-link" id="ex1-tab-3" data-mdb-toggle="tab" href="#ex1-tabs-3"
                                         role="tab" aria-controls="ex1-tabs-3" aria-selected="false">Other Rx</a>
                                     </li>

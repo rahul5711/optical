@@ -396,7 +396,6 @@ export class BillingComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.spectacle.REDPSPH = this.dataSPH[100].Name
     this.data.VisitDate = moment().format('YYYY-MM-DD');
     if (this.id != 0) {
       this.getCustomerById(); 
@@ -404,6 +403,18 @@ export class BillingComponent implements OnInit {
     
   }
 
+  specCheck(mode:any){
+   if(mode === 'spec'){
+    this.Check.ContactCheck = false
+    this.Check.OtherCheck = false
+   }else if (mode === 'con'){
+    this.Check.SpectacleCheck = false
+    this.Check.OtherCheck = false
+   }else if (mode === 'other'){
+    this.Check.SpectacleCheck = false
+    this.Check.ContactCheck = false
+   }
+  }
   calculateAge() {
     if (this.data.DOB) {
       var timeDiff = Math.abs(Date.now() - new Date(this.data.DOB).getTime());

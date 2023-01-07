@@ -32,6 +32,7 @@ export class ProductTransferComponent implements OnInit {
   prodList:any;
   specList: any;
   shopList: any;
+  shopLists: any;
   barCodeList: any;
   xferList: any;
   showAdd = false;
@@ -158,8 +159,9 @@ export class ProductTransferComponent implements OnInit {
   dropdownShoplist(){
     const subs: Subscription = this.ss.dropShoplist().subscribe({
       next: (res: any) => {
-        let shop = res.data
-        this.shopList = shop.filter((s:any) => s.ID !== Number(this.selectedShop[0]));
+          let shop = res.data
+          this.shopList = shop.filter((s:any) => s.ID !== Number(this.selectedShop[0]));
+          this.shopLists = res.data
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -305,8 +307,14 @@ export class ProductTransferComponent implements OnInit {
   FilterData(ID:any){
     if(ID !== '0') {
       this.tempShopArray = [];
+      let id = 0
+      if (ID === "" || ID === null || ID === undefined) {
+          id = ID 
+      } else{
+          id = Number(this.selectedShop[0]);
+      }
         const dtm = {
-        ID : ID,
+        id : id,
         currentPage: 1,
         itemsPerPage: 50000,
       }
@@ -327,7 +335,21 @@ export class ProductTransferComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     }else{
-      this.getList()
+      const dtm = {
+      ID : Number(this.selectedShop[0]),
+      currentPage: 1,
+      itemsPerPage: 50000,
+    }
+    const subs: Subscription = this.purchaseService.getTransferList(dtm).subscribe({
+      next: (res: any) => {
+        this.collectionSize = res.count;
+        this.page = 1;
+        this.xferList = res.data
+        this.as.successToast(res.message)
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
     }
   }
 

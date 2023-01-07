@@ -27,6 +27,7 @@ import { PurchaseComponent } from './purchase/purchase.component';
 import { PurchaseListComponent } from './purchase-list/purchase-list.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ProductTransferComponent } from './product-transfer/product-transfer.component';
+import { SearchBarcodeComponent } from './search-barcode/search-barcode.component';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { ProductTransferComponent } from './product-transfer/product-transfer.co
     FitterListComponent,
     PurchaseComponent,
     PurchaseListComponent,
-    ProductTransferComponent
+    ProductTransferComponent,
+    SearchBarcodeComponent
   ],
   imports: [
     CommonModule,

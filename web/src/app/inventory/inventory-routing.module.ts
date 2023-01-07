@@ -5,6 +5,7 @@ import { FitterComponent } from './fitter/fitter.component';
 import { ProductTransferComponent } from './product-transfer/product-transfer.component';
 import { PurchaseListComponent } from './purchase-list/purchase-list.component';
 import { PurchaseComponent } from './purchase/purchase.component';
+import { SearchBarcodeComponent } from './search-barcode/search-barcode.component';
 import { SupplierComponent } from './supplier/supplier.component';
 
 const routes: Routes = [
@@ -16,6 +17,7 @@ const routes: Routes = [
     { path: 'fitter/:id', component: FitterComponent },  
     { path: 'fitterList', component: FitterListComponent },  
     { path: 'product-transfer', component: ProductTransferComponent },  
+    { path: 'search-barcode', component: SearchBarcodeComponent },  
   ]}
   ]
 

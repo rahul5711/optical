@@ -81,7 +81,7 @@ export class PurchaseComponent implements OnInit {
     this.getdropdownSupplierlist();
     this.getGSTList();
     this.chargelist();
-    if (this.id !== 0){
+    if (this.id != 0){
       this.getPurchaseById();
     }else{
       this.selectedPurchaseMaster.PurchaseDate = moment().format('YYYY-MM-DD');
@@ -287,20 +287,22 @@ export class PurchaseComponent implements OnInit {
     if (this.category === 'Product'){
       if (this.selectedPurchaseMaster.ID !== null){this.item.Status = 2; }
         this.item.ProductName = "";
+        this.item.ProductTypeID = "";
         this.item.ProductExpDate = "0000-00-00";
 
         this.specList.forEach((element: any) => {
+            this.prodList.forEach((elements: any) => {
+              if(elements.Name === element.ProductName){
+                this.item.ProductTypeID = elements.ID
+                this.item.ProductTypeName = elements.Name
+              }
+            });
           if(element.SelectedValue !== "") {
             this.item.ProductName = this.item.ProductName  + element.SelectedValue + "/";
           }
           if(element.FieldType === "Date") {
             this.item.ProductExpDate = element.SelectedValue;
           }
-        });
-
-        this.prodList.forEach((element: any) => {
-          this.item.ProductTypeID =  element.ID
-          this.item.ProductTypeName =  element.Name
         });
 
         this.item.ProductTypeID = this.item.ProductTypeID
@@ -423,21 +425,32 @@ export class PurchaseComponent implements OnInit {
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!'
+          confirmButtonText: 'Yes, delete it!',
+          backdrop : false,
         }).then((result) => {
           if (result.isConfirmed) {
             const subs: Subscription = this.purchaseService.deleteProduct(this.itemList[i].ID,this.selectedPurchaseMaster).subscribe({
               next: (res: any) => {
-                this.itemList[i].Status = 0;
-                this.getPurchaseById()
-                Swal.fire({
-                  position: 'center',
-                  icon: 'success',
-                  title: 'Your file has been deleted.',
-                  showConfirmButton: false,
-                  timer: 1000
-                })
-                this.as.successToast(res.message)
+                if(res.message === "You have product already sold"){
+                  Swal.fire({
+                    position: 'center',
+                    icon: 'warning',
+                    title: 'You have product'  + `<span style ="font-size:20px;color:red;font-weight:bold;"> ${this.itemList[i].ProductName}</span>` + ' already sold',
+                    showConfirmButton: true,
+                    backdrop : false,
+                  })
+                }else{
+                  this.itemList[i].Status = 0;
+                  this.getPurchaseById()
+                  Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Your file has been deleted.',
+                    showConfirmButton: false,
+                    timer: 1000
+                  })
+                  this.as.successToast(res.message)
+                }
               },
               error: (err: any) => console.log(err.message),
               complete: () => subs.unsubscribe(),
