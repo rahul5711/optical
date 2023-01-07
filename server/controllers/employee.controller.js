@@ -225,7 +225,6 @@ module.exports = {
 
             let finalQuery = qry + skipQuery;
 
-            console.log(finalQuery);
 
             let data = await connection.query(finalQuery);
             let count = await connection.query(qry);
