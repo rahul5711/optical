@@ -39,6 +39,10 @@ router.post('/barcodeDataByBarcodeNo', verifyAccessTokenAdmin, Controller.barcod
 
 router.post('/updateBarcode', verifyAccessTokenAdmin, Controller.updateBarcode)
 
+// Inventory Summery
+
+router.post('/getInventorySummary', verifyAccessTokenAdmin, Controller.getInventorySummary)
+
 
 
 module.exports = router

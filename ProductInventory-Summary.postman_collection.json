@@ -1,0 +1,146 @@
+{
+	"info": {
+		"_postman_id": "e7e81570-31ab-44dd-be0c-163862e718be",
+		"name": "ProductInventory/Summary",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getInventorySummary",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Parem\" : \" and purchasedetailnew.ProductTypeID = 3 and purchasedetailnew.ProductName like 'pt-2/one'  and barcodemasternew.CurrentStatus = 'Available'\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchase/getInventorySummary",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"getInventorySummary"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getInventorySummary",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Parem\" : \" and purchasedetailnew.ProductTypeID = 3 and purchasedetailnew.ProductName like 'pt-1/two'  and barcodemasternew.CurrentStatus = 'Available'\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchase/getInventorySummary",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchase",
+								"getInventorySummary"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2079"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"81f-6gIa1N2ft2rdoFStDIjOXEaX49Y\""
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 07 Jan 2023 17:23:16 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Count\": 1,\n            \"BrandType\": 0,\n            \"PurchaseDetailID\": 1,\n            \"UnitPrice\": 300,\n            \"Quantity\": 5,\n            \"ID\": 5,\n            \"DiscountAmount\": 0,\n            \"TotalAmount\": 1500,\n            \"SupplierName\": \"rahul supplier\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"pt-1/two\",\n            \"ProductTypeName\": \"testproduct1\",\n            \"SubTotal\": 1500,\n            \"DiscountPercentage\": 0,\n            \"GSTPercentagex\": 0,\n            \"GSTAmount\": 0,\n            \"GSTTypex\": \"None\",\n            \"WholeSalePrice\": 0,\n            \"InvoiceNo\": \"in-1\",\n            \"PurchaseDate\": \"2023-01-04\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10000000\",\n            \"AvailableDate\": \"2023-01-04 22:05:12\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"None\",\n            \"GSTPercentage\": 0,\n            \"PreOrder\": 0,\n            \"TransferID\": 0,\n            \"TransferStatus\": \"\",\n            \"TransferToShop\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-04 22:05:12\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"SupplierID\": 1,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0\n        },\n        {\n            \"Count\": 4,\n            \"BrandType\": 0,\n            \"PurchaseDetailID\": 1,\n            \"UnitPrice\": 300,\n            \"Quantity\": 5,\n            \"ID\": 1,\n            \"DiscountAmount\": 0,\n            \"TotalAmount\": 1500,\n            \"SupplierName\": \"rahul supplier\",\n            \"ShopName\": \"shop-2\",\n            \"AreaName\": \"two\",\n            \"ProductName\": \"pt-1/two\",\n            \"ProductTypeName\": \"testproduct1\",\n            \"SubTotal\": 1500,\n            \"DiscountPercentage\": 0,\n            \"GSTPercentagex\": 0,\n            \"GSTAmount\": 0,\n            \"GSTTypex\": \"None\",\n            \"WholeSalePrice\": 0,\n            \"InvoiceNo\": \"in-1\",\n            \"PurchaseDate\": \"2023-01-04\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"CompanyID\": 1,\n            \"ShopID\": 2,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10000000\",\n            \"AvailableDate\": \"2023-01-04 22:05:12\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"None\",\n            \"GSTPercentage\": 0,\n            \"PreOrder\": 0,\n            \"TransferID\": 1,\n            \"TransferStatus\": \"Available\",\n            \"TransferToShop\": 2,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": 2,\n            \"CreatedOn\": \"2023-01-04 22:05:12\",\n            \"UpdatedOn\": \"2023-01-05 22:37:07\",\n            \"SupplierID\": 1,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzMwODMyOTQsImV4cCI6MTY3MzE2OTY5NCwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.q_zOLI7HKor10y_Lv0L-FW2an0pkXd4Xkkh4XE_OSp0",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

@@ -217,7 +217,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             console.log(error);
@@ -250,7 +250,7 @@ module.exports = {
             console.log("Customer Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -282,7 +282,7 @@ module.exports = {
             console.log("Customer Restore SuccessFUlly !!!");
 
             response.message = "data restore sucessfully"
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -305,7 +305,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {

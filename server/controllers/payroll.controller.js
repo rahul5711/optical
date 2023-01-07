@@ -60,7 +60,7 @@ module.exports = {
             console.log(connected("Data Save SuccessFUlly !!!"));
             response.message = "data save sucessfully"
             response.data = await connection.query(`select * from payroll where CompanyID = ${CompanyID} and Status = 1 order by ID desc`)
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -92,7 +92,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             console.log(error);
@@ -130,7 +130,7 @@ module.exports = {
             console.log("Payroll Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -150,7 +150,7 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = Payroll
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -199,7 +199,7 @@ module.exports = {
             console.log("Payroll Updated SuccessFUlly !!!");
 
             response.message = "data update sucessfully"
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -224,7 +224,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {

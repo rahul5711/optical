@@ -6,7 +6,7 @@ const connected = chalk.bold.cyan;
 const _Query = require('../helpers/queryBuilder')
 
 module.exports = {
-    save: async (req, res, next) => { 
+    save: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
@@ -28,7 +28,7 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = await connection.query(`select * from product where CompanyID = ${CompanyID} and Status = 1 order by ID desc`)
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -37,7 +37,7 @@ module.exports = {
 
         }
     },
-    update: async (req, res, next) => { 
+    update: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
@@ -59,7 +59,7 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = saveData
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -68,7 +68,7 @@ module.exports = {
 
         }
     },
-    delete: async (req, res, next) => { 
+    delete: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
@@ -90,7 +90,7 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = saveData
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -99,7 +99,7 @@ module.exports = {
 
         }
     },
-    restore: async (req, res, next) => { 
+    restore: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
@@ -118,7 +118,7 @@ module.exports = {
 
             response.message = "data restore sucessfully"
             response.data = saveData
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -127,13 +127,13 @@ module.exports = {
 
         }
     },
-    getList: async (req, res, next) => { 
+    getList: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
 
             const Body = req.body;
-            
+
             const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
@@ -144,7 +144,7 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = saveData
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -155,7 +155,7 @@ module.exports = {
     },
 
 
-    saveSpec: async (req, res, next) => { 
+    saveSpec: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
@@ -168,16 +168,16 @@ module.exports = {
 
             const doesExistSeq = await connection.query(`select * from productspec where ProductName = '${Body.ProductName}' and CompanyID = ${CompanyID} and Status = 1 and Seq = '${Body.Seq}'`)
             if (doesExistSeq.length) return res.send({ message: `this Seq Already Exist ${Body.Seq}` })
-            
+
            
             if(Body.Type === 'DropDown') {
                 Body.SptTableName = Body.ProductName + Math.floor(Math.random() * 999999) + 1 ;
             } else {
-                Body.SptTableName = '0' 
+                Body.SptTableName = '0'
             }
 
 
-          
+
 
             const query = await _Query.getQuery("ProductSpec", Body, LoggedOnUser, CompanyID,  ShopID)
             const saveData = await connection.query(query)
@@ -186,7 +186,7 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = saveData
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -196,7 +196,7 @@ module.exports = {
         }
     },
 
-    deleteSpec: async (req, res, next) => { 
+    deleteSpec: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
@@ -215,7 +215,7 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = saveData
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -226,7 +226,7 @@ module.exports = {
     },
 
 
-    getSpec: async (req, res, next) => { 
+    getSpec: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
@@ -245,7 +245,7 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = saveData
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -256,7 +256,7 @@ module.exports = {
     },
 
 
-    getFieldList: async (req, res, next) => { 
+    getFieldList: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
@@ -276,7 +276,7 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = Data
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -285,7 +285,7 @@ module.exports = {
 
         }
     },
-    getProductSupportData: async (req, res, next) => { 
+    getProductSupportData: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
@@ -306,7 +306,7 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = Data
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -315,7 +315,7 @@ module.exports = {
 
         }
     },
-    saveProductSupportData: async (req, res, next) => { 
+    saveProductSupportData: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
@@ -337,7 +337,7 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = Data
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {

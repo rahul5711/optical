@@ -6,7 +6,7 @@ const connected = chalk.bold.cyan;
 const _Query = require('../helpers/queryBuilder')
 
 module.exports = {
-    save: async (req, res, next) => { 
+    save: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
@@ -14,7 +14,7 @@ module.exports = {
             const Body = req.body;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            
+
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.Name.trim() === "") return res.send({ message: "Invalid Query Data" })
             if (Body.Name.trim() === "CompanyAdmin") return res.send({ message: "Invalid Query Data" })
@@ -30,7 +30,7 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = await connection.query(`select * from role where CompanyID = ${CompanyID} and Status = 1 order by ID desc`)
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -39,7 +39,7 @@ module.exports = {
 
         }
     },
-    update: async (req, res, next) => { 
+    update: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
@@ -58,7 +58,7 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = saveData
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -67,7 +67,7 @@ module.exports = {
 
         }
     },
-    delete: async (req, res, next) => { 
+    delete: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
@@ -84,7 +84,7 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = await connection.query(`select * from role where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -93,7 +93,7 @@ module.exports = {
 
         }
     },
-    restore: async (req, res, next) => { 
+    restore: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
@@ -110,7 +110,7 @@ module.exports = {
 
             response.message = "data restore sucessfully"
             response.data = await connection.query(`select * from role where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -119,7 +119,7 @@ module.exports = {
 
         }
     },
-    getList: async (req, res, next) => { 
+    getList: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
@@ -133,7 +133,7 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = saveData
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -159,7 +159,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {

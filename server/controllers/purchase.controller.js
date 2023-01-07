@@ -128,13 +128,13 @@ module.exports = {
 
             const savePaymentMaster = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${supplierId}, ${CompanyID}, ${shopid}, 'Supplier','Debit',now(), 'Payment Initiated', '', '', ${purchase.TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
 
-            const savePaymentDetail = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${purchase.InvoiceNo}',${savePurchase.insertId},${supplierId},${CompanyID},${purchase.TotalAmount},${purchase.TotalAmount},'Vendor','Debit',1,${LoggedOnUser}, now())`)
+            const savePaymentDetail = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${purchase.InvoiceNo}',${savePurchase.insertId},${supplierId},${CompanyID},0,${purchase.TotalAmount},'Vendor','Debit',1,${LoggedOnUser}, now())`)
 
             console.log(connected("Payment Initiate SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
             response.data = savePurchase.insertId
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -275,14 +275,14 @@ module.exports = {
 
             const updatePaymentMaster = await connection.query(`update paymentmaster set PayableAmount = ${PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
 
-            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount = ${PurchaseMaster.TotalAmount} , DueAmount = ${PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
+            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount = 0 , DueAmount = ${PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
 
             console.log(connected("Payment Update SuccessFUlly !!!"));
 
 
             response.message = "data update sucessfully"
             response.data = purchase.ID
-            connection.release()
+            // connection.release()
             return res.send(response)
 
 
@@ -315,7 +315,7 @@ module.exports = {
             response.result.PurchaseMaster[0].gst_detail = gst_detail || []
             response.result.PurchaseDetail = PurchaseDetail
             response.result.Charge = Charge
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -354,7 +354,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             console.log(error);
@@ -394,7 +394,7 @@ module.exports = {
             console.log("Purchase Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -447,7 +447,7 @@ module.exports = {
 
             const updatePaymentMaster = await connection.query(`update paymentmaster set PayableAmount = ${Body.PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
 
-            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount = ${Body.PurchaseMaster.TotalAmount} , DueAmount = ${Body.PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
+            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount = 0 , DueAmount = ${Body.PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
 
             const fetchPurchaseMaster = await connection.query(`select * from purchasemasternew  where Status = 1 and ID = ${Body.PurchaseMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
@@ -459,7 +459,7 @@ module.exports = {
             response.result.PurchaseDetail = PurchaseDetail;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data delete sucessfully"
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             console.log(error);
@@ -501,7 +501,7 @@ module.exports = {
 
             const updatePaymentMaster = await connection.query(`update paymentmaster set PayableAmount = ${Body.PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
 
-            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount = ${Body.PurchaseMaster.TotalAmount} , DueAmount = ${Body.PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
+            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount = 0 , DueAmount = ${Body.PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
 
             const fetchPurchaseMaster = await connection.query(`select * from purchasemasternew  where Status = 1 and ID = ${Body.PurchaseMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
@@ -518,7 +518,7 @@ module.exports = {
             response.result.Charge = Charge;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data delete sucessfully"
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -550,7 +550,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -576,7 +576,7 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = data
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -612,7 +612,7 @@ module.exports = {
             response.data = purchaseData;
             response.message = "Success";
 
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -649,7 +649,7 @@ module.exports = {
             let barCodeData = await connection.query(qry);
             response.data = barCodeData[0];
             response.message = "Success";
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -709,7 +709,7 @@ module.exports = {
             let xferList = await connection.query(qry1);
             response.data = xferList;
             response.message = "Success";
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -761,7 +761,7 @@ module.exports = {
             let xferList = await connection.query(qry1);
             response.data = xferList;
             response.message = "Success";
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -810,7 +810,7 @@ module.exports = {
             let xferList = await connection.query(qry1);
             response.data = xferList;
             response.message = "Success";
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -855,7 +855,7 @@ module.exports = {
             response.count = count.length
             response.success = "Success";
 
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -899,7 +899,7 @@ module.exports = {
             response.data = barcodelist;
             response.message = "success";
 
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -926,7 +926,36 @@ module.exports = {
             let barcode = await connection.query(qry);
             response.data = [];
             response.message = "success";
-            connection.release()
+            // connection.release()
+            res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+
+
+    // Inventory summary
+
+    getInventorySummary: async (req, res, next) => {
+        try {
+
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            qry = `SELECT COUNT(barcodemasternew.ID) AS Count,purchasedetailnew.BrandType, purchasedetailnew.ID as PurchaseDetailID , purchasedetailnew.UnitPrice, purchasedetailnew.Quantity, purchasedetailnew.ID, purchasedetailnew.DiscountAmount, purchasedetailnew.TotalAmount, supplier.Name AS SupplierName, shop.Name AS ShopName, shop.AreaName AS AreaName, purchasedetailnew.ProductName, purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice, purchasedetailnew.SubTotal, purchasedetailnew.DiscountPercentage, purchasedetailnew.GSTPercentage as GSTPercentagex, purchasedetailnew.GSTAmount, purchasedetailnew.GSTType as GSTTypex, purchasedetailnew.WholeSalePrice, purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.PaymentStatus,  barcodemasternew.*, purchasemasternew.SupplierID FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID  LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} AND purchasedetailnew.Status = 1 ` + Parem + " Group By barcodemasternew.PurchaseDetailID, barcodemasternew.ShopID" + " HAVING barcodemasternew.Status = 1";
+
+            let data = await connection.query(qry);
+            response.data = data
+            response.message = "success";
+            // connection.release()
             res.send(response)
 
         } catch (error) {

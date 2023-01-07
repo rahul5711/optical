@@ -26,7 +26,7 @@ module.exports = {
             const LoggedOnUser = 0;
 
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
-            
+
 
             const doesExist = await connection.query(`select * from company where Email = '${Body.Email}' and Status = 1`)
             if (doesExist.length) return res.send({ message: `Company Already exist from this Email ${Body.Email}` })
@@ -230,7 +230,7 @@ module.exports = {
             response.message = "data save sucessfully"
             response.Company = Company[0]
             response.User = User[0]
-            connection.release()
+            // connection.release()
             return res.send(response)
         } catch (error) {
             console.log(error);
@@ -269,7 +269,7 @@ module.exports = {
             response.message = "data update sucessfully"
             response.data = User[0]
             res.send(response)
-            connection.release()
+            // connection.release()
         } catch (error) {
             return error
         }
@@ -310,7 +310,7 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = Company[0]
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -347,7 +347,7 @@ module.exports = {
             console.log("Shop Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -376,7 +376,7 @@ module.exports = {
             console.log("Company Deactive SuccessFUlly !!!");
 
             response.message = "data deactive sucessfully"
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -405,7 +405,7 @@ module.exports = {
             console.log("Company Active SuccessFUlly !!!");
 
             response.message = "data active sucessfully"
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -452,7 +452,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = Company
             response.user = User
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -481,7 +481,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -509,7 +509,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -539,7 +539,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -569,7 +569,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -598,7 +598,7 @@ module.exports = {
             data[0].WelComeNote = JSON.parse(data[0].WelComeNote) || []
             data[0].SmsSetting = JSON.parse(data[0].SmsSetting) || []
             response.data = data
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             console.log(error);
@@ -622,7 +622,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -648,7 +648,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {

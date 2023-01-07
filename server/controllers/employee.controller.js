@@ -34,7 +34,7 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = saveUser.insertId;
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -65,7 +65,7 @@ module.exports = {
 
 
             response.message = "data update sucessfully"
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -96,7 +96,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -114,7 +114,7 @@ module.exports = {
             let data = await connection.query(`select * from user where Status = 1 and CompanyID = ${CompanyID}`);
             response.message = "data fetch sucessfully"
             response.data = data
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             console.log(error);
@@ -147,7 +147,7 @@ module.exports = {
             console.log("User Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -179,7 +179,7 @@ module.exports = {
             console.log("User Restore SuccessFUlly !!!");
 
             response.message = "data restore sucessfully"
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -196,11 +196,11 @@ module.exports = {
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
             const User = await connection.query(`select * from user where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
-           
+
             response.message = "data fetch sucessfully"
             response.data = User
             response.UserShop = await connection.query(`select usershop.*, role.Name as RoleName, shop.Name as ShopName, shop.AreaName as AreaName, user.Name as UserName from usershop left join role on role.ID = usershop.RoleID left join shop on shop.ID = usershop.ShopID left join user on user.ID = usershop.UserID where usershop.Status = 1 and usershop.UserID = ${Body.ID}`)
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -232,7 +232,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             console.log(error);
@@ -248,7 +248,7 @@ module.exports = {
             const Body = req.body;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            
+
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
             if (!Body.Password) return res.send({ message: "Invalid Query Data" })
@@ -273,7 +273,7 @@ module.exports = {
             response.message = "data update sucessfully"
             response.data = User[0]
             res.send(response)
-            connection.release()
+            // connection.release()
         } catch (error) {
             return error
         }
@@ -295,7 +295,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -320,7 +320,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
