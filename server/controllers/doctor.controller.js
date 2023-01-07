@@ -68,7 +68,7 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = saveData.insertId;
-            connection.release()
+            // connection.release()
             return res.send(response)
         } catch (error) {
             console.log(error);
@@ -126,7 +126,7 @@ module.exports = {
 
             console.log("Doctor Updated SuccessFUlly !!!");
             response.message = "data update sucessfully"
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -160,7 +160,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             console.log(error);
@@ -179,7 +179,7 @@ module.exports = {
             let data = await connection.query(`select * from doctor where Status = 1 and CompanyID = ${CompanyID}`);
             response.message = "data fetch sucessfully"
             response.data = data
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             console.log(error);
@@ -212,7 +212,7 @@ module.exports = {
             console.log("Doctor Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -233,7 +233,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = Doctor
 
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -256,7 +256,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {

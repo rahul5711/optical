@@ -33,7 +33,7 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = await connection.query(`select * from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = '${Body.TableName}' order by ID desc`)
-            connection.release()
+            // connection.release()
             return res.send(response)
         } catch (error) {
             console.log(error);
@@ -54,7 +54,7 @@ module.exports = {
 
             response.message = "fetch data sucessfully"
             response.data = await connection.query(`select * from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = '${Body.TableName}' order by ID desc`)
-            connection.release()
+            // connection.release()
             return res.send(response)
         } catch (error) {
             console.log(error);
@@ -80,7 +80,7 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = await connection.query(`select * from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = '${Body.TableName}' order by ID desc`)
-            connection.release()
+            // connection.release()
             return res.send(response)
         } catch (error) {
             console.log(error);
@@ -111,7 +111,7 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = await connection.query(`select * from chargermaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            connection.release()
+            // connection.release()
             return res.send(response)
         } catch (error) {
             console.log(error);
@@ -128,7 +128,7 @@ module.exports = {
 
             response.message = "fetch data sucessfully"
             response.data = await connection.query(`select * from chargermaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            connection.release()
+            // connection.release()
             return res.send(response)
         } catch (error) {
             console.log(error);
@@ -155,7 +155,7 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = await connection.query(`select * from chargermaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            connection.release()
+            // connection.release()
             return res.send(response)
         } catch (error) {
             console.log(error);
@@ -187,7 +187,7 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = await connection.query(`select * from servicemaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            connection.release()
+            // connection.release()
             return res.send(response)
         } catch (error) {
             console.log(error);
@@ -204,7 +204,7 @@ module.exports = {
 
             response.message = "fetch data sucessfully"
             response.data = await connection.query(`select * from servicemaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            connection.release()
+            // connection.release()
             return res.send(response)
         } catch (error) {
             console.log(error);
@@ -231,7 +231,7 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = await connection.query(`select * from servicemaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            connection.release()
+            // connection.release()
             return res.send(response)
         } catch (error) {
             console.log(error);

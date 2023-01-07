@@ -8,7 +8,7 @@ const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 
 
-module.exports = { 
+module.exports = {
     save: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
@@ -20,16 +20,16 @@ module.exports = {
 
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.Name || Body.Name.trim() === "" || Body.Name === undefined || Body.Name === null) {
-                return res.send({ message: "Invalid Query Data" })   
-            } 
+                return res.send({ message: "Invalid Query Data" })
+            }
             if (!Body.MobileNo1 || Body.MobileNo1 === "" || Body.MobileNo1 === undefined || Body.MobileNo1 === null) {
                 return res.send({ message: "Invalid Query Data" })
-            } 
+            }
 
             doesExist = await connection.query(`select * from supplier where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID}`)
 
             if (doesExist.length) {
-               return res.send({message : `supplier already exist from this number ${Body.MobileNo1}`}) 
+               return res.send({message : `supplier already exist from this number ${Body.MobileNo1}`})
             }
 
             dataCount = await connection.query(`select * from supplier where CompanyID = ${CompanyID}`)
@@ -41,7 +41,7 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data =  saveData.insertId;
-            connection.release()
+            // connection.release()
             return res.send(response)
         } catch (error) {
             console.log(error);
@@ -61,16 +61,16 @@ module.exports = {
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
             if (!Body.Name || Body.Name.trim() === "" || Body.Name === undefined || Body.Name === null) {
-                return res.send({ message: "Invalid Query Data" })   
-            } 
+                return res.send({ message: "Invalid Query Data" })
+            }
             if (!Body.MobileNo1 || Body.MobileNo1 === "" || Body.MobileNo1 === undefined || Body.MobileNo1 === null) {
                 return res.send({ message: "Invalid Query Data" })
-            } 
+            }
 
             const doesExistSupplier = await connection.query(`select * from supplier where MobileNo1 = '${Body.MobileNo1}' and Status = 1 and ID != ${Body.ID}`)
             if (doesExistSupplier.length) return res.send({ message: `Supplier Already exist from this MobileNo1 ${Body.MobileNo1}` })
 
-            
+
 
             const saveData = await connection.query(`update supplier set Name = '${Body.Name}', MobileNo1='${Body.MobileNo1}', MobileNo2='${Body.MobileNo2}', PhoneNo='${Body.PhoneNo}', Address='${Body.Address}', GSTNo='${Body.GSTNo}', Email='${Body.Email}', Website='${Body.Website}', CINNo='${Body.CINNo}', Fax='${Body.Fax}', PhotoURL='${Body.PhotoURL}', ContactPerson='${Body.ContactPerson}', Remark='${Body.Remark}', DOB='${Body.DOB}',GSTType='${Body.GSTType}', Anniversary='${Body.Anniversary}',Status=1,UpdatedBy=${LoggedOnUser},UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
@@ -78,7 +78,7 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = []
-            connection.release()
+            // connection.release()
             return res.send(response)
         } catch (error) {
             console.log(error);
@@ -105,7 +105,7 @@ module.exports = {
 
 
             let finalQuery = qry + skipQuery;
-            
+
 
             let data = await connection.query(finalQuery);
             let count = await connection.query(qry);
@@ -113,7 +113,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             console.log(error);
@@ -153,7 +153,7 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = await connection.query(`select * from supplier where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -166,13 +166,13 @@ module.exports = {
             const connection = await getConnection.connection();
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const UserID = req.user.ID ? req.user.ID : 0;
-            const UserGroup = req.user.UserGroup ? req.user.UserGroup : 'CompanyAdmin';            
-            
+            const UserGroup = req.user.UserGroup ? req.user.UserGroup : 'CompanyAdmin';
+
 
             let data = await connection.query(`select * from supplier where Status = 1 and CompanyID = ${CompanyID}`);
             response.message = "data fetch sucessfully"
             response.data = data
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             console.log(error);
@@ -190,10 +190,10 @@ module.exports = {
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
             const supplier = await connection.query(`select * from supplier where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
-            
+
             response.message = "data fetch sucessfully"
             response.data = supplier
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -216,7 +216,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {

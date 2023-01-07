@@ -53,7 +53,7 @@ module.exports = {
                 const company = await connection.query(`select * from company where Status = 1 and ID = '${User[0].CompanyID}'`)
 
                 if (!company) {
-                    return res.send({ success: false, message: "Company De-Activate By Admin, Contact OpticalGuru Team" })  
+                    return res.send({ success: false, message: "Company De-Activate By Admin, Contact OpticalGuru Team" })
                 }
 
                 const setting = await connection.query(`select * from companysetting where CompanyID = '${User[0].CompanyID}'`);
@@ -61,7 +61,7 @@ module.exports = {
                 var expDate = new Date(company[0].CancellationDate);
                 var todate = new Date()
                 // if (todate >= expDate) {
-                //   return res.send({message: "Plan Expired"})  
+                //   return res.send({message: "Plan Expired"})
                 // }
 
                 if (User[0].UserGroup === "CompanyAdmin") {
@@ -114,7 +114,7 @@ module.exports = {
 
             }
 
-            connection.release()
+            // connection.release()
         } catch (error) {
             return error
         }
@@ -122,7 +122,7 @@ module.exports = {
 
     companylogin: async (req, res, next) => {
         try {
-           
+
             const connection = await getConnection.connection();
             const Body = req.body;
             const ip = req.headers.ip ? req.headers.ip : '**********';
@@ -147,7 +147,7 @@ module.exports = {
             comment = "login SuccessFully";
             const accessToken = await signAccessTokenAdmin(`'${User[0].ID}'`)
             const refreshToken = await signRefreshTokenAdmin(`'${User[0].ID}'`)
-           
+
             const shop = await connection.query(`select * from shop where Status = 1 and CompanyID = '${User[0].CompanyID}'`)
 
             return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], shop: shop, success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })

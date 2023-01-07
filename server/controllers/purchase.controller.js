@@ -134,7 +134,7 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = savePurchase.insertId
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -282,7 +282,7 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = purchase.ID
-            connection.release()
+            // connection.release()
             return res.send(response)
 
 
@@ -315,7 +315,7 @@ module.exports = {
             response.result.PurchaseMaster[0].gst_detail = gst_detail || []
             response.result.PurchaseDetail = PurchaseDetail
             response.result.Charge = Charge
-            connection.release()
+            // connection.release()
             return res.send(response)
 
         } catch (error) {
@@ -354,7 +354,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             console.log(error);
@@ -394,7 +394,7 @@ module.exports = {
             console.log("Purchase Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -459,7 +459,7 @@ module.exports = {
             response.result.PurchaseDetail = PurchaseDetail;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data delete sucessfully"
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             console.log(error);
@@ -518,7 +518,7 @@ module.exports = {
             response.result.Charge = Charge;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data delete sucessfully"
-            connection.release()
+            // connection.release()
             res.send(response)
         } catch (error) {
             return error
@@ -550,7 +550,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -576,7 +576,7 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = data
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -612,7 +612,7 @@ module.exports = {
             response.data = purchaseData;
             response.message = "Success";
 
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -649,7 +649,7 @@ module.exports = {
             let barCodeData = await connection.query(qry);
             response.data = barCodeData[0];
             response.message = "Success";
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -709,7 +709,7 @@ module.exports = {
             let xferList = await connection.query(qry1);
             response.data = xferList;
             response.message = "Success";
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -761,7 +761,7 @@ module.exports = {
             let xferList = await connection.query(qry1);
             response.data = xferList;
             response.message = "Success";
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -810,7 +810,7 @@ module.exports = {
             let xferList = await connection.query(qry1);
             response.data = xferList;
             response.message = "Success";
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -855,7 +855,7 @@ module.exports = {
             response.count = count.length
             response.success = "Success";
 
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -899,7 +899,7 @@ module.exports = {
             response.data = barcodelist;
             response.message = "success";
 
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -926,7 +926,7 @@ module.exports = {
             let barcode = await connection.query(qry);
             response.data = [];
             response.message = "success";
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
@@ -955,7 +955,7 @@ module.exports = {
             let data = await connection.query(qry);
             response.data = data
             response.message = "success";
-            connection.release()
+            // connection.release()
             res.send(response)
 
         } catch (error) {
