@@ -81,7 +81,7 @@ export class PurchaseComponent implements OnInit {
     this.getdropdownSupplierlist();
     this.getGSTList();
     this.chargelist();
-    if (this.id != 0){
+    if (this.id !== 0){
       this.getPurchaseById();
     }else{
       this.selectedPurchaseMaster.PurchaseDate = moment().format('YYYY-MM-DD');
@@ -91,13 +91,13 @@ export class PurchaseComponent implements OnInit {
   getPurchaseById(){
     const subs: Subscription = this.purchaseService.getPurchaseById(this.id).subscribe({
       next: (res: any) => {
+        this.selectedPurchaseMaster = res.result.PurchaseMaster[0]
+        this.itemList = res.result.PurchaseDetail
+        this.chargeList = res.result.Charge
+        this.gst_detail = this.selectedPurchaseMaster.gst_detail
+        this.calculateGrandTotal();
         if (res.success) {
           this.as.successToast(res.message)
-          this.selectedPurchaseMaster = res.result.PurchaseMaster[0]
-          this.itemList = res.result.PurchaseDetail
-          this.chargeList = res.result.Charge
-          this.gst_detail = this.selectedPurchaseMaster.gst_detail
-          this.calculateGrandTotal();
         } else {
           this.as.errorToast(res.message)
         }
