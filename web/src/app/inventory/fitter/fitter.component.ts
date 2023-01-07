@@ -97,15 +97,18 @@ export class FitterComponent implements OnInit {
     const subs: Subscription =  this.fs.saveFitter(fitterdate).subscribe({
       next: (res: any) => {
         if (res.success) {
-          // this.router.navigate(['/inventory/fitterList']); 
-
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Your file has been Save.',
-            showConfirmButton: false,
-            timer: 1200
-          }) 
+          if(res.data !== 0) {
+            this.id = res.data;
+            this.router.navigate(['/inventory/fitter' , this.id]);
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been Save.',
+              showConfirmButton: false,
+              timer: 1200
+            }) 
+            this.getFitterById(); 
+          }
         } else {
           this.as.errorToast(res.message)
         }

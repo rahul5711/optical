@@ -415,6 +415,7 @@ export class BillingComponent implements OnInit {
     this.Check.ContactCheck = false
    }
   }
+  
   calculateAge() {
     if (this.data.DOB) {
       var timeDiff = Math.abs(Date.now() - new Date(this.data.DOB).getTime());

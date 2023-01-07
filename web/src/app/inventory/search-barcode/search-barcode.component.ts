@@ -7,14 +7,14 @@ import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PurchaseService } from 'src/app/service/purchase.service';
-import { ShopService } from 'src/app/service/shop.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
 
 @Component({
   selector: 'app-search-barcode',
   templateUrl: './search-barcode.component.html',
   styleUrls: ['./search-barcode.component.css']
 })
+
 export class SearchBarcodeComponent implements OnInit {
 
   evn = environment;
@@ -26,24 +26,20 @@ export class SearchBarcodeComponent implements OnInit {
 
   id: any;
   SearchBarCode: any;
-  searchValue: any;
   selectedProduct: any;
   prodList:any;
   specList: any;
   barCodeList: any;
   searchList: any;
-  showAdd = false;
   ShopMode = 'false';
-  item: any;
+  UpdateBarcode = false;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private ps: ProductService,
     private purchaseService: PurchaseService,
-    private ss: ShopService,
     public as: AlertService,
-    private modalService: NgbModal,
   ){
     this.id = this.route.snapshot.params['id'];
   }
@@ -120,7 +116,7 @@ export class SearchBarcodeComponent implements OnInit {
         searchString = searchString + element.SelectedValue + "/" ;
       }
     });
-    const subs: Subscription =  this.purchaseService.barCodeListBySearchString(this.ShopMode,this.selectedProduct, searchString).subscribe({
+    const subs: Subscription =  this.purchaseService.barCodeListBySearchString(this.ShopMode, this.selectedProduct, searchString).subscribe({
       next: (res: any) => {
         this.barCodeList = res.data;
       },
@@ -147,5 +143,28 @@ export class SearchBarcodeComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+  updateBarcode(data:any){
+    const subs: Subscription =  this.purchaseService.updateBarcode(data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Update.',
+            showConfirmButton: false,
+            timer: 1500
+          })   
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  showInput(){
+    this.UpdateBarcode = !this.UpdateBarcode;
+  }
+
 
 }

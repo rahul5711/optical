@@ -1,0 +1,17 @@
+.old{
+    background-color: rgb(252, 89, 64);
+}
+
+
+.new{
+    background-color: rgb(220, 220, 220);
+}
+
+
+.barcodeUpBtn{
+    border: none;
+    background-color: #465ac6;
+    color: white;
+    padding: 4% 13%;
+    font-size: 17px;
+}

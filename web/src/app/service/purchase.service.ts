@@ -93,6 +93,11 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+  updateBarcode(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/updateBarcode', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
 
 
   private handleError(errorResponse: HttpErrorResponse) {
