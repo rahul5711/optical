@@ -67,7 +67,6 @@ export class ShopListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getList();
-
   }
 
   onPageChange(pageNum: number): void {
@@ -136,9 +135,17 @@ export class ShopListComponent implements OnInit {
   }
 
   openModal(content: any) {
-    this.suBtn = false;
-    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
-    
+    if (this.dataList.length >= this.company.NoOfShops){
+      Swal.fire({
+        icon: 'error',
+        title: 'You Can Not Create Shop',
+        text: 'New Shop Can Not Be Added As Your Plan Does Not Allow. ',
+        footer: ''
+      });
+    }else{
+      this.suBtn = false;
+      this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+    } 
   }
 
   openModalEdit(content: any, datas: any) {
