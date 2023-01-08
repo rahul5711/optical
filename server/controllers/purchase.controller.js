@@ -962,6 +962,33 @@ module.exports = {
             console.log(error);
             return error
         }
+    },
+
+    updateInventorySummary: async (req, res, next) => {
+        try {
+
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const { PurchaseDetailID , BrandType } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (BrandType === "" || BrandType === undefined || BrandType === null) return res.send({ message: "Invalid Query Data" })
+            if (PurchaseDetailID === "" || PurchaseDetailID === undefined || PurchaseDetailID === null) return res.send({ message: "Invalid Query Data" })
+
+            qry = `update purchasedetailnew set BrandType = ${BrandType}, UpdatedBy=${LoggedOnUser}, CreatedOn=now() where ID = ${PurchaseDetailID} and CompanyID = ${CompanyID}`
+
+            let data = await connection.query(qry);
+            response.data = []
+            response.message = "success";
+            // connection.release()
+            res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
     }
 
 
