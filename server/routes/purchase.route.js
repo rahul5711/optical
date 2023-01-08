@@ -45,6 +45,10 @@ router.post('/getInventorySummary', verifyAccessTokenAdmin, Controller.getInvent
 
 router.post('/updateInventorySummary', verifyAccessTokenAdmin, Controller.updateInventorySummary)
 
+// Purchase Report
+
+router.post('/getPurchasereports', verifyAccessTokenAdmin, Controller.getPurchasereports)
+
 
 
 module.exports = router
