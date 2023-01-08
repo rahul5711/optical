@@ -98,6 +98,10 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+  getInventorySummary(Parem:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getInventorySummary',{Parem:Parem}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
 
   private handleError(errorResponse: HttpErrorResponse) {
