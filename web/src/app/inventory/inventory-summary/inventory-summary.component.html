@@ -5,7 +5,8 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
                 <div class="card">
                     <div class="header">
-                        <h2>Inventory Summary</h2>
+                        <h2>Inventory Summary <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"
+                            (click)="exportAsXLSX()"></i></h2>
                     </div>
                     <div class="body">
                         <!-- form start -->
@@ -53,6 +54,20 @@
                                         </mat-select>
                                         <mat-error>
                                             Select Shop
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0 ">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Supplier Name</mat-label>
+                                        <mat-select name="Supplier" editable="true" [(ngModel)]="data.SupplierID" #singleSelect>
+                                            <mat-option [value]="0">All</mat-option>
+                                            <mat-option *ngFor="let sup of supplierList  let i = index;" [value]="sup.ID">
+                                                {{sup.Name}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            Select Supplier
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
@@ -150,7 +165,7 @@
                                                 <th>S No.</th>
                                                 <th>Product Category</th>
                                                 <th>Product Name</th>
-                                                <th>Branded</th>
+                                                <th>BrandType</th>
                                                 <th>PurchaseDate</th>
                                                 <th>Quantity</th>
                                                 <th>Current Shop</th>

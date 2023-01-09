@@ -118,6 +118,15 @@
             </div>
           </div>
           <!-- companyadmin end company payment -->
+          <!-- companyadmin  report start -->
+          <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown">
+            <a class="dropBtn" data-target="#collapseExample">Report <i class="fa fa-caret-down"
+                aria-hidden="true"></i></a>
+            <div class="drop-content" id="collapseExample">
+              <a href="javascript:void(0)" [routerLink]="['/report/purchase']" id="collapseExample">Purchase</a>
+            </div>
+          </div>
+          <!-- companyadmin end report -->
         </div>
       </div>
       <!-- CompanyAdmin end nav-->

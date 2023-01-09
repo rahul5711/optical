@@ -8,6 +8,8 @@ import Swal from 'sweetalert2';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { ShopService } from 'src/app/service/shop.service';
+import { SupplierService } from 'src/app/service/supplier.service';
+import { ExcelService } from 'src/app/service/helpers/excel.service';
 
 
 @Component({
@@ -31,7 +33,8 @@ export class InventorySummaryComponent implements OnInit {
   ShopMode = 'false';
   SummaryList:any;
   shopList:any;
-  UpdateBarndType = false
+  supplierList:any;
+  UpdateBarndType = false;
   BarndTypeUp:any = 0;
 
   constructor(
@@ -40,22 +43,35 @@ export class InventorySummaryComponent implements OnInit {
     private ps: ProductService,
     private purchaseService: PurchaseService,
     private ss: ShopService,
+    private sup: SupplierService,
+    private excelService: ExcelService,
     public as: AlertService,
   ){
     this.id = this.route.snapshot.params['id'];
   }
 
-  data:any = { ProductCategory : 0, ProductName:'', SupplierID: 0, ShopID: 0, PurchaseID: 0, Barcode: "", CurrentStatus : "Available",BrandType:0 };
+  data:any = {PurchaseID: 0, ShopID: 0, ProductCategory : 0, ProductName:'', CurrentStatus : "Available", SupplierID: 0, BrandType:0 ,  Barcode: "", };
 
   ngOnInit(): void {
     this.getProductList();
     this.dropdownShoplist();
+    this.dropdownSupplierlist();
   }
 
   dropdownShoplist(){
     const subs: Subscription = this.ss.dropShoplist().subscribe({
       next: (res: any) => {
         this.shopList  = res.data
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  dropdownSupplierlist(){
+    const subs: Subscription = this.sup.dropdownSupplierlist().subscribe({
+      next: (res: any) => {
+        this.supplierList  = res.data
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -164,9 +180,15 @@ export class InventorySummaryComponent implements OnInit {
     if (this.data.ShopID !== 0){
       Parem = Parem + ' and barcodemasternew.ShopID = ' +  this.data.ShopID; }
 
+    if (this.data.SupplierID !== 0){
+      Parem = Parem + ' and purchasemasternew.SupplierID = ' +  this.data.SupplierID ; }
+
     const subs: Subscription =  this.purchaseService.getInventorySummary(Parem).subscribe({
       next: (res: any) => {
-        this.SummaryList = res.data;
+        if(res.message){
+          this.as.successToast(res.message)
+          this.SummaryList = res.data;
+        }
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -178,14 +200,15 @@ export class InventorySummaryComponent implements OnInit {
   }
 
   updateInventorySummary(data:any){
-    console.log(data);
-    
     const subs: Subscription =  this.purchaseService.updateInventorySummary(data).subscribe({
       next: (res: any) => {
-
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+  }
+
+  exportAsXLSX(): void {
+    this.excelService.exportAsExcelFile(this.SummaryList, 'Summary_List');
   }
 }
