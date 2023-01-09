@@ -32,7 +32,7 @@ export class InventorySummaryComponent implements OnInit {
   SummaryList:any;
   shopList:any;
   UpdateBarndType = false
-  BarndTypeUp:any = ''
+  BarndTypeUp:any = 0;
 
   constructor(
     private router: Router,
@@ -45,7 +45,7 @@ export class InventorySummaryComponent implements OnInit {
     this.id = this.route.snapshot.params['id'];
   }
 
-  data = { ProductCategory : 0, ProductName:'', SupplierID: 0, ShopID: 0, PurchaseID: 0, Barcode: "", CurrentStatus : "Available",BrandType:'0'
+  data = { ProductCategory : 0, ProductName:'', SupplierID: 0, ShopID: 0, PurchaseID: 0, Barcode: "", CurrentStatus : "Available",BrandType:0
   };
 
   ngOnInit(): void {
@@ -156,7 +156,7 @@ export class InventorySummaryComponent implements OnInit {
     if (this.data.CurrentStatus !== ''){
       Parem = Parem + ' and barcodemasternew.CurrentStatus = ' + '"' + this.data.CurrentStatus + '"';}
 
-    if (this.data.BrandType !== ''  && this.data.BrandType !== '0'){
+    if (this.data.BrandType !== 0){
       Parem = Parem + ' and purchasedetailnew.BrandType = ' + '"' + this.data.BrandType + '"';}
 
     if (this.data.Barcode !== ''){

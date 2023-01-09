@@ -294,15 +294,15 @@
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Brand Type</mat-label>
                                         <mat-select name="BrandType" [(ngModel)]="item.BrandType" #singleSelect>
-                                            <mat-option value="0">None</mat-option>
-                                            <mat-option value="1">Brand</mat-option>
-                                            <mat-option value="2">Non-Brand</mat-option>
+                                            <mat-option [value]="0">None</mat-option>
+                                            <mat-option [value]="1">Brand</mat-option>
+                                            <mat-option [value]="2">Non-Brand</mat-option>
                                         </mat-select>
                                         <mat-error>
                                             Select BrandType
                                         </mat-error>
                                     </mat-form-field>
-                                    <mat-checkbox style="padding-top: 14px;" name="BrandLock"  *ngIf="item.BrandType !== '0'" color="primary" [(ngModel)]="BrandLock"></mat-checkbox>
+                                    <mat-checkbox style="padding-top: 14px;" name="BrandLock"  *ngIf="item.BrandType !== 0" color="primary" [(ngModel)]="BrandLock"></mat-checkbox>
 
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ml-auto">
@@ -444,9 +444,9 @@
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.RetailPrice}}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.WholeSalePrice}}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >
-                                                        <span *ngIf="data.BrandType === '0'">None</span>
-                                                        <span *ngIf="data.BrandType === '1'">Brand</span>
-                                                        <span *ngIf="data.BrandType === '2'">Non-Brand</span></td>
+                                                        <span *ngIf="data.BrandType == 0">None</span>
+                                                        <span *ngIf="data.BrandType == 1">Brand</span>
+                                                        <span *ngIf="data.BrandType == 2">Non-Brand</span></td>
                                                 </tr>
                                                 <!-- chargeList -->
                                                 <tr *ngFor="let data of chargeList ; let i = index;">

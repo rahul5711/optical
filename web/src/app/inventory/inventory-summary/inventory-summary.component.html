@@ -170,16 +170,16 @@
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">{{i+1}}</td>
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.ProductTypeName}}</td>
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.ProductName}}</td>
-                                                    <td *ngIf="!UpdateBarndType" [ngClass]="{'my_class': s.BrandType === '1'}">
-                                                        <span *ngIf="s.BrandType === '0'">None</span>
-                                                        <span *ngIf="s.BrandType === '1'">Brand</span>
-                                                        <span *ngIf="s.BrandType === '2'">Non-Brand</span>
+                                                    <td *ngIf="!UpdateBarndType" [ngClass]="{'my_class': s.BrandType === 1}">
+                                                        <span *ngIf="s.BrandType == 0">None</span>
+                                                        <span *ngIf="s.BrandType == 1">Brand</span>
+                                                        <span *ngIf="s.BrandType == 2">Non-Brand</span>
                                                     </td>
                                                     <td *ngIf="UpdateBarndType" style=" width: 120px;text-align: center;">
                                                         <select style="height: 26px;" name="BarndTypeUp" [(ngModel)]="s.BrandType" #name="ngModel" (change)="updateInventorySummary(s)" [ngModelOptions]="{standalone: true}" name="s{{i}}">
-                                                            <option value="0">None</option>
-                                                            <option value="1">Brand</option>
-                                                            <option value="2">Non-Barnd</option>
+                                                            <option [value]='0'>None</option>
+                                                            <option [value]='1'>Brand</option>
+                                                            <option [value]='2'>Non-Barnd</option>
                                                         </select>
                                                     </td>
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.PurchaseDate | date: 'dd/MM/yyyy'}}</td>
