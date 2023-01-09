@@ -45,8 +45,7 @@ export class InventorySummaryComponent implements OnInit {
     this.id = this.route.snapshot.params['id'];
   }
 
-  data = { ProductCategory : 0, ProductName:'', SupplierID: 0, ShopID: 0, PurchaseID: 0, Barcode: "", CurrentStatus : "Available",BrandType:0
-  };
+  data:any = { ProductCategory : 0, ProductName:'', SupplierID: 0, ShopID: 0, PurchaseID: 0, Barcode: "", CurrentStatus : "Available",BrandType:0 };
 
   ngOnInit(): void {
     this.getProductList();
@@ -156,7 +155,7 @@ export class InventorySummaryComponent implements OnInit {
     if (this.data.CurrentStatus !== ''){
       Parem = Parem + ' and barcodemasternew.CurrentStatus = ' + '"' + this.data.CurrentStatus + '"';}
 
-    if (this.data.BrandType !== 0){
+    if (this.data.BrandType !== ''){
       Parem = Parem + ' and purchasedetailnew.BrandType = ' + '"' + this.data.BrandType + '"';}
 
     if (this.data.Barcode !== ''){
