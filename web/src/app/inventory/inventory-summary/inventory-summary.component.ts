@@ -31,6 +31,8 @@ export class InventorySummaryComponent implements OnInit {
   ShopMode = 'false';
   SummaryList:any;
   shopList:any;
+  UpdateBarndType = false
+  BarndTypeUp:any = ''
 
   constructor(
     private router: Router,
@@ -172,5 +174,27 @@ export class InventorySummaryComponent implements OnInit {
     });
   }
 
+  showInput(){
+    this.UpdateBarndType = !this.UpdateBarndType;
+  }
 
+  updateInventorySummary(data:any){
+    console.log(data);
+    
+    const subs: Subscription =  this.purchaseService.updateInventorySummary(data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Update.',
+            showConfirmButton: false,
+            timer: 1500
+          })   
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
 }

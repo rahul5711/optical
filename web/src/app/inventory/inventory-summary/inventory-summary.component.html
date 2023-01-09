@@ -146,7 +146,7 @@
                                         <table class="table table-striped table-hover table-sm table-bordered"
                                             style="border: 2px solid #fff !important;">
                                             <thead>
-                                                <tr style="white-space: nowrap;" >
+                                                <tr style="white-space: nowrap;" (click)="showInput()" [ngClass]="{'old': UpdateBarndType, 'new': !UpdateBarndType}">
                                                 <th>S No.</th>
                                                 <th>Product Category</th>
                                                 <th>Product Name</th>
@@ -165,12 +165,23 @@
                                                 <th>WholeSale Price</th>
                                                 </tr>
                                             </thead>
-                                            <tbody class="text-center">
-                                                <tr *ngFor="let s of SummaryList; let i = index;">
+                                            <tbody class="text-center" >
+                                                <tr *ngFor="let s of SummaryList; let i = index;"  >
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">{{i+1}}</td>
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.ProductTypeName}}</td>
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.ProductName}}</td>
-                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.BrandType}}</td>
+                                                    <td *ngIf="!UpdateBarndType" [ngClass]="{'my_class': s.BrandType === '1'}">
+                                                        <span *ngIf="s.BrandType === '0'">None</span>
+                                                        <span *ngIf="s.BrandType === '1'">Brand</span>
+                                                        <span *ngIf="s.BrandType === '2'">Non-Brand</span>
+                                                    </td>
+                                                    <td *ngIf="UpdateBarndType" style=" width: 120px;text-align: center;">
+                                                        <select style="height: 26px;" name="BarndTypeUp" [(ngModel)]="s.BrandType" #name="ngModel" (change)="updateInventorySummary(s)" [ngModelOptions]="{standalone: true}" name="s{{i}}">
+                                                            <option value="0">None</option>
+                                                            <option value="1">Brand</option>
+                                                            <option value="2">Non-Barnd</option>
+                                                        </select>
+                                                    </td>
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.PurchaseDate | date: 'dd/MM/yyyy'}}</td>
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.Count}}</td>
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.ShopName}}<span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></td>
