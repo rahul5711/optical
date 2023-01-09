@@ -167,22 +167,22 @@
                                             </thead>
                                             <tbody class="text-center">
                                                 <tr *ngFor="let s of SummaryList; let i = index;">
-                                                    <td [ngClass]="{'my_class': s.BrandType == true}">{{i+1}}</td>
-                                                    <td [ngClass]="{'my_class': s.BrandType == true}">{{s.ProductTypeName}}</td>
-                                                    <td [ngClass]="{'my_class': s.BrandType == true}">{{s.ProductName}}</td>
-                                                    <td [ngClass]="{'my_class': s.BrandType == true}">{{s.BrandType}}</td>
-                                                    <td [ngClass]="{'my_class': s.BrandType == true}">{{s.PurchaseDate | date: 'dd/MM/yyyy'}}</td>
-                                                    <td [ngClass]="{'my_class': s.BrandType == true}">{{s.Count}}</td>
-                                                    <td [ngClass]="{'my_class': s.BrandType == true}">{{s.ShopName}}<span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></td>
-                                                    <td [ngClass]="{'my_class': s.BrandType == true}">{{s.CurrentStatus}}</td>
-                                                    <td [ngClass]="{'my_class': s.BrandType == true}">{{s.Barcode}}</td>
-                                                    <td [ngClass]="{'my_class': s.BrandType == true}">{{s.SupplierName}}</td>
-                                                    <td [ngClass]="{'my_class': s.BrandType == true}">{{s.UnitPrice}}</td>
-                                                    <td [ngClass]="{'my_class': s.BrandType == true}">{{s.DiscountPercentage}}%</td>
-                                                    <td [ngClass]="{'my_class': s.BrandType == true}">{{s.GSTPercentagex}}%</td>
-                                                    <td [ngClass]="{'my_class': s.BrandType == true}">{{s.GSTTypex}}</td>
-                                                    <td [ngClass]="{'my_class': s.BrandType == true}">{{s.RetailPrice}}</td>
-                                                    <td [ngClass]="{'my_class': s.BrandType == true}">{{s.WholeSalePrice}}</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{i+1}}</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.ProductTypeName}}</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.ProductName}}</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.BrandType}}</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.PurchaseDate | date: 'dd/MM/yyyy'}}</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.Count}}</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.ShopName}}<span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.CurrentStatus}}</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.Barcode}}</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.SupplierName}}</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.UnitPrice}}</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.DiscountPercentage}}%</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.GSTPercentagex}}%</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.GSTTypex}}</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.RetailPrice}}</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.WholeSalePrice}}</td>
                                                 </tr>
                                             </tbody>
                                         </table>

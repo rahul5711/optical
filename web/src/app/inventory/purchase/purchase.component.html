@@ -10,21 +10,15 @@
                                 <h2>Purchase Info </h2>
                             </div>
                             <!-- togggle btn start -->
-                            <div class="col-xl-2 col-lg-5 col-md-5 col-8 ms-auto">
-                                <span style="color: rgb(33, 33, 33);">
-                                    <mat-slide-toggle name="BrandType" color="primary" [(ngModel)]="item.BrandType"
-                                         class="example-margin"
-                                        #Multiplecontrol>Brand</mat-slide-toggle>
-                                </span>
-                                <span class="ms-2 " style="color: rgb(33, 33, 33);">
+                            <div class="col-xl-3 col-lg-5 col-md-5 col-8 ms-auto">
+                                <span class="ms-5  ps-5 me-3 " style="font-weight: 600;">
                                     <mat-slide-toggle name="Multiple" color="primary" [(ngModel)]="disableAddButtons"
                                         class="example-margin" #Multiplecontrol>Quick Entry</mat-slide-toggle>
                                 </span>
-                                <!-- <span style="color: rgb(33, 33, 33);">
-                                    <mat-slide-toggle name="Multiple" color="primary"
-                                        [(ngModel)]="selectedPurchaseMaster.preOrder" class="example-margin"
-                                        #Multiplecontrol>Pre-Order</mat-slide-toggle>
-                                </span> -->
+                                <span style="font-weight: 600;">
+                                    <mat-slide-toggle name="WholeSale" color="primary" [(ngModel)]="item.WholeSale"
+                                    class="example-margin" #Multiplecontrol>WholeSale</mat-slide-toggle>
+                                </span>
                             </div>
                             <!-- togggle btn end -->
                         </div>
@@ -105,17 +99,7 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-lg-2 col-md-6 col-6 ms-auto pt-2 p-0" *ngIf="category !== 'Charges'">
-                                    
-                                <span>
-                                    <mat-slide-toggle name="BrandType" color="primary" [(ngModel)]="item.BrandType"
-                                     class="example-margin"
-                                        #Multiplecontrol>Non-Brand</mat-slide-toggle>
-
-                                </span>
-                                    <span class="me-0 ms-2">
-                                        <mat-slide-toggle name="WholeSale" color="primary" [(ngModel)]="item.WholeSale"
-                                        class="example-margin" #Multiplecontrol>WholeSale</mat-slide-toggle>
-                                    </span>
+                                   
                                 </div>
                             </div>
                             <!-- save product spec start -->
@@ -306,6 +290,21 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
+                                <div class="col-xl-1 col-lg-1 col-md-6 col-sm-2 mb-0 d-flex">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Brand Type</mat-label>
+                                        <mat-select name="BrandType" [(ngModel)]="item.BrandType" #singleSelect>
+                                            <mat-option value="0">None</mat-option>
+                                            <mat-option value="1">Brand</mat-option>
+                                            <mat-option value="2">Non-Brand</mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            Select BrandType
+                                        </mat-error>
+                                    </mat-form-field>
+                                    <mat-checkbox style="padding-top: 14px;" name="BrandLock"  *ngIf="item.BrandType !== '0'" color="primary" [(ngModel)]="BrandLock"></mat-checkbox>
+
+                                </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ml-auto">
                                     <button *ngIf="editBtn === false" class="mr-3" type="submit" [disabled]="!f.valid || item.Quantity == 0"
                                         mat-raised-button color="primary" >Add</button>
@@ -392,7 +391,7 @@
                         <form #f2="ngForm"  (ngSubmit)="onSumbit()">
                             <!-- Add item List start -->
                             <div class="row" >
-                                <div class="col-sm-12 p-0" style="overflow-y: auto; height: 340px;box-shadow: 1px 0px 2px 4px #ddddddff;">
+                                <div class="col-sm-12 p-0" style="overflow-y: auto; height: 340px;box-shadow: 1px 0px 2px 4px rgba(221, 221, 221, 0.338);">
                                         <table class="table table-striped table-hover table-sm table-bordered"
                                             style="border: 2px solid #fff !important;">
                                             <thead>
@@ -430,7 +429,7 @@
                                                         <mat-icon *ngIf="data.Status !== 0" class="delete_icons ms-1" (click)="deleteItem('Product',i)">delete_forever</mat-icon>
                                                         <mat-icon class="edit_icons ms-1" (click)="edititem('Product',data)" *ngIf="data.ID === null">edit </mat-icon>
                                                     </td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.BaseBarCode * 1000}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" ><span *ngIf="data.BaseBarCode !== ''">{{data.BaseBarCode * 1000}}</span>  </td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.UniqueBarcode}}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.ProductName}}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.UnitPrice }}</td>
@@ -444,7 +443,10 @@
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.TotalAmount}}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.RetailPrice}}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.WholeSalePrice}}</td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" ><span *ngIf="data.BrandType === true">Brand</span> <span *ngIf="data.BrandType === true">Non-Brand</span></td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >
+                                                        <span *ngIf="data.BrandType === '0'">None</span>
+                                                        <span *ngIf="data.BrandType === '1'">Brand</span>
+                                                        <span *ngIf="data.BrandType === '2'">Non-Brand</span></td>
                                                 </tr>
                                                 <!-- chargeList -->
                                                 <tr *ngFor="let data of chargeList ; let i = index;">
