@@ -1,0 +1,253 @@
+{
+	"info": {
+		"_postman_id": "18507238-e483-4f54-8d91-458e35c17b8e",
+		"name": "PurchaseReports",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "PurchaseReport",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Parem\" : \" and purchasemasternew.PurchaseDate between '2023-01-04' and '2023-01-04'\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchase/getPurchasereports",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"getPurchasereports"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "PurchaseReport",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Parem\" : \" and purchasemasternew.PurchaseDate between '2023-01-04' and '2023-01-04'\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchase/getPurchasereports",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchase",
+								"getPurchasereports"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "4928"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1340-PmTtKNHWPRfiXczDj8GKLQ4tAVQ\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 09 Jan 2023 17:21:45 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 1,\n            \"PurchaseID\": 1,\n            \"CompanyID\": 1,\n            \"ProductName\": \"pt-1/two\",\n            \"ProductTypeID\": 3,\n            \"ProductTypeName\": \"testproduct1\",\n            \"UnitPrice\": 300,\n            \"Quantity\": 5,\n            \"SubTotal\": 1500,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 1500,\n            \"RetailPrice\": 0,\n            \"WholeSalePrice\": 0,\n            \"MultipleBarCode\": 0,\n            \"WholeSale\": 0,\n            \"BaseBarCode\": \"10000\",\n            \"Ledger\": 1,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-01-04 22:05:12\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"NewBarcode\": \"10000\",\n            \"ReturnRef\": 0,\n            \"BrandType\": 0,\n            \"UniqueBarcode\": \"23011/10031\",\n            \"ProductExpDate\": \"0000-00-00\",\n            \"Checked\": 0,\n            \"BillDetailIDForPreOrder\": 0,\n            \"InvoiceNo\": \"in-1\",\n            \"PurchaseDate\": \"2023-01-04\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"SupplierName\": \"rahul supplier\",\n            \"SupplierGSTNo\": \"\",\n            \"HSNcode\": \"test-1\"\n        },\n        {\n            \"ID\": 2,\n            \"PurchaseID\": 1,\n            \"CompanyID\": 1,\n            \"ProductName\": \"pt-1/one\",\n            \"ProductTypeID\": 3,\n            \"ProductTypeName\": \"testproduct1\",\n            \"UnitPrice\": 100,\n            \"Quantity\": 10,\n            \"SubTotal\": 1000,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 1000,\n            \"RetailPrice\": 0,\n            \"WholeSalePrice\": 0,\n            \"MultipleBarCode\": 0,\n            \"WholeSale\": 0,\n            \"BaseBarCode\": \"10001\",\n            \"Ledger\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-01-04 22:05:12\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"NewBarcode\": \"10001\",\n            \"ReturnRef\": 0,\n            \"BrandType\": 0,\n            \"UniqueBarcode\": \"23011/10011\",\n            \"ProductExpDate\": \"0000-00-00\",\n            \"Checked\": 0,\n            \"BillDetailIDForPreOrder\": 0,\n            \"InvoiceNo\": \"in-1\",\n            \"PurchaseDate\": \"2023-01-04\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"SupplierName\": \"rahul supplier\",\n            \"SupplierGSTNo\": \"\",\n            \"HSNcode\": \"test-1\"\n        },\n        {\n            \"ID\": 3,\n            \"PurchaseID\": 1,\n            \"CompanyID\": 1,\n            \"ProductName\": \"pt-2/pt-1\",\n            \"ProductTypeID\": 3,\n            \"ProductTypeName\": \"testproduct1\",\n            \"UnitPrice\": 600,\n            \"Quantity\": 20,\n            \"SubTotal\": 12000,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 12000,\n            \"RetailPrice\": 0,\n            \"WholeSalePrice\": 0,\n            \"MultipleBarCode\": 0,\n            \"WholeSale\": 0,\n            \"BaseBarCode\": \"10002\",\n            \"Ledger\": 1,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-01-04 22:05:40\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"NewBarcode\": \"10002\",\n            \"ReturnRef\": 0,\n            \"BrandType\": 0,\n            \"UniqueBarcode\": \"23011/10061\",\n            \"ProductExpDate\": \"0000-00-00\",\n            \"Checked\": 0,\n            \"BillDetailIDForPreOrder\": 0,\n            \"InvoiceNo\": \"in-1\",\n            \"PurchaseDate\": \"2023-01-04\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"SupplierName\": \"rahul supplier\",\n            \"SupplierGSTNo\": \"\",\n            \"HSNcode\": \"test-1\"\n        },\n        {\n            \"ID\": 4,\n            \"PurchaseID\": 2,\n            \"CompanyID\": 1,\n            \"ProductName\": \"pt-2/pt-3\",\n            \"ProductTypeID\": 3,\n            \"ProductTypeName\": \"testproduct1\",\n            \"UnitPrice\": 500,\n            \"Quantity\": 10,\n            \"SubTotal\": 5000,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 12,\n            \"GSTAmount\": 600,\n            \"GSTType\": \"IGST\",\n            \"TotalAmount\": 5600,\n            \"RetailPrice\": 0,\n            \"WholeSalePrice\": 0,\n            \"MultipleBarCode\": 0,\n            \"WholeSale\": 0,\n            \"BaseBarCode\": \"10003\",\n            \"Ledger\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-01-04 22:08:25\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"NewBarcode\": \"10003\",\n            \"ReturnRef\": 0,\n            \"BrandType\": 0,\n            \"UniqueBarcode\": \"23011*10051\",\n            \"ProductExpDate\": \"0000-00-00\",\n            \"Checked\": 0,\n            \"BillDetailIDForPreOrder\": 0,\n            \"InvoiceNo\": \"in-2\",\n            \"PurchaseDate\": \"2023-01-04\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"SupplierName\": \"rahul supplier\",\n            \"SupplierGSTNo\": \"\",\n            \"HSNcode\": \"test-1\"\n        },\n        {\n            \"ID\": 5,\n            \"PurchaseID\": 2,\n            \"CompanyID\": 1,\n            \"ProductName\": \"pt-1/rahul\",\n            \"ProductTypeID\": 3,\n            \"ProductTypeName\": \"testproduct1\",\n            \"UnitPrice\": 800,\n            \"Quantity\": 8,\n            \"SubTotal\": 6400,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 12,\n            \"GSTAmount\": 768,\n            \"GSTType\": \"SGST-CGST\",\n            \"TotalAmount\": 7168,\n            \"RetailPrice\": 0,\n            \"WholeSalePrice\": 0,\n            \"MultipleBarCode\": 0,\n            \"WholeSale\": 0,\n            \"BaseBarCode\": \"10004\",\n            \"Ledger\": 1,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-01-08 22:43:59\",\n            \"UpdatedBy\": 2,\n            \"UpdatedOn\": null,\n            \"NewBarcode\": \"10004\",\n            \"ReturnRef\": 0,\n            \"BrandType\": 1,\n            \"UniqueBarcode\": \"23011*10081\",\n            \"ProductExpDate\": \"0000-00-00\",\n            \"Checked\": 0,\n            \"BillDetailIDForPreOrder\": 0,\n            \"InvoiceNo\": \"in-2\",\n            \"PurchaseDate\": \"2023-01-04\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"SupplierName\": \"rahul supplier\",\n            \"SupplierGSTNo\": \"\",\n            \"HSNcode\": \"test-1\"\n        },\n        {\n            \"ID\": 15,\n            \"PurchaseID\": 1,\n            \"CompanyID\": 1,\n            \"ProductName\": \"pt-2/100\",\n            \"ProductTypeID\": 4,\n            \"ProductTypeName\": \"testproduct-2\",\n            \"UnitPrice\": 10,\n            \"Quantity\": 10,\n            \"SubTotal\": 100,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 100,\n            \"RetailPrice\": 0,\n            \"WholeSalePrice\": 0,\n            \"MultipleBarCode\": 0,\n            \"WholeSale\": 0,\n            \"BaseBarCode\": \"10014\",\n            \"Ledger\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-01-09 22:51:24\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"NewBarcode\": \"10014\",\n            \"ReturnRef\": 0,\n            \"BrandType\": 0,\n            \"UniqueBarcode\": \"23011/1011\",\n            \"ProductExpDate\": \"0000-00-00\",\n            \"Checked\": 0,\n            \"BillDetailIDForPreOrder\": 0,\n            \"InvoiceNo\": \"in-1\",\n            \"PurchaseDate\": \"2023-01-04\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"SupplierName\": \"rahul supplier\",\n            \"SupplierGSTNo\": \"\",\n            \"HSNcode\": \"test-2\"\n        }\n    ],\n    \"calculation\": [\n        {\n            \"totalQty\": 63,\n            \"totalGstAmount\": 1368,\n            \"totalAmount\": 27368,\n            \"totalDiscount\": 0,\n            \"totalUnitPrice\": 26000\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				}
+			]
+		},
+		{
+			"name": "getPurchasereportsDetail",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Parem\" : \" and purchasemasternew.PurchaseDate between '2023-01-11' and '2023-01-11' and purchasedetailnew.ProductTypeID = 3 and purchasedetailnew.ProductName like 'pt-1/444%'\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchase/getPurchasereportsDetail",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"getPurchasereportsDetail"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getPurchasereportsDetail",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Parem\" : \" and purchasemasternew.PurchaseDate between '2023-01-11' and '2023-01-11' and purchasedetailnew.ProductTypeID = 3 and purchasedetailnew.ProductName like 'pt-1/444%'\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchase/getPurchasereportsDetail",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchase",
+								"getPurchasereportsDetail"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1034"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"40a-q9tkWCkoNpb3Epvhh+KnHLWB2ho\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 09 Jan 2023 17:54:42 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 16,\n            \"PurchaseID\": 8,\n            \"CompanyID\": 1,\n            \"ProductName\": \"pt-1/444\",\n            \"ProductTypeID\": 3,\n            \"ProductTypeName\": \"testproduct1\",\n            \"UnitPrice\": 100,\n            \"Quantity\": 10,\n            \"SubTotal\": 1000,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 10,\n            \"GSTAmount\": 100,\n            \"GSTType\": \"IGST\",\n            \"TotalAmount\": 1100,\n            \"RetailPrice\": 0,\n            \"WholeSalePrice\": 0,\n            \"MultipleBarCode\": 0,\n            \"WholeSale\": 0,\n            \"BaseBarCode\": \"10015\",\n            \"Ledger\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-01-09 22:56:24\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"NewBarcode\": \"10015\",\n            \"ReturnRef\": 0,\n            \"BrandType\": 0,\n            \"UniqueBarcode\": \"23011*10011\",\n            \"ProductExpDate\": \"0000-00-00\",\n            \"Checked\": 0,\n            \"BillDetailIDForPreOrder\": 0,\n            \"InvoiceNo\": \"khb\",\n            \"PurchaseDate\": \"2023-01-11\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"SupplierName\": \"rahul supplier\",\n            \"SupplierGSTNo\": \"\",\n            \"HSNcode\": \"test-1\"\n        }\n    ],\n    \"calculation\": [\n        {\n            \"totalQty\": 10,\n            \"totalGstAmount\": 100,\n            \"totalAmount\": 1100,\n            \"totalDiscount\": 0,\n            \"totalUnitPrice\": 1000,\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"IGST\",\n                    \"Amount\": 0\n                },\n                {\n                    \"GSTType\": \"SGST-CGST\",\n                    \"Amount\": 0\n                }\n            ]\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzMyODIzMjUsImV4cCI6MTY3MzM2ODcyNSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.SaGmWA7V_RqKLbadaXXhZsbdBtit9q8uGwc_C7CORA8",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

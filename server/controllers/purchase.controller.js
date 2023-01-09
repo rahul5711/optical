@@ -969,7 +969,7 @@ module.exports = {
 
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
-            const { PurchaseDetailID , BrandType } = req.body;
+            const { PurchaseDetailID, BrandType } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -996,8 +996,15 @@ module.exports = {
 
     getPurchasereports: async (req, res, next) => {
         try {
-            return
-            const response = { data: null, success: true, message: "" }
+            const response = {
+                data: null, calculation: [{
+                    "totalQty": 0,
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalDiscount": 0,
+                    "totalUnitPrice": 0
+                }], success: true, message: ""
+            }
             const connection = await getConnection.connection();
             const { Parem } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -1006,15 +1013,101 @@ module.exports = {
 
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
-            qry =`SELECT purchasedetailnew.*,purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.PaymentStatus, shop.Name AS ShopName,  shop.AreaName AS AreaName, supplier.Name AS SupplierName,supplier.GSTNo AS SupplierGSTNo,product.HSNCode AS HSNcode  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1  AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem;
+            qry = `SELECT purchasedetailnew.*,purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.PaymentStatus, shop.Name AS ShopName,  shop.AreaName AS AreaName, supplier.Name AS SupplierName,supplier.GSTNo AS SupplierGSTNo,product.HSNCode AS HSNcode  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1  AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem;
 
 
 
-            let calculation = {};
 
-
+            let datum = await connection.query(`SELECT SUM(purchasedetailnew.Quantity) as totalQty, SUM(purchasedetailnew.GSTAmount) as totalGstAmount, SUM(purchasedetailnew.TotalAmount) as totalAmount, SUM(purchasedetailnew.DiscountAmount) as totalDiscount, SUM(purchasedetailnew.SubTotal) as totalUnitPrice  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1  AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem)
 
             let data = await connection.query(qry);
+
+            response.calculation[0].totalQty = datum[0].totalQty ? datum[0].totalQty : 0
+            response.calculation[0].totalGstAmount = datum[0].totalGstAmount ? datum[0].totalGstAmount : 0
+            response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount : 0
+            response.calculation[0].totalDiscount = datum[0].totalDiscount ? datum[0].totalDiscount : 0
+            response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice : 0
+            response.data = data
+            response.message = "success";
+            // connection.release()
+            res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+
+    getPurchasereportsDetail: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, calculation: [{
+                    "totalQty": 0,
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalDiscount": 0,
+                    "totalUnitPrice": 0,
+                    "gst_details": []
+                }], success: true, message: ""
+            }
+            const connection = await getConnection.connection();
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            qry = `SELECT purchasedetailnew.*,purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.PaymentStatus, shop.Name AS ShopName,  shop.AreaName AS AreaName, supplier.Name AS SupplierName,supplier.GSTNo AS SupplierGSTNo,product.HSNCode AS HSNcode  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1  AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem;
+
+
+
+
+            let datum = await connection.query(`SELECT SUM(purchasedetailnew.Quantity) as totalQty, SUM(purchasedetailnew.GSTAmount) as totalGstAmount, SUM(purchasedetailnew.TotalAmount) as totalAmount, SUM(purchasedetailnew.DiscountAmount) as totalDiscount, SUM(purchasedetailnew.SubTotal) as totalUnitPrice  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1  AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem)
+
+            let data = await connection.query(qry);
+
+
+            let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            const values = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        values.push(
+                          {
+                            GSTType: `CGST`,
+                            Amount: 0
+                          },
+                          {
+                            GSTType: `SGST`,
+                            Amount: 0
+                          }
+                        )
+                      } else {
+                        values.push({
+                          GSTType: `${item.Name}`,
+                          Amount: 0
+                        })
+                      }
+                }
+
+            }
+
+
+            response.calculation[0].gst_details = values;
+
+            response.calculation[0].totalQty = datum[0].totalQty ? datum[0].totalQty : 0
+            response.calculation[0].totalGstAmount = datum[0].totalGstAmount ? datum[0].totalGstAmount : 0
+            response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount : 0
+            response.calculation[0].totalDiscount = datum[0].totalDiscount ? datum[0].totalDiscount : 0
+            response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice : 0
+
+            // for (const item of data) {
+
+            // }
 
 
             response.data = data
