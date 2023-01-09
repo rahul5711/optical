@@ -183,15 +183,7 @@ export class InventorySummaryComponent implements OnInit {
     
     const subs: Subscription =  this.purchaseService.updateInventorySummary(data).subscribe({
       next: (res: any) => {
-        if (res.success) {
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Your file has been Update.',
-            showConfirmButton: false,
-            timer: 1500
-          })   
-        }
+
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
