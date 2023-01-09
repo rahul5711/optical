@@ -49,6 +49,8 @@ router.post('/updateInventorySummary', verifyAccessTokenAdmin, Controller.update
 
 router.post('/getPurchasereports', verifyAccessTokenAdmin, Controller.getPurchasereports)
 
+router.post('/getPurchasereportsDetail', verifyAccessTokenAdmin, Controller.getPurchasereportsDetail)
+
 
 
 module.exports = router
