@@ -572,4 +572,6 @@ export class PurchaseComponent implements OnInit {
 
   }
 
+  
+
 }

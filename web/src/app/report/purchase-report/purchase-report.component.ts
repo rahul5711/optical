@@ -101,7 +101,7 @@ export class PurchaseReportComponent implements OnInit {
       let ToDate =  moment(this.PurchaseMaster.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' +  `'${ToDate}'`; }
       
-    if (this.PurchaseMaster.ShopID.length !== undefined){
+    if (this.PurchaseMaster.ShopID != 0  ){
       Parem = Parem + ' and purchasemasternew.ShopID IN ' +  `(${this.PurchaseMaster.ShopID})`;}
 
     if (this.PurchaseMaster.SupplierID !== 0){
@@ -248,7 +248,7 @@ export class PurchaseReportComponent implements OnInit {
     if (this.PurchaseDetail.ProductName !== '' ) {
       Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.PurchaseDetail.ProductName + "%'"; }
 
-    if (this.PurchaseDetail.ShopID.length !== undefined){
+    if (this.PurchaseDetail.ShopID != 0){
       Parem = Parem + ' and purchasemasternew.ShopID IN ' +  `(${this.PurchaseDetail.ShopID})`;}
 
     if (this.PurchaseDetail.SupplierID !== 0){
