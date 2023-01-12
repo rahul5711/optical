@@ -4,16 +4,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { ProductService } from 'src/app/service/product.service';
 import { Subscription } from 'rxjs';
-import Swal from 'sweetalert2';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { ShopService } from 'src/app/service/shop.service';
 import { SupplierService } from 'src/app/service/supplier.service';
-import { ExcelService } from 'src/app/service/helpers/excel.service';
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
-
-
+import { jsPDF } from "jspdf";
+import { SupportService } from 'src/app/service/support.service';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-purchase-report',
@@ -36,7 +35,12 @@ export class PurchaseReportComponent implements OnInit {
   selectedProduct: any;
   prodList:any;
   specList: any;
- 
+  gstList: any;
+  DetailtotalQty: any;
+  DetailtotalDiscount: any;
+  DetailtotalUnitPrice: any;
+  DetailtotalAmount: any;
+  DetailtotalGstAmount: any;
 
   constructor(
     private router: Router,
@@ -44,7 +48,7 @@ export class PurchaseReportComponent implements OnInit {
     private purchaseService: PurchaseService,
     private ss: ShopService,
     private sup: SupplierService,
-    private excelService: ExcelService,
+    private supps: SupportService,
     private ps: ProductService,
     public as: AlertService,
   ) { }
@@ -56,13 +60,14 @@ export class PurchaseReportComponent implements OnInit {
 
   PurchaseDetail: any =  {
     FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
-    SupplierGSTNo:'All', PaymentStatus: 0,  ProductCategory : 0, ProductName:'',
+    PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
   };
 
   ngOnInit(): void {
     this.dropdownShoplist();
     this.dropdownSupplierlist();
     this.getProductList();
+    this.getGSTList();
   }
 
   dropdownShoplist(){
@@ -96,8 +101,8 @@ export class PurchaseReportComponent implements OnInit {
       let ToDate =  moment(this.PurchaseMaster.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' +  `'${ToDate}'`; }
       
-    if (this.PurchaseMaster.ShopID !== 0){
-      Parem = Parem + ' and purchasemasternew.ShopID = ' +  this.PurchaseMaster.ShopID; }
+    if (this.PurchaseMaster.ShopID.length !== undefined){
+      Parem = Parem + ' and purchasemasternew.ShopID IN ' +  `(${this.PurchaseMaster.ShopID})`;}
 
     if (this.PurchaseMaster.SupplierID !== 0){
       Parem = Parem + ' and purchasemasternew.SupplierID = ' +  this.PurchaseMaster.SupplierID ; }
@@ -128,11 +133,19 @@ export class PurchaseReportComponent implements OnInit {
         SupplierGSTNo:'All', PaymentStatus: 0,
     };
     this.PurchaseMasterList = [];
+    this.totalQty = ''
+    this.totalDiscount = ''
+    this.totalUnitPrice = ''
+    this.totalGstAmount =''
+    this.totalAmount = ''
   }
 
   exportAsXLSXMaster(): void {
-
-    this.excelService.exportAsExcelFile(this.PurchaseMasterList, 'purchase_List');
+      let element = document.getElementById('purchaseExcel');
+      const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+      XLSX.writeFile(wb, 'Purchase Report.xlsx');
   }
 
   // purchase details code start
@@ -195,6 +208,15 @@ export class PurchaseReportComponent implements OnInit {
      });
   }
 
+  getGSTList(){
+    const subs: Subscription = this.supps.getList('TaxType').subscribe({
+      next: (res: any) => {
+        this.gstList = res.data
+      },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+    });
+  }
 
   filter() {
     let productName = '';
@@ -220,23 +242,34 @@ export class PurchaseReportComponent implements OnInit {
       Parem = Parem + ' and ' +  `'${ToDate}'`; }
 
     if (this.PurchaseDetail.ProductCategory  !== 0){
-      Parem = Parem + ' and purchasedetailnew.ProductTypeID = ' +  this.PurchaseDetail.ProductCategory ;
+      Parem = Parem + ' and purchasedetailnew.ProductTypeID = ' +  this.PurchaseDetail.ProductCategory;
       this.filter();}
 
     if (this.PurchaseDetail.ProductName !== '' ) {
-      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.PurchaseDetail.ProductName + "%'";}
+      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.PurchaseDetail.ProductName + "%'"; }
 
-    if (this.PurchaseDetail.ShopID !== 0){
-      Parem = Parem + ' and purchasemasternew.ShopID = ' +  this.PurchaseDetail.ShopID; }
+    if (this.PurchaseDetail.ShopID.length !== undefined){
+      Parem = Parem + ' and purchasemasternew.ShopID IN ' +  `(${this.PurchaseDetail.ShopID})`;}
 
     if (this.PurchaseDetail.SupplierID !== 0){
-      Parem = Parem + ' and purchasemasternew.SupplierID = ' +  this.PurchaseDetail.SupplierID ; }
+      Parem = Parem + ' and purchasemasternew.SupplierID = ' +  this.PurchaseDetail.SupplierID; }
+
+    if (this.PurchaseDetail.GSTPercentage !== 0){
+      Parem = Parem + ' and purchasedetailnew.GSTPercentage = '  + `'${this.PurchaseDetail.GSTPercentage}'`; }
+
+    if (this.PurchaseDetail.GSTType !== 0){
+      Parem = Parem + ' and purchasedetailnew.GSTType = '  + `'${this.PurchaseDetail.GSTType}'`; }
 
     const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem).subscribe({
       next: (res: any) => {
         if(res.message){
           this.as.successToast(res.message)
           this.PurchaseDetailList = res.data
+          this.DetailtotalQty = res.calculation[0].totalQty;
+          this.DetailtotalDiscount = res.calculation[0].totalDiscount.toFixed(2);
+          this.DetailtotalUnitPrice = res.calculation[0].totalUnitPrice.toFixed(2);
+          this.DetailtotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
+          this.DetailtotalAmount = res.calculation[0].totalAmount.toFixed(2);
         }
       },
       error: (err: any) => console.log(err.message),
@@ -244,6 +277,25 @@ export class PurchaseReportComponent implements OnInit {
     });
   }
 
+  exportAsXLSXDetail(): void {
+    let element = document.getElementById('purchaseDetailExcel');
+    const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'Purchase ProductType Report.xlsx');
+  }
 
+  PDFdetail(){
+    let DATA: any = document.getElementById('purchaseDetailExcel');
+    html2canvas(DATA).then((canvas) => {
+      let fileWidth = 208;
+      let fileHeight = (canvas.height * fileWidth) / canvas.width;
+      const FILEURI = canvas.toDataURL('image/png');
+      let PDF = new jsPDF('p', 'mm', 'a4');
+      let position = 0;
+      PDF.addImage(FILEURI, 'PNG', 0, position, fileWidth, fileHeight);
+      PDF.save('purchaseDetail.pdf');
+    });
+  }
 
 }
