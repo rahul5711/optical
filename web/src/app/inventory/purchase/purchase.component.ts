@@ -355,7 +355,7 @@ export class PurchaseComponent implements OnInit {
           }
         }else{
           this.item = {
-            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale:this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: 0, UniqueBarcode: ''
+            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale:this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: 0, UniqueBarcode: ''
           }
         }
        
@@ -518,9 +518,8 @@ export class PurchaseComponent implements OnInit {
 
   editUpdate(){
     this.itemList.forEach((ele: any) =>{
-      if(ele.ID === null){
+      if(ele.ID !== null && ele.ID === null ){
         ele = this.item
-        
       }
     });
     this.calculateGrandTotal()
@@ -538,7 +537,7 @@ export class PurchaseComponent implements OnInit {
     this.data.Charge = this.chargeList;
     let items:any = [];
     this.itemList.forEach((ele: any) => {
-      if(ele.ID === null || ele.Status == 0 && ele.UpdatedBy === null) {
+      if(ele.ID !== null || ele.ID === null || ele.Status == 0 && ele.UpdatedBy === null) {
         ele.UpdatedBy = this.user.ID;
         items.push(ele);
       }
