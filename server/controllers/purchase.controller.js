@@ -1077,21 +1077,21 @@ module.exports = {
                 for (const item of gstTypes) {
                     if ((item.Name).toUpperCase() === 'CGST-SGST') {
                         values.push(
-                          {
-                            GSTType: `CGST`,
-                            Amount: 0
-                          },
-                          {
-                            GSTType: `SGST`,
-                            Amount: 0
-                          }
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
                         )
-                      } else {
+                    } else {
                         values.push({
-                          GSTType: `${item.Name}`,
-                          Amount: 0
+                            GSTType: `${item.Name}`,
+                            Amount: 0
                         })
-                      }
+                    }
                 }
 
             }
@@ -1105,9 +1105,32 @@ module.exports = {
             response.calculation[0].totalDiscount = datum[0].totalDiscount ? datum[0].totalDiscount : 0
             response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice : 0
 
-            // for (const item of data) {
+            if (data.length && values.length) {
+                for (const item of data) {
+                    values.forEach(e => {
+                        if (e.GSTType === item.GSTType) {
+                            e.Amount += item.GSTAmount
+                        }
 
-            // }
+                        // CGST-SGST
+
+                        if (item.GSTType === 'CGST-SGST') {
+
+                            if (e.GSTType === 'CGST') {
+                                e.Amount += item.GSTAmount / 2
+                            }
+
+                            if (e.GSTType === 'SGST') {
+                                e.Amount += item.GSTAmount / 2
+                            }
+                        }
+                    })
+
+                }
+
+            }
+
+
 
 
             response.data = data
