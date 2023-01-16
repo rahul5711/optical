@@ -33,6 +33,7 @@ router.post('/cancelTransfer', verifyAccessTokenAdmin, Controller.cancelTransfer
 
 router.post('/getTransferList', verifyAccessTokenAdmin, Controller.getTransferList)
 
+router.post('/getproductTransferReport', verifyAccessTokenAdmin, Controller.getproductTransferReport)
 // search barcode
 
 router.post('/barcodeDataByBarcodeNo', verifyAccessTokenAdmin, Controller.barcodeDataByBarcodeNo)

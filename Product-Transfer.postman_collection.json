@@ -718,6 +718,113 @@
 					"body": "{\n    \"data\": [\n        {\n            \"ID\": 4,\n            \"CompanyID\": 1,\n            \"ProductName\": \"testproduct1/pt-1/two\",\n            \"BarCode\": \"10002000\",\n            \"BarCodeCount\": 20,\n            \"TransferCount\": 6,\n            \"TransferToShop\": 2,\n            \"TransferFromShop\": 1,\n            \"AcceptanceCode\": \"85915630\",\n            \"DateStarted\": \"2023-01-05 22:53:11\",\n            \"DateCompleted\": null,\n            \"TransferStatus\": \"Transfer Initiated\",\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-05 22:53:11\",\n            \"UpdatedOn\": null,\n            \"Remark\": \"undefined\",\n            \"FromShop\": \"shop-1\",\n            \"ToShop\": \"shop-2\",\n            \"ToAreaName\": \"two\",\n            \"FromAreaName\": \"one\",\n            \"CreatedByUser\": \"Rahul Gothi\",\n            \"UpdatedByUser\": null\n        }\n    ],\n    \"success\": \"Success\",\n    \"message\": \"\"\n}"
 				}
 			]
+		},
+		{
+			"name": "getproductTransferReport",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"Parem\" : ` and DATE_FORMAT(transfermaster.DateStarted,\"%Y-%m-%d\") between '2023-01-05' and '2023-01-05' ` \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchase/getproductTransferReport",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"getproductTransferReport"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getproductTransferReport",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchase/getproductTransferReport",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchase",
+								"getproductTransferReport"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2187"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"88b-EOee48isRqBNFCO40sjEvNQbAEs\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 16 Jan 2023 17:20:07 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 4,\n            \"CompanyID\": 1,\n            \"ProductName\": \"testproduct1/pt-1/two\",\n            \"BarCode\": \"10002000\",\n            \"BarCodeCount\": 20,\n            \"TransferCount\": 6,\n            \"TransferToShop\": 2,\n            \"TransferFromShop\": 1,\n            \"AcceptanceCode\": \"85915630\",\n            \"DateStarted\": \"2023-01-05 22:53:11\",\n            \"DateCompleted\": null,\n            \"TransferStatus\": \"Transfer Initiated\",\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-05 22:53:11\",\n            \"UpdatedOn\": null,\n            \"Remark\": \"undefined\",\n            \"FromShop\": \"shop-1\",\n            \"ToShop\": \"shop-2\",\n            \"AreaName\": \"one\",\n            \"ToAreaName\": \"two\",\n            \"CreatedByUser\": \"Rahul Gothi\",\n            \"UpdatedByUser\": null\n        },\n        {\n            \"ID\": 3,\n            \"CompanyID\": 1,\n            \"ProductName\": \"testproduct1/pt-1/two\",\n            \"BarCode\": \"10002000\",\n            \"BarCodeCount\": 20,\n            \"TransferCount\": 6,\n            \"TransferToShop\": 2,\n            \"TransferFromShop\": 1,\n            \"AcceptanceCode\": \"58567499\",\n            \"DateStarted\": \"2023-01-05 22:47:58\",\n            \"DateCompleted\": \"2023-01-05 22:52:26\",\n            \"TransferStatus\": \"Transfer Cancelled\",\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": 2,\n            \"CreatedOn\": \"2023-01-05 22:47:58\",\n            \"UpdatedOn\": \"2023-01-05 22:52:26\",\n            \"Remark\": \"Cancel\",\n            \"FromShop\": \"shop-1\",\n            \"ToShop\": \"shop-2\",\n            \"AreaName\": \"one\",\n            \"ToAreaName\": \"two\",\n            \"CreatedByUser\": \"Rahul Gothi\",\n            \"UpdatedByUser\": \"Rahul Gothi\"\n        },\n        {\n            \"ID\": 2,\n            \"CompanyID\": 1,\n            \"ProductName\": \"testproduct1/pt-1/two\",\n            \"BarCode\": \"10002000\",\n            \"BarCodeCount\": 20,\n            \"TransferCount\": 6,\n            \"TransferToShop\": 2,\n            \"TransferFromShop\": 1,\n            \"AcceptanceCode\": \"54732479\",\n            \"DateStarted\": \"2023-01-05 20:49:29\",\n            \"DateCompleted\": \"2023-01-05 22:32:55\",\n            \"TransferStatus\": \"Transfer Completed\",\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": 2,\n            \"CreatedOn\": \"2023-01-05 20:49:29\",\n            \"UpdatedOn\": \"2023-01-05 22:32:55\",\n            \"Remark\": \"Done\",\n            \"FromShop\": \"shop-1\",\n            \"ToShop\": \"shop-2\",\n            \"AreaName\": \"one\",\n            \"ToAreaName\": \"two\",\n            \"CreatedByUser\": \"Rahul Gothi\",\n            \"UpdatedByUser\": \"Rahul Gothi\"\n        },\n        {\n            \"ID\": 1,\n            \"CompanyID\": 1,\n            \"ProductName\": \"testproduct1/pt-1/two\",\n            \"BarCode\": \"10000000\",\n            \"BarCodeCount\": 5,\n            \"TransferCount\": 4,\n            \"TransferToShop\": 2,\n            \"TransferFromShop\": 1,\n            \"AcceptanceCode\": \"68373742\",\n            \"DateStarted\": \"2023-01-05 20:48:24\",\n            \"DateCompleted\": \"2023-01-05 22:37:07\",\n            \"TransferStatus\": \"Transfer Completed\",\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": 2,\n            \"CreatedOn\": \"2023-01-05 20:48:24\",\n            \"UpdatedOn\": \"2023-01-05 22:37:07\",\n            \"Remark\": \"Done\",\n            \"FromShop\": \"shop-1\",\n            \"ToShop\": \"shop-2\",\n            \"AreaName\": \"one\",\n            \"ToAreaName\": \"two\",\n            \"CreatedByUser\": \"Rahul Gothi\",\n            \"UpdatedByUser\": \"Rahul Gothi\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"Success\"\n}"
+				}
+			]
 		}
 	],
 	"auth": {
@@ -725,7 +832,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzI5MzA2NjQsImV4cCI6MTY3MzAxNzA2NCwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.iapiPFq8r69gcoRYrzfFvAfT3w57-6Dt4L0hKETb5PY",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzM4ODYwNDgsImV4cCI6MTY3Mzk3MjQ0OCwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.KrWh1SSj_tPDshfMUg7lj81XRYpxvOlNKLysADelP2U",
 				"type": "string"
 			}
 		]
