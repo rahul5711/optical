@@ -88,6 +88,11 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+  getproductTransferReport(Parem:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getproductTransferReport', {Parem:Parem}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   barcodeDataByBarcodeNo(Barcode:any, mode:any, ShopMode:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/barcodeDataByBarcodeNo', {Barcode:Barcode, mode:mode, ShopMode:ShopMode}, httpOptions)
     .pipe(catchError(this.handleError));

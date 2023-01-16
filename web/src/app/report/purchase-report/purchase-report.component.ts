@@ -298,4 +298,17 @@ export class PurchaseReportComponent implements OnInit {
     });
   }
 
+  purchaseDetailsFromReset(){
+    this.PurchaseDetail =  { 
+      FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
+      PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
+    };
+    this.PurchaseDetailList = [];
+    this.DetailtotalQty = ''
+    this.DetailtotalDiscount = ''
+    this.DetailtotalUnitPrice = ''
+    this.DetailtotalGstAmount =''
+    this.DetailtotalAmount = ''
+  }
+
 }
