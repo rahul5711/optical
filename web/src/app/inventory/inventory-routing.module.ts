@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { FitterListComponent } from './fitter-list/fitter-list.component';
 import { FitterComponent } from './fitter/fitter.component';
 import { InventorySummaryComponent } from './inventory-summary/inventory-summary.component';
+import { PreOrderComponent } from './pre-order/pre-order.component';
 import { ProductTransferComponent } from './product-transfer/product-transfer.component';
 import { PurchaseListComponent } from './purchase-list/purchase-list.component';
 import { PurchaseComponent } from './purchase/purchase.component';
@@ -19,7 +20,8 @@ const routes: Routes = [
     { path: 'fitterList', component: FitterListComponent },  
     { path: 'product-transfer', component: ProductTransferComponent },  
     { path: 'search-barcode', component: SearchBarcodeComponent },  
-    { path: 'inventor-summary', component: InventorySummaryComponent },  
+    { path: 'inventory-summary', component: InventorySummaryComponent },  
+    { path: 'pre-order', component: PreOrderComponent },  
   ]}
   ]
 

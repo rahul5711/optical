@@ -29,6 +29,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { ProductTransferComponent } from './product-transfer/product-transfer.component';
 import { SearchBarcodeComponent } from './search-barcode/search-barcode.component';
 import { InventorySummaryComponent } from './inventory-summary/inventory-summary.component';
+import { PreOrderComponent } from './pre-order/pre-order.component';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { InventorySummaryComponent } from './inventory-summary/inventory-summary
     PurchaseListComponent,
     ProductTransferComponent,
     SearchBarcodeComponent,
-    InventorySummaryComponent
+    InventorySummaryComponent,
+    PreOrderComponent
   ],
   imports: [
     CommonModule,
