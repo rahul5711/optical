@@ -23,6 +23,7 @@ export class TransferProductReportComponent implements OnInit {
   ) { }
 
   TransfermasterList:any
+  totalQty:any
   shopList :any;
   selectedProduct: any;
   prodList:any;
@@ -151,6 +152,7 @@ export class TransferProductReportComponent implements OnInit {
         if(res.message){
           this.as.successToast(res.message)
           this.TransfermasterList = res.data
+          this.totalQty = res.calculation[0].totalQty
         }
       },
       error: (err: any) => console.log(err.message),

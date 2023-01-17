@@ -875,9 +875,9 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
 
-            Parem = `and DATE_FORMAT(transfermaster.DateStarted,"%Y-%m-%d") between '2023-01-05' and '2023-01-05'`
+            // Parem = `and DATE_FORMAT(transfermaster.DateStarted,"%Y-%m-%d") between '2023-01-05' and '2023-01-05'`
 
-            // if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             qry = `SELECT transfermaster.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, shop.AreaName AS AreaName, ShopTo.AreaName AS ToAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser FROM transfermaster LEFT JOIN shop ON Shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON User.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID}  ` + Parem + ` Order By transfermaster.ID Desc`;
 
