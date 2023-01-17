@@ -53,5 +53,11 @@ router.post('/getPurchasereports', verifyAccessTokenAdmin, Controller.getPurchas
 router.post('/getPurchasereportsDetail', verifyAccessTokenAdmin, Controller.getPurchasereportsDetail)
 
 
+// pre order product
+router.post('/createPreOrder', verifyAccessTokenAdmin, Controller.createPreOrder)
+router.post('/listPreOrder', verifyAccessTokenAdmin, Controller.listPreOrder)
+router.post('/getPurchaseByIdPreOrder', verifyAccessTokenAdmin, Controller.getPurchaseByIdPreOrder)
+
+
 
 module.exports = router

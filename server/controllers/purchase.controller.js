@@ -866,9 +866,11 @@ module.exports = {
     getproductTransferReport: async (req, res, next) => {
         try {
 
-            const response = { data: null, calculation: [{
-                "totalQty": 0
-            }], success: true, message: "" }
+            const response = {
+                data: null, calculation: [{
+                    "totalQty": 0
+                }], success: true, message: ""
+            }
             const connection = await getConnection.connection();
             let { Parem } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -1180,5 +1182,198 @@ module.exports = {
         }
     },
 
+
+    // pre order
+
+    createPreOrder: async (req, res, next) => {
+        try {
+
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const currentStatus = "Pre Order";
+            const paymentStatus = "Unpaid"
+
+            const {
+                PurchaseMaster,
+                PurchaseDetail,
+                Charge
+            } = req.body;
+
+            if (!PurchaseMaster || PurchaseMaster === undefined) return res.send({ message: "Invalid purchaseMaseter Data" })
+
+            if (!PurchaseDetail || PurchaseDetail === undefined) return res.send({ message: "Invalid purchaseDetail Data" })
+
+            if (!PurchaseMaster.SupplierID || PurchaseMaster.SupplierID === undefined) return res.send({ message: "Invalid SupplierID Data" })
+
+            if (!PurchaseMaster.PurchaseDate || PurchaseMaster.PurchaseDate === undefined) return res.send({ message: "Invalid PurchaseDate Data" })
+
+            if (!PurchaseMaster.InvoiceNo || PurchaseMaster.InvoiceNo === undefined || PurchaseMaster.InvoiceNo.trim() === "") return res.send({ message: "Invalid InvoiceNo Data" })
+
+            if (PurchaseMaster.ID !== null || PurchaseMaster.ID === undefined) return res.send({ message: "Invalid Query Data" })
+
+            if (PurchaseMaster.Quantity == 0 || !PurchaseMaster?.Quantity || PurchaseMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
+
+            if (PurchaseMaster.preOrder === false || PurchaseMaster.preOrder === "false"  || !PurchaseMaster?.preOrder || PurchaseMaster?.preOrder === null) return res.send({ message: "Invalid Query Data preOrder" })
+
+            const doesExistInvoiceNo = await connection.query(`select * from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+
+            if (doesExistInvoiceNo.length) {
+                return res.send({ message: `Purchase Already exist from this InvoiceNo ${PurchaseMaster.InvoiceNo}` })
+            }
+
+            const purchaseDetail = JSON.parse(PurchaseDetail);
+
+            if (purchaseDetail.length === 0) {
+                return res.send({ message: "Invalid Query Data purchaseDetail" })
+            }
+
+            const purchase = {
+                ID: null,
+                SupplierID: PurchaseMaster.SupplierID,
+                CompanyID: CompanyID,
+                ShopID: shopid,
+                PurchaseDate: PurchaseMaster.PurchaseDate ? PurchaseMaster.PurchaseDate : now(),
+                PaymentStatus: paymentStatus,
+                InvoiceNo: PurchaseMaster.InvoiceNo,
+                GSTNo: PurchaseMaster.GSTNo ? PurchaseMaster.GSTNo : '',
+                Quantity: 1,
+                SubTotal: PurchaseMaster.SubTotal,
+                DiscountAmount: PurchaseMaster.DiscountAmount,
+                GSTAmount: PurchaseMaster.GSTAmount,
+                TotalAmount: PurchaseMaster.TotalAmount,
+                Status: 1,
+                PStatus: 1,
+                DueAmount: PurchaseMaster.DueAmount
+            }
+
+            const supplierId = purchase.SupplierID;
+
+            //  save purchase data
+            const savePurchase = await connection.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${paymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,1,${purchase.TotalAmount}, ${LoggedOnUser}, now())`);
+
+            console.log(connected("Data Save SuccessFUlly !!!"));
+
+            //  save purchase detail data
+            for (const item of purchaseDetail) {
+                const doesProduct = 0
+
+                // generate unique barcode
+                item.UniqueBarcode = await generateUniqueBarcode(CompanyID, supplierId, item)
+
+                // baseBarcode initiated if same product exist or not condition
+                let baseBarCode = 0;
+                if (doesProduct !== 0) {
+                    baseBarCode = doesProduct
+                } else {
+                    baseBarCode = await generateBarcode(CompanyID, 'PB')
+                }
+
+                const savePurchaseDetail = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},now())`)
+
+
+            }
+            console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
+
+            //  save barcode
+
+            let detailDataForBarCode = await connection.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId}`)
+
+            if (detailDataForBarCode.length) {
+                for (const item of detailDataForBarCode) {
+                    const barcode = Number(item.BaseBarCode) * 1000
+                    let count = 0;
+                    count = 1;
+                    for (j = 0; j < count; j++) {
+                        const saveBarcode = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn, PreOrder)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, now(),1)`)
+                    }
+                }
+            }
+
+            console.log(connected("Barcode Data Save SuccessFUlly !!!"));
+
+            response.message = "data save sucessfully"
+            response.data = savePurchase.insertId
+            // connection.release()
+            return res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+
+    listPreOrder: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+
+            let page = Body.currentPage;
+            let limit = Body.itemsPerPage;
+            let skip = page * limit - limit;
+
+            let shopId = ``
+
+            if (shopid !== 0) {
+                shopId = `and ShopID = ${shopid}`
+            }
+
+            let qry = `select purchasemasternew.*, supplier.Name as SupplierName,  supplier.GSTNo as GSTNo, users1.Name as CreatedPerson,shop.Name as ShopName, shop.AreaName as AreaName, users.Name as UpdatedPerson from purchasemasternew left join user as users1 on users1.ID = purchasemasternew.CreatedBy left join user as users on users.ID = purchasemasternew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and purchasemasternew.PStatus = 1 and purchasemasternew.CompanyID = ${CompanyID} ${shopId} order by purchasemasternew.ID desc`
+            let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
+
+
+            let finalQuery = qry + skipQuery;
+
+            let data = await connection.query(finalQuery);
+            let count = await connection.query(qry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = count.length
+            // connection.release()
+            res.send(response)
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
+
+    getPurchaseByIdPreOrder: async (req, res, next) => {
+        try {
+            const response = { result: { PurchaseMaster: null, PurchaseDetail: null }, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const { ID } = req.body;
+
+            if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
+
+            const PurchaseMaster = await connection.query(`select * from purchasemasternew  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid} and PStatus = 1`)
+
+            const PurchaseDetail = await connection.query(`select * from purchasedetailnew where  PurchaseID = ${ID} and CompanyID = ${CompanyID}`)
+
+
+
+            const gst_detail = await gstDetail(CompanyID, ID) || []
+
+            response.message = "data fetch sucessfully"
+            response.result.PurchaseMaster = PurchaseMaster
+            response.result.PurchaseMaster[0].gst_detail = gst_detail || []
+            response.result.PurchaseDetail = PurchaseDetail
+            // connection.release()
+            return res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    },
 
 }
