@@ -29,7 +29,7 @@ module.exports = {
             doesExist = await connection.query(`select * from supplier where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID}`)
 
             if (doesExist.length) {
-               return res.send({message : `supplier already exist from this number ${Body.MobileNo1}`})
+                return res.send({ message: `supplier already exist from this number ${Body.MobileNo1}` })
             }
 
             dataCount = await connection.query(`select * from supplier where CompanyID = ${CompanyID}`)
@@ -40,12 +40,12 @@ module.exports = {
             console.log(connected("Data Added SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
-            response.data =  saveData.insertId;
+            response.data = saveData.insertId;
             // connection.release()
             return res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
     update: async (req, res, next) => {
@@ -82,7 +82,7 @@ module.exports = {
             return res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -91,8 +91,8 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
             const Body = req.body;
-        //     const shopid = await shopID(req.headers)
-        //   console.log(shopid,'shopid');
+            //     const shopid = await shopID(req.headers)
+            //   console.log(shopid,'shopid');
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
@@ -117,7 +117,7 @@ module.exports = {
             res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -144,7 +144,7 @@ module.exports = {
             const doesPurchase = await connection.query(`select * from purchasemasternew where Status and CompanyID = ${CompanyID} and SupplierID = ${Body.ID}`)
 
             if (doesPurchase.length) {
-                return res.send({ message: `You can't delete this supplier because you have inventory of this supplier`})
+                return res.send({ message: `You can't delete this supplier because you have inventory of this supplier` })
             }
 
             const deleteSupplier = await connection.query(`update supplier set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
@@ -156,7 +156,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
 
@@ -176,7 +176,7 @@ module.exports = {
             res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -196,7 +196,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
 
@@ -221,8 +221,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     }
 }

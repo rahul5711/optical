@@ -28,7 +28,7 @@ module.exports = {
             doesExist = await connection.query(`select * from fitter where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID}`)
 
             if (doesExist.length) {
-               return res.send({message : `fitter already exist from this number ${Body.MobileNo1}`})
+                return res.send({ message: `fitter already exist from this number ${Body.MobileNo1}` })
             }
 
             const saveData = await connection.query(`insert into fitter (CompanyID, ShopID, Name,  MobileNo1,  MobileNo2,  PhoneNo,  Email,  Address,  Website,  PhotoURL,  CINNO, GSTNo,  Fax, ContactPerson, Remark,  DOB,  Anniversary, Status, CreatedBy , CreatedOn ) values ('${CompanyID}', '${Body.ShopID}', '${Body.Name}',  '${Body.MobileNo1}', '${Body.MobileNo2}', '${Body.PhoneNo}','${Body.Email}', '${Body.Address}', '${Body.Website}','${Body.PhotoURL}','${Body.CINNo}','${Body.GSTNo}','${Body.Fax}','${Body.ContactPerson}','${Body.Remark}','${Body.DOB}', '${Body.Anniversary}', 1 , '${LoggedOnUser}', now())`)
@@ -36,12 +36,12 @@ module.exports = {
             console.log(connected("Data Added SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
-            response.data =  saveData.insertId;
+            response.data = saveData.insertId;
             // connection.release()
             return res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
     update: async (req, res, next) => {
@@ -76,7 +76,7 @@ module.exports = {
             return res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -109,7 +109,7 @@ module.exports = {
             res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -142,7 +142,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
 
@@ -162,7 +162,7 @@ module.exports = {
             res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -181,11 +181,11 @@ module.exports = {
             response.data = fitter
             response.RateCard = await connection.query(`select * from fitterratecard where  Status = 1 and FitterID = ${Body.ID} and CompanyID = ${CompanyID} `)
             response.AssignedShop = await connection.query(`SELECT fitterassignedshop.*,  shop.Name AS ShopName, shop.AreaName AS AreaName  FROM fitterassignedshop  LEFT JOIN shop ON shop.ID = fitterassignedshop.ShopID WHERE fitterassignedshop.Status = 1 AND fitterassignedshop.FitterID = ${Body.ID} `)
-           
+
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
 
@@ -204,7 +204,7 @@ module.exports = {
             doesExist = await connection.query(`select * from fitterratecard where Status = 1 and LensType='${Body.LensType}'`);
 
             if (doesExist.length) {
-               return res.send({message: `User have already LensType in this shop`});
+                return res.send({ message: `User have already LensType in this shop` });
             }
 
             const saveData = await connection.query(`insert into fitterratecard (CompanyID, FitterID,  LensType,  Rate,  Status,  CreatedBy, CreatedOn ) values (${CompanyID}, ${Body.FitterID}, '${Body.LensType}', ${Body.Rate},1,${LoggedOnUser}, now())`)
@@ -217,7 +217,7 @@ module.exports = {
             return res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -250,7 +250,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
 
@@ -268,7 +268,7 @@ module.exports = {
             doesExist = await connection.query(`select * from fitterassignedshop where Status = 1 and FitterID=${Body.FitterID} and ShopID=${Body.ShopID}`);
 
             if (doesExist.length) {
-               return res.send({message: `User have already FitterAssignedShop in this shop`});
+                return res.send({ message: `User have already FitterAssignedShop in this shop` });
             }
 
             const saveData = await connection.query(`insert into fitterassignedshop (CompanyID,ShopID, FitterID, Status,  CreatedBy, CreatedOn ) values (${CompanyID}, ${Body.ShopID}, ${Body.FitterID},1,${LoggedOnUser}, now())`)
@@ -281,7 +281,7 @@ module.exports = {
             return res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -314,7 +314,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
 
@@ -340,8 +340,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     }
 

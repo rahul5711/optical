@@ -39,7 +39,7 @@ module.exports = {
             return res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -70,7 +70,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
     dropdownlist: async (req, res, next) => {
@@ -82,7 +82,7 @@ module.exports = {
             const UserGroup = req.user.UserGroup ? req.user.UserGroup : 'CompanyAdmin';
 
             let qry = ``
-            
+
             if (UserGroup === 'CompanyAdmin') {
                 qry = `select * from shop where Status = 1 and CompanyID = '${CompanyID}'  order by ID desc`;
             } else {
@@ -96,7 +96,7 @@ module.exports = {
             res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
     delete: async (req, res, next) => {
@@ -127,7 +127,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
     restore: async (req, res, next) => {
@@ -158,7 +158,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
 
@@ -226,7 +226,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
     update: async (req, res, next) => {
@@ -246,11 +246,11 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
 
-    //  user shop 
+    //  user shop
 
     saveUserShop: async (req, res, next) => {
         try {
@@ -269,7 +269,7 @@ module.exports = {
             doesExist = await connection.query(`select * from usershop where Status = 1 and UserID=${Body.UserID} and ShopID=${Body.ShopID}`);
 
             if (doesExist.length) {
-               return res.send({message: `User have already role in this shop`});
+                return res.send({ message: `User have already role in this shop` });
             }
 
 
@@ -278,12 +278,12 @@ module.exports = {
             console.log(connected("Data Added SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
-            response.data =  await connection.query(`select usershop.*, role.Name as RoleName, shop.Name as ShopName, shop.AreaName as AreaName, user.Name as UserName from usershop left join role on role.ID = usershop.RoleID left join shop on shop.ID = usershop.ShopID left join user on user.ID = usershop.UserID where usershop.Status = 1 and usershop.UserID = ${Body.UserID} and usershop.ShopID = ${Body.ShopID} and usershop.ID = ${saveData.insertId}`)
+            response.data = await connection.query(`select usershop.*, role.Name as RoleName, shop.Name as ShopName, shop.AreaName as AreaName, user.Name as UserName from usershop left join role on role.ID = usershop.RoleID left join shop on shop.ID = usershop.ShopID left join user on user.ID = usershop.UserID where usershop.Status = 1 and usershop.UserID = ${Body.UserID} and usershop.ShopID = ${Body.ShopID} and usershop.ID = ${saveData.insertId}`)
             // connection.release()
             return res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
     updateUserShop: async (req, res, next) => {
@@ -318,7 +318,7 @@ module.exports = {
             return res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -350,7 +350,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
 
@@ -375,8 +375,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     }
 

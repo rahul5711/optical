@@ -12,7 +12,7 @@ module.exports = {
             const connection = await getConnection.connection();
 
             const Body = req.body;
-            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const LoggedOnUser = { ID: req.user.ID ? req.user.ID : 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
@@ -21,7 +21,7 @@ module.exports = {
             const doesExist = await connection.query(`select * from product where Name = '${Body.Name}' and CompanyID = ${CompanyID} and Status = 1`)
             if (doesExist.length) return res.send({ message: `Product Already exist from this Name ${Body.Name}` })
 
-            const query = await _Query.getQuery("Product", Body, LoggedOnUser, CompanyID,  ShopID)
+            const query = await _Query.getQuery("Product", Body, LoggedOnUser, CompanyID, ShopID)
             const saveData = await connection.query(query)
 
             console.log(connected("Data Save SuccessFUlly !!!"));
@@ -33,8 +33,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
     update: async (req, res, next) => {
@@ -43,7 +42,7 @@ module.exports = {
             const connection = await getConnection.connection();
 
             const Body = req.body;
-            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const LoggedOnUser = { ID: req.user.ID ? req.user.ID : 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
@@ -52,7 +51,7 @@ module.exports = {
             const doesExist = await connection.query(`select * from product where Name = '${Body.Name}' and CompanyID = ${CompanyID} and Status = 1 and ID != ${Body.ID}`)
             if (doesExist.length) return res.send({ message: `Product Already exist from this Name ${Body.Name}` })
 
-            const query = await _Query.getQuery("Product", Body, LoggedOnUser, CompanyID,  ShopID)
+            const query = await _Query.getQuery("Product", Body, LoggedOnUser, CompanyID, ShopID)
             const saveData = await connection.query(query)
 
             console.log(connected("Data Update SuccessFUlly !!!"));
@@ -64,8 +63,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
     delete: async (req, res, next) => {
@@ -74,7 +72,7 @@ module.exports = {
             const connection = await getConnection.connection();
 
             const Body = req.body;
-            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const LoggedOnUser = { ID: req.user.ID ? req.user.ID : 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
@@ -95,8 +93,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
     restore: async (req, res, next) => {
@@ -105,7 +102,7 @@ module.exports = {
             const connection = await getConnection.connection();
 
             const Body = req.body;
-            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const LoggedOnUser = { ID: req.user.ID ? req.user.ID : 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
@@ -123,8 +120,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
     getList: async (req, res, next) => {
@@ -134,10 +130,10 @@ module.exports = {
 
             const Body = req.body;
 
-            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const LoggedOnUser = { ID: req.user.ID ? req.user.ID : 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
-            const query = await _Query.getQuery("getProduct", Body, LoggedOnUser, CompanyID,  ShopID)
+            const query = await _Query.getQuery("getProduct", Body, LoggedOnUser, CompanyID, ShopID)
             const saveData = await connection.query(query)
 
             console.log(connected("Data Fetch SuccessFUlly !!!"));
@@ -149,8 +145,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
 
@@ -161,7 +156,7 @@ module.exports = {
             const connection = await getConnection.connection();
 
             const Body = req.body;
-            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const LoggedOnUser = { ID: req.user.ID ? req.user.ID : 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
@@ -169,9 +164,9 @@ module.exports = {
             const doesExistSeq = await connection.query(`select * from productspec where ProductName = '${Body.ProductName}' and CompanyID = ${CompanyID} and Status = 1 and Seq = '${Body.Seq}'`)
             if (doesExistSeq.length) return res.send({ message: `this Seq Already Exist ${Body.Seq}` })
 
-           
-            if(Body.Type === 'DropDown') {
-                Body.SptTableName = Body.ProductName + Math.floor(Math.random() * 999999) + 1 ;
+
+            if (Body.Type === 'DropDown') {
+                Body.SptTableName = Body.ProductName + Math.floor(Math.random() * 999999) + 1;
             } else {
                 Body.SptTableName = '0'
             }
@@ -179,7 +174,7 @@ module.exports = {
 
 
 
-            const query = await _Query.getQuery("ProductSpec", Body, LoggedOnUser, CompanyID,  ShopID)
+            const query = await _Query.getQuery("ProductSpec", Body, LoggedOnUser, CompanyID, ShopID)
             const saveData = await connection.query(query)
 
             console.log(connected("Data Save SuccessFUlly !!!"));
@@ -191,8 +186,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
 
@@ -202,7 +196,7 @@ module.exports = {
             const connection = await getConnection.connection();
 
             const Body = req.body;
-            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const LoggedOnUser = { ID: req.user.ID ? req.user.ID : 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
@@ -220,8 +214,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
 
@@ -232,7 +225,7 @@ module.exports = {
             const connection = await getConnection.connection();
 
             const Body = req.body;
-            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const LoggedOnUser = { ID: req.user.ID ? req.user.ID : 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
@@ -250,8 +243,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
 
@@ -262,7 +254,7 @@ module.exports = {
             const connection = await getConnection.connection();
 
             const Body = req.body;
-            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const LoggedOnUser = { ID: req.user.ID ? req.user.ID : 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
@@ -281,8 +273,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
     getProductSupportData: async (req, res, next) => {
@@ -291,7 +282,7 @@ module.exports = {
             const connection = await getConnection.connection();
 
             const Body = req.body;
-            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const LoggedOnUser = { ID: req.user.ID ? req.user.ID : 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
@@ -311,8 +302,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
     saveProductSupportData: async (req, res, next) => {
@@ -321,7 +311,7 @@ module.exports = {
             const connection = await getConnection.connection();
 
             const Body = req.body;
-            const LoggedOnUser = {ID : req.user.ID ? req.user.ID : 0}
+            const LoggedOnUser = { ID: req.user.ID ? req.user.ID : 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
@@ -342,8 +332,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
 

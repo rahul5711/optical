@@ -116,7 +116,7 @@ module.exports = {
 
             // connection.release()
         } catch (error) {
-            return error
+            next(error)
         }
     },
 
@@ -153,7 +153,7 @@ module.exports = {
             return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], shop: shop, success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
 
         } catch (error) {
-            return error
+            next(error)
         }
     }
 

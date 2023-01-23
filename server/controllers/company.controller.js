@@ -217,7 +217,7 @@ module.exports = {
 
             //  barcode initiated for company
 
-            const barcode = {CompanyID : saveCompany.insertId , SB: '10000', PB: '90000', MB: '00001'}
+            const barcode = { CompanyID: saveCompany.insertId, SB: '10000', PB: '90000', MB: '00001' }
 
             const savebarcode = await connection.query(`insert into barcode(CompanyID, SB, PB, MB, Status, CreatedBy, CreatedOn)values(${barcode.CompanyID}, '${barcode.SB}', '${barcode.PB}', '${barcode.MB}',1,0,now())`)
 
@@ -234,7 +234,7 @@ module.exports = {
             return res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
     updatePassword: async (req, res, next) => {
@@ -271,12 +271,12 @@ module.exports = {
             res.send(response)
             // connection.release()
         } catch (error) {
-            return error
+            next(error)
         }
     },
     update: async (req, res, next) => {
         try {
-            const response = { data: null,  success: true, message: "" }
+            const response = { data: null, success: true, message: "" }
             const connection = await getConnection.connection();
 
             const Body = req.body;
@@ -313,7 +313,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
     delete: async (req, res, next) => {
@@ -350,7 +350,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
     deactive: async (req, res, next) => {
@@ -379,7 +379,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
     activecompany: async (req, res, next) => {
@@ -408,12 +408,12 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
     getCompanyById: async (req, res, next) => {
         try {
-            const response = { data: null, user:null, success: true, message: "" }
+            const response = { data: null, user: null, success: true, message: "" }
             const connection = await getConnection.connection();
 
             const Body = req.body;
@@ -455,7 +455,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
 
@@ -484,7 +484,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
     Deactivelist: async (req, res, next) => {
@@ -512,7 +512,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
     LoginHistory: async (req, res, next) => {
@@ -542,7 +542,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
     getUser: async (req, res, next) => {
@@ -572,7 +572,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
     updatecompanysetting: async (req, res, next) => {
@@ -602,7 +602,7 @@ module.exports = {
             res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -627,8 +627,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
 
@@ -653,8 +652,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     }
 

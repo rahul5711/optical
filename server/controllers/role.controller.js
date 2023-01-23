@@ -35,8 +35,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
     update: async (req, res, next) => {
@@ -63,8 +62,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
     delete: async (req, res, next) => {
@@ -89,8 +87,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
     restore: async (req, res, next) => {
@@ -115,8 +112,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
     getList: async (req, res, next) => {
@@ -138,8 +134,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
 
@@ -164,8 +159,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     }
 

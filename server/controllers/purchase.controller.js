@@ -139,7 +139,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
     update: async (req, res, next) => {
@@ -288,7 +288,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
     getPurchaseById: async (req, res, next) => {
@@ -320,7 +320,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
     list: async (req, res, next) => {
@@ -358,7 +358,7 @@ module.exports = {
             res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -397,7 +397,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
     deleteProduct: async (req, res, next) => {
@@ -463,7 +463,7 @@ module.exports = {
             res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
     deleteCharge: async (req, res, next) => {
@@ -521,7 +521,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
 
@@ -555,8 +555,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
     paymentHistory: async (req, res, next) => {
@@ -581,8 +580,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
 
@@ -617,8 +615,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
 
@@ -654,7 +651,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -714,7 +711,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -766,7 +763,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
     cancelTransfer: async (req, res, next) => {
@@ -815,7 +812,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -860,7 +857,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
     getproductTransferReport: async (req, res, next) => {
@@ -898,7 +895,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -942,7 +939,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -969,7 +966,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -998,7 +995,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -1025,7 +1022,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -1072,7 +1069,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -1178,7 +1175,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -1216,7 +1213,7 @@ module.exports = {
 
             if (PurchaseMaster.Quantity == 0 || !PurchaseMaster?.Quantity || PurchaseMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
 
-            if (PurchaseMaster.preOrder === false || PurchaseMaster.preOrder === "false"  || !PurchaseMaster?.preOrder || PurchaseMaster?.preOrder === null) return res.send({ message: "Invalid Query Data preOrder" })
+            if (PurchaseMaster.preOrder === false || PurchaseMaster.preOrder === "false" || !PurchaseMaster?.preOrder || PurchaseMaster?.preOrder === null) return res.send({ message: "Invalid Query Data preOrder" })
 
             const doesExistInvoiceNo = await connection.query(`select * from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
@@ -1301,7 +1298,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -1340,7 +1337,7 @@ module.exports = {
             res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -1372,7 +1369,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -1411,7 +1408,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
 
@@ -1438,8 +1435,8 @@ module.exports = {
                 return res.send({ message: "product doesnot exist from this id " })
             }
 
-           
-            
+
+
 
             const deletePurchasedetail = await connection.query(`update purchasedetailnew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
@@ -1448,7 +1445,7 @@ module.exports = {
             // update purchasemaster
             const updatePurchaseMaster = await connection.query(`update purchasemasternew set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${Body.PurchaseMaster.InvoiceNo}' and ShopID = ${shopid}`)
 
-            
+
 
             const fetchPurchaseMaster = await connection.query(`select * from purchasemasternew  where Status = 1 and ID = ${Body.PurchaseMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
@@ -1464,7 +1461,7 @@ module.exports = {
             res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 
@@ -1498,7 +1495,7 @@ module.exports = {
 
             if (PurchaseMaster.Quantity == 0 || !PurchaseMaster?.Quantity || PurchaseMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
 
-            if (PurchaseMaster.preOrder === false || PurchaseMaster.preOrder === "false"  || !PurchaseMaster?.preOrder || PurchaseMaster?.preOrder === null) return res.send({ message: "Invalid Query Data preOrder" })
+            if (PurchaseMaster.preOrder === false || PurchaseMaster.preOrder === "false" || !PurchaseMaster?.preOrder || PurchaseMaster?.preOrder === null) return res.send({ message: "Invalid Query Data preOrder" })
 
 
             const doesExistInvoiceNo = await connection.query(`select * from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${PurchaseMaster.ID}`)
@@ -1532,7 +1529,7 @@ module.exports = {
 
             const supplierId = purchase.SupplierID;
 
-            
+
 
             // update purchasemaster
             const updatePurchaseMaster = await connection.query(`update purchasemasternew set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and ShopID = ${shopid} and ID=${purchase.ID}`)
@@ -1581,7 +1578,7 @@ module.exports = {
             }
             console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
 
-           
+
             response.message = "data update sucessfully"
             response.data = purchase.ID
             // connection.release()
@@ -1590,7 +1587,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
 

@@ -43,7 +43,7 @@ module.exports = {
                 const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
 
                 if (Balance < datum.Amount) {
-                    return res.send({message: `you can not withdrawal greater than ${Balance}`})
+                    return res.send({ message: `you can not withdrawal greater than ${Balance}` })
                 }
             }
 
@@ -85,7 +85,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
     list: async (req, res, next) => {
@@ -124,7 +124,7 @@ module.exports = {
             res.send(response)
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
     delete: async (req, res, next) => {
@@ -161,7 +161,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
     getById: async (req, res, next) => {
@@ -180,7 +180,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            return error
+            next(error)
         }
     },
     update: async (req, res, next) => {
@@ -222,7 +222,7 @@ module.exports = {
                 const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
 
                 if (Balance < datum.Amount) {
-                    return res.send({message: `you can not withdrawal greater than ${Balance}`})
+                    return res.send({ message: `you can not withdrawal greater than ${Balance}` })
                 }
             }
 
@@ -252,7 +252,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     },
     searchByFeild: async (req, res, next) => {
@@ -284,8 +284,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            return error
-
+            next(error)
         }
     },
 
@@ -311,13 +310,13 @@ module.exports = {
             const WithdrawalBalance = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Withdrawal'`)
 
             response.message = "data fetch sucessfully"
-            response.data = DepositBalance[0].Amount  - WithdrawalBalance[0].Amount
+            response.data = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
             // connection.release()
             res.send(response)
 
         } catch (error) {
             console.log(error);
-            return error
+            next(error)
         }
     }
 
