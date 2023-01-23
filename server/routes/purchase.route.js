@@ -38,6 +38,8 @@ router.post('/getproductTransferReport', verifyAccessTokenAdmin, Controller.getp
 
 router.post('/barcodeDataByBarcodeNo', verifyAccessTokenAdmin, Controller.barcodeDataByBarcodeNo)
 
+router.post('/barCodeListBySearchStringSearch', verifyAccessTokenAdmin, Controller.barCodeListBySearchStringSearch)
+
 router.post('/updateBarcode', verifyAccessTokenAdmin, Controller.updateBarcode)
 
 // Inventory Summery

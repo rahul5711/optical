@@ -18,7 +18,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"ShopMode\" : \"false\",\r\n    \"ProductName\": \"testproduct1\",\r\n    \"searchString\": \"pt-1/one\"\r\n}",
+					"raw": "{\r\n    \"ShopMode\" : \"false\",\r\n    \"ProductName\": \"testproduct-2\",\r\n    \"searchString\": \"pt-2\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -109,6 +109,113 @@
 					],
 					"cookie": [],
 					"body": "{\n    \"data\": [\n        {\n            \"BarCodeCount\": 9,\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"pt-1/one\",\n            \"ID\": 7,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"PurchaseDetailID\": 2,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10001000\",\n            \"AvailableDate\": \"2023-01-04 22:05:12\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSalePrice\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"None\",\n            \"GSTPercentage\": 0,\n            \"PreOrder\": 0,\n            \"TransferID\": 0,\n            \"TransferStatus\": \"\",\n            \"TransferToShop\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-04 22:05:12\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"SupplierID\": 0,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0\n        }\n    ],\n    \"success\": true,\n    \"message\": \"Success\"\n}"
+				}
+			]
+		},
+		{
+			"name": "barCodeListBySearchStringSearch",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ShopMode\" : \"false\",\r\n    \"ProductName\": \"testproduct1\",\r\n    \"searchString\": \"pt-1/444\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchase/barCodeListBySearchStringSearch",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"barCodeListBySearchStringSearch"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "barCodeListBySearchStringSearch",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ShopMode\" : \"false\",\r\n    \"ProductName\": \"testproduct1\",\r\n    \"searchString\": \"pt-1/444\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchase/barCodeListBySearchStringSearch",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchase",
+								"barCodeListBySearchStringSearch"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "9175"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"23d7-HAbC1MAAgAP3CtsVz3jTVD648S0\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 23 Jan 2023 16:44:57 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 2178,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"PurchaseDetailID\": 16,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10015000\",\n            \"AvailableDate\": \"2023-01-09 22:56:24\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSalePrice\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"IGST\",\n            \"GSTPercentage\": 10,\n            \"PreOrder\": 0,\n            \"TransferID\": 0,\n            \"TransferStatus\": \"\",\n            \"TransferToShop\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-09 22:56:24\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"SupplierID\": 0,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0,\n            \"CompanyName\": \"patidar const\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"BarcodeShopName\": \"\",\n            \"ProductName\": \"pt-1/444\",\n            \"ProductTypeName\": \"testproduct1\",\n            \"BarCode\": \"10015\",\n            \"UniqueBarcode\": \"23011*10011\",\n            \"UnitPrice\": 100,\n            \"Quantity\": 10,\n            \"InvoiceNo\": \"khb\",\n            \"SupplierName\": \"rahul supplier\"\n        },\n        {\n            \"ID\": 2179,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"PurchaseDetailID\": 16,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10015000\",\n            \"AvailableDate\": \"2023-01-09 22:56:24\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSalePrice\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"IGST\",\n            \"GSTPercentage\": 10,\n            \"PreOrder\": 0,\n            \"TransferID\": 0,\n            \"TransferStatus\": \"\",\n            \"TransferToShop\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-09 22:56:24\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"SupplierID\": 0,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0,\n            \"CompanyName\": \"patidar const\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"BarcodeShopName\": \"\",\n            \"ProductName\": \"pt-1/444\",\n            \"ProductTypeName\": \"testproduct1\",\n            \"BarCode\": \"10015\",\n            \"UniqueBarcode\": \"23011*10011\",\n            \"UnitPrice\": 100,\n            \"Quantity\": 10,\n            \"InvoiceNo\": \"khb\",\n            \"SupplierName\": \"rahul supplier\"\n        },\n        {\n            \"ID\": 2180,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"PurchaseDetailID\": 16,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10015000\",\n            \"AvailableDate\": \"2023-01-09 22:56:24\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSalePrice\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"IGST\",\n            \"GSTPercentage\": 10,\n            \"PreOrder\": 0,\n            \"TransferID\": 0,\n            \"TransferStatus\": \"\",\n            \"TransferToShop\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-09 22:56:24\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"SupplierID\": 0,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0,\n            \"CompanyName\": \"patidar const\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"BarcodeShopName\": \"\",\n            \"ProductName\": \"pt-1/444\",\n            \"ProductTypeName\": \"testproduct1\",\n            \"BarCode\": \"10015\",\n            \"UniqueBarcode\": \"23011*10011\",\n            \"UnitPrice\": 100,\n            \"Quantity\": 10,\n            \"InvoiceNo\": \"khb\",\n            \"SupplierName\": \"rahul supplier\"\n        },\n        {\n            \"ID\": 2181,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"PurchaseDetailID\": 16,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10015000\",\n            \"AvailableDate\": \"2023-01-09 22:56:24\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSalePrice\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"IGST\",\n            \"GSTPercentage\": 10,\n            \"PreOrder\": 0,\n            \"TransferID\": 0,\n            \"TransferStatus\": \"\",\n            \"TransferToShop\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-09 22:56:24\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"SupplierID\": 0,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0,\n            \"CompanyName\": \"patidar const\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"BarcodeShopName\": \"\",\n            \"ProductName\": \"pt-1/444\",\n            \"ProductTypeName\": \"testproduct1\",\n            \"BarCode\": \"10015\",\n            \"UniqueBarcode\": \"23011*10011\",\n            \"UnitPrice\": 100,\n            \"Quantity\": 10,\n            \"InvoiceNo\": \"khb\",\n            \"SupplierName\": \"rahul supplier\"\n        },\n        {\n            \"ID\": 2182,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"PurchaseDetailID\": 16,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10015000\",\n            \"AvailableDate\": \"2023-01-09 22:56:24\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSalePrice\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"IGST\",\n            \"GSTPercentage\": 10,\n            \"PreOrder\": 0,\n            \"TransferID\": 0,\n            \"TransferStatus\": \"\",\n            \"TransferToShop\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-09 22:56:24\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"SupplierID\": 0,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0,\n            \"CompanyName\": \"patidar const\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"BarcodeShopName\": \"\",\n            \"ProductName\": \"pt-1/444\",\n            \"ProductTypeName\": \"testproduct1\",\n            \"BarCode\": \"10015\",\n            \"UniqueBarcode\": \"23011*10011\",\n            \"UnitPrice\": 100,\n            \"Quantity\": 10,\n            \"InvoiceNo\": \"khb\",\n            \"SupplierName\": \"rahul supplier\"\n        },\n        {\n            \"ID\": 2183,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"PurchaseDetailID\": 16,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10015000\",\n            \"AvailableDate\": \"2023-01-09 22:56:24\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSalePrice\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"IGST\",\n            \"GSTPercentage\": 10,\n            \"PreOrder\": 0,\n            \"TransferID\": 0,\n            \"TransferStatus\": \"\",\n            \"TransferToShop\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-09 22:56:24\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"SupplierID\": 0,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0,\n            \"CompanyName\": \"patidar const\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"BarcodeShopName\": \"\",\n            \"ProductName\": \"pt-1/444\",\n            \"ProductTypeName\": \"testproduct1\",\n            \"BarCode\": \"10015\",\n            \"UniqueBarcode\": \"23011*10011\",\n            \"UnitPrice\": 100,\n            \"Quantity\": 10,\n            \"InvoiceNo\": \"khb\",\n            \"SupplierName\": \"rahul supplier\"\n        },\n        {\n            \"ID\": 2184,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"PurchaseDetailID\": 16,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10015000\",\n            \"AvailableDate\": \"2023-01-09 22:56:24\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSalePrice\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"IGST\",\n            \"GSTPercentage\": 10,\n            \"PreOrder\": 0,\n            \"TransferID\": 0,\n            \"TransferStatus\": \"\",\n            \"TransferToShop\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-09 22:56:24\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"SupplierID\": 0,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0,\n            \"CompanyName\": \"patidar const\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"BarcodeShopName\": \"\",\n            \"ProductName\": \"pt-1/444\",\n            \"ProductTypeName\": \"testproduct1\",\n            \"BarCode\": \"10015\",\n            \"UniqueBarcode\": \"23011*10011\",\n            \"UnitPrice\": 100,\n            \"Quantity\": 10,\n            \"InvoiceNo\": \"khb\",\n            \"SupplierName\": \"rahul supplier\"\n        },\n        {\n            \"ID\": 2185,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"PurchaseDetailID\": 16,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10015000\",\n            \"AvailableDate\": \"2023-01-09 22:56:24\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSalePrice\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"IGST\",\n            \"GSTPercentage\": 10,\n            \"PreOrder\": 0,\n            \"TransferID\": 0,\n            \"TransferStatus\": \"\",\n            \"TransferToShop\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-09 22:56:24\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"SupplierID\": 0,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0,\n            \"CompanyName\": \"patidar const\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"BarcodeShopName\": \"\",\n            \"ProductName\": \"pt-1/444\",\n            \"ProductTypeName\": \"testproduct1\",\n            \"BarCode\": \"10015\",\n            \"UniqueBarcode\": \"23011*10011\",\n            \"UnitPrice\": 100,\n            \"Quantity\": 10,\n            \"InvoiceNo\": \"khb\",\n            \"SupplierName\": \"rahul supplier\"\n        },\n        {\n            \"ID\": 2186,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"PurchaseDetailID\": 16,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10015000\",\n            \"AvailableDate\": \"2023-01-09 22:56:24\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSalePrice\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"IGST\",\n            \"GSTPercentage\": 10,\n            \"PreOrder\": 0,\n            \"TransferID\": 0,\n            \"TransferStatus\": \"\",\n            \"TransferToShop\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-09 22:56:24\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"SupplierID\": 0,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0,\n            \"CompanyName\": \"patidar const\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"BarcodeShopName\": \"\",\n            \"ProductName\": \"pt-1/444\",\n            \"ProductTypeName\": \"testproduct1\",\n            \"BarCode\": \"10015\",\n            \"UniqueBarcode\": \"23011*10011\",\n            \"UnitPrice\": 100,\n            \"Quantity\": 10,\n            \"InvoiceNo\": \"khb\",\n            \"SupplierName\": \"rahul supplier\"\n        },\n        {\n            \"ID\": 2187,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"PurchaseDetailID\": 16,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10015000\",\n            \"AvailableDate\": \"2023-01-09 22:56:24\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSalePrice\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"IGST\",\n            \"GSTPercentage\": 10,\n            \"PreOrder\": 0,\n            \"TransferID\": 0,\n            \"TransferStatus\": \"\",\n            \"TransferToShop\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-09 22:56:24\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"SupplierID\": 0,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0,\n            \"CompanyName\": \"patidar const\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"BarcodeShopName\": \"\",\n            \"ProductName\": \"pt-1/444\",\n            \"ProductTypeName\": \"testproduct1\",\n            \"BarCode\": \"10015\",\n            \"UniqueBarcode\": \"23011*10011\",\n            \"UnitPrice\": 100,\n            \"Quantity\": 10,\n            \"InvoiceNo\": \"khb\",\n            \"SupplierName\": \"rahul supplier\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"Success\"\n}"
 				}
 			]
 		},
@@ -332,7 +439,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzMwODMyOTQsImV4cCI6MTY3MzE2OTY5NCwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.q_zOLI7HKor10y_Lv0L-FW2an0pkXd4Xkkh4XE_OSp0",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzQ0OTEyOTcsImV4cCI6MTY3NDU3NzY5NywiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.spqJCY-gaLeC4mCocMStrxd_Vonj2L0sDxYcySwe6b8",
 				"type": "string"
 			}
 		]

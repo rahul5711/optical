@@ -943,6 +943,59 @@ module.exports = {
         }
     },
 
+    barCodeListBySearchStringSearch: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const connection = await getConnection.connection();
+            const { searchString, ShopMode, ProductName } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (searchString === "" || searchString === undefined || searchString === null) return res.send({ message: "Invalid Query Data" })
+
+            let SearchString = searchString + "%";
+            let shopMode = ``;
+
+            if (ShopMode === "false" || ShopMode === false) {
+                shopMode = " And barcodemasternew.ShopID = " + shopid;
+            }
+            if (ShopMode === "true" || ShopMode === true) {
+                shopMode = " ";
+            }
+
+            const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, purchasedetailnew.ProductName, barcodemasternew.* FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE purchasedetailnew.ProductTypeName = '${ProductName}' ${shopMode} AND purchasedetailnew.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus = "Available"   AND purchasedetailnew.Status = 1  and shop.Status = 1 And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
+
+            let purchaseData = await connection.query(qry);
+
+            let barcodelist = []
+
+            if (purchaseData.length) {
+
+                for (const b of purchaseData) {
+                    let mode1 = `And barcodemasternew.Barcode = '${b.Barcode}'`;
+                    let Barcodes = await connection.query(`SELECT barcodemasternew.* , company.Name AS CompanyName, shop.Name AS ShopName, shop.AreaName AS AreaName, shop.BarcodeName AS BarcodeShopName, purchasedetailnew.ProductName , purchasedetailnew.ProductTypeName, purchasedetailnew.BaseBarCode AS BarCode, purchasedetailnew.UniqueBarcode, purchasedetailnew.UnitPrice, purchasedetailnew.ProductName, purchasedetailnew.Quantity ,purchasemasternew.InvoiceNo,supplier.Name AS SupplierName   FROM barcodemasternew LEFT JOIN company ON company.ID = barcodemasternew.CompanyID LEFT JOIN shop ON Shop.ID = barcodemasternew.ShopID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID WHERE barcodemasternew.CurrentStatus != 'Pre Order' and  purchasedetailnew.Status = 1 AND barcodemasternew.CompanyID = ${CompanyID}  ${shopMode} ${mode1}`)
+
+                    if (Barcodes) {
+                        Barcodes.forEach(e => {
+                            barcodelist.push(e)
+                        })
+                    }
+                }
+            }
+
+
+            response.data = barcodelist;
+            response.message = "Success";
+
+            // connection.release()
+            res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            return next(error)
+        }
+    },
+
     updateBarcode: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
