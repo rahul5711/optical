@@ -25,7 +25,7 @@ module.exports = {
       });
 
     } catch (error) {
-      next(error)
+      return next(error)
     }
   },
   companyimageupload: async (req, res, next) => {
@@ -43,7 +43,7 @@ module.exports = {
       });
 
     } catch (error) {
-      next(error)
+      return next(error)
     }
   },
 

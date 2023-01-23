@@ -45,7 +45,7 @@ module.exports = {
             return res.send(response)
         } catch (error) {
             console.log(error);
-            next(error)
+            return next(error)
         }
     },
     update: async (req, res, next) => {
@@ -82,7 +82,7 @@ module.exports = {
             return res.send(response)
         } catch (error) {
             console.log(error);
-            next(error)
+            return next(error)
         }
     },
 
@@ -117,7 +117,7 @@ module.exports = {
             res.send(response)
         } catch (error) {
             console.log(error);
-            next(error)
+            return next(error)
         }
     },
 
@@ -156,7 +156,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            next(error)
+            return next(error)
         }
     },
 
@@ -176,7 +176,7 @@ module.exports = {
             res.send(response)
         } catch (error) {
             console.log(error);
-            next(error)
+            return next(error)
         }
     },
 
@@ -196,7 +196,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            next(error)
+            return next(error)
         }
     },
 
@@ -221,7 +221,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            next(error)
+            return next(error)
         }
     }
 }

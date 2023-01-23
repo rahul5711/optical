@@ -85,7 +85,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            next(error)
+            return next(error)
         }
     },
     list: async (req, res, next) => {
@@ -124,7 +124,7 @@ module.exports = {
             res.send(response)
         } catch (error) {
             console.log(error);
-            next(error)
+            return next(error)
         }
     },
     delete: async (req, res, next) => {
@@ -161,7 +161,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            next(error)
+            return next(error)
         }
     },
     getById: async (req, res, next) => {
@@ -180,7 +180,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            next(error)
+            return next(error)
         }
     },
     update: async (req, res, next) => {
@@ -252,7 +252,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            next(error)
+            return next(error)
         }
     },
     searchByFeild: async (req, res, next) => {
@@ -284,7 +284,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            next(error)
+            return next(error)
         }
     },
 
@@ -316,7 +316,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            next(error)
+            return next(error)
         }
     }
 

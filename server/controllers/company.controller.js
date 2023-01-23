@@ -234,7 +234,7 @@ module.exports = {
             return res.send(response)
         } catch (error) {
             console.log(error);
-            next(error)
+            return next(error)
         }
     },
     updatePassword: async (req, res, next) => {
@@ -271,7 +271,7 @@ module.exports = {
             res.send(response)
             // connection.release()
         } catch (error) {
-            next(error)
+            return next(error)
         }
     },
     update: async (req, res, next) => {
@@ -313,7 +313,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            next(error)
+            return next(error)
         }
     },
     delete: async (req, res, next) => {
@@ -350,7 +350,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            next(error)
+            return next(error)
         }
     },
     deactive: async (req, res, next) => {
@@ -379,7 +379,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            next(error)
+            return next(error)
         }
     },
     activecompany: async (req, res, next) => {
@@ -408,7 +408,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            next(error)
+            return next(error)
         }
     },
     getCompanyById: async (req, res, next) => {
@@ -455,7 +455,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            next(error)
+            return next(error)
         }
     },
 
@@ -484,7 +484,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            next(error)
+            return next(error)
         }
     },
     Deactivelist: async (req, res, next) => {
@@ -512,7 +512,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            next(error)
+            return next(error)
         }
     },
     LoginHistory: async (req, res, next) => {
@@ -542,7 +542,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            next(error)
+            return next(error)
         }
     },
     getUser: async (req, res, next) => {
@@ -572,7 +572,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
-            next(error)
+            return next(error)
         }
     },
     updatecompanysetting: async (req, res, next) => {
@@ -602,7 +602,7 @@ module.exports = {
             res.send(response)
         } catch (error) {
             console.log(error);
-            next(error)
+            return next(error)
         }
     },
 
@@ -627,7 +627,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            next(error)
+            return next(error)
         }
     },
 
@@ -652,7 +652,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            next(error)
+            return next(error)
         }
     }
 
