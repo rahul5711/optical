@@ -260,7 +260,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.ProductName.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            const query = `Select ProductSpec.ID as SpecID, ProductSpec.ProductName , ProductSpec.Required , ProductSpec.CompanyID, ProductSpec.Name as FieldName, ProductSpec.Seq, ProductSpec.Type as FieldType, ProductSpec.Ref, ProductSpec.SptTableName, null as SptTableData, '' as SelectedValue, false as DisplayAdd,  '' as EnteredValue, null as SptFilterData from ProductSpec where ProductSpec.ProductName = '${Body.ProductName}' and CompanyID = '${CompanyID}' and Status = 1  Order By ProductSpec.Seq ASC`
+            const query = `Select productspec.ID as SpecID, productspec.ProductName , productspec.Required , productspec.CompanyID, productspec.Name as FieldName, productspec.Seq, productspec.Type as FieldType, productspec.Ref, productspec.SptTableName, null as SptTableData, '' as SelectedValue, false as DisplayAdd,  '' as EnteredValue, null as SptFilterData from productspec where productspec.ProductName = '${Body.ProductName}' and CompanyID = '${CompanyID}' and Status = 1  Order By productspec.Seq ASC`
 
             const Data = await connection.query(query)
 
@@ -289,7 +289,7 @@ module.exports = {
             if (Body.TableName.trim() === "") return res.send({ message: "Invalid Query Data" })
             // if (Body.Ref.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            const query = `select * from SpecSptTable where RefID = '${Body.Ref}' and TableName = '${Body.TableName}' and Status = 1`
+            const query = `select * from specspttable where RefID = '${Body.Ref}' and TableName = '${Body.TableName}' and Status = 1`
 
             const Data = await connection.query(query)
 
@@ -319,7 +319,7 @@ module.exports = {
             // if (Body.Ref.trim() === "") return res.send({ message: "Invalid Query Data" })
             if (Body.SelectedValue.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            const query = `insert into SpecSptTable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${Body.TableName}','${Body.Ref}','${Body.SelectedValue}',1,now(),${LoggedOnUser.ID})`
+            const query = `insert into specspttable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${Body.TableName}','${Body.Ref}','${Body.SelectedValue}',1,now(),${LoggedOnUser.ID})`
 
             const Data = await connection.query(query)
 

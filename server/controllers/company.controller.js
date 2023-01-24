@@ -271,6 +271,7 @@ module.exports = {
             res.send(response)
             // connection.release()
         } catch (error) {
+            console.log(error);
             return next(error)
         }
     },
@@ -313,6 +314,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
+            console.log(error);
             return next(error)
         }
     },
@@ -350,6 +352,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
+            console.log(error);
             return next(error)
         }
     },
@@ -379,6 +382,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
+            console.log(error);
             return next(error)
         }
     },
@@ -408,6 +412,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
+            console.log(error);
             return next(error)
         }
     },
@@ -455,6 +460,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
+            console.log(error);
             return next(error)
         }
     },
@@ -484,6 +490,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
+            console.log(error);
             return next(error)
         }
     },
@@ -512,6 +519,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
+            console.log(error);
             return next(error)
         }
     },
@@ -542,6 +550,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
+            console.log(error);
             return next(error)
         }
     },
@@ -572,6 +581,7 @@ module.exports = {
             // connection.release()
             res.send(response)
         } catch (error) {
+            console.log(error);
             return next(error)
         }
     },
