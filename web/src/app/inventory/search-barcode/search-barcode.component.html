@@ -51,7 +51,7 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
-                                    <button type="button"  mat-raised-button color="primary">Search</button>
+                                    <button type="button"  mat-raised-button color="primary" (click)="searchAll('')">Search</button>
                                </div>
                             </div>
                             <!-- save product spec start -->
@@ -114,8 +114,7 @@
                         <!-- list start -->
                         <form>
                             <div class="row">
-                                <div class="col-sm-12" style="overflow: auto; height: 350px;">
-                                    <div class="table-responsive">
+                                <div class="col-sm-12" style="overflow: auto; height: 400px;">
                                         <table class="table table-striped table-hover table-sm table-bordered"
                                         style="border: 2px solid #fff !important;">
                                             <thead [ngClass]="{'old': UpdateBarcode, 'new': !UpdateBarcode}">
@@ -177,7 +176,6 @@
                                                 </tr>
                                             </tbody>
                                         </table>
-                                    </div>
                                 </div>
                             </div>
                         </form>

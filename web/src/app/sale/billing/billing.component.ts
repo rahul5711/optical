@@ -400,7 +400,6 @@ export class BillingComponent implements OnInit {
     if (this.id != 0) {
       this.getCustomerById(); 
     }
-    
   }
 
   specCheck(mode:any){
@@ -482,6 +481,7 @@ export class BillingComponent implements OnInit {
             this.clensImage = this.env.apiUrl + res.contact_lens_rx[0].PhotoURL;
           }
           this.data = res.data[0]
+          this.data.Idd = res.data[0].Idd
           this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
           this.otherList = res.other_rx
           if(this.otherList.length !== 0){

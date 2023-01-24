@@ -3,6 +3,9 @@ import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular
 import { Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
+const httpOptions = {
+  headers: new HttpHeaders({'Content-Type': 'application/json'})
+};
 
 @Injectable({
   providedIn: 'root'
@@ -13,66 +16,58 @@ export class ProductService {
   private url = 'http://localhost:3000/product';
 
 
-  productSave( Body: any): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/save', Body, { headers, params })
+  productSave(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/save', Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   updateProduct( Body: any): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/update', Body, { headers, params })
+    return this.httpClient.post<any>(this.url + '/update', Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   getList(): Observable<any> {
-    return this.httpClient.get<any>(this.url + '/getList')
+    return this.httpClient.get<any>(this.url + '/getList', httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   getSpec(ProductName: any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getSpec', {ProductName : ProductName})
+    return this.httpClient.post<any>(this.url + '/getSpec', {ProductName : ProductName}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   deleteProductType(ID:any,TableName:any  ): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/delete', {ID: ID,TableName: TableName})
+    return this.httpClient.post<any>(this.url + '/delete', {ID: ID,TableName: TableName}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   deleteSpec(TableName:any,ID:any  ): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/deleteSpec', {TableName: TableName,ID: ID})
+    return this.httpClient.post<any>(this.url + '/deleteSpec', {TableName: TableName,ID: ID}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   saveSpec( Body: any): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/saveSpec', Body, { headers, params })
+    return this.httpClient.post<any>(this.url + '/saveSpec', Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   getFieldList(ProductName: any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getFieldList', {ProductName :ProductName})
+    return this.httpClient.post<any>(this.url + '/getFieldList', {ProductName :ProductName}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
-  getProductSupportData(Ref:any ,TableName: any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getProductSupportData', { Ref: Ref ,TableName :TableName})
+  getProductSupportData(Ref:any, TableName: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getProductSupportData', {Ref: Ref, TableName :TableName}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   saveProductSupportData(TableName: any, Ref:any,SelectedValue:any): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/saveProductSupportData',{TableName :TableName, Ref: Ref,SelectedValue:SelectedValue})
+    return this.httpClient.post<any>(this.url + '/saveProductSupportData',{TableName :TableName, Ref: Ref,SelectedValue:SelectedValue}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   deleteSpecValue(ID:any,TableName:any  ): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/deleteSpec', {ID: ID,TableName: TableName})
+    return this.httpClient.post<any>(this.url + '/deleteSpec', {ID: ID,TableName: TableName}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 

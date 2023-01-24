@@ -166,17 +166,21 @@ export class SearchBarcodeComponent implements OnInit {
     this.UpdateBarcode = !this.UpdateBarcode;
   }
 
-  // searchAll(){
-  //   this.searchList = [];
-  //   this.barCodeList.forEach((element: any) => {
-  //     const subs: Subscription =  this.purchaseService.barcodeDataByBarcodeNo(element.SearchBarCode, 'search', this.ShopMode).subscribe({
-  //       next: (res: any) => {
-  //       },
-  //       error: (err: any) => console.log(err.message),
-  //       complete: () => subs.unsubscribe(),
-  //     });
-  //   });
-  // }
+  searchAll(index:any){
+    let searchString = "";
+    this.specList.forEach((element: any, i: any) => {
+      if (i <= index) {
+        searchString = searchString + element.SelectedValue + "/" ;
+      }
+    });
+    const subs: Subscription =  this.purchaseService.barCodeListBySearchStringSearch(this.ShopMode, this.selectedProduct, searchString).subscribe({
+      next: (res: any) => {
+        this.searchList = res.data;
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
 
 
 }

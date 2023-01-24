@@ -63,6 +63,11 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+  barCodeListBySearchStringSearch( ShopMode:any, ProductName:any, searchString:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/barCodeListBySearchStringSearch', {ShopMode:ShopMode, ProductName:ProductName, searchString:searchString}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   productDataByBarCodeNo(Req:any, PreOrder:any, ShopMode:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/productDataByBarCodeNo', {Req:Req, PreOrder:PreOrder, ShopMode:ShopMode}, httpOptions)
     .pipe(catchError(this.handleError));
