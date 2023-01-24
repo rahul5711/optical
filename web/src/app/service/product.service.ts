@@ -27,7 +27,7 @@ export class ProductService {
   }
 
   getList(): Observable<any> {
-    return this.httpClient.get<any>(this.url + '/getList', httpOptions)
+    return this.httpClient.post<any>(this.url + '/getList', httpOptions)
     .pipe(catchError(this.handleError));
   }
 
