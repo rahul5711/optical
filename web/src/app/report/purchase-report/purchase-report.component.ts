@@ -13,6 +13,7 @@ import * as XLSX from 'xlsx';
 import { jsPDF } from "jspdf";
 import { SupportService } from 'src/app/service/support.service';
 import html2canvas from 'html2canvas';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-purchase-report',
@@ -41,7 +42,8 @@ export class PurchaseReportComponent implements OnInit {
   DetailtotalUnitPrice: any;
   DetailtotalAmount: any;
   DetailtotalGstAmount: any;
-
+  gstdetails:any
+  
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -51,6 +53,7 @@ export class PurchaseReportComponent implements OnInit {
     private supps: SupportService,
     private ps: ProductService,
     public as: AlertService,
+    private modalService: NgbModal,
   ) { }
 
   PurchaseMaster: any =  { 
@@ -270,6 +273,8 @@ export class PurchaseReportComponent implements OnInit {
           this.DetailtotalUnitPrice = res.calculation[0].totalUnitPrice.toFixed(2);
           this.DetailtotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
           this.DetailtotalAmount = res.calculation[0].totalAmount.toFixed(2);
+          this.gstdetails = res.calculation[0].gst_details
+          console.log(this.gstdetails,'tt');
         }
       },
       error: (err: any) => console.log(err.message),
@@ -311,4 +316,7 @@ export class PurchaseReportComponent implements OnInit {
     this.DetailtotalAmount = ''
   }
 
+  openModal(content: any) {
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+  }
 }
