@@ -25,13 +25,13 @@ export class SupplierService {
     const params = new HttpParams()
     return this.httpClient.post<any>(this.url + '/update', Body, { headers, params })
     .pipe(catchError(this.handleError));
-    
+
   }
 
-  dropdownSupplierlist(): Observable<any> {
+  dropdownSupplierlist(Body:any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams()
-    return this.httpClient.get<any>(this.url + '/dropdownlist')
+    return this.httpClient.post<any>(this.url + '/dropdownlist', Body)
     .pipe(catchError(this.handleError));
   }
 
@@ -61,5 +61,5 @@ export class SupplierService {
     }
     return throwError(errorResponse);
   }
-  
+
 }

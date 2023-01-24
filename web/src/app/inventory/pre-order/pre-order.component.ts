@@ -99,7 +99,7 @@ export class PreOrderComponent implements OnInit {
   }
 
   getdropdownSupplierlist(){
-    const subs: Subscription =  this.ss.dropdownSupplierlist().subscribe({
+    const subs: Subscription =  this.ss.dropdownSupplierlist('').subscribe({
       next: (res: any) => {
         this.supplierList = res.data;
       },
@@ -128,7 +128,7 @@ export class PreOrderComponent implements OnInit {
         res.data.forEach((ele: any) => {
           if(ele.Name !== ' '){
            let obj = {GSTType: '', Amount: 0};
-            obj.GSTType = ele.Name;    
+            obj.GSTType = ele.Name;
             this.gst_detail.push(obj);
           }
         })
@@ -179,12 +179,12 @@ export class PreOrderComponent implements OnInit {
       }
      });
   }
- 
+
   displayAddField(i:any){
      this.specList[i].DisplayAdd = 1;
      this.specList[i].SelectedValue = '';
   }
- 
+
   saveFieldData(i:any){
    this.specList[i].DisplayAdd = 0;
    const Ref = this.specList[i].Ref;
@@ -199,7 +199,7 @@ export class PreOrderComponent implements OnInit {
        const subss: Subscription =  this.ps.getProductSupportData(RefValue,this.specList[i].SptTableName).subscribe({
          next: (res: any) => {
            this.specList[i].SptTableData = res.data;
-           this.specList[i].SptFilterData = res.data; 
+           this.specList[i].SptFilterData = res.data;
          },
          error: (err: any) => console.log(err.message),
          complete: () => subss.unsubscribe(),
@@ -211,7 +211,7 @@ export class PreOrderComponent implements OnInit {
            title: 'Your file has been Save.',
            showConfirmButton: false,
            timer: 1200
-         }) 
+         })
        } else {
          this.as.errorToast(res.message)
        }
@@ -227,7 +227,7 @@ export class PreOrderComponent implements OnInit {
       const index = this.supplierList.findIndex((element:any) => element.ID === event.value);
       this.selectedPurchaseMaster.SupplierID = this.supplierList[index].ID;
       this.selectedPurchaseMaster.SupplierName = this.supplierList[index].Name;
-      this.item.GSTType = this.supplierList[index].GSTType; 
+      this.item.GSTType = this.supplierList[index].GSTType;
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
@@ -293,7 +293,7 @@ export class PreOrderComponent implements OnInit {
         }
 
         this.tempItem = { Item: null, Spec: null };
-    
+
         if(this.gstLock === false && this.gstperLock === false ) {
           this.item = {
             ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale:this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, UniqueBarcode: ''
@@ -321,7 +321,7 @@ export class PreOrderComponent implements OnInit {
             ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale:this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: 0, UniqueBarcode: ''
           }
         }
-       
+
         this.specList.forEach((element: any) => {
           if(element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
             element.SelectedValue = '';
@@ -361,7 +361,7 @@ export class PreOrderComponent implements OnInit {
             title: 'Your file has been Save.',
             showConfirmButton: false,
             timer: 1200
-          }) 
+          })
         } else {
           this.as.errorToast(res.message)
         }
@@ -420,7 +420,7 @@ export class PreOrderComponent implements OnInit {
         })
       }
     }
-   
+
   }
 
   edititem(mode:any,data:any){
@@ -473,7 +473,7 @@ export class PreOrderComponent implements OnInit {
             title: 'Your file has been Update.',
             showConfirmButton: false,
             timer: 1200
-          }) 
+          })
         } else {
           this.as.errorToast(res.message)
         }

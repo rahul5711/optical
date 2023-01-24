@@ -47,7 +47,7 @@ export class SupportService {
   chargelist( Body:any ): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams()
-    return this.httpClient.get<any>(this.url + '/chargelist', Body)
+    return this.httpClient.post<any>(this.url + '/chargelist', Body)
     .pipe(catchError(this.handleError));
   }
 
@@ -68,10 +68,10 @@ export class SupportService {
   servicelist( Body:any ): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams()
-    return this.httpClient.get<any>(this.url + '/servicelist', Body)
+    return this.httpClient.post<any>(this.url + '/servicelist', Body)
     .pipe(catchError(this.handleError));
   }
-  
+
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

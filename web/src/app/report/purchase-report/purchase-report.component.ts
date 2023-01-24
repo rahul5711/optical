@@ -84,7 +84,7 @@ export class PurchaseReportComponent implements OnInit {
   }
 
   dropdownSupplierlist(){
-    const subs: Subscription = this.sup.dropdownSupplierlist().subscribe({
+    const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
       next: (res: any) => {
         this.supplierList  = res.data
       },

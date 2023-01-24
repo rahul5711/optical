@@ -49,7 +49,7 @@ export class ShopService {
   dropdownShoplist(Body:any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams()
-    return this.httpClient.get<any>(this.url + '/dropdownlist', Body )
+    return this.httpClient.post<any>(this.url + '/dropdownlist', Body )
     .pipe(catchError(this.handleError));
   }
 

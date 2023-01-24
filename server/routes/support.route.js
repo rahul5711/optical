@@ -11,12 +11,12 @@ router.post('/delete', verifyAccessTokenAdmin, Controller.delete)
 
 // charge and service management
 router.post('/chargesave', verifyAccessTokenAdmin, Controller.chargesave)
-router.get('/chargelist', verifyAccessTokenAdmin, Controller.chargelist)
+router.post('/chargelist', verifyAccessTokenAdmin, Controller.chargelist)
 router.post('/chargedelete', verifyAccessTokenAdmin, Controller.chargedelete)
 
 // service management
 router.post('/servicesave', verifyAccessTokenAdmin, Controller.servicesave)
-router.get('/servicelist', verifyAccessTokenAdmin, Controller.servicelist)
+router.post('/servicelist', verifyAccessTokenAdmin, Controller.servicelist)
 router.post('/servicedelete', verifyAccessTokenAdmin, Controller.servicedelete)
 
 
