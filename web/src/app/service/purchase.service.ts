@@ -128,8 +128,35 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+  createPreOrder( Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/createPreOrder', Body, httpOptions )
+    .pipe(catchError(this.handleError));
+  }
 
+  getPurchaseByIdPreOrder(ID:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getPurchaseByIdPreOrder', {ID: ID}, httpOptions )
+    .pipe(catchError(this.handleError));
+  }
 
+  listPreOrder(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/listPreOrder', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  deleteProductPreOrder(ID:any,PurchaseMaster:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/deleteProductPreOrder', {ID: ID, PurchaseMaster: PurchaseMaster},  httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  deletePreOrder(ID:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/deletePreOrder', {ID: ID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  updatePreOrder( Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/updatePreOrder', Body, httpOptions )
+    .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

@@ -1,6 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
-import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
@@ -10,14 +9,14 @@ import { fromEvent   } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { PurchaseService } from 'src/app/service/purchase.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
 
 @Component({
-  selector: 'app-purchase-list',
-  templateUrl: './purchase-list.component.html',
-  styleUrls: ['./purchase-list.component.css']
+  selector: 'app-preorder-list',
+  templateUrl: './preorder-list.component.html',
+  styleUrls: ['./preorder-list.component.css']
 })
-export class PurchaseListComponent implements OnInit {
+export class PreorderListComponent implements OnInit {
 
   @ViewChild('searching') searching: ElementRef | any;
   env = environment;
@@ -29,15 +28,13 @@ export class PurchaseListComponent implements OnInit {
   pageSize!: number;
   collectionSize = 0
   page = 4;
-  paymentHistoryList:any;
-  
+
   constructor(
     private formBuilder: FormBuilder,
     public as: AlertService,
     private sp: NgxSpinnerService,
     private excelService: ExcelService,
     private purchaseService: PurchaseService,
-    private modalService: NgbModal,
   ) { }
 
   ngOnInit(): void {
@@ -54,7 +51,7 @@ export class PurchaseListComponent implements OnInit {
       currentPage: this.currentPage,
       itemsPerPage: this.itemsPerPage
     }
-    const subs: Subscription = this.purchaseService.getList(dtm).subscribe({
+    const subs: Subscription = this.purchaseService.listPreOrder(dtm).subscribe({
       next: (res: any) => {
         this.collectionSize = res.count;
         this.dataList = res.data;
@@ -79,7 +76,7 @@ export class PurchaseListComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
-        const subs: Subscription = this.purchaseService.deleteData(this.dataList[i].ID).subscribe({
+        const subs: Subscription = this.purchaseService.deletePreOrder(this.dataList[i].ID).subscribe({
           next: (res: any) => {
             if(res.message === "First you'll have to delete product"){
               Swal.fire({
@@ -143,21 +140,7 @@ export class PurchaseListComponent implements OnInit {
   }
 
   exportAsXLSX(): void {
-    this.excelService.exportAsExcelFile(this.dataList, 'fitter_list');
+    this.excelService.exportAsExcelFile(this.dataList, 'perOrder_list');
   }
-
-  openModal(content: any,data:any) {
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
-    const subs: Subscription = this.purchaseService.paymentHistory(data.ID, data.InvoiceNo).subscribe({
-      next: (res: any) => {
-        this.paymentHistoryList = res.data;
-        this.sp.hide();
-        this.as.successToast(res.message)
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
-
 
 }

@@ -30,6 +30,7 @@ import { ProductTransferComponent } from './product-transfer/product-transfer.co
 import { SearchBarcodeComponent } from './search-barcode/search-barcode.component';
 import { InventorySummaryComponent } from './inventory-summary/inventory-summary.component';
 import { PreOrderComponent } from './pre-order/pre-order.component';
+import { PreorderListComponent } from './preorder-list/preorder-list.component';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { PreOrderComponent } from './pre-order/pre-order.component';
     ProductTransferComponent,
     SearchBarcodeComponent,
     InventorySummaryComponent,
-    PreOrderComponent
+    PreOrderComponent,
+    PreorderListComponent
   ],
   imports: [
     CommonModule,
