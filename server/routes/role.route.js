@@ -7,7 +7,7 @@ router.post('/save', verifyAccessTokenAdmin ,Controller.save)
 router.post('/update', verifyAccessTokenAdmin ,Controller.update)
 router.post('/delete', verifyAccessTokenAdmin ,Controller.delete)
 router.post('/restore', verifyAccessTokenAdmin ,Controller.restore)
-router.get('/getList', verifyAccessTokenAdmin ,Controller.getList)
+router.post('/getList', verifyAccessTokenAdmin ,Controller.getList)
 
 // Regex search
 

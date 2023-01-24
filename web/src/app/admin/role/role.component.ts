@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { RoleService } from 'src/app/service/role.service';
 
@@ -41,8 +41,8 @@ export class RoleComponent implements OnInit {
     this.getList();
   }
 
-  saveRole(){    
-    this.selectedRole.Permission = JSON.stringify(this.moduleList) 
+  saveRole(){
+    this.selectedRole.Permission = JSON.stringify(this.moduleList)
     const subs: Subscription =  this.role.roleSave(this.selectedRole.Name,this.selectedRole.Permission).subscribe({
       next: (res: any) => {
         this.roleList = res.data;
@@ -54,7 +54,7 @@ export class RoleComponent implements OnInit {
             title: 'Your file has been Save.',
             showConfirmButton: false,
             timer: 1200
-          }) 
+          })
         } else {
           this.as.errorToast(res.message)
           Swal.fire({
@@ -64,16 +64,16 @@ export class RoleComponent implements OnInit {
             text:'Already exist from this Role Name',
             showConfirmButton: true,
             backdrop: false
-          }) 
+          })
         }
       },
       error: (err: any) => {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
-      
+
     });
-    
+
   }
 
   deleteRole(){
@@ -106,11 +106,11 @@ export class RoleComponent implements OnInit {
         })
       }
     })
-    
+
   }
 
   getList(){
-    const subs: Subscription = this.role.getList().subscribe({
+    const subs: Subscription = this.role.getList('').subscribe({
       next: (res: any) => {
         this.roleList = res.data
         this.sp.hide();
@@ -120,8 +120,8 @@ export class RoleComponent implements OnInit {
     });
   }
 
- 
 
-  
+
+
 
 }

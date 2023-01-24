@@ -58,7 +58,7 @@ export class LoginComponent implements OnInit {
   }
 
   rolesList(){
-    const subs: Subscription = this.role.getList().subscribe({
+    const subs: Subscription = this.role.getList('').subscribe({
       next: (res: any) => {
         this.roleList = res.data
         this.setPermission()

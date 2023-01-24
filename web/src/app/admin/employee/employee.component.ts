@@ -77,7 +77,7 @@ export class EmployeeComponent implements OnInit {
               title: 'Your file has been Save.',
               showConfirmButton: false,
               timer: 1200
-            })  
+            })
           }
         } else {
           this.as.errorToast(res.message)
@@ -170,7 +170,7 @@ export class EmployeeComponent implements OnInit {
   }
 
   rolesList(){
-    const subs: Subscription = this.role.getList().subscribe({
+    const subs: Subscription = this.role.getList('').subscribe({
       next: (res: any) => {
         this.roleList = res.data
         this.sp.hide();

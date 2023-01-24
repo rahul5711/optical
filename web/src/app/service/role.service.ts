@@ -24,8 +24,8 @@ export class RoleService {
     .pipe(catchError(this.handleError));
   }
 
-  getList(): Observable<any> {
-    return this.httpClient.get<any>(this.url + '/getList')
+  getList(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getList',Body)
     .pipe(catchError(this.handleError));
   }
 
