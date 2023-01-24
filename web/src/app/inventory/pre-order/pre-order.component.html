@@ -10,15 +10,12 @@
                                 <h2>Pre Order</h2>
                             </div>
                             <!-- togggle btn start -->
-                            <div class="col-xl-3 col-lg-5 col-md-5 col-8 ms-auto">
-                                <span class="ms-5  ps-5 me-3 " style="font-weight: 600;">
+                            <div class="col-xl-1 col-lg-5 col-md-5 col-8 ms-auto p-0">
+                                <span  style="font-weight: 600;">
                                     <mat-slide-toggle name="Multiple" color="primary" [(ngModel)]="disableAddButtons"
                                         class="example-margin" #Multiplecontrol>Quick Entry</mat-slide-toggle>
                                 </span>
-                                <span style="font-weight: 600;">
-                                    <mat-slide-toggle name="WholeSale" color="primary" [(ngModel)]="item.WholeSale"
-                                    class="example-margin" #Multiplecontrol>WholeSale</mat-slide-toggle>
-                                </span>
+                               
                             </div>
                             <!-- togggle btn end -->
                         </div>
@@ -201,7 +198,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Quantity</mat-label>
-                                        <input matInput name="Quantity" [(ngModel)]="item.Quantity" required
+                                        <input matInput name="Quantity" [(ngModel)]="item.Quantity" required disabled
                                             #Quantitycontrol [autocomplete]="false" (blur)="calculateFields('Quantity', 'subTotal')">
                                         <mat-error>
                                             Quantity is required
@@ -352,7 +349,7 @@
                                                     </td>
                                                     <!-- <td style="z-index: -999 !important;" *ngIf="data.Status === 0"></td> -->
                                                     <td class="text-center">
-                                                        <mat-icon *ngIf="data.Status != 0 && data.ID !== null" class="print_icon ">print</mat-icon>
+                                                        <!-- <mat-icon *ngIf="data.Status != 0 && data.ID !== null" class="print_icon ">print</mat-icon> -->
                                                         <mat-icon *ngIf="data.Status !== 0" class="delete_icons ms-1" (click)="deleteItem('Product',i)">delete_forever</mat-icon>
                                                         <mat-icon class="edit_icons ms-1" (click)="edititem('Product',data)" *ngIf="data.ID === null">edit </mat-icon>
                                                     </td>
