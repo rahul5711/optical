@@ -133,8 +133,8 @@ module.exports = {
             const LoggedOnUser = { ID: req.user.ID ? req.user.ID : 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
-            const query = await _Query.getQuery("getProduct", Body, LoggedOnUser, CompanyID, ShopID)
-            const saveData = await connection.query(query)
+            // const query = await _Query.getQuery("getProduct", Body, LoggedOnUser, CompanyID, ShopID)
+            const saveData = await connection.query(`select product.*, user.Name as CreatedPerson, users.Name as UpdatedPerson from product left join user on user.ID = product.CreatedBy left join user as users on users.ID = product.UpdatedBy where product.Status = 1 and product.CompanyID = ${CompanyID}`)
 
             console.log(connected("Data Fetch SuccessFUlly !!!"));
 
