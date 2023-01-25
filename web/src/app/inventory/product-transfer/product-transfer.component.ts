@@ -353,4 +353,19 @@ export class ProductTransferComponent implements OnInit {
     }
   }
 
+  formReset() {
+    this.specList = [];
+    this.barCodeList = [];
+    this.xferItem.ProductName = "";
+    this.xferItem.Barcode = "";
+    this.xferItem.BarCodeCount = 0;
+    this.xferItem.TransferCount = 0;
+    this.xferItem.TransferToShop = null;
+    this.xferItem.TransferStatus = "";
+    this.xferItem.ToShopID = "";
+    this.SearchBarCode = "";
+    this.selectedProduct = "";
+    this.Req = "";
+  }
+
 }

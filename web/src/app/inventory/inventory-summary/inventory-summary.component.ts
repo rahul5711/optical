@@ -59,7 +59,7 @@ export class InventorySummaryComponent implements OnInit {
   }
 
   dropdownShoplist(){
-    const subs: Subscription = this.ss.dropShoplist().subscribe({
+    const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
       next: (res: any) => {
         this.shopList  = res.data
       },
@@ -95,16 +95,20 @@ export class InventorySummaryComponent implements OnInit {
           this.selectedProduct = element.Name;
         }
       })
+      const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
+        next: (res: any) => {
+        this.specList = res.data;
+        this.getSptTableData();
+       },
+       error: (err: any) => console.log(err.message),
+       complete: () => subs.unsubscribe(),
+     });
     }
-    const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
-       next: (res: any) => {
-       this.specList = res.data;
-       this.getSptTableData();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-   
+    else {
+      this.specList = [];
+      this.data.ProductName = '';
+      this.data.ProductCategory = 0;
+    }
   }
 
   getSptTableData() { 
@@ -175,13 +179,13 @@ export class InventorySummaryComponent implements OnInit {
       Parem = Parem + ' and purchasedetailnew.BrandType = ' + '"' + this.data.BrandType + '"';}
 
     if (this.data.Barcode !== ''){
-      Parem = Parem + ' and barcodemasternew.Barcode Like ' + '"' + this.data.Barcode + '%"' ;}
+      Parem = Parem + ' and barcodemasternew.Barcode Like ' + '"' + this.data.Barcode + '%"';}
 
     if (this.data.ShopID !== 0){
-      Parem = Parem + ' and barcodemasternew.ShopID = ' +  this.data.ShopID; }
+      Parem = Parem + ' and barcodemasternew.ShopID IN ' +  `(${this.data.ShopID})`;}
 
     if (this.data.SupplierID !== 0){
-      Parem = Parem + ' and purchasemasternew.SupplierID = ' +  this.data.SupplierID ; }
+      Parem = Parem + ' and purchasemasternew.SupplierID = ' +  this.data.SupplierID;}
 
     const subs: Subscription =  this.purchaseService.getInventorySummary(Parem).subscribe({
       next: (res: any) => {

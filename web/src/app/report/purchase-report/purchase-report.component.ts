@@ -169,16 +169,20 @@ export class PurchaseReportComponent implements OnInit {
           this.selectedProduct = element.Name;
         }
       })
+      const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
+        next: (res: any) => {
+        this.specList = res.data;
+        this.getSptTableData();
+       },
+       error: (err: any) => console.log(err.message),
+       complete: () => subs.unsubscribe(),
+     });
     }
-    const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
-       next: (res: any) => {
-       this.specList = res.data;
-       this.getSptTableData();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-   
+    else {
+      this.specList = [];
+      this.PurchaseDetail.ProductName = '';
+      this.PurchaseDetail.ProductCategory = 0;
+    }
   }
 
   getSptTableData() { 

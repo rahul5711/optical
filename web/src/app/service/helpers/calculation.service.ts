@@ -139,18 +139,20 @@ export class CalculationService {
       selectedPurchaseMaster.TotalAmount = (+selectedPurchaseMaster.TotalAmount + +element.TotalAmount).toFixed(2);
       }
     })
-
-    chargeList.forEach((element: any ) => {
-      if (element.Status !== 0){
-        if(element.ID === null) {
-          selectedPurchaseMaster.SubTotal = (+selectedPurchaseMaster.SubTotal + +element.Price).toFixed(2);
-        }else{
-          selectedPurchaseMaster.SubTotal = (+selectedPurchaseMaster.SubTotal + +element.Amount).toFixed(2);
+    if(chargeList !== ''){
+      chargeList.forEach((element: any ) => {
+        if (element.Status !== 0){
+          if(element.ID === null) {
+            selectedPurchaseMaster.SubTotal = (+selectedPurchaseMaster.SubTotal + +element.Price).toFixed(2);
+          }else{
+            selectedPurchaseMaster.SubTotal = (+selectedPurchaseMaster.SubTotal + +element.Amount).toFixed(2);
+          }
+          selectedPurchaseMaster.GSTAmount = (+selectedPurchaseMaster.GSTAmount + +element.GSTAmount).toFixed(2);
+          selectedPurchaseMaster.TotalAmount = (+selectedPurchaseMaster.TotalAmount + +element.TotalAmount).toFixed(2);
         }
-        selectedPurchaseMaster.GSTAmount = (+selectedPurchaseMaster.GSTAmount + +element.GSTAmount).toFixed(2);
-        selectedPurchaseMaster.TotalAmount = (+selectedPurchaseMaster.TotalAmount + +element.TotalAmount).toFixed(2);
-      }
-    })
+      })
+    }
+
   };
   // purchase Master calculation start
 

@@ -66,16 +66,19 @@ export class TransferProductReportComponent implements OnInit {
           this.selectedProduct = element.Name;
         }
       })
+      const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
+        next: (res: any) => {
+        this.specList = res.data;
+        this.getSptTableData();
+       },
+       error: (err: any) => console.log(err.message),
+       complete: () => subs.unsubscribe(),
+      });
+    }else {
+      this.specList = [];
+      this.data.ProductName = '';
+      this.data.ProductCategory = 0;
     }
-    const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
-       next: (res: any) => {
-       this.specList = res.data;
-       this.getSptTableData();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-   
   }
 
   getSptTableData() { 
@@ -112,7 +115,7 @@ export class TransferProductReportComponent implements OnInit {
     let productName = '';
     this.specList.forEach((element: any) => {
      if (productName === '') {
-        productName = element.SelectedValue;
+        productName = element.ProductName + '/' + element.SelectedValue;
      } else if (element.SelectedValue !== '') {
         productName += '/' + element.SelectedValue;
      }
@@ -141,7 +144,6 @@ export class TransferProductReportComponent implements OnInit {
       Parem = Parem + ' and transfermaster.TransferStatus = '  + `'${this.data.ProductStatus}'`;}
 
     if (this.data.ProductCategory  !== 0){
-      Parem = Parem + ' and transfermaster.ProductTypeID = ' +  this.data.ProductCategory;
       this.filter();}
 
     if (this.data.ProductName !== '' ){
