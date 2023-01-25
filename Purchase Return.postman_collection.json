@@ -1,0 +1,146 @@
+{
+	"info": {
+		"_postman_id": "00064b84-433b-452a-882b-166a77f50b5b",
+		"name": "Purchase Return",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getPurchaseReturnList",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Parem\" : \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchase/getPurchaseReturnList",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"getPurchaseReturnList"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getPurchaseReturnList",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Parem\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchase/getPurchaseReturnList",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchase",
+								"getPurchaseReturnList"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "10395"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"289b-6B9d2QrnHJq32WzyfoL/8lYUA9g\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 25 Jan 2023 19:29:31 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Count\": 1,\n            \"BrandType\": 0,\n            \"PurchaseDetailID\": 1,\n            \"UnitPrice\": 300,\n            \"Quantity\": 5,\n            \"ID\": 5,\n            \"DiscountAmount\": 0,\n            \"TotalAmount\": 1500,\n            \"SupplierName\": \"rahul supplier\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"pt-1/two\",\n            \"ProductTypeName\": \"testproduct1\",\n            \"SubTotal\": 1500,\n            \"DiscountPercentage\": 0,\n            \"GSTPercentagex\": 0,\n            \"GSTAmount\": 0,\n            \"GSTTypex\": \"None\",\n            \"WholeSalePrice\": 0,\n            \"InvoiceNo\": \"in-1\",\n            \"PurchaseDate\": \"2023-01-04\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10000000\",\n            \"AvailableDate\": \"2023-01-04 22:05:12\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"None\",\n            \"GSTPercentage\": 0,\n            \"PreOrder\": 0,\n            \"TransferID\": 0,\n            \"TransferStatus\": \"\",\n            \"TransferToShop\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-04 22:05:12\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"SupplierID\": 1,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0\n        },\n        {\n            \"Count\": 4,\n            \"BrandType\": 0,\n            \"PurchaseDetailID\": 1,\n            \"UnitPrice\": 300,\n            \"Quantity\": 5,\n            \"ID\": 1,\n            \"DiscountAmount\": 0,\n            \"TotalAmount\": 1500,\n            \"SupplierName\": \"rahul supplier\",\n            \"ShopName\": \"shop-2\",\n            \"AreaName\": \"two\",\n            \"ProductName\": \"pt-1/two\",\n            \"ProductTypeName\": \"testproduct1\",\n            \"SubTotal\": 1500,\n            \"DiscountPercentage\": 0,\n            \"GSTPercentagex\": 0,\n            \"GSTAmount\": 0,\n            \"GSTTypex\": \"None\",\n            \"WholeSalePrice\": 0,\n            \"InvoiceNo\": \"in-1\",\n            \"PurchaseDate\": \"2023-01-04\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"CompanyID\": 1,\n            \"ShopID\": 2,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10000000\",\n            \"AvailableDate\": \"2023-01-04 22:05:12\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"None\",\n            \"GSTPercentage\": 0,\n            \"PreOrder\": 0,\n            \"TransferID\": 1,\n            \"TransferStatus\": \"Available\",\n            \"TransferToShop\": 2,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": 2,\n            \"CreatedOn\": \"2023-01-04 22:05:12\",\n            \"UpdatedOn\": \"2023-01-05 22:37:07\",\n            \"SupplierID\": 1,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0\n        },\n        {\n            \"Count\": 10,\n            \"BrandType\": 0,\n            \"PurchaseDetailID\": 2,\n            \"UnitPrice\": 100,\n            \"Quantity\": 10,\n            \"ID\": 6,\n            \"DiscountAmount\": 0,\n            \"TotalAmount\": 1000,\n            \"SupplierName\": \"rahul supplier\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"pt-1/one\",\n            \"ProductTypeName\": \"testproduct1\",\n            \"SubTotal\": 1000,\n            \"DiscountPercentage\": 0,\n            \"GSTPercentagex\": 0,\n            \"GSTAmount\": 0,\n            \"GSTTypex\": \"None\",\n            \"WholeSalePrice\": 0,\n            \"InvoiceNo\": \"in-1\",\n            \"PurchaseDate\": \"2023-01-04\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10001000\",\n            \"AvailableDate\": \"2023-01-04 22:05:12\",\n            \"CurrentStatus\": \"Transfer Pending\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"None\",\n            \"GSTPercentage\": 0,\n            \"PreOrder\": 0,\n            \"TransferID\": 6,\n            \"TransferStatus\": \"Transfer Pending\",\n            \"TransferToShop\": 2,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": 2,\n            \"CreatedOn\": \"2023-01-04 22:05:12\",\n            \"UpdatedOn\": \"2023-01-07 14:54:47\",\n            \"SupplierID\": 1,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0\n        },\n        {\n            \"Count\": 14,\n            \"BrandType\": 0,\n            \"PurchaseDetailID\": 3,\n            \"UnitPrice\": 600,\n            \"Quantity\": 20,\n            \"ID\": 22,\n            \"DiscountAmount\": 0,\n            \"TotalAmount\": 12000,\n            \"SupplierName\": \"rahul supplier\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"pt-2/pt-1\",\n            \"ProductTypeName\": \"testproduct1\",\n            \"SubTotal\": 12000,\n            \"DiscountPercentage\": 0,\n            \"GSTPercentagex\": 0,\n            \"GSTAmount\": 0,\n            \"GSTTypex\": \"None\",\n            \"WholeSalePrice\": 0,\n            \"InvoiceNo\": \"in-1\",\n            \"PurchaseDate\": \"2023-01-04\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10002000\",\n            \"AvailableDate\": \"2023-01-04 22:05:40\",\n            \"CurrentStatus\": \"Transfer Pending\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"None\",\n            \"GSTPercentage\": 0,\n            \"PreOrder\": 0,\n            \"TransferID\": 4,\n            \"TransferStatus\": \"Transfer Pending\",\n            \"TransferToShop\": 2,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": 2,\n            \"CreatedOn\": \"2023-01-04 22:05:40\",\n            \"UpdatedOn\": \"2023-01-05 22:53:11\",\n            \"SupplierID\": 1,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0\n        },\n        {\n            \"Count\": 6,\n            \"BrandType\": 0,\n            \"PurchaseDetailID\": 3,\n            \"UnitPrice\": 600,\n            \"Quantity\": 20,\n            \"ID\": 16,\n            \"DiscountAmount\": 0,\n            \"TotalAmount\": 12000,\n            \"SupplierName\": \"rahul supplier\",\n            \"ShopName\": \"shop-2\",\n            \"AreaName\": \"two\",\n            \"ProductName\": \"pt-2/pt-1\",\n            \"ProductTypeName\": \"testproduct1\",\n            \"SubTotal\": 12000,\n            \"DiscountPercentage\": 0,\n            \"GSTPercentagex\": 0,\n            \"GSTAmount\": 0,\n            \"GSTTypex\": \"None\",\n            \"WholeSalePrice\": 0,\n            \"InvoiceNo\": \"in-1\",\n            \"PurchaseDate\": \"2023-01-04\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"CompanyID\": 1,\n            \"ShopID\": 2,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10002000\",\n            \"AvailableDate\": \"2023-01-04 22:05:40\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"None\",\n            \"GSTPercentage\": 0,\n            \"PreOrder\": 0,\n            \"TransferID\": 2,\n            \"TransferStatus\": \"Available\",\n            \"TransferToShop\": 2,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": 2,\n            \"CreatedOn\": \"2023-01-04 22:05:40\",\n            \"UpdatedOn\": \"2023-01-05 22:32:55\",\n            \"SupplierID\": 1,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0\n        },\n        {\n            \"Count\": 10,\n            \"BrandType\": 0,\n            \"PurchaseDetailID\": 4,\n            \"UnitPrice\": 500,\n            \"Quantity\": 10,\n            \"ID\": 36,\n            \"DiscountAmount\": 0,\n            \"TotalAmount\": 5600,\n            \"SupplierName\": \"rahul supplier\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"pt-2/pt-3\",\n            \"ProductTypeName\": \"testproduct1\",\n            \"SubTotal\": 5000,\n            \"DiscountPercentage\": 0,\n            \"GSTPercentagex\": 12,\n            \"GSTAmount\": 600,\n            \"GSTTypex\": \"IGST\",\n            \"WholeSalePrice\": 0,\n            \"InvoiceNo\": \"in-2\",\n            \"PurchaseDate\": \"2023-01-04\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10003000\",\n            \"AvailableDate\": \"2023-01-04 22:08:25\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"IGST\",\n            \"GSTPercentage\": 12,\n            \"PreOrder\": 0,\n            \"TransferID\": 0,\n            \"TransferStatus\": \"\",\n            \"TransferToShop\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-04 22:08:25\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"SupplierID\": 1,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0\n        },\n        {\n            \"Count\": 8,\n            \"BrandType\": 1,\n            \"PurchaseDetailID\": 5,\n            \"UnitPrice\": 800,\n            \"Quantity\": 8,\n            \"ID\": 46,\n            \"DiscountAmount\": 0,\n            \"TotalAmount\": 7168,\n            \"SupplierName\": \"rahul supplier\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"pt-1/rahul\",\n            \"ProductTypeName\": \"testproduct1\",\n            \"SubTotal\": 6400,\n            \"DiscountPercentage\": 0,\n            \"GSTPercentagex\": 12,\n            \"GSTAmount\": 768,\n            \"GSTTypex\": \"SGST-CGST\",\n            \"WholeSalePrice\": 0,\n            \"InvoiceNo\": \"in-2\",\n            \"PurchaseDate\": \"2023-01-04\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10004000\",\n            \"AvailableDate\": \"2023-01-04 22:09:08\",\n            \"CurrentStatus\": \"Transfer Pending\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"SGST-CGST\",\n            \"GSTPercentage\": 12,\n            \"PreOrder\": 0,\n            \"TransferID\": 5,\n            \"TransferStatus\": \"Transfer Pending\",\n            \"TransferToShop\": 2,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": 2,\n            \"CreatedOn\": \"2023-01-04 22:09:08\",\n            \"UpdatedOn\": \"2023-01-07 14:52:20\",\n            \"SupplierID\": 1,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0\n        },\n        {\n            \"Count\": 10,\n            \"BrandType\": 0,\n            \"PurchaseDetailID\": 9,\n            \"UnitPrice\": 100,\n            \"Quantity\": 10,\n            \"ID\": 68,\n            \"DiscountAmount\": 0,\n            \"TotalAmount\": 1180,\n            \"SupplierName\": \"rahul supplier\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"pt-2/one\",\n            \"ProductTypeName\": \"testproduct1\",\n            \"SubTotal\": 1000,\n            \"DiscountPercentage\": 0,\n            \"GSTPercentagex\": 18,\n            \"GSTAmount\": 180,\n            \"GSTTypex\": \"SGST-CGST\",\n            \"WholeSalePrice\": 0,\n            \"InvoiceNo\": \"123\",\n            \"PurchaseDate\": \"2023-01-07\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10008000\",\n            \"AvailableDate\": \"2023-01-07 16:32:26\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"SGST-CGST\",\n            \"GSTPercentage\": 18,\n            \"PreOrder\": 0,\n            \"TransferID\": 0,\n            \"TransferStatus\": \"\",\n            \"TransferToShop\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-07 16:32:26\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"SupplierID\": 1,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0\n        },\n        {\n            \"Count\": 50,\n            \"BrandType\": 0,\n            \"PurchaseDetailID\": 10,\n            \"UnitPrice\": 500,\n            \"Quantity\": 50,\n            \"ID\": 78,\n            \"DiscountAmount\": 0,\n            \"TotalAmount\": 25000,\n            \"SupplierName\": \"rahul supplier\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"pt-2/rahul-11\",\n            \"ProductTypeName\": \"testproduct-2\",\n            \"SubTotal\": 25000,\n            \"DiscountPercentage\": 0,\n            \"GSTPercentagex\": 0,\n            \"GSTAmount\": 0,\n            \"GSTTypex\": \"None\",\n            \"WholeSalePrice\": 0,\n            \"InvoiceNo\": \"rahul-1\",\n            \"PurchaseDate\": \"2023-01-07\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10009000\",\n            \"AvailableDate\": \"2023-01-07 23:45:07\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"None\",\n            \"GSTPercentage\": 0,\n            \"PreOrder\": 0,\n            \"TransferID\": 0,\n            \"TransferStatus\": \"\",\n            \"TransferToShop\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-07 23:45:07\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"SupplierID\": 1,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0\n        },\n        {\n            \"Count\": 2000,\n            \"BrandType\": 0,\n            \"PurchaseDetailID\": 11,\n            \"UnitPrice\": 400,\n            \"Quantity\": 2000,\n            \"ID\": 128,\n            \"DiscountAmount\": 0,\n            \"TotalAmount\": 800000,\n            \"SupplierName\": \"rahul supplier\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"pt-2/rahul supplier - 2\",\n            \"ProductTypeName\": \"testproduct-2\",\n            \"SubTotal\": 800000,\n            \"DiscountPercentage\": 0,\n            \"GSTPercentagex\": 0,\n            \"GSTAmount\": 0,\n            \"GSTTypex\": \"None\",\n            \"WholeSalePrice\": 0,\n            \"InvoiceNo\": \"rahul supplier - 2\",\n            \"PurchaseDate\": \"2023-01-08\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10010000\",\n            \"AvailableDate\": \"2023-01-08 22:46:13\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"GSTType\": \"None\",\n            \"GSTPercentage\": 0,\n            \"PreOrder\": 0,\n            \"TransferID\": 0,\n            \"TransferStatus\": \"\",\n            \"TransferToShop\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-08 22:46:13\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"SupplierID\": 1,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\",\n    \"count\": 18\n}"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzQ2NzQ3NTMsImV4cCI6MTY3NDc2MTE1MywiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.m9v_5ejdUQcfx9yYZJqlfB_8pi88nAmWOJEnnRbV-LY",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

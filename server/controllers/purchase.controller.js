@@ -1782,10 +1782,11 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const Body = req.body;
 
 
-            let page = Body.currentPage;
-            let limit = Body.itemsPerPage;
+            let page = Body.currentPage || 1;
+            let limit = Body.itemsPerPage || 10;
             let skip = page * limit - limit;
 
             let shopId = ``
