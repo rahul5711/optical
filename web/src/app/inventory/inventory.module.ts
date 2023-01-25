@@ -31,6 +31,7 @@ import { SearchBarcodeComponent } from './search-barcode/search-barcode.componen
 import { InventorySummaryComponent } from './inventory-summary/inventory-summary.component';
 import { PreOrderComponent } from './pre-order/pre-order.component';
 import { PreorderListComponent } from './preorder-list/preorder-list.component';
+import { PurchaseReturnComponent } from './purchase-return/purchase-return.component';
 
 
 @NgModule({
@@ -44,7 +45,8 @@ import { PreorderListComponent } from './preorder-list/preorder-list.component';
     SearchBarcodeComponent,
     InventorySummaryComponent,
     PreOrderComponent,
-    PreorderListComponent
+    PreorderListComponent,
+    PurchaseReturnComponent
   ],
   imports: [
     CommonModule,

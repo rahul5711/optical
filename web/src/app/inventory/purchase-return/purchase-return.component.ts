@@ -11,14 +11,12 @@ import { ShopService } from 'src/app/service/shop.service';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 
-
 @Component({
-  selector: 'app-inventory-summary',
-  templateUrl: './inventory-summary.component.html',
-  styleUrls: ['./inventory-summary.component.css']
+  selector: 'app-purchase-return',
+  templateUrl: './purchase-return.component.html',
+  styleUrls: ['./purchase-return.component.css']
 })
-
-export class InventorySummaryComponent implements OnInit {
+export class PurchaseReturnComponent implements OnInit {
 
   evn = environment;
   user = JSON.parse(localStorage.getItem('user') || '');
@@ -38,6 +36,13 @@ export class InventorySummaryComponent implements OnInit {
   UpdateBarndType = false;
   BarndTypeUp:any = 0;
 
+  currentPage = 1;
+  itemsPerPage = 10;
+  pageSize!: number;
+  collectionSize = 0
+  page = 4;
+ 
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -51,12 +56,14 @@ export class InventorySummaryComponent implements OnInit {
     this.id = this.route.snapshot.params['id'];
   }
 
-  data:any = {PurchaseID: 0, ShopID: 0, ProductCategory : 0, ProductName:'', CurrentStatus : "Available", SupplierID: 0, BrandType:0 ,  Barcode: "", };
+  data:any = {PurchaseID: 0, ShopID: 0, ProductCategory : 0, ProductName:'', SupplierID: 0,  };
 
   ngOnInit(): void {
     this.getProductList();
     this.dropdownShoplist();
     this.dropdownSupplierlist();
+    this.getList();
+    
   }
 
   dropdownShoplist(){
@@ -163,8 +170,13 @@ export class InventorySummaryComponent implements OnInit {
     this.data.ProductName = productName;
   }
 
-  getInventoryData(){
+  getReturnData(){
     let Parem = '';
+    const dtm = { 
+      Parem : "",
+      currentPage: 1,
+      itemsPerPage: 50000
+    }
 
     if (this.data.ProductCategory  !== 0){
       Parem = Parem + ' and purchasedetailnew.ProductTypeID = ' +  this.data.ProductCategory ;
@@ -173,25 +185,19 @@ export class InventorySummaryComponent implements OnInit {
     if (this.data.ProductName !== '') {
       Parem = Parem + ' and purchasedetailnew.ProductName Like ' + '"' + this.data.ProductName + '%"';}
 
-    if (this.data.CurrentStatus !== ''){
-      Parem = Parem + ' and barcodemasternew.CurrentStatus = ' + '"' + this.data.CurrentStatus + '"';}
-
-    if (this.data.BrandType !== ''){
-      Parem = Parem + ' and purchasedetailnew.BrandType = ' + '"' + this.data.BrandType + '"';}
-
-    if (this.data.Barcode !== ''){
-      Parem = Parem + ' and barcodemasternew.Barcode Like ' + '"' + this.data.Barcode + '%"';}
-
     if (this.data.ShopID !== 0){
       Parem = Parem + ' and barcodemasternew.ShopID IN ' +  `(${this.data.ShopID})`;}
 
     if (this.data.SupplierID !== 0){
       Parem = Parem + ' and purchasemasternew.SupplierID = ' +  this.data.SupplierID;}
 
-    const subs: Subscription =  this.purchaseService.getInventorySummary(Parem).subscribe({
+      dtm.Parem = Parem
+
+    const subs: Subscription =  this.purchaseService.getPurchaseReturnList(dtm).subscribe({
       next: (res: any) => {
         if(res.message){
           this.as.successToast(res.message)
+          this.collectionSize = 1;
           this.SummaryList = res.data;
         }
       },
@@ -200,20 +206,25 @@ export class InventorySummaryComponent implements OnInit {
     });
   }
 
-  showInput(){
-    this.UpdateBarndType = !this.UpdateBarndType;
+  changePagesize(num: number): void {
+    this.itemsPerPage = this.pageSize + num;
   }
 
-  updateInventorySummary(data:any){
-    const subs: Subscription =  this.purchaseService.updateInventorySummary(data).subscribe({
+  getList() {
+    const dtm = {
+      Parem : "",
+      currentPage: this.currentPage,
+      itemsPerPage: this.itemsPerPage
+    }
+    const subs: Subscription = this.purchaseService.getPurchaseReturnList(dtm).subscribe({
       next: (res: any) => {
+        this.collectionSize = res.count;
+        this.SummaryList = res.data;
+        this.as.successToast(res.message)
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
   }
 
-  exportAsXLSX(): void {
-    this.excelService.exportAsExcelFile(this.SummaryList, 'Summary_List');
-  }
 }
