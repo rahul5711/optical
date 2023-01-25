@@ -52,6 +52,10 @@ export class PurchaseService {
     return this.httpClient.post<any>(this.url + '/searchByFeild', searchQuery,httpOptions)
     .pipe(catchError(this.handleError));
   }
+  searchByFeildPreOrder(searchQuery: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/searchByFeildPreOrder', searchQuery,httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
   paymentHistory(ID:any,InvoiceNo:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/paymentHistory', {ID: ID, InvoiceNo: InvoiceNo}, httpOptions)

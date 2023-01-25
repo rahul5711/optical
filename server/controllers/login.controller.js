@@ -1,5 +1,5 @@
 const createError = require('http-errors')
-const getConnection = require('../helpers/db')
+const mysql = require('../helpers/db')
 const pass_init = require('../helpers/generate_password')
 const {
     signAccessTokenAdmin,
@@ -18,9 +18,9 @@ module.exports = {
 
 
     login: async (req, res, next) => {
+        const connection = await mysql.connection();
         try {
             const response = { data: null, accessToken: null, refreshToken: null, success: true, message: "", loginCode: 0 }
-            const connection = await getConnection.connection();
 
             const Body = req.body;
             const ip = req.headers.ip ? req.headers.ip : '**********';
@@ -115,15 +115,19 @@ module.exports = {
             }
 
             // connection.release()
-        } catch (error) {
-            return next(error)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     companylogin: async (req, res, next) => {
+        const connection = await mysql.connection();
         try {
 
-            const connection = await getConnection.connection();
             const Body = req.body;
             const ip = req.headers.ip ? req.headers.ip : '**********';
             if (_.isEmpty(Body)) res.send({ success: false, message: "Invalid Query Data" })
@@ -152,8 +156,12 @@ module.exports = {
 
             return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], shop: shop, success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
 
-        } catch (error) {
-            return next(error)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     }
 

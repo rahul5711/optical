@@ -64,5 +64,8 @@ router.post('/deleteProductPreOrder', verifyAccessTokenAdmin, Controller.deleteP
 router.post('/updatePreOrder', verifyAccessTokenAdmin, Controller.updatePreOrder)
 
 
+router.post('/searchByFeildPreOrder', verifyAccessTokenAdmin, Controller.searchByFeildPreOrder)
+
+
 
 module.exports = router

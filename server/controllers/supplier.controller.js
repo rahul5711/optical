@@ -1,5 +1,5 @@
 const createError = require('http-errors')
-const getConnection = require('../helpers/db')
+const mysql = require('../helpers/db')
 const _ = require("lodash")
 const bcrypt = require('bcrypt')
 const { now } = require('lodash')
@@ -10,9 +10,9 @@ const connected = chalk.bold.cyan;
 
 module.exports = {
     save: async (req, res, next) => {
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
-            const connection = await getConnection.connection();
 
             const Body = req.body;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -43,15 +43,18 @@ module.exports = {
             response.data = saveData.insertId;
             // connection.release()
             return res.send(response)
-        } catch (error) {
-            console.log(error);
-            return next(error)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
     update: async (req, res, next) => {
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
-            const connection = await getConnection.connection();
 
             const Body = req.body;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -80,16 +83,19 @@ module.exports = {
             response.data = []
             // connection.release()
             return res.send(response)
-        } catch (error) {
-            console.log(error);
-            return next(error)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     list: async (req, res, next) => {
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
-            const connection = await getConnection.connection();
             const Body = req.body;
             //     const shopid = await shopID(req.headers)
             //   console.log(shopid,'shopid');
@@ -115,16 +121,19 @@ module.exports = {
             response.count = count.length
             // connection.release()
             res.send(response)
-        } catch (error) {
-            console.log(error);
-            return next(error)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     delete: async (req, res, next) => {
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
-            const connection = await getConnection.connection();
 
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -155,15 +164,19 @@ module.exports = {
             response.data = await connection.query(`select * from supplier where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
             // connection.release()
             res.send(response)
-        } catch (error) {
-            return next(error)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     dropdownlist: async (req, res, next) => {
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
-            const connection = await getConnection.connection();
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const UserID = req.user.ID ? req.user.ID : 0;
             const UserGroup = req.user.UserGroup ? req.user.UserGroup : 'CompanyAdmin';
@@ -174,16 +187,19 @@ module.exports = {
             response.data = data
             // connection.release()
             res.send(response)
-        } catch (error) {
-            console.log(error);
-            return next(error)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     getSupplierById: async (req, res, next) => {
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
-            const connection = await getConnection.connection();
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
@@ -195,15 +211,19 @@ module.exports = {
             response.data = supplier
             // connection.release()
             res.send(response)
-        } catch (error) {
-            return next(error)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     searchByFeild: async (req, res, next) => {
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "", count: 0 }
-            const connection = await getConnection.connection();
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
@@ -219,9 +239,12 @@ module.exports = {
             // connection.release()
             res.send(response)
 
-        } catch (error) {
-            console.log(error);
-            return next(error)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     }
 }

@@ -1,5 +1,5 @@
 const createError = require('http-errors')
-const getConnection = require('../helpers/db')
+const mysql = require('../helpers/db')
 const _ = require("lodash")
 const bcrypt = require('bcrypt')
 const { now } = require('lodash')
@@ -12,9 +12,9 @@ module.exports = {
     // support data api
 
     save: async (req, res, next) => {
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
-            const connection = await getConnection.connection();
 
             const Body = req.body;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -35,15 +35,18 @@ module.exports = {
             response.data = await connection.query(`select * from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = '${Body.TableName}' order by ID desc`)
             // connection.release()
             return res.send(response)
-        } catch (error) {
-            console.log(error);
-            return next(error)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
     list: async (req, res, next) => {
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
-            const connection = await getConnection.connection();
 
             const Body = req.body;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -56,15 +59,18 @@ module.exports = {
             response.data = await connection.query(`select * from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = '${Body.TableName}' order by ID desc`)
             // connection.release()
             return res.send(response)
-        } catch (error) {
-            console.log(error);
-            return next(error)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
     delete: async (req, res, next) => {
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
-            const connection = await getConnection.connection();
 
             const Body = req.body;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -82,18 +88,21 @@ module.exports = {
             response.data = await connection.query(`select * from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = '${Body.TableName}' order by ID desc`)
             // connection.release()
             return res.send(response)
-        } catch (error) {
-            console.log(error);
-            return next(error)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     //  charge master api
 
     chargesave: async (req, res, next) => {
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
-            const connection = await getConnection.connection();
 
             const Body = req.body;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -113,16 +122,19 @@ module.exports = {
             response.data = await connection.query(`select * from chargermaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
             // connection.release()
             return res.send(response)
-        } catch (error) {
-            console.log(error);
-            return next(error)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     chargelist: async (req, res, next) => {
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
-            const connection = await getConnection.connection();
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
@@ -130,17 +142,20 @@ module.exports = {
             response.data = await connection.query(`select * from chargermaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
             // connection.release()
             return res.send(response)
-        } catch (error) {
-            console.log(error);
-            return next(error)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
 
     chargedelete: async (req, res, next) => {
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
-            const connection = await getConnection.connection();
 
             const Body = req.body;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -157,9 +172,12 @@ module.exports = {
             response.data = await connection.query(`select * from chargermaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
             // connection.release()
             return res.send(response)
-        } catch (error) {
-            console.log(error);
-            return next(error)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
@@ -167,9 +185,9 @@ module.exports = {
     //  service master api
 
     servicesave: async (req, res, next) => {
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
-            const connection = await getConnection.connection();
 
             const Body = req.body;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -189,16 +207,19 @@ module.exports = {
             response.data = await connection.query(`select * from servicemaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
             // connection.release()
             return res.send(response)
-        } catch (error) {
-            console.log(error);
-            return next(error)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     servicelist: async (req, res, next) => {
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
-            const connection = await getConnection.connection();
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
@@ -206,17 +227,20 @@ module.exports = {
             response.data = await connection.query(`select * from servicemaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
             // connection.release()
             return res.send(response)
-        } catch (error) {
-            console.log(error);
-            return next(error)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
 
     servicedelete: async (req, res, next) => {
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
-            const connection = await getConnection.connection();
 
             const Body = req.body;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -233,9 +257,12 @@ module.exports = {
             response.data = await connection.query(`select * from servicemaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
             // connection.release()
             return res.send(response)
-        } catch (error) {
-            console.log(error);
-            return next(error)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 

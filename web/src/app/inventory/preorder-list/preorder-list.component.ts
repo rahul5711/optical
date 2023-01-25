@@ -122,7 +122,7 @@ export class PreorderListComponent implements OnInit {
         itemsPerPage: 50000,
         searchQuery: data.searchQuery 
       }
-      const subs: Subscription = this.purchaseService.searchByFeild(dtm).subscribe({
+      const subs: Subscription = this.purchaseService.searchByFeildPreOrder(dtm).subscribe({
         next: (res: any) => {
           this.collectionSize = res.count;
           this.page = 1;
