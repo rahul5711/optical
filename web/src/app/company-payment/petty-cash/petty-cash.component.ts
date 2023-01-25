@@ -62,7 +62,7 @@ export class PettyCashComponent implements OnInit {
   }
 
   dropdownUserlist(){
-    const subs: Subscription = this.es.dropdownUserlist().subscribe({
+    const subs: Subscription = this.es.dropdownUserlist('').subscribe({
       next: (res: any) => {
         this.dropUserlist = res.data
         this.sp.hide();
