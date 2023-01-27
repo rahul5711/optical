@@ -1891,6 +1891,113 @@ module.exports = {
 
     },
 
+    // purchase charge report
+
+    getPurchaseChargeReport: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+
+            const response = {
+                data: null, success: true, message: "", calculation: [{
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "gst_details": []
+                }]
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const Body = req.body;
+
+            let shopId = ``
+
+            if (Parem === "" || Parem === undefined || Parem === null) {
+                if (shopid !== 0) {
+                    shopId = `and purchasemasternew.ShopID = ${shopid}`
+                }
+            }
+
+            qry = `SELECT purchasecharge.*, purchasemasternew.InvoiceNo, purchasemasternew.ShopID,shop.Name AS ShopName,shop.AreaName AS AreaName FROM purchasecharge LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasecharge.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID WHERE purchasecharge.CompanyID = ${CompanyID} AND purchasecharge.Status = 1 ` + Parem;
+
+            let data = await connection.query(qry);
+
+            let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            const values = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        values.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        values.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+
+            if (data.length) {
+                for (const item of data) {
+                    response.calculation[0].totalGstAmount += item.GSTAmount
+                    response.calculation[0].totalAmount += item.Amount
+
+                    if (values) {
+                        values.forEach(e => {
+                            if (e.GSTType === item.GSTType) {
+                                e.Amount += item.GSTAmount
+                            }
+
+                            // CGST-SGST
+
+                            if (item.GSTType === 'CGST-SGST') {
+
+                                if (e.GSTType === 'CGST') {
+                                    e.Amount += item.GSTAmount / 2
+                                }
+
+                                if (e.GSTType === 'SGST') {
+                                    e.Amount += item.GSTAmount / 2
+                                }
+                            }
+                        })
+                    }
+
+                }
+
+
+            }
+
+            response.calculation[0].gst_details = values;
+            response.data = data
+            response.message = "success";
+            // connection.release()
+            res.send(response)
+
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+
+    },
+
     // purchase return
 
     getPurchaseReturnList: async (req, res, next) => {

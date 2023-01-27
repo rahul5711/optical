@@ -1,0 +1,131 @@
+{
+	"info": {
+		"_postman_id": "c6c12da0-18ee-4ab1-b419-aed0f34f2719",
+		"name": "getPurchaseChargeReport",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getPurchaseChargeReport",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/purchase/getPurchaseChargeReport",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"getPurchaseChargeReport"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getPurchaseChargeReport",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"Parem\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchase/getPurchaseChargeReport",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchase",
+								"getPurchaseChargeReport"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "558"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"22e-wXfydnL5EvarxdI1dbm3Gsl7gyQ\""
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 27 Jan 2023 18:45:23 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 1,\n            \"PurchaseID\": 15,\n            \"CompanyID\": 1,\n            \"ChargeType\": \"abc\",\n            \"Description\": \"abc\",\n            \"Amount\": 100,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 100,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-01-27 23:58:11\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"InvoiceNo\": \"hhh\",\n            \"ShopID\": 1,\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\",\n    \"calculation\": [\n        {\n            \"totalGstAmount\": 0,\n            \"totalAmount\": 100,\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"IGST\",\n                    \"Amount\": 0\n                },\n                {\n                    \"GSTType\": \"SGST-CGST\",\n                    \"Amount\": 0\n                },\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 0\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 0\n                }\n            ]\n        }\n    ]\n}"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzQ4MzI3NDUsImV4cCI6MTY3NDkxOTE0NSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.PQ93E0uE5BEpYv3OnunqtZE8LG9TouGt_DX1SEnzSRs",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
