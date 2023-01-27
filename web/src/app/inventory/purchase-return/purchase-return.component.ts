@@ -10,6 +10,7 @@ import { PurchaseService } from 'src/app/service/purchase.service';
 import { ShopService } from 'src/app/service/shop.service';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-purchase-return',
@@ -33,9 +34,10 @@ export class PurchaseReturnComponent implements OnInit {
   SummaryList:any;
   shopList:any;
   supplierList:any;
-  UpdateBarndType = false;
-  BarndTypeUp:any = 0;
-
+  modalData : any;
+  returnQuantity : any;
+  remark : any = '';
+  
   currentPage = 1;
   itemsPerPage = 10;
   pageSize!: number;
@@ -52,6 +54,7 @@ export class PurchaseReturnComponent implements OnInit {
     private sup: SupplierService,
     private excelService: ExcelService,
     public as: AlertService,
+    private modalService: NgbModal,
   ){
     this.id = this.route.snapshot.params['id'];
   }
@@ -225,6 +228,30 @@ export class PurchaseReturnComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+  }
+
+  openModal(content: any,data:any) {
+    this.modalData = data
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'md'});
+  }
+
+  purchasereturn() {
+    if(this.returnQuantity <= this.modalData.Count) {
+      this.modalData.ReturnQuantity = this.returnQuantity;
+      this.modalData.Remark = this.remark;
+      console.log(this.modalData);
+      this.modalService.dismissAll();
+    }else{
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title:'Oops!!!',
+        text: 'Reqested Item Quantity not available. Please change the Quantity',
+        showConfirmButton: true,
+        backdrop : false,
+      })
+      this.returnQuantity = 0;
+    }
   }
 
 }

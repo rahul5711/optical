@@ -290,7 +290,7 @@ export class SupplierComponent implements OnInit {
       }
       const subs: Subscription = this.ss.searchByFeild(dtm).subscribe({
         next: (res: any) => {
-          this.collectionSize = res.count;
+          this.collectionSize = 1;
           this.page = 1;
           this.dataList = res.data
           this.sp.hide();
