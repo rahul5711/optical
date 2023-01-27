@@ -1771,13 +1771,133 @@ module.exports = {
         }
     },
 
+    // product inventory report
+
+    getProductInventoryReport: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+
+            const response = {
+                data: null, success: true, message: "", calculation: [{
+                    "totalQty": 0,
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalDiscount": 0,
+                    "totalUnitPrice": 0,
+                    "gst_details": []
+                }]
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const Body = req.body;
+
+            let shopId = ``
+
+            if (Parem === "" || Parem === undefined || Parem === null) {
+                if (shopid !== 0) {
+                    shopId = `and purchasemasternew.ShopID = ${shopid}`
+                }
+            }
+
+            qry = `SELECT COUNT(barcodemasternew.ID) AS Count, purchasedetailnew.BrandType, purchasedetailnew.ID as PurchaseDetailID , purchasedetailnew.UnitPrice, purchasedetailnew.Quantity, purchasedetailnew.ID, purchasedetailnew.DiscountAmount, purchasedetailnew.TotalAmount, supplier.Name AS SupplierName, shop.Name AS ShopName, shop.AreaName AS AreaName, purchasedetailnew.ProductName, purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice, purchasedetailnew.SubTotal, purchasedetailnew.DiscountPercentage, purchasedetailnew.GSTPercentage as GSTPercentagex, purchasedetailnew.GSTAmount, purchasedetailnew.GSTType as GSTTypex, purchasedetailnew.WholeSalePrice, purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.PaymentStatus,  barcodemasternew.*, purchasemasternew.SupplierID FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID  LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} AND purchasedetailnew.Status = 1 and barcodemasternew.CurrentStatus = 'Available' ` +
+                Parem +
+                " Group By barcodemasternew.PurchaseDetailID, barcodemasternew.ShopID" + " HAVING barcodemasternew.Status = 1";
+
+            let data = await connection.query(qry);
+
+            let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            const values = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        values.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        values.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+
+            if (data.length) {
+                for (const item of data) {
+                    item.DiscountAmount = item.UnitPrice * item.Count * item.DiscountPercentage / 100
+                    item.SubTotal = (item.Count * item.UnitPrice) - item.DiscountAmount
+                    item.GSTAmount = (item.UnitPrice * item.Count - item.DiscountAmount) * item.GSTPercentage / 100
+                    item.TotalAmount = item.SubTotal + item.GSTAmount
+
+                    response.calculation[0].totalQty += item.Count
+                    response.calculation[0].totalGstAmount += item.GSTAmount
+                    response.calculation[0].totalAmount += item.TotalAmount
+                    response.calculation[0].totalDiscount += item.DiscountAmount
+                    response.calculation[0].totalUnitPrice += item.UnitPrice
+
+                    if (values) {
+                        values.forEach(e => {
+                            if (e.GSTType === item.GSTType) {
+                                e.Amount += item.GSTAmount
+                            }
+
+                            // CGST-SGST
+
+                            if (item.GSTType === 'CGST-SGST') {
+
+                                if (e.GSTType === 'CGST') {
+                                    e.Amount += item.GSTAmount / 2
+                                }
+
+                                if (e.GSTType === 'SGST') {
+                                    e.Amount += item.GSTAmount / 2
+                                }
+                            }
+                        })
+                    }
+
+                }
+
+
+            }
+
+            response.calculation[0].gst_details = values;
+            response.data = data
+            response.message = "success";
+            // connection.release()
+            res.send(response)
+
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+
+    },
+
     // purchase return
 
     getPurchaseReturnList: async (req, res, next) => {
         const connection = await mysql.connection();
         try {
 
-            const response = { data: null, success: true, message: "", count : 0 }
+            const response = { data: null, success: true, message: "", count: 0 }
             const { Parem } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -1792,9 +1912,9 @@ module.exports = {
             let shopId = ``
 
             if (Parem === "" || Parem === undefined || Parem === null) {
-              if (shopid !== 0) {
-                shopId = `and purchasemasternew.ShopID = ${shopid}`
-              }  
+                if (shopid !== 0) {
+                    shopId = `and purchasemasternew.ShopID = ${shopid}`
+                }
             }
 
             qry = `SELECT COUNT(barcodemasternew.ID) AS Count,purchasedetailnew.BrandType, purchasedetailnew.ID as PurchaseDetailID , purchasedetailnew.UnitPrice, purchasedetailnew.Quantity, purchasedetailnew.ID, purchasedetailnew.DiscountAmount, purchasedetailnew.TotalAmount, supplier.Name AS SupplierName, shop.Name AS ShopName, shop.AreaName AS AreaName, purchasedetailnew.ProductName, purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice, purchasedetailnew.SubTotal, purchasedetailnew.DiscountPercentage, purchasedetailnew.GSTPercentage as GSTPercentagex, purchasedetailnew.GSTAmount, purchasedetailnew.GSTType as GSTTypex, purchasedetailnew.WholeSalePrice, purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.PaymentStatus,  barcodemasternew.*, purchasemasternew.SupplierID FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID  LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} AND barcodemasternew.CurrentStatus = 'Available' AND purchasemasternew.PStatus =0 and purchasedetailnew.Status = 1  ${shopId} ` + Parem + " Group By barcodemasternew.PurchaseDetailID, barcodemasternew.ShopID" + " HAVING barcodemasternew.Status = 1";
