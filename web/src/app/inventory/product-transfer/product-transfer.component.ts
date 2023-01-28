@@ -157,7 +157,7 @@ export class ProductTransferComponent implements OnInit {
   }
 
   dropdownShoplist(){
-    const subs: Subscription = this.ss.dropShoplist().subscribe({
+    const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
       next: (res: any) => {
           let shop = res.data
           this.shopList = shop.filter((s:any) => s.ID !== Number(this.selectedShop[0]));

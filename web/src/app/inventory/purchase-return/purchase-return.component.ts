@@ -27,22 +27,21 @@ export class PurchaseReturnComponent implements OnInit {
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
 
   id: any;
+  SearchBarCode: any;
+  searchValue: any;
   selectedProduct: any;
   prodList:any;
   specList: any;
-  ShopMode = 'false';
-  SummaryList:any;
-  shopList:any;
-  supplierList:any;
-  modalData : any;
-  returnQuantity : any;
-  remark : any = '';
-  
-  currentPage = 1;
-  itemsPerPage = 10;
-  pageSize!: number;
-  collectionSize = 0
-  page = 4;
+  shopList: any;
+  supplierList: any;
+  shopLists: any;
+  barCodeList: any;
+  xferList: any;
+  showAdd = false;
+  shopMode = 'false';
+  item: any;
+  itemList: any;
+  Req :any= {SearchBarCode : ''}
  
 
   constructor(
@@ -59,14 +58,20 @@ export class PurchaseReturnComponent implements OnInit {
     this.id = this.route.snapshot.params['id'];
   }
 
-  data:any = {PurchaseID: 0, ShopID: 0, ProductCategory : 0, ProductName:'', SupplierID: 0,  };
+  xferItem: any = {
+    ID: null, ProductName: null, Barcode: null, BarCodeCount: null, SupplierID: null, ShopID: null,  CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null,RetrunQuantity:0, Remark : '',SystemCN:'',SupplierCN:'',
+  };
+
+  selectedPurchaseMaster: any = {
+    ID: null, SupplierID: null, SupplierName: null, CompanyID: null, GSTNo: null, ShopID: null, ShopName: null, PurchaseDate: null,
+    PaymentStatus: null, InvoiceNo: null, Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0,
+    GSTAmount: 0, TotalAmount: 0, preOrder:false,
+  };
 
   ngOnInit(): void {
     this.getProductList();
     this.dropdownShoplist();
-    this.dropdownSupplierlist();
-    this.getList();
-    
+    this.dropdownSupplierlist(); 
   }
 
   dropdownShoplist(){
@@ -100,26 +105,15 @@ export class PurchaseReturnComponent implements OnInit {
   }
 
   getFieldList(){
-    if(this.data.ProductCategory !== 0){
-      this.prodList.forEach((element: any) => {
-        if (element.ID === this.data.ProductCategory) {
-          this.selectedProduct = element.Name;
-        }
-      })
-      const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
-        next: (res: any) => {
-        this.specList = res.data;
-        this.getSptTableData();
-       },
-       error: (err: any) => console.log(err.message),
-       complete: () => subs.unsubscribe(),
-     });
-    }
-    else {
-      this.specList = [];
-      this.data.ProductName = '';
-      this.data.ProductCategory = 0;
-    }
+    const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
+       next: (res: any) => {
+       this.specList = res.data;
+       this.getSptTableData();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+   
   }
 
   getSptTableData() { 
@@ -152,7 +146,46 @@ export class PurchaseReturnComponent implements OnInit {
      });
   }
 
-  onChange(event: any) {
+  getProductDataByBarCodeNo(){
+    const subs: Subscription =  this.purchaseService.productDataByBarCodeNo(this.Req, 'false', 'false').subscribe({
+      next: (res: any) => {
+        this.item  = res.data;
+        if (this.item.Barcode === null) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Product Not Available in this Shop for Selected Barcode for Transfer.',
+            text: ' Please Check the Barcode. ',
+            footer: '',
+            backdrop : false,
+          });
+        }else{
+          this.xferItem.ProductName = (this.item .ProductTypeName + '/' +  this.item.ProductName).toUpperCase();
+          this.xferItem.Barcode = this.item.Barcode;
+          this.xferItem.BarCodeCount = this.item.BarCodeCount;
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getBarCodeList(index:any) {
+    let searchString = "";
+    this.specList.forEach((element: any, i: any) => {
+      if (i <= index) {
+        searchString = searchString + element.SelectedValue + "/" ;
+      }
+    });
+    const subs: Subscription =  this.purchaseService.barCodeListBySearchString(this.shopMode,this.selectedProduct, searchString).subscribe({
+      next: (res: any) => {
+        this.barCodeList = res.data;
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
     if (this.companysetting.DataFormat === '1') {
       event = event.toUpperCase()
     } else if (this.companysetting.DataFormat == '2') {
@@ -161,97 +194,9 @@ export class PurchaseReturnComponent implements OnInit {
     return event;
   }
 
-  filter() {
-    let productName = '';
-    this.specList.forEach((element: any) => {
-     if (productName === '') {
-        productName = element.SelectedValue;
-     } else if (element.SelectedValue !== '') {
-        productName += '/' + element.SelectedValue;
-     }
-    });
-    this.data.ProductName = productName;
+  addItem(){
+    this.xferItem
+    this.itemList.unshift(this.xferItem);
+          
   }
-
-  getReturnData(){
-    let Parem = '';
-    const dtm = { 
-      Parem : "",
-      currentPage: 1,
-      itemsPerPage: 50000
-    }
-
-    if (this.data.ProductCategory  !== 0){
-      Parem = Parem + ' and purchasedetailnew.ProductTypeID = ' +  this.data.ProductCategory ;
-      this.filter();}
-
-    if (this.data.ProductName !== '') {
-      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + '"' + this.data.ProductName + '%"';}
-
-    if (this.data.ShopID !== 0){
-      Parem = Parem + ' and barcodemasternew.ShopID IN ' +  `(${this.data.ShopID})`;}
-
-    if (this.data.SupplierID !== 0){
-      Parem = Parem + ' and purchasemasternew.SupplierID = ' +  this.data.SupplierID;}
-
-      dtm.Parem = Parem
-
-    const subs: Subscription =  this.purchaseService.getPurchaseReturnList(dtm).subscribe({
-      next: (res: any) => {
-        if(res.message){
-          this.as.successToast(res.message)
-          this.collectionSize = 1;
-          this.SummaryList = res.data;
-        }
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
-
-  changePagesize(num: number): void {
-    this.itemsPerPage = this.pageSize + num;
-  }
-
-  getList() {
-    const dtm = {
-      Parem : "",
-      currentPage: this.currentPage,
-      itemsPerPage: this.itemsPerPage
-    }
-    const subs: Subscription = this.purchaseService.getPurchaseReturnList(dtm).subscribe({
-      next: (res: any) => {
-        this.collectionSize = res.count;
-        this.SummaryList = res.data;
-        this.as.successToast(res.message)
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
-
-  openModal(content: any,data:any) {
-    this.modalData = data
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'md'});
-  }
-
-  purchasereturn() {
-    if(this.returnQuantity <= this.modalData.Count) {
-      this.modalData.ReturnQuantity = this.returnQuantity;
-      this.modalData.Remark = this.remark;
-      console.log(this.modalData);
-      this.modalService.dismissAll();
-    }else{
-      Swal.fire({
-        position: 'center',
-        icon: 'warning',
-        title:'Oops!!!',
-        text: 'Reqested Item Quantity not available. Please change the Quantity',
-        showConfirmButton: true,
-        backdrop : false,
-      })
-      this.returnQuantity = 0;
-    }
-  }
-
 }

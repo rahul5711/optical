@@ -26,9 +26,7 @@ export class ServiceReportComponent implements OnInit {
 
   shopList :any;
   PurchaseChargeList :any;
-  DetailtotalQty: any;
-  DetailtotalDiscount: any;
-  DetailtotalUnitPrice: any;
+  DetailAmount:any
   DetailtotalAmount: any;
   DetailtotalGstAmount: any;
   gstdetails:any
@@ -70,8 +68,8 @@ export class ServiceReportComponent implements OnInit {
         if(res.message){
           this.as.successToast(res.message)
           this.PurchaseChargeList = res.data
+          this.DetailAmount = res.calculation[0].totalAmount.toFixed(2);
           this.DetailtotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
-          this.DetailtotalAmount = res.calculation[0].totalAmount.toFixed(2);
           this.gstdetails = res.calculation[0].gst_details
         }
       },
