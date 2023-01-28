@@ -1,0 +1,158 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                    <div class="card p-0">
+                        <div class="header p-2 py-0 pt-1">
+                            <div class="row">
+                                <div class="col-md-2 col-8 p-0 ms-3">
+                                    <h2>Service & Charge Report </h2>
+                                </div>
+                            </div>
+                        </div>
+                        <mat-tab-group>
+                            <!-- Purchase Charge -->
+                            <mat-tab label="Purchase Charge">
+                                <div class="body">
+                                    <form class="p-3 pb-0" #f="ngForm" (ngSubmit)="purchaseCharge()">
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>From Date</mat-label>
+                                                    <input matInput name="FromDate" type="date"
+                                                        [(ngModel)]="charge.FromDate" #DOBcontrol />
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>To Date</mat-label>
+                                                    <input matInput name="ToDate" type="date"
+                                                        [(ngModel)]="charge.ToDate" />
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0 ">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Shop Name</mat-label>
+                                                    <mat-select name="shopID" [(ngModel)]="charge.ShopID" multiple>
+                                                        <mat-option [value]=0>All</mat-option>
+                                                        <mat-option [value]="s.ID" *ngFor="let s of shopList">
+                                                            {{s.Name}}
+                                                            <span [style.color]="'blue'"
+                                                                *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button class="ml-0" mat-raised-button
+                                                    color="primary"><mat-icon>search</mat-icon> Search</button>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button class="mr-0" type="button" mat-raised-button color="warn"
+                                                    (click)="f.reset()"><mat-icon>refresh</mat-icon> Reset</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <div class="body p-2">
+                                        <div class="col-sm-12" style="overflow: auto; height: 450px;">
+                                            <table class="table table-striped table-hover table-sm table-bordered"
+                                                style="border: 2px solid #fff !important;" id="purchaseChargeExcel">
+                                                <thead>
+                                                    <tr style="white-space: nowrap;">
+                                                        <th>S.No</th>
+                                                        <th>ShopName</th>
+                                                        <th>InvoiceNo</th>
+                                                        <th>Description</th>
+                                                        <th>Amount</th>
+                                                        <th>GST Type</th>
+                                                        <th>GST%</th>
+                                                        <th>GST Amount</th>
+                                                        <th>GrandTotal</th>
+                                                    </tr>
+                                                    <tr class="totolRow">
+                                                        <td>
+                                                            <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
+                                                                aria-hidden="true" type="button"
+                                                                (click)="exportAsXLSXDetail()">
+                                                            </i>
+                                                            <i class="far fa-file-pdf ms-4"
+                                                                style="color: #2433be;font-size: 22px;cursor: pointer;"
+                                                                (click)="PDFdetail()">
+                                                            </i>
+                                                        </td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>{{this.DetailtotalAmount}}</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td data-mdb-toggle="modal" data-mdb-target="#exampleModal"
+                                                            (click)="openModal(content)">
+                                                            {{this.DetailtotalGstAmount}}</td>
+                                                        <td></td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="text-center">
+                                                    <tr *ngFor="let c of PurchaseChargeList; let i = index" text="left">
+                                                        <td> {{i+1 }} </td>
+                                                        <td>{{c.ShopName}}<span [style.color]="'blue'"
+                                                                *ngIf="c.AreaName !== 'null'">({{c.AreaName}})</span>
+                                                        </td>
+                                                        <td>{{c.InvoiceNo}}</td>
+                                                        <td>{{c.Description}}</td>
+                                                        <td>{{c.Amount}}</td>
+                                                        <td>{{c.GSTType}}</td>
+                                                        <td>{{c.GSTPercentage}}%</td>
+                                                        <td>{{c.GSTAmount}}</td>
+                                                        <td>{{c.TotalAmount}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </mat-tab>
+                            <!-- Purchase Charge-->
+                            <mat-tab label="Bill Service">
+
+                            </mat-tab>
+                        </mat-tab-group>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- model -->
+<ng-template #content role="document" let-modal>
+    <div class="modal-header" style="height: 50px;">
+        <h3 class="modal-title header pt-2" id="exampleModalLabel">GST Amount List</h3>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <table class="table table-striped table-hover table-sm table-bordered"
+                style="border: 2px solid #fff !important;">
+                <thead>
+                    <tr>
+                        <th>GSTType</th>
+                        <th>GSTAmount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-center" *ngFor="let gst of gstdetails let i = index;">
+                        <td>{{gst.GSTType}}</td>
+                        <td>{{gst.Amount}}</td>
+                    </tr>
+                </tbody>
+                <tfoot class="text-center">
+                    <tr>
+                        <th style="color: red; font-weight: 600;">Total Amt</th>
+                        <th style="color: red; font-weight: 600;">{{this.DetailtotalGstAmount}}</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</ng-template>

@@ -278,7 +278,6 @@ export class PurchaseReportComponent implements OnInit {
           this.DetailtotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
           this.DetailtotalAmount = res.calculation[0].totalAmount.toFixed(2);
           this.gstdetails = res.calculation[0].gst_details
-          console.log(this.gstdetails,'tt');
         }
       },
       error: (err: any) => console.log(err.message),

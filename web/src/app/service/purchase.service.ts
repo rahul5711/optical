@@ -167,6 +167,16 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+  getProductInventoryReport(Parem:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getProductInventoryReport',{Parem:Parem}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getPurchaseChargeReport(Parem:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getPurchaseChargeReport',{Parem:Parem}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

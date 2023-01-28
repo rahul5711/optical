@@ -25,11 +25,15 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { SharedModule } from "../shared/shared.module";
 import { TransferProductReportComponent } from './transfer-product-report/transfer-product-report.component';
+import { InventoryReportComponent } from './inventory-report/inventory-report.component';
+import { ServiceReportComponent } from './service-report/service-report.component';
 
 @NgModule({
   declarations: [
     PurchaseReportComponent,
     TransferProductReportComponent,
+    InventoryReportComponent,
+    ServiceReportComponent,
 
   ],
   imports: [
