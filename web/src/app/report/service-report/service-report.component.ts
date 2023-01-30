@@ -35,6 +35,10 @@ export class ServiceReportComponent implements OnInit {
     FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0
   };
 
+  service: any =  { 
+    FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0
+  };
+
   ngOnInit(): void {
     this.dropdownShoplist();
   }
@@ -48,7 +52,7 @@ export class ServiceReportComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
-
+ // purchaseCharge
   purchaseCharge(){
     let Parem = '';
 
