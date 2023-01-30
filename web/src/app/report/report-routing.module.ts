@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { EyetestReportComponent } from './eyetest-report/eyetest-report.component';
 import { InventoryReportComponent } from './inventory-report/inventory-report.component';
+import { ProductExpiryReportComponent } from './product-expiry-report/product-expiry-report.component';
+import { ProductSummaryReportComponent } from './product-summary-report/product-summary-report.component';
 import { PurchaseReportComponent } from './purchase-report/purchase-report.component';
 import { ServiceReportComponent } from './service-report/service-report.component';
 import { TransferProductReportComponent } from './transfer-product-report/transfer-product-report.component';
@@ -12,6 +15,9 @@ const routes: Routes = [
     { path: 'product-transfer', component: TransferProductReportComponent },
     { path: 'inventory', component: InventoryReportComponent },
     { path: 'service', component: ServiceReportComponent },
+    { path: 'product-summary', component: ProductSummaryReportComponent },
+    { path: 'product-expiry', component: ProductExpiryReportComponent },
+    { path: 'eyetest', component: EyetestReportComponent },
   ]}
   ]
 
