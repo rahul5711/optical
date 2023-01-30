@@ -56,6 +56,9 @@ export class InventoryReportComponent implements OnInit {
     this.dropdownSupplierlist();
     this.getProductList();
     this.getGSTList();
+    this.inventory.FromDate = moment().format('YYYY-MM-DD');
+    this.inventory.ToDate = moment().format('YYYY-MM-DD');
+    this.getInventory()
   }
 
   dropdownShoplist(){
