@@ -51,6 +51,10 @@ export class InventoryReportComponent implements OnInit {
     FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0, Barcode:'', CurrentStatus:'Available', PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
   };
 
+  data: any =  {
+    FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'),SupplierID:0, ShopID: 0, 
+  };
+
   ngOnInit(): void {
     this.dropdownShoplist();
     this.dropdownSupplierlist();

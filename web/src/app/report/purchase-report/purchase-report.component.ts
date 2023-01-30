@@ -43,6 +43,13 @@ export class PurchaseReportComponent implements OnInit {
   DetailtotalAmount: any;
   DetailtotalGstAmount: any;
   gstdetails:any
+
+
+  PurchaseChargeList :any;
+  ChargeAmount:any
+  ChargetotalAmount: any;
+  ChargetotalGstAmount: any;
+  gstCharge:any
   
   constructor(
     private router: Router,
@@ -62,6 +69,15 @@ export class PurchaseReportComponent implements OnInit {
   };
 
   PurchaseDetail: any =  {
+    FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
+    PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
+  };
+
+  charge: any =  { 
+    FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0
+  };
+
+  ProductExpiry: any =  {
     FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
     PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
   };
@@ -322,4 +338,58 @@ export class PurchaseReportComponent implements OnInit {
   openModal(content: any) {
     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
   }
+
+   // purchaseCharge
+  purchaseCharge(){
+    let Parem = '';
+
+    if (this.charge.FromDate !== '' && this.charge.FromDate !== null){
+      let FromDate =  moment(this.charge.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and purchasemasternew.PurchaseDate between ' +  `'${FromDate}'`; }
+
+    if (this.charge.ToDate !== '' && this.charge.ToDate !== null){
+      let ToDate =  moment(this.charge.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' +  `'${ToDate}'`; }
+
+    if (this.charge.ShopID != 0){
+      Parem = Parem + ' and purchasemasternew.ShopID IN ' +  `(${this.charge.ShopID})`;}
+
+    const subs: Subscription =  this.purchaseService.getPurchaseChargeReport(Parem).subscribe({
+      next: (res: any) => {
+        if(res.message){
+          this.as.successToast(res.message)
+          this.PurchaseChargeList = res.data
+          this.ChargeAmount = res.calculation[0].totalAmount.toFixed(2);
+          this.ChargetotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
+          this.gstCharge = res.calculation[0].gst_details
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  exportAsXLSXcharge(): void {
+    let element = document.getElementById('purchaseChargeExcel');
+    const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'PurchaseCharge_Report.xlsx');
+  }
+
+  purchaseChargeFromReset(){
+    this.charge =  { 
+      FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0
+    };
+    this.PurchaseChargeList = [];
+    this.ChargeAmount = ''
+    this.ChargetotalGstAmount = ''
+    this.gstCharge = ''
+  }
+
+  openModal1(content1: any) {
+    this.modalService.open(content1, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+  }
+
+  // purchase product expiry
 }

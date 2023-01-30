@@ -26,20 +26,16 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { SharedModule } from "../shared/shared.module";
 import { TransferProductReportComponent } from './transfer-product-report/transfer-product-report.component';
 import { InventoryReportComponent } from './inventory-report/inventory-report.component';
-import { ServiceReportComponent } from './service-report/service-report.component';
-import { ProductSummaryReportComponent } from './product-summary-report/product-summary-report.component';
 import { EyetestReportComponent } from './eyetest-report/eyetest-report.component';
-import { ProductExpiryReportComponent } from './product-expiry-report/product-expiry-report.component';
+
 
 @NgModule({
   declarations: [
     PurchaseReportComponent,
     TransferProductReportComponent,
     InventoryReportComponent,
-    ServiceReportComponent,
-    ProductSummaryReportComponent,
     EyetestReportComponent,
-    ProductExpiryReportComponent,
+
 
   ],
   imports: [
