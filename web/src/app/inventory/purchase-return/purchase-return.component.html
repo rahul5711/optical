@@ -272,14 +272,15 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ml-auto">
-                                    <button type="button" class="mr-3" mat-raised-button
-                                        color="primary">Print</button>
-                                </div>
                                 <div  class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ml-auto">
-                                    <button type="submit"  mat-raised-button color="primary">Save
-                                        </button>
+                                    <button type="submit"  mat-raised-button color="primary">Save</button>
                                 </div>
+                                <div class="col-xl-2 col-lg-2 col-md-1 col-sm-1 mb-0 ml-auto">
+                                    <button  class="mr-1 shopPdf" type="button" ><i class="fa-sharp fa-solid fa-file-pdf"></i></button>
+                                    <button class="whatsapp ms-4 me-4"><i class="fa-brands fa-whatsapp" ></i> </button>
+                                    <button class="email"> <i class="fa-solid fa-envelope"></i></button>
+                                </div>
+                                
                                 <div *ngIf="selectedPurchaseMaster.ID !== null" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 mr-3">
                                     <button type="button" [disabled]="itemList.length === 0"   mat-raised-button
                                         color="primary">Update</button>
