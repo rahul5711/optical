@@ -76,7 +76,9 @@ router.post('/getPurchaseChargeReport', verifyAccessTokenAdmin, Controller.getPu
 
 
 // purchase return
-router.post('/getPurchaseReturnList', verifyAccessTokenAdmin, Controller.getPurchaseReturnList)
+router.post('/barCodeListBySearchStringPR', verifyAccessTokenAdmin, Controller.barCodeListBySearchStringPR)
+
+router.post('/productDataByBarCodeNoPR', verifyAccessTokenAdmin, Controller.productDataByBarCodeNoPR)
 
 
 module.exports = router

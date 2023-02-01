@@ -2000,43 +2000,32 @@ module.exports = {
 
     // purchase return
 
-    getPurchaseReturnList: async (req, res, next) => {
+    barCodeListBySearchStringPR: async (req, res, next) => {
         const connection = await mysql.connection();
         try {
-
-            const response = { data: null, success: true, message: "", count: 0 }
-            const { Parem } = req.body;
+            const response = { data: null, success: true, message: "" }
+            const { searchString, ShopMode, ProductName } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-            const Body = req.body;
 
+            if (searchString === "" || searchString === undefined || searchString === null) return res.send({ message: "Invalid Query Data" })
 
-            let page = Body.currentPage || 1;
-            let limit = Body.itemsPerPage || 10;
-            let skip = page * limit - limit;
+            let SearchString = searchString + "%";
+            let shopMode = ``;
 
-            let shopId = ``
-
-            if (Parem === "" || Parem === undefined || Parem === null) {
-                if (shopid !== 0) {
-                    shopId = `and purchasemasternew.ShopID = ${shopid}`
-                }
+            if (ShopMode === "false" || ShopMode === false) {
+                shopMode = " And barcodemasternew.ShopID = " + shopid;
+            }
+            if (ShopMode === "true" || ShopMode === true) {
+                shopMode = " ";
             }
 
-            qry = `SELECT COUNT(barcodemasternew.ID) AS Count,purchasedetailnew.BrandType, purchasedetailnew.ID as PurchaseDetailID , purchasedetailnew.UnitPrice, purchasedetailnew.Quantity, purchasedetailnew.ID, purchasedetailnew.DiscountAmount, purchasedetailnew.TotalAmount, supplier.Name AS SupplierName, shop.Name AS ShopName, shop.AreaName AS AreaName, purchasedetailnew.ProductName, purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice, purchasedetailnew.SubTotal, purchasedetailnew.DiscountPercentage, purchasedetailnew.GSTPercentage as GSTPercentagex, purchasedetailnew.GSTAmount, purchasedetailnew.GSTType as GSTTypex, purchasedetailnew.WholeSalePrice, purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.PaymentStatus,  barcodemasternew.*, purchasemasternew.SupplierID FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID  LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} AND barcodemasternew.CurrentStatus = 'Available' AND purchasemasternew.PStatus =0 and purchasedetailnew.Status = 1  ${shopId} ` + Parem + " Group By barcodemasternew.PurchaseDetailID, barcodemasternew.ShopID" + " HAVING barcodemasternew.Status = 1";
+            const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, purchasedetailnew.ProductName, purchasedetailnew.UnitPrice, purchasedetailnew.DiscountPercentage, purchasedetailnew.DiscountAmount,purchasedetailnew.GSTPercentage, purchasedetailnew.GSTAmount, purchasedetailnew.GSTType,barcodemasternew.* FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE purchasedetailnew.ProductTypeName = '${ProductName}' ${shopMode} AND purchasedetailnew.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus = "Available"   AND purchasedetailnew.Status = 1  and shop.Status = 1 and purchasemasternew.PStatus = 0  And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
 
-            let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
+            let purchaseData = await connection.query(qry);
+            response.data = purchaseData;
+            response.message = "Success";
 
-
-            let finalQuery = qry + skipQuery;
-
-            let data = await connection.query(finalQuery);
-            let count = await connection.query(qry);
-
-            response.message = "data fetch sucessfully"
-            response.data = data
-            response.count = count.length
             // connection.release()
             res.send(response)
 
@@ -2048,5 +2037,45 @@ module.exports = {
             await connection.release();
         }
     },
+
+    productDataByBarCodeNoPR: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const { Req, PreOrder, ShopMode } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (Req.SearchBarCode === "" || Req.SearchBarCode === undefined || Req.SearchBarCode === null) return res.send({ message: "Invalid Query Data" })
+
+            let barCode = Req.SearchBarCode;
+            let qry = "";
+            if (PreOrder === "false") {
+                let shopMode = "";
+                if (ShopMode === "false") {
+                    shopMode = " And barcodemasternew.ShopID = " + shopid;
+                } else {
+                    shopMode = " Group By barcodemasternew.ShopID ";
+                }
+                qry = `SELECT COUNT(PurchaseDetailID) AS BarCodeCount, purchasedetailnew.UnitPrice, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage, purchasedetailnew.GSTAmount, purchasedetailnew.DiscountAmount, purchasedetailnew.DiscountPercentage,purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName,purchasedetailnew.ProductTypeID, barcodemasternew.*  FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE CurrentStatus = "Available" AND barcodemasternew.Barcode = '${barCode}' and purchasedetailnew.Status = 1  and purchasedetailnew.PurchaseID != 0 and  purchasedetailnew.CompanyID = '${CompanyID}' ${shopMode}`;
+            } else {
+                qry = `SELECT COUNT(PurchaseDetailID) AS BarCodeCount,purchasedetailnew.UnitPrice, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage,purchasedetailnew.GSTAmount, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice,purchasedetailnew.DiscountAmount, purchasedetailnew.DiscountPercentage, purchasedetailnew.ProductTypeID, barcodemasternew.*  FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.Barcode = '${barCode}' and PurchaseDetail.Status = 1 AND barcodemasternew.CurrentStatus = 'Pre Order'  and purchasedetailnew.CompanyID = '${CompanyID}'`;
+            }
+
+            let barCodeData = await connection.query(qry);
+            response.data = barCodeData[0];
+            response.message = "Success";
+            // connection.release()
+            res.send(response)
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+
 
 }
