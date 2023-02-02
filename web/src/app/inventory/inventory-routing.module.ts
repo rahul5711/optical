@@ -7,6 +7,7 @@ import { PreOrderComponent } from './pre-order/pre-order.component';
 import { PreorderListComponent } from './preorder-list/preorder-list.component';
 import { ProductTransferComponent } from './product-transfer/product-transfer.component';
 import { PurchaseListComponent } from './purchase-list/purchase-list.component';
+import { PurchaseReturnListComponent } from './purchase-return-list/purchase-return-list.component';
 import { PurchaseReturnComponent } from './purchase-return/purchase-return.component';
 import { PurchaseComponent } from './purchase/purchase.component';
 import { SearchBarcodeComponent } from './search-barcode/search-barcode.component';
@@ -25,7 +26,8 @@ const routes: Routes = [
     { path: 'inventory-summary', component: InventorySummaryComponent },  
     { path: 'pre-order/:id', component: PreOrderComponent },  
     { path: 'preOrderList', component: PreorderListComponent },  
-    { path: 'purchase-return', component: PurchaseReturnComponent },  
+    { path: 'purchase-return/:id', component: PurchaseReturnComponent },  
+    { path: 'purchase-returnList', component: PurchaseReturnListComponent },  
   ]}
   ]
 

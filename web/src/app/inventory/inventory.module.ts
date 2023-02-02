@@ -32,6 +32,7 @@ import { InventorySummaryComponent } from './inventory-summary/inventory-summary
 import { PreOrderComponent } from './pre-order/pre-order.component';
 import { PreorderListComponent } from './preorder-list/preorder-list.component';
 import { PurchaseReturnComponent } from './purchase-return/purchase-return.component';
+import { PurchaseReturnListComponent } from './purchase-return-list/purchase-return-list.component';
 
 
 @NgModule({
@@ -46,7 +47,8 @@ import { PurchaseReturnComponent } from './purchase-return/purchase-return.compo
     InventorySummaryComponent,
     PreOrderComponent,
     PreorderListComponent,
-    PurchaseReturnComponent
+    PurchaseReturnComponent,
+    PurchaseReturnListComponent
   ],
   imports: [
     CommonModule,

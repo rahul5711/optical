@@ -177,6 +177,17 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+  barCodeListBySearchStringPR( ShopMode:any, ProductName:any, searchString:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/barCodeListBySearchStringPR', {ShopMode:ShopMode, ProductName:ProductName, searchString:searchString}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  productDataByBarCodeNoPR(Req:any, PreOrder:any, ShopMode:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/productDataByBarCodeNoPR', {Req:Req, PreOrder:PreOrder, ShopMode:ShopMode}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

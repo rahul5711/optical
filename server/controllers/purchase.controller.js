@@ -2042,6 +2042,7 @@ module.exports = {
         const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
+            console.log(req.body);
             const { Req, PreOrder, ShopMode } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;

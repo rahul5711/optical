@@ -5,12 +5,11 @@ import { AlertService } from 'src/app/service/helpers/alert.service';
 import { ProductService } from 'src/app/service/product.service';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { ShopService } from 'src/app/service/shop.service';
 import { SupplierService } from 'src/app/service/supplier.service';
-import { ExcelService } from 'src/app/service/helpers/excel.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CalculationService } from 'src/app/service/helpers/calculation.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-purchase-return',
@@ -34,15 +33,13 @@ export class PurchaseReturnComponent implements OnInit {
   specList: any;
   shopList: any;
   supplierList: any;
-  shopLists: any;
   barCodeList: any;
   xferList: any;
   showAdd = false;
   shopMode = 'false';
   item: any;
-  itemList: any;
-  Req :any= {SearchBarCode : ''}
- 
+  itemList: any = [];
+  Req :any= {SearchBarCode : ''} 
 
   constructor(
     private router: Router,
@@ -51,22 +48,23 @@ export class PurchaseReturnComponent implements OnInit {
     private purchaseService: PurchaseService,
     private ss: ShopService,
     private sup: SupplierService,
-    private excelService: ExcelService,
     public as: AlertService,
-    private modalService: NgbModal,
+    public calculation: CalculationService,
+
   ){
     this.id = this.route.snapshot.params['id'];
   }
 
   xferItem: any = {
-    ID: null, ProductName: null, Barcode: null, BarCodeCount: null, SupplierID: null, ShopID: null,  CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null,RetrunQuantity:0, Remark : '',SystemCN:'',SupplierCN:'',
+    ID: null, ProductName: null, Barcode: null, BarCodeCount: null, Quantity:0, Remark : '', UnitPrice: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00,  CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null, 
   };
 
   selectedPurchaseMaster: any = {
-    ID: null, SupplierID: null, SupplierName: null, CompanyID: null, GSTNo: null, ShopID: null, ShopName: null, PurchaseDate: null,
-    PaymentStatus: null, InvoiceNo: null, Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0,
-    GSTAmount: 0, TotalAmount: 0, preOrder:false,
+    ID: null, CompanyID: null, SupplierID: null,  ShopID: null, SystemCN:'', SupplierCN:'',  Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, TotalAmount: 0, 
   };
+
+  data:any = { PurchaseRetureMaster: null, PurchaseRetureDateil: null };
+
 
   ngOnInit(): void {
     this.getProductList();
@@ -147,7 +145,7 @@ export class PurchaseReturnComponent implements OnInit {
   }
 
   getProductDataByBarCodeNo(){
-    const subs: Subscription =  this.purchaseService.productDataByBarCodeNo(this.Req, 'false', 'false').subscribe({
+    const subs: Subscription =  this.purchaseService.productDataByBarCodeNoPR(this.Req, 'false', 'false').subscribe({
       next: (res: any) => {
         this.item  = res.data;
         if (this.item.Barcode === null) {
@@ -176,7 +174,7 @@ export class PurchaseReturnComponent implements OnInit {
         searchString = searchString + element.SelectedValue + "/" ;
       }
     });
-    const subs: Subscription =  this.purchaseService.barCodeListBySearchString(this.shopMode,this.selectedProduct, searchString).subscribe({
+    const subs: Subscription =  this.purchaseService.barCodeListBySearchStringPR(this.shopMode,this.selectedProduct, searchString).subscribe({
       next: (res: any) => {
         this.barCodeList = res.data;
       },
@@ -194,9 +192,50 @@ export class PurchaseReturnComponent implements OnInit {
     return event;
   }
 
-  addItem(){
-    this.xferItem
-    this.itemList.unshift(this.xferItem);
-          
+  calculateFields(){
+    this.xferItem.UnitPrice = this.item .UnitPrice ;
+    this.xferItem.DiscountPercentage = this.item.DiscountPercentage;
+    this.xferItem.DiscountAmount = this.item.DiscountAmount ;
+    this.xferItem.GSTPercentage = this.item.GSTPercentage ;
+    this.xferItem.GSTAmount = this.item .GSTAmount ;
+    this.xferItem.GSTType = this.item .GSTType ;
+    this.xferItem.TotalAmount = this.item .TotalAmount ;
+    this.calculation.calculateFields('','',this.xferItem,'')
   }
+ 
+  calculateGrandTotal(){
+    this.calculation.calculateGrandTotal(this.selectedPurchaseMaster, this.itemList, '')
+  }
+
+  addItem(){
+    if(this.item.BarCodeCount >= this.xferItem.Quantity ){
+      this.calculateFields()
+      this.itemList.unshift(this.xferItem);
+      this.calculateGrandTotal();
+      this.xferItem = []
+      this.item = []
+      this.barCodeList = []
+      this.prodList = []
+      this.specList  = []
+      this.Req = {SearchBarCode : ''}
+    }else{
+      Swal.fire({
+        icon: 'warning',
+        title: 'Opps !!',
+        text: 'Return Quantity Can Not Be More Than Available Quantity',
+        footer: '',
+        backdrop : false,
+      });
+      this.xferItem.Quantity = 0;
+    }
+   
+  }
+
+  onSumbit(){
+    this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
+    this.data.PurchaseRetureMaster = this.selectedPurchaseMaster;
+    this.data.PurchaseRetureDateil = JSON.stringify(this.itemList);
+    console.log(this.data);
+  }
+
 }
