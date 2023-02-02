@@ -70,6 +70,12 @@ router.post('/searchByFeildPreOrder', verifyAccessTokenAdmin, Controller.searchB
 
 router.post('/getProductInventoryReport', verifyAccessTokenAdmin, Controller.getProductInventoryReport)
 
+
+// product expiry report
+
+router.post('/getProductExpiryReport', verifyAccessTokenAdmin, Controller.getProductExpiryReport)
+
+
 // charge report
 
 router.post('/getPurchaseChargeReport', verifyAccessTokenAdmin, Controller.getPurchaseChargeReport)
