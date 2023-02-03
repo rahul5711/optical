@@ -18,7 +18,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"ShopMode\" : \"false\",\r\n    \"ProductName\": \"testproduct1\",\r\n    \"searchString\": \"pt-1/one\"\r\n}",
+					"raw": "{\r\n    \"ShopMode\" : \"false\",\r\n    \"ProductName\": \"testproduct-2\",\r\n    \"searchString\": \"pt-2/ptttt\",\r\n    \"SupplierID\": 1,\r\n    \"ShopID\": 1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -26,14 +26,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/purchase/barCodeListBySearchString",
+					"raw": "localhost:3000/purchase/barCodeListBySearchStringPR",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
 						"purchase",
-						"barCodeListBySearchString"
+						"barCodeListBySearchStringPR"
 					]
 				}
 			},
@@ -51,7 +51,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"ShopMode\" : \"false\",\r\n    \"ProductName\": \"testproduct1\",\r\n    \"searchString\": \"pt-1/one\"\r\n}",
+							"raw": "{\r\n    \"ShopMode\" : \"false\",\r\n    \"ProductName\": \"testproduct-2\",\r\n    \"searchString\": \"pt-2/ptttt\",\r\n    \"SupplierID\": 1,\r\n    \"ShopID\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -88,15 +88,15 @@
 						},
 						{
 							"key": "Content-Length",
-							"value": "830"
+							"value": "845"
 						},
 						{
 							"key": "ETag",
-							"value": "W/\"33e-atGgyf/VhnIngPzTaA0qoKd3Ag0\""
+							"value": "W/\"34d-SpvBkHumSzhNR/zf0S/shI/ouDk\""
 						},
 						{
 							"key": "Date",
-							"value": "Wed, 01 Feb 2023 17:04:46 GMT"
+							"value": "Fri, 03 Feb 2023 17:36:08 GMT"
 						},
 						{
 							"key": "Connection",
@@ -108,7 +108,7 @@
 						}
 					],
 					"cookie": [],
-					"body": "{\n    \"data\": [\n        {\n            \"BarCodeCount\": 8,\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"pt-1/one\",\n            \"UnitPrice\": 100,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"ID\": 7,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"PurchaseDetailID\": 2,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10001000\",\n            \"AvailableDate\": \"2023-01-04 22:05:12\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSalePrice\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"PreOrder\": 0,\n            \"TransferID\": 0,\n            \"TransferStatus\": \"\",\n            \"TransferToShop\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-01-04 22:05:12\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"SupplierID\": 0,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0\n        }\n    ],\n    \"success\": true,\n    \"message\": \"Success\"\n}"
+					"body": "{\n    \"data\": [\n        {\n            \"BarCodeCount\": 10,\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"pt-2/ptttt\",\n            \"UnitPrice\": 500,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 18,\n            \"GSTAmount\": 900,\n            \"GSTType\": \"CGST-SGST\",\n            \"ID\": 2790,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"PurchaseDetailID\": 31,\n            \"BillDetailID\": null,\n            \"Barcode\": \"10026000\",\n            \"AvailableDate\": \"2023-02-03 20:49:43\",\n            \"CurrentStatus\": \"Available\",\n            \"RetailPrice\": 0,\n            \"RetailDiscount\": 0,\n            \"TxCode\": 0,\n            \"MultipleBarcode\": 0,\n            \"ForWholeSale\": 0,\n            \"WholeSalePrice\": 0,\n            \"WholeSaleDiscount\": 0,\n            \"PreOrder\": 0,\n            \"TransferID\": 0,\n            \"TransferStatus\": \"\",\n            \"TransferToShop\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-02-03 20:49:43\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"SupplierID\": 0,\n            \"MeasurementID\": null,\n            \"Family\": \"\\\"\\\"\",\n            \"Optionsss\": \"\\\"\\\"\",\n            \"FitterID\": 0,\n            \"LensType\": null,\n            \"FitterCost\": 0,\n            \"Remark\": null,\n            \"Po\": 0\n        }\n    ],\n    \"success\": true,\n    \"message\": \"Success\"\n}"
 				}
 			]
 		},
@@ -158,7 +158,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"ShopMode\" : \"false\",\r\n    \"PreOrder\": \"false\",\r\n    \"Req\": {\r\n        \"SearchBarCode\" : \"10001000\"\r\n    }\r\n}",
+							"raw": "{\r\n    \"ShopMode\" : \"false\",\r\n    \"PreOrder\": \"false\",\r\n    \"SupplierID\": 1,\r\n    \"ShopID\": 1,\r\n    \"Req\": {\r\n        \"SearchBarCode\" : \"10026000\"\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -195,15 +195,15 @@
 						},
 						{
 							"key": "Content-Length",
-							"value": "842"
+							"value": "858"
 						},
 						{
 							"key": "ETag",
-							"value": "W/\"34a-QOm1BOyyIpFiSPivlCIeqnOs3Wg\""
+							"value": "W/\"35a-oNdQpQpFtzjvphEtDGMCEaGbVHg\""
 						},
 						{
 							"key": "Date",
-							"value": "Wed, 01 Feb 2023 17:05:52 GMT"
+							"value": "Fri, 03 Feb 2023 17:38:42 GMT"
 						},
 						{
 							"key": "Connection",
@@ -215,7 +215,7 @@
 						}
 					],
 					"cookie": [],
-					"body": "{\n    \"data\": {\n        \"BarCodeCount\": 8,\n        \"UnitPrice\": 100,\n        \"GSTType\": \"None\",\n        \"GSTPercentage\": 0,\n        \"GSTAmount\": 0,\n        \"DiscountAmount\": 0,\n        \"DiscountPercentage\": 0,\n        \"ProductName\": \"pt-1/one\",\n        \"ProductTypeName\": \"testproduct1\",\n        \"ProductTypeID\": 3,\n        \"ID\": 7,\n        \"CompanyID\": 1,\n        \"ShopID\": 1,\n        \"PurchaseDetailID\": 2,\n        \"BillDetailID\": null,\n        \"Barcode\": \"10001000\",\n        \"AvailableDate\": \"2023-01-04 22:05:12\",\n        \"CurrentStatus\": \"Available\",\n        \"RetailPrice\": 0,\n        \"RetailDiscount\": 0,\n        \"TxCode\": 0,\n        \"MultipleBarcode\": 0,\n        \"ForWholeSale\": 0,\n        \"WholeSalePrice\": 0,\n        \"WholeSaleDiscount\": 0,\n        \"PreOrder\": 0,\n        \"TransferID\": 0,\n        \"TransferStatus\": \"\",\n        \"TransferToShop\": 0,\n        \"Status\": 1,\n        \"CreatedBy\": 2,\n        \"UpdatedBy\": null,\n        \"CreatedOn\": \"2023-01-04 22:05:12\",\n        \"UpdatedOn\": \"0000-00-00 00:00:00\",\n        \"SupplierID\": 0,\n        \"MeasurementID\": null,\n        \"Family\": \"\\\"\\\"\",\n        \"Optionsss\": \"\\\"\\\"\",\n        \"FitterID\": 0,\n        \"LensType\": null,\n        \"FitterCost\": 0,\n        \"Remark\": null,\n        \"Po\": 0\n    },\n    \"success\": true,\n    \"message\": \"Success\"\n}"
+					"body": "{\n    \"data\": {\n        \"BarCodeCount\": 10,\n        \"UnitPrice\": 500,\n        \"GSTType\": \"CGST-SGST\",\n        \"GSTPercentage\": 18,\n        \"GSTAmount\": 900,\n        \"DiscountAmount\": 0,\n        \"DiscountPercentage\": 0,\n        \"ProductName\": \"pt-2/ptttt\",\n        \"ProductTypeName\": \"testproduct-2\",\n        \"ProductTypeID\": 4,\n        \"ID\": 2790,\n        \"CompanyID\": 1,\n        \"ShopID\": 1,\n        \"PurchaseDetailID\": 31,\n        \"BillDetailID\": null,\n        \"Barcode\": \"10026000\",\n        \"AvailableDate\": \"2023-02-03 20:49:43\",\n        \"CurrentStatus\": \"Available\",\n        \"RetailPrice\": 0,\n        \"RetailDiscount\": 0,\n        \"TxCode\": 0,\n        \"MultipleBarcode\": 0,\n        \"ForWholeSale\": 0,\n        \"WholeSalePrice\": 0,\n        \"WholeSaleDiscount\": 0,\n        \"PreOrder\": 0,\n        \"TransferID\": 0,\n        \"TransferStatus\": \"\",\n        \"TransferToShop\": 0,\n        \"Status\": 1,\n        \"CreatedBy\": 2,\n        \"UpdatedBy\": null,\n        \"CreatedOn\": \"2023-02-03 20:49:43\",\n        \"UpdatedOn\": \"0000-00-00 00:00:00\",\n        \"SupplierID\": 0,\n        \"MeasurementID\": null,\n        \"Family\": \"\\\"\\\"\",\n        \"Optionsss\": \"\\\"\\\"\",\n        \"FitterID\": 0,\n        \"LensType\": null,\n        \"FitterCost\": 0,\n        \"Remark\": null,\n        \"Po\": 0\n    },\n    \"success\": true,\n    \"message\": \"Success\"\n}"
 				}
 			]
 		}
@@ -225,7 +225,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzUyNzEwNDMsImV4cCI6MTY3NTM1NzQ0MywiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.qB_sabG0a0mXuiMqBzLSfWTHlbc8vms5nydNCHyxoHg",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzU0NDUwODYsImV4cCI6MTY3NTUzMTQ4NiwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.OQQOuMVBkoiNUxusWaJesEX9y8e8zityD2m2gpw20Y8",
 				"type": "string"
 			}
 		]
