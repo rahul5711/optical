@@ -2255,7 +2255,6 @@ module.exports = {
         const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
-            console.log(req.body);
             const { Req, PreOrder, ShopMode, ShopID, SupplierID } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -2295,5 +2294,82 @@ module.exports = {
         }
     },
 
+    savePurchaseReturn: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const {
+                PurchaseMaster,
+                PurchaseDetail
+            } = req.body;
+
+            if (!PurchaseMaster || PurchaseMaster === undefined) return res.send({ message: "Invalid purchaseMaseter Data" })
+
+            if (!PurchaseDetail || PurchaseDetail === undefined) return res.send({ message: "Invalid purchaseDetail Data" })
+
+            if (!PurchaseMaster.SupplierID || PurchaseMaster.SupplierID === undefined) return res.send({ message: "Invalid SupplierID Data" })
+
+            if (!PurchaseMaster.ShopID || PurchaseMaster.ShopID === undefined) return res.send({ message: "Invalid ShopID Data" })
+
+            if (!PurchaseMaster.SystemCn || PurchaseMaster.SystemCn === undefined || PurchaseMaster.SystemCn.trim() === "") return res.send({ message: "Invalid SystemCn Data" })
+
+            if (PurchaseMaster.ID !== null || PurchaseMaster.ID === undefined) return res.send({ message: "Invalid Query Data" })
+
+            if (PurchaseMaster.Quantity == 0 || !PurchaseMaster?.Quantity || PurchaseMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
+
+            const doesExistSystemCn = await connection.query(`select * from purchasereturn where Status = 1 and SystemCn = '${PurchaseMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+
+            if (doesExistSystemCn.length) {
+                return res.send({ message: `PurchaseReturn Already exist from this SystemCn ${PurchaseMaster.SystemCn}` })
+            }
+
+            const purchaseDetail = JSON.parse(PurchaseDetail);
+
+            if (purchaseDetail.length === 0) {
+                return res.send({ message: "Invalid Query Data purchaseDetail" })
+            }
+
+            const purchasereturn = {
+                ID: null,
+                SupplierID: PurchaseMaster.SupplierID,
+                CompanyID: CompanyID,
+                ShopID: PurchaseMaster.ShopID,
+                SystemCn: PurchaseMaster.SystemCn,
+                Quantity: PurchaseMaster.Quantity,
+                SubTotal: PurchaseMaster.SubTotal,
+                DiscountAmount: PurchaseMaster.DiscountAmount,
+                GSTAmount: PurchaseMaster.GSTAmount,
+                TotalAmount: PurchaseMaster.TotalAmount,
+                Status: 1,
+                SupplierCn: ""
+            }
+
+            //  save purchasereturn data
+            const savePurchaseReturn = await connection.query(`insert into purchasereturn(SupplierID,CompanyID,ShopID,SystemCn,SupplierCn,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,CreatedBy,CreatedOn)values(${purchasereturn.SupplierID},${purchasereturn.CompanyID},${purchasereturn.ShopID},'${purchasereturn.SystemCn}','${purchasereturn.SupplierCn}',${purchasereturn.Quantity},${purchasereturn.SubTotal},${purchasereturn.DiscountAmount},${purchasereturn.GSTAmount},${purchasereturn.TotalAmount},1,${LoggedOnUser}, now())`);
+
+            console.log(connected("Data Save SuccessFUlly !!!"));
+
+            //  save purchase return detail data
+            for (const item of purchaseDetail) {
+                
+                const savePurchaseDetail = await connection.query(`insert into purchasereturndetail(ReturnID,CompanyID,PurchaseDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn)values(${savePurchaseReturn.insertId},${CompanyID},${item.ID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1,${LoggedOnUser},now())`)
+
+            }
+            console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
+
+
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    }
 
 }
