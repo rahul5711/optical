@@ -2355,13 +2355,16 @@ module.exports = {
 
             //  save purchase return detail data
             for (const item of purchaseDetail) {
-                
+
                 const savePurchaseDetail = await connection.query(`insert into purchasereturndetail(ReturnID,CompanyID,PurchaseDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn)values(${savePurchaseReturn.insertId},${CompanyID},${item.ID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1,${LoggedOnUser},now())`)
 
             }
             console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
 
-
+            response.message = "data save sucessfully"
+            response.data = savePurchaseReturn.insertId
+            // connection.release()
+            return res.send(response)
 
         } catch (err) {
             await connection.query("ROLLBACK");
