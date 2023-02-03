@@ -157,7 +157,7 @@
                                                 <th>Status</th>
                                                 <th>Initiated By</th>
                                             </tr>
-                                            <tr class="totolRow" *ngIf="this.TransfermasterList != null" >
+                                            <tr class="totolRow" *ngIf="this.TransfermasterList != null && this.TransfermasterList != ''" >
                                                 <td>
                                                     <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                         aria-hidden="true" type="button" (click)="exportAsXLSX()"> </i>

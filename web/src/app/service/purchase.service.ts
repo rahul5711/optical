@@ -132,6 +132,11 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+  getProductExpiryReport(Parem:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getProductExpiryReport',{Parem:Parem}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   createPreOrder( Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/createPreOrder', Body, httpOptions )
     .pipe(catchError(this.handleError));
