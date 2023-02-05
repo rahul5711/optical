@@ -88,5 +88,10 @@ router.post('/productDataByBarCodeNoPR', verifyAccessTokenAdmin, Controller.prod
 
 router.post('/savePurchaseReturn', verifyAccessTokenAdmin, Controller.savePurchaseReturn)
 
+router.post('/purchasereturnlist', verifyAccessTokenAdmin, Controller.purchasereturnlist)
+
+
+router.post('/getPurchaseReturnById', verifyAccessTokenAdmin, Controller.getPurchaseReturnById)
+
 
 module.exports = router
