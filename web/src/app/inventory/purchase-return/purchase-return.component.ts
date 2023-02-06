@@ -56,20 +56,21 @@ export class PurchaseReturnComponent implements OnInit {
   }
 
   xferItem: any = {
-    ID: null, ProductName: null, Barcode: null, BarCodeCount: null, Quantity:0, Remark : '', UnitPrice: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00,  CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null, 
+    ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null,  Barcode: null, BarCodeCount: null, Quantity:0, Remark : '', UnitPrice: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00,  CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null, 
   };
 
   selectedPurchaseMaster: any = {
-    ID: null, CompanyID: null, SupplierID: null,  ShopID: null, SystemCN:'', SupplierCN:'',  Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, TotalAmount: 0, 
+    ID: null, CompanyID: null, SupplierID: null,  ShopID: null, SystemCn:'', SupplierCN:'',  Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, TotalAmount: 0, 
   };
 
-  data:any = { PurchaseRetureMaster: null, PurchaseRetureDateil: null };
+  data:any = { PurchaseMaster: null, PurchaseDetail: null };
 
 
   ngOnInit(): void {
     this.getProductList();
     this.dropdownShoplist();
     this.dropdownSupplierlist(); 
+    this.getPurchaseReturnById(); 
   }
 
   dropdownShoplist(){
@@ -90,6 +91,25 @@ export class PurchaseReturnComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+  }
+
+  getPurchaseReturnById(){
+    const subs: Subscription = this.purchaseService.getPurchaseReturnById(this.id).subscribe({
+      next: (res: any) => {
+        this.selectedPurchaseMaster = res.result.PurchaseMaster[0]
+        this.itemList = res.result.PurchaseDetail
+        this.calculateGrandTotal();
+        if (res.success) {
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
   }
 
   getProductList(){
@@ -145,13 +165,13 @@ export class PurchaseReturnComponent implements OnInit {
   }
 
   getProductDataByBarCodeNo(){
-    const subs: Subscription =  this.purchaseService.productDataByBarCodeNoPR(this.Req, 'false', 'false').subscribe({
+    const subs: Subscription =  this.purchaseService.productDataByBarCodeNoPR(this.Req, 'false', 'false',this.selectedPurchaseMaster.SupplierID,this.selectedPurchaseMaster.ShopID).subscribe({
       next: (res: any) => {
         this.item  = res.data;
         if (this.item.Barcode === null) {
           Swal.fire({
             icon: 'warning',
-            title: 'Product Not Available in this Shop for Selected Barcode for Transfer.',
+            title: 'Product Not Available In This Shop For Selected Barcode For Supplier.',
             text: ' Please Check the Barcode. ',
             footer: '',
             backdrop : false,
@@ -174,7 +194,7 @@ export class PurchaseReturnComponent implements OnInit {
         searchString = searchString + element.SelectedValue + "/" ;
       }
     });
-    const subs: Subscription =  this.purchaseService.barCodeListBySearchStringPR(this.shopMode,this.selectedProduct, searchString).subscribe({
+    const subs: Subscription =  this.purchaseService.barCodeListBySearchStringPR(this.shopMode,this.selectedProduct, searchString, this.selectedPurchaseMaster.SupplierID,this.selectedPurchaseMaster.ShopID).subscribe({
       next: (res: any) => {
         this.barCodeList = res.data;
       },
@@ -209,13 +229,32 @@ export class PurchaseReturnComponent implements OnInit {
 
   addItem(){
     if(this.item.BarCodeCount >= this.xferItem.Quantity ){
-      this.calculateFields()
+      this.xferItem.ProductName = "";
+      this.xferItem.ProductTypeID = "";
+      this.xferItem.PurchaseDetailID = "";
+
+      this.specList.forEach((element: any) => {
+          this.prodList.forEach((elements: any) => {
+            if(elements.Name === element.ProductName){
+              this.xferItem.ProductTypeID = elements.ID
+              this.xferItem.ProductTypeName = elements.Name
+            }
+          });
+        if(element.SelectedValue !== "") {
+          this.xferItem.ProductName = this.item.ProductName  + element.SelectedValue + "/";
+        }
+      });
+
+      this.xferItem.PurchaseDetailID = this.item.PurchaseDetailID;
+      this.xferItem.ProductTypeID = this.item.ProductTypeID
+      this.xferItem.ProductTypeName = this.item.ProductTypeName
+      this.xferItem.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
+
       this.itemList.unshift(this.xferItem);
+      this.calculateFields()
       this.calculateGrandTotal();
       this.xferItem = []
-      this.item = []
       this.barCodeList = []
-      this.prodList = []
       this.specList  = []
       this.Req = {SearchBarCode : ''}
     }else{
@@ -232,10 +271,35 @@ export class PurchaseReturnComponent implements OnInit {
   }
 
   onSumbit(){
-    this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
-    this.data.PurchaseRetureMaster = this.selectedPurchaseMaster;
-    this.data.PurchaseRetureDateil = JSON.stringify(this.itemList);
+    this.data.PurchaseMaster = this.selectedPurchaseMaster;
+    this.data.PurchaseDetail = JSON.stringify(this.itemList);
     console.log(this.data);
+    const subs: Subscription =  this.purchaseService.savePurchaseReturn(this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          if(res.data !== 0) {
+            this.id = res.data;
+            this.router.navigate(['/inventory/purchase-return' , this.id]);
+            this.getPurchaseReturnById();
+            this.selectedProduct = "";
+            this.specList = [];
+          }
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Save.',
+            showConfirmButton: false,
+            timer: 1200
+          })
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
+
+  
 
 }

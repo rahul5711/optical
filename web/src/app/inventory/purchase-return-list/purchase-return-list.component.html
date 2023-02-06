@@ -8,7 +8,7 @@
                 <div class="row">
                   <div class="col-md-2 col-8 p-0 ms-3">
                     <h2>Purchase Return List <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"
-                        ></i></h2>
+                       (click)="exportAsXLSX()" ></i></h2>
                   </div>
                   <div class="col-md-2 col-1 ps-md-0 ps-1">
                     <select class=" form-control"
@@ -53,10 +53,9 @@
                             <th style="text-align: left;">Action</th>
                             <th style="text-align: left;">S.No</th>
                             <th style="text-align: left;">SupplierName</th>
-                            <th style="text-align: left;">InvoiceNo</th>
+                            <th style="text-align: left;">SystemCn</th>
                             <th style="text-align: left;">ReceivedAt</th>
                             <th style="text-align: left;">PurchaseDate</th>
-                            <th style="text-align: left;">PaymentStatus</th>
                             <th style="text-align: left;">GSTNo</th>
                             <th style="text-align: left;">Quantity</th>
                             <th style="text-align: left;">InvoiceAmount</th>
@@ -67,7 +66,34 @@
                           </tr>
                         </thead>
                         <tbody>
-                        
+                          <tr class="text-center" *ngFor="let data of dataList let i = index;"
+                          style="white-space: nowrap;">
+                          <td style="width: 5%;" >
+                            <button  class="detail_icons bg-btn" (click)="openModal(content,data)" >
+                              <i class="fas fa-info-circle" data-mdb-toggle="modal" data-mdb-target="#exampleModal"> </i>
+                            </button>
+                            <button class="bg-btn" [routerLink]="['/inventory/purchase-return',data.ID]">
+                              <mat-icon class="edit_icon ms-1">edit
+                              </mat-icon>
+                            </button>
+                            <button class="bg-btn" >
+                              <mat-icon class="delete_icon ms-1">delete_forever</mat-icon>
+                            </button>
+                          </td>
+                          <td>{{dataList.length - i }}</td>
+                          <td>{{data.SupplierName}}</td>
+                          <td>{{data.SystemCn}}</td>
+                          <td>{{data.ShopName}}<span [style.color]="'blue'"
+                              *ngIf="data.AreaName !== 'null'">({{data.AreaName}})</span></td>
+                          <td>{{data.PurchaseDate}}</td>
+                          <td>{{(data.GSTNo !== 'null')? data.GSTNo: ''}}</td>
+                          <td>{{data.Quantity}}</td>
+                          <td>{{data.TotalAmount}}</td>
+                          <td>{{data.DiscountAmount}}</td>
+                          <td>{{data.GSTAmount}}</td>
+                          <td>{{data.CreatedPerson}}</td>
+                          <td>{{data.UpdatedPerson}}</td>
+                        </tr>
                         </tbody>
                       </table>
                     </div>
@@ -85,7 +111,7 @@
   <!-- Modal -->
   <ng-template #content role="document" let-modal>
     <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
-      <h2 class="modal-title header pt-2" id="exampleModalLabel">Payment Detail's</h2>
+      <h2 class="modal-title header pt-2" id="exampleModalLabel">Supplier Detail's</h2>
       <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body p-0">
