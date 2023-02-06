@@ -167,11 +167,7 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
-  getPurchaseReturnList(Parem:any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getPurchaseReturnList', Parem, httpOptions)
-    .pipe(catchError(this.handleError));
-  }
-
+ 
   getProductInventoryReport(Parem:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/getProductInventoryReport',{Parem:Parem}, httpOptions)
     .pipe(catchError(this.handleError));
@@ -182,16 +178,30 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
-  barCodeListBySearchStringPR( ShopMode:any, ProductName:any, searchString:any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/barCodeListBySearchStringPR', {ShopMode:ShopMode, ProductName:ProductName, searchString:searchString}, httpOptions)
+  barCodeListBySearchStringPR( ShopMode:any, ProductName:any, searchString:any, SupplierID:any, ShopID:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/barCodeListBySearchStringPR', {ShopMode:ShopMode, ProductName:ProductName, searchString:searchString, SupplierID:SupplierID, ShopID:ShopID}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
-  productDataByBarCodeNoPR(Req:any, PreOrder:any, ShopMode:any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/productDataByBarCodeNoPR', {Req:Req, PreOrder:PreOrder, ShopMode:ShopMode}, httpOptions)
+  productDataByBarCodeNoPR(Req:any, PreOrder:any, ShopMode:any , SupplierID:any, ShopID:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/productDataByBarCodeNoPR', {Req:Req, PreOrder:PreOrder, ShopMode:ShopMode, SupplierID:SupplierID, ShopID:ShopID}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
+  savePurchaseReturn(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/savePurchaseReturn', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getPurchaseReturnById(ID:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getPurchaseReturnById', {ID: ID}, httpOptions )
+    .pipe(catchError(this.handleError));
+  }
+
+  getPurchaseReturnList(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/purchasereturnlist', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

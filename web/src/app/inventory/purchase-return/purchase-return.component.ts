@@ -10,6 +10,7 @@ import { ShopService } from 'src/app/service/shop.service';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { CalculationService } from 'src/app/service/helpers/calculation.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { SupportService } from 'src/app/service/support.service';
 
 @Component({
   selector: 'app-purchase-return',
@@ -40,6 +41,8 @@ export class PurchaseReturnComponent implements OnInit {
   item: any;
   itemList: any = [];
   Req :any= {SearchBarCode : ''} 
+  gst_detail:any = [];
+  gstList:any
 
   constructor(
     private router: Router,
@@ -49,6 +52,7 @@ export class PurchaseReturnComponent implements OnInit {
     private ss: ShopService,
     private sup: SupplierService,
     public as: AlertService,
+    private supps: SupportService,
     public calculation: CalculationService,
 
   ){
@@ -56,20 +60,22 @@ export class PurchaseReturnComponent implements OnInit {
   }
 
   xferItem: any = {
-    ID: null, ProductName: null, Barcode: null, BarCodeCount: null, Quantity:0, Remark : '', UnitPrice: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00,  CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null, 
+    ID: null, CompanyID: null, PurchaseDetailID:null, ProductName: '', ProductTypeName: '', ProductTypeID: null,  Barcode: null, BarCodeCount: null, Quantity:0, Remark : '', UnitPrice: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1
   };
 
   selectedPurchaseMaster: any = {
-    ID: null, CompanyID: null, SupplierID: null,  ShopID: null, SystemCN:'', SupplierCN:'',  Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, TotalAmount: 0, 
+    ID: null, CompanyID: null, SupplierID: null,  ShopID: null, SystemCn:'', SupplierCN:'',  Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, TotalAmount: 0, 
   };
 
-  data:any = { PurchaseRetureMaster: null, PurchaseRetureDateil: null };
-
+  data:any = { PurchaseMaster: null, PurchaseDetail: null };
 
   ngOnInit(): void {
     this.getProductList();
     this.dropdownShoplist();
     this.dropdownSupplierlist(); 
+    if (this.id != 0){
+      this.getPurchaseReturnById(); 
+    }
   }
 
   dropdownShoplist(){
@@ -90,6 +96,44 @@ export class PurchaseReturnComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+  }
+
+  getGSTList(){
+    const subs: Subscription = this.supps.getList('TaxType').subscribe({
+      next: (res: any) => {
+        this.gstList = res.data
+        this.gst_detail = [];
+        res.data.forEach((ele: any) => {
+          if(ele.Name !== ' '){
+           let obj = {GSTType: '', Amount: 0};
+            obj.GSTType = ele.Name;
+            this.gst_detail.push(obj);
+          }
+        })
+      },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getPurchaseReturnById(){
+    const subs: Subscription = this.purchaseService.getPurchaseReturnById(this.id).subscribe({
+      next: (res: any) => {
+        this.selectedPurchaseMaster = res.result.PurchaseMaster[0]
+        this.itemList = res.result.PurchaseDetail
+        this.gst_detail = this.selectedPurchaseMaster.gst_detail
+        this.calculateGrandTotal();
+        if (res.success) {
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
   }
 
   getProductList(){
@@ -145,19 +189,19 @@ export class PurchaseReturnComponent implements OnInit {
   }
 
   getProductDataByBarCodeNo(){
-    const subs: Subscription =  this.purchaseService.productDataByBarCodeNoPR(this.Req, 'false', 'false').subscribe({
+    const subs: Subscription =  this.purchaseService.productDataByBarCodeNoPR(this.Req, 'false', 'false',this.selectedPurchaseMaster.SupplierID,this.selectedPurchaseMaster.ShopID).subscribe({
       next: (res: any) => {
         this.item  = res.data;
         if (this.item.Barcode === null) {
           Swal.fire({
             icon: 'warning',
-            title: 'Product Not Available in this Shop for Selected Barcode for Transfer.',
+            title: 'Product Not Available In This Shop For Selected Barcode For Supplier.',
             text: ' Please Check the Barcode. ',
             footer: '',
             backdrop : false,
           });
         }else{
-          this.xferItem.ProductName = (this.item .ProductTypeName + '/' +  this.item.ProductName).toUpperCase();
+          this.xferItem.ProductName = (this.item.ProductTypeName + '/' +  this.item.ProductName).toUpperCase();
           this.xferItem.Barcode = this.item.Barcode;
           this.xferItem.BarCodeCount = this.item.BarCodeCount;
         }
@@ -174,7 +218,7 @@ export class PurchaseReturnComponent implements OnInit {
         searchString = searchString + element.SelectedValue + "/" ;
       }
     });
-    const subs: Subscription =  this.purchaseService.barCodeListBySearchStringPR(this.shopMode,this.selectedProduct, searchString).subscribe({
+    const subs: Subscription =  this.purchaseService.barCodeListBySearchStringPR(this.shopMode,this.selectedProduct, searchString, this.selectedPurchaseMaster.SupplierID,this.selectedPurchaseMaster.ShopID).subscribe({
       next: (res: any) => {
         this.barCodeList = res.data;
       },
@@ -193,13 +237,13 @@ export class PurchaseReturnComponent implements OnInit {
   }
 
   calculateFields(){
-    this.xferItem.UnitPrice = this.item .UnitPrice ;
+    this.xferItem.UnitPrice = this.item.UnitPrice ;
     this.xferItem.DiscountPercentage = this.item.DiscountPercentage;
     this.xferItem.DiscountAmount = this.item.DiscountAmount ;
     this.xferItem.GSTPercentage = this.item.GSTPercentage ;
-    this.xferItem.GSTAmount = this.item .GSTAmount ;
-    this.xferItem.GSTType = this.item .GSTType ;
-    this.xferItem.TotalAmount = this.item .TotalAmount ;
+    this.xferItem.GSTAmount = this.item.GSTAmount ;
+    this.xferItem.GSTType = this.item.GSTType ;
+    this.xferItem.TotalAmount = this.item.TotalAmount ;
     this.calculation.calculateFields('','',this.xferItem,'')
   }
  
@@ -209,15 +253,35 @@ export class PurchaseReturnComponent implements OnInit {
 
   addItem(){
     if(this.item.BarCodeCount >= this.xferItem.Quantity ){
-      this.calculateFields()
+      this.xferItem.ProductName = "";
+      this.xferItem.ProductTypeID = "";
+
+      if(this.barCodeList !== undefined){
+        this.specList.forEach((element: any) => {
+          this.prodList.forEach((elements: any) => {
+            if(elements.Name === element.ProductName){
+              this.xferItem.ProductTypeID = elements.ID
+              this.xferItem.ProductTypeName = elements.Name
+            }
+          });
+        if(element.SelectedValue !== "") {
+          this.xferItem.ProductName = this.item.ProductName  + element.SelectedValue + "/";
+        }
+      });
+      }
+
+      this.xferItem.PurchaseDetailID = this.item.PurchaseDetailID;
+      this.xferItem.ProductTypeID = this.item.ProductTypeID
+      this.xferItem.ProductTypeName = this.item.ProductTypeName
+      this.xferItem.ProductName = this.item.ProductName
       this.itemList.unshift(this.xferItem);
-      this.calculateGrandTotal();
-      this.xferItem = []
-      this.item = []
-      this.barCodeList = []
-      this.prodList = []
-      this.specList  = []
+      this. xferItem = {
+        ID: null, CompanyID: null, PurchaseDetailID:null, ProductName: '', ProductTypeName: '', ProductTypeID: null,  Barcode: null, BarCodeCount: null, Quantity:0, Remark : '', UnitPrice: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1
+      };
+      this.specList = [];
       this.Req = {SearchBarCode : ''}
+      this.calculateFields();
+      this.calculateGrandTotal();
     }else{
       Swal.fire({
         icon: 'warning',
@@ -228,14 +292,35 @@ export class PurchaseReturnComponent implements OnInit {
       });
       this.xferItem.Quantity = 0;
     }
-   
   }
 
   onSumbit(){
-    this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
-    this.data.PurchaseRetureMaster = this.selectedPurchaseMaster;
-    this.data.PurchaseRetureDateil = JSON.stringify(this.itemList);
-    console.log(this.data);
+    this.data.PurchaseMaster = this.selectedPurchaseMaster;
+    this.data.PurchaseDetail = JSON.stringify(this.itemList);
+    const subs: Subscription =  this.purchaseService.savePurchaseReturn(this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          if(res.data !== 0) {
+            this.id = res.data;
+            this.router.navigate(['/inventory/purchase-return' , this.id]);
+            this.getPurchaseReturnById();
+            this.selectedProduct = "";
+            this.specList = [];
+          }
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Save.',
+            showConfirmButton: false,
+            timer: 1200
+          })
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
 }

@@ -41,6 +41,48 @@ export class PurchaseReturnListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.getList();
+  }
+  
+  changePagesize(num: number): void {
+    this.itemsPerPage = this.pageSize + num;
+  }
+
+  getList() {
+    this.sp.show()
+    const dtm = {
+      currentPage: this.currentPage,
+      itemsPerPage: this.itemsPerPage
+    }
+    const subs: Subscription = this.purchaseService.getPurchaseReturnList(dtm).subscribe({
+      next: (res: any) => {
+        this.collectionSize = res.count;
+        this.dataList = res.data;
+        this.sp.hide();
+        this.as.successToast(res.message)
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    this.sp.hide()
+
+  }
+
+  exportAsXLSX(): void {
+    this.excelService.exportAsExcelFile(this.dataList, 'Purchase_return_list');
+  }
+
+  openModal(content: any,data:any) {
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
+    const subs: Subscription = this.purchaseService.paymentHistory(data.ID, data.InvoiceNo).subscribe({
+      next: (res: any) => {
+        this.paymentHistoryList = res.data;
+        this.sp.hide();
+        this.as.successToast(res.message)
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
 }
