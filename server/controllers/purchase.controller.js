@@ -1288,7 +1288,7 @@ module.exports = {
                     MGst_details = values2
                     gst_detail.forEach(e => {
                         MGst_details.forEach(el => {
-                            if (e.GSTType === el.Name) {
+                            if (el.GSTType === e.GSTType) {
                                el.Amount = el.Amount + e.GSTAmount
                             }
                         })
