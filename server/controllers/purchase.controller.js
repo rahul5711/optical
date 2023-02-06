@@ -1237,15 +1237,16 @@ module.exports = {
 
             if (data.length) {
                 for (let item of data) {
+                    let gst_detail = []
                     for (const item2 of data2) {
                         if (item.ID === item2.PurchaseID) {
                             if (item2.GSTType !== 'CGST-SGST') {
-                                item.gst_detail = [{
+                                gst_detail.push({
                                     'GSTType': item2.GSTType,
                                     'GSTAmount': item2.GSTAmount
-                                }]
+                                })
                             } else {
-                                item.gst_detail = [
+                                gst_detail.push(
                                     {
                                         'GSTType': 'CGST',
                                         'GSTAmount': item2.GSTAmount / 2
@@ -1254,10 +1255,12 @@ module.exports = {
                                         'GSTType': 'SGST',
                                         'GSTAmount': item2.GSTAmount / 2
                                     }
-                                ]
+                                )
                             }
                         }
                     }
+
+                    item.gst_detail = gst_detail
                 }
 
             }
