@@ -190,7 +190,7 @@
                                
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <button class="mr-3" mat-raised-button color="primary"
-                                         (click)="calculateFields()" type="submit" [disabled]="!f.valid || this.xferItem.Quantity == 0">Add</button>
+                                         (click)="calculateFields()" type="submit" [disabled]="this.xferItem.Quantity == 0">Add</button>
                                 </div>
                             </div>
                         </form>
@@ -222,7 +222,7 @@
                                                     <td class="text-center">
                                                         <mat-icon *ngIf="data.Status !== 0" class="delete_icons ms-1" >delete_forever</mat-icon>
                                                     </td>
-                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.ProductName}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.ProductTypeName}}/{{data.ProductName}}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.UnitPrice }}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.Quantity}}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.DiscountPercentage}}%</td>
@@ -272,6 +272,15 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0"  *ngFor="let gst of gst_detail">
+                                    <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>{{gst.GSTType}}</mat-label>
+                                    <input matInput name="igstAmt"  value="{{gst.Amount | number:'1.0-2'}}" disabled>
+                                      <mat-error>
+                                         GST Amt is required
+                                      </mat-error>
+                                </mat-form-field>
+                                </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>TotalTAXAmt</mat-label>
@@ -293,18 +302,17 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div  class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ml-auto">
+                                <div *ngIf="id == 0" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ml-auto">
                                     <button type="submit" [disabled]="itemList.length === 0"  mat-raised-button color="primary">Save</button>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-1 col-sm-1 mb-0 ml-auto">
-                                    <button  class="mr-1 shopPdf" type="button" ><i class="fa-sharp fa-solid fa-file-pdf"></i></button>
-                                    <button class="whatsapp ms-4 me-4"><i class="fa-brands fa-whatsapp" ></i> </button>
-                                    <button class="email"> <i class="fa-solid fa-envelope"></i></button>
-                                </div>
-                                
                                 <div *ngIf="selectedPurchaseMaster.ID !== null" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 mr-3">
                                     <button type="button" [disabled]="itemList.length === 0"   mat-raised-button
                                         color="primary">Update</button>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ml-auto">
+                                    <button  class="shopPdf" type="button" ><i class="fa-sharp fa-solid fa-file-pdf"></i></button>
+                                    <button class="whatsapp ms-1 me-1"><i class="fa-brands fa-whatsapp" ></i> </button>
+                                    <button class="email"> <i class="fa-solid fa-envelope"></i></button>
                                 </div>
                             </div>
                             <!-- Total calculcation end -->
