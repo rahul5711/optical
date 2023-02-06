@@ -1262,7 +1262,6 @@ module.exports = {
             if (data.length) {
                 for (let item of data) {
                     let gst_detail = []
-                    let gst_details2 = values2
                     for (const item2 of data2) {
                         if (item.ID === item2.PurchaseID) {
                             if (item2.GSTType !== 'CGST-SGST') {
@@ -1285,15 +1284,7 @@ module.exports = {
                         }
                     }
 
-                    gst_detail.forEach(e => {
-                        gst_details2.forEach(el => {
-                            if (e.GSTType === el.GSTType) {
-                              el.GSTAmount += e.GSTAmount
-                            }
-                        })
-                    })
-
-                    item.gst_detail = gst_details2
+                    item.gst_detail = gst_detail
                 }
 
             }
