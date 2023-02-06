@@ -1208,6 +1208,30 @@ module.exports = {
                 }
 
             }
+            const values2 = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        values2.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        values2.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
 
 
             if (data2.length && values.length) {
@@ -1261,7 +1285,7 @@ module.exports = {
                     }
 
                     let MGst_details = []
-                    MGst_details = values
+                    MGst_details = values2
                     gst_detail.forEach(e => {
                         MGst_details.forEach(el => {
                             if (e.GSTType === el.Name) {
