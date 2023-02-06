@@ -1286,10 +1286,10 @@ module.exports = {
 
                     let MGst_details = []
                     MGst_details = values2
-                    gst_detail.forEach(e => {
-                        MGst_details.forEach(el => {
-                            if (el.GSTType === e.GSTType) {
-                               el.Amount = e.GSTAmount
+                    MGst_details.forEach(e => {
+                        gst_detail.forEach(el => {
+                            if (e.GSTType === el.GSTType) {
+                               el.Amount = el.Amount + el.GSTAmount
                             }
                         })
                     })
