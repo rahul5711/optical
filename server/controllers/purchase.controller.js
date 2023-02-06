@@ -1284,17 +1284,7 @@ module.exports = {
                         }
                     }
 
-                    let MGst_details = []
-                    MGst_details = values2
-                    gst_detail.forEach(e => {
-                        MGst_details.forEach(el => {
-                            if ( el.GSTType === e.GSTType) {
-                               el.GSTAmount = el.GSTAmount + e.GSTAmount
-                            }
-                        })
-                    })
-
-                    item.gst_detail = MGst_details
+                    item.gst_detail = gst_detail
                 }
 
             }
