@@ -1216,17 +1216,17 @@ module.exports = {
                         values2.push(
                             {
                                 GSTType: `CGST`,
-                                Amount: 0
+                                GSTAmount: 0
                             },
                             {
                                 GSTType: `SGST`,
-                                Amount: 0
+                                GSTAmount: 0
                             }
                         )
                     } else {
                         values2.push({
                             GSTType: `${item.Name}`,
-                            Amount: 0
+                            GSTAmount: 0
                         })
                     }
                 }
@@ -1286,10 +1286,10 @@ module.exports = {
 
                     let MGst_details = []
                     MGst_details = values2
-                    MGst_details.forEach(e => {
-                        gst_detail.forEach(el => {
+                    gst_detail.forEach(e => {
+                        MGst_details.forEach(el => {
                             if ( el.GSTType === e.GSTType) {
-                               e.Amount = e.Amount + el.GSTAmount
+                               el.GSTAmount = el.GSTAmount + e.GSTAmount
                             }
                         })
                     })
