@@ -1212,25 +1212,11 @@ module.exports = {
 
             if (gstTypes.length) {
                 for (const item of gstTypes) {
-                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
-                        values2.push(
-                            {
-                                GSTType: `CGST`,
-                                GSTAmount: 0
-                            },
-                            {
-                                GSTType: `SGST`,
-                                GSTAmount: 0
-                            }
-                        )
-                    } else {
-                        values2.push({
+                    values2.push({
                             GSTType: `${item.Name}`,
                             GSTAmount: 0
                         })
-                    }
                 }
-
             }
 
 
@@ -1260,34 +1246,19 @@ module.exports = {
             }
 
             if (data.length) {
-                for (let item of data) {
-                    let gst_detail = []
-                    for (const item2 of data2) {
-                        if (item.ID === item2.PurchaseID) {
-                            if (item2.GSTType !== 'CGST-SGST') {
-                                gst_detail.push({
-                                    'GSTType': item2.GSTType,
-                                    'GSTAmount': item2.GSTAmount
-                                })
-                            } else {
-                                gst_detail.push(
-                                    {
-                                        'GSTType': 'CGST',
-                                        'GSTAmount': item2.GSTAmount / 2
-                                    },
-                                    {
-                                        'GSTType': 'SGST',
-                                        'GSTAmount': item2.GSTAmount / 2
-                                    }
-                                )
-                            }
-                        }
-                    }
+                for(let item of data) {
+                   item.gst_details = []
+                   for(let item2 of data2) {
+                       if (item.ID === item2.PurchaseID) {
+                           item.gst_details.push({
+                               "GSTType" : item2.GSTType,
+                               "GSTAmount": item2.GSTAmount
+                           })
 
-                    item.gst_detail = gst_detail
+                       }
+                   }
                 }
-
-            }
+               }
 
 
             response.calculation[0].gst_details = values;
