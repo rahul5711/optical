@@ -1213,9 +1213,9 @@ module.exports = {
             if (gstTypes.length) {
                 for (const item of gstTypes) {
                     values2.push({
-                            GSTType: `${item.Name}`,
-                            GSTAmount: 0
-                        })
+                        GSTType: `${item.Name}`,
+                        GSTAmount: 0
+                    })
                 }
             }
 
@@ -1246,21 +1246,21 @@ module.exports = {
             }
 
             if (data.length) {
-                for(let item of data) {
-                   item.gst_details = []
-                   item.gst_detailssss = []
-                   for(let item2 of data2) {
-                       if (item.ID === item2.PurchaseID) {
-                           item.gst_details.push({
-                               "GSTType" : item2.GSTType,
-                               "GSTAmount": item2.GSTAmount,
-                               "InvoiceNo": item2.InvoiceNo,
-                           })
+                for (let item of data) {
+                    item.gst_details = []
+                    item.gst_detailssss = []
+                    for (let item2 of data2) {
+                        if (item.ID === item2.PurchaseID) {
+                            item.gst_details.push({
+                                "GSTType": item2.GSTType,
+                                "GSTAmount": item2.GSTAmount,
+                                "InvoiceNo": item2.InvoiceNo,
+                            })
 
-                       }
-                   }
+                        }
+                    }
                 }
-               }
+            }
 
 
             response.calculation[0].gst_details = values;
@@ -2359,7 +2359,11 @@ module.exports = {
                 const savePurchaseDetail = await connection.query(`insert into purchasereturndetail(ReturnID,CompanyID,PurchaseDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn)values(${savePurchaseReturn.insertId},${CompanyID},${item.PurchaseDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1,${LoggedOnUser},now())`)
 
 
-                let updateBarcode = await connection.query(`update barcodemasternew set CurrentStatus = 'Return To Supplier' where Status = 1 and Barcode = '${item.Barcode}' and PurchaseDetailID = ${item.PurchaseDetailID} Limit ${item.Quantity}`)
+                let count = 0;
+                count = item.Quantity;
+
+                let updateBarcode = await connection.query(`update barcodemasternew set CurrentStatus = 'Return To Supplier', BillDetailID = ${savePurchaseReturn.insertId} where Status = 1 and Barcode = '${item.Barcode}' and CurrentStatus = 'Available' limit ${count}`)
+
 
                 console.log(`Barcode No ${item.Barcode} update successfully`);
 
@@ -2425,7 +2429,7 @@ module.exports = {
     getPurchaseReturnById: async (req, res, next) => {
         const connection = await mysql.connection();
         try {
-            const response = { result: { PurchaseMaster: null, PurchaseDetail: null}, success: true, message: "" }
+            const response = { result: { PurchaseMaster: null, PurchaseDetail: null }, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
