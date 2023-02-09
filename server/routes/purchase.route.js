@@ -88,10 +88,20 @@ router.post('/productDataByBarCodeNoPR', verifyAccessTokenAdmin, Controller.prod
 
 router.post('/savePurchaseReturn', verifyAccessTokenAdmin, Controller.savePurchaseReturn)
 
+router.post('/updatePurchaseReturn', verifyAccessTokenAdmin, Controller.updatePurchaseReturn)
+
 router.post('/purchasereturnlist', verifyAccessTokenAdmin, Controller.purchasereturnlist)
 
-
 router.post('/getPurchaseReturnById', verifyAccessTokenAdmin, Controller.getPurchaseReturnById)
+
+router.post('/deleteProductPR', verifyAccessTokenAdmin, Controller.deleteProductPR)
+
+router.post('/searchByFeildPR', verifyAccessTokenAdmin, Controller.searchByFeildPR)
+
+router.post('/deletePR', verifyAccessTokenAdmin, Controller.deletePR)
+
+router.post('/supplierCnPR', verifyAccessTokenAdmin, Controller.supplierCnPR)
+
 
 
 module.exports = router

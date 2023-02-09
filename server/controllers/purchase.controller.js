@@ -2362,7 +2362,7 @@ module.exports = {
                 let count = 0;
                 count = item.Quantity;
 
-                let updateBarcode = await connection.query(`update barcodemasternew set CurrentStatus = 'Return To Supplier', BillDetailID = ${savePurchaseReturn.insertId} where Status = 1 and Barcode = '${item.Barcode}' and CurrentStatus = 'Available' limit ${count}`)
+                let updateBarcode = await connection.query(`update barcodemasternew set CurrentStatus = 'Return To Supplier', BillDetailID = ${savePurchaseDetail.insertId} where Status = 1 and Barcode = '${item.Barcode}' and CurrentStatus = 'Available' limit ${count}`)
 
 
                 console.log(`Barcode No ${item.Barcode} update successfully`);
@@ -2374,6 +2374,101 @@ module.exports = {
             response.data = savePurchaseReturn.insertId
             // connection.release()
             return res.send(response)
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+
+    updatePurchaseReturn: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const {
+                PurchaseMaster,
+                PurchaseDetail
+            } = req.body;
+
+            if (!PurchaseMaster || PurchaseMaster === undefined) return res.send({ message: "Invalid purchaseMaseter Data" })
+
+            if (!PurchaseDetail || PurchaseDetail === undefined) return res.send({ message: "Invalid purchaseDetail Data" })
+
+            if (!PurchaseMaster.SupplierID || PurchaseMaster.SupplierID === undefined) return res.send({ message: "Invalid SupplierID Data" })
+
+            if (!PurchaseMaster.SystemCn || PurchaseMaster.SystemCn === undefined) return res.send({ message: "Invalid SystemCn Data" })
+
+            if (!PurchaseMaster.ShopID || PurchaseMaster.ShopID === undefined) return res.send({ message: "Invalid ShopID Data" })
+
+            if (PurchaseMaster.ID === null || PurchaseMaster.ID === undefined) return res.send({ message: "Invalid Query Data" })
+
+            if (PurchaseMaster.Quantity == 0 || !PurchaseMaster?.Quantity || PurchaseMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
+
+
+            const doesExistSystemCn = await connection.query(`select * from purchasereturn where Status = 1 and SystemCn = '${PurchaseMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${PurchaseMaster.ID}`)
+
+            if (doesExistSystemCn.length) {
+                return res.send({ message: `Purchase Already exist from this SystemCn ${PurchaseMaster.SystemCn}` })
+            }
+
+            const purchaseDetail = JSON.parse(PurchaseDetail);
+
+            if (purchaseDetail.length === 0) {
+                return res.send({ message: "Invalid Query Data purchaseDetail" })
+            }
+
+            const purchase = {
+                ID: PurchaseMaster.ID,
+                SupplierID: PurchaseMaster.SupplierID,
+                CompanyID: CompanyID,
+                ShopID: PurchaseMaster.ShopID,
+                Quantity: PurchaseMaster.Quantity,
+                SubTotal: PurchaseMaster.SubTotal,
+                DiscountAmount: PurchaseMaster.DiscountAmount,
+                GSTAmount: PurchaseMaster.GSTAmount,
+                TotalAmount: PurchaseMaster.TotalAmount,
+                Status: 1,
+            }
+
+            const supplierId = purchase.SupplierID;
+
+            // update purchasemaster
+            const updatePurchaseMaster = await connection.query(`update purchasereturn set Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and ShopID = ${purchase.ShopID} and ID = ${purchase.ID}`)
+
+
+            //  save purchase return detail data
+            for (const item of purchaseDetail) {
+
+                if (item.ID === null) {
+
+                    const savePurchaseDetail = await connection.query(`insert into purchasereturndetail(ReturnID,CompanyID,PurchaseDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn)values(${purchase.ID},${CompanyID},${item.PurchaseDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1,${LoggedOnUser},now())`)
+
+
+                    let count = 0;
+                    count = item.Quantity;
+
+                    let updateBarcode = await connection.query(`update barcodemasternew set CurrentStatus = 'Return To Supplier', BillDetailID = ${savePurchaseDetail.insertId} where Status = 1 and Barcode = '${item.Barcode}' and CurrentStatus = 'Available' limit ${count}`)
+
+
+                    console.log(`Barcode No ${item.Barcode} update successfully`);
+
+                }
+
+            }
+            console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
+
+            response.message = "data update sucessfully"
+            response.data = purchase.ID
+            // connection.release()
+            return res.send(response)
+
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -2439,7 +2534,9 @@ module.exports = {
 
             const PurchaseMaster = await connection.query(`select * from purchasereturn  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
-            const PurchaseDetail = await connection.query(`select * from purchasereturndetail where  ReturnID = ${ID} and CompanyID = ${CompanyID}`)
+            const PurchaseDetail2 = await connection.query(`select * from purchasereturndetail where  ReturnID = ${ID} and CompanyID = ${CompanyID}`)
+
+            const PurchaseDetail = await connection.query(`select * from purchasereturndetail where  Status = 1 and ReturnID = ${ID} and CompanyID = ${CompanyID}`)
 
 
             let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
@@ -2502,10 +2599,250 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.result.PurchaseMaster = PurchaseMaster
             response.result.PurchaseMaster[0].gst_detail = values || []
-            response.result.PurchaseDetail = PurchaseDetail
+            response.result.PurchaseDetail = PurchaseDetail2
             // connection.release()
             return res.send(response)
 
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+
+    deleteProductPR: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { result: { PurchaseDetail: null, PurchaseMaster: null }, success: true, message: "" }
+
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+
+            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+
+
+            if (Body.PurchaseMaster.ID === null || Body.PurchaseMaster.SystemCn.trim() === '' || !Body.PurchaseMaster) return res.send({ message: "Invalid Query Data" })
+
+            const doesExist = await connection.query(`select * from purchasereturndetail where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "product doesnot exist from this id " })
+            }
+
+
+            const deletePurchasedetail = await connection.query(`update purchasereturndetail set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+
+            console.log("Product Delete SuccessFUlly !!!");
+
+            // update purchasemaster
+            const updatePurchaseMaster = await connection.query(`update purchasereturn set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and SystemCn = '${Body.PurchaseMaster.SystemCn}' and ShopID = ${Body.PurchaseMaster.ShopID}`)
+
+            // update barcode
+
+            const updateBarcode = await connection.query(`update barcodemasternew set CurrentStatus = 'Available' , BillDetailID = 0  where BillDetailID = ${Body.ID}`)
+
+
+            const fetchPurchaseMaster = await connection.query(`select * from purchasereturn  where Status = 1 and ID = ${Body.PurchaseMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${Body.PurchaseMaster.ShopID}`)
+
+            const PurchaseDetail2 = await connection.query(`select * from purchasereturndetail where ReturnID = ${doesExist[0].ReturnID} and CompanyID = ${CompanyID}`)
+
+            const PurchaseDetail = await connection.query(`select * from purchasereturndetail where Status = 1 and ReturnID = ${doesExist[0].ReturnID} and CompanyID = ${CompanyID}`)
+
+            let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            const values = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        values.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        values.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+
+            if (PurchaseDetail.length) {
+                for (const item of PurchaseDetail) {
+
+                    if (values) {
+                        values.forEach(e => {
+                            if (e.GSTType === item.GSTType) {
+                                e.Amount += item.GSTAmount
+                            }
+
+                            // CGST-SGST
+
+                            if (item.GSTType === 'CGST-SGST') {
+
+                                if (e.GSTType === 'CGST') {
+                                    e.Amount += item.GSTAmount / 2
+                                }
+
+                                if (e.GSTType === 'SGST') {
+                                    e.Amount += item.GSTAmount / 2
+                                }
+                            }
+                        })
+                    }
+
+                }
+
+
+            }
+
+            fetchPurchaseMaster[0].gst_detail = values
+            response.result.PurchaseDetail = PurchaseDetail2;
+            response.result.PurchaseMaster = fetchPurchaseMaster;
+            response.message = "data delete sucessfully"
+            // connection.release()
+            res.send(response)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+
+    searchByFeildPR: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "", count: 0 }
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
+
+            let shopId = ``
+
+            if (shopid !== 0) {
+                shopId = `and purchasereturn.ShopID = ${shopid}`
+            }
+
+
+            let qry = `select purchasereturn.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasereturn left join user as users1 on users1.ID = purchasereturn.CreatedBy left join user as users on users.ID = purchasereturn.UpdatedBy left join supplier on supplier.ID = purchasereturn.SupplierID left join shop on shop.ID = purchasereturn.ShopID where purchasereturn.Status = 1 and purchasereturn.CompanyID = '${CompanyID}' ${shopId} and purchasereturn.SystemCn like '%${Body.searchQuery}%' OR purchasereturn.Status = 1 and purchasereturn.CompanyID = '${CompanyID}' ${shopId}  and supplier.Name like '%${Body.searchQuery}%' OR purchasereturn.Status = 1  and purchasereturn.CompanyID = '${CompanyID}' ${shopId}  and supplier.GSTNo like '%${Body.searchQuery}%' `
+
+            let data = await connection.query(qry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = data.length
+            // connection.release()
+            res.send(response)
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+
+    deletePR: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+
+            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+
+            const doesExist = await connection.query(`select * from purchasereturn where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "purchasereturn doesnot exist from this id " })
+            }
+
+
+            const doesExistProduct = await connection.query(`select * from purchasereturndetail where Status = 1 and CompanyID = '${CompanyID}' and ReturnID = '${Body.ID}'`)
+
+            if (doesExistProduct.length) {
+                return res.send({ message: `First you'll have to delete product` })
+            }
+
+
+            const deletePurchase = await connection.query(`update purchasereturn set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+
+            console.log("Purchase Return Delete SuccessFUlly !!!");
+
+            response.message = "data delete sucessfully"
+            // connection.release()
+            res.send(response)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+
+    supplierCnPR: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const { SupplierCn, ID } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (SupplierCn === null || SupplierCn === undefined) return res.send({ message: "Invalid Query Data" })
+
+            if (ID === null || ID === undefined) return res.send({ message: "Invalid Query Data" })
+
+            const doesExist = await connection.query(`select * from purchasereturn where Status = 1 and CompanyID = '${CompanyID}' and ID = '${ID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "purchasereturn doesnot exist from this id " })
+            }
+
+            let supplierId = doesExist[0].SupplierID
+
+
+            let update = await connection.query(`update purchasereturn set SupplierCn = '${SupplierCn}', CreatedOn=now(), UpdatedBy=${LoggedOnUser} where ID =${ID}`)
+
+            console.log("Purchase Return Update SuccessFUlly !!!");
+
+
+            const savePaymentMaster = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${supplierId}, ${CompanyID}, ${shopid}, 'Supplier','Credit',now(), 'Vendor Credit', '', '', ${doesExist[0].TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
+
+            const savePaymentDetail = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${SupplierCn}',${ID},${supplierId},${CompanyID},${doesExist[0].TotalAmount},0,'Vendor Credit','Credit',1,${LoggedOnUser}, now())`)
+
+            console.log(connected("Vendor Credit SuccessFUlly !!!"));
+
+            response.message = "data update sucessfully"
+            // connection.release()
+            res.send(response)
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
