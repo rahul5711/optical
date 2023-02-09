@@ -43,7 +43,7 @@ export class PurchaseComponent implements OnInit {
   selectedPurchaseMaster: any = {
     ID: null, SupplierID: null, SupplierName: null, CompanyID: null, GSTNo: null, ShopID: null, ShopName: null, PurchaseDate: null,
     PaymentStatus: null, InvoiceNo: null, Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0,
-    GSTAmount: 0, TotalAmount: 0, preOrder:false,
+    GSTAmount: 0, TotalAmount: 0, RoundOff: 0, preOrder:false,
   };
 
   item: any = {
@@ -280,7 +280,7 @@ export class PurchaseComponent implements OnInit {
   }
 
   calculateGrandTotal(){
-    this.calculation.calculateGrandTotal(this.selectedPurchaseMaster, this.itemList, this.chargeList)
+    this.calculation.calculateGrandTotal(this.selectedPurchaseMaster, this.itemList, this.chargeList) 
   }
 
   addItem(){
@@ -567,10 +567,6 @@ export class PurchaseComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-
-
   }
-
-
 
 }

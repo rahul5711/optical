@@ -1248,11 +1248,13 @@ module.exports = {
             if (data.length) {
                 for(let item of data) {
                    item.gst_details = []
+                   item.gst_detailssss = []
                    for(let item2 of data2) {
                        if (item.ID === item2.PurchaseID) {
                            item.gst_details.push({
                                "GSTType" : item2.GSTType,
-                               "GSTAmount": item2.GSTAmount
+                               "GSTAmount": item2.GSTAmount,
+                               "InvoiceNo": item2.InvoiceNo,
                            })
 
                        }

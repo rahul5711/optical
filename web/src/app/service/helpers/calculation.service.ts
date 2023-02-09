@@ -139,6 +139,14 @@ export class CalculationService {
       selectedPurchaseMaster.TotalAmount = (+selectedPurchaseMaster.TotalAmount + +element.TotalAmount).toFixed(2);
       }
     })
+
+    // RoundOff
+    let TotalAmt = '';
+    TotalAmt = selectedPurchaseMaster.TotalAmount;
+    selectedPurchaseMaster.TotalAmount = Math.round(selectedPurchaseMaster.TotalAmount);
+    selectedPurchaseMaster.RoundOff = (selectedPurchaseMaster.TotalAmount - Number(TotalAmt)).toFixed(2);
+
+    // chargeList
     if(chargeList !== ''){
       chargeList.forEach((element: any ) => {
         if (element.Status !== 0){

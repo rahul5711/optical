@@ -142,7 +142,7 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0" style="padding: 0;">
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 p-md-0" >
                                     <mat-form-field class="example-full-width mb-0"
                                         [class.has-error]="ShopControl.invalid && ShopControl.touched"
                                         [class.has-success]="ShopControl.valid">
@@ -175,18 +175,18 @@
                                             (ngModelChange)="xferItem.Remark = onChange($event)" autocomplete="off">
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                <div class="col-xl-1 col-lg-1 col-md-6 col-sm-6 col-6 mb-0">
                                     <button class="mr-3" mat-raised-button color="primary"
                                         [disabled]="!f.valid || !this.xferItem.ToShopID">Intiate Transfer</button>
                                 </div>
-                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ms-3">
+                                <div class="col-xl-1 col-lg-1 col-md-6 col-sm-6 col-5 mb-0 ms-3">
                                     <button type="button" class="mr-3" mat-raised-button color="warn" (click)="formReset()">Reset</button>
                                 </div>
                             </div>
                             <hr style="margin: 0;">
                             <!-- fillter data list -->
                             <div class="row pt-2" style="margin: 0;">
-                                <div class="col-md-2 p-0">
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12  p-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Shop Filter</mat-label>
                                         <mat-select name="shopID" #shopID (selectionChange)="FilterData(shopID.value)">
@@ -197,18 +197,18 @@
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-3 mb-md-0">
                                     <button  class="mr-1 shopPdf" type="button" ><i class="fa-sharp fa-solid fa-file-pdf"></i></button>
                                     <button class="whatsapp ms-4 me-4"><i class="fa-brands fa-whatsapp" ></i></button>
                                     <button class="email"><i class="fa-solid fa-envelope"></i></button>
                                 </div>
-                                  <div class="col-md-3 col-4 mx-md-auto" style="margin-top:0px;">
+                                <div class="col-xl-3 col-lg-3 col-md-8 col-sm-8  col-8 mx-md-auto" style="margin-top:0px;">
                                     <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false" ngbPaginationEllipsis
                                       [collectionSize]="collectionSize" #numPages [pageSize]="itemsPerPage" [(page)]="currentPage"
                                       (pageChange)="getList()" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
                                     </ngb-pagination>
-                                  </div>
-                                  <div class="col-md-1 col-1 ps-md-0 ps-1">
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-4 col-sm-4  col-4 ps-md-0 ps-1">
                                     <select class=" form-control"
                                       style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
                                       [(ngModel)]="itemsPerPage" (change)="getList();">
@@ -219,7 +219,7 @@
                                       <option [ngValue]="250">Show 250Row</option>
                                       <option [ngValue]="500">Show 500 Row</option>
                                     </select>
-                                  </div>
+                                </div>
                             </div>
                             <!-- fillter data list -->
                         </form>

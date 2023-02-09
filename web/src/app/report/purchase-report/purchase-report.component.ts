@@ -45,7 +45,7 @@ export class PurchaseReportComponent implements OnInit {
   DetailtotalGstAmount: any;
   gstdetails:any
 
-
+v :any = []
   PurchaseChargeList :any;
   ChargeAmount:any
   ChargetotalAmount: any;
@@ -94,6 +94,7 @@ export class PurchaseReportComponent implements OnInit {
     PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
   };
 
+
   ngOnInit(): void {
     this.dropdownShoplist();
     this.dropdownSupplierlist();
@@ -122,6 +123,7 @@ export class PurchaseReportComponent implements OnInit {
   }
 
   getPurchaseMaster(){
+
     let Parem = '';
 
     if (this.PurchaseMaster.FromDate !== '' && this.PurchaseMaster.FromDate !== null){
@@ -146,6 +148,26 @@ export class PurchaseReportComponent implements OnInit {
         if(res.message){
           this.as.successToast(res.message)
           this.PurchaseMasterList = res.data;
+ 
+          this.PurchaseMasterList.forEach((e: any) => {
+            let g :any = {type: 'iGST' , amt : 0}
+            let gs : any = {type: 'cGST-sGST' , amt : 0}
+            let c: any[] = []
+
+            e.gst_details.forEach((el: any) => {
+              if(el.InvoiceNo === e.InvoiceNo){
+                if(el.GSTType === 'IGST'){
+                  g.amt =  g.amt + el.GSTAmount;
+                }else if(el.GSTType === 'CGST-SGST'){
+                  gs.amt =  gs.amt + el.GSTAmount;
+                }
+              }
+            })
+            c.push(g)
+            c.push(gs)
+            e.gst_detailssss.push(c)
+          })
+
           this.totalQty = res.calculation[0].totalQty;
           this.totalDiscount = res.calculation[0].totalDiscount.toFixed(2);
           this.totalUnitPrice = res.calculation[0].totalUnitPrice.toFixed(2);

@@ -64,7 +64,7 @@ export class PurchaseReturnComponent implements OnInit {
   };
 
   selectedPurchaseMaster: any = {
-    ID: null, CompanyID: null, SupplierID: null,  ShopID: null, SystemCn:'', SupplierCN:'',  Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, TotalAmount: 0, 
+    ID: null, CompanyID: null, SupplierID: null,  ShopID: null, SystemCn:'', SupplierCN:'',  Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, TotalAmount: 0, RoundOff: 0, 
   };
 
   data:any = { PurchaseMaster: null, PurchaseDetail: null };
@@ -321,6 +321,20 @@ export class PurchaseReturnComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+  }
+
+  updatedPurchaseReturn(){
+    this.data.PurchaseMaster = this.selectedPurchaseMaster;
+    let items:any = [];
+    this.itemList.forEach((ele: any) => {
+      if(ele.ID !== null || ele.ID === null || ele.Status == 0 && ele.UpdatedBy === null) {
+        ele.UpdatedBy = this.user.ID;
+        items.push(ele);
+      }
+    })
+    this.data.PurchaseDetail = JSON.stringify(items) ;
+    console.log(this.data);
+    
   }
 
 }

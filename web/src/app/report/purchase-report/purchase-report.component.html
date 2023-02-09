@@ -96,6 +96,9 @@
                             <th>GST Amount </th>
                             <th>Grand Total</th>
                             <th>SupplierGSTNo</th>
+                            <th>IGST</th>
+                            <th>SGST</th>
+                            <th>CGST</th>
                           </tr>
                           <tr class="totolRow" *ngIf="this.totalQty != null && this.totalQty != '' ">
                             <td>
@@ -117,6 +120,9 @@
                               {{this.totalGstAmount}}</td>
                             <td>{{this.totalAmount}}</td>
                             <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                           </tr>
                         </thead>
                         <tbody class="text-center">
@@ -134,6 +140,9 @@
                             <td>{{s.GSTAmount}} </td>
                             <td>{{s.TotalAmount}}</td>
                             <td>{{s.SupplierGSTNo}}</td>
+                            <td *ngIf="s.gst_detailssss[0][0].type === 'iGST'">{{s.gst_detailssss[0][0].amt }}</td>
+                            <td *ngIf="s.gst_detailssss[0][1].type === 'cGST-sGST'">{{s.gst_detailssss[0][1].amt/2 }}</td>
+                            <td *ngIf="s.gst_detailssss[0][1].type === 'cGST-sGST'">{{s.gst_detailssss[0][1].amt/2 }}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -300,6 +309,12 @@
                             <th>GST Type</th>
                             <th>GST%</th>
                             <th>GSTAmt</th>
+                            <th style="display: none;"> CGST%</th>
+                            <th style="display: none;"> CGSTAmt</th>
+                            <th style="display: none;"> SGST%</th>
+                            <th style="display: none;"> SGSTAmt</th>
+                            <th style="display: none;"> IGST%</th>
+                            <th style="display: none;"> IGSTAmt</th>
                             <th>Grand Total</th>
                             <th>BarCode</th>
                             <th>Payment Status</th>
@@ -356,6 +371,12 @@
                             <td>{{s.GSTType}}</td>
                             <td>{{s.GSTPercentage}}%</td>
                             <td>{{s.GSTAmount}}</td>
+                            <td style="display: none;" ><span *ngIf="s.GSTType === 'CGST-SGST'">{{s.GSTPercentage/2}}</span></td>
+                            <td style="display: none;" ><span *ngIf="s.GSTType === 'CGST-SGST'">{{s.GSTAmount/2}} </span></td>
+                            <td style="display: none;" ><span *ngIf="s.GSTType === 'CGST-SGST'">{{s.GSTPercentage/2}}</span></td>
+                            <td style="display: none;" ><span *ngIf="s.GSTType === 'CGST-SGST'">{{s.GSTAmount/2}}</span></td>
+                            <td style="display: none;" ><span *ngIf="s.GSTType === 'IGST'">{{s.GSTPercentage}}</span></td>
+                            <td style="display: none;" ><span *ngIf="s.GSTType === 'IGST'">{{s.GSTAmount}}</span></td>
                             <td>{{s.TotalAmount}}</td>
                             <td>{{s.BaseBarCode}}</td>
                             <td>{{s.PaymentStatus}}</td>
