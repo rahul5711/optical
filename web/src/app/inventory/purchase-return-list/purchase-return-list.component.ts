@@ -150,8 +150,18 @@ export class PurchaseReturnListComponent implements OnInit {
   }
 
   openModal(content: any,data:any) {
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
-    this.supplierCnPRlist = data
+    if(data.SupplierCn === ''){
+      this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+      this.supplierCnPRlist = data
+    }else{
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: `SupplierCn NO All Ready Insent`,
+        showCancelButton: true,
+      })
+    }
+
   }
 
   supplierCnPR(){
