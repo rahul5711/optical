@@ -253,45 +253,54 @@ export class PurchaseReturnComponent implements OnInit {
   }
 
   addItem(){
-    if(this.item.BarCodeCount >= this.xferItem.Quantity ){
-      this.xferItem.ProductName = "";
-      this.xferItem.ProductTypeID = "";
-
-      if(this.barCodeList !== undefined){
-        this.specList.forEach((element: any) => {
-          this.prodList.forEach((elements: any) => {
-            if(elements.Name === element.ProductName){
-              this.xferItem.ProductTypeID = elements.ID
-              this.xferItem.ProductTypeName = elements.Name
-            }
-          });
-        if(element.SelectedValue !== "") {
-          this.xferItem.ProductName = this.item.ProductName  + element.SelectedValue + "/";
+    if(this.selectedPurchaseMaster.SupplierCn === ''){
+      if(this.item.BarCodeCount >= this.xferItem.Quantity ){
+        this.xferItem.ProductName = "";
+        this.xferItem.ProductTypeID = "";
+  
+        if(this.barCodeList !== undefined){
+          this.specList.forEach((element: any) => {
+            this.prodList.forEach((elements: any) => {
+              if(elements.Name === element.ProductName){
+                this.xferItem.ProductTypeID = elements.ID
+                this.xferItem.ProductTypeName = elements.Name
+              }
+            });
+          if(element.SelectedValue !== "") {
+            this.xferItem.ProductName = this.item.ProductName  + element.SelectedValue + "/";
+          }
+        });
         }
-      });
+  
+        this.xferItem.PurchaseDetailID = this.item.PurchaseDetailID;
+        this.xferItem.ProductTypeID = this.item.ProductTypeID
+        this.xferItem.ProductTypeName = this.item.ProductTypeName
+        this.xferItem.ProductName = this.item.ProductName
+        this.itemList.unshift(this.xferItem);
+        this. xferItem = {
+          ID: null, CompanyID: null, PurchaseDetailID:null, ProductName: '', ProductTypeName: '', ProductTypeID: null,  Barcode: null, BarCodeCount: null, Quantity:0, Remark : '', UnitPrice: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1
+        };
+        this.specList = [];
+        this.Req = {SearchBarCode : ''}
+        this.calculateFields();
+        this.calculateGrandTotal();
+      }else{
+        Swal.fire({
+          icon: 'warning',
+          title: 'Opps !!',
+          text: 'Return Quantity Can Not Be More Than Available Quantity',
+          footer: '',
+          backdrop : false,
+        });
+        this.xferItem.Quantity = 0;
       }
-
-      this.xferItem.PurchaseDetailID = this.item.PurchaseDetailID;
-      this.xferItem.ProductTypeID = this.item.ProductTypeID
-      this.xferItem.ProductTypeName = this.item.ProductTypeName
-      this.xferItem.ProductName = this.item.ProductName
-      this.itemList.unshift(this.xferItem);
-      this. xferItem = {
-        ID: null, CompanyID: null, PurchaseDetailID:null, ProductName: '', ProductTypeName: '', ProductTypeID: null,  Barcode: null, BarCodeCount: null, Quantity:0, Remark : '', UnitPrice: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1
-      };
-      this.specList = [];
-      this.Req = {SearchBarCode : ''}
-      this.calculateFields();
-      this.calculateGrandTotal();
     }else{
       Swal.fire({
+        position: 'center',
         icon: 'warning',
-        title: 'Opps !!',
-        text: 'Return Quantity Can Not Be More Than Available Quantity',
-        footer: '',
-        backdrop : false,
-      });
-      this.xferItem.Quantity = 0;
+        title: `SupplierCn NO All Ready Insent`,
+        showCancelButton: true,
+      })
     }
   }
 
