@@ -111,10 +111,28 @@
   <!-- Modal -->
   <ng-template #content role="document" let-modal>
     <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
-      <h2 class="modal-title header pt-2" id="exampleModalLabel">Supplier Detail's</h2>
+      <h2 class="modal-title header pt-2" id="exampleModalLabel">Supplier CN No</h2>
       <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body p-0">
-   
+      <form #f="ngForm">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-xl-10 col-lg-10 col-md-8 col-sm-12 mb-0 mx-auto">
+              <mat-form-field class="example-full-width mb-0">
+                <mat-label>Supplier CN No</mat-label>
+                <input  matInput name="SupplierCNNo" [(ngModel)]="SupplierCNNo" required >
+                <mat-error>
+                  SupplierCNNo is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" mat-raised-button color="primary" [disabled]="!f.valid"
+            (click)="supplierCnPR()">Update</button>
+        </div>
+      </form>
     </div>
   </ng-template>

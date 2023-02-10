@@ -31,6 +31,9 @@ export class PurchaseReturnListComponent implements OnInit {
   page = 4;
   paymentHistoryList:any;
 
+  SupplierCNNo:any
+  supplierCnPRlist :any
+
   constructor(
     private formBuilder: FormBuilder,
     public as: AlertService,
@@ -147,18 +150,26 @@ export class PurchaseReturnListComponent implements OnInit {
   }
 
   openModal(content: any,data:any) {
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
-    const subs: Subscription = this.purchaseService.paymentHistory(data.ID, data.InvoiceNo).subscribe({
-      next: (res: any) => {
-        this.paymentHistoryList = res.data;
-        this.sp.hide();
-        this.as.successToast(res.message)
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+    this.supplierCnPRlist = data
   }
 
-
+  supplierCnPR(){
+   const subs: Subscription =  this.purchaseService.supplierCnPR(this.SupplierCNNo,this.supplierCnPRlist.ID).subscribe({
+    next: (res: any) => {
+      this.modalService.dismissAll();
+      this.SupplierCNNo = '';
+      Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Your file has been Update.',
+          showConfirmButton: false,
+          timer: 1200
+      })
+    },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+  });
+  }
 
 }

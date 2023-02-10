@@ -224,6 +224,12 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+  supplierCnPR(SupplierCn:any, ID:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/supplierCnPR', {SupplierCn: SupplierCn, ID: ID }, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

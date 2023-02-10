@@ -64,7 +64,8 @@ export class PurchaseReturnComponent implements OnInit {
   };
 
   selectedPurchaseMaster: any = {
-    ID: null, CompanyID: null, SupplierID: null,  ShopID: null, SystemCn:'', SupplierCN:'',  Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, TotalAmount: 0, RoundOff: 0, 
+    ID: null, CompanyID: null, SupplierID: null,  ShopID: null, SystemCn:'', SupplierCn
+    :'',  Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, TotalAmount: 0, RoundOff: 0, 
   };
 
   data:any = { PurchaseMaster: null, PurchaseDetail: null };
