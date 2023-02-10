@@ -333,8 +333,81 @@ export class PurchaseReturnComponent implements OnInit {
       }
     })
     this.data.PurchaseDetail = JSON.stringify(items) ;
-    console.log(this.data);
+    const subs: Subscription =  this.purchaseService.updatePurchaseReturn(this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          if(res.data !== 0) {
+            this.getPurchaseReturnById();
+            this.selectedProduct = "";
+            this.specList = [];
+          }
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Update.',
+            showConfirmButton: false,
+            timer: 1200
+          })
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
     
+  }
+
+  deleteItem(Category:any ,i:any){
+    if(Category === 'Product'){
+      if (this.itemList[i].ID === null){
+        this.itemList.splice(i, 1);
+      }else{
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!',
+          backdrop : false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const subs: Subscription = this.purchaseService.deleteProductPR(this.itemList[i].ID,this.selectedPurchaseMaster).subscribe({
+              next: (res: any) => {
+                if(res.message === "You have product already sold"){
+                  Swal.fire({
+                    position: 'center',
+                    icon: 'warning',
+                    title: 'You have product'  + `<span style ="font-size:20px;color:red;font-weight:bold;"> ${this.itemList[i].ProductName}</span>` + ' already sold',
+                    showConfirmButton: true,
+                    backdrop : false,
+                  })
+                }else{
+                  this.itemList[i].Status = 0;
+                  this.getPurchaseReturnById()
+                  Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Your file has been deleted.',
+                    showConfirmButton: false,
+                    timer: 1000
+                  })
+                  this.as.successToast(res.message)
+                }
+              },
+              error: (err: any) => console.log(err.message),
+              complete: () => subs.unsubscribe(),
+            });
+
+          }
+        })
+      }
+    }
+
   }
 
 }

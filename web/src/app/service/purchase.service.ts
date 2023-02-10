@@ -52,6 +52,7 @@ export class PurchaseService {
     return this.httpClient.post<any>(this.url + '/searchByFeild', searchQuery,httpOptions)
     .pipe(catchError(this.handleError));
   }
+
   searchByFeildPreOrder(searchQuery: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/searchByFeildPreOrder', searchQuery,httpOptions)
     .pipe(catchError(this.handleError));
@@ -193,13 +194,33 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+  updatePurchaseReturn(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/updatePurchaseReturn', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   getPurchaseReturnById(ID:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/getPurchaseReturnById', {ID: ID}, httpOptions )
     .pipe(catchError(this.handleError));
   }
 
+  deleteProductPR(ID:any,PurchaseMaster:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/deleteProductPR', {ID: ID, PurchaseMaster: PurchaseMaster},  httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   getPurchaseReturnList(Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/purchasereturnlist', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  searchByFeildPR(searchQuery: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/searchByFeildPR', searchQuery,httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  deletePR(ID:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/deletePR', {ID: ID}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
