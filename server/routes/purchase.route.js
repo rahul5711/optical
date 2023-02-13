@@ -103,5 +103,12 @@ router.post('/deletePR', verifyAccessTokenAdmin, Controller.deletePR)
 router.post('/supplierCnPR', verifyAccessTokenAdmin, Controller.supplierCnPR)
 
 
+// purchase return report
+
+router.post('/getPurchasereturnreports', verifyAccessTokenAdmin, Controller.getPurchasereturnreports)
+
+router.post('/getPurchasereturndetailreports', verifyAccessTokenAdmin, Controller.getPurchasereturndetailreports)
+
+
 
 module.exports = router

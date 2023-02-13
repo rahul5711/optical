@@ -1394,6 +1394,255 @@ module.exports = {
     },
 
 
+    // Purchase return report
+
+    getPurchasereturnreports: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = {
+                data: null, calculation: [{
+                    "totalQty": 0,
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalDiscount": 0,
+                    "totalUnitPrice": 0,
+                    "gst_details": []
+                }], success: true, message: ""
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            qry = `SELECT purchasereturn.*, shop.Name AS ShopName,  shop.AreaName AS AreaName, supplier.Name AS SupplierName,supplier.GSTNo AS SupplierGSTNo FROM purchasereturn  LEFT JOIN shop ON shop.ID = purchasereturn.ShopID LEFT JOIN supplier ON supplier.ID = purchasereturn.SupplierID WHERE purchasereturn.Status = 1 AND purchasereturn.CompanyID = ${CompanyID}  ` + Parem;
+
+
+
+
+            let datum = await connection.query(`SELECT SUM(purchasereturndetail.Quantity) as totalQty, SUM(purchasereturndetail.GSTAmount) as totalGstAmount, SUM(purchasereturndetail.TotalAmount) as totalAmount, SUM(purchasereturndetail.DiscountAmount) as totalDiscount, SUM(purchasereturndetail.SubTotal) as totalUnitPrice  FROM purchasereturndetail INNER JOIN purchasereturn ON purchasereturn.ID = purchasereturndetail.ReturnID LEFT JOIN shop ON shop.ID = purchasereturn.ShopID LEFT JOIN supplier ON supplier.ID = purchasereturn.SupplierID WHERE purchasereturndetail.Status = 1  AND purchasereturndetail.CompanyID = ${CompanyID}  ` + Parem)
+
+            let data = await connection.query(qry);
+
+
+            qry2 = `SELECT purchasereturndetail.*,purchasereturn.SystemCn, purchasereturn.SupplierCn, shop.Name AS ShopName,  shop.AreaName AS AreaName, supplier.Name AS SupplierName,supplier.GSTNo AS SupplierGSTNo,product.HSNCode AS HSNcode  FROM purchasereturndetail INNER JOIN purchasereturn ON purchasereturn.ID = purchasereturndetail.ReturnID LEFT JOIN shop ON shop.ID = purchasereturn.ShopID LEFT JOIN supplier ON supplier.ID = purchasereturn.SupplierID LEFT JOIN product ON product.ID = purchasereturndetail.ProductTypeID WHERE purchasereturndetail.Status = 1  AND purchasereturndetail.CompanyID = ${CompanyID}  ` + Parem;
+
+            let data2 = await connection.query(qry2);
+
+            let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            const values = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        values.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        values.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+            const values2 = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    values2.push({
+                        GSTType: `${item.Name}`,
+                        GSTAmount: 0
+                    })
+                }
+            }
+
+
+            if (data2.length && values.length) {
+                for (const item of data2) {
+                    values.forEach(e => {
+                        if (e.GSTType === item.GSTType) {
+                            e.Amount += item.GSTAmount
+                        }
+
+                        // CGST-SGST
+
+                        if (item.GSTType === 'CGST-SGST') {
+
+                            if (e.GSTType === 'CGST') {
+                                e.Amount += item.GSTAmount / 2
+                            }
+
+                            if (e.GSTType === 'SGST') {
+                                e.Amount += item.GSTAmount / 2
+                            }
+                        }
+                    })
+
+                }
+
+            }
+
+            if (data.length) {
+                for (let item of data) {
+                    item.gst_details = []
+                    item.gst_detailssss = []
+                    for (let item2 of data2) {
+                        if (item.ID === item2.ReturnID) {
+                            item.gst_details.push({
+                                "GSTType": item2.GSTType,
+                                "GSTAmount": item2.GSTAmount,
+                                "InvoiceNo": item2.InvoiceNo,
+                            })
+
+                        }
+                    }
+                }
+            }
+
+
+            response.calculation[0].gst_details = values;
+
+            response.calculation[0].totalQty = datum[0].totalQty ? datum[0].totalQty : 0
+            response.calculation[0].totalGstAmount = datum[0].totalGstAmount ? datum[0].totalGstAmount : 0
+            response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount : 0
+            response.calculation[0].totalDiscount = datum[0].totalDiscount ? datum[0].totalDiscount : 0
+            response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice : 0
+            response.data = data
+            response.message = "success";
+            // connection.release()
+            res.send(response)
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+
+    getPurchasereturndetailreports: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = {
+                data: null, calculation: [{
+                    "totalQty": 0,
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalDiscount": 0,
+                    "totalUnitPrice": 0,
+                    "gst_details": []
+                }], success: true, message: ""
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            qry = `SELECT purchasereturndetail.*,purchasereturn.SystemCn, purchasereturn.SupplierCn, shop.Name AS ShopName,  shop.AreaName AS AreaName, supplier.Name AS SupplierName,supplier.GSTNo AS SupplierGSTNo,product.HSNCode AS HSNcode  FROM purchasereturndetail INNER JOIN purchasereturn ON purchasereturn.ID = purchasereturndetail.ReturnID LEFT JOIN shop ON shop.ID = purchasereturn.ShopID LEFT JOIN supplier ON supplier.ID = purchasereturn.SupplierID LEFT JOIN product ON product.ID = purchasereturndetail.ProductTypeID WHERE purchasereturndetail.Status = 1 AND purchasereturndetail.CompanyID = ${CompanyID}  ` + Parem;
+
+
+
+
+            let datum = await connection.query(`SELECT SUM(purchasereturndetail.Quantity) as totalQty, SUM(purchasereturndetail.GSTAmount) as totalGstAmount, SUM(purchasereturndetail.TotalAmount) as totalAmount, SUM(purchasereturndetail.DiscountAmount) as totalDiscount, SUM(purchasereturndetail.SubTotal) as totalUnitPrice  FROM purchasereturndetail INNER JOIN purchasereturn ON purchasereturn.ID = purchasereturndetail.ReturnID LEFT JOIN shop ON shop.ID = purchasereturn.ShopID LEFT JOIN supplier ON supplier.ID = purchasereturn.SupplierID LEFT JOIN product ON product.ID = purchasereturndetail.ProductTypeID WHERE purchasereturndetail.Status = 1  AND purchasereturndetail.CompanyID = ${CompanyID}  ` + Parem)
+
+            let data = await connection.query(qry);
+
+
+            let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            const values = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        values.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        values.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+
+
+            response.calculation[0].gst_details = values;
+
+            response.calculation[0].totalQty = datum[0].totalQty ? datum[0].totalQty : 0
+            response.calculation[0].totalGstAmount = datum[0].totalGstAmount ? datum[0].totalGstAmount : 0
+            response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount : 0
+            response.calculation[0].totalDiscount = datum[0].totalDiscount ? datum[0].totalDiscount : 0
+            response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice : 0
+
+            if (data.length && values.length) {
+                for (const item of data) {
+                    values.forEach(e => {
+                        if (e.GSTType === item.GSTType) {
+                            e.Amount += item.GSTAmount
+                        }
+
+                        // CGST-SGST
+
+                        if (item.GSTType === 'CGST-SGST') {
+
+                            if (e.GSTType === 'CGST') {
+                                e.Amount += item.GSTAmount / 2
+                            }
+
+                            if (e.GSTType === 'SGST') {
+                                e.Amount += item.GSTAmount / 2
+                            }
+                        }
+                    })
+
+                }
+
+            }
+
+
+
+
+            response.data = data
+            response.message = "success";
+            // connection.release()
+            res.send(response)
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+
+
     // pre order
 
     createPreOrder: async (req, res, next) => {
@@ -2418,6 +2667,11 @@ module.exports = {
                 return res.send({ message: `Purchase Already exist from this SystemCn ${PurchaseMaster.SystemCn}` })
             }
 
+
+            if (doesExistSystemCn.SupplierCn !=="") {
+                return res.send({ message: `You have already added supplierCn ${PurchaseMaster.SupplierCn}` })
+            }
+
             const purchaseDetail = JSON.parse(PurchaseDetail);
 
             if (purchaseDetail.length === 0) {
@@ -2636,6 +2890,14 @@ module.exports = {
             }
 
 
+            const doesExistSystemCn = await connection.query(`select * from purchasereturn where Status = 1 and SystemCn = '${Body.PurchaseMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${Body.PurchaseMaster.ID}`)
+
+
+            if (doesExistSystemCn.SupplierCn !=="") {
+                return res.send({ message: `You have already added supplierCn ${Body.PurchaseMaster.SupplierCn}` })
+            }
+
+
             const deletePurchasedetail = await connection.query(`update purchasereturndetail set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Product Delete SuccessFUlly !!!");
@@ -2780,6 +3042,10 @@ module.exports = {
 
             if (!doesExist.length) {
                 return res.send({ message: "purchasereturn doesnot exist from this id " })
+            }
+
+            if (doesExist.SupplierCn !== "") {
+                return res.send({ message: "You have already added supplierCn" })
             }
 
 
