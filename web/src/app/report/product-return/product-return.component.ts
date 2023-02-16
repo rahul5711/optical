@@ -175,7 +175,7 @@ export class ProductReturnComponent implements OnInit {
       const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-      XLSX.writeFile(wb, 'Purchase Report.xlsx');
+      XLSX.writeFile(wb, 'Product_Return_Report.xlsx');
   }
 
   openModal3(content3: any) {
@@ -315,7 +315,7 @@ export class ProductReturnComponent implements OnInit {
     const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    XLSX.writeFile(wb, 'Purchase ProductType Report.xlsx');
+    XLSX.writeFile(wb, 'Product_Return_ProductType_Report.xlsx');
   }
   
   PDFdetail(){
