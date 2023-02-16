@@ -165,22 +165,34 @@ export class PurchaseReturnListComponent implements OnInit {
   }
 
   supplierCnPR(){
-   const subs: Subscription =  this.purchaseService.supplierCnPR(this.SupplierCNNo,this.supplierCnPRlist.ID).subscribe({
-    next: (res: any) => {
-      this.modalService.dismissAll();
-      this.getList();
-      this.SupplierCNNo = '';
-      Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'Your file has been Update.',
-          showConfirmButton: false,
-          timer: 1200
-      })
-    },
-    error: (err: any) => console.log(err.message),
-    complete: () => subs.unsubscribe(),
-   });
+    Swal.fire({
+      title: 'Are you sure?  SupplierCN -' + ` <b style ="font-size:20px;color:red;font-weight:bold;"> ${this.SupplierCNNo}</b> `,
+      text: 'After you save a SupplierCN No., You will be unable to update it again.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, Save it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const subs: Subscription =  this.purchaseService.supplierCnPR(this.SupplierCNNo,this.supplierCnPRlist.ID).subscribe({
+          next: (res: any) => {
+            this.modalService.dismissAll();
+            this.getList();
+            this.SupplierCNNo = '';
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been Update.',
+                showConfirmButton: false,
+                timer: 1200
+            })
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+         });
+      }
+    })
   }
 
 }
