@@ -94,11 +94,11 @@
                             <th>Discount </th>
                             <th>SubTotal</th>
                             <th>GST Amount </th>
-                            <th>Grand Total</th>
-                            <th>SupplierGSTNo</th>
                             <th>IGST</th>
                             <th>SGST</th>
                             <th>CGST</th>
+                            <th>Grand Total</th>
+                            <th>SupplierGSTNo</th>
                           </tr>
                           <tr class="totolRow" *ngIf="this.totalQty != null && this.totalQty != '' ">
                             <td>
@@ -116,12 +116,12 @@
                             <td>{{this.totalQty}}</td>
                             <td>{{this.totalDiscount}}</td>
                             <td>{{this.totalUnitPrice}}</td>
-                            <td data-mdb-toggle="modal" data-mdb-target="#exampleModal" (click)="openModal3(content3)">
+                            <td (click)="openModal3(content3)">
                               {{this.totalGstAmount}}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                             <td>{{this.totalAmount}}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
                             <td></td>
                           </tr>
                         </thead>
@@ -138,11 +138,11 @@
                             <td>{{s.DiscountAmount}} </td>
                             <td>{{s.SubTotal}}</td>
                             <td>{{s.GSTAmount}} </td>
-                            <td>{{s.TotalAmount}}</td>
-                            <td>{{s.SupplierGSTNo}}</td>
                             <td *ngIf="s.gst_detailssss[0][0].type === 'iGST'">{{s.gst_detailssss[0][0].amt }}</td>
                             <td *ngIf="s.gst_detailssss[0][1].type === 'cGST-sGST'">{{s.gst_detailssss[0][1].amt/2 }}</td>
                             <td *ngIf="s.gst_detailssss[0][1].type === 'cGST-sGST'">{{s.gst_detailssss[0][1].amt/2 }}</td>
+                            <td>{{s.TotalAmount}}</td>
+                            <td>{{s.SupplierGSTNo}}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -344,7 +344,7 @@
                             <td>{{this.DetailtotalUnitPrice}}</td>
                             <td></td>
                             <td></td>
-                            <td data-mdb-toggle="modal" data-mdb-target="#exampleModal" (click)="openModal(content)">
+                            <td (click)="openModal(content)">
                               {{this.DetailtotalGstAmount}}</td>
                             <td>{{this.DetailtotalAmount}}</td>
                             <td></td>
@@ -464,8 +464,7 @@
                                         <td>{{this.ChargeAmount}}</td>
                                         <td></td>
                                         <td></td>
-                                        <td data-mdb-toggle="modal" data-mdb-target="#exampleModal1"
-                                            (click)="openModal1(content1)">
+                                        <td (click)="openModal1(content1)">
                                             {{this.ChargetotalGstAmount}}</td>
                                         <td></td>
                                     </tr>
@@ -641,9 +640,9 @@
                             <th>Unit Price</th>
                             <th>Discount</th>
                             <th>SubTotal</th>
-                            <th>GSTPercentage</th>
+                            <th>GST%</th>
                             <th>GSTAmount</th>
-                            <th>GST Type</th>
+                            <th>GSTType</th>
                             <th>GrandTotal</th>
                             <th>PaymentStatus</th>
                             <th>Retail Price</th>
@@ -668,7 +667,7 @@
                             <td>{{this.ExpirytotalDiscount}}</td>
                             <td>{{this.ExpirytotalUnitPrice}}</td>
                             <td></td>
-                            <td data-mdb-toggle="modal" data-mdb-target="#exampleModal" (click)="openModal2(content2)">
+                            <td (click)="openModal2(content2)">
                               {{this.ExpirytotalGstAmount}}</td>
                             <td></td>
                             <td>{{this.ExpirytotalAmount}}</td>

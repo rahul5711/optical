@@ -20,8 +20,6 @@ module.exports.loggers = createLogger({
   ]
 });
 
-
-
 module.exports.getLogFileStream = (logType = 'unknown') => {
   if (!fs.existsSync(path.join(__dirname, '../logs/')))
     return fs.mkdirSync(path.join(__dirname, '../logs/'))

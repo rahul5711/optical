@@ -229,6 +229,17 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+  getPurchasereturnreports(Parem:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getPurchasereturnreports',{Parem:Parem}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getPurchasereturndetailreports(Parem:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getPurchasereturndetailreports',{Parem:Parem}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

@@ -388,17 +388,8 @@ export class PurchaseReturnComponent implements OnInit {
           if (result.isConfirmed) {
             const subs: Subscription = this.purchaseService.deleteProductPR(this.itemList[i].ID,this.selectedPurchaseMaster).subscribe({
               next: (res: any) => {
-                if(res.message === "You have product already sold"){
-                  Swal.fire({
-                    position: 'center',
-                    icon: 'warning',
-                    title: 'You have product'  + `<span style ="font-size:20px;color:red;font-weight:bold;"> ${this.itemList[i].ProductName}</span>` + ' already sold',
-                    showConfirmButton: true,
-                    backdrop : false,
-                  })
-                }else{
                   this.itemList[i].Status = 0;
-                  this.getPurchaseReturnById()
+                  // this.getPurchaseReturnById()
                   Swal.fire({
                     position: 'center',
                     icon: 'success',
@@ -407,17 +398,14 @@ export class PurchaseReturnComponent implements OnInit {
                     timer: 1000
                   })
                   this.as.successToast(res.message)
-                }
               },
               error: (err: any) => console.log(err.message),
               complete: () => subs.unsubscribe(),
             });
-
           }
         })
       }
     }
-
   }
 
 }

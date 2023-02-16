@@ -31,12 +31,16 @@ export class TransferProductReportComponent implements OnInit {
   DetailtotalQty: any;
 
   data: any =  {
-    FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ToShop: 0, FromShop : 0,ProductStatus: 0,  ProductCategory : 0, ProductName:''
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ToShop: 0, FromShop : 0,ProductStatus: 0,  ProductCategory : 0, ProductName:''
   };
 
   ngOnInit(): void {
     this.getProductList();
     this. dropdownShoplist();
+    // TransferReport Today Data
+    this.data.FromDate = moment().format('YYYY-MM-DD');
+    this.data.ToDate = moment().format('YYYY-MM-DD');
+    this.getTransferReport();
   }
 
   dropdownShoplist(){
@@ -172,7 +176,7 @@ export class TransferProductReportComponent implements OnInit {
 
   FromReset(){
     this.data =  { 
-      FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ToShop: 0, FromShop : 0,ProductStatus: 0,  ProductCategory : 0, ProductName:''
+      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ToShop: 0, FromShop : 0,ProductStatus: 0,  ProductCategory : 0, ProductName:''
     };
     this.TransfermasterList = [];
   }

@@ -45,7 +45,7 @@ export class PurchaseReportComponent implements OnInit {
   DetailtotalGstAmount: any;
   gstdetails:any
 
-v :any = []
+  v :any = []
   PurchaseChargeList :any;
   ChargeAmount:any
   ChargetotalAmount: any;
@@ -76,21 +76,21 @@ v :any = []
   ) { }
 
   PurchaseMaster: any =  { 
-    FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
     SupplierGSTNo:'All', PaymentStatus: 0,
   };
 
   PurchaseDetail: any =  {
-    FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
     PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
   };
 
   charge: any =  { 
-    FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0
   };
 
   ProductExpiry: any =  {
-    FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
     PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
   };
 
@@ -100,6 +100,22 @@ v :any = []
     this.dropdownSupplierlist();
     this.getProductList();
     this.getGSTList();
+    // PurchaseMaster Today Data
+    this.PurchaseMaster.FromDate = moment().format('YYYY-MM-DD');
+    this.PurchaseMaster.ToDate = moment().format('YYYY-MM-DD');
+    this.getPurchaseMaster();
+    // PurchaseMaster Today Data
+    this.PurchaseDetail.FromDate = moment().format('YYYY-MM-DD');
+    this.PurchaseDetail.ToDate = moment().format('YYYY-MM-DD');
+    this.getPurchaseDetails();
+    // PurchaseMaster Today Data
+    this.charge.FromDate = moment().format('YYYY-MM-DD');
+    this.charge.ToDate = moment().format('YYYY-MM-DD');
+    this.purchaseCharge();
+    // PurchaseMaster Today Data
+    this.ProductExpiry.FromDate = moment().format('YYYY-MM-DD');
+    this.ProductExpiry.ToDate = moment().format('YYYY-MM-DD');
+    this.purchaseProductExpiry();
   }
 
   dropdownShoplist(){
@@ -183,7 +199,7 @@ v :any = []
 
   purchaseFromReset(){
     this.PurchaseMaster =  { 
-        FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
+        FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
         SupplierGSTNo:'All', PaymentStatus: 0,
     };
     this.PurchaseMasterList = [];
@@ -363,7 +379,7 @@ v :any = []
 
   purchaseDetailsFromReset(){
     this.PurchaseDetail =  { 
-      FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
+      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
       PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
     };
     this.PurchaseDetailList = [];
@@ -418,7 +434,7 @@ v :any = []
 
   purchaseChargeFromReset(){
     this.charge =  { 
-      FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0
+      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0
     };
     this.PurchaseChargeList = [];
     this.ChargeAmount = ''
@@ -569,7 +585,7 @@ v :any = []
 
   productExpiryFromReset(){
     this.ProductExpiry =  {
-      FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
+      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
       PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
     };
     this.ProductExpiryList= [];

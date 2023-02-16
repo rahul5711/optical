@@ -27,6 +27,7 @@ import { SharedModule } from "../shared/shared.module";
 import { TransferProductReportComponent } from './transfer-product-report/transfer-product-report.component';
 import { InventoryReportComponent } from './inventory-report/inventory-report.component';
 import { EyetestReportComponent } from './eyetest-report/eyetest-report.component';
+import { ProductReturnComponent } from './product-return/product-return.component';
 
 
 @NgModule({
@@ -35,6 +36,7 @@ import { EyetestReportComponent } from './eyetest-report/eyetest-report.componen
     TransferProductReportComponent,
     InventoryReportComponent,
     EyetestReportComponent,
+    ProductReturnComponent,
 
 
   ],
