@@ -2667,8 +2667,10 @@ module.exports = {
                 return res.send({ message: `Purchase Already exist from this SystemCn ${PurchaseMaster.SystemCn}` })
             }
 
+            const doesExistSupplierCn = await connection.query(`select * from purchasereturn where Status = 1 and SystemCn = '${PurchaseMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${PurchaseMaster.ID}`)
 
-            if (doesExistSystemCn.SupplierCn !=="") {
+
+            if (doesExistSupplierCn[0].SupplierCn !== "") {
                 return res.send({ message: `You have already added supplierCn ${PurchaseMaster.SupplierCn}` })
             }
 
@@ -2893,7 +2895,7 @@ module.exports = {
             const doesExistSystemCn = await connection.query(`select * from purchasereturn where Status = 1 and SystemCn = '${Body.PurchaseMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${Body.PurchaseMaster.ID}`)
 
 
-            if (doesExistSystemCn.SupplierCn !=="") {
+            if (doesExistSystemCn[0].SupplierCn !== "") {
                 return res.send({ message: `You have already added supplierCn ${Body.PurchaseMaster.SupplierCn}` })
             }
 

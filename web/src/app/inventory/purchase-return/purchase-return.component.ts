@@ -298,7 +298,7 @@ export class PurchaseReturnComponent implements OnInit {
       Swal.fire({
         position: 'center',
         icon: 'warning',
-        title: `SupplierCn NO All Ready Insent`,
+        title: `You have already added SupplierCn NO.`,
         showCancelButton: true,
       })
     }
@@ -388,6 +388,7 @@ export class PurchaseReturnComponent implements OnInit {
           if (result.isConfirmed) {
             const subs: Subscription = this.purchaseService.deleteProductPR(this.itemList[i].ID,this.selectedPurchaseMaster).subscribe({
               next: (res: any) => {
+                if (res.success) {
                   this.itemList[i].Status = 0;
                   // this.getPurchaseReturnById()
                   Swal.fire({
@@ -397,7 +398,17 @@ export class PurchaseReturnComponent implements OnInit {
                     showConfirmButton: false,
                     timer: 1000
                   })
-                  this.as.successToast(res.message)
+                  this.as.successToast(res.message) 
+                } else {
+                  Swal.fire({
+                    position: 'center',
+                    icon: 'warning',
+                    title: `You have already added SupplierCn NO.`,
+                    showCancelButton: true,
+                  })
+                  this.as.errorToast(res.message)
+                }
+                  
               },
               error: (err: any) => console.log(err.message),
               complete: () => subs.unsubscribe(),

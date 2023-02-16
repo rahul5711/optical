@@ -84,18 +84,19 @@ export class PurchaseReturnListComponent implements OnInit {
       if (result.isConfirmed) {
         const subs: Subscription = this.purchaseService.deletePR(this.dataList[i].ID).subscribe({
           next: (res: any) => {
-            if(res.message === "First you'll have to delete product"){
-              Swal.fire({
-                position: 'center',
-                icon: 'warning',
-                title: `First you'll have to delete product`,
-                showCancelButton: true,
-              })
-            }else{
+            if(res.success) {
               this.dataList.splice(i, 1);
               this.as.successToast(res.message)
             }
-            
+            else{
+              Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: `First you'll have to delete product OR You have already added SupplierCn NO.`,
+                showCancelButton: true,
+              })
+              this.as.errorToast(res.message)
+            }
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
@@ -157,17 +158,17 @@ export class PurchaseReturnListComponent implements OnInit {
       Swal.fire({
         position: 'center',
         icon: 'warning',
-        title: `SupplierCn NO All Ready Insent`,
+        title: `You have already added SupplierCn NO.`,
         showCancelButton: true,
       })
     }
-
   }
 
   supplierCnPR(){
    const subs: Subscription =  this.purchaseService.supplierCnPR(this.SupplierCNNo,this.supplierCnPRlist.ID).subscribe({
     next: (res: any) => {
       this.modalService.dismissAll();
+      this.getList();
       this.SupplierCNNo = '';
       Swal.fire({
           position: 'center',
@@ -179,7 +180,7 @@ export class PurchaseReturnListComponent implements OnInit {
     },
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),
-  });
+   });
   }
 
 }
