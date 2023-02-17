@@ -133,6 +133,15 @@
             </div>
           </div>
           <!-- companyadmin end report -->
+          <!-- companyadmin  Uploader start -->
+          <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown">
+            <a class="dropBtn" data-target="#collapseExample">Uploader <i class="fa fa-caret-down"
+                aria-hidden="true"></i></a>
+            <div class="drop-content" id="collapseExample">
+              <a href="javascript:void(0)" id="collapseExample">Inventory</a>
+            </div>
+          </div>
+          <!-- companyadmin end Uploader -->
         </div>
       </div>
       <!-- CompanyAdmin end nav-->
