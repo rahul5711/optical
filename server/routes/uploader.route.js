@@ -7,6 +7,9 @@ router.post('/saveFileRecord', verifyAccessTokenAdmin, Controller.saveFileRecord
 
 router.post('/list', verifyAccessTokenAdmin, Controller.list)
 
+router.post('/updateFileRecord', verifyAccessTokenAdmin, Controller.updateFileRecord)
+
+router.post('/processPurchaseFile', verifyAccessTokenAdmin, Controller.processPurchaseFile)
 
 
 module.exports = router
