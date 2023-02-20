@@ -161,5 +161,15 @@ module.exports = {
       })
     }
     return values
+  },
+  discountAmount: async (item) => {
+    let discountAmount = 0
+    discountAmount = (item.UnitPrice * item.Quantity) * item.DiscountPercentage / 100;
+    return discountAmount
+  },
+  gstAmount: async(SubTotal, GSTPercentage) => {
+    let gstAmount = 0
+    gstAmount = (SubTotal * GSTPercentage) / 100
+    return gstAmount
   }
 }

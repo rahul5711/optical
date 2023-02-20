@@ -1,0 +1,576 @@
+{
+	"info": {
+		"_postman_id": "9f4ca617-81b0-4c75-8172-bc2e92793ace",
+		"name": "Purchase Upload",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "upload file",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/Dell/Desktop/purchaseupload.xlsx"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3000/file/purchase",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"file",
+						"purchase"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "upload file",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Dell/Desktop/purchaseupload.xlsx"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3000/file/purchase",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"file",
+								"purchase"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "451"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1c3-H1reOYwrook0cjp2cd5EcnjptLo\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 20 Feb 2023 16:32:14 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"message\": \"Uploaded Successfully\",\n    \"file\": {\n        \"fieldname\": \"file\",\n        \"originalname\": \"purchaseupload.xlsx\",\n        \"encoding\": \"7bit\",\n        \"mimetype\": \"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\",\n        \"destination\": \"./uploads/2023/2/1/purchase\",\n        \"filename\": \"1676910734508.xlsx\",\n        \"path\": \"uploads\\\\2023\\\\2\\\\1\\\\purchase\\\\1676910734508.xlsx\",\n        \"size\": 10216\n    },\n    \"fileName\": \"1676910734508.xlsx\",\n    \"download\": \"/uploads/2023/2/1/purchase/1676910734508.xlsx\"\n}"
+				}
+			]
+		},
+		{
+			"name": "saveFileRecord",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": null,\r\n    \"originalname\":\"purchaseupload.xlsx\",\r\n    \"fileName\":\"1676910734508.xlsx\",\r\n    \"download\":\"/uploads/2023/2/1/purchase/1676910734508.xlsx\",\r\n    \"path\":\"uploads\\\\2023\\\\2\\\\1\\\\purchase\\\\1676910734508.xlsx\",\r\n    \"destination\":\"./uploads/2023/2/1/purchase\",\r\n    \"Type\": \"Purchase\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchaseUpload/saveFileRecord",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchaseUpload",
+						"saveFileRecord"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "saveFileRecord",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": null,\r\n    \"originalname\":\"purchaseupload.xlsx\",\r\n    \"fileName\":\"1676910734508.xlsx\",\r\n    \"download\":\"/uploads/2023/2/1/purchase/1676910734508.xlsx\",\r\n    \"path\":\"uploads\\\\2023\\\\2\\\\1\\\\purchase\\\\1676910734508.xlsx\",\r\n    \"destination\":\"./uploads/2023/2/1/purchase\",\r\n    \"Type\": \"Purchase\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchaseUpload/saveFileRecord",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchaseUpload",
+								"saveFileRecord"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "60"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"3c-MvfnQdD1nLxJJqNLVlU1OoYldGc\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 20 Feb 2023 16:33:37 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [],\n    \"success\": true,\n    \"message\": \"data save sucessfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "list",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 ,\r\n   \"Type\": \"Purchase\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchaseUpload/list",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchaseUpload",
+						"list"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "list",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 ,\r\n   \"Type\": \"Purchase\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchaseUpload/list",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchaseUpload",
+								"list"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "502"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1f6-AOcrOPMpBKyKBuozQQbwPDbLsbI\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 20 Feb 2023 16:36:26 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 1,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"originalname\": \"purchaseupload.xlsx\",\n            \"fileName\": \"1676910734508.xlsx\",\n            \"download\": \"/uploads/2023/2/1/purchase/1676910734508.xlsx\",\n            \"path\": \"uploads202321purchase1676910734508.xlsx\",\n            \"destination\": \"./uploads/2023/2/1/purchase\",\n            \"Type\": \"Purchase\",\n            \"Process\": 0,\n            \"PurchaseMaster\": 0,\n            \"UniqueBarcode\": 0,\n            \"Status\": 1,\n            \"CreatedOn\": \"2023-02-20 22:03:37\",\n            \"CreatedBy\": 2,\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"UpdatedBy\": null\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\",\n    \"count\": 1\n}"
+				}
+			]
+		},
+		{
+			"name": "processPurchaseFile",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"filename\": \"1676910734508.xlsx\",\r\n    \"originalname\":\"purchaseupload.xlsx\",\r\n    \"path\": \"uploads\\\\2023\\\\2\\\\1\\\\purchase\\\\1676910734508.xlsx\",\r\n    \"destination\": \"./uploads/2023/2/1/purchase\",\r\n    \"PurchaseMaster\": {\r\n        \"ID\": null,\r\n        \"SupplierID\": 1,\r\n        \"CompanyID\": 1,\r\n        \"ShopID\":1,\r\n        \"PurchaseDate\":\"2023-02-20\",\r\n        \"InvoiceNo\": \"xxxxxxxxx-*****---\"\r\n\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchaseUpload/processPurchaseFile",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchaseUpload",
+						"processPurchaseFile"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "processPurchaseFile",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"filename\": \"1676910734508.xlsx\",\r\n    \"originalname\":\"purchaseupload.xlsx\",\r\n    \"path\": \"uploads\\\\2023\\\\2\\\\1\\\\purchase\\\\1676910734508.xlsx\",\r\n    \"destination\": \"./uploads/2023/2/1/purchase\",\r\n    \"PurchaseMaster\": {\r\n        \"ID\": null,\r\n        \"SupplierID\": 1,\r\n        \"CompanyID\": 1,\r\n        \"ShopID\":1,\r\n        \"PurchaseDate\":\"2023-02-20\",\r\n        \"InvoiceNo\": \"xxxxxxxxx-*****---\"\r\n\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchaseUpload/processPurchaseFile",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchaseUpload",
+								"processPurchaseFile"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "60"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"3c-MvfnQdD1nLxJJqNLVlU1OoYldGc\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 20 Feb 2023 19:02:29 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [],\n    \"success\": true,\n    \"message\": \"data save sucessfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "updateFileRecord",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": 1,\r\n    \"key\": \"Process\",\r\n    \"value\": 1,\r\n    \"Type\": \"Purchase\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchaseUpload/updateFileRecord",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchaseUpload",
+						"updateFileRecord"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "updateFileRecord",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 1,\r\n    \"key\": \"Process\",\r\n    \"value\": 1,\r\n    \"Type\": \"Purchase\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchaseUpload/updateFileRecord",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchaseUpload",
+								"updateFileRecord"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "62"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"3e-Vv0gYUQyqsowM8075j7LbumrJAI\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 20 Feb 2023 19:08:21 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [],\n    \"success\": true,\n    \"message\": \"data update sucessfully\"\n}"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzY5MTAwNzYsImV4cCI6MTY3Njk5NjQ3NiwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.eQLuwgU3TsSpgug1LLsJBv3IMPlYJIv_oKrSCJEnXHE",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

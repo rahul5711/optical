@@ -10,7 +10,7 @@ const purchaseStorageHelper = require('../helpers/diskStorageHelper/purchase.Sto
 
 _router.post("/upload", imageStorageHelper.storage.single("file"), FileController.upload);
 _router.post("/companyimage", verifyAccessTokenAdmin, companyimageStorageHelper.storage.single("file"), FileController.companyimageupload);
-_router.post("/purchase", verifyAccessTokenAdmin, companyimageStorageHelper.storage.single("file"), FileController.purchaseupload);
+_router.post("/purchase", verifyAccessTokenAdmin, purchaseStorageHelper.storage.single("file"), FileController.purchaseupload);
 
 
 module.exports = _router;

@@ -54,6 +54,7 @@ module.exports = {
         return res.status(400).json({ message: "Please upload file!" });
       }
       return res.json({
+        success: true,
         message: "Uploaded Successfully",
         file: req.file,
         fileName: req.file.filename,
