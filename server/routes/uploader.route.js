@@ -9,6 +9,8 @@ router.post('/list', verifyAccessTokenAdmin, Controller.list)
 
 router.post('/updateFileRecord', verifyAccessTokenAdmin, Controller.updateFileRecord)
 
+router.post('/deleteFileRecord', verifyAccessTokenAdmin, Controller.deleteFileRecord)
+
 router.post('/processPurchaseFile', verifyAccessTokenAdmin, Controller.processPurchaseFile)
 
 

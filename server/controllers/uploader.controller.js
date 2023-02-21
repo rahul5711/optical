@@ -120,6 +120,43 @@ module.exports = {
             await connection.release();
         }
     },
+    deleteFileRecord: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const { ID } = req.body
+
+            if (ID === null || ID === undefined) return res.send({ message: "Invalid ID Data" })
+
+            const doesExist = await connection.query(`select * from files where ID = ${ID} and CompanyID = ${CompanyID}`)
+
+            if (doesExist.length && doesExist[0].Process === 0) {
+                return res.send({message : "you have already processed this file."})
+            }
+
+
+            const deleteData = await connection.query(`delete from files where ID = ${ID} and CompanyID = ${CompanyID}`)
+
+            console.log(connected("Data Delete SuccessFUlly !!!"));
+
+            response.message = "data delete sucessfully"
+            response.data = []
+            // connection.release()
+            return res.send(response)
+
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
 
     processPurchaseFile: async (req, res, next) => {
         const connection = await mysql.connection();
