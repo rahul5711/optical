@@ -66,5 +66,16 @@ module.exports = {
     }
   },
 
+  download: (req, res) => {
+    filepath = path.join(__dirname, "/../") + req.params.folder1 + '/' + req.params.folder2 + '/' + req.params.folder3 + '/' + req.params.folder4 + '/' + req.params.filename
+    console.log(filepath);
+
+
+    if (fs.existsSync(filepath)) {
+      console.log('exist');
+      res.sendFile(filepath)
+    }
+  },
+
 
 }

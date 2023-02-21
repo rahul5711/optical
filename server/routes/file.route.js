@@ -12,5 +12,5 @@ _router.post("/upload", imageStorageHelper.storage.single("file"), FileControlle
 _router.post("/companyimage", verifyAccessTokenAdmin, companyimageStorageHelper.storage.single("file"), FileController.companyimageupload);
 _router.post("/purchase", verifyAccessTokenAdmin, purchaseStorageHelper.storage.single("file"), FileController.purchaseupload);
 
-
+_router.get("/downloadPurchase/:folder1/:folder2/:folder3/:folder4/:filename", FileController.download);
 module.exports = _router;
