@@ -134,7 +134,7 @@ module.exports = {
 
             const doesExist = await connection.query(`select * from files where ID = ${ID} and CompanyID = ${CompanyID}`)
 
-            if (doesExist.length && doesExist[0].Process === 0) {
+            if (doesExist.length && doesExist[0].Process === 1) {
                 return res.send({message : "you have already processed this file."})
             }
 
