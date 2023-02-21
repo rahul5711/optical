@@ -171,6 +171,8 @@ module.exports = {
             } = req.body
 
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            PurchaseMaster.CompanyID = CompanyID;
 
             if (!PurchaseMaster || PurchaseMaster === undefined) return res.send({ message: "Invalid purchaseMaseter Data" })
 
@@ -270,7 +272,7 @@ module.exports = {
 
                     // product
 
-                    let productName = datum.ProductName
+                    let productName = datum.ProductTypeName
 
                     const doesExistProductName = await connection.query(`select * from product where CompanyID = ${PurchaseMaster.CompanyID} and Name = '${productName}'`)
 
