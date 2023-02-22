@@ -33,6 +33,7 @@ import { ModalModule } from 'ngb-modal';
     PurchaseBlukComponent
   ],
   imports: [
+    
     CommonModule,
     UploaderRoutingModule,
     CommonModule,

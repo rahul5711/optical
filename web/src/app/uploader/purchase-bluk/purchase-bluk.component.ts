@@ -12,7 +12,8 @@ import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SupplierService } from 'src/app/service/supplier.service';
-import * as XLSX from 'xlsx';
+import { ExcelService } from 'src/app/service/helpers/excel.service';
+
 
 @Component({
   selector: 'app-purchase-bluk',
@@ -21,18 +22,20 @@ import * as XLSX from 'xlsx';
 })
 
 export class PurchaseBlukComponent implements OnInit {
+
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   env: any;
-  purchaseUpload: any
+  purchaseUpload: any;
   currentPage = 1;
   itemsPerPage = 10;
   pageSize!: number;
-  collectionSize = 0
+  collectionSize = 0;
   page = 4;
-  dataList: any
+  dataList: any;
 
   supplierList: any;
-  tempProcessFile: any
+  tempProcessFile: any;
+
   constructor(
     private uploader: UploaderService,
     private router: Router,
@@ -42,6 +45,7 @@ export class PurchaseBlukComponent implements OnInit {
     private sp: NgxSpinnerService,
     private modalService: NgbModal,
     private ss: SupplierService,
+    private excelService: ExcelService,
 
   ) {
     this.env = environment
@@ -52,6 +56,22 @@ export class PurchaseBlukComponent implements OnInit {
     PaymentStatus: null, InvoiceNo: null, Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0,
     GSTAmount: 0, TotalAmount: 0, RoundOff: 0, preOrder: false,
   };
+
+  josnData = [{
+    'ProductName' : '',
+    'ProductTypeName' : '',
+    'UnitPrice' : '',
+    'Quantity' : '',
+    'DiscountPercentage' : '',
+    'GSTPercentage' : '',
+    'GSTType' : '',
+    'RetailPrice' : '',
+    'WholeSalePrice' : '',
+    'WholeSale' : '',
+    'BrandType' : '',
+    'BarcodeExist' : '',
+    'BaseBarCode' : '',
+  }]  
 
   ngOnInit(): void {
     this.getList();
@@ -71,16 +91,14 @@ export class PurchaseBlukComponent implements OnInit {
   submit(frm: NgForm) {
     console.log(frm, 'sun');
     if (frm.valid) {
-      const elem: any = document.getElementById("uploadButton"); this.uploader
-        .uploadPurchase(this.purchaseUpload)
-        .subscribe((resp: any) => {
+      const elem: any = document.getElementById("uploadButton"); 
+      this.uploader.uploadPurchase(this.purchaseUpload).subscribe((resp: any) => {
           if (resp.type == HttpEventType.UploadProgress) {
             let uploadProgress = 0;
             uploadProgress = Math.round((resp.loaded / resp.total) * 100);
             elem.innerText = `uploaded : ${uploadProgress} % `;
           } else if (resp.type == HttpEventType.Response) {
             const body: any = resp.body;
-            console.log(resp, 'resp');
             const fs = body.file
 
             const fileData = {
@@ -117,7 +135,6 @@ export class PurchaseBlukComponent implements OnInit {
     this.uploader.saveFileRecord(dtm).subscribe((resp: any) => {
       if (resp.success) {
         this.as.successToast("File Added!");
-
         this.getList();
       } else {
         this.as.warningToast(resp.message);
@@ -156,13 +173,18 @@ export class PurchaseBlukComponent implements OnInit {
     } else {
       this.purchaseUpload = null;
     }
-    console.log(this.purchaseUpload, 'this.purchaseUpload');
-
   }
 
   deleteItem(data: any, i: any) {
     if (data.Process === 1) {
-      return this.as.errorToast("You  Can Not Delete This File, You Have Already Processed")
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'You Can Not Delete This File, You Have Already Processed',
+        showConfirmButton: true,
+        backdrop : false,
+      })
+      return this.as.errorToast("You Can Not Delete This File, You Have Already Processed")
     }
     Swal.fire({
       title: 'Are you sure?',
@@ -230,9 +252,7 @@ export class PurchaseBlukComponent implements OnInit {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
-    });
-    console.log(dtm,'dtm');
-    
+    }); 
   }
 
   updateFileRecord(ID:any){
@@ -244,9 +264,11 @@ export class PurchaseBlukComponent implements OnInit {
    }
    const subs: Subscription =  this.uploader.updateFileRecord(dtm).subscribe({
     next: (res: any) => {
+      console.log(res);
+      return
       if (res.success) {
         this.modalService.dismissAll();
-       this.router.navigate(['/inventory/purchaseList'])
+       this.router.navigate(['/inventory/purchase' , ID])
       
       } else {
         this.as.errorToast(res.message)
@@ -259,8 +281,9 @@ export class PurchaseBlukComponent implements OnInit {
   });
   }
 
-  generateExcel() {
 
+  generateExcel(): void {
+    this.excelService.exportAsExcelFile(this.josnData, 'Purchase_Upload');
   }
   
 
