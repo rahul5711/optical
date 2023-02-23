@@ -57,21 +57,56 @@ export class PurchaseBlukComponent implements OnInit {
     GSTAmount: 0, TotalAmount: 0, RoundOff: 0, preOrder: false,
   };
 
-  josnData = [{
+  josnData = [
+    {
     'ProductName' : '',
     'ProductTypeName' : '',
     'UnitPrice' : '',
     'Quantity' : '',
     'DiscountPercentage' : '',
     'GSTPercentage' : '',
-    'GSTType' : '',
+    'GSTType' : 'IGST',
     'RetailPrice' : '',
     'WholeSalePrice' : '',
     'WholeSale' : '',
     'BrandType' : '',
     'BarcodeExist' : '',
     'BaseBarCode' : '',
-  }]  
+    'ProductExpDate' : '"YYYY-MM-DD"',
+  },
+  {
+    'ProductName' : '',
+    'ProductTypeName' : '',
+    'UnitPrice' : '',
+    'Quantity' : '',
+    'DiscountPercentage' : '',
+    'GSTPercentage' : '',
+    'GSTType' : 'CGST-SGST',
+    'RetailPrice' : '',
+    'WholeSalePrice' : '',
+    'WholeSale' : '',
+    'BrandType' : '',
+    'BarcodeExist' : '',
+    'BaseBarCode' : '',
+    'ProductExpDate' : '"0000-00-00"',
+  },
+  {
+    'ProductName' : '',
+    'ProductTypeName' : '',
+    'UnitPrice' : '',
+    'Quantity' : '',
+    'DiscountPercentage' : '',
+    'GSTPercentage' : '',
+    'GSTType' : 'None',
+    'RetailPrice' : '',
+    'WholeSalePrice' : '',
+    'WholeSale' : '',
+    'BrandType' : '',
+    'BarcodeExist' : '',
+    'BaseBarCode' : '',
+    'ProductExpDate' : '"0000-00-00"',
+  }
+]
 
   ngOnInit(): void {
     this.getList();
@@ -265,10 +300,11 @@ export class PurchaseBlukComponent implements OnInit {
    const subs: Subscription =  this.uploader.updateFileRecord(dtm).subscribe({
     next: (res: any) => {
       console.log(res);
-      return
+      // return
       if (res.success) {
         this.modalService.dismissAll();
-       this.router.navigate(['/inventory/purchase' , ID])
+       this.router.navigate(['/inventory/purchaseList'])
+      //  this.router.navigate(['/inventory/purchase' , ID])
       
       } else {
         this.as.errorToast(res.message)

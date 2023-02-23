@@ -227,6 +227,9 @@ module.exports = {
             }
 
             for (const fd of fileData) {
+                if (fd[6] !== "CGST-SGST" || fd[6] !== "IGST" || fd[6] !== "None") {
+                  return res.send({success : false , message : "Invalid GSTType, You Can Add CGST-SGST , IGST OR None"})
+                }
                 let newData = {
                     "ProductName": fd[0],
                     "ProductTypeName": fd[1],
@@ -240,10 +243,11 @@ module.exports = {
                     "WholeSale": fd[9],
                     "BrandType": fd[10],
                     "BarcodeExist": fd[11],
-                    "BaseBarCode": fd[12]
+                    "BaseBarCode": fd[12],
+                    "ProductExpDate": fd[13]
                 }
 
-                newData.ProductExpDate = ""
+                // newData.ProductExpDate = ""
                 newData.Ledger = 0
                 newData.DiscountAmount = 0
                 newData.GSTAmount = 0
@@ -332,7 +336,8 @@ module.exports = {
 
 
                 for (const item of data) {
-                    const savePurchaseDetail = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${purchase.CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${item.BaseBarCode}',${item.Ledger},1,'${item.BaseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},now())`)
+                    console.log(item);
+                    const savePurchaseDetail = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${purchase.CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${item.BaseBarCode}',${item.Ledger},1,'${item.BaseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}',${item.ProductExpDate},0,0,${LoggedOnUser},now())`)
                 }
 
                 console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
