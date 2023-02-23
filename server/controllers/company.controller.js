@@ -619,9 +619,9 @@ module.exports = {
         }
     },
     updatecompanysetting: async (req, res, next) => {
-        const response = { data: null, success: true, message: "" }
+        const connection = await mysql.connection();
         try {
-            const connection = await mysql.connection();
+            const response = { data: null, success: true, message: "" }
 
             const Body = req.body;
             const LoggedOnUser = 0;
