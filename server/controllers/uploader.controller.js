@@ -227,7 +227,8 @@ module.exports = {
             }
 
             for (const fd of fileData) {
-                // if (fd[6] !== "CGST-SGST" && fd[6] !== "IGST" && fd[6] !== "None" && fd[6] !== "GSTType") {
+
+                // if (fd[6] !== "CGST-SGST" && fd[6] !== "IGST" && fd[6] !== "None" && fd[6] === "GSTType") {
                 //   return res.send({success : false , message : "Invalid GSTType, You Can Add CGST-SGST , IGST OR None"})
                 // }
                 let newData = {
@@ -255,6 +256,11 @@ module.exports = {
                 newData.TotalAmount = 0
                 newData.ProductTypeID = 0
                 newData.Multiple = 0
+                
+                if (newData.GSTType !== "CGST-SGST" && newData.GSTType !== "IGST" && newData.GSTType !== "None" && newData.GSTType !== "GSTType") {
+                  return res.send({success : false , message : "Invalid GSTType, You Can Add CGST-SGST , IGST OR None"})
+                }
+                
                 processedFileData.push(newData)
             }
 
@@ -262,8 +268,8 @@ module.exports = {
             processedFileData.pop()
             processedFileData.reverse()
 
-
             const body = processedFileData
+
             if (!body.length) {
                 console.log('syncing done....')
                 return
