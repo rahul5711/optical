@@ -497,6 +497,21 @@
                                                                             [(ngModel)]="bill.linespece">
                                                                     </mat-form-field>
                                                                 </div>
+
+                                                                <div class="col-md-5 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>table Heading</mat-label>
+                                                                        <input matInput name="linespece"
+                                                                            [(ngModel)]="bill.table_Heading">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-5 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>table Body </mat-label>
+                                                                        <input matInput name="linespece"
+                                                                            [(ngModel)]="bill.table_Body ">
+                                                                    </mat-form-field>
+                                                                </div>
                                                             </div>
 
                                                         </div>
@@ -506,6 +521,64 @@
                                             <div class="col-md-9">
                                                 <div class="row">
                                                     <div class="col-12">
+                                                    <!-- center log -->
+                                                      <span *ngIf="this.bill.BillHeader === '0'">
+                                                        <header style="width:{{this.bill.headerwidth}}; height: {{this.bill.headerheight}}; padding: {{this.bill.headerpadding}}; margin: {{this.bill.headermargin}};  border: 1px solid #000 ;ltext-align: center;" >
+                                                            <div style="width:100% ; text-align: center;margin-bottom: 15px">
+                                                                <img src="../../../assets/images/OGorange.png" alt=""
+                                                                    style="width:{{this.bill.imagewidth}}; height: {{this.bill.imageheight}};">
+                                                    
+                                                            </div>
+                                                                
+                                                              <p style=" font-weight: 400;text-align: center; font-size: {{this.bill.addfont}}; ">  TH SCHONEAR SAMAROL, OPP-RAOSAHEB PATWARDHAN
+                                                                SMARAK, BHISBAUG ROAD, PROFESSOR CHOWK, SAVEDI,
+                                                                A.NAGAR-414003 </p>  
+
+                                                              <div style="padding-top: 0%;   width: 100%; font-size: {{this.bill.addfont}}; ">
+                                                    
+                                                                <div style="font-weight: 400;width: 33%;  float: left;text-align: left;">MobileNo - 9766666248 , 9175773955</div>
+                                                               <div style="font-weight: 400; width: 25%;  float: right; text-align: right; ">PhoneNo - 9175773955</div>
+                                                      
+                                                               <div style="font-weight: 400; width: 41%;  margin: 0px 2px; float: right; text-align: center;">Email - RELINKSYS@GMAIL.COM</div>
+                                                              </div>
+                                                        </header>
+                                                      </span>
+                                                    <!-- center log -->
+                                                    <!-- right log -->
+                                                      <span *ngIf="this.bill.BillHeader === '1'">
+                                                        <header
+                                                            style="width:{{this.bill.headerwidth}}; height: {{this.bill.headerheight}}; padding: {{this.bill.headerpadding}}; margin: {{this.bill.headermargin}};  border: 1px solid #000">
+                                                            <span style="width: 25%; float: left; height: 90px; ">
+                                                                <img src="../../../assets/images/OGorange.png" alt=""
+                                                                    style="width:{{this.bill.imagewidth}}; height: {{this.bill.imageheight}};">
+                                                            </span>
+                                                            <div style="width: 70%; float: right;line-height: {{this.bill.linespece}}; ">
+                                                                <div style=" font-weight: {{this.bill.ShopNameBold}}; font-size: {{this.bill.ShopNameFont}};color:{{this.bill.color}}">
+                                                                    RELINKSYS SOFTWARE
+                                                                </div>
+                                                                <span style="font-size: {{this.bill.addfont}};">
+
+                                                               
+                                                                <div style=" font-weight: 400; padding-top:5px">
+                                                                    TH SCHONEAR SAMAROL, OPP-RAOSAHEB PATWARDHAN
+                                                                    SMARAK, BHISBAUG ROAD, PROFESSOR CHOWK, SAVEDI,
+                                                                    A.NAGAR-414003
+                                                                </div>
+                                                               
+
+                                                                <div style="font-weight: 400; width: 40%; float: left;">9766666248 , 9175773955
+                                                                </div>
+                                                               
+                                                                <div style="font-weight: 400; width: 20%; float: right;"> 9766666248</div>
+                                                           
+                                                                <div style="font-weight: 400; width: 40%; float: right;">RELINKSYS@GMAIL.COM
+                                                                </div>
+                                                            </span>
+                                                            </div>
+                                                        </header>
+                                                      </span>
+                                                    <!-- right log -->
+                                                    <!-- 50-50 log -->
                                                       <span *ngIf="this.bill.BillHeader === '3'">
                                                         <header
                                                             style="width:{{this.bill.headerwidth}}; height: {{this.bill.headerheight}}; padding: {{this.bill.headerpadding}}; margin: {{this.bill.headermargin}};  border: 1px solid #000">
@@ -534,29 +607,131 @@
                                                             </div>
                                                         </header>
                                                       </span>
-                                                      <span *ngIf="this.bill.BillHeader === '0'">
-                                                        <header style="width:{{this.bill.headerwidth}}; height: {{this.bill.headerheight}}; padding: {{this.bill.headerpadding}}; margin: {{this.bill.headermargin}};  border: 1px solid #000 ;ltext-align: center;" >
-                                                            <div style="width:100% ; text-align: center;margin-bottom: 15px">
-                                                                <img src="../../../assets/images/OGorange.png" alt=""
-                                                                    style="width:{{this.bill.imagewidth}}; height: {{this.bill.imageheight}};">
-                                                    
-                                                            </div>
-                                                                
-                                                              <span style=" font-weight: 400;text-align: center; font-size: {{this.bill.addfont}}; ">  TH SCHONEAR SAMAROL, OPP-RAOSAHEB PATWARDHAN
-                                                                SMARAK, BHISBAUG ROAD, PROFESSOR CHOWK, SAVEDI,
-                                                                A.NAGAR-414003 </span>  
-
-                                                              <div style="padding-top: 0%;   width: 100%; font-size: {{this.bill.addfont}}; ">
-                                                    
-                                                                <div style="font-weight: 400;width: 33%;  float: left;text-align: left;">MobileNo - 9766666248 , 9175773955</div>
-                                                               <div style="font-weight: 400; width: 25%;  float: right; text-align: right; ">PhoneNo - 9175773955</div>
-                                                      
-                                                               <div style="font-weight: 400; width: 41%;  margin: 0px 2px; float: right; text-align: center;">Email - RELINKSYS@GMAIL.COM</div>
-                                                              </div>
-                                                        </header>
-                                                      </span>
+                                                    <!-- 50-50 log -->
                                                     </div>
                                                 </div>
+
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                    <div style="width:100vh; padding: 0px 10px;">
+                                                        <div style="width:55vh;float: left;">
+                                                           <div style="width:20%;float: left;">
+                                                                <h5>Bill of Supply</h5>
+                                                                <h5>Cust_ID</h5>
+                                                                <h5>Name</h5>
+                                                                <h5>MobileNo1</h5>
+                                                           </div>
+                                                           <div style="width:75%;float: right;">
+                                                                 <p>xxxxxxxxxx</p>
+                                                                 <p>xx</p>
+                                                                 <p>xxxxx xxxxx</p>
+                                                                 <p>xxxxxxxx</p>
+                                                           </div>
+                                                        </div>
+                                                        <div style="width:40vh;float: right;">
+                                                            <div style="width:25%;float: left;">
+                                                                <h5>Date</h5>
+                                                                <h5>Del. Date</h5>
+                                                                <h5>Rx BY</h5>
+                                                                <h5>Sale Person</h5>
+                                                           </div>
+                                                           <div style="width:70%;float: right;">
+                                                            <p>xx xx xxxx</p>
+                                                            <p>xx xx xxxx</p>
+                                                            <p>xxxxx xxxxx</p>
+                                                            <p>xxxx xxxx</p>
+                                                           </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                                
+                                                <div class="row" style="padding: 0px 20px;">
+                                                    <table style="width:100vh;">
+                                                        <thead style="background-color: rgb(228, 228, 228); text-align: center;">
+                                                          <tr style="font-size: {{this.bill.table_Heading}} ;">
+                                                              <th>SNo.</th>
+                                                              <th>Item</th>
+                                                              <th>Qty</th>
+                                                              <th>Rate</th>
+                                                              <th>Discount</th>
+                                                              <th>GSTType</th>
+                                                              <th>GSTAmt</th>
+                                                              <th>Total</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody style="text-align: center; font-size: {{this.bill.table_Body}} ;">
+                                                            <tr>
+                                                                <td>1</td>
+                                                                <td>xxxxx</td>
+                                                                <td>1</td>
+                                                                <td>1</td>
+                                                                <td>1</td>
+                                                                <td>xxxx</td>
+                                                                <td>1</td>
+                                                                <td>1</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>2</td>
+                                                                <td>xxxxx</td>
+                                                                <td>1</td>
+                                                                <td>1</td>
+                                                                <td>1</td>
+                                                                <td>xxxx</td>
+                                                                <td>1</td>
+                                                                <td>1</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>2</td>
+                                                                <td>xxxxx</td>
+                                                                <td>1</td>
+                                                                <td>1</td>
+                                                                <td>1</td>
+                                                                <td>xxxx</td>
+                                                                <td>1</td>
+                                                                <td>1</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                 
+                                                <div class="row" style="padding: 0px 10px;width:100vh;">
+                                                    <div style="width: 60%; float: left;">
+                                                        <h2>Improt Note</h2>
+                                                         <ul style="padding: 0 ; list-style: none; font-size: 10px;">
+                                                            <li> WE PREFER 50% ADVANCE AT THE TIME OF ORDER BOOKING</li>
+                                                            <li> ANY REPAIRING WORK WILL BE DONE AT CUSTOMERS OWN RISK</li>
+                                                            <li> NO REFUND AND NO EXCHANGE ONCE ORDER IS PLACED</li>
+                                                            <li> NO RETURN FOR ANY GOODS ONCE SOLD</li>
+                                                            <li> WE PREFER CHECKING OF THE PRODUCT AT THE TIME OF DELIVERY</li>
+                                                         </ul>
+                                                    </div>
+                                                    <div style="width: 40%; float: right;">
+                                                        <ul style="padding: 0 ; list-style: none; font-size: 10px; width: 50%; float: left; font-weight: 600;">
+                                                            <li>Sub Total</li>
+                                                            <li>Discount</li>
+                                                            <li>Tax Amt</li>
+                                                            <li>Round Off</li>
+                                                            <li>Grand Total</li>
+                                                            <li>Advance</li>
+                                                            <li>Balance</li>
+                                                            <li>Payment By</li>
+                                                        </ul>
+
+                                                        <ul style="padding: 0 ; list-style: none; font-size: 10px; width: 50%; float: right; text-align: right;">
+                                                            <li>0</li>
+                                                            <li>0</li>
+                                                            <li>0</li>
+                                                            <li>0</li>
+                                                            <li>0</li>
+                                                            <li>0</li>
+                                                            <li>0</li>
+                                                            <li>0</li>
+                                                        </ul>
+                                                    
+                                                    </div>
+                                                </div>
+                                           
                                             </div>
                                         </div>
                                     </div>

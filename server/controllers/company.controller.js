@@ -628,8 +628,8 @@ module.exports = {
 
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
-            Body.WelComeNote = JSON.stringify(Body.WelComeNote) || '[]'
-            Body.SmsSetting = JSON.stringify(Body.SmsSetting) || '[]'
+            // Body.WelComeNote = JSON.stringify(Body.WelComeNote) || '[]'
+            // Body.SmsSetting = JSON.stringify(Body.SmsSetting) || '[]'
 
             const updateCompanySetting = await connection.query(`update companysetting set CompanyID = ${Body.CompanyID} , CompanyLanguage = '${Body.CompanyLanguage}' ,  CompanyCurrency = '${Body.CompanyCurrency}' , CurrencyFormat = '${Body.CurrencyFormat}' , DateFormat = '${Body.DateFormat}' , CompanyTagline = '${Body.CompanyTagline}', BillHeader = '${Body.BillHeader}' , BillFooter = '${Body.BillFooter}' ,  RewardsPointValidity = '${Body.RewardsPointValidity}' , EmailReport = ${Body.EmailReport} , MessageReport = ${Body.MessageReport} , LogoURL = '${Body.LogoURL}' , WatermarkLogoURL = '${Body.WatermarkLogoURL}', WholeSalePrice = '${Body.WholeSalePrice}' , RetailRate = '${Body.RetailRate}',Color1 = '${Body.Color1}',HSNCode = '${Body.HSNCode}',Discount = '${Body.Discount}',GSTNo = '${Body.GSTNo}',Rate = '${Body.Rate}',SubTotal = '${Body.SubTotal}',Total = '${Body.Total}',CGSTSGST = '${Body.CGSTSGST}',Composite = '${Body.Composite}', InvoiceOption = '${Body.InvoiceOption}', Locale = '${Body.Locale}', LoginTimeStart = '${Body.LoginTimeStart}', LoginTimeEnd = '${Body.LoginTimeEnd}',BillFormat = '${Body.BillFormat}', Status = 1 , UpdatedOn = now(), UpdatedBy = '${LoggedOnUser}', WelComeNote = '${Body.WelComeNote}' , SenderID = '${Body.SenderID}' , SmsSetting = '${Body.SmsSetting}', year = '${Body.year}', month = '${Body.month}', partycode = '${Body.partycode}', DataFormat = '${Body.DataFormat}', type = '${Body.type}', RewardExpiryDate = '${Body.RewardExpiryDate}', RewardPercentage = '${Body.RewardPercentage}', AppliedReward = '${Body.AppliedReward}' , MobileNo = '${Body.MobileNo}', FontApi = '${Body.FontApi}', FontsStyle = '${Body.FontsStyle}', BarCode = '${Body.BarCode}' , FeedbackDate = '${Body.FeedbackDate}' , ServiceDate = '${Body.ServiceDate}', DeliveryDay = '${Body.DeliveryDay}' , AppliedDiscount = '${Body.AppliedDiscount}' where ID = ${Body.ID}`)
 
@@ -638,9 +638,10 @@ module.exports = {
 
             response.message = "data update sucessfully"
             const data = await connection.query(`select * from companysetting where ID = ${Body.ID}`)
-            data[0].WelComeNote = JSON.parse(data[0].WelComeNote) || []
-            data[0].SmsSetting = JSON.parse(data[0].SmsSetting) || []
+            // data[0].WelComeNote = JSON.parse(data[0].WelComeNote) || []
+            // data[0].SmsSetting = JSON.parse(data[0].SmsSetting) || []
             response.data = data
+
             // connection.release()
             res.send(response)
         } catch (err) {

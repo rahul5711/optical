@@ -317,7 +317,6 @@ export class PurchaseBlukComponent implements OnInit {
   });
   }
 
-
   generateExcel(): void {
     this.excelService.exportAsExcelFile(this.josnData, 'Purchase_Upload');
   }

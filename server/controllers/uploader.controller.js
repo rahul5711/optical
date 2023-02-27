@@ -227,9 +227,9 @@ module.exports = {
             }
 
             for (const fd of fileData) {
-                if (fd[6] !== "CGST-SGST" || fd[6] !== "IGST" || fd[6] !== "None" || fd[6] !== "GSTType") {
-                  return res.send({success : false , message : "Invalid GSTType, You Can Add CGST-SGST , IGST OR None"})
-                }
+                // if (fd[6] !== "CGST-SGST" && fd[6] !== "IGST" && fd[6] !== "None" && fd[6] !== "GSTType") {
+                //   return res.send({success : false , message : "Invalid GSTType, You Can Add CGST-SGST , IGST OR None"})
+                // }
                 let newData = {
                     "ProductName": fd[0],
                     "ProductTypeName": fd[1],
@@ -277,9 +277,9 @@ module.exports = {
                     // product
 
                     let productName = datum.ProductTypeName
-
+                    
                     const doesExistProductName = await connection.query(`select * from product where CompanyID = ${PurchaseMaster.CompanyID} and Name = '${productName}'`)
-
+                    
                     if (doesExistProductName.length) {
                         datum.ProductTypeID = doesExistProductName[0].ID
                     } else {
@@ -297,7 +297,7 @@ module.exports = {
                     // base barcode
 
                     const doesProduct = await doesExistProduct(PurchaseMaster.CompanyID, datum)
-
+                 
                     let basebarCode = 0
 
                     if (datum.BarcodeExist === 0 && doesProduct === 0) {
