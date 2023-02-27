@@ -227,7 +227,7 @@ module.exports = {
             }
 
             for (const fd of fileData) {
-                if (fd[6] !== "CGST-SGST" || fd[6] !== "IGST" || fd[6] !== "None") {
+                if (fd[6] !== "CGST-SGST" || fd[6] !== "IGST" || fd[6] !== "None" || fd[6] !== "GSTType") {
                   return res.send({success : false , message : "Invalid GSTType, You Can Add CGST-SGST , IGST OR None"})
                 }
                 let newData = {
@@ -367,7 +367,7 @@ module.exports = {
                 console.log(connected("Payment Initiate SuccessFUlly !!!"));
 
                 response.message = "data save sucessfully"
-                response.data = []
+                response.data = savePurchase.insertId
                 // connection.release()
                 return res.send(response)
 
