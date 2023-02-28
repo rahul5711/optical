@@ -32,7 +32,7 @@ export class PurchaseBlukComponent implements OnInit {
   collectionSize = 0;
   page = 4;
   dataList: any;
-
+  id: any;
   supplierList: any;
   tempProcessFile: any;
 
@@ -277,6 +277,9 @@ export class PurchaseBlukComponent implements OnInit {
     const subs: Subscription =  this.uploader.processPurchaseFile(dtm).subscribe({
       next: (res: any) => {
         if (res.success) {
+          if(res.data !== 0) {
+            this.id = res.data;
+          }
          this.updateFileRecord(ID)
         
         } else {
@@ -302,9 +305,10 @@ export class PurchaseBlukComponent implements OnInit {
       console.log(res);
       // return
       if (res.success) {
+        
         this.modalService.dismissAll();
-       this.router.navigate(['/inventory/purchaseList'])
-      //  this.router.navigate(['/inventory/purchase' , ID])
+      //  this.router.navigate(['/inventory/purchaseList'])
+       this.router.navigate(['/inventory/purchase' , this.id])
       
       } else {
         this.as.errorToast(res.message)
