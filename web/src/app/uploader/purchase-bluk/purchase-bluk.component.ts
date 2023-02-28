@@ -283,7 +283,15 @@ export class PurchaseBlukComponent implements OnInit {
          this.updateFileRecord(ID)
         
         } else {
-          this.as.errorToast(res.message)
+          this.as.errorToast(res.message )
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'Invalid GSTType, You Can Add CGST-SGST , IGST OR None',
+            showConfirmButton: true,
+            backdrop : false,
+          })
+
         }
       },
       error: (err: any) => {
