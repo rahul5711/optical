@@ -6,6 +6,7 @@ const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const { shopID, discountAmount, gstAmount, generateUniqueBarcode, doesExistProduct, generateBarcode } = require('../helpers/helper_function')
+const { Idd } = require('../helpers/helper_function')
 
 var multer = require("multer")
 var path = require("path")
@@ -135,7 +136,7 @@ module.exports = {
             const doesExist = await connection.query(`select * from files where ID = ${ID} and CompanyID = ${CompanyID}`)
 
             if (doesExist.length && doesExist[0].Process === 1) {
-                return res.send({message : "you have already processed this file."})
+                return res.send({ message: "you have already processed this file." })
             }
 
 
@@ -256,11 +257,11 @@ module.exports = {
                 newData.TotalAmount = 0
                 newData.ProductTypeID = 0
                 newData.Multiple = 0
-                
+
                 if (newData.GSTType !== "CGST-SGST" && newData.GSTType !== "IGST" && newData.GSTType !== "None" && newData.GSTType !== "GSTType") {
-                  return res.send({success : false , message : "Invalid GSTType, You Can Add CGST-SGST , IGST OR None"})
+                    return res.send({ success: false, message: "Invalid GSTType, You Can Add CGST-SGST , IGST OR None" })
                 }
-                
+
                 processedFileData.push(newData)
             }
 
@@ -283,9 +284,9 @@ module.exports = {
                     // product
 
                     let productName = datum.ProductTypeName
-                    
+
                     const doesExistProductName = await connection.query(`select * from product where CompanyID = ${PurchaseMaster.CompanyID} and Name = '${productName}'`)
-                    
+
                     if (doesExistProductName.length) {
                         datum.ProductTypeID = doesExistProductName[0].ID
                     } else {
@@ -303,7 +304,7 @@ module.exports = {
                     // base barcode
 
                     const doesProduct = await doesExistProduct(PurchaseMaster.CompanyID, datum)
-                 
+
                     let basebarCode = 0
 
                     if (datum.BarcodeExist === 0 && doesProduct === 0) {
@@ -378,6 +379,100 @@ module.exports = {
                 return res.send(response)
 
             }
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+
+    processCustomerFile: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const {
+                filename,
+                originalname,
+                path,
+                destination
+            } = req.body
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+
+            filepath = destination + '/' + filename
+
+            const sheets = xlsx.parse(filepath) // parses a file
+            sheets[0].data = sheets[0].data.filter((el) => el.length > 0);
+            let fileData = []
+            let processedFileData = []
+            for (const sheet of sheets) {
+                fileData = [...fileData, ...sheet.data]
+            }
+
+
+            for (const fd of fileData) {
+
+                let newData = {
+                    "Name": fd[0],
+                    "MobileNo1": fd[1] ? fd[1] : "",
+                    "MobileNo2": fd[2] ? fd[2] : "",
+                    "PhoneNo": fd[3] ? fd[3] : "",
+                    "Address": fd[4] ? fd[4] : "" ,
+                    "Email": fd[5] ? fd[5] : "" ,
+                    "DOB": fd[6] ? fd[6] : "0000-00-00" ,
+                    "Age": fd[7] ? fd[7] : 0 ,
+                    "Anniversary": fd[8] ? fd[8] : "0000-00-00" ,
+                    "Gender": fd[9] ? fd[9] : "" ,
+                    "VisitDate": fd[10] ? fd[10] : ""
+                }
+
+                newData.Idd = 0
+                newData.CompanyID = CompanyID
+                newData.Sno = ""
+                newData.PhotoURL = ""
+                newData.RefferedByDoc = ""
+                newData.ReferenceType = ""
+                newData.Other = ""
+                newData.Remarks = ""
+                newData.GSTNo = ""
+                processedFileData.push(newData)
+            }
+
+            processedFileData.reverse()
+            processedFileData.pop()
+            processedFileData.reverse()
+
+            const body = processedFileData
+
+
+            if (!body.length) {
+                console.log('syncing done....')
+                return
+            } else {
+                const data = body
+                if (!(data && data.length)) {
+                    return next(createError.BadRequest())
+                }
+                for (const datum of data) {
+                    let Id = await Idd(req)
+                    console.log(Id);
+                    datum.Idd = Id
+
+                    const customer = await connection.query(`insert into customer(Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Status,CreatedBy,CreatedOn,VisitDate) values('${datum.Idd}', '${datum.Name}','${datum.Sno}',${datum.CompanyID},'${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Address}','${datum.GSTNo}','${datum.Email}','${datum.PhotoURL}','${datum.DOB}','${datum.RefferedByDoc}','${datum.Age}','${datum.Anniversary}','${datum.ReferenceType}','${datum.Gender}','${datum.Other}','${datum.Remarks}',1,'${LoggedOnUser}',now(),${datum.VisitDate})`);
+
+                    console.log(connected("Customer Added SuccessFUlly !!!"));                }
+
+            }
+
+            response.message = "data save sucessfully"
+            response.data = []
+            // connection.release()
+            return res.send(response)
 
         } catch (err) {
             await connection.query("ROLLBACK");

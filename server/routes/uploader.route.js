@@ -13,5 +13,6 @@ router.post('/deleteFileRecord', verifyAccessTokenAdmin, Controller.deleteFileRe
 
 router.post('/processPurchaseFile', verifyAccessTokenAdmin, Controller.processPurchaseFile)
 
+router.post('/processCustomerFile', verifyAccessTokenAdmin, Controller.processCustomerFile)
 
 module.exports = router
