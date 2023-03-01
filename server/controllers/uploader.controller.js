@@ -463,7 +463,7 @@ module.exports = {
                     console.log(Id);
                     datum.Idd = Id
 
-                    const customer = await connection.query(`insert into customer(Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Status,CreatedBy,CreatedOn,VisitDate) values('${datum.Idd}', '${datum.Name}','${datum.Sno}',${datum.CompanyID},'${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Address}','${datum.GSTNo}','${datum.Email}','${datum.PhotoURL}','${datum.DOB}','${datum.RefferedByDoc}','${datum.Age}','${datum.Anniversary}','${datum.ReferenceType}','${datum.Gender}','${datum.Other}','${datum.Remarks}',1,'${LoggedOnUser}',now(),${datum.VisitDate})`);
+                    const customer = await connection.query(`insert into customer(Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Status,CreatedBy,CreatedOn,VisitDate) values('${datum.Idd}', '${datum.Name}','${datum.Sno}',${datum.CompanyID},'${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Address}','${datum.GSTNo}','${datum.Email}','${datum.PhotoURL}','${datum.DOB}','${datum.RefferedByDoc}','${datum.Age}','${datum.Anniversary}','${datum.ReferenceType}','${datum.Gender}','${datum.Other}','${datum.Remarks}',1,'${LoggedOnUser}',now(),'${datum.VisitDate}')`);
 
                     console.log(connected("Customer Added SuccessFUlly !!!"));                }
 

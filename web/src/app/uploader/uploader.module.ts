@@ -25,12 +25,14 @@ import { ToastrModule } from 'ngx-toastr';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { ModalModule } from 'ngb-modal';
+import { CustomerBlukComponent } from './customer-bluk/customer-bluk.component';
 
 
 
 @NgModule({
   declarations: [
-    PurchaseBlukComponent
+    PurchaseBlukComponent,
+    CustomerBlukComponent
   ],
   imports: [
     

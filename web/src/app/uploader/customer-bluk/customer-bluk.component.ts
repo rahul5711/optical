@@ -14,18 +14,16 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 
-
 @Component({
-  selector: 'app-purchase-bluk',
-  templateUrl: './purchase-bluk.component.html',
-  styleUrls: ['./purchase-bluk.component.css']
+  selector: 'app-customer-bluk',
+  templateUrl: './customer-bluk.component.html',
+  styleUrls: ['./customer-bluk.component.css']
 })
-
-export class PurchaseBlukComponent implements OnInit {
+export class CustomerBlukComponent implements OnInit {
 
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   env: any;
-  purchaseUpload: any;
+  customerUpload: any;
   currentPage = 1;
   itemsPerPage = 10;
   pageSize!: number;
@@ -51,83 +49,41 @@ export class PurchaseBlukComponent implements OnInit {
     this.env = environment
   }
 
-  selectedPurchaseMaster: any = {
-    ID: null, SupplierID: null, SupplierName: null, CompanyID: null, GSTNo: null, ShopID: null, ShopName: null, PurchaseDate: null,
-    PaymentStatus: null, InvoiceNo: null, Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0,
-    GSTAmount: 0, TotalAmount: 0, RoundOff: 0, preOrder: false,
-  };
-
   josnData = [
     {
-    'ProductName' : '',
-    'ProductTypeName' : '',
-    'UnitPrice' : '',
-    'Quantity' : '',
-    'DiscountPercentage' : '',
-    'GSTPercentage' : '',
-    'GSTType' : 'IGST',
-    'RetailPrice' : '',
-    'WholeSalePrice' : '',
-    'WholeSale' : '',
-    'BrandType' : '',
-    'BarcodeExist' : '',
-    'BaseBarCode' : '',
-    'ProductExpDate' : '"YYYY-MM-DD"',
-  },
-  {
-    'ProductName' : '',
-    'ProductTypeName' : '',
-    'UnitPrice' : '',
-    'Quantity' : '',
-    'DiscountPercentage' : '',
-    'GSTPercentage' : '',
-    'GSTType' : 'CGST-SGST',
-    'RetailPrice' : '',
-    'WholeSalePrice' : '',
-    'WholeSale' : '',
-    'BrandType' : '',
-    'BarcodeExist' : '',
-    'BaseBarCode' : '',
-    'ProductExpDate' : '"0000-00-00"',
-  },
-  {
-    'ProductName' : '',
-    'ProductTypeName' : '',
-    'UnitPrice' : '',
-    'Quantity' : '',
-    'DiscountPercentage' : '',
-    'GSTPercentage' : '',
-    'GSTType' : 'None',
-    'RetailPrice' : '',
-    'WholeSalePrice' : '',
-    'WholeSale' : '',
-    'BrandType' : '',
-    'BarcodeExist' : '',
-    'BaseBarCode' : '',
-    'ProductExpDate' : '"0000-00-00"',
-  }
-]
+    'Name' : '',
+    'MobileNo1' : '',
+    'MobileNo2' : '',
+    'PhoneNo' : '',
+    'Address' : '',
+    'Email' : '',
+    'DOB' : '',
+    'Age' : '',
+    'Anniversary' : '',
+    'Gender' : '',
+    'VisitDate' : '',
+    }
+  ]
 
   ngOnInit(): void {
     this.getList();
-    this.getdropdownSupplierlist();
   }
 
-  getdropdownSupplierlist() {
-    const subs: Subscription = this.ss.dropdownSupplierlist('').subscribe({
-      next: (res: any) => {
-        this.supplierList = res.data;
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+  selectFile(e: any) {
+    if (e.target.files.length) {
+      this.customerUpload = e.target.files[0];
+      const elem: any = document.getElementById("uploadButton");
+      elem.innerText = 'name : ' + this.customerUpload.name;
+    } else {
+      this.customerUpload = null;
+    }
   }
 
   submit(frm: NgForm) {
     console.log(frm, 'sun');
     if (frm.valid) {
       const elem: any = document.getElementById("uploadButton"); 
-      this.uploader.uploadPurchase(this.purchaseUpload).subscribe((resp: any) => {
+      this.uploader.uploadCustomer(this.customerUpload).subscribe((resp: any) => {
           if (resp.type == HttpEventType.UploadProgress) {
             let uploadProgress = 0;
             uploadProgress = Math.round((resp.loaded / resp.total) * 100);
@@ -143,7 +99,7 @@ export class PurchaseBlukComponent implements OnInit {
               "encoding": fs.encoding,
               "mimetype": fs.mimetype,
               "location": fs.destination,
-              "fileType": 'purchase',
+              "fileType": 'Customer',
               "file_name": fs.filename,
               "path": fs.path.replaceAll("\\", "/"),
               "size": fs.size
@@ -165,7 +121,7 @@ export class PurchaseBlukComponent implements OnInit {
       "download": frm.download,
       "path": frm.path,
       "destination": frm.location,
-      "Type": "Purchase"
+      "Type": "Customer"
     }
     this.uploader.saveFileRecord(dtm).subscribe((resp: any) => {
       if (resp.success) {
@@ -186,7 +142,7 @@ export class PurchaseBlukComponent implements OnInit {
     const dtm = {
       currentPage: this.currentPage,
       itemsPerPage: this.itemsPerPage,
-      Type: "Purchase"
+      Type: "Customer"
     }
     const subs: Subscription = this.uploader.getList(dtm).subscribe({
       next: (res: any) => {
@@ -200,14 +156,62 @@ export class PurchaseBlukComponent implements OnInit {
     });
   }
 
-  selectFile(e: any) {
-    if (e.target.files.length) {
-      this.purchaseUpload = e.target.files[0];
-      const elem: any = document.getElementById("uploadButton");
-      elem.innerText = 'name : ' + this.purchaseUpload.name;
-    } else {
-      this.purchaseUpload = null;
+  processFile(data:any) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Are You Able To Upload Customer File!",
+      icon: 'warning',
+      showCancelButton: true,
+      backdrop : false,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, Upload it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const ID = data.ID
+        const dtm = {
+          filename:data.fileName,
+          originalname:data.originalname,
+          path:data.path,
+          destination:data.destination,
+        }
+        const subs: Subscription =  this.uploader.processCustomerFile(dtm).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+             this.updateFileRecord(ID)
+            } else {
+              this.as.errorToast(res.message )
+            }
+          },
+          error: (err: any) => {
+            console.log(err.msg);
+          },
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    })
+  }
+
+  updateFileRecord(ID:any){
+    const dtm = {
+     "ID": ID,
+     "key": "Process",
+     "value": 1,
+     "Type": "Customer"
     }
+    const subs: Subscription =  this.uploader.updateFileRecord(dtm).subscribe({
+     next: (res: any) => {
+       if (res.success) {
+        this.router.navigate(['/sale/customerList'])
+       } else {
+         this.as.errorToast(res.message)
+       }
+     },
+     error: (err: any) => {
+       console.log(err.msg);
+     },
+     complete: () => subs.unsubscribe(),
+   });
   }
 
   deleteItem(data: any, i: any) {
@@ -251,88 +255,7 @@ export class PurchaseBlukComponent implements OnInit {
     })
   }
 
-  openModal(content: any, data: any) {
-   this.tempProcessFile = data;
-    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
-  }
-
-  processFile() {
-    if (this.tempProcessFile.Process === 1) {
-      return this.as.errorToast("You  Can Not Delete This File, You Have Already Processed")
-    }
-    const ID = this.tempProcessFile.ID
-    const dtm = {
-      filename:this.tempProcessFile.fileName,
-      originalname:this.tempProcessFile.originalname,
-      path:this.tempProcessFile.path,
-      destination:this.tempProcessFile.destination,
-      PurchaseMaster: {
-        ID : null,
-        SupplierID : this.selectedPurchaseMaster.SupplierID,
-        PurchaseDate : this.selectedPurchaseMaster.PurchaseDate,
-        InvoiceNo : this.selectedPurchaseMaster.InvoiceNo,
-        ShopID : Number(this.selectedShop[0]) ,
-      },
-    }
-
-    const subs: Subscription =  this.uploader.processPurchaseFile(dtm).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          if(res.data !== 0) {
-            this.id = res.data;
-          }
-         this.updateFileRecord(ID)
-        
-        } else {
-          this.as.errorToast(res.message )
-          Swal.fire({
-            position: 'center',
-            icon: 'error',
-            title: 'Invalid GSTType, You Can Add CGST-SGST , IGST OR None',
-            showConfirmButton: true,
-            backdrop : false,
-          })
-
-        }
-      },
-      error: (err: any) => {
-        console.log(err.msg);
-      },
-      complete: () => subs.unsubscribe(),
-    }); 
-  }
-
-  updateFileRecord(ID:any){
-   const dtm = {
-    "ID": ID,
-    "key": "Process",
-    "value": 1,
-    "Type": "Purchase"
-   }
-   const subs: Subscription =  this.uploader.updateFileRecord(dtm).subscribe({
-    next: (res: any) => {
-      console.log(res);
-      // return
-      if (res.success) {
-        
-        this.modalService.dismissAll();
-      //  this.router.navigate(['/inventory/purchaseList'])
-       this.router.navigate(['/inventory/purchase' , this.id])
-      
-      } else {
-        this.as.errorToast(res.message)
-      }
-    },
-    error: (err: any) => {
-      console.log(err.msg);
-    },
-    complete: () => subs.unsubscribe(),
-  });
-  }
-
   generateExcel(): void {
-    this.excelService.exportAsExcelFile(this.josnData, 'Purchase_Upload');
+    this.excelService.exportAsExcelFile(this.josnData, 'Customer_Upload');
   }
-  
-
 }
