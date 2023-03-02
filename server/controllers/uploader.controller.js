@@ -415,20 +415,22 @@ module.exports = {
             }
 
 
+            let count = 0
             for (const fd of fileData) {
-
+                count += 1
+                console.log(count);
                 let newData = {
-                    "Name": fd[0],
+                    "Name": fd[0] ? fd[0] : "",
                     "MobileNo1": fd[1] ? fd[1] : "",
                     "MobileNo2": fd[2] ? fd[2] : "",
                     "PhoneNo": fd[3] ? fd[3] : "",
-                    "Address": fd[4] ? fd[4] : "" ,
-                    "Email": fd[5] ? fd[5] : "" ,
-                    "DOB": fd[6] ? fd[6] : "0000-00-00" ,
-                    "Age": fd[7] ? fd[7] : 0 ,
-                    "Anniversary": fd[8] ? fd[8] : "0000-00-00" ,
-                    "Gender": fd[9] ? fd[9] : "" ,
-                    "VisitDate": fd[10] ? fd[10] : ""
+                    "Address": fd[4] ? fd[4] : "",
+                    "Email": fd[5] ? fd[5] : "",
+                    "DOB": fd[6] ? fd[6] : '"0000-00-00"',
+                    "Age": fd[7] ? fd[7] : 0,
+                    "Anniversary": fd[8] ? fd[8] : '"0000-00-00"',
+                    "Gender": fd[9] ? fd[9] : "",
+                    "VisitDate": fd[10] ? fd[10] : '"0000-00-00"'
                 }
 
                 newData.Idd = 0
@@ -440,6 +442,7 @@ module.exports = {
                 newData.Other = ""
                 newData.Remarks = ""
                 newData.GSTNo = ""
+                // console.log(newData);
                 processedFileData.push(newData)
             }
 
@@ -459,13 +462,20 @@ module.exports = {
                     return next(createError.BadRequest())
                 }
                 for (const datum of data) {
-                    let Id = await Idd(req)
+
+                    const customerCount = await connection.query(`select * from customer where CompanyID = ${CompanyID}`)
+
+                    let Idd = customerCount.length
+
+                    let Id = Idd + 1
+                    // let Id = await Idd(req)
                     console.log(Id);
                     datum.Idd = Id
 
-                    const customer = await connection.query(`insert into customer(Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Status,CreatedBy,CreatedOn,VisitDate) values('${datum.Idd}', '${datum.Name}','${datum.Sno}',${datum.CompanyID},'${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Address}','${datum.GSTNo}','${datum.Email}','${datum.PhotoURL}','${datum.DOB}','${datum.RefferedByDoc}','${datum.Age}','${datum.Anniversary}','${datum.ReferenceType}','${datum.Gender}','${datum.Other}','${datum.Remarks}',1,'${LoggedOnUser}',now(),'${datum.VisitDate}')`);
+                    const customer = await connection.query(`insert into customer(Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Status,CreatedBy,CreatedOn,VisitDate) values('${datum.Idd}', '${datum.Name}','${datum.Sno}',${datum.CompanyID},'${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Address}','${datum.GSTNo}','${datum.Email}','${datum.PhotoURL}',${datum.DOB},'${datum.RefferedByDoc}','${datum.Age}',${datum.Anniversary},'${datum.ReferenceType}','${datum.Gender}','${datum.Other}','${datum.Remarks}',1,'${LoggedOnUser}',now(),${datum.VisitDate})`);
 
-                    console.log(connected("Customer Added SuccessFUlly !!!"));                }
+                    console.log(connected("Customer Added SuccessFUlly !!!"));
+                }
 
             }
 
