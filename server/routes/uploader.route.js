@@ -15,4 +15,6 @@ router.post('/processPurchaseFile', verifyAccessTokenAdmin, Controller.processPu
 
 router.post('/processCustomerFile', verifyAccessTokenAdmin, Controller.processCustomerFile)
 
+router.post('/processCusSpectacleFile', verifyAccessTokenAdmin, Controller.processCusSpectacleFile)
+
 module.exports = router

@@ -84,9 +84,28 @@ module.exports = {
       return next(error)
     }
   },
+  customerPowerupload: async (req, res, next) => {
+    try {
+      const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0
+
+      if (req.file == undefined) {
+        return res.status(400).json({ message: "Please upload file!" });
+      }
+      return res.json({
+        success: true,
+        message: "Uploaded Successfully",
+        file: req.file,
+        fileName: req.file.filename,
+        download: '/uploads/' + year + '/' + month + '/' + CompanyID + '/' + 'customerPower/' + req.file.filename
+      });
+
+    } catch (error) {
+      return next(error)
+    }
+  },
 
   download: (req, res) => {
-    filepath = path.join(__dirname, "/../") + req.params.folder1 + '/' + req.params.folder2 + '/' + req.params.folder3 + '/' + req.params.folder4 
+    filepath = path.join(__dirname, "/../") + req.params.folder1 + '/' + req.params.folder2 + '/' + req.params.folder3 + '/' + req.params.folder4
 
     if (fs.existsSync(filepath)) {
       console.log('exist');

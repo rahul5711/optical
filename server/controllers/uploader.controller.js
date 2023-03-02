@@ -491,6 +491,109 @@ module.exports = {
         } finally {
             await connection.release();
         }
+    },
+    processCusSpectacleFile: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+
+            const response = { data: null, success: true, message: "" }
+            const {
+                filename,
+                originalname,
+                path,
+                destination
+            } = req.body
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+
+            filepath = destination + '/' + filename
+
+            const sheets = xlsx.parse(filepath) // parses a file
+            sheets[0].data = sheets[0].data.filter((el) => el.length > 0);
+            let fileData = []
+            let processedFileData = []
+            for (const sheet of sheets) {
+                fileData = [...fileData, ...sheet.data]
+            }
+
+
+            for (const fd of fileData) {
+                let newData = {
+                    "Idd": fd[0] || 0,
+                    "REDPSPH": fd[1] || '',
+                    "REDPCYL": fd[2] || '',
+                    "REDPAxis": fd[3] || '',
+                    "REDPVA": fd[4] || '',
+                    "LEDPSPH": fd[5] || '',
+                    "LEDPCYL": fd[6] || '',
+                    "LEDPAxis": fd[7] || '',
+                    "LEDPVA": fd[8] || '',
+                    "RENPSPH": fd[9] || '',
+                    "RENPCYL": fd[10] || '',
+                    "RENPAxis": fd[11] || '',
+                    "RENPVA": fd[12] || '',
+                    "LENPSPH": fd[13] || '',
+                    "LENPCYL": fd[14] || '',
+                    "LENPAxis": fd[15] || '',
+                    "LENPVA": fd[16] || '',
+                    "REPD": fd[17] || '',
+                    "LEPD": fd[18] || '',
+                    "R_Addition": fd[19] || '',
+                    "L_Addition": fd[20] || '',
+                    "R_Prism": fd[21] || '',
+                    "L_Prism": fd[22] || '',
+                    "Lens": fd[23] || '',
+                    "Shade": fd[24] || '',
+                    "Frame": fd[25] || '',
+                    "VertexDistance": fd[26] || '',
+                    "RefractiveIndex": fd[27] || '',
+                    "FittingHeight": fd[28] || '',
+                    "ConstantUse": fd[29] || '',
+                    "NearWork": fd[30] || '',
+                    "DistanceWork": fd[31] || '',
+                    "UploadBy": 'Upload',
+                    "PhotoURL": '',
+                    "FileURL": '',
+                    "Family": 'Self',
+                    "RefferedByDoc": 'Self',
+                    "Reminder": '6',
+                    "ExpiryDate": '"0000-00-00"',
+                }
+                newData.VisitNo = 0,
+                newData.CompanyID = CompanyID,
+                newData.CustomerID = 0
+                processedFileData.push(newData)
+            }
+
+            processedFileData.reverse()
+            processedFileData.pop()
+            processedFileData.reverse()
+
+            const body = processedFileData
+
+            if (!body.length) {
+                console.log('syncing done....')
+                return
+            } else {
+                const data = body
+                if (!(data && data.length)) {
+                    return next(createError.BadRequest())
+                }
+                for (const datum of data) {
+                    console.log(datum);
+                }
+            }
+
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
     }
 
 }
