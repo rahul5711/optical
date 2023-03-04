@@ -175,13 +175,23 @@ export class CustomerBlukComponent implements OnInit {
           path:data.path,
           destination:data.destination,
         }
+        this.sp.show();
         const subs: Subscription =  this.uploader.processCustomerFile(dtm).subscribe({
           next: (res: any) => {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your Customer Has Been Imported',
+              showConfirmButton: false,
+              timer: 2000
+            })
+            this.sp.show();
             if (res.success) {
              this.updateFileRecord(ID)
             } else {
               this.as.errorToast(res.message )
             }
+            this.sp.hide();
           },
           error: (err: any) => {
             console.log(err.msg);
@@ -199,19 +209,23 @@ export class CustomerBlukComponent implements OnInit {
      "value": 1,
      "Type": "Customer"
     }
+    this.sp.show();
     const subs: Subscription =  this.uploader.updateFileRecord(dtm).subscribe({
      next: (res: any) => {
        if (res.success) {
+        this.sp.show();
         this.router.navigate(['/sale/customerList'])
        } else {
          this.as.errorToast(res.message)
        }
+       this.sp.hide();
      },
      error: (err: any) => {
        console.log(err.msg);
      },
      complete: () => subs.unsubscribe(),
    });
+
   }
 
   deleteItem(data: any, i: any) {

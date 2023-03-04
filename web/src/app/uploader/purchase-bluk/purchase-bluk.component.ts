@@ -274,15 +274,15 @@ export class PurchaseBlukComponent implements OnInit {
         ShopID : Number(this.selectedShop[0]) ,
       },
     }
-
+    this.sp.show();
     const subs: Subscription =  this.uploader.processPurchaseFile(dtm).subscribe({
       next: (res: any) => {
         if (res.success) {
+          this.sp.show();
           if(res.data !== 0) {
             this.id = res.data;
           }
          this.updateFileRecord(ID)
-        
         } else {
           this.as.errorToast(res.message )
           Swal.fire({
@@ -294,6 +294,7 @@ export class PurchaseBlukComponent implements OnInit {
           })
 
         }
+        this.sp.hide();
       },
       error: (err: any) => {
         console.log(err.msg);
@@ -314,7 +315,6 @@ export class PurchaseBlukComponent implements OnInit {
       console.log(res);
       // return
       if (res.success) {
-        
         this.modalService.dismissAll();
       //  this.router.navigate(['/inventory/purchaseList'])
        this.router.navigate(['/inventory/purchase' , this.id])

@@ -69,8 +69,8 @@
                                                 style="white-space: nowrap;">
                                                 <td class="text-left">
                                                     <button type="button" [disabled]="data.Process == 1" (click)="processFile(data)" mat-raised-button color="primary">Process</button>
-                                                    <button  class=" bg-btn">
-                                                        <mat-icon class="delete_icon ms-2"  (click)="deleteItem(data,i)" >delete_forever</mat-icon>
+                                                    <button  class=" bg-btn" (click)="deleteItem(data,i)">
+                                                        <mat-icon class="delete_icon ms-2"   >delete_forever</mat-icon>
                                                     </button>
                                                 </td>
                                                 <td class="text-left">{{i + 1 }}</td>
