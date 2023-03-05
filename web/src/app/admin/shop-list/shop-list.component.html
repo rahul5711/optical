@@ -176,7 +176,7 @@
                             </mat-form-field>
                         </div>
                         <div class="col-md-3 mb-0 pt-md-3  ">
-                            <mat-slide-toggle type="ratio" name="Checked" class="example-margin " [checked]="toggleChecked"
+                            <mat-slide-toggle type="ratio" name="Checked" class="example-margin " [(ngModel)]="toggleChecked"
                                 color="primary" (change)="copyData($event.checked)" [disabled]="false"
                                 #CompanyIDcontrol>
                                 Copy Data From Company
@@ -339,10 +339,10 @@
             <!-- Save/Cancel -->
             <div class="row my-4">
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
+                    <button type="submit" class="me-3" mat-raised-button color="primary" [disabled]="!f.valid"
+                    *ngIf="suBtn == false">Save</button>
                     <button class="me-3" type="button" mat-raised-button color="primary"
                         [disabled]="id == 0 || !f.valid" *ngIf="suBtn == true" (click)="updateShop()">Update</button>
-                    <button type="submit" class="me-3" mat-raised-button color="primary" [disabled]="!f.valid"
-                        *ngIf="suBtn == false">Save</button>
                     <button type="button" mat-raised-button (click)="f.reset()">Clear</button>
                 </div>
             </div>

@@ -77,11 +77,11 @@ export class CompanyListComponent implements OnInit {
       next: (res: any) => {
         this.collectionSize = res.count;
         this.dataList = res.data;
-        this.dataList.forEach((element: { LogoURL: any; }) => {
-          if (element.LogoURL !== "null" && element.LogoURL !== "") {
-            element.LogoURL = (this.env.apiUrl + element.LogoURL);
+        this.dataList.forEach((element: { PhotoURL: any; }) => {
+          if (element.PhotoURL !== "null" && element.PhotoURL !== "") {
+            element.PhotoURL = (this.env.apiUrl + element.PhotoURL);
           } else {
-            element.LogoURL = "/assets/images/userEmpty.png"
+            element.PhotoURL = "/assets/images/userEmpty.png"
           }
         });
         this.sp.hide();

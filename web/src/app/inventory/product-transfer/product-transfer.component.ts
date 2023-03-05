@@ -228,6 +228,7 @@ export class ProductTransferComponent implements OnInit {
     const subs: Subscription =  this.purchaseService.transferProduct(this.xferItem).subscribe({
       next: (res: any) => {
         this.xferList = res.data;
+        this.formReset();
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),

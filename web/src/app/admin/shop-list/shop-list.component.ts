@@ -205,6 +205,7 @@ export class ShopListComponent implements OnInit {
 
   copyData(val: any) {
     if (val) {
+      this.data.Name = this.company.Name;
       this.data.GSTNo = this.company.GSTNo;
       this.data.CINNo = this.company.CINNo;
       this.data.Address = this.company.Address;
@@ -375,6 +376,7 @@ export class ShopListComponent implements OnInit {
       ID: null, CompanyID: null, Name: '', AreaName: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '',
       Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: false, GSTnumber: false, LogoURL: '', HSNCode: false, CustGSTNo: false, Rate: false, Discounts: false, Tax: false, SubTotal: false, Total: false, ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: 'No Terms and Conditions', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
     };
+    this.toggleChecked = false
   }
 
 }

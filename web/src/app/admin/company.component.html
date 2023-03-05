@@ -244,12 +244,12 @@
                                     </div>
                                 </div>
                                 <!-- Owner Details start -->
-                                <div class="row mt-4 mb-0">
+                                <div *ngIf="user?.UserGroup == 'SuperAdmin'" class="row mt-4 mb-0" >
                                     <h2 style="color: rgb(255, 81, 0)"> Owner Details</h2>
                                 </div>
-                                <div class="row ">
+                                <div  class="row ">
                                     <div class="col-md-10 col-12">
-                                        <div class="row">
+                                        <div *ngIf="user?.UserGroup == 'SuperAdmin'" class="row ">
                                             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0 pt-3">
                                                 <mat-slide-toggle name="Checked" class="example-margin" color="primary"
                                                     [checked]="toggleChecked" (change)="copyData($event.checked)"
@@ -292,7 +292,7 @@
                                                 </mat-form-field>
                                             </div>
                                         </div>
-                                        <div class="row">
+                                        <div *ngIf="user?.UserGroup == 'SuperAdmin'" class="row">
                                             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Mobile No2</mat-label>
@@ -332,7 +332,7 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="id == 0">
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="id == 0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>LoginName</mat-label>
                                                     <input matInput name="LoginName" [(ngModel)]="data1.LoginName"
@@ -354,13 +354,13 @@
                                                     </mat-error>
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3 p-0">
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3 p-0 mt-2">
                                                 <button class="ms-2" type="submit" mat-raised-button color="primary" [disabled]="!f.valid " *ngIf="id == 0">Save</button>
-                                                <button class="ms-3" type="button" mat-raised-button color="primary"  [disabled]="id == 0" *ngIf=" id != 0"   (click)="updateCompany()"  >Update</button>
+                                                <button class="ms-3 " type="button" mat-raised-button color="primary"  [disabled]="id == 0" *ngIf=" id != 0"   (click)="updateCompany()"  >Update</button>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-2 col-12 ps-md-4">
+                                    <div *ngIf="user?.UserGroup == 'SuperAdmin'" class="col-md-2 col-12 ps-md-4">
                                         <div class="row ps-2">
                                             <div class="col-12 ">
                                                 <img class="fit-picture" width="170" height="170" [src]="userImage">

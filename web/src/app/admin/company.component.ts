@@ -215,7 +215,7 @@ data1: any = {
         }
       } else {
         this.userImage = this.env.apiUrl + data.body?.download;
-        this.data.PhotoURL = data.body?.download
+        this.data1.PhotoURL = data.body?.download
         if(data?.body?.message === 'Uploaded Successfully'){
           Swal.fire({
             position: 'center',
