@@ -169,6 +169,8 @@ i: any;
     const subs: Subscription =  this.ps.updateProduct(this.newProduct).subscribe({
       next: (res: any) => {
         if (res.success) {
+          this.getProductList();
+          this.specList = []
           Swal.fire({
             position: 'center',
             icon: 'success',

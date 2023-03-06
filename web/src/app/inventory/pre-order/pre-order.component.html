@@ -248,7 +248,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 d-flex">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>TAX Type</mat-label>
-                                        <mat-select name="GSTType" [(ngModel)]="item.GSTType" #GSTTypecontrol1 required (selectionChange)="calculateFields('TotalAmount', 'total')" (blur)="calculateFields('TotalAmount', 'total');notifyGst();" >
+                                        <mat-select name="GSTType" [(ngModel)]="item.GSTType" #GSTTypecontrol required (selectionChange)="calculateFields('TotalAmount', 'total')" (blur)="notifyGst();" >
                                             <mat-option value="None" *ngIf="item.GSTPercentage  === 0 || item.GSTAmount === 0">None
                                             </mat-option>
                                             <mat-option  [value]="g.Name" *ngFor="let g of gstList">{{g.Name}}
@@ -303,9 +303,10 @@
 
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ml-auto">
-                                    <button *ngIf="editBtn === false" class="mr-3" type="submit" [disabled]="!f.valid || item.Quantity == 0"
+                                    <button *ngIf="editBtn === false" class="mr-3" type="submit" 
+                                        mat-raised-button color="primary" [disabled]="!f.valid || item.GSTPercentage === 0 && item.GSTType !== 'None' && item.GSTType !== 'NONE' && item.GSTType !== '' "
                                         mat-raised-button color="primary" >Add</button>
-                                    <button *ngIf="editBtn === true" class="mr-3" type="submit" [disabled]="!f.valid || item.Quantity == 0"
+                                    <button *ngIf="editBtn === true" class="mr-3" type="submit" [disabled]="item.Quantity == 0"
                                         mat-raised-button color="primary" (click)="editUpdate()">Update</button>
                                 </div>
                             </div>

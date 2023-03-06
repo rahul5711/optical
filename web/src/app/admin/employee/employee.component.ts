@@ -56,12 +56,11 @@ export class EmployeeComponent implements OnInit {
   UserShop: any = {ID: null, UserID: null, ShopID: null, RoleID: null, Status: 1};
 
   ngOnInit(): void {
-
     if (this.id != 0) {
       this.getUserById();
     }
-    this.rolesList();
     this.dropdownShoplist();
+    this.rolesList();
   }
 
   onSubmit(){
@@ -149,14 +148,17 @@ export class EmployeeComponent implements OnInit {
     const subs: Subscription =  this.es.updateUser( this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.router.navigate(['/admin/employeeList']);
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Your file has been Update.',
-            showConfirmButton: false,
-            timer: 1200
-          })
+          if(res.data !== 0) {
+            this.id = res.data;
+            this.router.navigate(['/admin/employee/' , this.id]);
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been Save.',
+              showConfirmButton: false,
+              timer: 1200
+            })
+          }
         } else {
           this.as.errorToast(res.message)
         }
@@ -167,17 +169,6 @@ export class EmployeeComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
 
-  }
-
-  rolesList(){
-    const subs: Subscription = this.role.getList('').subscribe({
-      next: (res: any) => {
-        this.roleList = res.data
-        this.sp.hide();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
   }
 
   dropdownShoplist(){
@@ -196,16 +187,22 @@ export class EmployeeComponent implements OnInit {
     const subs: Subscription =  this.ss.saveUserShop(this.UserShop).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.router.navigate(['/admin/employeeList']);
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Your role has been Save.',
-            showConfirmButton: false,
-            timer: 1200
-          })
+            this.getUserById()
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been Save.',
+              showConfirmButton: false,
+              timer: 1200
+            })
         } else {
           this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: res.message,
+            showConfirmButton: true,
+          })
         }
       },
       error: (err: any) => {
@@ -220,16 +217,23 @@ export class EmployeeComponent implements OnInit {
     const subs: Subscription =  this.ss.updateUserShop(this.UserShop).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.router.navigate(['/admin/employeeList']);
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Your role has been Update.',
-            showConfirmButton: false,
-            timer: 1200
-          })
+            this.getUserById();
+            this.saveUpdateHide = false;
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been Save.',
+              showConfirmButton: false,
+              timer: 1200
+            })
         } else {
           this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: res.message,
+            showConfirmButton: true,
+          })
         }
       },
       error: (err: any) => {
@@ -237,6 +241,17 @@ export class EmployeeComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
 
+    });
+  }
+
+  rolesList(){
+    const subs: Subscription = this.role.getList('').subscribe({
+      next: (res: any) => {
+        this.roleList = res.data
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
     });
   }
 

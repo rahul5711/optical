@@ -13,3 +13,13 @@
     width: 0px !important;
     cursor: pointer !important;
 }
+
+.TransferInitiated{
+    color:red !important;
+    font-weight: 600;
+}
+
+.TransferCompleted{
+    color:green !important;
+    font-weight: 600;
+}

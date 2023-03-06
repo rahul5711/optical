@@ -132,13 +132,7 @@ saveFieldData(i:any){
         complete: () => subss.unsubscribe(),
       });
       if (res.success) {
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'Your file has been Save.',
-          showConfirmButton: false,
-          timer: 1200
-        }) 
+       
       } else {
         this.as.errorToast(res.message)
       }

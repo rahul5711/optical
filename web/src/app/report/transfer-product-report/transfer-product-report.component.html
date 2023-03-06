@@ -56,7 +56,7 @@
                                             <mat-label>Transfer Status</mat-label>
                                             <mat-select name="ProductStatus" [(ngModel)]="data.ProductStatus">
                                                 <mat-option [value]="0">All</mat-option>
-                                                <mat-option value="Transfer Initiated">Transfer Initiated</mat-option>
+                                                <mat-option value="Transfer Initiated">Transfer Initiated(Pending)</mat-option>
                                                 <mat-option value="Transfer Completed">Transfer Completed</mat-option>
                                                 <mat-option value="Transfer Cancelled">Transfer Cancelled</mat-option>
                                             </mat-select>
@@ -186,7 +186,7 @@
                                                         *ngIf="data.ToAreaName !== 'null'">({{data.ToAreaName}})</span>
                                                 </td>
                                                 <td>{{data.DateStarted}}</td>
-                                                <td>{{data.TransferStatus}}</td>
+                                                <td [ngClass]="{'TransferInitiated': data.TransferStatus === 'Transfer Initiated', 'TransferCompleted': data.TransferStatus === 'Transfer Completed' }">{{data.TransferStatus}}</td>
                                                 <td>{{data.CreatedByUser}}</td>
                                             </tr>
                                         </tbody>

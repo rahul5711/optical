@@ -277,6 +277,7 @@ export class PurchaseComponent implements OnInit {
 
   calculateFields(fieldName:any,mode:any){
    this.calculation.calculateFields(fieldName,mode,this.item,this.charge)
+
   }
 
   calculateGrandTotal(){
@@ -529,6 +530,7 @@ export class PurchaseComponent implements OnInit {
     };
     this.editBtn = false
     this.specList = []
+    this.selectedProduct = "";
   }
 
   updatedPurchase(){

@@ -427,6 +427,7 @@ export class PreOrderComponent implements OnInit {
     };
     this.editBtn = false
     this.specList = []
+    this.selectedProduct = "";
   }
 
   updatedPurchase(){

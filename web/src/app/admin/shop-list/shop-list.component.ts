@@ -243,6 +243,7 @@ export class ShopListComponent implements OnInit {
               title: 'Opps !!',
               text: 'You Can Not Create Shop !! Your has been permission end',
               showConfirmButton: true,
+              backdrop : false,
             }) 
           }
         }

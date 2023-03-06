@@ -79,8 +79,7 @@ export class SupplierComponent implements OnInit {
   }
 
   onsubmit() {
-    var supplierdate = this.data ?? " ";
-    const subs: Subscription =  this.ss.supplierSave(supplierdate).subscribe({
+    const subs: Subscription =  this.ss.supplierSave(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.formReset();

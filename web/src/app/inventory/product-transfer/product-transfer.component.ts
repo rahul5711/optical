@@ -80,9 +80,8 @@ export class ProductTransferComponent implements OnInit {
 
   getList() {
     const dtm = {
-      ID : null,
-      itemsPerPage: this.itemsPerPage,
       currentPage: this.currentPage,
+      itemsPerPage: this.itemsPerPage,
     }
     const subs: Subscription = this.purchaseService.getTransferList(dtm).subscribe({
       next: (res: any) => {
@@ -145,9 +144,12 @@ export class ProductTransferComponent implements OnInit {
        });
       }
      });
+     this.xferItem.ProductName = ''
+     this.xferItem.Barcode = ''
+     this.xferItem.BarCodeCount = ''
   }
 
-  onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
+  onChange(event: any ) {
     if (this.companysetting.DataFormat === '1') {
       event = event.toUpperCase()
     } else if (this.companysetting.DataFormat == '2') {
@@ -181,7 +183,7 @@ export class ProductTransferComponent implements OnInit {
             backdrop : false,
           });
         }else{
-          this.xferItem.ProductName = (this.item .ProductTypeName + '/' +  this.item.ProductName).toUpperCase();
+          this.xferItem.ProductName = (this.item.ProductTypeName + '/' +  this.item.ProductName).toUpperCase();
           this.xferItem.Barcode = this.item.Barcode;
           this.xferItem.BarCodeCount = this.item.BarCodeCount;
           this.xferItem.TransferCount = 0;
@@ -228,7 +230,14 @@ export class ProductTransferComponent implements OnInit {
     const subs: Subscription =  this.purchaseService.transferProduct(this.xferItem).subscribe({
       next: (res: any) => {
         this.xferList = res.data;
-        this.formReset();
+        if(this.xferItem.BarCodeCount - this.xferItem.TransferCount > 0) {
+          this.getProductDataByBarCodeNo();
+        }else{
+          this.xferItem.TransferCount = 0;
+          this.xferItem.BarCodeCount = 0;
+          this.xferItem.AcceptanceCode = "";
+        }
+        this.getList();
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),

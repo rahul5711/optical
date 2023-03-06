@@ -18,11 +18,17 @@ export class AddManageComponent implements OnInit {
   depList: any ;
   showFeild = false;
   showAdd = false;
+  showAddCharge = false;
   showAddService = false;
   selectedDepartment: any;
   selectedDepartmentHead: any;
   selectedProduct: any;
-
+  dataList:any
+  serviceList:any
+  gstList:any
+  setValueDisbled = false
+  setValueServiceDisbled = false
+  
   constructor(
     private supps: SupportService,
     public as: AlertService,
@@ -47,12 +53,8 @@ export class AddManageComponent implements OnInit {
   data1: any = { ID : null, CompanyID : null,  Name:'', Category : null, Status : 1, CreatedBy: null, UpdatedBy: null,};
   newDepartment: any  = {ID: null, CompanyID: null, Name: "", TableName:null,   Status: 1};
 
-  selectedRow: any = {ID: null, CompanyID: null, Name: null, Description:null,  Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
-  Service: any = {ID: null, CompanyID: null, Name: null, Description:null,  Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
-
-  dataList:any
-  serviceList:any
-  gstList:any
+  selectedRow: any = {ID: null, CompanyID: null, Name: null, Description:null, Cost:0,  Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
+  Service: any = {ID: null, CompanyID: null, Name: null, Description:null, Cost:0,  Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
   
   ngOnInit(): void {
     this.chargelist();
@@ -140,6 +142,7 @@ export class AddManageComponent implements OnInit {
   }
 
   setValues(){
+    this.setValueDisbled = true
     this.dataList.forEach((element: { ID: any; Name:any; Price: any; Description: any; GSTAmount: any; GSTPercentage: any; GSTType: any; TotalAmount: any; }) => {
       if (element.Name === this.selectedRow.Name) {
       this.selectedRow.Price = element.Price;
@@ -170,6 +173,7 @@ export class AddManageComponent implements OnInit {
   }
 
   resetData(){
+    this.setValueDisbled = false
     this.selectedRow = {ID: null, CompanyID: null, Name: null, Cost: 0, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
   }
 
@@ -178,6 +182,8 @@ export class AddManageComponent implements OnInit {
       next: (res: any) => {
         // this.dataList = res.result;
         if (res.success) {
+          this.resetData();
+          this.chargelist();
           Swal.fire({
             position: 'center',
             icon: 'success',
@@ -200,9 +206,6 @@ export class AddManageComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    
-    this.resetData();
-    this.chargelist();
   }
 
   chargedelete(i: string | number){
@@ -262,8 +265,10 @@ export class AddManageComponent implements OnInit {
   }
 
   setValuesService(){
-    this.serviceList.forEach((element: { ID: any; Name:any; Price: any; Description: any; GSTAmount: any; GSTPercentage: any; GSTType: any; TotalAmount: any; }) => {
+    this.setValueServiceDisbled = true
+    this.serviceList.forEach((element: { ID: any; Name:any; Cost:any,  Price: any; Description: any; GSTAmount: any; GSTPercentage: any; GSTType: any; TotalAmount: any; }) => {
       if (element.Name === this.Service.Name) {
+      this.Service.Cost = element.Cost;
       this.Service.Price = element.Price;
       this.Service.Description = element.Description;
       this.Service.GSTAmount = element.GSTAmount;
@@ -292,6 +297,7 @@ export class AddManageComponent implements OnInit {
   }
   
   serviceresetData(){
+    this.setValueServiceDisbled = false
     this.Service = {ID: null, CompanyID: null, Name: null, Cost: 0, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
   }
 
@@ -300,6 +306,8 @@ export class AddManageComponent implements OnInit {
       next: (res: any) => {
         // this.serviceList = res.result;
         if (res.success) {
+          this.serviceresetData();
+          this.servicelist();
           Swal.fire({
             position: 'center',
             icon: 'success',
@@ -322,8 +330,7 @@ export class AddManageComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.serviceresetData();
-    this.servicelist();
+
   
   }
 
@@ -348,7 +355,7 @@ export class AddManageComponent implements OnInit {
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
-      this.Service = {ID: null, CompanyID: null, Name: null, Description: null, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
+      this.Service = {ID: null, CompanyID: null, Name: null, Description: null, Cost:0, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
         this.servicelist();
       Swal.fire({
           position: 'center',

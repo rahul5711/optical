@@ -77,17 +77,20 @@ export class CalculationService {
             if(Number(item.GSTPercentage) > 100 ) {
               alert("you can't give 100% above GST Percentage");
               item.GSTPercentage = 0;
+              
             }else{
               item.GSTAmount =(+item.UnitPrice * +item.Quantity - item.DiscountAmount) * +item.GSTPercentage / 100;
             }
           }
-          if (fieldName === 'GSTAmount') {
+          if (fieldName === 'GSTAmount' || item.GSTPercentage !== 0) {
              item.GSTPercentage =100 * +item.GSTAmount / (+item.SubTotal);
+          }else{
+            item.GSTType = 'None'
           }
         break;
   
         case 'total':
-          item.TotalAmount = +item.SubTotal + +item.GSTAmount;
+          item.TotalAmount = +item.SubTotal + +item.GSTAmount;  
         break;
         
         // charges calculation start
