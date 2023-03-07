@@ -329,12 +329,12 @@ module.exports = {
             if (!Body.ShopID) return res.send({ message: "Invalid Query Data" })
             if (!Body.RoleID) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+            
+            doesExist = await connection.query(`select * from usershop where Status = 1 and UserID=${Body.UserID} and ShopID!=${Body.ShopID} and ID = ${Body.ID}`);
 
-            // doesExist = await connection.query(`select * from usershop where Status = 1 and UserID=${Body.UserID} and ShopID=${Body.ShopID} and ID = ${Body.ID}`);
-
-            // if (doesExist.length) {
-            //    return res.send({message: `User have already role in this shop`});
-            // }
+            if (doesExist.length) {
+               return res.send({message: `User have already role in this shop`});
+            }
 
             const updateData = await connection.query(`update usershop set RoleID = ${Body.RoleID}, ShopID = ${Body.ShopID}, UpdatedBy=${LoggedOnUser}, UpdatedOn = now() where ID = ${Body.ID}`)
 

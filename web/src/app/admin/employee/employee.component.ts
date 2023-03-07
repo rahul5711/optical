@@ -228,6 +228,7 @@ export class EmployeeComponent implements OnInit {
             })
         } else {
           this.as.errorToast(res.message)
+          this.getUserById();
           Swal.fire({
             position: 'center',
             icon: 'error',
