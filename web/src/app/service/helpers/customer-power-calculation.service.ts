@@ -16,6 +16,22 @@ export class CustomerPowerCalculationService {
     let a = 0.00;
   
     if (mode === 'Lens'){
+      if(isNaN(Number(spectacle.R_Addition)) === true) {
+        alert("please fill up Number value");
+        spectacle.R_Addition = 0.00;
+      }
+      if(isNaN(Number(spectacle.REDPCYL)) === true) {
+        alert("please fill up Number value");
+        spectacle.REDPCYL = 0.00;
+      }
+      if(isNaN(Number(spectacle.RENPSPH)) === true) {
+        alert("please fill up Number value");
+        spectacle.RENPSPH = 0.00;
+      }
+      if(isNaN(Number(spectacle.REDPSPH)) === true) {
+        alert("please fill up Number value");
+        spectacle.REDPSPH = 0.00;
+      }
       // right spectacle calculate start
       if (x === 'RD')
       { if(spectacle.R_Addition !== ''){
