@@ -608,6 +608,134 @@ module.exports = {
         } finally {
             await connection.release();
         }
+    },
+    processCusContactFile: async (req, res, next) => {
+        const connection = await mysql.connection();
+
+        try {
+
+            const response = { data: null, success: true, message: "" }
+            const {
+                filename,
+                originalname,
+                path,
+                destination
+            } = req.body
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+
+            filepath = destination + '/' + filename
+
+            const sheets = xlsx.parse(filepath) // parses a file
+            sheets[0].data = sheets[0].data.filter((el) => el.length > 0);
+            let fileData = []
+            let processedFileData = []
+            for (const sheet of sheets) {
+                fileData = [...fileData, ...sheet.data]
+            }
+
+
+            for (const fd of fileData) {
+                let newData = {
+                    "Idd": fd[0] || 0,
+                    "REDPSPH": fd[1] || '',
+                    "REDPCYL": fd[2] || '',
+                    "REDPAxis": fd[3] || '',
+                    "REDPVA": fd[4] || '',
+                    "LEDPSPH": fd[5] || '',
+                    "LEDPCYL": fd[6] || '',
+                    "LEDPAxis": fd[7] || '',
+                    "LEDPVA": fd[8] || '',
+                    "RENPSPH": fd[9] || '',
+                    "RENPCYL": fd[10] || '',
+                    "RENPAxis": fd[11] || '',
+                    "RENPVA": fd[12] || '',
+                    "LENPSPH": fd[13] || '',
+                    "LENPCYL": fd[14] || '',
+                    "LENPAxis": fd[15] || '',
+                    "LENPVA": fd[16] || '',
+                    "REPD": fd[17] || '',
+                    "LEPD": fd[18] || '',
+                    "R_Addition": fd[19] || '',
+                    "L_Addition": fd[20] || '',
+                    "R_KR": fd[21] || '',
+                    "L_KR": fd[22] || '',
+                    "R_HVID": fd[23] || '',
+                    "L_HVID": fd[24] || '',
+                    "R_CS": fd[25] || '',
+                    "L_CS": fd[26] || '',
+                    "R_BC": fd[27] || '',
+                    "L_BC": fd[28] || '',
+                    "R_Diameter": fd[29] || '',
+                    "L_Diameter": fd[30] || '',
+                    "BR": fd[31] || '',
+                    "Material": fd[32] || '',
+                    "Modality": fd[33] || '',
+                    "Other": fd[34] || '',
+                    "ConstantUse": fd[35] || '',
+                    "NearWork": fd[36] || '',
+                    "DistanceWork": fd[37] || '',
+                    "Multifocal": fd[38] || '',
+                    "UploadBy": 'Upload',
+                    "PhotoURL": '',
+                    "FileURL": '',
+                    "Family": 'Self',
+                    "RefferedByDoc": 'Self',
+                    "Reminder": '6',
+                    "ExpiryDate": '"0000-00-00"',
+                }
+                newData.VisitNo = 1,
+                    newData.CompanyID = CompanyID,
+                    newData.CustomerID = 0
+                processedFileData.push(newData)
+            }
+
+            processedFileData.reverse()
+            processedFileData.pop()
+            processedFileData.reverse()
+
+            const body = processedFileData
+
+            if (!body.length) {
+                console.log('syncing done....')
+                return
+            } else {
+                const data = body
+
+                if (!(data && data.length)) {
+                    return next(createError.BadRequest())
+                }
+                for (const datum of data) {
+                    console.log(datum);
+
+                    const cID = await connection.query(`select * from customer where CompanyID = ${CompanyID} and Idd = ${datum.Idd}`)
+
+                    if (cID.length) {
+                        datum.CustomerID = cID[0].ID
+                        const saveContact = await connection.query(`insert into contact_lens_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_KR,L_KR,R_HVID,L_HVID,R_CS,L_CS,R_BC,L_BC,R_Diameter,L_Diameter,BR,Material,Modality,Other,ConstantUse,NearWork,DistanceWork,Multifocal,PhotoURL,FileURL,Family,RefferedByDoc,Status,CreatedBy,CreatedOn) values (${datum.VisitNo}, ${CompanyID}, ${datum.CustomerID},'${datum.REDPSPH}','${datum.REDPCYL}','${datum.REDPAxis}','${datum.REDPVA}','${datum.LEDPSPH}','${datum.LEDPCYL}','${datum.LEDPAxis}','${datum.LEDPVA}','${datum.RENPSPH}','${datum.RENPCYL}','${datum.RENPAxis}','${datum.RENPVA}','${datum.LENPSPH}','${datum.LENPCYL}','${datum.LENPAxis}','${datum.LENPVA}','${datum.REPD}','${datum.LEPD}','${datum.R_Addition}','${datum.L_Addition}','${datum.R_KR}','${datum.L_KR}','${datum.R_HVID}','${datum.L_HVID}','${datum.R_CS}','${datum.L_CS}','${datum.R_BC}','${datum.L_BC}','${datum.R_Diameter}','${datum.L_Diameter}','${datum.BR}','${datum.Material}','${datum.Modality}','${datum.Other}','${datum.ConstantUse}','${datum.NearWork}','${datum.DistanceWork}','${datum.Multifocal}','${datum.PhotoURL}','${datum.FileURL}','${datum.Family}','${datum.RefferedByDoc}',1,${LoggedOnUser},now())`)
+
+
+
+                    }
+                }
+
+                console.log(connected("Customer Contact Added SuccessFUlly !!!"));
+            }
+
+            response.message = "data save sucessfully"
+            response.data = []
+            // connection.release()
+            return res.send(response)
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
     }
 
 }
