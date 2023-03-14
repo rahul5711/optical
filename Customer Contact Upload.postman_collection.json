@@ -1,0 +1,503 @@
+{
+	"info": {
+		"_postman_id": "1694fa10-2156-4ede-a651-8caf82bab950",
+		"name": "Customer Contact Upload",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "upload file",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/Dell/Downloads/contact.xlsx"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3000/file/customerPower",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"file",
+						"customerPower"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "upload file",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Dell/Downloads/contact.xlsx"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3000/file/customerPower",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"file",
+								"customerPower"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "459"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1cb-kUDOP7YYF8k4c6DlnURHiVBu8hU\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 14 Mar 2023 10:58:42 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"message\": \"Uploaded Successfully\",\n    \"file\": {\n        \"fieldname\": \"file\",\n        \"originalname\": \"contact.xlsx\",\n        \"encoding\": \"7bit\",\n        \"mimetype\": \"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\",\n        \"destination\": \"./uploads/2023/3/1/customerPower\",\n        \"filename\": \"1678791522549.xlsx\",\n        \"path\": \"uploads\\\\2023\\\\3\\\\1\\\\customerPower\\\\1678791522549.xlsx\",\n        \"size\": 10285\n    },\n    \"fileName\": \"1678791522549.xlsx\",\n    \"download\": \"/uploads/2023/3/1/customerPower/1678791522549.xlsx\"\n}"
+				}
+			]
+		},
+		{
+			"name": "saveFileRecord",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": null,\r\n    \"originalname\":\"contact.xlsx\",\r\n    \"fileName\":\"1678791522549.xlsx\",\r\n    \"download\":\"/uploads/2023/2/1/customerPower/1678791522549.xlsx\",\r\n    \"path\":\"uploads\\\\2023\\\\2\\\\1\\\\customerPower\\\\1678791522549.xlsx\",\r\n    \"destination\":\"./uploads/2023/2/1/customerPower\",\r\n    \"Type\": \"contact_lens_rx\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchaseUpload/saveFileRecord",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchaseUpload",
+						"saveFileRecord"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "saveFileRecord",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": null,\r\n    \"originalname\":\"contact.xlsx\",\r\n    \"fileName\":\"1678791522549.xlsx\",\r\n    \"download\":\"/uploads/2023/2/1/customerPower/1678791522549.xlsx\",\r\n    \"path\":\"uploads\\\\2023\\\\2\\\\1\\\\customerPower\\\\1678791522549.xlsx\",\r\n    \"destination\":\"./uploads/2023/2/1/customerPower\",\r\n    \"Type\": \"contact_lens_rx\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchaseUpload/saveFileRecord",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchaseUpload",
+								"saveFileRecord"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "60"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"3c-MvfnQdD1nLxJJqNLVlU1OoYldGc\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 14 Mar 2023 11:00:00 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [],\n    \"success\": true,\n    \"message\": \"data save sucessfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "list",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 ,\r\n   \"Type\": \"contact_lens_rx\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchaseUpload/list",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchaseUpload",
+						"list"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "list",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 ,\r\n   \"Type\": \"contact_lens_rx\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchaseUpload/list",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchaseUpload",
+								"list"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "518"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"206-wis1W6y3ciFUurjsKBSzYACPzdc\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 14 Mar 2023 11:00:22 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 27,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"originalname\": \"contact.xlsx\",\n            \"fileName\": \"1678791522549.xlsx\",\n            \"download\": \"/uploads/2023/2/1/customerPower/1678791522549.xlsx\",\n            \"path\": \"uploads202321customerPower1678791522549.xlsx\",\n            \"destination\": \"./uploads/2023/2/1/customerPower\",\n            \"Type\": \"contact_lens_rx\",\n            \"Process\": 0,\n            \"PurchaseMaster\": 0,\n            \"UniqueBarcode\": 0,\n            \"Status\": 1,\n            \"CreatedOn\": \"2023-03-14 16:30:00\",\n            \"CreatedBy\": 2,\n            \"UpdatedOn\": \"0000-00-00 00:00:00\",\n            \"UpdatedBy\": null\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\",\n    \"count\": 1\n}"
+				}
+			]
+		},
+		{
+			"name": "processCusContactFile",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"filename\": \"1678791522549.xlsx\",\r\n    \"originalname\":\"contact.xlsx\",\r\n    \"path\": \"uploads\\\\2023\\\\3\\\\1\\\\customerPower\\\\1678791522549.xlsx\",\r\n    \"destination\": \"./uploads/2023/3/1/customerPower\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchaseUpload/processCusContactFile",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchaseUpload",
+						"processCusContactFile"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "processCusContactFile",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"filename\": \"1678791522549.xlsx\",\r\n    \"originalname\":\"contact.xlsx\",\r\n    \"path\": \"uploads\\\\2023\\\\3\\\\1\\\\customerPower\\\\1678791522549.xlsx\",\r\n    \"destination\": \"./uploads/2023/3/1/customerPower\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchaseUpload/processCusContactFile",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchaseUpload",
+								"processCusContactFile"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "60"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"3c-MvfnQdD1nLxJJqNLVlU1OoYldGc\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 14 Mar 2023 11:19:17 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [],\n    \"success\": true,\n    \"message\": \"data save sucessfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "updateFileRecord",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": 13,\r\n    \"key\": \"Process\",\r\n    \"value\": 1,\r\n    \"Type\": \"Customer\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchaseUpload/updateFileRecord",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchaseUpload",
+						"updateFileRecord"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Nzg3ODg1NzYsImV4cCI6MTY3ODg3NDk3NiwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.8PWpdIu8ezbK8Fb4WrkYA6Waoy5gx67quNKutj_NECM",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
