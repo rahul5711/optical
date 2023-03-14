@@ -34,6 +34,15 @@ export class CustomerBlukComponent implements OnInit {
   supplierList: any;
   tempProcessFile: any;
 
+  spectacleList:any
+  SpectacleUpload: any;
+  currentPageSpec = 1;
+  itemsPerPageSpec = 10;
+  pageSizeSpec!: number;
+  collectionSizeSpec = 0;
+  pageSpec = 4;
+  tempProcessFileSpec: any;
+  
   constructor(
     private uploader: UploaderService,
     private router: Router,
@@ -65,8 +74,46 @@ export class CustomerBlukComponent implements OnInit {
     }
   ]
 
+  josnDataSpec = [
+    {
+      "Idd": '',
+      "REDPSPH": '',
+      "REDPCYL": '',
+      "REDPAxis": '',
+      "REDPVA": '',
+      "LEDPSPH": '',
+      "LEDPCYL": '',
+      "LEDPAxis": '',
+      "LEDPVA": '',
+      "RENPSPH": '',
+      "RENPCYL": '',
+      "RENPAxis": '',
+      "RENPVA": '',
+      "LENPSPH": '',
+      "LENPCYL": '',
+      "LENPAxis": '',
+      "LENPVA": '',
+      "REPD": '',
+      "LEPD": '',
+      "R_Addition": '',
+      "L_Addition": '',
+      "R_Prism": '',
+      "L_Prism": '',
+      "Lens": '',
+      "Shade": '',
+      "Frame": '',
+      "VertexDistance": '',
+      "RefractiveIndex": '',
+      "FittingHeight": '',
+      "ConstantUse": '',
+      "NearWork": '',
+      "DistanceWork": '',
+    }
+  ]
+
   ngOnInit(): void {
     this.getList();
+    this.getListSpec();
   }
 
   selectFile(e: any) {
@@ -271,5 +318,210 @@ export class CustomerBlukComponent implements OnInit {
 
   generateExcel(): void {
     this.excelService.exportAsExcelFile(this.josnData, 'Customer_Upload');
+  }
+
+  // spectacle code
+  selectFileSpectacle(e: any) {
+    if (e.target.files.length) {
+      this.SpectacleUpload = e.target.files[0];
+      const elem: any = document.getElementById("uploadButton");
+      elem.innerText = 'name : ' + this.SpectacleUpload.name;
+    } else {
+      this.SpectacleUpload = null;
+    }
+  }
+
+  submitSpectacle(frm: NgForm) {
+    console.log(frm, 'sun');
+    if (frm.valid) {
+      const elem: any = document.getElementById("uploadButton"); 
+      this.uploader.uploadSpectacle(this.SpectacleUpload).subscribe((resp: any) => {
+          if (resp.type == HttpEventType.UploadProgress) {
+            let uploadProgress = 0;
+            uploadProgress = Math.round((resp.loaded / resp.total) * 100);
+            elem.innerText = `uploaded : ${uploadProgress} % `;
+          } else if (resp.type == HttpEventType.Response) {
+            const body: any = resp.body;
+            const fs = body.file
+
+            const fileData = {
+              "fieldname": fs.fieldname,
+              "original_name": fs.originalname,
+              "download": body.download,
+              "encoding": fs.encoding,
+              "mimetype": fs.mimetype,
+              "location": fs.destination,
+              "fileType": 'spectacle_rx',
+              "file_name": fs.filename,
+              "path": fs.path.replaceAll("\\", "/"),
+              "size": fs.size
+            }
+            this.createFileRecordSpectacle(fileData);
+            frm.reset();
+          }
+        });
+    } else {
+      this.as.warningToast("Please fill all the fields properly!");
+    }
+  }
+
+  createFileRecordSpectacle(frm: any) {
+    const dtm = {
+      "ID": null,
+      "originalname": frm.original_name,
+      "fileName": frm.file_name,
+      "download": frm.download,
+      "path": frm.path,
+      "destination": frm.location,
+      "Type": "spectacle_rx"
+    }
+    this.uploader.saveFileRecord(dtm).subscribe((resp: any) => {
+      if (resp.success) {
+        this.as.successToast("File Added!");
+        this.getListSpec();
+      } else {
+        this.as.warningToast(resp.message);
+      }
+    });
+  }
+
+  changePagesizeSpec(num: number): void {
+    this.itemsPerPageSpec = this.pageSizeSpec + num;
+  }
+
+  getListSpec() {
+    this.sp.show()
+    const dtm = {
+      currentPage: this.currentPageSpec,
+      itemsPerPage: this.itemsPerPageSpec,
+      Type: "spectacle_rx"
+    }
+    const subs: Subscription = this.uploader.getList(dtm).subscribe({
+      next: (res: any) => {
+        this.collectionSizeSpec = res.count;
+        this.spectacleList = res.data;
+        this.sp.hide();
+        this.as.successToast(res.message)
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  processFileSpec(data:any) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Are You Able To Upload Customer Spectacle File!",
+      icon: 'warning',
+      showCancelButton: true,
+      backdrop : false,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, Upload it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const ID = data.ID
+        const dtm = {
+          filename:data.fileName,
+          originalname:data.originalname,
+          path:data.path,
+          destination:data.destination,
+        }
+        this.sp.show();
+        const subs: Subscription =  this.uploader.processCusSpectacleFile(dtm).subscribe({
+          next: (res: any) => {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your Customer Has Been Imported',
+              showConfirmButton: false,
+              timer: 2000
+            })
+            this.sp.show();
+            if (res.success) {
+             this.updateFileRecordSpec(ID)
+            } else {
+              this.as.errorToast(res.message )
+            }
+            this.sp.hide();
+          },
+          error: (err: any) => {
+            console.log(err.msg);
+          },
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    })
+  }
+
+  updateFileRecordSpec(ID:any){
+    const dtm = {
+     "ID": ID,
+     "key": "Process",
+     "value": 1,
+     "Type": "spectacle_rx"
+    }
+    this.sp.show();
+    const subs: Subscription =  this.uploader.updateFileRecord(dtm).subscribe({
+     next: (res: any) => {
+       if (res.success) {
+        this.sp.show();
+        this.router.navigate(['/sale/customerList'])
+       } else {
+         this.as.errorToast(res.message)
+       }
+       this.sp.hide();
+     },
+     error: (err: any) => {
+       console.log(err.msg);
+     },
+     complete: () => subs.unsubscribe(),
+   });
+
+  }
+
+  deleteItemSpec(data: any, i: any) {
+    if (data.Process === 1) {
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'You Can Not Delete This File, You Have Already Processed',
+        showConfirmButton: true,
+        backdrop : false,
+      })
+      return this.as.errorToast("You Can Not Delete This File, You Have Already Processed")
+    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      backdrop : false,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const subs: Subscription = this.uploader.deleteFileRecord(data.ID).subscribe({
+          next: (res: any) => {
+            this.spectacleList.splice(i, 1);
+            this.as.successToast(res.message)
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Your file has been deleted.',
+          showConfirmButton: false,
+          timer: 1000
+        })
+      }
+    })
+  }
+
+  generateExcelSpectacle(): void {
+    this.excelService.exportAsExcelFile(this.josnDataSpec, 'Customer_Spectacle_Upload');
   }
 }
