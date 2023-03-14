@@ -561,9 +561,9 @@ module.exports = {
                     "Reminder": '6',
                     "ExpiryDate": '"0000-00-00"',
                 }
-                newData.VisitNo = 0,
-                newData.CompanyID = CompanyID,
-                newData.CustomerID = 0
+                newData.VisitNo = 1,
+                    newData.CompanyID = CompanyID,
+                    newData.CustomerID = 0
                 processedFileData.push(newData)
             }
 
@@ -582,10 +582,24 @@ module.exports = {
                     return next(createError.BadRequest())
                 }
                 for (const datum of data) {
-                    console.log(datum);
+                    const cID = await connection.query(`select * from customer where CompanyID = ${CompanyID} and Idd = ${datum.Idd}`)
+
+                    if (cID.length) {
+
+                        datum.CustomerID = cID[0].ID
+
+                        const saveSpec = await connection.query(`insert into spectacle_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_Prism,L_Prism,Lens,Shade,Frame,VertexDistance,RefractiveIndex,FittingHeight,ConstantUse,NearWork,DistanceWork,UploadBy,PhotoURL,FileURL,Family,RefferedByDoc,Reminder,ExpiryDate,Status,CreatedBy,CreatedOn) values(${datum.VisitNo}, ${CompanyID}, ${datum.CustomerID},'${datum.REDPSPH}','${datum.REDPCYL}','${datum.REDPAxis}','${datum.REDPVA}','${datum.LEDPSPH}','${datum.LEDPCYL}','${datum.LEDPAxis}','${datum.LEDPVA}','${datum.RENPSPH}','${datum.RENPCYL}','${datum.RENPAxis}','${datum.RENPVA}','${datum.LENPSPH}','${datum.LENPCYL}','${datum.LENPAxis}','${datum.LENPVA}','${datum.REPD}','${datum.LEPD}','${datum.R_Addition}','${datum.L_Addition}','${datum.R_Prism}','${datum.L_Prism}','${datum.Lens}','${datum.Shade}','${datum.Frame}','${datum.VertexDistance}','${datum.RefractiveIndex}','${datum.FittingHeight}','${datum.ConstantUse}','${datum.NearWork}','${datum.DistanceWork}','${datum.UploadBy}','${datum.PhotoURL}','${datum.FileURL}','${datum.Family}','${datum.RefferedByDoc}','${datum.Reminder}','${datum.ExpiryDate}',1,${LoggedOnUser},now())`)
+
+                    }
                 }
+
+                console.log(connected("Customer Spec Added SuccessFUlly !!!"));
             }
 
+            response.message = "data save sucessfully"
+            response.data = []
+            // connection.release()
+            return res.send(response)
 
         } catch (err) {
             await connection.query("ROLLBACK");
