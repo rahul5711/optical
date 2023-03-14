@@ -26,6 +26,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { ModalModule } from 'ngb-modal';
 import { CustomerBlukComponent } from './customer-bluk/customer-bluk.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
 
 
 
@@ -67,6 +69,8 @@ import { CustomerBlukComponent } from './customer-bluk/customer-bluk.component';
     ToastrModule.forRoot(),
     NgbModule,
     NgxSpinnerModule,
+    MatTableModule,
+    MatTabsModule,
 
   ]
 })

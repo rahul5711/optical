@@ -221,7 +221,7 @@ module.exports = {
             if (Body.ID === null) return res.send({ message: "Invalid Query Data" })
             if (Body.TableName === "") return res.send({ message: "Invalid Query Data" })
 
-            const saveData = await connection.query(`update ${Body.TableName} set Status = 0, UpdatedBy = ${LoggedOnUser.ID}, UpdatedOn = now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const saveData = await connection.query(`update ${Body.TableName} set Status = 0, UpdatedBy = ${LoggedOnUser.ID}, UpdatedOn = now() where ID = ${Body.ID}`)
 
             console.log(connected("Data Delete SuccessFUlly !!!"));
 
