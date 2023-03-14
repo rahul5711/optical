@@ -485,6 +485,78 @@ module.exports = {
             await connection.release();
         }
     },
+    updateProduct: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { result: { PurchaseDetail: null, PurchaseMaster: null }, success: true, message: "" }
+
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+
+            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+
+
+            if (Body.PurchaseMaster.ID === null || Body.PurchaseMaster.InvoiceNo.trim() === '' || !Body.PurchaseMaster) return res.send({ message: "Invalid Query Data" })
+
+            const doesExist = await connection.query(`select * from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "product doesnot exist from this id " })
+            }
+
+            const doesCheckPayment = await connection.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${Body.PurchaseMaster.InvoiceNo}' and BillMasterID = ${Body.PurchaseMaster.ID}`)
+
+            if (doesCheckPayment.length > 1) {
+                return res.send({ message: `You Can't Delete Product !!, You have Already Paid Amount of this Invoice` })
+            }
+
+
+            const doesExistProductQty = await connection.query(`select * from barcodemasternew where Status = 1 and CompanyID = '${CompanyID}' and PurchaseDetailID = '${Body.ID}' and CurrentStatus = 'Available'`)
+
+            if (doesExist[0].Quantity !== doesExistProductQty.length) {
+                return res.send({ message: `You have product already sold` })
+            }
+
+
+            // PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,, Quantity,,,,, ,,,,,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn
+
+            const updatePurchasedetail = await connection.query(`update purchasedetailnew set UnitPrice=${Body.UnitPrice}, SubTotal=${Body.SubTotal},DiscountPercentage=${Body.DiscountPercentage},DiscountAmount=${Body.DiscountAmount},GSTPercentage=${Body.GSTPercentage},GSTAmount=${Body.GSTAmount},GSTType='${Body.GSTType}',TotalAmount=${Body.TotalAmount},RetailPrice=${Body.RetailPrice},WholeSalePrice=${Body.WholeSalePrice},BrandType='${Body.BrandType}', UniqueBarcode='${Body.UniqueBarcode}', UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+
+            console.log("Product Update SuccessFUlly !!!");
+
+            // update purchasemaster
+            const updatePurchaseMaster = await connection.query(`update purchasemasternew set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${Body.PurchaseMaster.InvoiceNo}' and ShopID = ${shopid}`)
+
+            //  update payment
+
+            const updatePaymentMaster = await connection.query(`update paymentmaster set PayableAmount = ${Body.PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+
+            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount = 0 , DueAmount = ${Body.PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
+
+            const fetchPurchaseMaster = await connection.query(`select * from purchasemasternew  where Status = 1 and ID = ${Body.PurchaseMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+
+            const gst_detail = await gstDetail(CompanyID, Body.PurchaseMaster.ID) || []
+
+            fetchPurchaseMaster[0].gst_detail = gst_detail
+
+            const PurchaseDetail = await connection.query(`select * from purchasedetailnew where  PurchaseID = ${doesExist[0].PurchaseID} and CompanyID = ${CompanyID}`)
+            response.result.PurchaseDetail = PurchaseDetail;
+            response.result.PurchaseMaster = fetchPurchaseMaster;
+            response.message = "data delete sucessfully"
+            // connection.release()
+            res.send(response)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
     deleteCharge: async (req, res, next) => {
         const connection = await mysql.connection();
         try {

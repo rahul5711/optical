@@ -10,6 +10,7 @@ router.post('/getPurchaseById', verifyAccessTokenAdmin, Controller.getPurchaseBy
 router.post('/list', verifyAccessTokenAdmin, Controller.list)
 router.post('/delete', verifyAccessTokenAdmin, Controller.delete)
 router.post('/deleteProduct', verifyAccessTokenAdmin, Controller.deleteProduct)
+router.post('/updateProduct', verifyAccessTokenAdmin, Controller.updateProduct)
 router.post('/deleteCharge', verifyAccessTokenAdmin, Controller.deleteCharge)
 
 
