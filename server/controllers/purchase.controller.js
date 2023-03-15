@@ -485,12 +485,14 @@ module.exports = {
             await connection.release();
         }
     },
+    
     updateProduct: async (req, res, next) => {
         const connection = await mysql.connection();
         try {
             const response = { result: { PurchaseDetail: null, PurchaseMaster: null }, success: true, message: "" }
 
             const Body = req.body;
+            console.log(Body,'body');
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -546,7 +548,7 @@ module.exports = {
             const PurchaseDetail = await connection.query(`select * from purchasedetailnew where  PurchaseID = ${doesExist[0].PurchaseID} and CompanyID = ${CompanyID}`)
             response.result.PurchaseDetail = PurchaseDetail;
             response.result.PurchaseMaster = fetchPurchaseMaster;
-            response.message = "data delete sucessfully"
+            response.message = "data update product sucessfully"
             // connection.release()
             res.send(response)
         } catch (err) {

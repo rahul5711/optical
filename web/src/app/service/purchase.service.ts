@@ -38,6 +38,11 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+  updateProduct(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/updateProduct', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   deleteCharge(ID:any,PurchaseMaster:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/deleteCharge', {ID: ID, PurchaseMaster: PurchaseMaster}, httpOptions)
     .pipe(catchError(this.handleError));

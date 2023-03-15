@@ -48,7 +48,7 @@ export class PurchaseComponent implements OnInit {
 
   item: any = {
     ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, UnitPrice: 0.00,
-    Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: 0.00, WholeSalePrice: 0.00, Ledger: false, WholeSale: false, BaseBarCode: '', NewBarcode: '',  Status: 1, BrandType: 0
+    Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: 0.00, WholeSalePrice: 0.00, Ledger: false, WholeSale: false, BaseBarCode: '', NewBarcode: '',  Status: 1, BrandType: 0,UpdateProduct : false
   };
 
   charge: any = {
@@ -275,7 +275,7 @@ export class PurchaseComponent implements OnInit {
     });
   }
 
-  calculateFields(fieldName:any,mode:any){
+  calculateFields(fieldName:any,mode:any,){
    this.calculation.calculateFields(fieldName,mode,this.item,this.charge)
 
   }
@@ -552,6 +552,7 @@ export class PurchaseComponent implements OnInit {
             this.getPurchaseById();
             this.selectedProduct = "";
             this.specList = [];
+            this.data.UpdateProduct = false
           }
           Swal.fire({
             position: 'center',
@@ -567,6 +568,30 @@ export class PurchaseComponent implements OnInit {
       error: (err: any) => {
         console.log(err.msg);
       },
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  showInput(data:any){
+    data.UpdateProduct = !data.UpdateProduct
+  }
+   
+  calculateFields1(fieldName:any,mode:any,data:any){
+    this.calculation.calculateFields(fieldName,mode,data,'')
+   }
+
+  updataEditProdcut(fieldName:any,mode:any,data:any){
+    this.calculateFields1(fieldName,mode,data)
+    this.calculateGrandTotal();
+    const dtm = {
+      PurchaseMaster: this.selectedPurchaseMaster,
+      ...data
+    }
+    const subs: Subscription = this.purchaseService.updateProduct(dtm).subscribe({
+      next: (res: any) => {
+        // console.log(res);
+      },
+      error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
   }
