@@ -209,3 +209,9 @@
     padding: 0 !important;
     border-top: 0em solid transparent !important;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

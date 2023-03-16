@@ -508,30 +508,30 @@ export class PurchaseComponent implements OnInit {
     }
   }
 
-  edititem(mode:any,data:any){
-    this.editBtn = true
-    if(mode === 'Product'){
-      this.selectedProduct = data.ProductTypeName
-      this.item.ProductName = data.ProductName
-      this.item = data
-    }
-  }
+  // edititem(mode:any,data:any){
+  //   this.editBtn = true
+  //   if(mode === 'Product'){
+  //     this.selectedProduct = data.ProductTypeName
+  //     this.item.ProductName = data.ProductName
+  //     this.item = data
+  //   }
+  // }
 
-  editUpdate(){
-    this.itemList.forEach((ele: any) =>{
-      if(ele.ID !== null && ele.ID === null ){
-        ele = this.item
-      }
-    });
-    this.calculateGrandTotal()
-    this.item = {
-      ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, UnitPrice: 0.00,
-      Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: 0.00, WholeSalePrice: 0.00, Ledger: false, WholeSale: false, BaseBarCode: '', NewBarcode: '',  Status: 1, BrandType: 0
-    };
-    this.editBtn = false
-    this.specList = []
-    this.selectedProduct = "";
-  }
+  // editUpdate(){
+  //   this.itemList.forEach((ele: any) =>{
+  //     if(ele.ID !== null && ele.ID === null ){
+  //       ele = this.item
+  //     }
+  //   });
+  //   this.calculateGrandTotal()
+  //   this.item = {
+  //     ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, UnitPrice: 0.00,
+  //     Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: 0.00, WholeSalePrice: 0.00, Ledger: false, WholeSale: false, BaseBarCode: '', NewBarcode: '',  Status: 1, BrandType: 0
+  //   };
+  //   this.editBtn = false
+  //   this.specList = []
+  //   this.selectedProduct = "";
+  // }
 
   updatedPurchase(){
     this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
@@ -589,9 +589,6 @@ export class PurchaseComponent implements OnInit {
     }
     const subs: Subscription = this.purchaseService.updateProduct(dtm).subscribe({
       next: (res: any) => {
-        if (res.success) {
-          this.as.successToast(res.message)
-        }
         // console.log(res);
       },
       error: (err: any) => console.log(err.message),
