@@ -25,7 +25,7 @@ export class PurchaseComponent implements OnInit {
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   editBtn = false;
-
+  addDis :any
 
   constructor(
     private router: Router,
@@ -285,7 +285,7 @@ export class PurchaseComponent implements OnInit {
   }
 
   addItem(){
-
+   
     if (this.category === 'Product'){
       if (this.selectedPurchaseMaster.ID !== null){this.item.Status = 2; }
         this.item.ProductName = "";
@@ -578,7 +578,7 @@ export class PurchaseComponent implements OnInit {
    
   calculateFields1(fieldName:any,mode:any,data:any){
     this.calculation.calculateFields(fieldName,mode,data,'')
-   }
+  }
 
   updataEditProdcut(fieldName:any,mode:any,data:any){
     this.calculateFields1(fieldName,mode,data)
@@ -589,6 +589,9 @@ export class PurchaseComponent implements OnInit {
     }
     const subs: Subscription = this.purchaseService.updateProduct(dtm).subscribe({
       next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+        }
         // console.log(res);
       },
       error: (err: any) => console.log(err.message),

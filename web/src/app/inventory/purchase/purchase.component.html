@@ -254,8 +254,11 @@
                                         <mat-select name="GSTType" [(ngModel)]="item.GSTType" #GSTTypeacontrol  (selectionChange)="calculateFields('TotalAmount', 'total')" (blur)="notifyGst()"required>
                                             <mat-option value="None" *ngIf="item.GSTPercentage  === 0">None
                                             </mat-option>
-                                            <mat-option  [value]="g.Name" *ngFor="let g of gstList">{{g.Name}}
+                                            <span *ngIf="item.GSTPercentage !== 0">
+                                            <mat-option  [value]="g.Name" *ngFor="let g of gstList">
+                                                {{g.Name}}
                                             </mat-option>
+                                        </span>   
                                         </mat-select>
                                     </mat-form-field>
                                     <mat-checkbox style="padding-top: 14px;" *ngIf="item.GSTType !== 'None' && item.GSTPercentage !== 0 && item.GSTPercentage !== '0'" name="gstLock" color="primary" [(ngModel)]="gstLock"></mat-checkbox>
@@ -306,7 +309,7 @@
 
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ml-auto">
-                                    <button *ngIf="editBtn === false" class="mr-3" type="submit" [disabled]="!f1.valid || item.Quantity == 0 || item.GSTPercentage === 0 && item.GSTType !== 'None' && item.GSTType !== 'NONE' && item.GSTType !== '' "
+                                    <button *ngIf="editBtn === false" class="mr-3" type="submit" [disabled]="!f1.valid || item.Quantity == 0 || item.GSTPercentage === 0 &&  item.GSTType !== 'None' && item.GSTType !== 'NONE' || item.GSTType === '' "
                                         mat-raised-button color="primary" >Add</button>
                                     <button *ngIf="editBtn === true" class="mr-3" type="submit" [disabled]=" item.Quantity == 0"
                                         mat-raised-button color="primary" (click)="editUpdate()">Update</button>
@@ -462,7 +465,9 @@
                                                     <td *ngIf="data.UpdateProduct" style=" width:60px;text-align: center;">
                                                         <select style="height: 26px; width: 60px;" name="BarndTypeUp" [(ngModel)]="data.GSTType" #name="ngModel" (change)="updataEditProdcut('','',data)" [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                                             <option value='None' *ngIf="data.GSTPercentage === 0 " >None</option>
-                                                            <option  [value]="g.Name" *ngFor="let g of gstList">{{g.Name}}</option>
+                                                           
+                                                                <option  [value]="g.Name" *ngFor="let g of gstList"> <span *ngIf="data.GSTPercentage !== 0">{{g.Name}}</span></option>
+                                                         
                                                         </select>
                                                     </td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.TotalAmount}}</td>
