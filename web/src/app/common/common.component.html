@@ -47,6 +47,7 @@
           <!-- SuperAdmin end nav-->
 
           <!-- CompanyAdmin start nav-->
+          <a *ngIf="user?.UserGroup !== 'SuperAdmin'" (click)="openModal(content)"><i class="fas fa-search"></i></a>
           <a *ngIf="user?.UserGroup !== 'SuperAdmin'" [routerLink]="['/admin/CompanyDashborad']">Dashborad</a>
           <!-- companyadmin  Administration -->
           <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown">
@@ -174,5 +175,40 @@
       <!-- SuperAdmin login btn end -->
     </div>
   </div>
+  <!-- model detail-->
+<ng-template #content role="document" let-modal>
+  <div class="modal-header p-2 row" style="height: 50px;">
+     <div class="col-3">
+       <h2 class="modal-title header pt-2" id="exampleModalLabel">Search</h2>
+     </div>
+     <div class="col-7 mx-auto">
+      <input class="form-control" type="text" name="search" [(ngModel)]="searchText" autocomplete="off" placeholder="search">
+     </div>
+     <div class="col-1 ml-auto">
+      <button type="button" style="font-size: 25px;" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+     </div>
+   
+    
+ 
+  </div>
+  <div class="modal-body p-3">
+    <div class="row">
+      <table style="overflow: auto; height: 250px;">
+        <thead>
+          <tr>
+            <th>Page</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let hero of heroes | filter:searchText">
+            <td> <a href="" routerLink={{hero.routersLinks}} style=" font-size: 18px; text-decoration: none;color: #000;">{{hero.Name}} </a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</ng-template>
 </body>
+
+
 <router-outlet></router-outlet>

@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ShopService } from '../service/shop.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-common',
@@ -14,19 +15,48 @@ import { ShopService } from '../service/shop.service';
 export class CommonComponent implements OnInit {
 
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
+  company:any =JSON.parse(localStorage.getItem('company') || '') ;
   CompanyAdmindisplsy :any
   SuperAdmindis :any
   x: any;
   dropShoplist :any;
   selectedShops :any = [];
-
+  searchText:any
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private ss: ShopService,
     private sp: NgxSpinnerService,
+    private modalService: NgbModal,
     ) { }
   viewCompanyInfo = true;
+
+  heroes = [
+    {
+      "Name": "Company",
+      "routersLinks" : `/admin/company/${this.company.ID}`
+    },
+    {
+      "Name": "Employee ",
+      "routersLinks" : `/admin/employee/0`
+    },
+    {
+      "Name": "Employee List",
+      "routersLinks" : `/admin/employeeList`
+    },
+    {
+      "Name": "Shop List",
+      "routersLinks" : `/admin/shopList`
+    },
+    {
+      "Name": "Role Permission ",
+      "routersLinks" : `/admin/rolePermission`
+    },
+    {
+      "Name": "Company Setting ",
+      "routersLinks" : `/admin/companySetting`
+    },
+  ];
 
   ngOnInit(): void { 
     this.user = JSON.parse(localStorage.getItem('user') || '')
@@ -35,7 +65,11 @@ export class CommonComponent implements OnInit {
       this.dropShoplist  = JSON.parse(localStorage.getItem('shop') || '')
     }
   }
- 
+
+  openModal(content: any) {
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+  }
+
   myFunction() {
     this.x = document.getElementById("myTopnav");
     if (this.x.className === "topnav") {

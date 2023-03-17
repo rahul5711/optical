@@ -33,6 +33,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { BrowserModule } from '@angular/platform-browser';
 import { ModalModule } from 'ngb-modal';
 import { Page404Component } from './common/page404.component';
+import { Ng2SearchPipeModule } from 'ng2-search-filter';
 // import { NgxPaginationModule } from 'ngx-pagination';
 
 
@@ -79,7 +80,7 @@ import { Page404Component } from './common/page404.component';
     NgbModule,
     NgxSpinnerModule,
     BrowserAnimationsModule,
-    
+    Ng2SearchPipeModule,
   ],
   exports: [    // optional in your case
         NgxSpinnerModule
