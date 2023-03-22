@@ -161,8 +161,9 @@
                                                 <td>
                                                     <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                         aria-hidden="true" type="button" (click)="exportAsXLSX()"> </i>
-                                                    <i class="far fa-file-pdf ms-4"
+                                                    <button [useExistingCss]="true" printSectionId="ProductTransferExcel" ngxPrint ><i  class="far fa-file-pdf ms-4"
                                                         style="color: #2433be;font-size: 22px;cursor: pointer;"> </i>
+                                                    </button>
                                                 </td>
                                                 <td></td>
                                                 <td></td>

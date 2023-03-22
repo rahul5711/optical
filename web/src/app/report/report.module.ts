@@ -28,6 +28,7 @@ import { TransferProductReportComponent } from './transfer-product-report/transf
 import { InventoryReportComponent } from './inventory-report/inventory-report.component';
 import { EyetestReportComponent } from './eyetest-report/eyetest-report.component';
 import { ProductReturnComponent } from './product-return/product-return.component';
+import { NgxPrintModule } from 'ngx-print';
 
 
 @NgModule({
@@ -65,6 +66,7 @@ import { ProductReturnComponent } from './product-return/product-return.componen
     MatTabsModule,
     NgbModule,
     SharedModule,
+    NgxPrintModule
 
   ]
 })
