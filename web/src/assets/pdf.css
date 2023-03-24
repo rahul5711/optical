@@ -1,0 +1,18 @@
+
+
+.table  thead tr{
+    font-size: 9px !important;
+    background: hsl(0, 0%, 69%) !important;
+    text-align: center;
+    border: none;
+}
+
+table  td{
+    font-size: 10px !important;
+    text-align: center;
+
+}
+
+/* table{
+    font-family: Arial, Helvetica, sans-serif;
+} */

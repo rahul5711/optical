@@ -68,18 +68,22 @@
                         </mat-form-field>
                       </div>
                       <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
-                        <button class="me-3" type="submit" mat-raised-button color="primary">
+                        <button  type="submit" mat-raised-button color="primary">
                           Search
                         </button>
-                        <button type="button" mat-raised-button color="warn" (click)="purchaseFromReset()">
+                        <button type="button"   class=" ms-2 me-2" mat-raised-button color="warn" (click)="purchaseFromReset()">
                           Reset
                         </button>
+                        <button mat-raised-button color="primary"  printTitle="Purchase Report"  printSectionId="PurchasePDF"  ngxPrint styleSheetFile="../../../assets/pdf.css">
+                          <i  class="far fa-file-pdf "
+                          style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
+                      </button>
                       </div>
                     </div>
                   </form>
                   <!-- Purchase list -->
                   <div class="body p-2">
-                    <div class="col-sm-12" style="overflow: auto; height: 450px;">
+                    <div id="PurchasePDF" class="col-sm-12" style="overflow: auto; height: 450px;">
                       <table class="table table-striped table-hover table-sm table-bordered"
                         style="border: 2px solid #fff !important;" id="purchaseExcel">
                         <thead>
@@ -277,19 +281,23 @@
                           </mat-select>
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                      <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0 ">
                         <button class="me-3" type="submit" mat-raised-button color="primary">
                         Search
                         </button>
                         <button type="button" mat-raised-button color="warn" (click)="purchaseDetailsFromReset()">
                            Reset
                         </button>
+                        <button  class=" ms-3" mat-raised-button color="primary"  printTitle="Purchase Report"  printSectionId="producttype"  ngxPrint styleSheetFile="../../../assets/pdf.css">
+                          <i  class="far fa-file-pdf "
+                          style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
+                      </button>
                       </div>
                     </div>
                   </form>
                   <!-- Purchase Detailed list -->
                   <div class="body p-2">
-                    <div class="col-sm-12" style="overflow: auto; height: 450px;">
+                    <div id="producttype" class="col-sm-12" style="overflow: auto; height: 450px;">
                       <table class="table table-striped table-hover table-sm table-bordered"
                         style="border: 2px solid #fff !important;" id="purchaseDetailExcel">
                         <thead>
@@ -423,16 +431,20 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0">
                                 <button class="me-3" mat-raised-button
                                     color="primary">Search</button>
                                 <button class="mr-0" type="button" mat-raised-button color="warn"
                                     (click)="purchaseChargeFromReset()">Reset</button>
+                                    <button class=" ms-3" mat-raised-button color="primary"  printTitle="Purchase Charge" [useExistingCss]="true" printSectionId="Purchasecharge" ngxPrint >
+                                      <i  class="far fa-file-pdf "
+                                      style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
+                                  </button>
                             </div>
                         </div>
                     </form>
                     <div class="body p-2">
-                        <div class="col-sm-12" style="overflow: auto; height: 450px;">
+                        <div id="Purchasecharge" class="col-sm-12" style="overflow: auto; height: 450px;">
                             <table class="table table-striped table-hover table-sm table-bordered"
                                 style="border: 2px solid #fff !important;" id="purchaseChargeExcel">
                                 <thead>
@@ -452,10 +464,6 @@
                                             <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                 aria-hidden="true" type="button"
                                                 (click)="exportAsXLSXcharge()">
-                                            </i>
-                                            <i class="far fa-file-pdf ms-4"
-                                                style="color: #2433be;font-size: 22px;cursor: pointer;"
-                                                >
                                             </i>
                                         </td>
                                         <td></td>
@@ -619,12 +627,16 @@
                       <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
                         <button class="me-3" type="submit" mat-raised-button color="primary"> Search </button>
                         <button type="button" mat-raised-button color="warn" (click)="productExpiryFromReset()"> Reset </button>
+                        <button mat-raised-button color="primary"  printTitle="Prodcut Expriy Report"  printSectionId="productExpiryPDF"  ngxPrint styleSheetFile="../../../assets/pdf.css">
+                          <i  class="far fa-file-pdf "
+                          style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
+                      </button>
                       </div>
                     </div>
                   </form>
                   <!--  list -->
                   <div class="body p-2">
-                    <div class="col-sm-12" style="overflow: auto; height: 450px;">
+                    <div id="productExpiryPDF" class="col-sm-12" style="overflow: auto; height: 450px;">
                       <table class="table table-striped table-hover table-sm table-bordered"
                         style="border: 2px solid #fff !important;" id="ProductExpiry">
                         <thead>

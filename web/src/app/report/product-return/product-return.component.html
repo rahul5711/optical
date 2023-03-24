@@ -58,19 +58,24 @@
                           </mat-form-field>
                         </div>
 
-                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
-                          <button class="me-3" type="submit" mat-raised-button color="primary">
+                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0 ">
+                          <button type="submit" mat-raised-button color="primary">
                             Search
                           </button>
-                          <button type="button" mat-raised-button color="warn" (click)="ReturnMasterFromReset()">
+                          <button type="button" class="me-3 ms-3"  mat-raised-button color="warn" (click)="ReturnMasterFromReset()">
                             Reset
                           </button>
+                          <button  mat-raised-button color="primary"  
+                          printTitle="Purchase Retrun Report"  printSectionId="PurchaseRetrunPDF"  ngxPrint [useExistingCss]="true">
+                            <i  class="far fa-file-pdf "
+                            style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
+                        </button>
                         </div>
                       </div>
                     </form>
                     <!-- Purchase list -->
                     <div class="body p-2">
-                      <div class="col-sm-12" style="overflow: auto; height: 450px;">
+                      <div id="PurchaseRetrunPDF" class="col-sm-12" style="overflow: auto; height: 450px;">
                         <table class="table table-striped table-hover table-sm table-bordered"
                           style="border: 2px solid #fff !important;" id="purchaseExcel">
                           <thead>
@@ -95,8 +100,7 @@
                                 <i class="fa fa-file-excel-o excel" title="ExportAsXLSX" aria-hidden="true" type="button"
                                   (click)="exportAsXLSXMaster()">
                                 </i>
-                                <i class="far fa-file-pdf ms-4" style="color: #2433be;font-size: 22px;cursor: pointer;">
-                                </i>
+                              
                               </td>
                               <td></td>
                               <td></td>
@@ -245,18 +249,22 @@
                         </div>
                         <!--  spec end -->
                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
-                          <button class="me-3" type="submit" mat-raised-button color="primary">
+                          <button  type="submit" mat-raised-button color="primary">
                           Search
                           </button>
-                          <button type="button" mat-raised-button color="warn" (click)="RetureDetailsFromReset()">
+                          <button type="button" class="me-2 ms-2" mat-raised-button color="warn" (click)="RetureDetailsFromReset()">
                              Reset
                           </button>
+                          <button mat-raised-button color="primary"  printTitle="Product return (ProductType) Report"  printSectionId="ProductTypesPDF"  ngxPrint styleSheetFile="../../../assets/pdf.css">
+                            <i  class="far fa-file-pdf "
+                            style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
+                        </button>
                         </div>
                       </div>
                     </form>
                     <!-- Purchase Detailed list -->
                     <div class="body p-2">
-                      <div class="col-sm-12" style="overflow: auto; height: 450px;">
+                      <div id="ProductTypesPDF" class="col-sm-12" style="overflow: auto; height: 450px;">
                         <table class="table table-striped table-hover table-sm table-bordered"
                           style="border: 2px solid #fff !important;" id="purchaseDetailExcel">
                           <thead>
@@ -291,9 +299,7 @@
                                 <i class="fa fa-file-excel-o excel" title="ExportAsXLSX" aria-hidden="true" type="button"
                                   (click)="exportAsXLSXDetail()">
                                 </i>
-                                <i class="far fa-file-pdf ms-4" style="color: #2433be;font-size: 22px;cursor: pointer;"
-                                  (click)="PDFdetail()">
-                                </i>
+                                
                               </td>
                               <td></td>
                               <td></td>
@@ -312,7 +318,7 @@
                               <td>{{this.DetailtotalAmount}}</td>
                               <td></td>
                               <td></td>
-                              <td></td>
+                              <!-- <td></td> -->
                             </tr>
                           </thead>
                           <tbody class="text-center">

@@ -18,7 +18,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 export class ProductTransferComponent implements OnInit {
 
-  evn = environment;
+  env = environment;
   user = JSON.parse(localStorage.getItem('user') || '');
   company = JSON.parse(localStorage.getItem('company') || '');
   shop = JSON.parse(localStorage.getItem('shop') || '');
@@ -376,6 +376,18 @@ export class ProductTransferComponent implements OnInit {
     this.SearchBarCode = "";
     this.selectedProduct = "";
     this.Req = "";
+  }
+
+  PDFtransfer(){
+    // const subs: Subscription =  this.purchaseService.transferProductPDF(this.xferList).subscribe({
+    //   next: (res: any) => {
+    //     console.log(res);
+    //     const url = this.env.apiUrl + res;
+    //     window.open(url, "_blank");
+    //   },
+    //   error: (err: any) => console.log(err.message),
+    //   complete: () => subs.unsubscribe(),
+    // });
   }
 
 }
