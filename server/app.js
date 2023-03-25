@@ -16,6 +16,9 @@ const morgan = require('morgan')
 const { addRoutes } = require('./helpers/routes')
 const loggerss = require("./helpers/logger");
 var app = express();
+global.appRoot = path.resolve(__dirname);
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, '')));
 
 const http = require('http').Server(app)
@@ -68,7 +71,6 @@ app.use(function(req, res, next) {
   }
 });
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(logger('dev'));

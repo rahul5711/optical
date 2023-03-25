@@ -244,6 +244,20 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+  transferProductPDF(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/transferProductPDF',Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  purchaseDetailPDF(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/purchaseDetailPDF',Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  PrintBarcode(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/PrintBarcode',Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
 
   private handleError(errorResponse: HttpErrorResponse) {

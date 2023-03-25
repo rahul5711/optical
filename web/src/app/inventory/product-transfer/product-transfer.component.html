@@ -22,7 +22,7 @@
                                 <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Search By Product</mat-label>
-                                        <mat-select name="FieldType" [(ngModel)]="selectedProduct"
+                                        <mat-select name="FieldType" [(ngModel)]="selectedProduct" 
                                             (selectionChange)="getFieldList()" required #Typecontrol>
                                             <mat-option *ngFor="let prod of prodList   let i = index;"
                                                 [value]="prod.Name">

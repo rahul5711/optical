@@ -58,6 +58,8 @@ export class ProductTransferComponent implements OnInit {
     private ss: ShopService,
     public as: AlertService,
     private modalService: NgbModal,
+    private sp: NgxSpinnerService,
+
   ){
     this.id = this.route.snapshot.params['id'];
   }
@@ -379,15 +381,17 @@ export class ProductTransferComponent implements OnInit {
   }
 
   PDFtransfer(){
-    // const subs: Subscription =  this.purchaseService.transferProductPDF(this.xferList).subscribe({
-    //   next: (res: any) => {
-    //     console.log(res);
-    //     const url = this.env.apiUrl + res;
-    //     window.open(url, "_blank");
-    //   },
-    //   error: (err: any) => console.log(err.message),
-    //   complete: () => subs.unsubscribe(),
-    // });
+    this.sp.show();
+    let PDFtransfer = JSON.stringify(this.xferList)    
+    const subs: Subscription =  this.purchaseService.transferProductPDF(PDFtransfer).subscribe({
+      next: (res: any) => {
+        this.sp.hide();
+        const url = this.env.apiUrl + "/uploads/" + res;
+        window.open(url, "_blank");
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
 }

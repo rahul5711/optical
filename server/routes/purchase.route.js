@@ -12,6 +12,8 @@ router.post('/delete', verifyAccessTokenAdmin, Controller.delete)
 router.post('/deleteProduct', verifyAccessTokenAdmin, Controller.deleteProduct)
 router.post('/updateProduct', verifyAccessTokenAdmin, Controller.updateProduct)
 router.post('/deleteCharge', verifyAccessTokenAdmin, Controller.deleteCharge)
+router.post('/purchaseDetailPDF', verifyAccessTokenAdmin, Controller.purchaseDetailPDF)
+router.post('/PrintBarcode', verifyAccessTokenAdmin, Controller.PrintBarcode)
 
 
 // Regex search
@@ -35,6 +37,9 @@ router.post('/cancelTransfer', verifyAccessTokenAdmin, Controller.cancelTransfer
 router.post('/getTransferList', verifyAccessTokenAdmin, Controller.getTransferList)
 
 router.post('/getproductTransferReport', verifyAccessTokenAdmin, Controller.getproductTransferReport)
+
+router.post('/transferProductPDF', verifyAccessTokenAdmin, Controller.transferProductPDF)
+
 // search barcode
 
 router.post('/barcodeDataByBarcodeNo', verifyAccessTokenAdmin, Controller.barcodeDataByBarcodeNo)

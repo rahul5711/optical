@@ -11,6 +11,7 @@ import { SupportService } from 'src/app/service/support.service';
 import { CalculationService } from 'src/app/service/helpers/calculation.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PurchaseService } from 'src/app/service/purchase.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-purchase',
@@ -18,7 +19,7 @@ import { PurchaseService } from 'src/app/service/purchase.service';
   styleUrls: ['./purchase.component.css']
 })
 export class PurchaseComponent implements OnInit {
-  evn = environment;
+  env = environment;
   user = JSON.parse(localStorage.getItem('user') || '');
   company = JSON.parse(localStorage.getItem('company') || '');
   shop = JSON.parse(localStorage.getItem('shop') || '');
@@ -36,6 +37,9 @@ export class PurchaseComponent implements OnInit {
     private purchaseService: PurchaseService,
     public as: AlertService,
     public calculation: CalculationService,
+    public modalService: NgbModal,
+    public sp: NgxSpinnerService,
+
   ){
     this.id = this.route.snapshot.params['id'];
    }
@@ -75,8 +79,8 @@ export class PurchaseComponent implements OnInit {
   chargeList:any  = [];
 
   gst_detail:any = [];
-
-
+  BarcodeQuantity = 0;
+  BarcodeData:any = {};
   ngOnInit(): void {
     this.getProductList();
     this.getdropdownSupplierlist();
@@ -596,4 +600,39 @@ export class PurchaseComponent implements OnInit {
     });
   }
 
+  PurchaseDetailPDF(){
+    this.sp.show();
+    let body = {PurchaseMaster:this.selectedPurchaseMaster, PurchaseDetails:this.itemList, PurchaseCharge:this.chargeList }
+    const subs: Subscription = this.purchaseService.purchaseDetailPDF(body).subscribe({
+      next: (res: any) => {
+        console.log(res);
+        const url = this.env.apiUrl + "/uploads/" + res;
+        window.open(url, "_blank");
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  openModal(content: any,data:any) {
+    this.BarcodeQuantity = 0
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+    this.BarcodeData = data
+  }
+
+  BarcodeQty(){
+   this.sp.show();
+   this.BarcodeData.Quantity = Number(this.BarcodeQuantity)
+   const subs: Subscription = this.purchaseService.PrintBarcode(this.BarcodeData).subscribe({
+    next: (res: any) => {
+      console.log(res);
+      window.open(res, "_blank");
+      this.modalService.dismissAll();
+      this.sp.hide();
+    },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+  });
+  }
 }

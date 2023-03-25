@@ -5,7 +5,10 @@ const { generateBarcode, generateUniqueBarcode, doesExistProduct, shopID, gstDet
 const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
-
+let ejs = require("ejs");
+let path = require("path");
+let pdf = require("html-pdf");
+var TinyURL = require('tinyurl');
 
 module.exports = {
     create: async (req, res, next) => {
@@ -622,6 +625,145 @@ module.exports = {
         }
     },
 
+    purchaseDetailPDF:async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const printdata = req.body
+            const PurchaseMasters = req.body.PurchaseMaster;
+            const PurchaseDetail = req.body.PurchaseDetails;
+            const PurchaseCharges = req.body.PurchaseCharge;
+
+            printdata.PurchaseMaster = PurchaseMasters
+            printdata.PurchaseDetails = PurchaseDetail
+            printdata.PurchaseCharge = PurchaseCharges
+
+            const shopdetails = await connection.query(`select * from shop where ID = ${shopid}`)           
+            const companysetting = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+
+            printdata.shopdetails = shopdetails[0]
+            printdata.companysetting = companysetting[0]
+               console.log(printdata);
+
+            var fileName = "";
+            
+            var formatName = "PurchasePDF.ejs";
+            var file = formatName + "_" + CompanyID + ".pdf";
+            fileName = "uploads/" + file;
+
+            console.log(fileName);
+
+            ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    res.send(err);
+                } else {
+                    let options = {
+                        "height": "11.25in",
+                        "width": "8.5in",
+                        header: {
+                            height: "5mm"
+                        },
+                        footer: {
+                            height: "5mm",
+                            contents: {
+                                last: ``,
+                            },
+                        },
+                    };
+                    pdf.create(data, options).toFile(fileName, function (err, data) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            res.json(file);
+                        }
+                    });
+                }
+            });
+
+        }
+        catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+
+    },
+
+    PrintBarcode:async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const bracodeData = req.body
+            let modifyBarcode = []
+
+            for( var i = 0; i < bracodeData.Quantity; i++) {
+                modifyBarcode.push(bracodeData)
+            }
+
+            const printdata = modifyBarcode;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const shopdetails = await connection.query(`select * from shop where ID = ${shopid}`)
+            const companysetting = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+
+            printdata.shopdetails = shopdetails[0]
+            printdata.companysetting = companysetting[0]
+            printdata.CompanyBarcode = 5
+            var file = "barcode" + CompanyID + ".pdf";
+            var formatName = "barcode.ejs";
+            var appURL = "http://localhost:3000/";
+            // var appURL = clientConfig.appURL;
+            var fileName = "";
+            fileName = "uploads/" + file;
+            let url = appURL +"uploads/" + file;
+            let updateUrl = '';
+            TinyURL.shorten(url, function (res) {
+                updateUrl = res;
+            });
+
+            ejs.renderFile(
+                path.join(appRoot, "./views/", formatName), { data: printdata },
+                (err, data) => {
+                    if (err) {
+                        res.send(err);
+                    } else {
+                        let options;
+    
+                        if (printdata.CompanyBarcode == 5) {
+                            options = {
+                                "height": "0.70in",
+                                "width": "4.41in",
+                            };
+                        }
+                        options.timeout = 540000,  // in milliseconds
+                            pdf.create(data, options).toFile(fileName, function (err, data) {
+                                if (err) {
+                                    console.log(err, 'err');
+                                    res.send(err);
+                                } else {
+                                    res.json(updateUrl);
+                                }
+                            });
+    
+                    }
+                }
+            );
+
+        }
+        catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+
     searchByFeild: async (req, res, next) => {
         const connection = await mysql.connection();
         try {
@@ -1021,6 +1163,43 @@ module.exports = {
         } finally {
             await connection.release();
         }
+    },
+
+    transferProductPDF: async (req, res, next) => {
+        
+            var printdata = req.body;
+            printdata.TXdata = printdata;
+            var PassNo = Math.trunc(Math.random() * 10000).toString();
+            printdata.PassNo = PassNo;
+            var fileName = "";
+            var file = "TransferProduct" + "_" + printdata[0].CompanyID  + ".pdf";
+            var formatName = "TransferProduct.ejs";
+            // var appURL = "http://navient.in:50060/"; 
+            fileName = "uploads/" + file;
+        
+        ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+            if (err) {
+                res.send(err);
+            } else {
+                let options = {
+                    "height": "11.25in",
+                    "width": "8.5in",
+                    "header": {
+                        "height": "20mm"
+                    },
+                    "footer": {
+                        "height": "20mm",
+                    },
+                };
+                pdf.create(data, options).toFile(fileName, function (err, data) {
+                    if (err) {
+                        res.send(err);
+                    } else {
+                        res.json(file);
+                    }
+                });
+            }
+        });
     },
 
     // search
