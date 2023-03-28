@@ -1,229 +1,88 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin-left: 1%;
-        }
-
-        th {
-            font-size: 10px;
-        }
-
-        td {
-            font-size: 7px;
-        }
-
-        header {
-            width: 93%;
-        }
-
-        .border_style {
-            border: 1px solid #000;
-        }
-
-        .border_style_1 {
-            border: 2px solid #000;
-            padding: 0;
-            font-weight: 550;
-        }
-
-        .span {
-            font-size: 11px;
-            font-weight: 600;
-            margin-left: 10%;
-        }
-
-        .IPS {
-            width: 100%;
-            padding: 1% 1% 1% 1%;
-        }
-
-        .shop_name {
-            width: 25%;
-            text-align: center;
-            margin-left: 32%;
-            margin-top: 1%;
-            font-size: 11px;
-        }
-
-        .list {
-            font-family: Arial, Helvetica, sans-serif;
-            border-collapse: collapse;
-            width: 95%;
-            margin-top: 1%;
-        }
-
-        .list td,
-        .list th {
-            padding: 8px;
-            font-size: 13px;
-        }
-
-        .footerMain {
-            width: 100%;
-            float: left;
-            text-align: left;
-        }
-
-        .foot1 {
-            width: 30%;
-            float: left;
-            text-align: left;
-            font-size: 8px;
-        }
-
-        .foot2 {
-            width: 30%;
-            float: left;
-            text-align: center;
-            font-size: 8px;
-        }
-
-        .foot3 {
-            width: 30%;
-            float: left;
-            text-align: right;
-            font-size: 8px;
-        }
-
-        .row {
-            width: 100%;
-            float: left;
-            margin-top: 3%;
-        }
-
-        .col {
-            width: 25%;
-            float: left;
-        }
-
-        .row1 {
-            width: 100%;
-            float: left;
-            margin-top: 1%;
-        }
-    </style>
-</head>
+<html>
+<link rel="stylesheet" href="http://localhost:3000/assest/TransferProduct.css">
 
 <body>
     <div>
         <section>
-            <h2>Transfer Product Report</h5>
-                <table style="text-align:left;margin-top:2%; ">
-                    <tr>
-                        <th style="font-size: 15PX;">S.No. :</th>
-                        <td style="font-size: 15PX;">
-                            <%=data.PassNo%>
-                        </td>
-                        <th></th>
-                        <td></td>
-                        <th></th>
-                        <td></td>
-                        <th></th>
-                        <td></td>
-                        <th></th>
-                        <td></td>
-                        <th></th>
-                        <td></td>
-                        <th></th>
-                        <td></td>
-                        <th></th>
-                        <td></td>
-                        <th></th>
-                        <td></td>
-                        <th style="font-size: 15PX;"> From Shop: </th>
-                        <td style="font-size: 15PX;">
-                            <%=data[0].FromShop%>
-                        </td>
-                    </tr>
-                    <tr style="margin-top:2%; font-size: 15PX;">
-                        <th style="font-size: 15PX;">Date:</th>
-                        <td style=" width: 300px;font-size: 15PX; text-align: left;">
-                            <%=data[0].CreatedOn%>
-                        </td>
-                        <th></th>
-                        <td></td>
-                        <th></th>
-                        <td></td>
-                        <th></th>
-                        <td></td>
-                        <th></th>
-                        <td></td>
-                        <th></th>
-                        <td></td>
-                        <th></th>
-                        <td></td>
-                        <th></th>
-                        <td></td>
-                        <th></th>
-                        <td></td>
-                        <th style="font-size: 15PX;"> To Shop: </th>
-                        <td style="font-size: 15PX;">
-                            <%=data[0].ToShop%>
-                        </td>
-                    </tr>
-                </table>
+            <h2>Transfer Product Report</h2>
+            <div class="main">
+                <div class="row1">
+                    <div class="col-1">
+                        <p>S.No. </p>
+                        <p>Date </p>
+                    </div>
+                    <div class="col-2">
+                        <p> : <%=data.PassNo%>
+                        </p>
+                        <p> : <%=data[0].CreatedOn%>
+                        </p>
+                    </div>
+                </div>
+                <div class="row2">
+                    <div class="col-1">
+                        <p>From Shop </p>
+                        <p>To Shop </p>
+                    </div>
+                    <div class="col-2">
+                        <p> : <%=data[0].FromShop%>
+                        </p>
+                        <p> : <%=data[0].ToShop%>
+                        </p>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section>
-            <div style="height:20PX; margin-top: 2%; ">
-                <table class="list">
-                    <thead>
-                        <tr
-                            style="white-space: nowrap; border-bottom: 1px hsl(0, 0%, 0%) solid; background-color: rgb(224, 224, 224); font-size: 14PX;">
-                            <th>S.No</th>
-                            <th>ITEM</th>
-                            <th>BARCODE</th>
-                            <th>QTY</th>
-                            <th>FROM SHOP </th>
-                            <th>TO SHOP</th>
-                            <th>INITIATION DATE</th>
-                            <th>INITIATION BY</th>
-                            <th>SECRET CODE</th>
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>ITEM</th>
+                        <th>BARCODE</th>
+                        <th>QTY</th>
+                        <th>FROM SHOP </th>
+                        <th>TO SHOP</th>
+                        <th>INITIATION DATE</th>
+                        <th>INITIATION BY</th>
+                        <th>SECRET CODE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if(data.TXdata.length !==0 ){ data.TXdata.forEach(function (i, index) { %>
+                        <tr>
+                            <td>
+                                <%= index+1 %>
+                            </td>
+                            <td>
+                                <%=i.ProductName%>
+                            </td>
+                            <td>
+                                <%=i.BarCode%>
+                            </td>
+                            <td>
+                                <%=i.TransferCount%>
+                            </td>
+                            <td>
+                                <%=i.FromShop%>
+                            </td>
+                            <td>
+                                <%=i.ToShop%>
+                            </td>
+                            <td>
+                                <%=i.DateStarted%>
+                            </td>
+                            <td>
+                                <%=i.CreatedByUser%>
+                            </td>
+                            <td>
+                                <%=i.AcceptanceCode%>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <% if(data.TXdata.length !==0 ){ data.TXdata.forEach(function (i, index) { %>
-                            <tr style="height:20PX;">
-                                <td style="text-align: center; ">
-                                    <%= index+1 %>
-                                </td>
-                                <td style="text-align: center; ">
-                                    <%=i.ProductName%>
-                                </td>
-                                <td style="text-align: center; ">
-                                    <%=i.BarCode%>
-                                </td>
-                                <td style="text-align: center; ">
-                                    <%=i.TransferCount%>
-                                </td>
-                                <td style="text-align: center; ">
-                                    <%=i.FromShop%>
-                                </td>
-                                <td style="text-align: center; ">
-                                    <%=i.ToShop%>
-                                </td>
-                                <td style="text-align: center; ">
-                                    <%=i.DateStarted%>
-                                </td>
-                                <td style="text-align: center; ">
-                                    <%=i.CreatedByUser%>
-                                </td>
-                                <td style="text-align: center; ">
-                                    <%=i.AcceptanceCode%>
-                                </td>
-                            </tr>
-                            <%})}%>
-                    </tbody>
-                </table>
-            </div>
+                        <%})}%>
+                </tbody>
+            </table>
         </section>
     </div>
 </body>
-
 </html>

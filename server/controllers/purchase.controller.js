@@ -1185,10 +1185,10 @@ module.exports = {
                     "height": "11.25in",
                     "width": "8.5in",
                     "header": {
-                        "height": "20mm"
+                        "height": "0mm"
                     },
                     "footer": {
-                        "height": "20mm",
+                        "height": "0mm",
                     },
                 };
                 pdf.create(data, options).toFile(fileName, function (err, data) {
