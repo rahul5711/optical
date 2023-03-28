@@ -17,23 +17,23 @@ body{
 }
 
 .row1 .col-1{
-    width: 10%;float: left;
+    width: 100%;float: left;
 }
 
-.row1 .col-2{
-    width: 90%; float: right;
+.row1 .col-1 .logo{
+    width: 150px; height: 150px; object-fit: cover;
 }
 
 .row2{
-    padding-top: 1%; width: 45% !important; float: right;
+    padding-top: 0%; width: 100% !important; float: right; font-size: 20px;
 }
 
 .row2 .col-1{
-     width: 20%; float: left;
+     width: 15%; float: left;
 }
 
 .row2 .col-2{ 
-    width: 80%;float: right;
+    width: 85%;float: right;
 }
 
 table{
@@ -58,4 +58,8 @@ table tbody tr th{
 
 tr:nth-child(even) {
     background-color: #f2f2f2;
+}
+
+table tfoot tr th{
+    color: red; padding: 5px !important;
 }

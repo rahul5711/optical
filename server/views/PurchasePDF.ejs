@@ -1,209 +1,107 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin-left: 5px;
-        }
-        
-        th {
-            font-size: 10px;
-        }
-        
-        td {
-            font-size: 7px;
-        }
-        
-        header {
-            width: 93%;
-        }
-        
-        .border_style {
-            border: 1px solid #000;
-        }
-        
-        .border_style_1 {
-            border: 2px solid #000;
-            padding: 0;
-            font-weight: 550;
-        }
-        
-        .span {
-            font-size: 11px;
-            font-weight: 600;
-            margin-left: 10%;
-        }
-        
-        .IPS {
-            width: 100%;
-            padding: 1% 1% 1% 1%;
-        }
-        
-        .shop_name {
-            width: 25%;
-            text-align: center;
-            margin-left: 32%;
-            margin-top: 1%;
-            font-size: 11px;
-        }
-        
-        .list {
-            font-family: Arial, Helvetica, sans-serif;
-            border-collapse: collapse;
-            width: 96%;
-           
-          
-        }
-        
-        .list td{
-            padding: 8px;
-            font-size: 12px;
-        }
-        .list th {
-            padding: 8px;
-            font-size: 14px;
-        }
-        
-        .footerMain {
-            width: 100%;
-            float: left;
-            text-align: left;
-        }
-        
-        .foot1 {
-            width: 30%;
-            float: left;
-            text-align: left;
-            font-size: 8px;
-        }
-        
-        .foot2 {
-            width: 30%;
-            float: left;
-            text-align: center;
-            font-size: 8px;
-        }
-        
-        .foot3 {
-            width: 30%;
-            float: left;
-            text-align: right;
-            font-size: 8px;
-        }
-        
-        .row {
-            width: 100%;
-            float: left;
-            margin-top: 3%;
-        }
-        
-        .col {
-            width: 25%;
-            float: left;
-        }
-        
-        .row1 {
-            width: 100%;
-            float: left;
-            margin-top: 1%;
-        }
-    </style>
-</head>
+<html>
+<link rel="stylesheet" href="http://localhost:3000/assest/purchaseDetails.css">
 
 <body>
-    <div>
-      <header style="width: 100%;">
-        <table style="text-align:left;margin-top:2%; width:40%; float: right; margin-bottom: 2%; padding-right: 4%;">
-            <tr style="width: 100%;">
-                <td style="font-size: 16px; width: 100%;"> </td>
-            </tr>
-            <tr style="width: 100%;">
-                <td style="font-size: 16px;">
-                    <span style=" width: 15%; font-weight: 600; float:left;">InvoiceNo  </span>
-                    <span style=" width:60%; float:right;"><%=data.PurchaseMaster.InvoiceNo%></span> 
-                </td>
-            </tr>
-            <tr style="width: 100%; padding-top: 25px;">
-                <td style="font-size: 16px;">
-                    <span style="font-weight: 600;width: 15%; float:left;">PurchaseDate </span>
-                    <span style=" width:60%; float:right;">  <%=data.PurchaseMaster.PurchaseDate%></span>
-                </td>
-            </tr>
-        </table>
-    </header>
-
-        <section>
-            <div style="height:150px; margin-top: 3%; ">
-                <table class="list">
-                    <thead>
-                        <tr style="white-space: nowrap; background-color: rgb(224, 224, 224); height: 20px;">
-                            <th>SNo.</th>
-                            <th>ProductNameType</th>
-                            <th>ProductName </th>
-                            <th>UnitPrice</th>
-                            <th>Quantity</th>
-                            <th>SubTotal</th>
-                            <th>DiscountAmount</th>
-                            <th>GSTAmount</th>
-                            <th>TotalAmount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% if(data.PurchaseDetails.length !== 0 ){ data.PurchaseDetails.forEach(function (i, index) { %>
-                            <tr >
-                                <td style="text-align: center; ">
-                                    <%= index+1 %>
-                                </td>
-
-                                <td style="text-align: center; ">
-                                    <%=i.ProductTypeName%>
-                                </td>
-                                <td style="text-align: center; ">
-                                    <%=i.ProductName%>
-                                </td>
-                                <td style="text-align: center; ">
-                                    <%=i.UnitPrice%>
-                                </td>
-                                <td style="text-align: center; ">
-                                    <%=i.Quantity%>
-                                </td>
-                                <td style="text-align: center; ">
-                                    <%=i.SubTotal%>
-                                </td>
-                                <td style="text-align: center; ">
-                                    <%=i.DiscountAmount%>
-                                </td>
-                                <td style="text-align: center; ">
-                                    <%=i.GSTAmount%>
-                                </td>
-                                <td style="text-align: center; ">
-                                    <%=i.TotalAmount%>
-                                </td>
-                            </tr>
-                            <%})}%>
-                    </tbody>
-                    <tfoot style="border-top: 1px solid rgb(205, 205, 205);">
-                        <tr>
-                            <th>Total</th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th><%=data.PurchaseMaster.Quantity%></th>
-                            <th><%=data.PurchaseMaster.SubTotal%></th>
-                            <th><%=data.PurchaseMaster.DiscountAmount%></th>
-                            <th><%=data.PurchaseMaster.GSTAmount%></th>
-                            <th><%=data.PurchaseMaster.TotalAmount.toFixed(2)%></th>
-                        </tr>
-                    </tfoot>
-                </table>
+    <section>
+        <h2>Purchase Invoice</h2>
+        <div class="main">
+            <!-- <div class="row1">
+                <div class="col-1">
+                   <img src="<%=data.LogoURL%>" alt="" class="logo">
+                </div>
+            </div> -->
+            <div class="row2">
+                <div class="col-1">
+                    <p>Supplier Name</p>
+                    <p>InvoiceNo </p>
+                    <p>PurchaseDate </p>
+                </div>
+                <div class="col-2">
+                    <p> : <%=data.supplier.Name%>
+                    </p>
+                    <p> : <%=data.PurchaseMaster.InvoiceNo%>
+                    </p>
+                    <p> : <%=data.PurchaseMaster.PurchaseDate%>
+                    </p>
+                </div>
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
+
+    <section>
+        <table>
+            <thead>
+                <tr>
+                    <th>SNo.</th>
+                    <th>ProductNameType</th>
+                    <th>ProductName </th>
+                    <th>UnitPrice</th>
+                    <th>Quantity</th>
+                    <th>SubTotal</th>
+                    <th>DiscountAmount</th>
+                    <th>GSTAmount</th>
+                    <th>TotalAmount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if(data.PurchaseDetails.length !==0 ){ data.PurchaseDetails.forEach(function (i, index) { %>
+                    <tr>
+                        <td>
+                            <%= index+1 %>
+                        </td>
+                        <td>
+                            <%=i.ProductTypeName%>
+                        </td>
+                        <td>
+                            <%=i.ProductName%>
+                        </td>
+                        <td>
+                            <%=i.UnitPrice%>
+                        </td>
+                        <td>
+                            <%=i.Quantity%>
+                        </td>
+                        <td>
+                            <%=i.SubTotal%>
+                        </td>
+                        <td>
+                            <%=i.DiscountAmount%>
+                        </td>
+                        <td>
+                            <%=i.GSTAmount%>
+                        </td>
+                        <td>
+                            <%=i.TotalAmount%>
+                        </td>
+                    </tr>
+                    <%})}%>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Total</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>
+                        <%=data.PurchaseMaster.Quantity%>
+                    </th>
+                    <th>
+                        <%=data.PurchaseMaster.SubTotal%>
+                    </th>
+                    <th>
+                        <%=data.PurchaseMaster.DiscountAmount%>
+                    </th>
+                    <th>
+                        <%=data.PurchaseMaster.GSTAmount%>
+                    </th>
+                    <th>
+                        <%=data.PurchaseMaster.TotalAmount.toFixed(2)%>
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+        </div>
+    </section>
 </body>
 
 </html>

@@ -642,17 +642,19 @@ module.exports = {
 
             const shopdetails = await connection.query(`select * from shop where ID = ${shopid}`)           
             const companysetting = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+            const supplier = await connection.query(`select * from supplier where CompanyID = ${CompanyID} and ID = ${PurchaseMasters.SupplierID}`)
 
             printdata.shopdetails = shopdetails[0]
+            printdata.supplier = supplier[0]
             printdata.companysetting = companysetting[0]
                console.log(printdata);
 
             var fileName = "";
-            
+            printdata.LogoURL = 'http://localhost:3000/'+ printdata.companysetting.LogoURL;
             var formatName = "PurchasePDF.ejs";
             var file = formatName + "_" + CompanyID + ".pdf";
             fileName = "uploads/" + file;
-
+            
             console.log(fileName);
 
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
@@ -664,10 +666,10 @@ module.exports = {
                         "height": "11.25in",
                         "width": "8.5in",
                         header: {
-                            height: "5mm"
+                            height: "0mm"
                         },
                         footer: {
-                            height: "5mm",
+                            height: "0mm",
                             contents: {
                                 last: ``,
                             },
