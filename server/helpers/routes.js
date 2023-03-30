@@ -17,6 +17,7 @@ app.use('/pettycash', require('../routes/pettycash.route'));
 app.use('/customer', require('../routes/customer.route'));
 app.use('/purchase', require('../routes/purchase.route'));
 app.use('/purchaseUpload', require('../routes/uploader.route'));
+app.use('/bill', require('../routes/bill.route'));
 }
 
 module.exports = { addRoutes };
