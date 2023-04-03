@@ -17,6 +17,7 @@ import { CustomerService } from 'src/app/service/customer.service';
 import { CalculationService } from 'src/app/service/helpers/calculation.service';
 import { CustomerPowerCalculationService } from 'src/app/service/helpers/customer-power-calculation.service';
 import { EmployeeService } from 'src/app/service/employee.service';
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-billing',
@@ -56,6 +57,7 @@ export class BillingComponent implements OnInit {
     private cs: CustomerService,
     private es: EmployeeService,
     public calculation: CustomerPowerCalculationService,
+    public bill: BillService,
 
   ) {
     this.id = this.route.snapshot.params['id'];
@@ -416,13 +418,17 @@ export class BillingComponent implements OnInit {
   shopMode = false;
   cgst = 0;
   sgst = 0;
+  doctorList:any
+  trayNoList:any
 
   ngOnInit(): void {
     this.data.VisitDate = moment().format('YYYY-MM-DD');
     if (this.id != 0) {
       this.getCustomerById(); 
     }
-    this.dropdownUserlist()
+    this.getTrayNo();
+    this.getEmployee();
+    this.getDoctor();
   }
 
   specCheck(mode:any){
@@ -731,9 +737,21 @@ export class BillingComponent implements OnInit {
    this.calculation.calculate(mode, x, y ,this.spectacle , this.clens)
   }
 
+  // Billing
 
-  dropdownUserlist(){
-    const subs: Subscription = this.es.dropdownUserlist('').subscribe({
+  getDoctor(){
+    const subs: Subscription = this.bill.getDoctor().subscribe({
+      next: (res: any) => {
+        this.doctorList = res.data
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getEmployee(){
+    const subs: Subscription = this.bill.getEmployee().subscribe({
       next: (res: any) => {
         this.employeeList = res.data
         this.sp.hide();
@@ -742,4 +760,16 @@ export class BillingComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+  getTrayNo(){
+    const subs: Subscription = this.bill.getTrayNo().subscribe({
+      next: (res: any) => {
+        this.trayNoList = res.data
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
 }
