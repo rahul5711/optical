@@ -16,6 +16,7 @@ import { CustomerModel, SpectacleModel, ContactModel, OtherModel } from 'src/app
 import { CustomerService } from 'src/app/service/customer.service';
 import { CalculationService } from 'src/app/service/helpers/calculation.service';
 import { CustomerPowerCalculationService } from 'src/app/service/helpers/customer-power-calculation.service';
+import { EmployeeService } from 'src/app/service/employee.service';
 
 @Component({
   selector: 'app-billing',
@@ -53,7 +54,9 @@ export class BillingComponent implements OnInit {
     private modalService: NgbModal,
     private compressImage: CompressImageService,
     private cs: CustomerService,
+    private es: EmployeeService,
     public calculation: CustomerPowerCalculationService,
+
   ) {
     this.id = this.route.snapshot.params['id'];
   }
@@ -394,12 +397,32 @@ export class BillingComponent implements OnInit {
   ];
   // dropdown values in satics 
 
+  // bill form
+  BillMaster:any = {
+    ID: null, CompanyID: null, InvoiceNo: null,  BillDate: null, DeliveryDate: null,  Doctor: 0, Employee: null, TrayNo:
+    null,  Sno: "", ProductStatus: 'Pending',Balance:0 , PaymentStatus: null,  Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0,   AddlDiscount: 0, TotalAmount: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
+  }
+
+  BillItem: any = {
+    ID: null, ProductName: null,  ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00,  Quantity: 0, SubTotal: 0.00,
+    DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false,  Manual: false, PreOrder: false, Barcode: null,  Status: 1,  MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null
+  };
+
+  category = 'Product';
+  employeeList :any;
+  searchBarCode :any;
+  searchProductName :any;
+  selectedProduct :any;
+  shopMode = false;
+  cgst = 0;
+  sgst = 0;
 
   ngOnInit(): void {
     this.data.VisitDate = moment().format('YYYY-MM-DD');
     if (this.id != 0) {
       this.getCustomerById(); 
     }
+    this.dropdownUserlist()
   }
 
   specCheck(mode:any){
@@ -708,4 +731,15 @@ export class BillingComponent implements OnInit {
    this.calculation.calculate(mode, x, y ,this.spectacle , this.clens)
   }
 
+
+  dropdownUserlist(){
+    const subs: Subscription = this.es.dropdownUserlist('').subscribe({
+      next: (res: any) => {
+        this.employeeList = res.data
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
 }

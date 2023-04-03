@@ -114,7 +114,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                                        <div class="col-xl-5 col-lg-5 col-md-6 col-sm-12 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Remark/TLN </mat-label>
                                                 <input matInput name="Remarks" [(ngModel)]="data.Remarks"
@@ -124,13 +124,13 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-5 col-lg-6 col-md-6 col-sm-12 mb-0 ms-auto">
+                                        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-0 ms-auto">
 
                                             <button *ngIf="id != 0"  (click)="updateCustomer()" [disabled]="!f.valid" mat-raised-button color="primary" style="padding: 0px 18px;">update</button>
-                                            <button *ngIf="id == 0" (click)="onsubmit()" [disabled]="!f.valid" mat-raised-button color="primary"  style="padding: 0px 25px;">
+                                            <button *ngIf="id == 0" (click)="onsubmit()" [disabled]="!f.valid" mat-raised-button color="primary"  style="padding: 0px 22px;">
                                                 Save
                                             </button>
-                                            <button class="ms-2" (click)="clearFrom()" mat-raised-button color="primary" style="padding: 0px 25px">
+                                            <button class="ms-2" (click)="clearFrom()" mat-raised-button color="primary" style="padding: 0px 22px">
                                                 Clear
                                             </button>
                                         </div>
@@ -1331,7 +1331,439 @@
                         </form>
                     </div>
                 </div>
+                  <!-- bill info -->
+                <div class="card">
+                    <div class="header">
+                        <div class="row">
+                            <div class="col-md-1 col-6">
+                                <h4>Bill Info </h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="body">
+                        <form #f="ngForm" autocomplete="off" >
+                           <div class="row">
+                            <div class="col-xl-1 col-lg-1 col-md-6 col-sm-12 mb-0 pr-2 pr-md-0 pl-2 pl-md-0 " >
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>Invoice No.</mat-label>
+                                    <input matInput name="InvoiceNo" [(ngModel)]="BillMaster.InvoiceNo" [disabled]="BillMaster.InvoiceNo === null" #InvoiceNoNocontrol [autocomplete]="false">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-1 col-lg-1 col-md-6 col-sm-6 col-4 mb-0">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>InvoiceDate</mat-label>
+                                    <input matInput name="BillDate" type="date" [(ngModel)]="BillMaster.BillDate">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-1 col-lg-1 col-md-6 col-sm-6 col-4 mb-0">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>DeliveryDate</mat-label>
+                                    <input matInput name="DeliveryDate" type="date" [(ngModel)]="BillMaster.DeliveryDate">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>Entry Type</mat-label>
+                                    <mat-select name="Category" [(ngModel)]="category" required #Typecontrol >
+                                        <mat-option value="Product">Product</mat-option>
+                                        <mat-option value="Services">Service</mat-option>
+                                    </mat-select>
+                                    <mat-error>
+                                        Select Entry Type
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0 " >
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>Doctor</mat-label>
+                                    <mat-select name="Doctor" [(ngModel)]="BillMaster.Doctor" [disabled]="BillMaster.ID !== null" #Doctorcontrol>
+                                        <mat-option [value]="0">No Doctor</mat-option>
+                                        <mat-option *ngFor="let doc of docList let i = index;" [value]="doc.ID">
+                                            {{doc.Name}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error>
+                                        Select Doctor
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0 " >
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>Employee Name</mat-label>
+                                    <mat-select name="Employee" [(ngModel)]="BillMaster.Employee" [disabled]="BillMaster.ID !== null" #Employeecontrol>
+                                        <mat-option value="All">All</mat-option>
+                                        <mat-option *ngFor="let el of employeeList let i = index;" [value]="el.ID">
+                                            {{el.Name}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error>Name is required</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>Tray No.</mat-label>
+                                    <mat-select name="TrayNo" [(ngModel)]="BillMaster.TrayNo" #Typecontrol>
+                                        <!-- <mat-option *ngFor="let Tray of TrayList let i = index;" [value]="Tray.Name">
+                                            {{Tray.Name}}
+                                        </mat-option> -->
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>Product Status</mat-label>
+                                    <mat-select name="ProductStatus" [(ngModel)]="BillMaster.ProductStatus" disabled #ProductStatuscontrol>
+                                        <mat-option value="Pending"> Pending </mat-option>
+                                        <mat-option value="Deliverd">Deliverd </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-1 col-lg-1 col-md-6 col-sm-12 mb-0 " >
+                                <mat-form-field class="example-full-width mb-0" style="color:red">
+                                    <mat-label>Balance</mat-label>
+                                    <input matInput name="Balance"  [(ngModel)]="BillMaster.Balance">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-1 col-6 pt-3">
+                                <mat-slide-toggle name="Preorder"  color="primary"  [(ngModel)]="BillItem.PreOrder"   class="example-margin" #Multiplecontrol style="color:#ff651e;"> Preorder</mat-slide-toggle>                     
+                            </div>
+                            <div class="col-md-1 col-6 pt-3">
+                                <mat-slide-toggle  name="Ledger"  color="primary" [(ngModel)]="BillItem.Manual" class="example-margin" #Multiplecontrol style="color:#ff651e;">Manual</mat-slide-toggle>
+                            </div>
+                            <div class="col-md-1 col-6 p-0 pt-3">
+                                <mat-slide-toggle  name="WholeSale" color="primary" [(ngModel)]="BillItem.WholeSale" class="example-margin" #WholeSalecontrol style="color:#ff651e;"> WholeSale</mat-slide-toggle>
+                            </div>
+                           </div>
+                           <div class="row">
+                            <div class="col-xl-1 col-lg-1 col-md-2 col-sm-2 mb-0">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>Barcode</mat-label>
+                                    <input matInput name="SearchBarCode" [(ngModel)]="searchBarCode" #SearchBarCodecontrol #GSTNocontrol [autocomplete]="false" >
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>Search By Product Name</mat-label>
+                                    <input matInput name="SearchProductName" [(ngModel)]="searchProductName" #SearchProductNamecontrol #GSTNocontrol [autocomplete]="false" >
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="category !== 'Services'">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>Select By Product</mat-label>
+                                    <mat-select name="FieldType" [(ngModel)]="selectedProduct" #Typecontrol>
+                                        <!-- <mat-option *ngFor="let prod of prodList  let i = index;" [value]="prod.Name">
+                                            {{prod.Name}}
+                                        </mat-option> -->
+                                    </mat-select>
+                                    <mat-error>
+                                        Select Product Type
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-1 col-lg-1 col-md-6 col-12 mb-0 pt-3" >
+                                <mat-slide-toggle color="primary" [(ngModel)]="shopMode" [ngModelOptions]="{standalone: true}" class="example-margin" style="color:#ff651e;">All Shops
+                                </mat-slide-toggle>
+                            </div>
+                            <div class="col-xl-5 col-lg-5 col-md-12 col-12 mb-0" *ngIf="( selectedProduct !== '' || selectedProduct !== undefined || selectedProduct !== null )">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>Select Barcode</mat-label>
+                                    <mat-select name="FieldType" [(ngModel)]="searchBarCode" #Typecontrol>
+                                        <!-- <mat-option  *ngFor="let bc of barCodeList ; let i = index;" [value]="bc.Barcode">
+                                            {{bc.Barcode}} # {{bc.BarCodeCount}} {{bc.p}}| {{bc.ProductName | uppercase}} | {{bc.ShopName | titlecase }} <span [style.color]="'blue'" *ngIf="bc.AreaName !== 'null'">({{bc.AreaName | titlecase}})</span>
+                                        </mat-option> -->
+                                    </mat-select>
+                                    <mat-error>
+                                        Select Product Type
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                           </div>
+                        </form>
+
+                        <form>
+                            <div class="row">
+                                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Product Name</mat-label>
+                                        <input style="color: rgb(255 0 0);"  matInput name="ProdName" [(ngModel)]="BillItem.ProductName" [disabled]=true>
+                                    </mat-form-field>
+                                </div>
+                                <!-- <div class="col-xl-1 col-lg-1 col-md-2 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Barcode</mat-label>
+                                        <input style="color: rgb(255 0 0);" matInput name="ProdBarcode" [(ngModel)]="BillItem.Barcode" [disabled]=true>
+                                    </mat-form-field>
+                                </div> -->
+                                <div class="col-xl-1 col-lg-1 col-md-2 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Available</mat-label>
+                                        <input style="color: rgb(255 0 0);" matInput name="BarCodeCount" [disabled]=true>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0" >
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Product Expiry Date</mat-label>
+                                        <input matInput type="date" name="ProductExpDate" [(ngModel)]="BillItem.ProductExpDate">
+                                    </mat-form-field>
+                                </div>
+                                <div *ngIf="selectedProduct?.toUpperCase() === 'LENS' || selectedProduct?.toUpperCase() === 'CONTACT LENS'" class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Family Name</mat-label>
+                                        <mat-select name="FamilyName" [(ngModel)]="BillItem.Family">
+                                            <mat-option></mat-option>
+                                            <mat-option selected value="Self">Self</mat-option>
+                                            <mat-option [value]="f.Name" *ngFor="let f of familyList"> {{f.Name}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Option</mat-label>
+                                        <mat-select name="Category" [(ngModel)]="BillItem.Option"  required #Typecontrol>
+                                            <mat-option value="Full Glass">Full Lens</mat-option>
+                                            <mat-option value="Half Glass Left">Half Lens Left</mat-option>
+                                            <mat-option value="Half Glass Right">Half Lens Right</mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            Select Entry Type
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0" *ngIf="category !== 'Services'">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Unit Price</mat-label>
+                                        <input matInput name="UnitPrice" [(ngModel)]="BillItem.UnitPrice" required #UnitPricecontrol [autocomplete]="false">
+                                        <mat-error>
+                                            Unit Price is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0" *ngIf="category !== 'Services'">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Quantity</mat-label>
+                                        <input matInput name="Quantity" [(ngModel)]="BillItem.Quantity" type="number"  required #Quantitycontrol [autocomplete]="false">
+                                        <mat-error>
+                                            Quantity is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div  class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0" *ngIf="category !== 'Services'">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label>Discount%</mat-label>
+                                        <input matInput name="Discount" [(ngModel)]="BillItem.DiscountPercentage" [required]=true #Discountcontrol [autocomplete]="false">
+                                        <mat-error >
+                                            Discount is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0" *ngIf=" category !== 'Services'">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Discount amt</mat-label>
+                                        <input matInput name="DiscountAmt" [(ngModel)]="BillItem.DiscountAmount"  [required]=true #Discountcontrol [autocomplete]="false">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0" *ngIf="category !== 'Services'">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Sub Total</mat-label>
+                                        <input matInput name="SubTotal" [(ngModel)]="BillItem.SubTotal" [disabled]='true' required #SubTotalcontrol [autocomplete]="false">
+                                        <mat-error>
+                                            Sub Total is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0" *ngIf="category !== 'Services'">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>(GST/VAT)%</mat-label>
+                                        <input matInput name="GST" [(ngModel)]="BillItem.GSTPercentage" required #GSTcontrol [autocomplete]="false">
+                                        <mat-error>
+                                            GST is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0" *ngIf="category !== 'Services'">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>TAX Type</mat-label>
+                                        <mat-select name="GSTType" [(ngModel)]="BillItem.GSTType" required #GSTTypecontrol1>
+                                            <mat-option value="None">None</mat-option>
+                                            <!-- <mat-option [value]="g.Name" *ngFor="let g of gstList">{{g.Name}}</mat-option> -->
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0" *ngIf="category !== 'Services'">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Total Amount</mat-label>
+                                        <input matInput name="TotalAmount" [(ngModel)]="BillItem.TotalAmount" disabled required #TotalAmountcontrol>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0" *ngIf="category !== 'Services'">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Remark</mat-label>
+                                        <input matInput name="Remark" [(ngModel)]="BillItem.Remark">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0" *ngIf="category !== 'Services'">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Warranty</mat-label>
+                                        <input matInput name="Warranty" [(ngModel)]="BillItem.Warranty">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0 mb-3  ms-auto" *ngIf="category !== 'Services'">
+                                    <button class="mr-4 p-2"  type="submit" [disabled]="!f.valid || this.BillItem.Quantity === 0 || this.BillItem.Barcode === null" mat-raised-button color="primary">Add</button>
+                                </div>
+                            </div>
+                        </form>
+                        <form  #f2="ngForm" >
+                            <div class="row mt-0">
+                                <div class="col-sm-12" style="overflow-y: scroll; max-height: 100px; margin: 0;">
+                                    <table class="table">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th> <mat-checkbox name="TempProductStatus" ></mat-checkbox> </th>
+                                                <th class="text-center">S.No</th>
+                                                <th class="text-center">Action</th>
+                                                <th class="text-center">HSNCode</th>
+                                                <th class="text-center">Barcode</th>
+                                                <th class="text-center">Product Category</th>
+                                                <th class="text-center">UnitPrice</th>
+                                                <th class="text-center">Quantity</th>
+                                                <th class="text-center">SubTotal</th>
+                                                <th class="text-center">GSTAmt</th>
+                                                <th class="text-center">GSTPer</th>
+                                                <th class="text-center">GSTType</th>
+                                                <th class="text-center">DiscountAmt</th>
+                                                <th class="text-center">DiscountPer</th>
+                                                <th class="text-center">TotalAmt</th>
+                                                <th class="text-center">Remark</th>
+                                                <th class="text-center">Warranty</th>
+                                                <th class="text-center">Option</th>
+                                                <th class="text-center">Status</th>
+                                                <th class="text-center">Cancel</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="text-center">
+                                                <td></td>
+                                                <td>1</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0 " >
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label class="cus-label">Quantity</mat-label>
+                                        <input class="cust-input" matInput name="Quantityt" [(ngModel)]="BillMaster.Quantity" disabled #Quantitytcontrol [autocomplete]="false">
+                                        <mat-error>
+                                            Quantity is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label class="cus-label">Sub Total</mat-label>
+                                        <input class="cust-input" matInput name="SubTotalt" [(ngModel)]="BillMaster.SubTotal" disabled #SubTotaltcontrol [autocomplete]="false">
+                                        <mat-error>
+                                            Sub Total is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label class="cus-label">D.Amount</mat-label>
+                                        <input class="cust-input" matInput name="DAmountt" [(ngModel)]="BillMaster.DiscountAmount" disabled #DAmounttcontrol [autocomplete]="false">
+                                        <mat-error>
+                                            D.Amount is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label class="cus-label">GST Amt</mat-label>
+                                        <input class="cust-input" matInput name="GSTAmt" [(ngModel)]="BillMaster.GSTAmount"  required #GSTAmtcontrol [autocomplete]="false" disabled>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0" >
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label class="cus-label">CGST</mat-label>
+                                        <input class="cust-input" matInput name="CGST" [(ngModel)]="cgst" disabled>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0" >
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label class="cus-label">SGST</mat-label>
+                                        <input class="cust-input" matInput name="SGST" [(ngModel)]="sgst" disabled>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Additional Discount%</mat-label>
+                                        <input matInput name="AddlDiscount" [(ngModel)]="BillMaster.AddlDiscount"  #AddlDiscounttcontrol [autocomplete]="false"  >
+                                        <mat-error >
+                                            Additional Discount is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Additional Discount</mat-label>
+                                        <input matInput name="AddlDiscount" [(ngModel)]="BillMaster.AddlDiscount"  #AddlDiscounttcontrol [autocomplete]="false"  >
+                                        <mat-error >
+                                            Additional Discount is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label >Grand Amount</mat-label>
+                                        <input matInput name="GrandAmount" disabled  >
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label >Round Off</mat-label>
+                                        <input matInput name="GrandAmount" disabled  >
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-12">
+                                    <button  type="button"  mat-raised-button color="primary" >Save</button>
+                                    <button  type="button" class="me-3 ms-3" mat-raised-button color="primary" >Update</button>
+                                    <button  type="button"  mat-raised-button color="primary" >Receipt</button>
+                                    <button  type="button" class="me-3 ms-3" mat-raised-button color="primary" >Receipt + Power</button>
+                                    <button  type="button"  mat-raised-button color="primary" >Invoice</button>
+                                    <button  type="button" class="me-3 ms-3" mat-raised-button color="primary" >Invoice + Power</button>
+                                    <button  type="button"  mat-raised-button color="primary" > Whatsapp</button>
+                                    <button  type="button" class="me-3 ms-3" mat-raised-button color="primary" >Email</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
+

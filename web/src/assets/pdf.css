@@ -1,5 +1,8 @@
 
-
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
+.table{
+    font-family: 'Roboto', sans-serif;
+}
 .table  thead tr{
     font-size: 9px !important;
     background: hsl(0, 0%, 69%) !important;

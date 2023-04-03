@@ -32,6 +32,8 @@ export class EmployeeService {
     .pipe(catchError(this.handleError));
   }
 
+
+
   deleteData(ID:any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams();
