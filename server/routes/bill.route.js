@@ -7,6 +7,7 @@ router.post('/getDoctor', verifyAccessTokenAdmin, Controller.getDoctor)
 router.post('/getEmployee', verifyAccessTokenAdmin, Controller.getEmployee)
 router.post('/getTrayNo', verifyAccessTokenAdmin, Controller.getTrayNo)
 router.post('/searchByBarcodeNo', verifyAccessTokenAdmin, Controller.searchByBarcodeNo)
+router.post('/searchByString', verifyAccessTokenAdmin, Controller.searchByString)
 
 
 module.exports = router

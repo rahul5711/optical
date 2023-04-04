@@ -103,6 +103,46 @@ module.exports = {
         } finally {
             await connection.release();
         }
+    },
+    searchByString: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const {Req,PreOrder,ShopMode} = req.body
+            let SearchString = Req.searchString;
+            let searchString =   SearchString + "%";
+
+            console.log(searchString , 'searchString');
+
+            let qry = "";
+            if (PreOrder === "false") {
+                let shopMode = "";
+                if (ShopMode === "false") {
+                    shopMode = " barcodemasternew.ShopID = " + shopid + " AND";
+                } else {
+                    shopMode = " ";
+                }
+                qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, purchasedetailnew.*, barcodemasternew.* FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE  ${shopMode}  purchasedetailnew.ProductName LIKE '${searchString}' AND barcodemasternew.CurrentStatus = "Available" AND purchasedetailnew.Status = 1  and shop.Status = 1 And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`;
+            } else {
+                qry = `SELECT 'XXX' AS BarCodeCount,  shop.AreaName as AreaName  ,shop.Name as ShopName, purchasedetailnew.*, barcodemasternew.* FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID WHERE  ProductName LIKE '${searchString}' AND barcodemasternew.CompanyID = '${CompanyID}' and purchasemasternew.PStatus = 1  AND barcodemasternew.Status = 1   AND purchasedetailnew.Status = 1  GROUP BY purchasedetailnew.ID`;
+            }
+
+            let data = await connection.query(qry);
+            response.message = "data fetch sucessfully"
+            response.data = data
+            // connection.release()
+            res.send(response)
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
     }
 
 }
