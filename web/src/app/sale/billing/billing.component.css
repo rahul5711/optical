@@ -215,3 +215,11 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+.searchStringInput{
+    width: 100%;
+    border-width: 0px 0px 1px 0px;
+    height: 39px;
+    font-size: 15px;
+    padding-top: 15px;
+}

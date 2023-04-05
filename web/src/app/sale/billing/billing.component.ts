@@ -18,6 +18,7 @@ import { CalculationService } from 'src/app/service/helpers/calculation.service'
 import { CustomerPowerCalculationService } from 'src/app/service/helpers/customer-power-calculation.service';
 import { EmployeeService } from 'src/app/service/employee.service';
 import { BillService } from 'src/app/service/bill.service';
+import { ProductService } from 'src/app/service/product.service';
 
 @Component({
   selector: 'app-billing',
@@ -58,7 +59,7 @@ export class BillingComponent implements OnInit {
     private es: EmployeeService,
     public calculation: CustomerPowerCalculationService,
     public bill: BillService,
-
+    private ps: ProductService,
   ) {
     this.id = this.route.snapshot.params['id'];
   }
@@ -412,7 +413,6 @@ export class BillingComponent implements OnInit {
 
   category = 'Product';
   employeeList :any;
-  searchBarCode :any;
   searchProductName :any;
   selectedProduct :any;
   shopMode = false;
@@ -420,6 +420,14 @@ export class BillingComponent implements OnInit {
   sgst = 0;
   doctorList:any
   trayNoList:any
+  prodList:any
+  specList: any;
+  searchList: any;
+  Req :any= {SearchBarCode : '',searchString : '',}
+ 
+  PreOrder = "false";
+  ShopMode = "true";
+  showProductExpDate = false;
 
   ngOnInit(): void {
     this.data.VisitDate = moment().format('YYYY-MM-DD');
@@ -429,6 +437,7 @@ export class BillingComponent implements OnInit {
     this.getTrayNo();
     this.getEmployee();
     this.getDoctor();
+    this.getProductList();
   }
 
   specCheck(mode:any){
@@ -772,4 +781,108 @@ export class BillingComponent implements OnInit {
     });
   }
 
+  getProductList(){
+    const subs: Subscription =  this.ps.getList().subscribe({
+      next: (res: any) => {
+        this.prodList = res.data;
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getFieldList(){
+    const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
+       next: (res: any) => {
+       this.specList = res.data;
+       this.getSptTableData();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getSptTableData() { 
+    this.specList.forEach((element: any) => {
+     if (element.FieldType === 'DropDown' && element.Ref === '0') {
+       const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
+         next: (res: any) => {
+           element.SptTableData = res.data;   
+           element.SptFilterData = res.data;  
+         },
+         error: (err: any) => console.log(err.message),
+         complete: () => subs.unsubscribe(),
+       });
+     }
+    });
+  }
+
+  getFieldSupportData(index:any) {
+    this.specList.forEach((element: any) => {
+     if (element.Ref === this.specList[index].FieldName.toString() ) {
+       const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
+         next: (res: any) => {
+           element.SptTableData = res.data; 
+           element.SptFilterData = res.data;   
+         },
+         error: (err: any) => console.log(err.message),
+         complete: () => subs.unsubscribe(),
+       });
+      }
+     });
+  }
+
+  onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
+    if (this.companysetting.DataFormat === '1') {
+      event = event.toUpperCase()
+    } else if (this.companysetting.DataFormat == '2') {
+      event = event.toTitleCase()
+    }
+    return event;
+  }
+
+  getSearchByBarcodeNo(){
+    const subs: Subscription =  this.bill.searchByBarcodeNo(this.Req, this.PreOrder, this.ShopMode).subscribe({
+      next: (res: any) => {
+        this.searchList = res.data[0];      
+        if (this.searchList.length === 0) {
+          Swal.fire({
+            icon: 'warning',
+            title:'Please Enter Correct Barcode ',
+            text: 'Incorrect Barcode OR Product not available in this Shop.',
+            footer: '',
+            backdrop : false,
+          });
+        } 
+        this.BillItem.ProductName = (this.searchList.ProductTypeName + '/' +  this.searchList.ProductName).toUpperCase();
+        // this.BillItem.Barcode = this.searchList.Barcode;
+        this.BillItem.Barcode = this.searchList.BarCodeCount;
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getSearchByString(){
+    const subs: Subscription =  this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
+      next: (res: any) => {
+        this.searchList = res.data;      
+        if (this.searchList.length === 0) {
+          Swal.fire({
+            icon: 'warning',
+            title:'Please Enter Correct Barcode ',
+            text: 'Incorrect Barcode OR Product not available in this Shop.',
+            footer: '',
+            backdrop : false,
+          });
+        }
+          this.BillItem.ProductName = (this.searchList[0].ProductTypeName + '/' +  this.searchList[0].ProductName).toUpperCase();
+          // this.BillItem.Barcode = this.searchList.Barcode;
+          this.BillItem.Barcode = this.searchList[0].BarCodeCount;
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+  
 }

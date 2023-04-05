@@ -33,6 +33,15 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  searchByBarcodeNo(Req:any, PreOrder:any, ShopMode:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/searchByBarcodeNo', {Req:Req, PreOrder:PreOrder, ShopMode:ShopMode}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  searchByString(Req:any, PreOrder:any, ShopMode:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/searchByString', {Req:Req, PreOrder:PreOrder, ShopMode:ShopMode}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
