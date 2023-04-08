@@ -1,0 +1,107 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { Observable, throwError, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class BillCalculationService {
+
+  constructor(private httpClient: HttpClient) { }
+
+  convertToDecimal(num: any, x: any) {
+    return Number(Math.round(parseFloat(num + 'e' + x)) + 'e-' + x);
+  }
+
+  calculations(fieldName: any, mode: any, BillItem: any, charges: any) {
+
+    switch (mode) {
+      case 'subTotal':
+          if (BillItem.Quantity === null || BillItem.Quantity === '') {
+              BillItem.Quantity = 0;
+          } else {
+              BillItem.GSTAmount = (+BillItem.Quantity * +BillItem.UnitPrice - +BillItem.DiscountAmount) - ((+BillItem.Quantity * +BillItem.UnitPrice - +BillItem.DiscountAmount) / (1 + +BillItem.GSTPercentage / 100));
+          }
+          if (BillItem.UnitPrice === null || BillItem.UnitPrice === '') {
+              BillItem.UnitPrice = 0;
+          }
+              BillItem.SubTotal = +BillItem.Quantity * +BillItem.UnitPrice - BillItem.DiscountAmount;
+      break;
+
+      case 'discount':
+          if (fieldName === 'DiscountPercentage') {
+            if (Number(BillItem.DiscountPercentage) > 100) {
+               alert("you can't give 100% above discount");
+               BillItem.DiscountPercentage = 0
+            } else {
+               BillItem.DiscountAmount = +BillItem.Quantity * +BillItem.UnitPrice * +BillItem.DiscountPercentage / 100;
+            }
+          }
+          if (fieldName === 'DiscountAmount') {
+               BillItem.DiscountPercentage = 100 * +BillItem.DiscountAmount / (+BillItem.Quantity * +BillItem.UnitPrice);
+          }
+      break;
+
+      case 'gst':
+          if (!BillItem.WholeSale) {
+            if (fieldName === 'GSTPercentage') {
+                BillItem.GSTAmount = (+BillItem.Quantity * +BillItem.UnitPrice - +BillItem.DiscountAmount) - ((+BillItem.Quantity * +BillItem.UnitPrice - +BillItem.DiscountAmount) / (1 + +BillItem.GSTPercentage / 100));
+            }
+            if (fieldName === 'GSTAmount') {
+                BillItem.GSTPercentage = 100 * +BillItem.GSTAmount / (+BillItem.Quantity * +BillItem.UnitPrice - +BillItem.DiscountAmount);
+            }
+          } else {
+            if (fieldName === 'GSTPercentage') {
+              if (BillItem.GSTPercentage === null || BillItem.GSTPercentage === '' || (Number(BillItem.GSTPercentage) > 100)) {
+                 alert("you can't give 100% above GST");
+                 BillItem.GSTPercentage = 0;
+              }
+              else {
+                 BillItem.GSTAmount = (+BillItem.Quantity * +BillItem.UnitPrice - BillItem.DiscountAmount) * +BillItem.GSTPercentage / 100;
+              }
+            }
+            if (fieldName === 'GSTAmount') {
+              if (BillItem.GSTAmount === null || BillItem.GSTAmount === '') {
+                 BillItem.GSTAmount = 0;
+              } else {
+                 BillItem.GSTPercentage = 100 * +BillItem.GSTAmount / (+BillItem.Quantity * +BillItem.UnitPrice - BillItem.DiscountAmount);
+              }
+            }
+          }
+      break;
+
+      case 'total':
+          BillItem.TotalAmount = +BillItem.Quantity * +BillItem.UnitPrice - +BillItem.DiscountAmount;
+          BillItem.SubTotal = BillItem.TotalAmount - +BillItem.GSTAmount;
+      break;
+    }
+    
+    // WholeSalecalculations
+    if (!BillItem.WholeSale) {
+        BillItem.TotalAmount = +BillItem.Quantity * +BillItem.UnitPrice - +BillItem.DiscountAmount;
+        BillItem.SubTotal = BillItem.TotalAmount - +BillItem.GSTAmount;
+    } else {
+        BillItem.SubTotal = +BillItem.Quantity * +BillItem.UnitPrice - +BillItem.DiscountAmount;
+        BillItem.TotalAmount = +BillItem.SubTotal + +BillItem.GSTAmount;
+    }
+
+    BillItem.UnitPrice = this.convertToDecimal(+BillItem.UnitPrice, 2);
+    BillItem.DiscountPercentage = this.convertToDecimal(+BillItem.DiscountPercentage, 2);
+    BillItem.DiscountAmount = this.convertToDecimal(+BillItem.DiscountAmount, 2);
+    BillItem.SubTotal = this.convertToDecimal(+BillItem.SubTotal, 2);
+    BillItem.GSTPercentage = this.convertToDecimal(+BillItem.GSTPercentage, 2);
+    BillItem.GSTAmount = this.convertToDecimal(+BillItem.GSTAmount, 2);
+    BillItem.TotalAmount = this.convertToDecimal(+BillItem.TotalAmount, 2);
+
+  }
+
+  private handleError(errorResponse: HttpErrorResponse) {
+    if (errorResponse.error instanceof ErrorEvent) {
+      console.error('Client Side Error: ', errorResponse.error.message);
+    } else {
+      console.error('Server Side Error: ', errorResponse);
+    }
+    return throwError(errorResponse);
+  }
+}

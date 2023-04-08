@@ -400,44 +400,12 @@ export class BillingComponent implements OnInit {
   ];
   // dropdown values in satics 
 
-  // bill form
-  BillMaster:any = {
-    ID: null, CompanyID: null, InvoiceNo: null,  BillDate: null, DeliveryDate: null,  Doctor: 0, Employee: null, TrayNo:
-    null,  Sno: "", ProductStatus: 'Pending',Balance:0 , PaymentStatus: null,  Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0,   AddlDiscount: 0, TotalAmount: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
-  }
-
-  BillItem: any = {
-    ID: null, ProductName: null,  ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00,  Quantity: 0, SubTotal: 0.00,
-    DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false,  Manual: false, PreOrder: false, Barcode: null,  Status: 1,  MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null
-  };
-
-  category = 'Product';
-  employeeList :any;
-  searchProductName :any;
-  selectedProduct :any;
-  shopMode = false;
-  cgst = 0;
-  sgst = 0;
-  doctorList:any
-  trayNoList:any
-  prodList:any
-  specList: any;
-  searchList: any;
-  Req :any= {SearchBarCode : '',searchString : '',}
- 
-  PreOrder = "false";
-  ShopMode = "true";
-  showProductExpDate = false;
 
   ngOnInit(): void {
     this.data.VisitDate = moment().format('YYYY-MM-DD');
     if (this.id != 0) {
       this.getCustomerById(); 
     }
-    this.getTrayNo();
-    this.getEmployee();
-    this.getDoctor();
-    this.getProductList();
   }
 
   specCheck(mode:any){
@@ -748,141 +716,5 @@ export class BillingComponent implements OnInit {
 
   // Billing
 
-  getDoctor(){
-    const subs: Subscription = this.bill.getDoctor().subscribe({
-      next: (res: any) => {
-        this.doctorList = res.data
-        this.sp.hide();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
-
-  getEmployee(){
-    const subs: Subscription = this.bill.getEmployee().subscribe({
-      next: (res: any) => {
-        this.employeeList = res.data
-        this.sp.hide();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
-
-  getTrayNo(){
-    const subs: Subscription = this.bill.getTrayNo().subscribe({
-      next: (res: any) => {
-        this.trayNoList = res.data
-        this.sp.hide();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
-
-  getProductList(){
-    const subs: Subscription =  this.ps.getList().subscribe({
-      next: (res: any) => {
-        this.prodList = res.data;
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
-
-  getFieldList(){
-    const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
-       next: (res: any) => {
-       this.specList = res.data;
-       this.getSptTableData();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
-
-  getSptTableData() { 
-    this.specList.forEach((element: any) => {
-     if (element.FieldType === 'DropDown' && element.Ref === '0') {
-       const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
-         next: (res: any) => {
-           element.SptTableData = res.data;   
-           element.SptFilterData = res.data;  
-         },
-         error: (err: any) => console.log(err.message),
-         complete: () => subs.unsubscribe(),
-       });
-     }
-    });
-  }
-
-  getFieldSupportData(index:any) {
-    this.specList.forEach((element: any) => {
-     if (element.Ref === this.specList[index].FieldName.toString() ) {
-       const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
-         next: (res: any) => {
-           element.SptTableData = res.data; 
-           element.SptFilterData = res.data;   
-         },
-         error: (err: any) => console.log(err.message),
-         complete: () => subs.unsubscribe(),
-       });
-      }
-     });
-  }
-
-  onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
-    if (this.companysetting.DataFormat === '1') {
-      event = event.toUpperCase()
-    } else if (this.companysetting.DataFormat == '2') {
-      event = event.toTitleCase()
-    }
-    return event;
-  }
-
-  getSearchByBarcodeNo(){
-    const subs: Subscription =  this.bill.searchByBarcodeNo(this.Req, this.PreOrder, this.ShopMode).subscribe({
-      next: (res: any) => {
-        this.searchList = res.data[0];      
-        if (this.searchList.length === 0) {
-          Swal.fire({
-            icon: 'warning',
-            title:'Please Enter Correct Barcode ',
-            text: 'Incorrect Barcode OR Product not available in this Shop.',
-            footer: '',
-            backdrop : false,
-          });
-        } 
-        this.BillItem.ProductName = (this.searchList.ProductTypeName + '/' +  this.searchList.ProductName).toUpperCase();
-        // this.BillItem.Barcode = this.searchList.Barcode;
-        this.BillItem.Barcode = this.searchList.BarCodeCount;
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
-
-  getSearchByString(){
-    const subs: Subscription =  this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
-      next: (res: any) => {
-        this.searchList = res.data;      
-        if (this.searchList.length === 0) {
-          Swal.fire({
-            icon: 'warning',
-            title:'Please Enter Correct Barcode ',
-            text: 'Incorrect Barcode OR Product not available in this Shop.',
-            footer: '',
-            backdrop : false,
-          });
-        }
-          this.BillItem.ProductName = (this.searchList[0].ProductTypeName + '/' +  this.searchList[0].ProductName).toUpperCase();
-          // this.BillItem.Barcode = this.searchList.Barcode;
-          this.BillItem.Barcode = this.searchList[0].BarCodeCount;
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
-  
+ 
 }
