@@ -11,3 +11,12 @@ input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
+.deleteClass {
+    color: red;
+    text-decoration: line-through;
+}
+
+.addClass {
+    color: green;
+} 

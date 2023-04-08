@@ -50,7 +50,7 @@ export class BillComponent implements OnInit {
 
   BillItem: any = {
     ID: null, ProductName: null,  ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00,  Quantity: 0, SubTotal: 0.00,
-    DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false,  Manual: false, PreOrder: false, Barcode: null,  Status: 1,  MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null
+    DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false,  Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null,  Status: 1,  MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null
   };
 
   Service: any = {
@@ -74,7 +74,8 @@ export class BillComponent implements OnInit {
   PreOrder = "false";
   ShopMode = "true";
   showProductExpDate = false;
-
+  billItemList:any = [];
+  
   ngOnInit(): void {
     this.getTrayNo();
     this.getEmployee();
@@ -189,14 +190,25 @@ export class BillComponent implements OnInit {
             backdrop : false,
           });
         } 
-        this.BillItem.ProductName = (this.searchList.ProductTypeName + '/' +  this.searchList.ProductName).toUpperCase();
-        // this.BillItem.Barcode = this.searchList.Barcode;
-        this.BillItem.Barcode = this.searchList.BarCodeCount;
+        this.selectedProduct = this.searchList.ProductTypeName;
+        this.BillItem.ProductName = this.searchList.ProductName.toUpperCase();
+         this.prodList.forEach((e: any) => {
+          if (e.ID === this.searchList.ProductTypeID) {
+            this.BillItem.ProductTypeID = e.ID;
+            this.BillItem.ProductTypeName = e.ProductTypeName;
+            this.BillItem.HSNCode = e.HSNCode;
+            this.BillItem.GSTPercentage = e.GSTPercentage;
+            this.BillItem.GSTType = e.GSTType;
+          }
+        })
+        this.BillItem.Barcode = this.searchList.Barcode;
+        this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
         if (this.BillItem.WholeSale === true) {
           this.BillItem.UnitPrice = this.searchList.WholeSalePrice;
         } else {
           this.BillItem.UnitPrice = this.searchList.RetailPrice;
         }
+       
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -226,8 +238,8 @@ export class BillComponent implements OnInit {
           });
         }
           this.BillItem.ProductName = (this.searchList[0].ProductTypeName + '/' +  this.searchList[0].ProductName).toUpperCase();
-          // this.BillItem.Barcode = this.searchList.Barcode;
-          this.BillItem.Barcode = this.searchList[0].BarCodeCount;
+          this.BillItem.Barcode = this.searchList.Barcode;
+          this.BillItem.BarCodeCount = this.searchList[0].BarCodeCount;
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -236,7 +248,50 @@ export class BillComponent implements OnInit {
 
   calculations(fieldName:any,mode:any,){
     this.billCalculation.calculations(fieldName,mode,this.BillItem,'')
- 
-   }
+  }
+
+  addProductItem(){
+    if (this.BillMaster.ID !== null) {
+        this.BillItem.Status = 2; 
+    }
+    if (!this.BillItem.PreOrder && this.BillItem.Quantity > this.BillItem.BarCodeCount) {
+        alert("Reqested Item Quantity not available. Please change the Quantity");
+    } else {
+        this.billItemList.unshift(this.BillItem);
+        console.log(this.billItemList);
+        
+          // if(this.BillItem.WholeSale == false){
+          //   this.BillItem.WholeSale = false;
+          // }
+
+          // if(this.BillItem.WholeSale == true ){
+          //   this.BillItem.WholeSale = true;
+          // } 
+
+        this.BillItem = {
+          ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: 0.00, WholeSalePrice: 0.00, Ledger: true, WholeSale: false, BaseBarCode: null, NewBarcode: '', Status: 1
+        };
+    
+        this.BillItem.BarCodeCount = 0;
+        this.selectedProduct = "";
+        this.specList = [];
+        this.showProductExpDate = false;
+        // this.barCodeList = [];
+        // this.SearchBarCode = '';
+    }
+  }
+
+  addItem(){
+    if (this.category === 'Product') {
+        this.addProductItem();
+    }
+    this.BillMaster.Quantity = 0;
+    this.BillMaster.SubTotal = 0;
+    this.BillMaster.DiscountAmount = 0;
+    this.BillMaster.GSTAmount = 0;
+    this.BillMaster.TotalAmount = 0;
+    this.cgst = 0;
+    this.sgst = 0;
+  }
   
 }

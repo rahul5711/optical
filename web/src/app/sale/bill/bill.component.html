@@ -250,7 +250,7 @@
             <!-- save product spec end -->
         </form>
 
-        <form>
+        <form #f="ngForm" (ngSubmit)="addItem()">
             <div class="row" *ngIf="category !== 'Services'">
                 <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
@@ -268,8 +268,8 @@
                 <div class="col-xl-1 col-lg-1 col-md-2 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Available</mat-label>
-                        <input style="color: rgb(255 0 0);" matInput name="BarCodeCount" [(ngModel)]="BillItem.Barcode"
-                            [disabled]=true>
+                        <input style="color: rgb(255 0 0);" matInput name="BarCodeCount"
+                            [(ngModel)]="BillItem.BarCodeCount" [disabled]=true>
                     </mat-form-field>
                 </div>
             </div>
@@ -397,10 +397,11 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0" >
+                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>(GST/VAT)%</mat-label>
-                        <input matInput name="GST" [(ngModel)]="Service.GSTPercentage" required #GSTcontrol [autocomplete]="false">
+                        <input matInput name="GST" [(ngModel)]="Service.GSTPercentage" required #GSTcontrol
+                            [autocomplete]="false">
                         <mat-error>
                             GST is required
                         </mat-error>
@@ -409,10 +410,11 @@
                 <div class="col-xl-1 col-lg-1 col-md-6 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX Amt</mat-label>
-                        <input matInput name="GSTAmt" [(ngModel)]="Service.GSTAmount" required #GSTAmtcontrol [autocomplete]="false">
+                        <input matInput name="GSTAmt" [(ngModel)]="Service.GSTAmount" required #GSTAmtcontrol
+                            [autocomplete]="false">
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-6 col-sm-12 mb-0" >
+                <div class="col-xl-1 col-lg-1 col-md-6 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX Type</mat-label>
                         <mat-select name="GSTType" [(ngModel)]="Service.GSTType" required #GSTTypecontrol1>
@@ -424,11 +426,13 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Total Amount</mat-label>
-                        <input matInput name="TAmount" [(ngModel)]="Service.TotalAmount" required #TAmountcontrol [autocomplete]="false">
+                        <input matInput name="TAmount" [(ngModel)]="Service.TotalAmount" required #TAmountcontrol
+                            [autocomplete]="false">
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-6 col-sm-12 mb-0  mb-3">
-                    <button class="mr-3" type="submit" [disabled]="!f.valid" mat-raised-button color="primary">Add</button>
+                    <button class="mr-3" type="submit" [disabled]="!f.valid" mat-raised-button
+                        color="primary">Add</button>
                 </div>
             </div>
         </form>
@@ -445,7 +449,7 @@
                                 <th class="text-center">Action</th>
                                 <th class="text-center">HSNCode</th>
                                 <th class="text-center">Barcode</th>
-                                <th class="text-center">Product Category</th>
+                                <th class="text-center">ProductName</th>
                                 <th class="text-center">UnitPrice</th>
                                 <th class="text-center">Quantity</th>
                                 <th class="text-center">SubTotal</th>
@@ -463,27 +467,34 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="text-center">
+                            <tr class="text-center" *ngFor="let data of billItemList ; let i = index;">
                                 <td></td>
-                                <td>1</td>
+                                <td>{{i+1}}</td>
                                 <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">{{data.HSNCode}}</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">{{data.Barcode}}</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">{{data.ProductName}}</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">{{data.UnitPrice}}</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">{{data.Quantity}}</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">{{data.SubTotal}}</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">{{data.GSTAmount}}</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">{{data.GSTPercentage}}%</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">{{data.GSTType}}</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">{{data.DiscountAmount}}</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">{{data.DiscountPercentage}}%</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">{{data.TotalAmount}}</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">{{(data.Remark !== 'undefined')? data.Remark: '-'}}</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">{{(data.Warranty !== 'undefined')? data.Warranty: '-'}}</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">{{(data.Option !== 'undefined' && data.Option !== 'null')?data.Option: '-'}}</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    <span *ngIf="data.Manual === 1">Manual</span> 
+                                    <span *ngIf="data.PreOrder === 1">PreOrder</span> 
+                                    <span *ngIf="data.PreOrder === 0 && data.Manual === 0">Stock</span>
+                                </td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    <span *ngIf="data.Cancel === 0">Cancel</span>
+                                    <span *ngIf="data.Cancel === 1">-</span>
+                                 </td>
                             </tr>
                         </tbody>
                     </table>
