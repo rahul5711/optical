@@ -17,6 +17,7 @@ import { CustomerPowerCalculationService } from 'src/app/service/helpers/custome
 import { BillService } from 'src/app/service/bill.service';
 import { ProductService } from 'src/app/service/product.service';
 import { BillCalculationService } from 'src/app/service/helpers/bill-calculation.service';
+import { SupportService } from 'src/app/service/support.service';
 
 @Component({
   selector: 'app-bill',
@@ -39,6 +40,7 @@ export class BillComponent implements OnInit {
     public bill: BillService,
     private ps: ProductService,
     private billCalculation: BillCalculationService,
+    private supps: SupportService,
   ) {
     this.id = this.route.snapshot.params['id'];
   }
@@ -75,12 +77,16 @@ export class BillComponent implements OnInit {
   ShopMode = "true";
   showProductExpDate = false;
   billItemList:any = [];
-  
+  serviceType:any;
+  gstList:any;
+
   ngOnInit(): void {
     this.getTrayNo();
     this.getEmployee();
     this.getDoctor();
     this.getProductList();
+    this.getService();
+    this.getGSTList();
   }
 
   getDoctor(){
@@ -113,6 +119,42 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getGSTList(){
+    const subs: Subscription = this.supps.getList('TaxType').subscribe({
+      next: (res: any) => {
+        this.gstList = res.data
+      },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getService(){
+    const subs: Subscription = this.supps.servicelist(this.Service).subscribe({
+      next: (res: any) => {
+        this.serviceType = res.data
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  setValues() {
+    this.serviceType.forEach((element:any) => {
+      if (element.ID === this.Service.ServiceType) {
+        this.Service.Name = element.Name 
+        this.Service.Price = element.Price;
+        this.Service.Cost = element.Cost;
+        this.Service.Description = element.Description;
+        this.Service.GSTAmount = element.GSTAmount;
+        this.Service.GSTPercentage = element.GSTPercentage;
+        this.Service.GSTType = element.GSTType;
+        this.Service.TotalAmount = element.TotalAmount;
+      }
     });
   }
 

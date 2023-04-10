@@ -341,7 +341,7 @@
                         <mat-select name="GSTType" [(ngModel)]="BillItem.GSTType" required
                             (selectionChange)="calculations('TotalAmount', 'total')" #GSTTypecontrol1>
                             <mat-option value="None">None</mat-option>
-                            <!-- <mat-option [value]="g.Name" *ngFor="let g of gstList">{{g.Name}}</mat-option> -->
+                            <mat-option [value]="g.Name" *ngFor="let g of gstList">{{g.Name}}</mat-option>
                         </mat-select>
                     </mat-form-field>
                 </div>
@@ -375,10 +375,10 @@
                 <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Service Type</mat-label>
-                        <mat-select name="Name" [(ngModel)]="Service.Name" required #ServiceTypecontrol1>
-                            <!-- <mat-option *ngFor="let service of serviceOptions let i = index;" [value]="service.ID">
-                            {{service.Name}}
-                        </mat-option> -->
+                        <mat-select name="Name" [(ngModel)]="Service.ServiceType" required (selectionChange)="setValues()" #ServiceTypecontrol1>
+                            <mat-option *ngFor="let service of serviceType let i = index;" [value]="service.ID">
+                               {{service.Name}}
+                            </mat-option>
                         </mat-select>
                     </mat-form-field>
                 </div>
@@ -419,7 +419,7 @@
                         <mat-label>TAX Type</mat-label>
                         <mat-select name="GSTType" [(ngModel)]="Service.GSTType" required #GSTTypecontrol1>
                             <mat-option value="None">None</mat-option>
-                            <!-- <mat-option [value]="g.Name" *ngFor="let g of gstList">{{g.Name}}</mat-option> -->
+                            <mat-option [value]="g.Name" *ngFor="let g of gstList">{{g.Name}}</mat-option>
                         </mat-select>
                     </mat-form-field>
                 </div>
