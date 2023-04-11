@@ -432,7 +432,7 @@
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-6 col-sm-12 mb-0  mb-3">
                     <button (focus)=" calculations('TotalAmount', 'serviceTotal')" class="mr-3" type="submit"
-                        [disabled]="!f.valid" mat-raised-button color="primary">Add</button>
+                        [disabled]="Service.TotalAmount === 0" mat-raised-button color="primary">Add</button>
                 </div>
             </div>
         </form>
