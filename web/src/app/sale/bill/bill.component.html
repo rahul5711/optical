@@ -360,9 +360,9 @@
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0 mb-3  ms-auto">
-                    <button type="submit"
-                        [disabled]="!f.valid || this.BillItem.Quantity === 0 || this.BillItem.Barcode === null"
-                        mat-raised-button color="primary">Add</button>
+                    <button *ngIf="BillItem.Manual === false && BillItem.PreOrder === false" type="submit" [disabled]="!f.valid || this.BillItem.Quantity === 0 || this.BillItem.Barcode === null" mat-raised-button color="primary">Add</button>
+                    <button *ngIf="BillItem.PreOrder" type="submit"  [disabled]="!f.valid || this.BillItem.Quantity === 0" mat-raised-button color="primary">PreOder</button>
+                    <button *ngIf="BillItem.Manual" type="submit" [disabled]="!f.valid || this.BillItem.Quantity === 0" mat-raised-button color="primary">Manual</button>
                 </div>
             </div>
             <!-- services calclution -->

@@ -38,7 +38,7 @@ export class BillCalculationService {
             BillItem.DiscountAmount = +BillItem.Quantity * +BillItem.UnitPrice * +BillItem.DiscountPercentage / 100;
           }
         }
-        if (fieldName === 'DiscountAmount') {
+        if (fieldName === 'DiscountAmount' ) {
           BillItem.DiscountPercentage = 100 * +BillItem.DiscountAmount / (+BillItem.Quantity * +BillItem.UnitPrice);
         }
         break;
