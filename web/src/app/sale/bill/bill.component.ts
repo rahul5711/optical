@@ -47,12 +47,11 @@ export class BillComponent implements OnInit {
 
   BillMaster:any = {
     ID: null, CompanyID: null, InvoiceNo: null,  BillDate: null, DeliveryDate: null,  Doctor: 0, Employee: null, TrayNo:
-    null,  Sno: "", ProductStatus: 'Pending',Balance:0 , PaymentStatus: null,  Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0,   AddlDiscount: 0, TotalAmount: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
+    null,  Sno: "", ProductStatus: 'Pending',Balance:0 , PaymentStatus: null,  Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0,   AddlDiscount: 0, TotalAmount: 0.00, RoundOff:0.00,DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
   }
 
   BillItem: any = {
-    ID: null, ProductName: null,  ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00,  Quantity: 0, SubTotal: 0.00,
-    DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false,  Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null,  Status: 1,  MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null
+    ID: null, ProductName: null,  ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00,  Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false,  Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null,  Status: 1,  MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null
   };
 
   Service: any = {
@@ -77,8 +76,10 @@ export class BillComponent implements OnInit {
   ShopMode = "true";
   showProductExpDate = false;
   billItemList:any = [];
+  serviceLists:any= [];
   serviceType:any;
   gstList:any;
+  BarcodeList:any;
 
   ngOnInit(): void {
     this.getTrayNo();
@@ -219,7 +220,7 @@ export class BillComponent implements OnInit {
   }
 
   getSearchByBarcodeNo(){
-    if(this.BillItem.Manual === false){
+    if(this.BillItem.Manual == false){
     const subs: Subscription =  this.bill.searchByBarcodeNo(this.Req, this.PreOrder, this.ShopMode).subscribe({
       next: (res: any) => {
         this.searchList = res.data[0];      
@@ -234,7 +235,20 @@ export class BillComponent implements OnInit {
         } 
         this.selectedProduct = this.searchList.ProductTypeName;
         this.BillItem.ProductName = this.searchList.ProductName.toUpperCase();
-         this.prodList.forEach((e: any) => {
+
+        if (this.searchList.Barcode !== null && this.searchList.BarCodeCount !== 0) {
+          if (this.billItemList.length !== 0 && this.BillItem.ProductName !== "") {
+            let itemCount = 0;
+            this.billItemList.forEach((element: any) => {
+              if (element.ProductName === this.BillItem.ProductName && element.ID === null) {
+                itemCount = itemCount + element.Quantity;
+              }
+            })
+            this.searchList.BarCodeCount = this.searchList.BarCodeCount - itemCount;
+          }
+        }
+
+        this.prodList.forEach((e: any) => {
           if (e.ID === this.searchList.ProductTypeID) {
             this.BillItem.ProductTypeID = e.ID;
             this.BillItem.ProductTypeName = e.ProductTypeName;
@@ -269,19 +283,7 @@ export class BillComponent implements OnInit {
   getSearchByString(){
     const subs: Subscription =  this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
       next: (res: any) => {
-        this.searchList = res.data;      
-        if (this.searchList.length === 0) {
-          Swal.fire({
-            icon: 'warning',
-            title:'Please Enter Correct Barcode ',
-            text: 'Incorrect Barcode OR Product not available in this Shop.',
-            footer: '',
-            backdrop : false,
-          });
-        }
-          this.BillItem.ProductName = (this.searchList[0].ProductTypeName + '/' +  this.searchList[0].ProductName).toUpperCase();
-          this.BillItem.Barcode = this.searchList.Barcode;
-          this.BillItem.BarCodeCount = this.searchList[0].BarCodeCount;
+        this.BarcodeList = res.data;      
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -289,29 +291,25 @@ export class BillComponent implements OnInit {
   }
 
   calculations(fieldName:any,mode:any,){
-    this.billCalculation.calculations(fieldName,mode,this.BillItem,'')
+    this.billCalculation.calculations(fieldName,mode,this.BillItem,this.Service)
+  }
+
+  calculateGrandTotal(){
+    this.billCalculation.calculateGrandTotal(this.BillMaster, this.billItemList, this.serviceLists) 
   }
 
   addProductItem(){
     if (this.BillMaster.ID !== null) {
-        this.BillItem.Status = 2; 
+        this.BillItem.Status =  2; 
     }
     if (!this.BillItem.PreOrder && this.BillItem.Quantity > this.BillItem.BarCodeCount) {
         alert("Reqested Item Quantity not available. Please change the Quantity");
     } else {
         this.billItemList.unshift(this.BillItem);
         console.log(this.billItemList);
-        
-          // if(this.BillItem.WholeSale == false){
-          //   this.BillItem.WholeSale = false;
-          // }
-
-          // if(this.BillItem.WholeSale == true ){
-          //   this.BillItem.WholeSale = true;
-          // } 
 
         this.BillItem = {
-          ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: 0.00, WholeSalePrice: 0.00, Ledger: true, WholeSale: false, BaseBarCode: null, NewBarcode: '', Status: 1
+          ID: null, ProductName: null,  ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00,  Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false,  Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null,  Status: 1,  MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null
         };
     
         this.BillItem.BarCodeCount = 0;
@@ -324,6 +322,16 @@ export class BillComponent implements OnInit {
   }
 
   addItem(){
+    if (this.category === 'Services') {
+      if (this.BillMaster.ID !== null) { this.Service.Status = 2; }
+      this.serviceLists.push(this.Service);
+      console.log(this.serviceLists,'servide');
+      
+      this.Service = {
+        ID: null, CompanyID: null, ServiceType: null, Name:'', Description: null, cost:0.00, Price: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1
+      };
+    }
+
     if (this.category === 'Product') {
         this.addProductItem();
     }
@@ -334,6 +342,8 @@ export class BillComponent implements OnInit {
     this.BillMaster.TotalAmount = 0;
     this.cgst = 0;
     this.sgst = 0;
+    this.calculateGrandTotal()
   }
+
   
 }
