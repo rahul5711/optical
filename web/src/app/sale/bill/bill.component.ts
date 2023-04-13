@@ -249,7 +249,6 @@ export class BillComponent implements OnInit {
               this.BillItem.GSTType = e.GSTType;
             }
           })
-          
           if (this.searchList.Barcode !== null && this.searchList.BarCodeCount !== 0) {
             if (this.billItemList.length !== 0 && this.BillItem.ProductName !== "") {
               let itemCount = 0;
@@ -261,8 +260,6 @@ export class BillComponent implements OnInit {
               this.searchList.BarCodeCount = this.searchList.BarCodeCount - itemCount;
             }
           }
-
-
           this.BillItem.Barcode = this.searchList.Barcode;
           this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
           if (this.BillItem.WholeSale === true) {
@@ -292,6 +289,7 @@ export class BillComponent implements OnInit {
 
   getSearchByString() {
     if (this.BillItem.PreOrder) {
+      // PreOrder product name
       this.PreOrder = "true"
       const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
         next: (res: any) => {
@@ -301,6 +299,7 @@ export class BillComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     } else {
+      // stock product name
       this.PreOrder = "false"
       const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
         next: (res: any) => {
