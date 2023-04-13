@@ -221,6 +221,11 @@ export class BillComponent implements OnInit {
 
   getSearchByBarcodeNo() {
     if (this.BillItem.Manual == false) {
+      if(this.BillItem.PreOrder){
+        this.PreOrder = "true"
+      }else{
+        this.PreOrder = "false"
+      }
       const subs: Subscription = this.bill.searchByBarcodeNo(this.Req, this.PreOrder, this.ShopMode).subscribe({
         next: (res: any) => {
           this.searchList = res.data[0];
@@ -235,7 +240,16 @@ export class BillComponent implements OnInit {
           }
           this.selectedProduct = this.searchList.ProductTypeName;
           this.BillItem.ProductName = this.searchList.ProductName.toUpperCase();
-
+          this.prodList.forEach((e: any) => {
+            if (e.ID === this.searchList.ProductTypeID) {
+              this.BillItem.ProductTypeID = e.ID;
+              this.BillItem.ProductTypeName = e.ProductTypeName;
+              this.BillItem.HSNCode = e.HSNCode;
+              this.BillItem.GSTPercentage = e.GSTPercentage;
+              this.BillItem.GSTType = e.GSTType;
+            }
+          })
+          
           if (this.searchList.Barcode !== null && this.searchList.BarCodeCount !== 0) {
             if (this.billItemList.length !== 0 && this.BillItem.ProductName !== "") {
               let itemCount = 0;
@@ -248,15 +262,7 @@ export class BillComponent implements OnInit {
             }
           }
 
-          this.prodList.forEach((e: any) => {
-            if (e.ID === this.searchList.ProductTypeID) {
-              this.BillItem.ProductTypeID = e.ID;
-              this.BillItem.ProductTypeName = e.ProductTypeName;
-              this.BillItem.HSNCode = e.HSNCode;
-              this.BillItem.GSTPercentage = e.GSTPercentage;
-              this.BillItem.GSTType = e.GSTType;
-            }
-          })
+
           this.BillItem.Barcode = this.searchList.Barcode;
           this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
           if (this.BillItem.WholeSale === true) {
@@ -285,13 +291,25 @@ export class BillComponent implements OnInit {
   }
 
   getSearchByString() {
-    const subs: Subscription = this.bill.searchByString(this.Req.substring(1), this.PreOrder, this.ShopMode).subscribe({
-      next: (res: any) => {
-        this.BarcodeList = res.data;
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+    if (this.BillItem.PreOrder) {
+      this.PreOrder = "true"
+      const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
+        next: (res: any) => {
+          this.BarcodeList = res.data;
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    } else {
+      this.PreOrder = "false"
+      const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
+        next: (res: any) => {
+          this.BarcodeList = res.data;
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
   }
 
   getBarCodeList(index: any) {
