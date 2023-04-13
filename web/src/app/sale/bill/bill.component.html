@@ -148,7 +148,7 @@
                     *ngIf="( selectedProduct !== '' || selectedProduct !== undefined || selectedProduct !== null )">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Select Barcode</mat-label>
-                        <mat-select name="FieldType" [(ngModel)]="Req.SearchBarCode" #Typecontrol>
+                        <mat-select name="FieldType" [(ngModel)]="Req.SearchBarCode" #Typecontrol (selectionChange)="getSearchByBarcodeNo()">
                             <mat-option *ngFor="let bc of BarcodeList ; let i = index;" [value]="bc.Barcode">
                                 {{bc.Barcode}} # {{bc.BarCodeCount}} {{bc.p}}| {{bc.ProductName | uppercase}} |
                                 {{bc.ShopName | titlecase }} <span [style.color]="'blue'"
@@ -168,7 +168,7 @@
                         <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
                             <mat-label>{{spec.FieldName}}</mat-label>
                             <mat-select name="{{spec.FieldName+'0'}}" [(ngModel)]="spec.SelectedValue"
-                                (selectionChange)="getFieldSupportData(i)" editable="true"
+                                (selectionChange)="getFieldSupportData(i);getBarCodeList(i)" editable="true"
                                 [required]="spec.Required === 1" #singleSelect>
                                 <mat-option>
                                 </mat-option>
@@ -186,7 +186,7 @@
                             <mat-label>{{spec.FieldName}}</mat-label>
                             <input matInput name="{{spec.FieldName+'2'}}" [(ngModel)]="spec.SelectedValue"
                                 (ngModelChange)="spec.SelectedValue = onChange($event)" [required]="spec.Required === 1"
-                                (blur)="getFieldSupportData(i)">
+                                (blur)="getFieldSupportData(i);getBarCodeList(i)">
                             <mat-error>
                                 {{spec.FieldName}} is Required
                             </mat-error>
