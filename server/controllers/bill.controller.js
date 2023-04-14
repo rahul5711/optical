@@ -113,7 +113,7 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
             const {Req,PreOrder,ShopMode} = req.body
             let SearchString = Req.searchString;
-            let searchString =   SearchString + "%";
+            let searchString =  "%" + SearchString + "%";
 
             console.log(searchString , 'searchString');
 
