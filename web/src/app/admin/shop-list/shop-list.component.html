@@ -41,7 +41,7 @@
                                         data-mdb-target="#exampleModal" > add</mat-icon>
                                     </button>
                                     <button class="bg-none" (click)="gridview = !gridview">
-                                        <mat-icon class="col-white Grid_icon" 
+                                        <mat-icon class="col-white Grid_icon"
                                         title="Grid View" style="font-size: 22px;padding: 4px;">grid_on</mat-icon>
                                     </button>
                                 </div>
@@ -321,6 +321,10 @@
                 </div>
                 <div class="col-md-1 col-sm-6 col-6 p-0">
                     <mat-slide-toggle type="ratio" name="Total" color="primary" [(ngModel)]="data.Total" class="example-margin">Total
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-md-2 col-sm-6 col-6 p-0">
+                    <mat-slide-toggle type="ratio" name="BillShopWise" color="primary" [(ngModel)]="data.BillShopWise" class="example-margin">BillShopWise
                     </mat-slide-toggle>
                 </div>
             </div>

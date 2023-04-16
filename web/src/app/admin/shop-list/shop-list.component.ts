@@ -44,7 +44,7 @@ export class ShopListComponent implements OnInit {
 
   data: any = {
     ID: null, CompanyID: null, Name: '', AreaName: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '',
-    Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: false, GSTnumber: false, LogoURL: '', HSNCode: false, CustGSTNo: false, Rate: false, Discounts: false, Tax: false, SubTotal: false, Total: false, ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: 'No Terms and Conditions', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
+    Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: false, GSTnumber: false, LogoURL: '', HSNCode: false, CustGSTNo: false, Rate: false, Discounts: false, Tax: false, SubTotal: false, Total: false, BillShopWise: false, ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: 'No Terms and Conditions', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
   };
 
   constructor(
@@ -62,7 +62,7 @@ export class ShopListComponent implements OnInit {
   ) {
     this.id = this.route.snapshot.params['id'];
     this.env = environment
-   
+
   }
 
   ngOnInit(): void {
@@ -145,7 +145,7 @@ export class ShopListComponent implements OnInit {
     }else{
       this.suBtn = false;
       this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
-    } 
+    }
   }
 
   openModalEdit(content: any, datas: any) {
@@ -163,12 +163,12 @@ export class ShopListComponent implements OnInit {
        this.data.GSTnumber = true;
      } else if (datas.GSTnumber === 'false' ) {
        this.data.GSTnumber = false;
-     } 
+     }
      if(datas.HSNCode === 'true') {
       this.data.HSNCode = true;
      } else if (datas.HSNCode === 'false' ) {
       this.data.HSNCode = false;
-     } 
+     }
      if(datas.CustGSTNo === 'true') {
       this.data.CustGSTNo = true;
      } else if (datas.CustGSTNo === 'false' ) {
@@ -199,8 +199,13 @@ export class ShopListComponent implements OnInit {
      } else if (datas.Total === 'false' ) {
       this.data.Total = false;
      }
-   
-    }   
+     if(datas.BillShopWise === 'true') {
+      this.data.BillShopWise = true;
+     } else if (datas.BillShopWise === 'false' ) {
+      this.data.BillShopWise = false;
+     }
+
+    }
   }
 
   copyData(val: any) {
@@ -244,7 +249,7 @@ export class ShopListComponent implements OnInit {
               text: 'You Can Not Create Shop !! Your has been permission end',
               showConfirmButton: true,
               backdrop : false,
-            }) 
+            })
           }
         }
       },
