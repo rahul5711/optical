@@ -8,6 +8,7 @@ router.post('/getEmployee', verifyAccessTokenAdmin, Controller.getEmployee)
 router.post('/getTrayNo', verifyAccessTokenAdmin, Controller.getTrayNo)
 router.post('/searchByBarcodeNo', verifyAccessTokenAdmin, Controller.searchByBarcodeNo)
 router.post('/searchByString', verifyAccessTokenAdmin, Controller.searchByString)
+router.post('/saveBill', verifyAccessTokenAdmin, Controller.saveBill)
 
 
 module.exports = router
