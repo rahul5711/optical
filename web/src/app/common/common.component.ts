@@ -15,7 +15,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class CommonComponent implements OnInit {
 
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
-  company:any =JSON.parse(localStorage.getItem('company') || '') ;
+  company:any
   CompanyAdmindisplsy :any
   SuperAdmindis :any
   x: any;
@@ -31,39 +31,43 @@ export class CommonComponent implements OnInit {
     ) { }
   viewCompanyInfo = true;
 
-  heroes = [
-    {
-      "Name": "Company",
-      "routersLinks" : `/admin/company/${this.company.ID}`
-    },
-    {
-      "Name": "Employee ",
-      "routersLinks" : `/admin/employee/0`
-    },
-    {
-      "Name": "Employee List",
-      "routersLinks" : `/admin/employeeList`
-    },
-    {
-      "Name": "Shop List",
-      "routersLinks" : `/admin/shopList`
-    },
-    {
-      "Name": "Role Permission ",
-      "routersLinks" : `/admin/rolePermission`
-    },
-    {
-      "Name": "Company Setting ",
-      "routersLinks" : `/admin/companySetting`
-    },
-  ];
+  heroes: any = []
 
   ngOnInit(): void { 
     this.user = JSON.parse(localStorage.getItem('user') || '')
     if (this.user.UserGroup !== 'SuperAdmin') {
+      this.company = JSON.parse(localStorage.getItem('company') || '') ;
       this.selectedShops = Number(JSON.parse(localStorage.getItem('selectedShop') || '')[0]);
       this.dropShoplist  = JSON.parse(localStorage.getItem('shop') || '')
+    } else {
+      this.company.ID = this.user.CompanyID
     }
+    this.heroes = [
+      {
+        "Name": "Company",
+        "routersLinks" : `/admin/company/${this.company.ID}`
+      },
+      {
+        "Name": "Employee ",
+        "routersLinks" : `/admin/employee/0`
+      },
+      {
+        "Name": "Employee List",
+        "routersLinks" : `/admin/employeeList`
+      },
+      {
+        "Name": "Shop List",
+        "routersLinks" : `/admin/shopList`
+      },
+      {
+        "Name": "Role Permission ",
+        "routersLinks" : `/admin/rolePermission`
+      },
+      {
+        "Name": "Company Setting ",
+        "routersLinks" : `/admin/companySetting`
+      },
+    ];
   }
 
   openModal(content: any) {
