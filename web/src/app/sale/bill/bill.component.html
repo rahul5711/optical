@@ -642,7 +642,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12 col-12">
-                    <button type="button" mat-raised-button color="primary">Save</button>
+                    <button type="button" mat-raised-button color="primary" (click)="onSubmit()" [disabled]="(billItemList?.length === 0 && serviceLists?.length === 0) || BillMaster.ID !== null" >Save</button>
                     <button type="button" class="me-3 ms-3" mat-raised-button color="primary">Update</button>
                     <button type="button" mat-raised-button color="primary">Receipt</button>
                     <button type="button" class="me-3 ms-3" mat-raised-button color="primary">Receipt +

@@ -59,6 +59,8 @@ export class BillComponent implements OnInit {
     ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1
   };
 
+  data = { billMaster: null,  billDetail: null, service: null };
+
   category = 'Product';
   employeeList: any;
   searchProductName: any;
@@ -80,11 +82,11 @@ export class BillComponent implements OnInit {
   serviceType: any;
   gstList: any;
   BarcodeList: any;
-  loginShopID : any
+  loginShopID: any
   ngOnInit(): void {
     this.loginShopID = Number(this.selectedShop[0])
     this.BillMaster.BillDate = moment().format('YYYY-MM-DD');
-    this.BillMaster.DeliveryDate = moment().format('YYYY-MM-DD');
+    this.BillMaster.DeliveryDate = moment(new Date()).add(this.companysetting.DeliveryDay, 'days').format('YYYY-MM-DD');
     this.getTrayNo();
     this.getEmployee();
     this.getDoctor();
@@ -113,10 +115,10 @@ export class BillComponent implements OnInit {
     this.sp.show();
     const subs: Subscription = this.bill.getEmployee().subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.employeeList = res.data
           this.sp.hide();
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
       },
@@ -129,9 +131,9 @@ export class BillComponent implements OnInit {
     this.sp.show();
     const subs: Subscription = this.bill.getTrayNo().subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.trayNoList = res.data
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -144,9 +146,9 @@ export class BillComponent implements OnInit {
   getGSTList() {
     const subs: Subscription = this.supps.getList('TaxType').subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.gstList = res.data
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
       },
@@ -158,9 +160,9 @@ export class BillComponent implements OnInit {
   getService() {
     const subs: Subscription = this.supps.servicelist(this.Service).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.serviceType = res.data
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -189,9 +191,9 @@ export class BillComponent implements OnInit {
     this.sp.show();
     const subs: Subscription = this.ps.getList().subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.prodList = res.data;
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -209,8 +211,8 @@ export class BillComponent implements OnInit {
         if (res.success) {
           this.specList = res.data;
           if (res.data.length) {
-            this.getSptTableData();         
-          } 
+            this.getSptTableData();
+          }
         } else {
           this.as.errorToast(res.message)
         }
@@ -226,10 +228,10 @@ export class BillComponent implements OnInit {
       if (element.FieldType === 'DropDown' && element.Ref === '0') {
         const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
           next: (res: any) => {
-            if(res.success){
+            if (res.success) {
               element.SptTableData = res.data;
               element.SptFilterData = res.data;
-            }else{
+            } else {
               this.as.errorToast(res.message)
             }
             this.sp.hide();
@@ -247,10 +249,10 @@ export class BillComponent implements OnInit {
       if (element.Ref === this.specList[index].FieldName.toString()) {
         const subs: Subscription = this.ps.getProductSupportData(this.specList[index].SelectedValue, element.SptTableName).subscribe({
           next: (res: any) => {
-            if(res.success){
+            if (res.success) {
               element.SptTableData = res.data;
               element.SptFilterData = res.data;
-            }else{
+            } else {
               this.as.errorToast(res.message)
             }
             this.sp.hide();
@@ -274,16 +276,16 @@ export class BillComponent implements OnInit {
   getSearchByBarcodeNo() {
     this.sp.show();
     if (this.BillItem.Manual == false) {
-      if(this.BillItem.PreOrder){
+      if (this.BillItem.PreOrder) {
         this.PreOrder = "true"
-      }else{
+      } else {
         this.PreOrder = "false"
       }
       const subs: Subscription = this.bill.searchByBarcodeNo(this.Req, this.PreOrder, this.ShopMode).subscribe({
         next: (res: any) => {
-          if(res.success){
+          if (res.success) {
             this.searchList = res.data[0];
-          }else{
+          } else {
             this.as.errorToast(res.message)
           }
           this.sp.hide();
@@ -301,7 +303,7 @@ export class BillComponent implements OnInit {
           this.prodList.forEach((e: any) => {
             if (e.ID === this.searchList.ProductTypeID) {
               this.BillItem.ProductTypeID = e.ID;
-              this.BillItem.ProductTypeName = e.ProductTypeName;
+              this.BillItem.ProductTypeName = e.Name;
               this.BillItem.HSNCode = e.HSNCode;
               this.BillItem.GSTPercentage = e.GSTPercentage;
               this.BillItem.GSTType = e.GSTType;
@@ -354,9 +356,9 @@ export class BillComponent implements OnInit {
       this.PreOrder = "true"
       const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
         next: (res: any) => {
-          if(res.success){
+          if (res.success) {
             this.BarcodeList = res.data;
-          }else{
+          } else {
             this.as.errorToast(res.message)
           }
           this.sp.hide();
@@ -369,9 +371,9 @@ export class BillComponent implements OnInit {
       this.PreOrder = "false"
       const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
         next: (res: any) => {
-          if(res.success){
+          if (res.success) {
             this.BarcodeList = res.data;
-          }else{
+          } else {
             this.as.errorToast(res.message)
           }
           this.sp.hide();
@@ -397,9 +399,9 @@ export class BillComponent implements OnInit {
       this.PreOrder = "true"
       const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
         next: (res: any) => {
-          if(res.success){
+          if (res.success) {
             this.BarcodeList = res.data;
-          }else{
+          } else {
             this.as.errorToast(res.message)
           }
           this.sp.hide();
@@ -407,15 +409,15 @@ export class BillComponent implements OnInit {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
-    } 
-     else {
+    }
+    else {
       // stock select barcodelist
       this.PreOrder = "false"
       const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
         next: (res: any) => {
-          if(res.success){
+          if (res.success) {
             this.BarcodeList = res.data;
-          }else{
+          } else {
             this.as.errorToast(res.message)
           }
           this.sp.hide();
@@ -438,26 +440,28 @@ export class BillComponent implements OnInit {
     if (this.BillMaster.ID !== null) {
       this.BillItem.Status = 2;
     }
+    if (!this.BillItem.PreOrder && this.BillItem.Quantity > this.BillItem.BarCodeCount) {
+      alert("Reqested Item Quantity not available. Please change the Quantity");
+    } else {
       this.billItemList.unshift(this.BillItem);
       console.log(this.billItemList);
 
       this.BillItem = {
-        ID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null
+        ID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false,  Barcode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null
       };
 
-      this.BillItem.BarCodeCount = 0;
       this.selectedProduct = "";
       this.specList = [];
       this.showProductExpDate = false;
       // this.barCodeList = [];
       // this.SearchBarCode = '';
+    }
   }
 
   addItem() {
     if (this.category === 'Services') {
       if (this.BillMaster.ID !== null) { this.Service.Status = 2; }
       this.serviceLists.push(this.Service);
-      console.log(this.serviceLists, 'servide');
 
       this.Service = {
         ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1
@@ -465,11 +469,17 @@ export class BillComponent implements OnInit {
     }
 
     if (this.category === 'Product') {
-      if(this.BillItem.Manual){
+      if (this.BillItem.Manual) {
         let searchString = "";
+        this.prodList.forEach((e: any) => {
+          if (e.Name === this.selectedProduct) {
+            this.BillItem.ProductTypeID = e.ID;
+            this.BillItem.HSNCode = e.HSNCode;
+          }
+        })
         this.specList.forEach((element: any, i: any) => {
           if (element.SelectedValue !== '') {
-            searchString = searchString.concat("/", element.SelectedValue);
+            searchString = searchString.concat(element.SelectedValue, "/");
           }
         });
         this.BillItem.ProductTypeName = this.selectedProduct
@@ -487,6 +497,20 @@ export class BillComponent implements OnInit {
     this.cgst = 0;
     this.sgst = 0;
     this.calculateGrandTotal()
+  }
+
+  onSubmit(){
+    this.data.billMaster = this.BillMaster;
+    this.data.billDetail = this.billItemList;
+    this.data.service = this.serviceLists;
+    console.log(this.data);
+    // const subs: Subscription = this.bill.saveBill(this.data).subscribe({
+    //   next: (res: any) => {
+
+    //   },
+    //   error: (err: any) => console.log(err.message),
+    //   complete: () => subs.unsubscribe(),
+    // });
   }
 
 
