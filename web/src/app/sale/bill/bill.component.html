@@ -45,7 +45,7 @@
                         <mat-label>Doctor</mat-label>
                         <mat-select name="Doctor" [(ngModel)]="BillMaster.Doctor" [disabled]="BillMaster.ID !== null"
                             #Doctorcontrol>
-                            <mat-option [value]="0">No Doctor</mat-option>
+                            <mat-option value="None"></mat-option>
                             <mat-option *ngFor="let doc of doctorList let i = index;" [value]="doc.ID">
                                 {{doc.Name}}
                             </mat-option>
@@ -60,7 +60,7 @@
                         <mat-label>Employee Name</mat-label>
                         <mat-select name="Employee" [(ngModel)]="BillMaster.Employee"
                             [disabled]="BillMaster.ID !== null" #Employeecontrol>
-                            <mat-option value="All">All</mat-option>
+                            <mat-option value="None"></mat-option>
                             <mat-option *ngFor="let el of employeeList let i = index;" [value]="el.ID">
                                 {{el.Name}}
                             </mat-option>
@@ -100,8 +100,8 @@
                         Preorder</mat-slide-toggle>
                 </div>
                 <div class="col-md-1 col-6 pt-3">
-                    <mat-slide-toggle name="Ledger" color="primary" [(ngModel)]="BillItem.Manual" class="example-margin"
-                        #Multiplecontrol style="color:#ff651e;">Manual</mat-slide-toggle>
+                    <mat-slide-toggle name="Manual" color="primary" [(ngModel)]="BillItem.Manual" class="example-margin"
+                        #Manualcontrol style="color:#ff651e;">Manual</mat-slide-toggle>
                 </div>
                 <div class="col-md-1 col-6 p-0 pt-3">
                     <mat-slide-toggle name="WholeSale" color="primary" [(ngModel)]="BillItem.WholeSale"
@@ -140,8 +140,7 @@
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-6 col-12 mb-0 pt-3">
-                    <mat-slide-toggle color="primary" [(ngModel)]="shopMode" [ngModelOptions]="{standalone: true}"
-                        class="example-margin" style="color:#ff651e;">All Shops
+                    <mat-slide-toggle  name="ShopMode"  [(ngModel)]="ShopMode" color="primary" #ShopModecontrol class="example-margin" style="color:#ff651e;">All Shops
                     </mat-slide-toggle>
                 </div>
                 <div class="col-xl-6 col-lg-6 col-md-12 col-12 mb-0"
@@ -149,7 +148,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Select Barcode</mat-label>
                         <mat-select name="FieldType" [(ngModel)]="Req.SearchBarCode" #Typecontrol (selectionChange)="getSearchByBarcodeNo()">
-                            <mat-option *ngFor="let bc of BarcodeList ; let i = index;" [value]="bc.Barcode">
+                            <mat-option [disabled]="this.loginShopID !== bc.ShopID" [ngClass]="{'otherShopClass': this.loginShopID !== bc.ShopID }" *ngFor="let bc of BarcodeList ; let i = index;" [value]="bc.Barcode">
                                 {{bc.Barcode}} # {{bc.BarCodeCount}} {{bc.p}}| {{bc.ProductName | uppercase}} |
                                 {{bc.ShopName | titlecase }} <span [style.color]="'blue'"
                                     *ngIf="bc.AreaName !== 'null'">({{bc.AreaName | titlecase}})</span>
@@ -245,8 +244,8 @@
             <!-- save product spec end -->
         </form>
 
-        <form #f="ngForm" (ngSubmit)="addItem()">
-            <div class="row" *ngIf="category !== 'Services'">
+        <form #f1="ngForm" (ngSubmit)="addItem()">
+            <div class="row" *ngIf="category !== 'Services' && BillItem.Manual === false">
                 <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Product Name</mat-label>
@@ -360,9 +359,9 @@
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0 mb-3  ms-auto">
-                    <button *ngIf="BillItem.Manual === false && BillItem.PreOrder === false" type="submit" [disabled]="!f.valid || this.BillItem.Quantity === 0 || this.BillItem.Barcode === null" mat-raised-button color="primary">Add</button>
-                    <button *ngIf="BillItem.PreOrder" type="submit"  [disabled]="!f.valid || this.BillItem.Quantity === 0" mat-raised-button color="primary">PreOder</button>
-                    <button *ngIf="BillItem.Manual" type="submit" [disabled]="!f.valid || this.BillItem.Quantity === 0" mat-raised-button color="primary">Manual</button>
+                    <button *ngIf="BillItem.Manual === false && BillItem.PreOrder === false" type="submit" [disabled]="!f1.valid || this.BillItem.Quantity === 0 || this.BillItem.Barcode === null" mat-raised-button color="primary" (focus)="calculations('GSTPercentage', 'gst')">Add</button>
+                    <button *ngIf="BillItem.PreOrder" type="submit"  [disabled]="!f1.valid || this.BillItem.Quantity === 0" mat-raised-button color="primary">PreOder</button>
+                    <button *ngIf="BillItem.Manual" type="submit" [disabled]="!f1.valid || this.BillItem.Quantity === 0" mat-raised-button color="primary">Manual</button>
                 </div>
             </div>
             <!-- services calclution -->

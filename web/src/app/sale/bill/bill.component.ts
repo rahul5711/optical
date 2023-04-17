@@ -27,6 +27,7 @@ import { SupportService } from 'src/app/service/support.service';
 export class BillComponent implements OnInit {
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   env = environment;
   id: any
 
@@ -46,7 +47,7 @@ export class BillComponent implements OnInit {
   }
 
   BillMaster: any = {
-    ID: null, CompanyID: null, InvoiceNo: null, BillDate: null, DeliveryDate: null, Doctor: 0, Employee: null, TrayNo:
+    ID: null, CompanyID: null, InvoiceNo: null, BillDate: null, DeliveryDate: null, Doctor: null, Employee: null, TrayNo:
       null, Sno: "", ProductStatus: 'Pending', Balance: 0, PaymentStatus: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
   }
 
@@ -62,7 +63,6 @@ export class BillComponent implements OnInit {
   employeeList: any;
   searchProductName: any;
   selectedProduct: any;
-  shopMode = false;
   cgst = 0;
   sgst = 0;
   familyList: any;
@@ -70,18 +70,21 @@ export class BillComponent implements OnInit {
   trayNoList: any
   prodList: any
   specList: any;
-  searchList: any;
+  searchList: any = [];
   Req: any = { SearchBarCode: '', searchString: '', }
   PreOrder = "false";
-  ShopMode = "true";
+  ShopMode = false;
   showProductExpDate = false;
   billItemList: any = [];
   serviceLists: any = [];
   serviceType: any;
   gstList: any;
   BarcodeList: any;
-
+  loginShopID : any
   ngOnInit(): void {
+    this.loginShopID = Number(this.selectedShop[0])
+    this.BillMaster.BillDate = moment().format('YYYY-MM-DD');
+    this.BillMaster.DeliveryDate = moment().format('YYYY-MM-DD');
     this.getTrayNo();
     this.getEmployee();
     this.getDoctor();
@@ -91,10 +94,15 @@ export class BillComponent implements OnInit {
   }
 
   getDoctor() {
+    this.sp.show();
     const subs: Subscription = this.bill.getDoctor().subscribe({
       next: (res: any) => {
-        this.doctorList = res.data
-        this.sp.hide();
+        if (res.success) {
+          this.doctorList = res.data
+          this.sp.hide();
+        } else {
+          this.as.errorToast(res.message)
+        }
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -102,10 +110,15 @@ export class BillComponent implements OnInit {
   }
 
   getEmployee() {
+    this.sp.show();
     const subs: Subscription = this.bill.getEmployee().subscribe({
       next: (res: any) => {
-        this.employeeList = res.data
-        this.sp.hide();
+        if(res.success){
+          this.employeeList = res.data
+          this.sp.hide();
+        }else{
+          this.as.errorToast(res.message)
+        }
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -113,9 +126,14 @@ export class BillComponent implements OnInit {
   }
 
   getTrayNo() {
+    this.sp.show();
     const subs: Subscription = this.bill.getTrayNo().subscribe({
       next: (res: any) => {
-        this.trayNoList = res.data
+        if(res.success){
+          this.trayNoList = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
         this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
@@ -126,7 +144,11 @@ export class BillComponent implements OnInit {
   getGSTList() {
     const subs: Subscription = this.supps.getList('TaxType').subscribe({
       next: (res: any) => {
-        this.gstList = res.data
+        if(res.success){
+          this.gstList = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -136,7 +158,11 @@ export class BillComponent implements OnInit {
   getService() {
     const subs: Subscription = this.supps.servicelist(this.Service).subscribe({
       next: (res: any) => {
-        this.serviceType = res.data
+        if(res.success){
+          this.serviceType = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
         this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
@@ -160,9 +186,15 @@ export class BillComponent implements OnInit {
   }
 
   getProductList() {
+    this.sp.show();
     const subs: Subscription = this.ps.getList().subscribe({
       next: (res: any) => {
-        this.prodList = res.data;
+        if(res.success){
+          this.prodList = res.data;
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -170,10 +202,18 @@ export class BillComponent implements OnInit {
   }
 
   getFieldList() {
+    this.sp.show();
     const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
       next: (res: any) => {
-        this.specList = res.data;
-        this.getSptTableData();
+        this.sp.hide();
+        if (res.success) {
+          this.specList = res.data;
+          if (res.data.length) {
+            this.getSptTableData();         
+          } 
+        } else {
+          this.as.errorToast(res.message)
+        }
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -181,12 +221,18 @@ export class BillComponent implements OnInit {
   }
 
   getSptTableData() {
+    this.sp.show();
     this.specList.forEach((element: any) => {
       if (element.FieldType === 'DropDown' && element.Ref === '0') {
         const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
           next: (res: any) => {
-            element.SptTableData = res.data;
-            element.SptFilterData = res.data;
+            if(res.success){
+              element.SptTableData = res.data;
+              element.SptFilterData = res.data;
+            }else{
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide();
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
@@ -196,12 +242,18 @@ export class BillComponent implements OnInit {
   }
 
   getFieldSupportData(index: any) {
+    this.sp.show();
     this.specList.forEach((element: any) => {
       if (element.Ref === this.specList[index].FieldName.toString()) {
         const subs: Subscription = this.ps.getProductSupportData(this.specList[index].SelectedValue, element.SptTableName).subscribe({
           next: (res: any) => {
-            element.SptTableData = res.data;
-            element.SptFilterData = res.data;
+            if(res.success){
+              element.SptTableData = res.data;
+              element.SptFilterData = res.data;
+            }else{
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide();
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
@@ -220,6 +272,7 @@ export class BillComponent implements OnInit {
   }
 
   getSearchByBarcodeNo() {
+    this.sp.show();
     if (this.BillItem.Manual == false) {
       if(this.BillItem.PreOrder){
         this.PreOrder = "true"
@@ -228,8 +281,13 @@ export class BillComponent implements OnInit {
       }
       const subs: Subscription = this.bill.searchByBarcodeNo(this.Req, this.PreOrder, this.ShopMode).subscribe({
         next: (res: any) => {
-          this.searchList = res.data[0];
-          if (this.searchList.length === 0) {
+          if(res.success){
+            this.searchList = res.data[0];
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+          if (this.searchList.length === 0 || this.searchList.Barcode === null) {
             Swal.fire({
               icon: 'warning',
               title: 'Please Enter Correct Barcode ',
@@ -264,14 +322,16 @@ export class BillComponent implements OnInit {
           this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
           if (this.BillItem.WholeSale === true) {
             this.BillItem.UnitPrice = this.searchList.WholeSalePrice;
+            this.BillItem.Quantity = 1
           }
-          if (this.BillItem.PreOrder === true) {
-            this.BillItem.UnitPrice = this.searchList.WholeSalePrice;
+          else if (this.BillItem.PreOrder === true) {
+            this.BillItem.UnitPrice = this.searchList.RetailPrice;
+            this.BillItem.Quantity = 1
           }
           else {
             this.BillItem.UnitPrice = this.searchList.RetailPrice;
+            this.BillItem.Quantity = 1
           }
-
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
@@ -288,12 +348,18 @@ export class BillComponent implements OnInit {
   }
 
   getSearchByString() {
+    this.sp.show();
     if (this.BillItem.PreOrder) {
       // PreOrder product name
       this.PreOrder = "true"
       const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
         next: (res: any) => {
-          this.BarcodeList = res.data;
+          if(res.success){
+            this.BarcodeList = res.data;
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
@@ -303,7 +369,12 @@ export class BillComponent implements OnInit {
       this.PreOrder = "false"
       const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
         next: (res: any) => {
-          this.BarcodeList = res.data;
+          if(res.success){
+            this.BarcodeList = res.data;
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
@@ -312,6 +383,7 @@ export class BillComponent implements OnInit {
   }
 
   getBarCodeList(index: any) {
+    this.sp.show();
     let searchString = "";
 
     this.specList.forEach((element: any, i: any) => {
@@ -325,17 +397,28 @@ export class BillComponent implements OnInit {
       this.PreOrder = "true"
       const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
         next: (res: any) => {
-          this.BarcodeList = res.data;
+          if(res.success){
+            this.BarcodeList = res.data;
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
-    } else {
+    } 
+     else {
       // stock select barcodelist
       this.PreOrder = "false"
       const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
         next: (res: any) => {
-          this.BarcodeList = res.data;
+          if(res.success){
+            this.BarcodeList = res.data;
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
@@ -355,9 +438,6 @@ export class BillComponent implements OnInit {
     if (this.BillMaster.ID !== null) {
       this.BillItem.Status = 2;
     }
-    if (!this.BillItem.PreOrder && this.BillItem.Quantity > this.BillItem.BarCodeCount) {
-      alert("Reqested Item Quantity not available. Please change the Quantity");
-    } else {
       this.billItemList.unshift(this.BillItem);
       console.log(this.billItemList);
 
@@ -371,7 +451,6 @@ export class BillComponent implements OnInit {
       this.showProductExpDate = false;
       // this.barCodeList = [];
       // this.SearchBarCode = '';
-    }
   }
 
   addItem() {
@@ -386,8 +465,20 @@ export class BillComponent implements OnInit {
     }
 
     if (this.category === 'Product') {
+      if(this.BillItem.Manual){
+        let searchString = "";
+        this.specList.forEach((element: any, i: any) => {
+          if (element.SelectedValue !== '') {
+            searchString = searchString.concat("/", element.SelectedValue);
+          }
+        });
+        this.BillItem.ProductTypeName = this.selectedProduct
+        this.BillItem.ProductName = searchString
+        this.BillItem.Barcode = 'ManualProduct'
+      }
       this.addProductItem();
     }
+    this.Req = {};
     this.BillMaster.Quantity = 0;
     this.BillMaster.SubTotal = 0;
     this.BillMaster.DiscountAmount = 0;

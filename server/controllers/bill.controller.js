@@ -120,7 +120,7 @@ module.exports = {
             let qry = "";
             if (PreOrder === "false") {
                 let shopMode = "";
-                if (ShopMode === "false") {
+                if (ShopMode === "false" || ShopMode === false) {
                     shopMode = " barcodemasternew.ShopID = " + shopid + " AND";
                 } else {
                     shopMode = " ";

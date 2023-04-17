@@ -59,7 +59,7 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Select Position </mat-label>
                                                 <mat-select name="Position" [(ngModel)]="data.Gender" #Gendercontrol
-                                                    required>
+                                                    >
                                                     <mat-option value="MR">Mr.</mat-option>
                                                     <mat-option value="Miss">Miss.</mat-option>
                                                     <mat-option value="DR">Dr.</mat-option>
@@ -1421,7 +1421,9 @@
                     </div>
                 </div>
                 <!-- bill info -->
-                <app-bill></app-bill>
+                <span *ngIf="this.data ">
+                    <app-bill></app-bill>
+                </span>
             </div>
         </div>
     </div>

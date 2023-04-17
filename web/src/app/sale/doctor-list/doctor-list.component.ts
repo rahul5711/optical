@@ -55,22 +55,25 @@ export class DoctorListComponent implements OnInit {
     }
     const subs: Subscription = this.ds.getList(dtm).subscribe({
       next: (res: any) => {
-        this.collectionSize = res.count;
-        this.dataList = res.data;
-        this.dataList.forEach((element: { PhotoURL: any; }) => {
-          if(element.PhotoURL !== "null" && element.PhotoURL !== ''){
-            element.PhotoURL = (this.env.apiUrl + element.PhotoURL);
-          }else{
-            element.PhotoURL = "/assets/images/userEmpty.png"
-          }
-        });
+        if(res.success){
+          this.collectionSize = res.count;
+          this.dataList = res.data;
+          this.dataList.forEach((element: { PhotoURL: any; }) => {
+            if(element.PhotoURL !== "null" && element.PhotoURL !== ''){
+              element.PhotoURL = (this.env.apiUrl + element.PhotoURL);
+            }else{
+              element.PhotoURL = "/assets/images/userEmpty.png"
+            }
+          });
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
         this.sp.hide();
-        this.as.successToast(res.message)
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-
   }
 
   deleteItem(i:any){
