@@ -75,7 +75,7 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const {Req,PreOrder,ShopMode} = req.body
+            const { Req, PreOrder, ShopMode } = req.body
             let barCode = Req.SearchBarCode;
             let qry = "";
             if (PreOrder === "false") {
@@ -111,11 +111,11 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const {Req,PreOrder,ShopMode} = req.body
+            const { Req, PreOrder, ShopMode } = req.body
             let SearchString = Req.searchString;
-            let searchString =  "%" + SearchString + "%";
+            let searchString = "%" + SearchString + "%";
 
-            console.log(searchString , 'searchString');
+            console.log(searchString, 'searchString');
 
             let qry = "";
             if (PreOrder === "false") {
@@ -143,6 +143,32 @@ module.exports = {
         } finally {
             await connection.release();
         }
+    },
+    saveBill: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const { billMaseterData, billDetailData, service } = req.body
+            let rw = "W";
+            let newInvoiceID = new Date();
+            if (billMaseterData.ID === null || billMaseterData.ID === undefined) {
+                newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
+            }
+            if (billDetailData.length !== 0 && !billDetailData[0].WholeSale) {
+                rw = "R";
+            }
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
     }
+
 
 }
