@@ -48,7 +48,7 @@ export class BillComponent implements OnInit {
 
   BillMaster: any = {
     ID: null, CompanyID: null, InvoiceNo: null, BillDate: null, DeliveryDate: null, Doctor: null, Employee: null, TrayNo:
-      null, Sno: "", ProductStatus: 'Pending', Balance: 0, PaymentStatus: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage:0.00, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
+      null, Sno: "", ProductStatus: 'Pending', Balance: 0, PaymentStatus: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0.00, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
   }
 
   BillItem: any = {
@@ -460,7 +460,7 @@ export class BillComponent implements OnInit {
       this.BillItem.Quantity = 1;
       if (this.BillItem.Option === 'Full Glass' || this.BillItem.Quantity !== 1) {
         this.BillItem.Quantity = this.BillItem.Quantity * 2;
-      } else{
+      } else {
         this.BillItem.Quantity = 1;
       }
       // Lens option
@@ -472,9 +472,9 @@ export class BillComponent implements OnInit {
   calculateGrandTotal() {
     this.billCalculation.calculateGrandTotal(this.BillMaster, this.billItemList, this.serviceLists)
   }
-  
-  AddDiscalculate(fieldName:any, mode:any ) {
-    this.billCalculation.AddDiscalculate(fieldName, mode,this.BillMaster)
+
+  AddDiscalculate(fieldName: any, mode: any) {
+    this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
   }
 
   addProductItem() {
@@ -524,7 +524,7 @@ export class BillComponent implements OnInit {
 
     // additem Product
     if (this.category === 'Product') {
-       // additem Manual
+      // additem Manual
       if (this.BillItem.Manual) {
         let searchString = "";
         this.prodList.forEach((e: any) => {
@@ -566,6 +566,23 @@ export class BillComponent implements OnInit {
     //   error: (err: any) => console.log(err.message),
     //   complete: () => subs.unsubscribe(),
     // });
+  }
+
+  deleteItem(category: any, i: any) {
+    if (category === "Product") {
+      if (this.billItemList[i].ID === null) {
+        this.billItemList.splice(i, 1);
+      } else {
+        this.billItemList[i].Status = 0;
+      }
+    } else if (category === "Service") {
+      if (this.serviceLists[i].ID === null) {
+        this.serviceLists.splice(i, 1);
+      } else {
+        this.serviceLists[i].Status = 0;
+      }
+    }
+    this.calculateGrandTotal();
   }
 
 
