@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import Swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
@@ -32,21 +33,49 @@ export class BillCalculationService {
       case 'discount':
         if (fieldName === 'DiscountPercentage') {
           if (Number(BillItem.DiscountPercentage) > 100) {
-            alert("you can't give 100% above discount");
+            Swal.fire({
+              icon: 'warning',
+              title: `You can't give more than 100% discount`,
+              text: ``,
+              footer: '',
+              backdrop: false,
+            });
             BillItem.DiscountPercentage = 0
           } else {
             BillItem.DiscountAmount = +BillItem.Quantity * +BillItem.UnitPrice * +BillItem.DiscountPercentage / 100;
           }
         }
-        if (fieldName === 'DiscountAmount' ) {
-          BillItem.DiscountPercentage = 100 * +BillItem.DiscountAmount / (+BillItem.Quantity * +BillItem.UnitPrice);
+        if (fieldName === 'DiscountAmount') {
+          if (Number(BillItem.DiscountAmount) > BillItem.SubTotal) {
+            Swal.fire({
+              icon: 'warning',
+              title: `You can't give discount amount more than sub total`,
+              text: ``,
+              footer: '',
+              backdrop: false,
+            });
+            BillItem.DiscountAmount = 0
+          } else {
+            BillItem.DiscountPercentage = 100 * +BillItem.DiscountAmount / (+BillItem.Quantity * +BillItem.UnitPrice);
+          }
         }
         break;
 
       case 'gst':
         if (!BillItem.WholeSale) {
           if (fieldName === 'GSTPercentage') {
-            BillItem.GSTAmount = (+BillItem.Quantity * +BillItem.UnitPrice - +BillItem.DiscountAmount) - ((+BillItem.Quantity * +BillItem.UnitPrice - +BillItem.DiscountAmount) / (1 + +BillItem.GSTPercentage / 100));
+            if (BillItem.GSTPercentage === null || BillItem.GSTPercentage === '' || (Number(BillItem.GSTPercentage) > 100)) {
+              Swal.fire({
+                icon: 'warning',
+                title: `You can't give more than 100% GSTPercentage`,
+                text: ``,
+                footer: '',
+                backdrop: false,
+              });
+              BillItem.GSTPercentage = 0;
+            } else {
+              BillItem.GSTAmount = (+BillItem.Quantity * +BillItem.UnitPrice - +BillItem.DiscountAmount) - ((+BillItem.Quantity * +BillItem.UnitPrice - +BillItem.DiscountAmount) / (1 + +BillItem.GSTPercentage / 100));
+            }
           }
           if (fieldName === 'GSTAmount') {
             BillItem.GSTPercentage = 100 * +BillItem.GSTAmount / (+BillItem.Quantity * +BillItem.UnitPrice - +BillItem.DiscountAmount);
@@ -54,8 +83,15 @@ export class BillCalculationService {
         } else {
           if (fieldName === 'GSTPercentage') {
             if (BillItem.GSTPercentage === null || BillItem.GSTPercentage === '' || (Number(BillItem.GSTPercentage) > 100)) {
-              alert("you can't give 100% above GST");
+              Swal.fire({
+                icon: 'warning',
+                title: `You can't give more than 100% GSTPercentage`,
+                text: ``,
+                footer: '',
+                backdrop: false,
+              });
               BillItem.GSTPercentage = 0;
+              BillItem.GSTType = 'None'
             }
             else {
               BillItem.GSTAmount = (+BillItem.Quantity * +BillItem.UnitPrice - BillItem.DiscountAmount) * +BillItem.GSTPercentage / 100;
@@ -75,20 +111,20 @@ export class BillCalculationService {
         BillItem.TotalAmount = +BillItem.Quantity * +BillItem.UnitPrice - +BillItem.DiscountAmount;
         BillItem.SubTotal = BillItem.TotalAmount - +BillItem.GSTAmount;
         break;
-        
+
       // serviceCalcultion    
       case 'serviceGst':
         if (fieldName === 'GSTPercentage') {
-          Service.GSTAmount =+Service.Price * +Service.GSTPercentage / 100;
+          Service.GSTAmount = +Service.Price * +Service.GSTPercentage / 100;
         }
         if (fieldName === 'GSTAmount') {
           Service.GSTPercentage = 100 * +Service.GSTAmount / (+Service.Price);
         }
-      break;
+        break;
 
       case 'serviceTotal':
         Service.TotalAmount = +Service.GSTAmount + +Service.Price;
-      break;
+        break;
     }
 
     // WholeSalecalculations
@@ -110,41 +146,84 @@ export class BillCalculationService {
 
   }
 
-    // bill Master calculation start
-    calculateGrandTotal(BillMaster:any, billItemList:any, serviceLists:any){
-      BillMaster.Quantity = 0;
-      BillMaster.SubTotal = 0;
-      BillMaster.DiscountAmount = 0;
-      BillMaster.GSTAmount = 0;
-      BillMaster.TotalAmount = 0;
-     
-      billItemList.forEach((element: any) => {
-        if (element.Status !== 0) {
-          BillMaster.Quantity = +BillMaster.Quantity + +element.Quantity;
-          BillMaster.SubTotal = +BillMaster.SubTotal + +element.SubTotal;
-          BillMaster.DiscountAmount = +BillMaster.DiscountAmount + +element.DiscountAmount;
-          BillMaster.GSTAmount = +BillMaster.GSTAmount + +element.GSTAmount;
-          BillMaster.TotalAmount = +BillMaster.TotalAmount + +element.TotalAmount;
-          BillMaster.DueAmount = BillMaster.TotalAmount;
-        }
-      });
-  
-      // serviceList
-      serviceLists.forEach((element: any) => {
-        if (element.Status !== 0) {
-          BillMaster.SubTotal = +BillMaster.SubTotal + +element.Price;
-          BillMaster.GSTAmount = +BillMaster.GSTAmount + +element.GSTAmount;
-          BillMaster.TotalAmount = +BillMaster.TotalAmount + +element.TotalAmount;
-        }
-      });
+  // bill Master calculation start
+  calculateGrandTotal(BillMaster: any, billItemList: any, serviceLists: any) {
+    BillMaster.Quantity = 0;
+    BillMaster.SubTotal = 0;
+    BillMaster.DiscountAmount = 0;
+    BillMaster.GSTAmount = 0;
+    BillMaster.TotalAmount = 0;
 
-      // RoundOff
-      let TotalAmt = '';
-      // TotalAmt = BillMaster.TotalAmount;
-      BillMaster.RoundOff = Math.round(BillMaster.TotalAmount).toFixed(2);
-      // BillMaster.RoundOff = (BillMaster.TotalAmount - Number(TotalAmt)).toFixed(2);      
-    };
-    // bill Master calculation start
+    billItemList.forEach((element: any) => {
+      if (element.Status !== 0) {
+        BillMaster.Quantity = +BillMaster.Quantity + +element.Quantity;
+        BillMaster.SubTotal = +BillMaster.SubTotal + +element.SubTotal;
+        BillMaster.DiscountAmount = +BillMaster.DiscountAmount + +element.DiscountAmount;
+        BillMaster.GSTAmount = +BillMaster.GSTAmount + +element.GSTAmount;
+        BillMaster.TotalAmount = +BillMaster.TotalAmount + +element.TotalAmount;
+        BillMaster.DueAmount = BillMaster.TotalAmount;
+      }
+    });
+
+    // serviceList
+    serviceLists.forEach((element: any) => {
+      if (element.Status !== 0) {
+        BillMaster.SubTotal = +BillMaster.SubTotal + +element.Price;
+        BillMaster.GSTAmount = +BillMaster.GSTAmount + +element.GSTAmount;
+        BillMaster.TotalAmount = +BillMaster.TotalAmount + +element.TotalAmount;
+      }
+    });
+
+    // RoundOff
+    let TotalAmt = '';
+    // TotalAmt = BillMaster.TotalAmount;
+    BillMaster.RoundOff = Math.round(BillMaster.TotalAmount).toFixed(2);
+    // BillMaster.RoundOff = (BillMaster.TotalAmount - Number(TotalAmt)).toFixed(2); 
+
+  };
+  // bill Master calculation start
+
+
+  AddDiscalculate(fieldName: any, mode: any, BillMaster: any,) {
+    // switch (mode) {
+
+    //   case 'discount':
+    //     if (fieldName === 'AddlDiscountPercentage') {
+    //       if (BillMaster.AddlDiscountPercentage > 100) {
+    //         Swal.fire({
+    //           icon: 'warning',
+    //           title: `You can't give more than 100% Discount Percentage`,
+    //           text: ``,
+    //           footer: '',
+    //           backdrop: false,
+    //         });
+    //         BillMaster.AddlDiscountPercentage = 0
+    //       } else {
+    //         BillMaster.AddlDiscount = +BillMaster.TotalAmount * +BillMaster.AddlDiscountPercentage / 100;
+    //         BillMaster.TotalAmount = BillMaster.TotalAmount - BillMaster.AddlDiscount
+           
+    //       }
+    //     }
+    //     if (fieldName === 'AddlDiscount') {
+    //       if (BillMaster.AddlDiscount > BillMaster.TotalAmount) {
+    //         Swal.fire({
+    //           icon: 'warning',
+    //           title: `You can't give discount amount more than total amount`,
+    //           text: ``,
+    //           footer: '',
+    //           backdrop: false,
+    //         });
+    //         BillMaster.AddlDiscount = 0
+    //       } else {
+    //         BillMaster.AddlDiscountPercentage = 100 * +BillMaster.AddlDiscount / (+BillMaster.TotalAmount);
+    //         BillMaster.TotalAmount = BillMaster.TotalAmount - BillMaster.AddlDiscount
+          
+    //       }
+    //     }
+    //     break;
+    // }
+    // BillMaster.RoundOff = Math.round(BillMaster.TotalAmount).toFixed(2);
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

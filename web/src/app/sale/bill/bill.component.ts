@@ -48,7 +48,7 @@ export class BillComponent implements OnInit {
 
   BillMaster: any = {
     ID: null, CompanyID: null, InvoiceNo: null, BillDate: null, DeliveryDate: null, Doctor: null, Employee: null, TrayNo:
-      null, Sno: "", ProductStatus: 'Pending', Balance: 0, PaymentStatus: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
+      null, Sno: "", ProductStatus: 'Pending', Balance: 0, PaymentStatus: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage:0.00, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
   }
 
   BillItem: any = {
@@ -59,7 +59,7 @@ export class BillComponent implements OnInit {
     ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1
   };
 
-  data = { billMaster: null,  billDetail: null, service: null };
+  data = { billMaster: null, billDetail: null, service: null };
 
   category = 'Product';
   employeeList: any;
@@ -92,7 +92,7 @@ export class BillComponent implements OnInit {
     this.getDoctor();
     this.getProductList();
     this.getService();
-    this.getGSTList();
+
   }
 
   getDoctor() {
@@ -147,7 +147,11 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.supps.getList('TaxType').subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.gstList = res.data
+          if (this.BillItem.GSTPercentage === 0) {
+            this.BillItem.GSTType = 'None'
+          } else {
+            this.gstList = res.data
+          }
         } else {
           this.as.errorToast(res.message)
         }
@@ -339,6 +343,7 @@ export class BillComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     } else {
+      this.sp.hide();
       Swal.fire({
         icon: 'warning',
         title: 'Not Available',
@@ -351,37 +356,43 @@ export class BillComponent implements OnInit {
 
   getSearchByString() {
     this.sp.show();
-    if (this.BillItem.PreOrder) {
-      // PreOrder product name
-      this.PreOrder = "true"
-      const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.BarcodeList = res.data;
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
+    if (this.BillItem.Manual === false) {
+      if (this.BillItem.PreOrder) {
+        // PreOrder product name
+        this.PreOrder = "true"
+        const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.BarcodeList = res.data;
+            } else {
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      } else {
+        // stock product name
+        this.PreOrder = "false"
+        const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.BarcodeList = res.data;
+            } else {
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
     } else {
-      // stock product name
-      this.PreOrder = "false"
-      const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.BarcodeList = res.data;
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
+      this.sp.hide();
+      this.BarcodeList = []
     }
+    this.sp.hide();
   }
 
   getBarCodeList(index: any) {
@@ -395,70 +406,113 @@ export class BillComponent implements OnInit {
     });
     this.Req.searchString = this.selectedProduct + searchString
     // PreOrder select barcodelist
-    if (this.BillItem.PreOrder) {
-      this.PreOrder = "true"
-      const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.BarcodeList = res.data;
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
+    if (this.BillItem.Manual === false) {
+      if (this.BillItem.PreOrder) {
+        this.PreOrder = "true"
+        const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.BarcodeList = res.data;
+            } else {
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+      else {
+        // stock select barcodelist
+        this.PreOrder = "false"
+        const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.BarcodeList = res.data;
+            } else {
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    } else {
+      this.sp.hide();
+      this.BarcodeList = []
     }
-    else {
-      // stock select barcodelist
-      this.PreOrder = "false"
-      const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.BarcodeList = res.data;
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    }
+    this.sp.hide();
   }
 
   calculations(fieldName: any, mode: any,) {
-    this.billCalculation.calculations(fieldName, mode, this.BillItem, this.Service)
+    if (!this.BillItem.PreOrder && !this.BillItem.Manual && this.BillItem.Quantity > this.searchList.BarCodeCount) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Entered Qty is Greater then Available Qty',
+        text: '',
+        footer: '',
+        backdrop: false,
+      });
+    }
+    else {
+      // Lens option
+      this.BillItem.Quantity = 1;
+      if (this.BillItem.Option === 'Full Glass' || this.BillItem.Quantity !== 1) {
+        this.BillItem.Quantity = this.BillItem.Quantity * 2;
+      } else{
+        this.BillItem.Quantity = 1;
+      }
+      // Lens option
+      this.billCalculation.calculations(fieldName, mode, this.BillItem, this.Service)
+      this.getGSTList();
+    }
   }
 
   calculateGrandTotal() {
     this.billCalculation.calculateGrandTotal(this.BillMaster, this.billItemList, this.serviceLists)
+  }
+  
+  AddDiscalculate(fieldName:any, mode:any ) {
+    this.billCalculation.AddDiscalculate(fieldName, mode,this.BillMaster)
   }
 
   addProductItem() {
     if (this.BillMaster.ID !== null) {
       this.BillItem.Status = 2;
     }
-    if (!this.BillItem.PreOrder && this.BillItem.Quantity > this.BillItem.BarCodeCount) {
-      alert("Reqested Item Quantity not available. Please change the Quantity");
+    if (!this.BillItem.PreOrder && !this.BillItem.Manual && this.BillItem.Quantity > this.searchList.BarCodeCount) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Entered Qty is Greater then Available Qty',
+        text: '',
+        footer: '',
+        backdrop: false,
+      });
+      this.BillItem.Quantity = 0;
+      this.BillItem.SubTotal = 0;
+      this.BillItem.DiscountAmount = 0;
+      this.BillItem.GSTAmount = 0;
+      this.BillItem.TotalAmount = 0;
+      this.billCalculation.calculations('', '', this.BillItem, this.Service)
     } else {
       this.billItemList.unshift(this.BillItem);
       console.log(this.billItemList);
 
       this.BillItem = {
-        ID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false,  Barcode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null
+        ID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, Barcode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null
       };
 
       this.selectedProduct = "";
       this.specList = [];
-      this.showProductExpDate = false;
-      // this.barCodeList = [];
-      // this.SearchBarCode = '';
+      this.BillItem.BarCodeCount = 0;
+      this.BarcodeList = [];
+      this.Req = {};
     }
   }
 
   addItem() {
+    // additem Services
     if (this.category === 'Services') {
       if (this.BillMaster.ID !== null) { this.Service.Status = 2; }
       this.serviceLists.push(this.Service);
@@ -468,7 +522,9 @@ export class BillComponent implements OnInit {
       };
     }
 
+    // additem Product
     if (this.category === 'Product') {
+       // additem Manual
       if (this.BillItem.Manual) {
         let searchString = "";
         this.prodList.forEach((e: any) => {
@@ -488,7 +544,6 @@ export class BillComponent implements OnInit {
       }
       this.addProductItem();
     }
-    this.Req = {};
     this.BillMaster.Quantity = 0;
     this.BillMaster.SubTotal = 0;
     this.BillMaster.DiscountAmount = 0;
@@ -499,7 +554,7 @@ export class BillComponent implements OnInit {
     this.calculateGrandTotal()
   }
 
-  onSubmit(){
+  onSubmit() {
     this.data.billMaster = this.BillMaster;
     this.data.billDetail = this.billItemList;
     this.data.service = this.serviceLists;

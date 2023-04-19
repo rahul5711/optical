@@ -455,7 +455,7 @@ export class BillingComponent implements OnInit {
           this.spectacle.CustomerID = this.id;
           this.clens.CustomerID = this.id;
           this.other.CustomerID = this.id;
-          this.router.navigate(['/sale/billing', res.data[0].ID ]); 
+          this.router.navigate(['/sale/billing', res.data[0].ID]); 
           this.getCustomerById();
         }
           Swal.fire({
