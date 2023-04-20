@@ -29,7 +29,7 @@ export class BillComponent implements OnInit {
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   env = environment;
-  id: any
+  id2: any
 
   constructor(
     private router: Router,
@@ -43,7 +43,7 @@ export class BillComponent implements OnInit {
     private billCalculation: BillCalculationService,
     private supps: SupportService,
   ) {
-    this.id = this.route.snapshot.params['id'];
+    this.id2 = this.route.snapshot.params['id'];
   }
 
   BillMaster: any = {
@@ -541,6 +541,25 @@ export class BillComponent implements OnInit {
         this.BillItem.ProductTypeName = this.selectedProduct
         this.BillItem.ProductName = searchString
         this.BillItem.Barcode = 'ManualProduct'
+      }
+      if (this.BillItem.Barcode === null || this.BillItem.Barcode === '') {
+        if (this.BillItem.PreOrder) {
+          let searchString = "";
+          this.prodList.forEach((e: any) => {
+            if (e.Name === this.selectedProduct) {
+              this.BillItem.ProductTypeID = e.ID;
+              this.BillItem.HSNCode = e.HSNCode;
+            }
+          })
+          this.specList.forEach((element: any, i: any) => {
+            if (element.SelectedValue !== '') {
+              searchString = searchString.concat(element.SelectedValue, "/");
+            }
+          });
+          this.BillItem.ProductTypeName = this.selectedProduct
+          this.BillItem.ProductName = searchString
+          this.BillItem.Barcode = '0'
+        }
       }
       this.addProductItem();
     }
