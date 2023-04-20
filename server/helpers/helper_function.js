@@ -171,5 +171,53 @@ module.exports = {
     let gstAmount = 0
     gstAmount = (SubTotal * GSTPercentage) / 100
     return gstAmount
-  }
+  },
+  generateInvoiceNo: async(CompanyID, ShopID, billDetailData, billMaseterData) => {
+    const connection = await getConnection.connection();
+    let rw = "W";
+    let billShopWiseBoolean = false
+    let newInvoiceID = new Date();
+    if (billMaseterData.ID === null || billMaseterData.ID === undefined) {
+        newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
+    }
+    if (billDetailData.length !== 0 && !billDetailData[0].WholeSale) {
+        rw = "R";
+    }
+    const billShopWise = await connection.query(`select * from shop where CompanyID = ${CompanyID}`);
+    if (billShopWise.length) {
+        if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
+            billShopWiseBoolean = true
+        } else {
+            billShopWiseBoolean = false
+        }
+    }
+
+    let lastInvoiceID = []
+
+    if (billShopWiseBoolean) {
+        lastInvoiceID = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID} and InvoiceNo LIKE '${newInvoiceID}%' )`);
+    } else {
+        lastInvoiceID = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and InvoiceNo LIKE '${newInvoiceID}%' )`);
+    }
+
+    if (lastInvoiceID.length === 0 || lastInvoiceID[0].MaxID === null ||
+        lastInvoiceID[0].InvoiceNo.substring(0, 4) !== newInvoiceID
+    ) {
+        newInvoiceID = newInvoiceID + rw + "00001";
+    } else {
+        let temp3 = lastInvoiceID[0].InvoiceNo;
+        let temp1 = parseInt(temp3.substring(10, 5)) + 1;
+        let temp2 = "0000" + temp1;
+        newInvoiceID = newInvoiceID + rw + temp2.slice(-5);
+    }
+
+    return newInvoiceID
+  },
+  generateBillSno: async (CompanyID, ShopID) => {
+    const connection = await getConnection.connection();
+    const sNo = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+
+    return sNo.length + 1;
+  },
+
 }

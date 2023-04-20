@@ -2,7 +2,7 @@ const createError = require('http-errors')
 const mysql = require('../helpers/db')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
-const { shopID } = require('../helpers/helper_function')
+const { shopID, generateInvoiceNo, generateBillSno } = require('../helpers/helper_function')
 module.exports = {
     getDoctor: async (req, res, next) => {
         const connection = await mysql.connection();
@@ -153,14 +153,22 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
 
             const { billMaseterData, billDetailData, service } = req.body
-            let rw = "W";
-            let newInvoiceID = new Date();
-            if (billMaseterData.ID === null || billMaseterData.ID === undefined) {
-                newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
-            }
-            if (billDetailData.length !== 0 && !billDetailData[0].WholeSale) {
-                rw = "R";
-            }
+
+            if (!billMaseterData) return res.send({ message: "Invalid Query Data" })
+            if (!billDetailData) return res.send({ message: "Invalid Query Data" })
+            if (!billDetailData.length) return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.ID !== null || billMaseterData.ID === undefined) return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.CustomerID == null || billMaseterData.CustomerID === undefined) return res.send({ message: "Invalid Query Data" })
+
+            const invoiceNo = await generateInvoiceNo(CompanyID,shopid, billDetailData, billMaseterData)
+            const serialNo = await generateBillSno(CompanyID,shopid,)
+
+            billMaseterData.Sno = serialNo;
+            billMaseterData.InvoiceNo = invoiceNo;
+
+
+
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
