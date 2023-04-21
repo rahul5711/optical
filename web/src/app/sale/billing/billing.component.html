@@ -1422,8 +1422,8 @@
                     </div>
                 </div>
                 <!-- bill info -->
-                <div>
-                    <app-bill></app-bill>
+                <div *ngIf="this.id != 0">
+                    <app-bill @fade [customerID2]="this.id"></app-bill>
                 </div>
             </div>
         </div>

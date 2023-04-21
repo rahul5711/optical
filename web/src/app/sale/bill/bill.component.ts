@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -18,13 +18,23 @@ import { BillService } from 'src/app/service/bill.service';
 import { ProductService } from 'src/app/service/product.service';
 import { BillCalculationService } from 'src/app/service/helpers/bill-calculation.service';
 import { SupportService } from 'src/app/service/support.service';
+import {trigger, style, animate, transition} from '@angular/animations';
 
 @Component({
   selector: 'app-bill',
   templateUrl: './bill.component.html',
-  styleUrls: ['./bill.component.css']
+  styleUrls: ['./bill.component.css'],
+  animations: [
+    trigger('fade', [ 
+      transition('void => *', [
+        style({ opacity: 0 }), 
+        animate(2000, style({opacity: 1}))
+      ]) 
+    ])
+  ]
 })
 export class BillComponent implements OnInit {
+  @Input() customerID2: any
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
@@ -42,13 +52,15 @@ export class BillComponent implements OnInit {
     private ps: ProductService,
     private billCalculation: BillCalculationService,
     private supps: SupportService,
+    private cs: CustomerService,
   ) {
     this.id2 = this.route.snapshot.params['id'];
   }
+ 
+  
 
   BillMaster: any = {
-    ID: null, CompanyID: null, InvoiceNo: null, BillDate: null, DeliveryDate: null, Doctor: null, Employee: null, TrayNo:
-      null, Sno: "", ProductStatus: 'Pending', Balance: 0, PaymentStatus: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0.00, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "",  BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, Doctor: null, Employee: null, TrayNo:null,  ProductStatus: 'Pending', Balance: 0,  Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0.00, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
   }
 
   BillItem: any = {
@@ -59,6 +71,11 @@ export class BillComponent implements OnInit {
     ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1
   };
 
+  customer: any = {
+    ID: '', CompanyID: '',  Idd: 0, Name: '', Sno: '', TotalCustomer: '', VisitDate: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: '', DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
+  };
+
+  customerPower:any=[]
   data = { billMaster: null, billDetail: null, service: null };
 
   category = 'Product';
@@ -92,7 +109,28 @@ export class BillComponent implements OnInit {
     this.getDoctor();
     this.getProductList();
     this.getService();
+    this.getCustomerById()
+  }
 
+  getCustomerById(){
+    const subs: Subscription = this.cs.getCustomerById(this.customerID2).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          console.log(res);
+          this.customer = res.data[0]
+          this.customerPower = res
+          this.BillMaster.CustomerID = this.customer.ID
+          this.BillMaster.PaymentStatus = 'unpaid';
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
   }
 
   getDoctor() {
@@ -561,6 +599,8 @@ export class BillComponent implements OnInit {
           this.BillItem.Barcode = '0'
         }
       }
+      this.searchList.MeasurementID = JSON.stringify(this.customerPower.spectacle_rx[0]);
+      this.BillItem.MeasurementID = JSON.stringify(this.customerPower.spectacle_rx[0]);
       this.addProductItem();
     }
     this.BillMaster.Quantity = 0;
@@ -574,6 +614,7 @@ export class BillComponent implements OnInit {
   }
 
   onSubmit() {
+    this.BillMaster.ShopID = this.loginShopID
     this.data.billMaster = this.BillMaster;
     this.data.billDetail = this.billItemList;
     this.data.service = this.serviceLists;

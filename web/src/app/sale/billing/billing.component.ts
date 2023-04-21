@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -19,11 +19,20 @@ import { CustomerPowerCalculationService } from 'src/app/service/helpers/custome
 import { EmployeeService } from 'src/app/service/employee.service';
 import { BillService } from 'src/app/service/bill.service';
 import { ProductService } from 'src/app/service/product.service';
+import {trigger, style, animate, transition} from '@angular/animations';
 
 @Component({
   selector: 'app-billing',
   templateUrl: './billing.component.html',
-  styleUrls: ['./billing.component.css']
+  styleUrls: ['./billing.component.css'],
+  animations: [
+    trigger('fade', [ 
+      transition('void => *', [
+        style({ opacity: 0 }), 
+        animate(1000, style({opacity: 1}))
+      ]) 
+    ])
+  ]
 })
 
 export class BillingComponent implements OnInit {
@@ -403,7 +412,7 @@ export class BillingComponent implements OnInit {
 
   ngOnInit(): void {
     this.data.VisitDate = moment().format('YYYY-MM-DD');
-    if (this.id != 0) {
+    if(this.id != 0){
       this.getCustomerById(); 
     }
   }
@@ -455,7 +464,7 @@ export class BillingComponent implements OnInit {
           this.spectacle.CustomerID = this.id;
           this.clens.CustomerID = this.id;
           this.other.CustomerID = this.id;
-          this.router.navigate(['/sale/billing', res.data[0].ID,0]); 
+          this.router.navigate(['/sale/billing', 0,res.data[0].ID]); 
           this.getCustomerById();
         }
           Swal.fire({
@@ -563,7 +572,7 @@ export class BillingComponent implements OnInit {
 
     this.Check = { SpectacleCheck: true, ContactCheck: false, OtherCheck: false, };
     this.id = 0;
-    this.router.navigate(['/sale/billing', 0 ]);
+    this.router.navigate(['/sale/billing', 0 ,0]);
     this.ngOnInit();
     this.spectacleLists = [];
     this.contactList = [];
