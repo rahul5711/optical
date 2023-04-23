@@ -167,48 +167,48 @@ module.exports = {
     discountAmount = (item.UnitPrice * item.Quantity) * item.DiscountPercentage / 100;
     return discountAmount
   },
-  gstAmount: async(SubTotal, GSTPercentage) => {
+  gstAmount: async (SubTotal, GSTPercentage) => {
     let gstAmount = 0
     gstAmount = (SubTotal * GSTPercentage) / 100
     return gstAmount
   },
-  generateInvoiceNo: async(CompanyID, ShopID, billDetailData, billMaseterData) => {
+  generateInvoiceNo: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     const connection = await getConnection.connection();
     let rw = "W";
     let billShopWiseBoolean = false
     let newInvoiceID = new Date();
     if (billMaseterData.ID === null || billMaseterData.ID === undefined) {
-        newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
+      newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
     }
     if (billDetailData.length !== 0 && !billDetailData[0].WholeSale) {
-        rw = "R";
+      rw = "R";
     }
     const billShopWise = await connection.query(`select * from shop where CompanyID = ${CompanyID}`);
     if (billShopWise.length) {
-        if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
-            billShopWiseBoolean = true
-        } else {
-            billShopWiseBoolean = false
-        }
+      if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
+        billShopWiseBoolean = true
+      } else {
+        billShopWiseBoolean = false
+      }
     }
 
     let lastInvoiceID = []
 
     if (billShopWiseBoolean) {
-        lastInvoiceID = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID} and InvoiceNo LIKE '${newInvoiceID}%' )`);
+      lastInvoiceID = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID} and InvoiceNo LIKE '${newInvoiceID}%' )`);
     } else {
-        lastInvoiceID = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and InvoiceNo LIKE '${newInvoiceID}%' )`);
+      lastInvoiceID = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and InvoiceNo LIKE '${newInvoiceID}%' )`);
     }
 
     if (lastInvoiceID.length === 0 || lastInvoiceID[0].MaxID === null ||
-        lastInvoiceID[0].InvoiceNo.substring(0, 4) !== newInvoiceID
+      lastInvoiceID[0].InvoiceNo.substring(0, 4) !== newInvoiceID
     ) {
-        newInvoiceID = newInvoiceID + rw + "00001";
+      newInvoiceID = newInvoiceID + rw + "00001";
     } else {
-        let temp3 = lastInvoiceID[0].InvoiceNo;
-        let temp1 = parseInt(temp3.substring(10, 5)) + 1;
-        let temp2 = "0000" + temp1;
-        newInvoiceID = newInvoiceID + rw + temp2.slice(-5);
+      let temp3 = lastInvoiceID[0].InvoiceNo;
+      let temp1 = parseInt(temp3.substring(10, 5)) + 1;
+      let temp2 = "0000" + temp1;
+      newInvoiceID = newInvoiceID + rw + temp2.slice(-5);
     }
 
     return newInvoiceID
@@ -219,5 +219,85 @@ module.exports = {
 
     return sNo.length + 1;
   },
+  generateCommission: async (CompanyID, UserType, UserID, bMasterID, billMaseterData, LoggedOnUser) => {
+    const connection = await getConnection.connection();
+    try {
+      let commission = { Type: 0, Mode: 0, Value: 0, Amount: 0 }
+      let commission1 = { Type: 0, Mode: 0, Value: 0, Amount: 0 }
+
+      if (UserType === 'Employee') {
+        let userData = await connection.query(`select * from user where user.ID = ${UserID}`);
+        if (userData.length !== 0 && userData[0].CommissionType == 1) {
+          commission1.Type = userData[0].CommissionType;
+          if (userData[0].CommissionMode == 2) {
+            commission1.Amount = userData[0].CommissionValue;
+            commission1.Mode = userData[0].CommissionMode;
+            commission1.Value = userData[0].CommissionValue;
+          } else if (userData[0].CommissionMode == 1) {
+            commission1.Type = userData[0].CommissionType;
+            commission1.Amount = +billMaseterData.SubTotal * +userData[0].CommissionValue / 100;
+            commission1.Mode = userData[0].CommissionMode;
+            commission1.Value = userData[0].CommissionValue;
+          }
+        } else if (userData.length !== 0 && userData[0].CommissionType == 2) {
+          let userResultB = await connection.query(`SELECT SUM(billdetail.SubTotal) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' AND BrandType = 1`);
+          let userResultNB = await connection.query(`SELECT SUM(billdetail.SubTotal) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' AND BrandType <> 1`);
+          commission1.Type = userData[0].CommissionType;
+          if (userData[0].CommissionMode == 2) {
+            // commission1.Amount = subTotal;
+            // commission1.Mode = userData[0].CommissionMode;
+            // commission1.Value = userData[0].CommissionValue;
+          } else if (userData[0].CommissionMode == 1) {
+            commission1.Type = userData[0].CommissionType;
+            commission1.Amount = userResultB[0].SubTotalVal * +userData[0].CommissionValue / 100 + userResultNB[0].SubTotalVal * +userData[0].CommissionValueNB / 100;
+            commission1.Mode = userData[0].CommissionMode;
+            commission1.Value = userData[0].CommissionValue;
+          }
+        }
+
+        if (commission1.Type !== 0 && commission1.Amount !== 0) {
+          const save = await connection.query(`insert into commissiondetail (CompanyID,ShopID,CommissionMasterID, UserType, UserID,BillMasterID, CommissionMode, CommissionType, CommissionValue, CommissionAmount, Status,CreatedBy,CreatedOn ) values (${CompanyID}, ${billMaseterData.ShopID}, 0,'Employee', ${userData[0].ID}, ${bMasterID}, ${commission1.Mode},${commission1.Type},${commission1.Value},${commission1.Amount}, 1, '${LoggedOnUser}', now())`)
+          console.log(save);
+        }
+      } else if (UserType === 'Doctor') {
+        let doctorData = await connection.query(`select * from doctor where doctor.ID = ${UserID}`);
+        if (doctorData.length !== 0 && doctorData[0].CommissionType == 1) {
+          commission.Type = doctorData[0].CommissionType;
+          if (doctorData[0].CommissionMode == 2) {
+            commission.Amount = doctorData[0].CommissionValue;
+            commission.Mode = doctorData[0].CommissionMode;
+            commission.Value = doctorData[0].CommissionValue;
+          } else if (doctorData[0].CommissionMode == 1) {
+            commission.Type = doctorData[0].CommissionType;
+            commission.Amount = +billMaseterData.SubTotal * +doctorData[0].CommissionValue / 100;
+            commission.Mode = doctorData[0].CommissionMode;
+            commission.Value = doctorData[0].CommissionValue;
+          }
+        } else if (doctorData.length !== 0 && doctorData[0].CommissionType == 2) {
+          let doctorResultB = await connection.query(`SELECT SUM(billdetail.SubTotal) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' AND BrandType = 1`);
+          let doctorResultNB = await connection.query(`SELECT SUM(billdetail.SubTotal) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' AND BrandType <> 1`);
+          commission.Type = doctorData[0].CommissionType;
+          if (doctorData[0].CommissionMode == 2) {
+            // commission.Amount = subTotal;
+            // commission.Mode = doctorData[0].CommissionMode;
+            // commission.Value = doctorData[0].CommissionValue;
+          } else if (doctorData[0].CommissionMode == 1) {
+            commission.Type = doctorData[0].CommissionType;
+            commission.Amount = doctorResultB[0].SubTotalVal * +doctorData[0].CommissionValue / 100 + doctorResultNB[0].SubTotalVal * +doctorData[0].CommissionValueNB / 100;
+            commission.Mode = doctorData[0].CommissionMode;
+            commission.Value = doctorData[0].CommissionValue;
+          }
+        }
+
+        if (commission.Type !== 0 && commission.Amount !== 0) {
+          await connection.query(`insert into commissiondetail (CompanyID,ShopID,CommissionMasterID, UserType, UserID,BillMasterID, CommissionMode, CommissionType, CommissionValue, CommissionAmount, Status,CreatedBy,CreatedOn ) values (${CompanyID}, ${billMaseterData.ShopID}, 0,'Doctor', ${billMaseterData.Doctor}, ${bMasterID}, ${commission.Mode},${commission.Type},${commission.Value},${commission.Amount},1,${LoggedOnUser}, now())`)
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+
+  }
 
 }
