@@ -141,7 +141,9 @@
                                                 <mat-label>Loyalty Mode</mat-label>
                                                 <mat-select name="CommissionMode" [(ngModel)]="data.CommissionMode"
                                                     required #CommissionTypecontrol>
-                                                    <mat-option [value]=0>Percentage</mat-option>
+                                                    <mat-option [value]=0></mat-option>
+                                                    <mat-option [value]=1>Percentage</mat-option>
+                                                    <mat-option *ngIf="data.CommissionType == 1"  [value]=2>Fixed Amount</mat-option>
                                                 </mat-select>
                                                 <mat-error> Select Loyalty Type</mat-error>
                                             </mat-form-field>
