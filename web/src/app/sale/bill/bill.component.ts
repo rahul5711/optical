@@ -76,7 +76,7 @@ export class BillComponent implements OnInit {
   };
 
   customerPower:any=[]
-  data = { billMaster: null, billDetail: null, service: null };
+  data = { billMaseterData: null, billDetailData: null, service: null };
 
   category = 'Product';
   employeeList: any;
@@ -365,6 +365,7 @@ export class BillComponent implements OnInit {
           }
           this.BillItem.Barcode = this.searchList.Barcode;
           this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
+          this.BillItem.BaseBarCode = this.searchList.BaseBarCode;
           if (this.BillItem.WholeSale === true) {
             this.BillItem.UnitPrice = this.searchList.WholeSalePrice;
             this.BillItem.Quantity = 1
@@ -598,6 +599,7 @@ export class BillComponent implements OnInit {
           this.BillItem.ProductTypeName = this.selectedProduct
           this.BillItem.ProductName = searchString
           this.BillItem.Barcode = '0'
+          this.BillItem.BaseBarCode = '0'
         }
       }
       this.searchList.MeasurementID = JSON.stringify(this.customerPower.spectacle_rx[0]);
@@ -616,17 +618,17 @@ export class BillComponent implements OnInit {
 
   onSubmit() {
     this.BillMaster.ShopID = this.loginShopID
-    this.data.billMaster = this.BillMaster;
-    this.data.billDetail = this.billItemList;
+    this.data.billMaseterData = this.BillMaster;
+    this.data.billDetailData = this.billItemList;
     this.data.service = this.serviceLists;
     console.log(this.data);
-    // const subs: Subscription = this.bill.saveBill(this.data).subscribe({
-    //   next: (res: any) => {
+    const subs: Subscription = this.bill.saveBill(this.data).subscribe({
+      next: (res: any) => {
 
-    //   },
-    //   error: (err: any) => console.log(err.message),
-    //   complete: () => subs.unsubscribe(),
-    // });
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   deleteItem(category: any, i: any) {
