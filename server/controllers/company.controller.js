@@ -214,6 +214,12 @@ module.exports = {
 
             }
 
+            // save supplier for preorder
+
+            const savesupplier =  await connection.query(`insert into supplier (Sno,Name, CompanyID,  MobileNo1, MobileNo2 , PhoneNo, Address,GSTNo, Email,Website ,CINNo,Fax,PhotoURL,ContactPerson,Remark,GSTType,DOB,Anniversary, Status,CreatedBy,CreatedOn) values ('1','PreOrder Supplier', ${saveCompany.insertId}, 'xxxxxxxxxx', 'xxxxxxxxxx', 'xxxxxxxxxx','Pune','${Body.GSTNo}','${Body.Email}','${Body.Website}','${Body.CINNo}','${Body.Fax}','${Body.PhotoURL}','${Body.ContactPerson}','${Body.Remark}','${Body.GSTType}','${Body.DOB}','${Body.Anniversary}',1,${LoggedOnUser}, now())`)
+
+            console.log(connected("Supplier Save SuccessFully !!!"));
+
 
             //  barcode initiated for company
 

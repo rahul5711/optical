@@ -148,6 +148,9 @@ module.exports = {
             if (!doesExist.length) {
                 return res.send({ message: "supplier doesnot exist from this id " })
             }
+            if (doesExist[0].Name === 'PreOrder Supplier') {
+                return res.send({ success: false, message: "you can not delete this supplier, it is system generated supplier " })
+            }
 
 
             const doesPurchase = await connection.query(`select * from purchasemasternew where Status and CompanyID = ${CompanyID} and SupplierID = ${Body.ID}`)

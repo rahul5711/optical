@@ -2,7 +2,7 @@ const createError = require('http-errors')
 const mysql = require('../helpers/db')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
-const { shopID, generateInvoiceNo, generateBillSno, generateCommission } = require('../helpers/helper_function')
+const { shopID, generateInvoiceNo, generateBillSno, generateCommission, generateBarcode } = require('../helpers/helper_function')
 module.exports = {
     getDoctor: async (req, res, next) => {
         const connection = await mysql.connection();
@@ -175,6 +175,18 @@ module.exports = {
 
             let bMasterID = bMaster.insertId;
 
+
+            // save service
+            await Promise.all(
+                service.map(async (ele) => {
+                    let result1 = await connection.query(
+                        `insert into billservice ( BillID, ServiceType ,CompanyID,Description, Price, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn ) values (${bMasterID}, '${ele.ServiceType}', ${CompanyID},  '${ele.Description}', ${ele.Price}, ${ele.GSTPercentage}, ${ele.GSTAmount}, '${ele.GSTType}', ${ele.TotalAmount},1,${LoggedOnUser}, now())`
+                    );
+                })
+            );
+
+            // save Bill Details
+
             await Promise.all(
                 billDetailData.map(async (item) => {
                     let preorder = 0;
@@ -198,7 +210,11 @@ module.exports = {
                     } else if(preorder === 1 && item.Barcode === "0") {
 
                     }else if(manual === 1 && preorder === 0) {
-
+                        item.BaseBarCode = await generateBarcode(CompanyID, 'MB')
+                        item.Barcode = Number(item.BaseBarCode) * 1000
+                        let result = await connection.query(
+                            `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
+                        );
                     }
 
                 })

@@ -167,8 +167,13 @@ export class SupplierComponent implements OnInit {
 
         const subs: Subscription = this.ss.deleteData(this.dataList[i].ID).subscribe({
           next: (res: any) => {
-            this.dataList.splice(i, 1);
-            this.as.successToast(res.message)
+            if (res.success) {
+              this.dataList.splice(i, 1);
+              this.as.successToast(res.message)
+            } else {
+              this.as.errorToast(res.message)
+            }
+
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
