@@ -298,6 +298,60 @@ module.exports = {
     }
 
 
+  },
+  generatePreOrderProduct: async (CompanyID, ShopID, InvoiceNo, Item) => {
+    const connection = await getConnection.connection();
+    const currentStatus = "Pre Order";
+    const paymentStatus = "Unpaid"
+    const supplierData = await connection.query(`select * from supplier where CompanyID = ${CompanyID} and Name = 'PreOrder Supplier'`)
+
+    const purchaseDetailData = await connection.query(`select * from purchasedetailnew left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID where purchasemasternew.PStatus = 1 and purchasemasternew.SupplierID = ${supplierData[0].ID} and purchasemasternew.CompanyID = ${CompanyID} and purchasemasternew.ShopID = ${ShopID}`)
+
+    if (purchaseDetailData.length && purchaseDetailData.length <= 50) {
+      const purchaseMasterData = await connection.query(`select * from purchasemasternew where CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+
+      const purchase = {
+        ID: purchaseMasterData[0].ID,
+        SupplierID: supplierData[0].ID,
+        CompanyID: CompanyID,
+        ShopID: ShopID,
+        PurchaseDate: now(),
+        PaymentStatus: paymentStatus,
+        InvoiceNo: InvoiceNo,
+        GSTNo: '',
+        Status: 1,
+        PStatus: 1,
+        Quantity: purchaseMasterData[0].Quantity + 1,
+        SubTotal: purchaseMasterData[0].SubTotal + Item.SubTotal,
+        DiscountAmount: purchaseMasterData[0].DiscountAmount + Item.DiscountAmount,
+        GSTAmount: purchaseMasterData[0].GSTAmount + Item.GSTAmount,
+        TotalAmount: purchaseMasterData[0].TotalAmount + Item.TotalAmount,
+        DueAmount: purchaseMasterData[0].DueAmount + Item.DueAmount
+      }
+
+    } else {
+      const purchase = {
+        ID: null,
+        SupplierID: supplierData[0].ID,
+        CompanyID: CompanyID,
+        ShopID: ShopID,
+        PurchaseDate: now(),
+        PaymentStatus: paymentStatus,
+        InvoiceNo: InvoiceNo,
+        GSTNo: '',
+        Status: 1,
+        PStatus: 1,
+        Quantity: 1,
+        SubTotal: Item.SubTotal,
+        DiscountAmount: Item.DiscountAmount,
+        GSTAmount: Item.GSTAmount,
+        TotalAmount: Item.TotalAmount,
+        DueAmount: Item.DueAmount
+      }
+    }
+
+
+
   }
 
 }
