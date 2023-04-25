@@ -49,10 +49,14 @@ export class DeactiveListComponent implements OnInit {
     }
     const subs: Subscription = this.cs.Deactivelist(dtm).subscribe({
       next: (res: any) => {
-        this.collectionSize = res.count;
-        this.dataList = res.data
+        if(res.success){
+          this.collectionSize = res.count;
+          this.dataList = res.data
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
         this.sp.hide();
-        this.as.successToast(res.message)
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -74,10 +78,16 @@ export class DeactiveListComponent implements OnInit {
 
     }).then((result) => {
       if (result.isConfirmed) {
+        this.sp.show()
         const subs: Subscription = this.cs.activecompany(this.dataList[i].ID).subscribe({
           next: (res: any) => {
-            this.dataList.splice(i, 1);
-            this.as.successToast(res.message)
+            if(res.success){
+              this.dataList.splice(i, 1);
+              this.as.successToast(res.message)
+            }else{
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide()
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),

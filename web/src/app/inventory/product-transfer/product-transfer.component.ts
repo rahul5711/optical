@@ -85,67 +85,101 @@ export class ProductTransferComponent implements OnInit {
       currentPage: this.currentPage,
       itemsPerPage: this.itemsPerPage,
     }
+    this.sp.show()
     const subs: Subscription = this.purchaseService.getTransferList(dtm).subscribe({
       next: (res: any) => {
-        this.collectionSize = res.count;
-        this.xferList = res.data;
-        this.as.successToast(res.message)
+        if(res.success){
+          this.collectionSize = res.count;
+          this.xferList = res.data;
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   getProductList(){
+    this.sp.show()
     const subs: Subscription =  this.ps.getList().subscribe({
       next: (res: any) => {
-        this.prodList = res.data;
+        if(res.success){
+          this.prodList = res.data;
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   getFieldList(){
+    this.sp.show()
     const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
        next: (res: any) => {
-       this.specList = res.data;
-       this.getSptTableData();
+        if(res.success){
+          this.specList = res.data;
+          this.getSptTableData();
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-   
+    this.sp.hide()
   }
 
-  getSptTableData() { 
+  getSptTableData() {
+    this.sp.show()
     this.specList.forEach((element: any) => {
      if (element.FieldType === 'DropDown' && element.Ref === '0') {
        const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
          next: (res: any) => {
-           element.SptTableData = res.data;   
-           element.SptFilterData = res.data;  
+          if(res.success){
+            element.SptTableData = res.data;   
+            element.SptFilterData = res.data;
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
        });
      }
     });
+    this.sp.hide()
   }
 
   getFieldSupportData(index:any) {
+    this.sp.show()
     this.specList.forEach((element: any) => {
      if (element.Ref === this.specList[index].FieldName.toString() ) {
        const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
          next: (res: any) => {
-           element.SptTableData = res.data; 
-           element.SptFilterData = res.data;   
+          if(res.success){
+            element.SptTableData = res.data; 
+            element.SptFilterData = res.data;   
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
        });
       }
      });
+     this.sp.hide()
      this.xferItem.ProductName = ''
      this.xferItem.Barcode = ''
      this.xferItem.BarCodeCount = ''
@@ -161,45 +195,60 @@ export class ProductTransferComponent implements OnInit {
   }
 
   dropdownShoplist(){
+    this.sp.show()
     const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
       next: (res: any) => {
+        if(res.success){
           let shop = res.data
           this.shopList = shop.filter((s:any) => s.ID !== Number(this.selectedShop[0]));
           this.shopLists = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   getProductDataByBarCodeNo(){
+    this.sp.show()
     const subs: Subscription =  this.purchaseService.productDataByBarCodeNo(this.Req, 'false', 'false').subscribe({
       next: (res: any) => {
-        this.item  = res.data;
-        if (this.item.Barcode === null) {
-          Swal.fire({
-            icon: 'warning',
-            title: 'Product Not Available in this Shop for Selected Barcode for Transfer.',
-            text: ' Please Check the Barcode. ',
-            footer: '',
-            backdrop : false,
-          });
+        if(res.success){
+          this.item  = res.data;
+          if (this.item.Barcode === null) {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Product Not Available in this Shop for Selected Barcode for Transfer.',
+              text: ' Please Check the Barcode. ',
+              footer: '',
+              backdrop : false,
+            });
+          }else{
+            this.xferItem.ProductName = (this.item.ProductTypeName + '/' +  this.item.ProductName).toUpperCase();
+            this.xferItem.Barcode = this.item.Barcode;
+            this.xferItem.BarCodeCount = this.item.BarCodeCount;
+            this.xferItem.TransferCount = 0;
+            this.xferItem.ToShopID = null;
+            this.xferItem.TransferFromShop = Number(this.selectedShop[0]);
+            this.xferItem.TransferStatus = "";
+          }
         }else{
-          this.xferItem.ProductName = (this.item.ProductTypeName + '/' +  this.item.ProductName).toUpperCase();
-          this.xferItem.Barcode = this.item.Barcode;
-          this.xferItem.BarCodeCount = this.item.BarCodeCount;
-          this.xferItem.TransferCount = 0;
-          this.xferItem.ToShopID = null;
-          this.xferItem.TransferFromShop = Number(this.selectedShop[0]);
-          this.xferItem.TransferStatus = "";
+          this.as.errorToast(res.message)
         }
+        this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide();
   }
 
   getBarCodeList(index:any) {
+    this.sp.show()
     let searchString = "";
     this.specList.forEach((element: any, i: any) => {
       if (i <= index) {
@@ -208,11 +257,17 @@ export class ProductTransferComponent implements OnInit {
     });
     const subs: Subscription =  this.purchaseService.barCodeListBySearchString(this.shopMode,this.selectedProduct, searchString).subscribe({
       next: (res: any) => {
-        this.barCodeList = res.data;
+        if(res.success){
+          this.barCodeList = res.data;
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   TransferCountLimit(){
@@ -229,21 +284,28 @@ export class ProductTransferComponent implements OnInit {
   }
   
   onSubmit(){
+    this.sp.show()
     const subs: Subscription =  this.purchaseService.transferProduct(this.xferItem).subscribe({
       next: (res: any) => {
-        this.xferList = res.data;
-        if(this.xferItem.BarCodeCount - this.xferItem.TransferCount > 0) {
-          this.getProductDataByBarCodeNo();
+        if(res.success){
+          this.xferList = res.data;
+          if(this.xferItem.BarCodeCount - this.xferItem.TransferCount > 0) {
+            this.getProductDataByBarCodeNo();
+          }else{
+            this.xferItem.TransferCount = 0;
+            this.xferItem.BarCodeCount = 0;
+            this.xferItem.AcceptanceCode = "";
+          }
+          this.getList();
         }else{
-          this.xferItem.TransferCount = 0;
-          this.xferItem.BarCodeCount = 0;
-          this.xferItem.AcceptanceCode = "";
+          this.as.errorToast(res.message)
         }
-        this.getList();
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   cancelTransfer(i:any){
@@ -258,43 +320,55 @@ export class ProductTransferComponent implements OnInit {
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.isConfirmed) {
+        this.sp.show()
         const subs: Subscription = this.purchaseService.cancelTransfer(this.xferList[i]).subscribe({
           next: (res: any) => {
+            if(res.success){
               this.xferList = res.data; 
               this.as.successToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been Cancel.',
+                showConfirmButton: false,
+                timer: 1200
+              })
+            }else{
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide()
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'Your file has been Cancel.',
-          showConfirmButton: false,
-          timer: 1200
-        })
       }
     })
+    this.sp.hide()
   }
 
   acceptTransfer(){
+    this.sp.show()
     const n = this.selectedRowID;
     if (this.xferAccept.secretCode === this.xferList[n].AcceptanceCode) {
         this.xferList[n].Remark = this.xferList[n].Remark + "  " + this.xferAccept.Remark;
 
       const subs: Subscription = this.purchaseService.acceptTransfer(this.xferList[n]).subscribe({
         next: (res: any) => {
-          this.xferList = res.data;
-          this.modalService.dismissAll();
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Your Product has been Accepted.',
-            showConfirmButton: false,
-            timer: 1200
-          })
-          this.xferAccept = [];
-          this.getList();
+          if(res.success){
+            this.xferList = res.data;
+            this.modalService.dismissAll();
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your Product has been Accepted.',
+              showConfirmButton: false,
+              timer: 1200
+            })
+            this.xferAccept = [];
+            this.getList();
+          }else{
+            this.sp.hide()
+          }
         },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
@@ -310,6 +384,7 @@ export class ProductTransferComponent implements OnInit {
       });
       this.xferAccept = [];
     }
+    this.sp.hide()
   }
 
   openModal(content: any,data:any) {
@@ -317,6 +392,7 @@ export class ProductTransferComponent implements OnInit {
   }
 
   FilterData(ID:any){
+    this.sp.show()
     if(ID !== '0') {
       this.tempShopArray = [];
       let id = 0
@@ -332,16 +408,21 @@ export class ProductTransferComponent implements OnInit {
       }
       const subs: Subscription = this.purchaseService.getTransferList(dtm).subscribe({
         next: (res: any) => {
-          this.collectionSize = res.count;
-          this.page = 1;
-          this.xferList = res.data
-          this.xferList.forEach((element: any) => {
-            if(element.TransferToShop === ID){
-              this.tempShopArray.push(element);
-            }
-          });
-          this.xferList = this.tempShopArray;
-          this.as.successToast(res.message)
+          if(res.success){
+            this.collectionSize = res.count;
+            this.page = 1;
+            this.xferList = res.data
+            this.xferList.forEach((element: any) => {
+              if(element.TransferToShop === ID){
+                this.tempShopArray.push(element);
+              }
+            });
+            this.xferList = this.tempShopArray;
+            this.as.successToast(res.message)
+          }else{
+            this.as.successToast(res.message)
+          }
+          this.sp.hide()
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
@@ -354,15 +435,21 @@ export class ProductTransferComponent implements OnInit {
     }
     const subs: Subscription = this.purchaseService.getTransferList(dtm).subscribe({
       next: (res: any) => {
-        this.collectionSize = res.count;
-        this.page = 1;
-        this.xferList = res.data
-        this.as.successToast(res.message)
+        if(res.success){
+          this.collectionSize = res.count;
+          this.page = 1;
+          this.xferList = res.data
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
     }
+    this.sp.hide()
   }
 
   formReset() {
@@ -385,13 +472,18 @@ export class ProductTransferComponent implements OnInit {
     let PDFtransfer = JSON.stringify(this.xferList)    
     const subs: Subscription =  this.purchaseService.transferProductPDF(PDFtransfer).subscribe({
       next: (res: any) => {
+        if(res.success){
+          const url = this.env.apiUrl + "/uploads/" + res;
+          window.open(url, "_blank");
+        }else{
+          this.as.errorToast(res.message)
+        }
         this.sp.hide();
-        const url = this.env.apiUrl + "/uploads/" + res;
-        window.open(url, "_blank");
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide();
   }
 
 }

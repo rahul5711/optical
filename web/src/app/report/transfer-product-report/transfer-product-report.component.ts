@@ -20,6 +20,7 @@ export class TransferProductReportComponent implements OnInit {
     private ss: ShopService,
     private ps: ProductService,
     public as: AlertService,
+    public sp: NgxSpinnerService,
   ) { }
 
   TransfermasterList:any
@@ -44,23 +45,37 @@ export class TransferProductReportComponent implements OnInit {
   }
 
   dropdownShoplist(){
+    this.sp.show()
     const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
       next: (res: any) => {
-        this.shopList  = res.data
+        if(res.success){
+          this.shopList  = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   getProductList(){
+    this.sp.show()
     const subs: Subscription =  this.ps.getList().subscribe({
       next: (res: any) => {
-        this.prodList = res.data;
+        if(res.success){
+          this.prodList = res.data;
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   getFieldList(){
@@ -72,8 +87,12 @@ export class TransferProductReportComponent implements OnInit {
       })
       const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
         next: (res: any) => {
-        this.specList = res.data;
-        this.getSptTableData();
+          if(res.success){
+            this.specList = res.data;
+            this.getSptTableData();
+          }else{
+            this.as.errorToast(res.message)
+          }
        },
        error: (err: any) => console.log(err.message),
        complete: () => subs.unsubscribe(),
@@ -90,8 +109,12 @@ export class TransferProductReportComponent implements OnInit {
      if (element.FieldType === 'DropDown' && element.Ref === '0') {
        const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
          next: (res: any) => {
-           element.SptTableData = res.data;   
-           element.SptFilterData = res.data;  
+          if(res.success){
+            element.SptTableData = res.data;   
+            element.SptFilterData = res.data; 
+          }else{
+            this.as.errorToast(res.message)
+          }
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
@@ -105,8 +128,12 @@ export class TransferProductReportComponent implements OnInit {
      if (element.Ref === this.specList[index].FieldName.toString() ) {
        const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
          next: (res: any) => {
-           element.SptTableData = res.data; 
-           element.SptFilterData = res.data;   
+          if(res.success){
+            element.SptTableData = res.data; 
+            element.SptFilterData = res.data; 
+          }else{
+            this.as.errorToast(res.message)
+          }
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
@@ -128,6 +155,7 @@ export class TransferProductReportComponent implements OnInit {
   }
 
   getTransferReport(){
+    this.sp.show()
     let Parem = '';
 
     if (this.data.FromDate !== '' && this.data.FromDate !== null){
@@ -155,15 +183,19 @@ export class TransferProductReportComponent implements OnInit {
 
     const subs: Subscription =  this.purchaseService.getproductTransferReport(Parem).subscribe({
       next: (res: any) => {
-        if(res.message){
+        if(res.success){
           this.as.successToast(res.message)
           this.TransfermasterList = res.data
           this.totalQty = res.calculation[0].totalQty
+        }else{
+          this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   exportAsXLSX(): void {

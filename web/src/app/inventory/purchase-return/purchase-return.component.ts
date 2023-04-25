@@ -54,6 +54,7 @@ export class PurchaseReturnComponent implements OnInit {
     public as: AlertService,
     private supps: SupportService,
     public calculation: CalculationService,
+    public sp: NgxSpinnerService,
 
   ){
     this.id = this.route.snapshot.params['id'];
@@ -80,37 +81,55 @@ export class PurchaseReturnComponent implements OnInit {
   }
 
   dropdownShoplist(){
+    this.sp.show()
     const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
       next: (res: any) => {
-        this.shopList  = res.data
+        if(res.success){
+          this.shopList  = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   dropdownSupplierlist(){
+    this.sp.show()
     const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
       next: (res: any) => {
-        this.supplierList  = res.data
+        if(res.success){
+          this.supplierList  = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   getGSTList(){
     const subs: Subscription = this.supps.getList('TaxType').subscribe({
       next: (res: any) => {
-        this.gstList = res.data
-        this.gst_detail = [];
-        res.data.forEach((ele: any) => {
-          if(ele.Name !== ' '){
-           let obj = {GSTType: '', Amount: 0};
-            obj.GSTType = ele.Name;
-            this.gst_detail.push(obj);
-          }
-        })
+        if(res.success){
+          this.gstList = res.data
+          this.gst_detail = [];
+          res.data.forEach((ele: any) => {
+            if(ele.Name !== ' '){
+             let obj = {GSTType: '', Amount: 0};
+              obj.GSTType = ele.Name;
+              this.gst_detail.push(obj);
+            }
+          })
+        }else{
+          this.as.errorToast(res.message)
+        }
       },
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),
@@ -118,45 +137,61 @@ export class PurchaseReturnComponent implements OnInit {
   }
 
   getPurchaseReturnById(){
+    this.sp.show()
     const subs: Subscription = this.purchaseService.getPurchaseReturnById(this.id).subscribe({
       next: (res: any) => {
-        this.selectedPurchaseMaster = res.result.PurchaseMaster[0]
-        this.itemList = res.result.PurchaseDetail
-        this.gst_detail = this.selectedPurchaseMaster.gst_detail
-        this.calculateGrandTotal();
         if (res.success) {
+          this.selectedPurchaseMaster = res.result.PurchaseMaster[0]
+          this.itemList = res.result.PurchaseDetail
+          this.gst_detail = this.selectedPurchaseMaster.gst_detail
+          this.calculateGrandTotal();
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.message);
       },
       complete: () => subs.unsubscribe(),
     })
+    this.sp.hide()
   }
 
   getProductList(){
+    this.sp.show()
     const subs: Subscription =  this.ps.getList().subscribe({
       next: (res: any) => {
-        this.prodList = res.data;
+        if(res.success){
+          this.prodList = res.data;
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   getFieldList(){
+    this.sp.show()
     const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
        next: (res: any) => {
-       this.specList = res.data;
-       this.getSptTableData();
+        if(res.success){
+          this.specList = res.data;
+          this.getSptTableData();
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-   
+    this.sp.hide()
   }
 
   getSptTableData() { 
@@ -164,8 +199,12 @@ export class PurchaseReturnComponent implements OnInit {
      if (element.FieldType === 'DropDown' && element.Ref === '0') {
        const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
          next: (res: any) => {
-           element.SptTableData = res.data;   
-           element.SptFilterData = res.data;  
+          if(res.success){
+            element.SptTableData = res.data;   
+            element.SptFilterData = res.data;  
+          }else{
+            this.as.errorToast(res.message)
+          }
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
@@ -179,8 +218,12 @@ export class PurchaseReturnComponent implements OnInit {
      if (element.Ref === this.specList[index].FieldName.toString() ) {
        const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
          next: (res: any) => {
-           element.SptTableData = res.data; 
-           element.SptFilterData = res.data;   
+          if(res.success){
+            element.SptTableData = res.data; 
+            element.SptFilterData = res.data; 
+          }else{
+            this.as.errorToast(res.message)
+          }
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
@@ -192,19 +235,23 @@ export class PurchaseReturnComponent implements OnInit {
   getProductDataByBarCodeNo(){
     const subs: Subscription =  this.purchaseService.productDataByBarCodeNoPR(this.Req, 'false', 'false',this.selectedPurchaseMaster.SupplierID,this.selectedPurchaseMaster.ShopID).subscribe({
       next: (res: any) => {
-        this.item  = res.data;
-        if (this.item.Barcode === null) {
-          Swal.fire({
-            icon: 'warning',
-            title: 'Product Not Available In This Shop For Selected Barcode For Supplier.',
-            text: ' Please Check the Barcode. ',
-            footer: '',
-            backdrop : false,
-          });
+        if(res.success){
+          this.item  = res.data;
+          if (this.item.Barcode === null) {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Product Not Available In This Shop For Selected Barcode For Supplier.',
+              text: ' Please Check the Barcode. ',
+              footer: '',
+              backdrop : false,
+            });
+          }else{
+            this.xferItem.ProductName = (this.item.ProductTypeName + '/' +  this.item.ProductName).toUpperCase();
+            this.xferItem.Barcode = this.item.Barcode;
+            this.xferItem.BarCodeCount = this.item.BarCodeCount;
+          }
         }else{
-          this.xferItem.ProductName = (this.item.ProductTypeName + '/' +  this.item.ProductName).toUpperCase();
-          this.xferItem.Barcode = this.item.Barcode;
-          this.xferItem.BarCodeCount = this.item.BarCodeCount;
+          this.as.errorToast(res.message)
         }
       },
       error: (err: any) => console.log(err.message),
@@ -221,7 +268,11 @@ export class PurchaseReturnComponent implements OnInit {
     });
     const subs: Subscription =  this.purchaseService.barCodeListBySearchStringPR(this.shopMode,this.selectedProduct, searchString, this.selectedPurchaseMaster.SupplierID,this.selectedPurchaseMaster.ShopID).subscribe({
       next: (res: any) => {
-        this.barCodeList = res.data;
+        if(res.success){
+          this.barCodeList = res.data;
+        }else{
+          this.as.errorToast(res.message)
+        }
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -305,6 +356,7 @@ export class PurchaseReturnComponent implements OnInit {
   }
 
   onSumbit(){
+    this.sp.show()
     this.data.PurchaseMaster = this.selectedPurchaseMaster;
     this.data.PurchaseDetail = JSON.stringify(this.itemList);
     const subs: Subscription =  this.purchaseService.savePurchaseReturn(this.data).subscribe({
@@ -327,13 +379,16 @@ export class PurchaseReturnComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   updatedPurchaseReturn(){
+    this.sp.show()
     this.data.PurchaseMaster = this.selectedPurchaseMaster;
     let items:any = [];
     this.itemList.forEach((ele: any) => {
@@ -361,13 +416,14 @@ export class PurchaseReturnComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
     });
-    
+    this.sp.hide()
   }
 
   deleteItem(Category:any ,i:any){
@@ -386,6 +442,7 @@ export class PurchaseReturnComponent implements OnInit {
           backdrop : false,
         }).then((result) => {
           if (result.isConfirmed) {
+            this.sp.show()
             const subs: Subscription = this.purchaseService.deleteProductPR(this.itemList[i].ID,this.selectedPurchaseMaster).subscribe({
               next: (res: any) => {
                 if (res.success) {
@@ -408,7 +465,7 @@ export class PurchaseReturnComponent implements OnInit {
                   })
                   this.as.errorToast(res.message)
                 }
-                  
+                 this.sp.hide()
               },
               error: (err: any) => console.log(err.message),
               complete: () => subs.unsubscribe(),
@@ -417,6 +474,7 @@ export class PurchaseReturnComponent implements OnInit {
         })
       }
     }
+    this.sp.hide()
   }
 
 }

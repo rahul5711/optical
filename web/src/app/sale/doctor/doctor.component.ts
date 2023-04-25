@@ -52,14 +52,11 @@ export class DoctorComponent implements OnInit {
     UpdatedBy: null, CreatedOn: null, UpdatedOn: null, CommissionType: 0, CommissionMode: 0, CommissionValue: 0, CommissionValueNB: 0
   };
 
-
   ngOnInit(): void {
     if (this.id != 0) {
       this.getDoctorById(); 
     }
   }
-
- 
 
   uploadImage(e:any, mode:any){
     this.img = e.target.files[0];
@@ -77,6 +74,7 @@ export class DoctorComponent implements OnInit {
   }
 
   onsubmit() {
+    this.sp.show()
     const subs: Subscription =  this.ds.saveDoctor( this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -91,16 +89,19 @@ export class DoctorComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
     this.modalService.dismissAll()
   } 
 
   updateDoctor(){
+    this.sp.show()
     const subs: Subscription =  this.ds.updateDoctor( this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -115,31 +116,35 @@ export class DoctorComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   getDoctorById(){
+    this.sp.show()
     const subs: Subscription = this.ds.getDoctorById(this.id).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)
           this.data = res.data[0]
           this.userImage = this.env.apiUrl + res.data[0].PhotoURL;
-
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.message);
       },
       complete: () => subs.unsubscribe(),
     })
+    this.sp.hide()
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {

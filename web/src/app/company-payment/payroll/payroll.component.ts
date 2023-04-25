@@ -66,22 +66,33 @@ export class PayrollComponent implements OnInit {
   dropdownUserlist(){
     const subs: Subscription = this.es.dropdownUserlist('').subscribe({
       next: (res: any) => {
-        this.dropUserlist = res.data
+        if (res.success) {
+          this.dropUserlist = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
         this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide();
   }
 
   getPaymentModesList(){
     const subs: Subscription = this.supps.getList('PaymentModeType').subscribe({
       next: (res: any) => {
-        this.PaymentModesList = res.data
+        if (res.success) {
+          this.PaymentModesList = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
       },
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),
     });
+    this.sp.hide();
   }
 
   getList() {
@@ -92,19 +103,23 @@ export class PayrollComponent implements OnInit {
     }
     const subs: Subscription = this.pay.getList(dtm).subscribe({
       next: (res: any) => {
-        this.collectionSize = res.count;
-        this.dataList = res.data;
-        
+        if (res.success) {
+          this.collectionSize = res.count;
+          this.dataList = res.data;
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
         this.sp.hide();
-        this.as.successToast(res.message)
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-
+    this.sp.hide();
   }
 
   onsubmit() {
+    this.sp.show()
     const subs: Subscription =  this.pay.savePayroll(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -121,12 +136,14 @@ export class PayrollComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide();
       },
       error: (err: any) => {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
     }); 
+    this.sp.hide();
   } 
 
   deleteItem(i:any){
@@ -140,27 +157,35 @@ export class PayrollComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
+        this.sp.show();
         const subs: Subscription = this.pay.deleteData(this.dataList[i].ID).subscribe({
           next: (res: any) => {
-            this.dataList.splice(i, 1);
-            this.as.successToast(res.message)
+            if (res.success) {
+              this.dataList.splice(i, 1);
+              this.as.successToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been deleted.',
+                showConfirmButton: false,
+                timer: 1000
+              })
+              this.getList();
+            } else {
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide();
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'Your file has been deleted.',
-          showConfirmButton: false,
-          timer: 1000
-        })
-        this.getList();
       }
     })
+    this.sp.hide();
   }
 
   updatePayroll(){
+    this.sp.show();
     const subs: Subscription =  this.pay.updatePayroll(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -177,12 +202,14 @@ export class PayrollComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide();
       },
       error: (err: any) => {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide();
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
@@ -195,17 +222,15 @@ export class PayrollComponent implements OnInit {
   }
 
   openEditModal(content: any,datas:any) {
-    console.log(datas);
-    
     this.suBtn = true;
     this.data = datas
-     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'xl'});
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'xl'});
   }
 
   openModal(content: any) {
     this. formReset();
     this.suBtn = false;
-     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'xl'});
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'xl'});
   }
 
   exportAsXLSX(): void {
@@ -244,13 +269,18 @@ export class PayrollComponent implements OnInit {
         itemsPerPage: 50000,
         searchQuery: data.searchQuery 
       }
+      this.sp.show();
       const subs: Subscription = this.pay.searchByFeild(dtm).subscribe({
         next: (res: any) => {
-          this.collectionSize = 1;
-          this.page = 1;
-          this.dataList = res.data
+          if (res.success) {
+            this.collectionSize = 1;
+            this.page = 1;
+            this.dataList = res.data
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
           this.sp.hide();
-          this.as.successToast(res.message)
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
@@ -259,6 +289,7 @@ export class PayrollComponent implements OnInit {
       this.getList();
     } 
     });
+    this.sp.hide();
   }
 
   formReset() {

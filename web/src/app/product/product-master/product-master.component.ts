@@ -52,27 +52,37 @@ export class ProductMasterComponent implements OnInit {
   }
 
   getProductList(){
+    this.sp.show()
     const subs: Subscription =  this.ps.getList().subscribe({
       next: (res: any) => {
-        this.prodList = res.data;
-        this.as.successToast(res.message)
+        if(res.success){
+          this.prodList = res.data;
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
  
   getFieldList(){
    const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
       next: (res: any) => {
-      this.specList = res.data;
-      this.getSptTableData();
-      this.as.successToast(res.message)
+      if(res.success){
+        this.specList = res.data;
+        this.getSptTableData();
+        this.as.successToast(res.message)
+      }else{
+        this.as.errorToast(res.message)
+      }
      },
      error: (err: any) => console.log(err.message),
      complete: () => subs.unsubscribe(),
    });
-  
   }
 
   getSptTableData() { 
@@ -80,8 +90,12 @@ export class ProductMasterComponent implements OnInit {
     if (element.FieldType === 'DropDown' && element.Ref === '0') {
       const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
         next: (res: any) => {
-          element.SptTableData = res.data;   
-          element.SptFilterData = res.data;  
+          if(res.success){
+            element.SptTableData = res.data;   
+            element.SptFilterData = res.data; 
+          }else{
+            this.as.errorToast(res.message)
+          }
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
@@ -95,9 +109,13 @@ export class ProductMasterComponent implements OnInit {
     if (element.Ref === this.specList[index].FieldName.toString() ) {
       const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
         next: (res: any) => {
-          element.SptTableData = res.data;   
-          element.SptFilterData = res.data;   
-          this.as.successToast(res.message)
+          if(res.success){
+            element.SptTableData = res.data;   
+            element.SptFilterData = res.data;   
+            this.as.successToast(res.message)
+          }else{
+            this.as.successToast(res.message)
+          }
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
@@ -124,18 +142,19 @@ saveFieldData(i:any){
     next: (res: any) => {
       const subss: Subscription =  this.ps.getProductSupportData(RefValue,this.specList[i].SptTableName).subscribe({
         next: (res: any) => {
-          this.specList[i].SptTableData = res.data;
+          if (res.success) {
+            this.specList[i].SptTableData = res.data;
             this.specList[i].SptFilterData = res.data; 
-          this.as.successToast(res.message)
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
         },
         error: (err: any) => console.log(err.message),
         complete: () => subss.unsubscribe(),
       });
-      if (res.success) {
-       
-      } else {
-        this.as.errorToast(res.message)
-      }
+      if (res.success) {} 
+      else {this.as.errorToast(res.message)}
     },
     error: (err: any) => {
       console.log(err.msg);

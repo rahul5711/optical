@@ -54,17 +54,21 @@ export class FitterListComponent implements OnInit {
     }
     const subs: Subscription = this.fs.getList(dtm).subscribe({
       next: (res: any) => {
-        this.collectionSize = res.count;
-        this.dataList = res.data;
-        this.dataList.forEach((element: { PhotoURL: any; }) => {
-          if(element.PhotoURL !== "null" && element.PhotoURL !== ''){
-            element.PhotoURL = (this.env.apiUrl + element.PhotoURL);
-          }else{
-            element.PhotoURL = "/assets/images/userEmpty.png"
-          }
-        });
+        if (res.success) {
+          this.collectionSize = res.count;
+          this.dataList = res.data;
+          this.dataList.forEach((element: { PhotoURL: any; }) => {
+            if(element.PhotoURL !== "null" && element.PhotoURL !== ''){
+              element.PhotoURL = (this.env.apiUrl + element.PhotoURL);
+            }else{
+              element.PhotoURL = "/assets/images/userEmpty.png"
+            }
+          });
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
         this.sp.hide();
-        this.as.successToast(res.message)
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -83,23 +87,30 @@ export class FitterListComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
+        this.sp.show()
         const subs: Subscription = this.fs.deleteData(this.dataList[i].ID).subscribe({
           next: (res: any) => {
-            this.dataList.splice(i, 1);
-            this.as.successToast(res.message)
+            if(res.success){
+              this.dataList.splice(i, 1);
+              this.as.successToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been deleted.',
+                showConfirmButton: false,
+                timer: 1000
+              })
+            }else{
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide()
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'Your file has been deleted.',
-          showConfirmButton: false,
-          timer: 1000
-        })
       }
     })
+    this.sp.hide()
   }
 
   ngAfterViewInit() {
@@ -134,13 +145,18 @@ export class FitterListComponent implements OnInit {
         itemsPerPage: 50000,
         searchQuery: data.searchQuery 
       }
+      this.sp.show()
       const subs: Subscription = this.fs.searchByFeild(dtm).subscribe({
         next: (res: any) => {
-          this.collectionSize = 1;
-          this.page = 1;
-          this.dataList = res.data
+          if(res.success){
+            this.collectionSize = 1;
+            this.page = 1;
+            this.dataList = res.data
+            this.as.successToast(res.message)
+          }else{
+            this.as.errorToast(res.message)
+          }
           this.sp.hide();
-          this.as.successToast(res.message)
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
@@ -149,6 +165,7 @@ export class FitterListComponent implements OnInit {
       this.getList();
      } 
     });
+    this.sp.hide();
   }
 
   exportAsXLSX(): void {

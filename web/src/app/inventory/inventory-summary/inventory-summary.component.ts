@@ -47,6 +47,7 @@ export class InventorySummaryComponent implements OnInit {
     private sup: SupplierService,
     private excelService: ExcelService,
     public as: AlertService,
+    public sp: NgxSpinnerService,
   ){
     this.id = this.route.snapshot.params['id'];
   }
@@ -60,33 +61,57 @@ export class InventorySummaryComponent implements OnInit {
   }
 
   dropdownShoplist(){
+    this.sp.show()
     const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
       next: (res: any) => {
-        this.shopList  = res.data
+        if(res.success){
+          this.shopList  = res.data
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   dropdownSupplierlist(){
+    this.sp.show()
     const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
       next: (res: any) => {
-        this.supplierList  = res.data
+        if(res.success){
+          this.supplierList  = res.data
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   getProductList(){
+    this.sp.show()
     const subs: Subscription =  this.ps.getList().subscribe({
       next: (res: any) => {
-        this.prodList = res.data;
+        if(res.success){
+          this.prodList  = res.data
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   getFieldList(){
@@ -98,12 +123,19 @@ export class InventorySummaryComponent implements OnInit {
       })
       const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
         next: (res: any) => {
-        this.specList = res.data;
-        this.getSptTableData();
+          if(res.success){
+            this.specList = res.data;
+            this.getSptTableData();
+            this.as.successToast(res.message)
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
        },
        error: (err: any) => console.log(err.message),
        complete: () => subs.unsubscribe(),
      });
+     this.sp.hide()
     }
     else {
       this.specList = [];
@@ -113,33 +145,47 @@ export class InventorySummaryComponent implements OnInit {
   }
 
   getSptTableData() { 
+    this.sp.show()
     this.specList.forEach((element: any) => {
      if (element.FieldType === 'DropDown' && element.Ref === '0') {
        const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
          next: (res: any) => {
-           element.SptTableData = res.data;   
-           element.SptFilterData = res.data;  
+          if(res.success){
+            element.SptTableData = res.data;   
+            element.SptFilterData = res.data; 
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
        });
      }
     });
+    this.sp.hide()
   }
 
   getFieldSupportData(index:any) {
+    this.sp.show()
     this.specList.forEach((element: any) => {
      if (element.Ref === this.specList[index].FieldName.toString() ) {
        const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
          next: (res: any) => {
-           element.SptTableData = res.data; 
-           element.SptFilterData = res.data;   
+          if(res.success){
+            element.SptTableData = res.data; 
+            element.SptFilterData = res.data;   
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
        });
       }
      });
+     this.sp.hide()
   }
 
   onChange(event: any) {
@@ -164,6 +210,7 @@ export class InventorySummaryComponent implements OnInit {
   }
 
   getInventoryData(){
+    this.sp.show()
     let Parem = '';
 
     if (this.data.ProductCategory  !== 0){
@@ -193,11 +240,15 @@ export class InventorySummaryComponent implements OnInit {
         if(res.message){
           this.as.successToast(res.message)
           this.SummaryList = res.data;
+        }else{
+          this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   showInput(){
@@ -205,12 +256,14 @@ export class InventorySummaryComponent implements OnInit {
   }
 
   updateInventorySummary(data:any){
+    this.sp.show()
     const subs: Subscription =  this.purchaseService.updateInventorySummary(data).subscribe({
       next: (res: any) => {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   exportAsXLSX(): void {

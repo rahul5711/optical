@@ -35,6 +35,7 @@ export class PreOrderComponent implements OnInit {
     private purchaseService: PurchaseService,
     public as: AlertService,
     public calculation: CalculationService,
+    public sp: NgxSpinnerService,
   ){
     this.id = this.route.snapshot.params['id'];
    }
@@ -79,6 +80,7 @@ export class PreOrderComponent implements OnInit {
   }
 
   getPurchaseByIdPreOrder(){
+    this.sp.show()
     const subs: Subscription = this.purchaseService.getPurchaseByIdPreOrder(this.id).subscribe({
       next: (res: any) => {
         this.selectedPurchaseMaster = res.result.PurchaseMaster[0]
@@ -90,94 +92,139 @@ export class PreOrderComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.message);
       },
       complete: () => subs.unsubscribe(),
     })
+    this.sp.hide()
   }
 
   getdropdownSupplierlist(){
+    this.sp.show()
     const subs: Subscription =  this.ss.dropdownSupplierlist('').subscribe({
       next: (res: any) => {
-        this.supplierList = res.data;
+        if(res.success){
+          this.supplierList = res.data;
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   getProductList(){
+    this.sp.show()
     const subs: Subscription =  this.ps.getList().subscribe({
       next: (res: any) => {
+        if(res.success){
         // this.prodList = res.data;
         this.prodList = res.data;
         this.prodList.sort((a:any, b:any) => (a.Name < b.Name)? -1 : 1)
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   getGSTList(){
+    this.sp.show()
     const subs: Subscription = this.supps.getList('TaxType').subscribe({
       next: (res: any) => {
-        this.gstList = res.data
-        this.gst_detail = [];
-        res.data.forEach((ele: any) => {
-          if(ele.Name !== ' '){
-           let obj = {GSTType: '', Amount: 0};
-            obj.GSTType = ele.Name;
-            this.gst_detail.push(obj);
-          }
-        })
+        if(res.success){
+          this.gstList = res.data
+          this.gst_detail = [];
+          res.data.forEach((ele: any) => {
+            if(ele.Name !== ' '){
+             let obj = {GSTType: '', Amount: 0};
+              obj.GSTType = ele.Name;
+              this.gst_detail.push(obj);
+            }
+          })
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   getFieldList(){
+    this.sp.show()
     const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
        next: (res: any) => {
-       this.specList = res.data;
-       this.getSptTableData();
+        if(res.success){
+          this.specList = res.data;
+          this.getSptTableData();
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-   
+    this.sp.hide()
+  
   }
 
   getSptTableData() { 
+    this.sp.show()
     this.specList.forEach((element: any) => {
      if (element.FieldType === 'DropDown' && element.Ref === '0') {
        const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
          next: (res: any) => {
-           element.SptTableData = res.data;   
-           element.SptFilterData = res.data;  
+          if(res.success){
+            element.SptTableData = res.data;   
+            element.SptFilterData = res.data;  
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
        });
      }
     });
+    this.sp.hide()
   }
 
   getFieldSupportData(index:any) {
+    this.sp.show()
     this.specList.forEach((element: any) => {
      if (element.Ref === this.specList[index].FieldName.toString() ) {
        const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
          next: (res: any) => {
-           element.SptTableData = res.data; 
-           element.SptFilterData = res.data;   
+          if(res.success){
+            element.SptTableData = res.data; 
+            element.SptFilterData = res.data;  
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
        });
       }
      });
+     this.sp.hide()
   }
 
   displayAddField(i:any){
@@ -186,6 +233,7 @@ export class PreOrderComponent implements OnInit {
   }
 
   saveFieldData(i:any){
+    this.sp.show()
    this.specList[i].DisplayAdd = 0;
    const Ref = this.specList[i].Ref;
    let RefValue = 0;
@@ -198,29 +246,31 @@ export class PreOrderComponent implements OnInit {
      next: (res: any) => {
        const subss: Subscription =  this.ps.getProductSupportData(RefValue,this.specList[i].SptTableName).subscribe({
          next: (res: any) => {
-           this.specList[i].SptTableData = res.data;
-           this.specList[i].SptFilterData = res.data;
+          if(res.success){
+            this.specList[i].SptTableData = res.data;
+            this.specList[i].SptFilterData = res.data;
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been Save.',
+              showConfirmButton: false,
+              timer: 1200
+            })
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
          },
          error: (err: any) => console.log(err.message),
          complete: () => subss.unsubscribe(),
        });
-       if (res.success) {
-         Swal.fire({
-           position: 'center',
-           icon: 'success',
-           title: 'Your file has been Save.',
-           showConfirmButton: false,
-           timer: 1200
-         })
-       } else {
-         this.as.errorToast(res.message)
-       }
      },
      error: (err: any) => {
        console.log(err.msg);
      },
      complete: () => subs.unsubscribe(),
    });
+   this.sp.hide()
   }
 
   getSupplierDetails(event:any){
@@ -324,6 +374,7 @@ export class PreOrderComponent implements OnInit {
   }
 
   onSumbit(){
+    this.sp.show()
     // this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
     this.data.PurchaseDetail = JSON.stringify(this.itemList);
     this.data.PurchaseMaster = this.selectedPurchaseMaster;
@@ -347,12 +398,14 @@ export class PreOrderComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+       this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   deleteItem(Category:any ,i:any){
@@ -371,6 +424,7 @@ export class PreOrderComponent implements OnInit {
           backdrop : false,
         }).then((result) => {
           if (result.isConfirmed) {
+           this.sp.show()
             const subs: Subscription = this.purchaseService.deleteProductPreOrder(this.itemList[i].ID,this.selectedPurchaseMaster).subscribe({
               next: (res: any) => {
                 if(res.message === "You have product already sold"){
@@ -393,6 +447,7 @@ export class PreOrderComponent implements OnInit {
                   })
                   this.as.successToast(res.message)
                 }
+              this.sp.hide()
               },
               error: (err: any) => console.log(err.message),
               complete: () => subs.unsubscribe(),
@@ -402,7 +457,7 @@ export class PreOrderComponent implements OnInit {
         })
       }
     }
-
+    this.sp.hide()
   }
 
   edititem(mode:any,data:any){
@@ -431,6 +486,7 @@ export class PreOrderComponent implements OnInit {
   }
 
   updatedPurchase(){
+    this.sp.show()
     // this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
     let items:any = [];
     this.itemList.forEach((ele: any) => {
@@ -460,14 +516,14 @@ export class PreOrderComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+      this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
     });
-
-
+    this.sp.hide()
   }
 
 }

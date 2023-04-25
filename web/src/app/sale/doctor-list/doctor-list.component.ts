@@ -31,7 +31,6 @@ export class DoctorListComponent implements OnInit {
   suBtn = false;
 
   constructor(
-
     private formBuilder: FormBuilder,
     public as: AlertService,
     private ds: DoctorService,
@@ -74,6 +73,7 @@ export class DoctorListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide();
   }
 
   deleteItem(i:any){
@@ -87,24 +87,30 @@ export class DoctorListComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
-
+        this.sp.show()
         const subs: Subscription = this.ds.deleteData(this.dataList[i].ID).subscribe({
           next: (res: any) => {
-            this.dataList.splice(i, 1);
-            this.as.successToast(res.message)
+            if(res.success){
+              this.dataList.splice(i, 1);
+              this.as.successToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been deleted.',
+                showConfirmButton: false,
+                timer: 1000
+              })
+            }else{
+              this.as.errorToast(res.message)
+            }
+          this.sp.hide()
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'Your file has been deleted.',
-          showConfirmButton: false,
-          timer: 1000
-        })
       }
     })
+    this.sp.hide()
   }
 
   ngAfterViewInit() {
@@ -141,14 +147,19 @@ export class DoctorListComponent implements OnInit {
         itemsPerPage: 50000,
         searchQuery: data.searchQuery 
       }
+
+      this.sp.show()
       const subs: Subscription = this.ds.searchByFeild(dtm).subscribe({
         next: (res: any) => {
-        
+        if(res.success){
           this.collectionSize = 1;
           this.page = 1;
           this.dataList = res.data;
-          this.sp.hide();
           this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
@@ -157,6 +168,7 @@ export class DoctorListComponent implements OnInit {
         this.getList()
       }
     });
+    this.sp.hide();
   }
 
   exportAsXLSX(): void {

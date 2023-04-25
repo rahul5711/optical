@@ -30,7 +30,6 @@ export class PurchaseReturnListComponent implements OnInit {
   collectionSize = 0
   page = 4;
   paymentHistoryList:any;
-
   SupplierCNNo:any
   supplierCnPRlist :any
 
@@ -59,16 +58,19 @@ export class PurchaseReturnListComponent implements OnInit {
     }
     const subs: Subscription = this.purchaseService.getPurchaseReturnList(dtm).subscribe({
       next: (res: any) => {
-        this.collectionSize = res.count;
-        this.dataList = res.data;
+        if(res.success){
+          this.collectionSize = res.count;
+          this.dataList = res.data;
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
         this.sp.hide();
-        this.as.successToast(res.message)
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
     this.sp.hide()
-
   }
 
   deleteItem(i:any){
@@ -82,11 +84,19 @@ export class PurchaseReturnListComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
+        this.sp.show()
         const subs: Subscription = this.purchaseService.deletePR(this.dataList[i].ID).subscribe({
           next: (res: any) => {
             if(res.success) {
               this.dataList.splice(i, 1);
               this.as.successToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been deleted.',
+                showConfirmButton: false,
+                timer: 1000
+              })
             }
             else{
               Swal.fire({
@@ -101,13 +111,7 @@ export class PurchaseReturnListComponent implements OnInit {
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'Your file has been deleted.',
-          showConfirmButton: false,
-          timer: 1000
-        })
+        this.sp.hide()
       }
     })
   }
@@ -129,13 +133,18 @@ export class PurchaseReturnListComponent implements OnInit {
         itemsPerPage: 50000,
         searchQuery: data.searchQuery 
       }
+      this.sp.show()
       const subs: Subscription = this.purchaseService.searchByFeildPR(dtm).subscribe({
         next: (res: any) => {
-          this.collectionSize = 1;
-          this.page = 1;
-          this.dataList = res.data
+          if(res.success){
+            this.collectionSize = 1;
+            this.page = 1;
+            this.dataList = res.data
+            this.as.successToast(res.message)
+          }else{
+            this.as.errorToast(res.message)
+          }
           this.sp.hide();
-          this.as.successToast(res.message)
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
@@ -144,6 +153,7 @@ export class PurchaseReturnListComponent implements OnInit {
       this.getList();
      } 
     });
+    this.sp.hide();
   }
 
   exportAsXLSX(): void {
@@ -175,24 +185,31 @@ export class PurchaseReturnListComponent implements OnInit {
       confirmButtonText: 'Yes, Save it!'
     }).then((result) => {
       if (result.isConfirmed) {
+        this.sp.show();
         const subs: Subscription =  this.purchaseService.supplierCnPR(this.SupplierCNNo,this.supplierCnPRlist.ID).subscribe({
           next: (res: any) => {
-            this.modalService.dismissAll();
-            this.getList();
-            this.SupplierCNNo = '';
-            Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'Your file has been Update.',
-                showConfirmButton: false,
-                timer: 1200
-            })
+            if(res.success){
+              this.modalService.dismissAll();
+              this.getList();
+              this.SupplierCNNo = '';
+              Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Your file has been Update.',
+                  showConfirmButton: false,
+                  timer: 1200
+              })
+            }else{
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide();
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
          });
       }
     })
+    this.sp.hide();
   }
 
 }

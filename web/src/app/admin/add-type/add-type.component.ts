@@ -55,9 +55,13 @@ export class AddTypeComponent implements OnInit {
     this.showFeild = true;
     const subs: Subscription = this.supps.getList(this.selectedProduct).subscribe({
       next: (res: any) => {
-        this.depList = res.data
+        if(res.success){
+          this.depList = res.data
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
         this.sp.hide();
-        this.as.successToast(res.message)
       },
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),

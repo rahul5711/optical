@@ -1,22 +1,22 @@
 import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { fromEvent   } from 'rxjs';
+import { fromEvent } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { SupportService } from 'src/app/service/support.service';
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
-import { SupplierModel} from 'src/app/interface/Supplier';
+import { SupplierModel } from 'src/app/interface/Supplier';
 
 @Component({
   selector: 'app-supplier',
@@ -26,14 +26,14 @@ import { SupplierModel} from 'src/app/interface/Supplier';
 })
 
 export class SupplierComponent implements OnInit {
-  
+
   @ViewChild('searching') searching: ElementRef | any;
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
 
   env = environment;
   gridview = true;
-  term:any;
+  term: any;
   id: any;
   companyImage: any;
   img: any;
@@ -45,8 +45,8 @@ export class SupplierComponent implements OnInit {
   page = 4;
   suBtn = false;
   purchasVariable: any = 0;
-  gstList:any;
-  
+  gstList: any;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -65,21 +65,23 @@ export class SupplierComponent implements OnInit {
     this.env = environment
   }
 
-  data: any = { ID : null, Sno: 0, Name : null, MobileNo1 : null, MobileNo2 : '', PhoneNo : '', Address : null, Email : '', Website : '',
-  GSTNo : '', GSTType:'None', CINNo : '', PhotoURL : '', Remark : null, ContactPerson : '', Fax : '', DOB: '', Anniversary: '',
-  Status : 1, CreatedBy : null, CreatedOn : null, UpdatedBy : null, UpdatedOn : null
+  data: any = {
+    ID: null, Sno: 0, Name: null, MobileNo1: null, MobileNo2: '', PhoneNo: '', Address: null, Email: '', Website: '',
+    GSTNo: '', GSTType: 'None', CINNo: '', PhotoURL: '', Remark: null, ContactPerson: '', Fax: '', DOB: '', Anniversary: '',
+    Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
   };
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.purchasVariable = +params['check'] || 0;
     });
-    this.getList(); 
+    this.getList();
     this.getGSTList();
   }
 
   onsubmit() {
-    const subs: Subscription =  this.ss.supplierSave(this.data).subscribe({
+    this.sp.show()
+    const subs: Subscription = this.ss.supplierSave(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.formReset();
@@ -89,9 +91,9 @@ export class SupplierComponent implements OnInit {
             title: 'Your file has been Save.',
             showConfirmButton: false,
             timer: 1200
-          }) 
+          })
           this.data = [];
-          if(this.purchasVariable === 1) {
+          if (this.purchasVariable === 1) {
             this.router.navigate(['/inventory/purchase/0']);
           } else {
             this.getList();
@@ -100,6 +102,7 @@ export class SupplierComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.msg);
@@ -107,9 +110,9 @@ export class SupplierComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
     this.modalService.dismissAll()
-    this.getList(); 
-
-  } 
+    this.getList();
+    this.sp.hide()
+  }
 
   getList() {
     this.sp.show()
@@ -119,17 +122,21 @@ export class SupplierComponent implements OnInit {
     }
     const subs: Subscription = this.ss.getList(dtm).subscribe({
       next: (res: any) => {
-        this.collectionSize = res.count;
-        this.dataList = res.data;
-        this.dataList.forEach((element: { PhotoURL: any; }) => {
-          if(element.PhotoURL !== "null" && element.PhotoURL !== ''){
-            element.PhotoURL = (this.env.apiUrl + element.PhotoURL);
-          }else{
-            element.PhotoURL = "/assets/images/userEmpty.png"
-          }
-        });
+        if (res.success) {
+          this.collectionSize = res.count;
+          this.dataList = res.data;
+          this.dataList.forEach((element: { PhotoURL: any; }) => {
+            if (element.PhotoURL !== "null" && element.PhotoURL !== '') {
+              element.PhotoURL = (this.env.apiUrl + element.PhotoURL);
+            } else {
+              element.PhotoURL = "/assets/images/userEmpty.png"
+            }
+          });
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
         this.sp.hide();
-        this.as.successToast(res.message)
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -137,23 +144,23 @@ export class SupplierComponent implements OnInit {
 
   }
 
-  uploadImage(e:any, mode:any){
-   
+  uploadImage(e: any, mode: any) {
+
     this.img = e.target.files[0];
-      // console.log(`Image size before compressed: ${this.img.size} bytes.`)
+    // console.log(`Image size before compressed: ${this.img.size} bytes.`)
     this.compressImage.compress(this.img).pipe(take(1)).subscribe((compressedImage: any) => {
       // console.log(`Image size after compressed: ${compressedImage.size} bytes.`)
-    this.fu.uploadFileComapny(compressedImage).subscribe((data:any) => {
-      if (data.body !== undefined && mode === 'company') {
-        this.companyImage = this.env.apiUrl + data.body?.download;
-        this.data.PhotoURL = data.body?.download;
-        this.as.successToast(data.body?.message)
-      }
-     });
-   })
+      this.fu.uploadFileComapny(compressedImage).subscribe((data: any) => {
+        if (data.body !== undefined && mode === 'company') {
+          this.companyImage = this.env.apiUrl + data.body?.download;
+          this.data.PhotoURL = data.body?.download;
+          this.as.successToast(data.body?.message)
+        }
+      });
+    })
   }
 
-  deleteItem(i:any){
+  deleteItem(i: any) {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -164,49 +171,52 @@ export class SupplierComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
-
+        this.sp.show()
         const subs: Subscription = this.ss.deleteData(this.dataList[i].ID).subscribe({
           next: (res: any) => {
             if (res.success) {
               this.dataList.splice(i, 1);
               this.as.successToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been deleted.',
+                showConfirmButton: false,
+                timer: 1000
+              })
             } else {
               this.as.errorToast(res.message)
             }
-
+            this.sp.hide();
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'Your file has been deleted.',
-          showConfirmButton: false,
-          timer: 1000
-        })
         this.getList();
       }
     })
+    this.sp.hide();
   }
 
-  getSupplierById(datas:any){
-    this.companyImage =  datas.PhotoURL;
+  getSupplierById(datas: any) {
+    this.companyImage = datas.PhotoURL;
     this.data = datas;
     this.suBtn = true;
   }
 
-  Clear(){
-  this.suBtn = false;
-  this.id = 0;
-  this.data = { ID : null, Sno: this.data.Sno, Name : null, MobileNo1 : null, MobileNo2 : '', PhoneNo : '', Address : null, Email : '', Website : '',
-  GSTNo : '', CINNo : '', PhotoURL : '', Remark : '', ContactPerson : '', Fax : '', DOB: '', Anniversary: '',
-  Status : 1, CreatedBy : null, CreatedOn : null, UpdatedBy : null, UpdatedOn : null
-   };
+  Clear() {
+    this.suBtn = false;
+    this.id = 0;
+    this.data = {
+      ID: null, Sno: this.data.Sno, Name: null, MobileNo1: null, MobileNo2: '', PhoneNo: '', Address: null, Email: '', Website: '',
+      GSTNo: '', CINNo: '', PhotoURL: '', Remark: '', ContactPerson: '', Fax: '', DOB: '', Anniversary: '',
+      Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
+    };
   }
 
-  supplierUpdate(){
-    const subs: Subscription =  this.ss.supplierUpdate( this.data).subscribe({
+  supplierUpdate() {
+    this.sp.show()
+    const subs: Subscription = this.ss.supplierUpdate(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.formReset();
@@ -218,16 +228,18 @@ export class SupplierComponent implements OnInit {
             title: 'Your file has been Update.',
             showConfirmButton: false,
             timer: 1200
-          })   
+          })
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide();
       },
       error: (err: any) => {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide();
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
@@ -240,24 +252,25 @@ export class SupplierComponent implements OnInit {
   }
 
   openModal(content: any) {
-   this.suBtn = false;
-   this.id = 0;
+    this.suBtn = false;
+    this.id = 0;
 
-   if(this.dataList.length == 0) {
-    this.data.Sno = Number(this.data.Sno) + 1;
-   }else {
-    if(this.dataList[0].Sno != 'null') {
-      this.data.Sno = Number(this.dataList[0].Sno) + 1;
+    if (this.dataList.length == 0) {
+      this.data.Sno = Number(this.data.Sno) + 1;
     } else {
-      this.data.Sno = 1
+      if (this.dataList[0].Sno != 'null') {
+        this.data.Sno = Number(this.dataList[0].Sno) + 1;
+      } else {
+        this.data.Sno = 1
+      }
     }
-   }
-   
-   this.data = { ID : null, Sno: this.data.Sno, Name : null, MobileNo1 : null, MobileNo2 : '', PhoneNo : '', Address : null, Email : '', Website : '',
-    GSTNo : '', CINNo : '', PhotoURL : '', Remark : '', ContactPerson : '', Fax : '', DOB: '', Anniversary: '',
-    Status : 1, CreatedBy : null, CreatedOn : null, UpdatedBy : null, UpdatedOn : null
-   };
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'xl'});
+
+    this.data = {
+      ID: null, Sno: this.data.Sno, Name: null, MobileNo1: null, MobileNo2: '', PhoneNo: '', Address: null, Email: '', Website: '',
+      GSTNo: '', CINNo: '', PhotoURL: '', Remark: '', ContactPerson: '', Fax: '', DOB: '', Anniversary: '',
+      Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
+    };
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
   }
 
   ngAfterViewInit() {
@@ -282,51 +295,65 @@ export class SupplierComponent implements OnInit {
       //   })
       // subscription for response
     ).subscribe((text: string) => {
-  //  const name = e.target.value;
-    let data = {
-      searchQuery: text.trim(),
-    } 
-    if(data.searchQuery !== "") {
-      const dtm = {
-        currentPage: 1,
-        itemsPerPage: 50000,
-        searchQuery: data.searchQuery 
+      //  const name = e.target.value;
+      let data = {
+        searchQuery: text.trim(),
       }
-      const subs: Subscription = this.ss.searchByFeild(dtm).subscribe({
-        next: (res: any) => {
-          this.collectionSize = 1;
-          this.page = 1;
-          this.dataList = res.data
-          this.sp.hide();
-          this.as.successToast(res.message)
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    } else {
-      this.getList();
-    } 
+      if (data.searchQuery !== "") {
+        const dtm = {
+          currentPage: 1,
+          itemsPerPage: 50000,
+          searchQuery: data.searchQuery
+        }
+        this.sp.show()
+        const subs: Subscription = this.ss.searchByFeild(dtm).subscribe({
+          next: (res: any) => {
+            if(res.success){
+              this.collectionSize = 1;
+              this.page = 1;
+              this.dataList = res.data
+              this.as.successToast(res.message)
+            }else{
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      } else {
+        this.getList();
+      }
     });
+    this.sp.hide();
   }
 
   exportAsXLSX(): void {
     this.excelService.exportAsExcelFile(this.dataList, 'supplier_list');
   }
 
-  getGSTList(){
+  getGSTList() {
+    this.sp.show();
     const subs: Subscription = this.supps.getList('TaxType').subscribe({
       next: (res: any) => {
-        this.gstList = res.data
+        if(res.success){
+          this.gstList = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
       },
-    error: (err: any) => console.log(err.message),
-    complete: () => subs.unsubscribe(),
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
     });
+    this.sp.hide();
   }
 
   formReset() {
-   this.data = { ID : null, Sno: 0, Name : null, MobileNo1 : null, MobileNo2 : '', PhoneNo : '', Address : null, Email : '', Website : '',
-    GSTNo : '', GSTType:'None', CINNo : '', PhotoURL : '', Remark : null, ContactPerson : '', Fax : '', DOB: '', Anniversary: '',
-    Status : 1, CreatedBy : null, CreatedOn : null, UpdatedBy : null, UpdatedOn : null
+    this.data = {
+      ID: null, Sno: 0, Name: null, MobileNo1: null, MobileNo2: '', PhoneNo: '', Address: null, Email: '', Website: '',
+      GSTNo: '', GSTType: 'None', CINNo: '', PhotoURL: '', Remark: null, ContactPerson: '', Fax: '', DOB: '', Anniversary: '',
+      Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
     };
   }
 }

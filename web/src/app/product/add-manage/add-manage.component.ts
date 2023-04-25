@@ -63,17 +63,23 @@ export class AddManageComponent implements OnInit {
   }
 
   getfieldList(){
+    this.sp.show()
     if (this.selectedProduct !== null || this.selectedProduct !== '' ){
     this.showFeild = true;
     const subs: Subscription = this.supps.getList(this.selectedProduct).subscribe({
       next: (res: any) => {
-        this.depList = res.data;
+        if(res.success){
+          this.depList = res.data;
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
         this.sp.hide();
-        this.as.successToast(res.message)
       },
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),
     });
+    this.sp.hide();
   }
   }
 
@@ -116,6 +122,7 @@ export class AddManageComponent implements OnInit {
     }else{
     this.depList.forEach((element: { Name: any; ID: any; }) => {
       if(element.Name === this.data1.Category) {
+        this.sp.show()
         const subs: Subscription =   this.supps.deleteSupport(this.selectedProduct, element.Name).subscribe({
         next: (res: any) => {
           if (res.success) {
@@ -129,6 +136,7 @@ export class AddManageComponent implements OnInit {
           }else {
               this.as.errorToast(res.message)
           }
+          this.sp.hide()
         },
         error: (err: any) => {
           console.log(err.msg);
@@ -138,6 +146,7 @@ export class AddManageComponent implements OnInit {
         this.getfieldList();
       }
     });
+    this.sp.hide()
     }
   }
 
@@ -178,6 +187,7 @@ export class AddManageComponent implements OnInit {
   }
 
   chargesave(){
+    this.sp.show()
     const subs: Subscription =  this.supps.chargesave( this.selectedRow).subscribe({
       next: (res: any) => {
         // this.dataList = res.result;
@@ -200,12 +210,14 @@ export class AddManageComponent implements OnInit {
           }); 
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   chargedelete(i: string | number){
@@ -222,46 +234,63 @@ export class AddManageComponent implements OnInit {
         this.sp.show();
         const subs: Subscription = this.supps.chargedelete(this.dataList[i].Name).subscribe({
           next: (res: any) => {
-            this.dataList.splice(i, 1);
+            if(res.success){
+              this.dataList.splice(i, 1);
+              this.as.successToast(res.message)
+              this.selectedRow = {ID: null, CompanyID: null, Name: null, Description: null, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
+              this.chargelist();
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been deleted.',
+                showConfirmButton: false,
+                timer: 1000
+              })
+            }else{
+              this.as.errorToast(res.message)
+            }
             this.sp.hide();
-            this.as.successToast(res.message)
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
-      this.selectedRow = {ID: null, CompanyID: null, Name: null, Description: null, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
-        this.chargelist();
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'Your file has been deleted.',
-          showConfirmButton: false,
-          timer: 1000
-        })
       }
     })
+    this.sp.hide();
   }
 
   chargelist(){
+    this.sp.show();
     const subs: Subscription = this.supps.chargelist(this.selectedRow).subscribe({
       next: (res: any) => {
-        this.dataList = res.data
+        if(res.success){
+          this.dataList = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
         this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide();
   }
 
   getList(){
+    this.sp.show();
     const subs: Subscription = this.supps.getList('TaxType').subscribe({
       next: (res: any) => {
-        this.gstList = res.data
+        if(res.success){
+          this.gstList = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
         this.sp.hide();
       },
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),
     });
+    this.sp.hide();
   }
 
   setValuesService(){
@@ -302,6 +331,7 @@ export class AddManageComponent implements OnInit {
   }
 
   servicesave(){
+    this.sp.show();
     const subs: Subscription =  this.supps.servicesave(this.Service).subscribe({
       next: (res: any) => {
         // this.serviceList = res.result;
@@ -330,8 +360,6 @@ export class AddManageComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-
-  
   }
 
   servicedelete(i: string | number){
@@ -348,35 +376,46 @@ export class AddManageComponent implements OnInit {
         this.sp.show();
         const subs: Subscription = this.supps.servicedelete(this.serviceList[i].Name).subscribe({
           next: (res: any) => {
-            this.serviceList.splice(i, 1);
+            if(res.success){
+              this.serviceList.splice(i, 1);
+              this.as.successToast(res.message)
+              this.Service = {ID: null, CompanyID: null, Name: null, Description: null, Cost:0, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
+              this.servicelist();
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been deleted.',
+                showConfirmButton: false,
+                timer: 1000
+              })
+            }else{
+              this.as.errorToast(res.message)
+            }
             this.sp.hide();
-            this.as.successToast(res.message)
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
-      this.Service = {ID: null, CompanyID: null, Name: null, Description: null, Cost:0, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
-        this.servicelist();
-      Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'Your file has been deleted.',
-          showConfirmButton: false,
-          timer: 1000
-        })
       }
     })
+    this.sp.hide();
   }
 
   servicelist(){
+    this.sp.show()
     const subs: Subscription = this.supps.servicelist(this.Service).subscribe({
       next: (res: any) => {
-        this.serviceList = res.data
+        if(res.success){
+          this.serviceList = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
         this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide();
   }
 
 }

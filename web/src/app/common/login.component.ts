@@ -58,15 +58,21 @@ export class LoginComponent implements OnInit {
   }
 
   rolesList(){
+    this.sp.show()
     const subs: Subscription = this.role.getList('').subscribe({
       next: (res: any) => {
-        this.roleList = res.data
-        this.setPermission()
+        if(res.success){
+          this.roleList = res.data
+          this.setPermission()
+        }else{
+          this.as.errorToast(res.message)
+        }
         this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide();
   }
 
   onSubmit(content:any) {

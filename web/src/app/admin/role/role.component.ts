@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -24,30 +24,31 @@ export class RoleComponent implements OnInit {
     private sp: NgxSpinnerService,
   ) { }
 
-  loggedInCompany:any = (localStorage.getItem('LoggedINCompany') || '');
+  loggedInCompany: any = (localStorage.getItem('LoggedINCompany') || '');
   user = (localStorage.getItem('user') || '');
 
-  selectedRole :any = {ID: null, Name: "", CompanyID: this.loggedInCompany, Permission: "[]", Status: 1};
+  selectedRole: any = { ID: null, Name: "", CompanyID: this.loggedInCompany, Permission: "[]", Status: 1 };
 
-  roleList :any
+  roleList: any
   showAdd = false;
-  displayModule :any= true;
+  displayModule: any = true;
 
   moduleList: any = [
-    {ModuleName: 'CompanyInfo', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    { ModuleName: 'CompanyInfo', MView: true, Edit: true, Add: true, View: true, Delete: true },
   ];
 
   ngOnInit(): void {
     this.getList();
   }
 
-  saveRole(){
+  saveRole() {
+    this.sp.show();
     this.selectedRole.Permission = JSON.stringify(this.moduleList)
-    const subs: Subscription =  this.role.roleSave(this.selectedRole.Name,this.selectedRole.Permission).subscribe({
+    const subs: Subscription = this.role.roleSave(this.selectedRole.Name, this.selectedRole.Permission).subscribe({
       next: (res: any) => {
-        this.roleList = res.data;
-        this.getList();
         if (res.success) {
+          this.roleList = res.data;
+          this.getList();
           Swal.fire({
             position: 'center',
             icon: 'success',
@@ -61,22 +62,22 @@ export class RoleComponent implements OnInit {
             position: 'center',
             icon: 'error',
             title: 'Already exist',
-            text:'Already exist from this Role Name',
+            text: res.message,
             showConfirmButton: true,
             backdrop: false
           })
         }
+        this.sp.hide();
       },
       error: (err: any) => {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
-
     });
-
+    this.sp.hide();
   }
 
-  deleteRole(){
+  deleteRole() {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -90,38 +91,46 @@ export class RoleComponent implements OnInit {
         this.sp.show();
         const subs: Subscription = this.role.deleteRole(this.selectedRole.ID).subscribe({
           next: (res: any) => {
-            this.getList();
+            if (res.success) {
+              this.getList();
+              this.as.successToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been deleted.',
+                showConfirmButton: false,
+                timer: 1000
+              })
+            } else {
+              this.as.errorToast(res.message)
+            }
             this.sp.hide();
-            this.as.successToast(res.message)
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
-      Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'Your file has been deleted.',
-          showConfirmButton: false,
-          timer: 1000
-        })
+
       }
     })
-
+    this.sp.hide();
   }
 
-  getList(){
+  getList() {
+    this.sp.show();
     const subs: Subscription = this.role.getList('').subscribe({
       next: (res: any) => {
-        this.roleList = res.data
+        if (res.success) {
+          this.roleList = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
         this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide();
   }
-
-
-
 
 
 }

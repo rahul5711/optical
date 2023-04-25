@@ -47,7 +47,7 @@ export class CompanyListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
+    this.sp.show()
     this.user = JSON.parse(localStorage.getItem('user') || '')
     if (this.user.UserGroup !== 'SuperAdmin') {
       localStorage.clear();
@@ -56,7 +56,7 @@ export class CompanyListComponent implements OnInit {
     } else {
       this.getList();
     }
-
+    this.sp.hide()
   }
 
   onPageChange(pageNum: number): void {
@@ -75,22 +75,26 @@ export class CompanyListComponent implements OnInit {
     }
     const subs: Subscription = this.cs.getList(dtm).subscribe({
       next: (res: any) => {
-        this.collectionSize = res.count;
-        this.dataList = res.data;
-        this.dataList.forEach((element: { PhotoURL: any; }) => {
-          if (element.PhotoURL !== "null" && element.PhotoURL !== "") {
-            element.PhotoURL = (this.env.apiUrl + element.PhotoURL);
-          } else {
-            element.PhotoURL = "/assets/images/userEmpty.png"
-          }
-        });
-        this.sp.hide();
-        this.as.successToast(res.message)
+        if(res.success){
+          this.collectionSize = res.count;
+          this.dataList = res.data;
+          this.dataList.forEach((element: { PhotoURL: any; }) => {
+            if (element.PhotoURL !== "null" && element.PhotoURL !== "") {
+              element.PhotoURL = (this.env.apiUrl + element.PhotoURL);
+            } else {
+              element.PhotoURL = "/assets/images/userEmpty.png"
+            }
+          });
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-
+    this.sp.hide()
   }
 
   deleteItem(i: any) {
@@ -108,25 +112,27 @@ export class CompanyListComponent implements OnInit {
       if (result.isConfirmed) {
         const subs: Subscription = this.cs.deleteData(this.dataList[i].ID).subscribe({
           next: (res: any) => {
-            this.dataList.splice(i, 1);
-            this.as.successToast(res.message)
+            if(res.success){
+              this.dataList.splice(i, 1);
+              this.as.successToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been deleted.',
+                showConfirmButton: false,
+                timer: 1000
+              })
+            }else{
+              this.as.successToast(res.message)
+            }
+            this.sp.hide();
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'Your file has been deleted.',
-          showConfirmButton: false,
-          timer: 1000
-        })
       }
       this.sp.hide();
     })
-
-
-
   }
 
   companylogin(i: any) {
@@ -215,13 +221,18 @@ export class CompanyListComponent implements OnInit {
           itemsPerPage: 50000,
           searchQuery: data.searchQuery
         }
+        this.sp.show()
         const subs: Subscription = this.cs.searchByFeild(dtm).subscribe({
           next: (res: any) => {
-            this.collectionSize = 1;
-            this.page = 1;
-            this.dataList = res.data
+            if(res.success){
+              this.collectionSize = 1;
+              this.page = 1;
+              this.dataList = res.data
+              this.as.successToast(res.message)
+            }else{
+              this.as.errorToast(res.message)
+            }
             this.sp.hide();
-            this.as.successToast(res.message)
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
@@ -230,6 +241,7 @@ export class CompanyListComponent implements OnInit {
         this.getList();
       }
     });
+    this.sp.hide();
   }
 
   deactive(i: any) {
@@ -245,25 +257,30 @@ export class CompanyListComponent implements OnInit {
 
     }).then((result) => {
       if (result.isConfirmed) {
+        this.sp.show()
         const subs: Subscription = this.cs.deactive(this.dataList[i].ID).subscribe({
           next: (res: any) => {
-            this.getList();
-            this.as.successToast(res.message)
+            if(res.success){
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Company has been Deactive.',
+                showConfirmButton: false,
+                timer: 1500
+              })
+              this.getList();
+              this.as.successToast(res.message)
+            }else{
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide()
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'Company has been Deactive.',
-          showConfirmButton: false,
-          timer: 1500
-        })
       }
     })
-
-
+    this.sp.hide()
   }
 
   activecompany(i:any) {
@@ -279,25 +296,31 @@ export class CompanyListComponent implements OnInit {
 
     }).then((result) => {
       if (result.isConfirmed) {
+        this.sp.show()
         const subs: Subscription = this.cs.activecompany(this.dataList[i].ID).subscribe({
           next: (res: any) => {
-            this.getList();
-            this.as.successToast(res.message)
+            if(res.success){
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Company has been Active.',
+                showConfirmButton: false,
+                timer: 1500
+              })
+              this.getList();
+              this.as.successToast(res.message)
+            }else{
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide()
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'Company has been Active.',
-          showConfirmButton: false,
-          timer: 1500
-        })
+       
       }
     })
-
-
+    this.sp.hide()
   }
 
   exportAsXLSX(): void {

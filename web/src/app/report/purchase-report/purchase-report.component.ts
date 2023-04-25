@@ -73,6 +73,7 @@ export class PurchaseReportComponent implements OnInit {
     private ps: ProductService,
     public as: AlertService,
     private modalService: NgbModal,
+    private sp: NgxSpinnerService,
   ) { }
 
   PurchaseMaster: any =  { 
@@ -96,6 +97,7 @@ export class PurchaseReportComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.sp.show()
     this.dropdownShoplist();
     this.dropdownSupplierlist();
     this.getProductList();
@@ -116,6 +118,7 @@ export class PurchaseReportComponent implements OnInit {
     this.ProductExpiry.FromDate = moment().format('YYYY-MM-DD');
     this.ProductExpiry.ToDate = moment().format('YYYY-MM-DD');
     this.purchaseProductExpiry();
+    this.sp.hide()
   }
 
   dropdownShoplist(){
@@ -161,7 +164,7 @@ export class PurchaseReportComponent implements OnInit {
 
     const subs: Subscription =  this.purchaseService.getPurchasereports(Parem).subscribe({
       next: (res: any) => {
-        if(res.message){
+        if(res.success){
           this.as.successToast(res.message)
           this.PurchaseMasterList = res.data;
  
@@ -190,11 +193,15 @@ export class PurchaseReportComponent implements OnInit {
           this.totalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
           this.totalAmount = res.calculation[0].totalAmount.toFixed(2);
           this.gstMaster = res.calculation[0].gst_details
+        }else{
+          this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   purchaseFromReset(){
@@ -309,6 +316,7 @@ export class PurchaseReportComponent implements OnInit {
   }
 
   getPurchaseDetails(){
+    this.sp.show()
     let Parem = '';
 
     if (this.PurchaseDetail.FromDate !== '' && this.PurchaseDetail.FromDate !== null){
@@ -340,7 +348,7 @@ export class PurchaseReportComponent implements OnInit {
 
     const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem).subscribe({
       next: (res: any) => {
-        if(res.message){
+        if(res.success){
           this.as.successToast(res.message)
           this.PurchaseDetailList = res.data
           this.DetailtotalQty = res.calculation[0].totalQty;
@@ -349,11 +357,15 @@ export class PurchaseReportComponent implements OnInit {
           this.DetailtotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
           this.DetailtotalAmount = res.calculation[0].totalAmount.toFixed(2);
           this.gstdetails = res.calculation[0].gst_details
+        }else{
+          this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   exportAsXLSXDetail(): void {
@@ -396,6 +408,7 @@ export class PurchaseReportComponent implements OnInit {
 
    // purchaseCharge
   purchaseCharge(){
+    this.sp.show()
     let Parem = '';
 
     if (this.charge.FromDate !== '' && this.charge.FromDate !== null){
@@ -411,17 +424,21 @@ export class PurchaseReportComponent implements OnInit {
 
     const subs: Subscription =  this.purchaseService.getPurchaseChargeReport(Parem).subscribe({
       next: (res: any) => {
-        if(res.message){
+        if(res.success){
           this.as.successToast(res.message)
           this.PurchaseChargeList = res.data
           this.ChargeAmount = res.calculation[0].totalAmount.toFixed(2);
           this.ChargetotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
           this.gstCharge = res.calculation[0].gst_details
+        }else{
+          this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
-    });
+    })       
+    this.sp.hide()
   }
 
   exportAsXLSXcharge(): void {
@@ -514,6 +531,7 @@ export class PurchaseReportComponent implements OnInit {
   }
 
   purchaseProductExpiry(){
+    this.sp.show()
     this.todaydate = moment(new Date()).format('YYYY-MM-DD');
     let Parem = '';
 
@@ -546,7 +564,7 @@ export class PurchaseReportComponent implements OnInit {
 
     const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem).subscribe({
       next: (res: any) => {
-        if(res.message){
+        if(res.success){
           this.as.successToast(res.message)
           this.ProductExpiryList = res.data
           this.ProductExpiryList.forEach((element: any) => {
@@ -564,11 +582,15 @@ export class PurchaseReportComponent implements OnInit {
           this.ExpirytotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
           this.ExpirytotalAmount = res.calculation[0].totalAmount.toFixed(2);
           this.gstExpirys = res.calculation[0].gst_details
+        }else{
+          this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   openModal2(content2: any) {

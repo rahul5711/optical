@@ -106,13 +106,17 @@ i: any;
     this.sp.show();
       const subs: Subscription =  this.ps.getList().subscribe({
         next: (res: any) => {
-          this.prodList = res.data;
-          this.as.successToast(res.message)
+          if(res.success){
+            this.prodList = res.data;
+            this.as.successToast(res.message)
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
-    this.sp.hide();
   }
 
   getfieldList(){
@@ -133,6 +137,7 @@ i: any;
   }
 
   deleteProductType(){
+    this.sp.show()
       if (this.specList.length === 0 ) {
       const subs: Subscription =  this.ps.deleteProductType(this.selectedProductID ,'product').subscribe({
         next: (res: any) => {
@@ -166,6 +171,7 @@ i: any;
         footer: ''
       });
     }
+    this.sp.hide();
   }
 
   updateProductType(){
@@ -254,10 +260,10 @@ i: any;
       });
      }
      this.sp.hide();
-
   }
 
   deleteItem(i:any){
+      this.sp.show();
       const subs: Subscription = this.ps.deleteSpec('productspec', this.specList[i].ID).subscribe({
         next: (res: any) => {
           this.specList.splice(i, 1);
@@ -272,14 +278,14 @@ i: any;
           } else {
             this.as.errorToast(res.message)
           }
+          this.sp.hide();
         },
         error: (err: any) => {
           console.log(err.msg);
         },
         complete: () => subs.unsubscribe(),
       });
-
-
+      this.sp.hide();
   }
 
   openModal(content: any,sProduct:any,sHSNCode:any,sGSTPercentage:any,sGSTType:any) {

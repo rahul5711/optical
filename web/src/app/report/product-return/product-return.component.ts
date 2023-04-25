@@ -53,6 +53,7 @@ export class ProductReturnComponent implements OnInit {
     private supps: SupportService,
     private ps: ProductService,
     public as: AlertService,
+    public sp: NgxSpinnerService,
     private modalService: NgbModal,
   ) { }
 
@@ -68,6 +69,7 @@ export class ProductReturnComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.sp.show()
     this.dropdownShoplist();
     this.dropdownSupplierlist();
     this.getProductList();
@@ -80,12 +82,17 @@ export class ProductReturnComponent implements OnInit {
     this.ReturnDetail.FromDate = moment().format('YYYY-MM-DD');
     this.ReturnDetail.ToDate = moment().format('YYYY-MM-DD');
     this.getReturnDetails();
+    this.sp.hide()
   }
 
   dropdownShoplist(){
     const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
       next: (res: any) => {
-        this.shopList  = res.data
+        if(res.success){
+          this.shopList  = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -95,7 +102,11 @@ export class ProductReturnComponent implements OnInit {
   dropdownSupplierlist(){
     const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
       next: (res: any) => {
-        this.supplierList  = res.data
+        if(res.success){
+          this.supplierList  = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -103,7 +114,7 @@ export class ProductReturnComponent implements OnInit {
   }
 
   getPurchaseReturnMaster(){
-
+    this.sp.show()
     let Parem = '';
 
     if (this.ReturnMaster.FromDate !== '' && this.ReturnMaster.FromDate !== null){
@@ -122,7 +133,7 @@ export class ProductReturnComponent implements OnInit {
 
     const subs: Subscription =  this.purchaseService.getPurchasereturnreports(Parem).subscribe({
       next: (res: any) => {
-        if(res.message){
+        if(res.success){
           this.ReturnMasterList = res.data;
           this.as.successToast(res.message)
           this.ReturnMasterList.forEach((e: any) => {
@@ -150,7 +161,10 @@ export class ProductReturnComponent implements OnInit {
           this.totalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
           this.totalAmount = res.calculation[0].totalAmount.toFixed(2);
           this.gstMaster = res.calculation[0].gst_details
+        }else{
+          this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -186,7 +200,11 @@ export class ProductReturnComponent implements OnInit {
   getProductList(){
     const subs: Subscription =  this.ps.getList().subscribe({
       next: (res: any) => {
-        this.prodList = res.data;
+        if(res.success){
+          this.prodList = res.data;
+        }else{
+          this.as.errorToast(res.message)
+        }
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -202,8 +220,12 @@ export class ProductReturnComponent implements OnInit {
       })
       const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
         next: (res: any) => {
-        this.specList = res.data;
-        this.getSptTableData();
+          if(res.success){
+            this.specList = res.data;
+            this.getSptTableData();
+          }else{
+            this.as.errorToast(res.message)
+          }
        },
        error: (err: any) => console.log(err.message),
        complete: () => subs.unsubscribe(),
@@ -221,8 +243,12 @@ export class ProductReturnComponent implements OnInit {
      if (element.FieldType === 'DropDown' && element.Ref === '0') {
        const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
          next: (res: any) => {
-           element.SptTableData = res.data;   
-           element.SptFilterData = res.data;  
+          if(res.success){
+            element.SptTableData = res.data;   
+            element.SptFilterData = res.data;  
+          }else{
+            this.as.errorToast(res.message)
+          }
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
@@ -236,8 +262,12 @@ export class ProductReturnComponent implements OnInit {
      if (element.Ref === this.specList[index].FieldName.toString() ) {
        const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
          next: (res: any) => {
-           element.SptTableData = res.data; 
-           element.SptFilterData = res.data;   
+          if(res.success){
+            element.SptTableData = res.data; 
+            element.SptFilterData = res.data;   
+          }else{
+            this.as.errorToast(res.message)
+          }
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
@@ -249,7 +279,11 @@ export class ProductReturnComponent implements OnInit {
   getGSTList(){
     const subs: Subscription = this.supps.getList('TaxType').subscribe({
       next: (res: any) => {
-        this.gstList = res.data
+        if(res.success){
+          this.gstList = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
       },
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),
@@ -269,6 +303,7 @@ export class ProductReturnComponent implements OnInit {
   }
   
   getReturnDetails(){
+    this.sp.show()
     let Parem = '';
 
     if (this.ReturnDetail.FromDate !== '' && this.ReturnDetail.FromDate !== null){
@@ -294,7 +329,7 @@ export class ProductReturnComponent implements OnInit {
 
     const subs: Subscription =  this.purchaseService.getPurchasereturndetailreports(Parem).subscribe({
       next: (res: any) => {
-        if(res.message){
+        if(res.success){
           this.as.successToast(res.message)
           this.RetureDetailList = res.data
           this.DetailtotalQty = res.calculation[0].totalQty;
@@ -303,7 +338,10 @@ export class ProductReturnComponent implements OnInit {
           this.DetailtotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
           this.DetailtotalAmount = res.calculation[0].totalAmount.toFixed(2);
           this.gstdetails = res.calculation[0].gst_details
+        }else{
+          this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),

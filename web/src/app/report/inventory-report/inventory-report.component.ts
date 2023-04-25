@@ -31,6 +31,7 @@ export class InventoryReportComponent implements OnInit {
     private ps: ProductService,
     public as: AlertService,
     private modalService: NgbModal,
+    private sp: NgxSpinnerService,
   ) { }
 
   supplierList :any;
@@ -86,33 +87,54 @@ export class InventoryReportComponent implements OnInit {
   }
 
   dropdownShoplist(){
+    this.sp.show()
     const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
       next: (res: any) => {
-        this.shopList  = res.data
+        if(res.success){
+          this.shopList  = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   dropdownSupplierlist(){
+    this.sp.show()
     const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
       next: (res: any) => {
-        this.supplierList  = res.data
+        if(res.success){
+          this.supplierList  = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   getProductList(){
+    this.sp.show()
     const subs: Subscription =  this.ps.getList().subscribe({
       next: (res: any) => {
-        this.prodList = res.data;
+        if(res.success){
+          this.prodList = res.data;
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   getFieldList(){
@@ -124,8 +146,12 @@ export class InventoryReportComponent implements OnInit {
       })
       const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
         next: (res: any) => {
-        this.specList = res.data;
-        this.getSptTableData();
+          if(res.success){
+            this.specList = res.data;
+            this.getSptTableData();
+          }else{
+            this.as.errorToast(res.message)
+          }
        },
        error: (err: any) => console.log(err.message),
        complete: () => subs.unsubscribe(),
@@ -143,8 +169,12 @@ export class InventoryReportComponent implements OnInit {
      if (element.FieldType === 'DropDown' && element.Ref === '0') {
        const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
          next: (res: any) => {
-           element.SptTableData = res.data;   
-           element.SptFilterData = res.data;  
+          if(res.success){
+            element.SptTableData = res.data;   
+            element.SptFilterData = res.data;  
+          }else{
+            this.as.errorToast(res.message)
+          }
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
@@ -158,8 +188,12 @@ export class InventoryReportComponent implements OnInit {
      if (element.Ref === this.specList[index].FieldName.toString() ) {
        const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
          next: (res: any) => {
-           element.SptTableData = res.data; 
-           element.SptFilterData = res.data;   
+          if(res.success){
+            element.SptTableData = res.data; 
+            element.SptFilterData = res.data;   
+          }else{
+            this.as.errorToast(res.message)
+          }
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
@@ -171,7 +205,11 @@ export class InventoryReportComponent implements OnInit {
   getGSTList(){
     const subs: Subscription = this.supps.getList('TaxType').subscribe({
       next: (res: any) => {
-        this.gstList = res.data
+        if(res.success){
+          this.gstList = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
       },
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),
@@ -191,6 +229,7 @@ export class InventoryReportComponent implements OnInit {
   }
 
   getInventory(){
+    this.sp.show()
     let Parem = '';
 
     if (this.inventory.FromDate !== '' && this.inventory.FromDate !== null){
@@ -228,7 +267,7 @@ export class InventoryReportComponent implements OnInit {
 
     const subs: Subscription =  this.purchaseService.getProductInventoryReport(Parem).subscribe({
       next: (res: any) => {
-        if(res.message){
+        if(res.success){
           this.as.successToast(res.message)
           this.inventoryList = res.data
           this.DetailtotalQty = res.calculation[0].totalQty;
@@ -237,11 +276,15 @@ export class InventoryReportComponent implements OnInit {
           this.DetailtotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
           this.DetailtotalAmount = res.calculation[0].totalAmount.toFixed(2);
           this.gstdetails = res.calculation[0].gst_details
+        }else{
+          this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   exportAsXLSXDetail(): void {
@@ -282,8 +325,12 @@ export class InventoryReportComponent implements OnInit {
         })
         const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
           next: (res: any) => {
-          this.specList1 = res.data;
-          this.getSptTableData1();
+            if(res.success){
+              this.specList1 = res.data;
+              this.getSptTableData1();
+            }else{
+              this.as.errorToast(res.message)
+            }
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
@@ -301,8 +348,12 @@ export class InventoryReportComponent implements OnInit {
        if (element.FieldType === 'DropDown' && element.Ref === '0') {
          const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
            next: (res: any) => {
-             element.SptTableData = res.data;   
-             element.SptFilterData = res.data;  
+            if(res.success){
+              element.SptTableData = res.data;   
+              element.SptFilterData = res.data;  
+            }else{
+              this.as.errorToast(res.message)
+            }
            },
            error: (err: any) => console.log(err.message),
            complete: () => subs.unsubscribe(),
@@ -316,8 +367,12 @@ export class InventoryReportComponent implements OnInit {
        if (element.Ref === this.specList1[index].FieldName.toString() ) {
          const subs: Subscription =  this.ps.getProductSupportData( this.specList1[index].SelectedValue,element.SptTableName).subscribe({
            next: (res: any) => {
-             element.SptTableData = res.data; 
-             element.SptFilterData = res.data;   
+            if(res.success){
+              element.SptTableData = res.data; 
+              element.SptFilterData = res.data; 
+            }else{
+              this.as.errorToast(res.message)
+            }
            },
            error: (err: any) => console.log(err.message),
            complete: () => subs.unsubscribe(),
@@ -339,6 +394,7 @@ export class InventoryReportComponent implements OnInit {
     }
   
     purchaseProductExpiry(){
+      this.sp.show()
       this.todaydate = moment(new Date()).format('YYYY-MM-DD');
       let Parem = '';
   
@@ -371,14 +427,12 @@ export class InventoryReportComponent implements OnInit {
   
       const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem).subscribe({
         next: (res: any) => {
-          if(res.message){
+          if(res.success){
             this.as.successToast(res.message)
             this.ProductExpiryList = res.data
             this.ProductExpiryList.forEach((element: any) => {
               if(element.ProductExpDate < this.todaydate) {
                 element.Color = true;
-                console.log( element.Color);
-                
               } else {
                 element.Color = false;
               }
@@ -389,11 +443,15 @@ export class InventoryReportComponent implements OnInit {
             this.ExpirytotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
             this.ExpirytotalAmount = res.calculation[0].totalAmount.toFixed(2);
             this.gstExpirys = res.calculation[0].gst_details
+          }else{
+            this.as.errorToast(res.message)
           }
+          this.sp.hide()
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
+      this.sp.hide()
     }
   
     openModal2(content2: any) {

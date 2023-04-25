@@ -64,21 +64,26 @@ export class UserUpdatePasswordComponent implements OnInit {
     }
     const subs: Subscription = this.cs.getUserList(dtm).subscribe({
       next: (res: any) => {
-        this.collectionSize = res.count;
-        this.dataList = res.data;
-        this.dataList.forEach((element: { PhotoURL: any; }) => {
-          if(element.PhotoURL !== "null" && element.PhotoURL !== ""){
-            element.PhotoURL = (this.env.apiUrl + element.PhotoURL);
-          }else{
-            element.PhotoURL = "../../../assets/images/userEmpty.png"
-          }
-        });
+        if(res.success){
+          this.collectionSize = res.count;
+          this.dataList = res.data;
+          this.dataList.forEach((element: { PhotoURL: any; }) => {
+            if(element.PhotoURL !== "null" && element.PhotoURL !== ""){
+              element.PhotoURL = (this.env.apiUrl + element.PhotoURL);
+            }else{
+              element.PhotoURL = "../../../assets/images/userEmpty.png"
+            }
+          });
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
         this.sp.hide();
-        this.as.successToast(res.message)
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide();
   }
 
   openModal(content: any,ID:any) {
@@ -87,47 +92,43 @@ export class UserUpdatePasswordComponent implements OnInit {
   }
 
   UpdatePassword(){
+    this.sp.show()
     if(this.data.Password === this.ConfirmPassword){
       const subs: Subscription = this.cs.updatePassword(this.data).subscribe({
         next: (res: any) => {
           if (res.success) {
+            this.data.Password = '';
+            this.ConfirmPassword = '';
+            this.modalService.dismissAll()
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'User Password has been Updated',
+              showConfirmButton: false,
+              timer: 1000
+            })
             this.as.successToast(res.message)
           } else {
             this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: 'Oops!! Incorrect Password',
+              showConfirmButton: true,
+              width: 400,
+              backdrop: false
+            })
           }
+         this.sp.hide()
         },
         error: (err: any) => {
           console.log(err.message);
         },
         complete: () => subs.unsubscribe(),
       })
-      this.data.Password = '';
-      this.ConfirmPassword = '';
-      this.modalService.dismissAll()
-      Swal.fire({
-        position: 'center',
-        icon: 'success',
-        title: 'User Password has been Updated',
-        showConfirmButton: false,
-        timer: 1000
-      })
-    }else{
-      Swal.fire({
-        position: 'center',
-        icon: 'error',
-        title: 'Oops!! Incorrect Password',
-        // text: 'Password don`t match',
-        showConfirmButton: true,
-        // background: '#fff url(../../../assets/images/relinksyslogo.png)',
-        width: 400,
-        backdrop: false
-      
-      })
     }
-    
+    this.sp.hide()
   }
 
- 
- 
 
 }

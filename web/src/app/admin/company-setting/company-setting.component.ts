@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,Reacti
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { NgxSpinner, NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
@@ -27,6 +27,7 @@ export class CompanySettingComponent implements OnInit {
     public as: AlertService,
     private fu: FileUploadService,
     private cs: CompanyService,
+    private sp: NgxSpinnerService,
 
   ) { }
 
@@ -92,6 +93,7 @@ export class CompanySettingComponent implements OnInit {
   }
 
   updatecompanysetting(){
+    this.sp.show();
     this.data.WelComeNote = JSON.stringify(this.wlcmArray1);
     const subs: Subscription =  this.cs.updatecompanysetting( this.data).subscribe({
       next: (res: any) => {
@@ -106,6 +108,7 @@ export class CompanySettingComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide();
       },
       error: (err: any) => {
         console.log(err.msg);

@@ -64,6 +64,7 @@ export class EmployeeComponent implements OnInit {
   }
 
   onSubmit(){
+    this.sp.show();
     const subs: Subscription =  this.es.saveUser(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -89,6 +90,7 @@ export class EmployeeComponent implements OnInit {
             backdrop: false
           })
         }
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.msg);
@@ -125,6 +127,7 @@ export class EmployeeComponent implements OnInit {
   }
 
   getUserById(){
+    this.sp.show()
     const subs: Subscription = this.es.getUserById(this.id).subscribe({
       next: (res: any) => {
         this.userList = res.UserShop
@@ -132,10 +135,10 @@ export class EmployeeComponent implements OnInit {
           this.as.successToast(res.message)
           this.data = res.data[0]
           this.userImage = this.env.apiUrl + res.data[0].PhotoURL;
-
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.message);
@@ -145,6 +148,7 @@ export class EmployeeComponent implements OnInit {
   }
 
   updateUser(){
+    this.sp.show()
     const subs: Subscription =  this.es.updateUser( this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -162,6 +166,7 @@ export class EmployeeComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.msg);
@@ -172,9 +177,14 @@ export class EmployeeComponent implements OnInit {
   }
 
   dropdownShoplist(){
+    this.sp.show()
     const subs: Subscription = this.ss.dropdownShoplist(this.user).subscribe({
       next: (res: any) => {
-        this.dropShoplist = res.data
+        if(res.success){
+          this.dropShoplist = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
         this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
@@ -183,6 +193,7 @@ export class EmployeeComponent implements OnInit {
   }
 
   saveUserShop(){
+    this.sp.show()
     this.UserShop.UserID = this.id
     const subs: Subscription =  this.ss.saveUserShop(this.UserShop).subscribe({
       next: (res: any) => {
@@ -204,6 +215,7 @@ export class EmployeeComponent implements OnInit {
             showConfirmButton: true,
           })
         }
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.msg);
@@ -214,6 +226,7 @@ export class EmployeeComponent implements OnInit {
   }
 
   updateUserShop(){
+    this.sp.show()
     const subs: Subscription =  this.ss.updateUserShop(this.UserShop).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -236,6 +249,7 @@ export class EmployeeComponent implements OnInit {
             showConfirmButton: true,
           })
         }
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.msg);
@@ -246,9 +260,14 @@ export class EmployeeComponent implements OnInit {
   }
 
   rolesList(){
+    this.sp.show()
     const subs: Subscription = this.role.getList('').subscribe({
       next: (res: any) => {
-        this.roleList = res.data
+        if(res.success){
+          this.roleList = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
         this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
@@ -270,20 +289,24 @@ export class EmployeeComponent implements OnInit {
         this.sp.show();
         const subs: Subscription = this.ss.deleteUserShop(this.userList[i].ID).subscribe({
           next: (res: any) => {
-            this.userList.splice(i, 1);
+            if(res.success){
+              this.userList.splice(i, 1);
+              this.as.successToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been deleted.',
+                showConfirmButton: false,
+                timer: 1000
+              })
+            }else{
+              this.as.errorToast(res.message)
+            }
             this.sp.hide();
-            this.as.successToast(res.message)
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
-      Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'Your file has been deleted.',
-          showConfirmButton: false,
-          timer: 1000
-        })
       }
     })
   }
