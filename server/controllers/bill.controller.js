@@ -170,12 +170,11 @@ module.exports = {
             billMaseterData.InvoiceNo = invoiceNo;
 
             // save Bill master data
-            // let bMaster = await connection.query(
-            //     `insert into billmaster (CustomerID,CompanyID, Sno,ShopID,BillDate, DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}','${billMaseterData.DeliveryDate}', 'Unpaid',  '${billMaseterData.InvoiceNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.SubTotal}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount - billMaseterData.AddlDiscount}, 1, ${LoggedOnUser}, now(), now(), ${billMaseterData.Doctor}, '${billMaseterData.TrayNo}', ${billMaseterData.Employee})`
-            // );
+            let bMaster = await connection.query(
+                `insert into billmaster (CustomerID,CompanyID, Sno,ShopID,BillDate, DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}','${billMaseterData.DeliveryDate}', 'Unpaid',  '${billMaseterData.InvoiceNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.SubTotal}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount - billMaseterData.AddlDiscount}, 1, ${LoggedOnUser}, now(), now(), ${billMaseterData.Doctor}, '${billMaseterData.TrayNo}', ${billMaseterData.Employee})`
+            );
 
-            // let bMasterID = bMaster.insertId || 0;
-            let bMasterID = 0;
+            let bMasterID = bMaster.insertId;
 
 
             // save service
@@ -209,12 +208,23 @@ module.exports = {
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
                     } else if (preorder === 1 && item.Barcode === "0") {
+                        item.Multiple = 0
+                        item.Ledger = 0
+                        item.BrandType = 0
+                        item.WholeSale = 0
+                        item.RetailPrice = 0
+                        item.WholeSalePrice = 0
+
                         item.BaseBarCode = await generateBarcode(CompanyID, 'PB')
                         item.Barcode = Number(item.BaseBarCode) * 1000
                         // generate unique barcode
                         item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item)
                         const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser)
-                        return res.send("hii")
+
+
+                        let result = await connection.query(
+                            `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
+                        );
                     } else if (manual === 1 && preorder === 0) {
                         item.BaseBarCode = await generateBarcode(CompanyID, 'MB')
                         item.Barcode = Number(item.BaseBarCode) * 1000

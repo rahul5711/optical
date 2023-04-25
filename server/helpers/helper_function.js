@@ -352,14 +352,14 @@ module.exports = {
     const paymentStatus = "Unpaid"
     const supplierData = await connection.query(`select * from supplier where CompanyID = ${CompanyID} and Name = 'PreOrder Supplier'`)
 
-    const purchaseDetailData = await connection.query(`select * from purchasedetailnew left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID where purchasemasternew.PStatus = 1 and purchasemasternew.SupplierID = ${supplierData[0].ID} and purchasemasternew.CompanyID = ${CompanyID} and purchasemasternew.ShopID = ${ShopID}`)
+    const purchaseDetailData = await connection.query(`select * from purchasedetailnew left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID where purchasemasternew.PStatus = 1 and purchasemasternew.SupplierID = ${supplierData[0].ID} and purchasemasternew.CompanyID = ${CompanyID} and purchasemasternew.ShopID = ${ShopID} order by purchasemasternew.ID desc`)
 
     if (purchaseDetailData.length <= 50) {
       console.log("Quantity less than 50");
       let updatePurchaseMasterData = []
       let updatePurchaseDetailData = []
 
-      const purchaseMasterData = await connection.query(`select * from purchasemasternew where CompanyID = ${CompanyID} and ShopID = ${ShopID} and purchasemasternew.SupplierID = ${supplierData[0].ID}`)
+      const purchaseMasterData = await connection.query(`select * from purchasemasternew where CompanyID = ${CompanyID} and ShopID = ${ShopID} and purchasemasternew.SupplierID = ${supplierData[0].ID} order by purchasemasternew.ID desc`)
 
       console.log(purchaseMasterData, 'purchaseMasterData');
 
@@ -385,12 +385,6 @@ module.exports = {
         }
         updatePurchaseMasterData = purchase
         updatePurchaseDetailData = Item
-        Item.Multiple = 0
-        Item.Ledger = 0
-        Item.BrandType = 0
-        Item.WholeSale = 0
-        Item.RetailPrice = 0
-        Item.WholeSalePrice = 0
 
         //  save purchase data
         const savePurchase = await connection.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},now(),'${paymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,1,${purchase.TotalAmount}, ${LoggedOnUser}, now())`);
@@ -440,12 +434,6 @@ module.exports = {
 
         updatePurchaseMasterData = purchase
         updatePurchaseDetailData = Item
-        Item.Multiple = 0
-        Item.Ledger = 0
-        Item.BrandType = 0
-        Item.WholeSale = 0
-        Item.RetailPrice = 0
-        Item.WholeSalePrice = 0
 
         const updatePurchaseMaster = await connection.query(`update purchasemasternew set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${purchase.InvoiceNo}' and ShopID = ${ShopID} and ID=${purchase.ID}`)
 
@@ -478,77 +466,56 @@ module.exports = {
       console.log(updatePurchaseMasterData, 'updatePurchaseMasterData');
       console.log(updatePurchaseDetailData, 'updatePurchaseDetailData');
 
-    } else {
+    } else if (purchaseDetailData.length > 50) {
       let updatePurchaseMasterData = []
       let updatePurchaseDetailData = []
       console.log("Quantity greater than 50");
       // length greater than 50
-
-      const purchaseMasterData = await connection.query(`select * from purchasemasternew where CompanyID = ${CompanyID} and ShopID = ${ShopID} and purchasemasternew.SupplierID = ${supplierData[0].ID}`)
-
-      if (!purchaseMasterData.length) {
-        // save
-        const purchase = {
-          ID: null,
-          SupplierID: supplierData[0].ID,
-          CompanyID: CompanyID,
-          ShopID: ShopID,
-          PurchaseDate: now(),
-          PaymentStatus: paymentStatus,
-          InvoiceNo: now(),
-          GSTNo: '',
-          Status: 1,
-          PStatus: 1,
-          Quantity: 1,
-          SubTotal: Item.SubTotal,
-          DiscountAmount: Item.DiscountAmount,
-          GSTAmount: Item.GSTAmount,
-          TotalAmount: Item.GSTAmount + Item.TotalAmount - Item.DiscountAmount,
-          DueAmount: Item.GSTAmount + Item.TotalAmount
-        }
-
-        updatePurchaseMasterData = purchase
-        updatePurchaseDetailData = Item
-        Item.Multiple = 0
-        Item.Ledger = 0
-        Item.BrandType = 0
-        Item.WholeSale = 0
-        Item.RetailPrice = 0
-        Item.WholeSalePrice = 0
-
-      } else {
-        // update
-        const purchase = {
-          ID: purchaseMasterData[0].ID,
-          SupplierID: supplierData[0].ID,
-          CompanyID: CompanyID,
-          ShopID: ShopID,
-          PurchaseDate: now(),
-          PaymentStatus: paymentStatus,
-          InvoiceNo: purchaseMasterData[0].InvoiceNo,
-          GSTNo: '',
-          Status: 1,
-          PStatus: 1,
-          Quantity: purchaseMasterData[0].Quantity + 1,
-          SubTotal: purchaseMasterData[0].SubTotal + Item.SubTotal,
-          DiscountAmount: purchaseMasterData[0].DiscountAmount + Item.DiscountAmount,
-          GSTAmount: purchaseMasterData[0].GSTAmount + Item.GSTAmount,
-          TotalAmount: Item.GSTAmount + purchaseMasterData[0].TotalAmount + Item.TotalAmount - Item.DiscountAmount,
-          DueAmount: Item.GSTAmount + purchaseMasterData[0].TotalAmount + Item.TotalAmount - Item.DiscountAmount
-        }
-
-        updatePurchaseMasterData = purchase
-        updatePurchaseDetailData = Item
-        Item.Multiple = 0
-        Item.Ledger = 0
-        Item.BrandType = 0
-        Item.WholeSale = 0
-        Item.RetailPrice = 0
-        Item.WholeSalePrice = 0
+      //  only save hoga
+      const purchase = {
+        ID: null,
+        SupplierID: supplierData[0].ID,
+        CompanyID: CompanyID,
+        ShopID: ShopID,
+        PurchaseDate: now(),
+        PaymentStatus: paymentStatus,
+        InvoiceNo: now(),
+        GSTNo: '',
+        Status: 1,
+        PStatus: 1,
+        Quantity: 1,
+        SubTotal: Item.SubTotal,
+        DiscountAmount: Item.DiscountAmount,
+        GSTAmount: Item.GSTAmount,
+        TotalAmount: Item.GSTAmount + Item.TotalAmount - Item.DiscountAmount,
+        DueAmount: Item.GSTAmount + Item.TotalAmount - Item.DiscountAmount
       }
+      updatePurchaseMasterData = purchase
+      updatePurchaseDetailData = Item
 
-      console.log(updatePurchaseMasterData, 'updatePurchaseMasterData');
-      console.log(updatePurchaseDetailData, 'updatePurchaseDetailData');
+      //  save purchase data
+      const savePurchase = await connection.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},now(),'${paymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,1,${purchase.TotalAmount}, ${LoggedOnUser}, now())`);
+
+      console.log(connected("Data Save SuccessFUlly !!!"));
+
+      const savePurchaseDetail = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${Item.ProductName}',${Item.ProductTypeID},'${Item.ProductTypeName}', ${Item.UnitPrice},${Item.Quantity},${Item.SubTotal},${Item.DiscountPercentage},${Item.DiscountAmount},${Item.GSTPercentage},${Item.GSTAmount},'${Item.GSTType}',${Item.TotalAmount},${Item.RetailPrice},${Item.WholeSalePrice},${Item.Multiple},${Item.WholeSale},'${Item.BaseBarCode}',${Item.Ledger},1,'${Item.BaseBarCode}',0,${Item.BrandType},'${Item.UniqueBarcode}','${Item.ProductExpDate}',0,0,${LoggedOnUser},now())`)
+
+      console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
+
+      //  save barcode
+      let detailDataForBarCode = await connection.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId}`)
+
+      if (detailDataForBarCode.length) {
+        for (const item of detailDataForBarCode) {
+          const barcode = Number(item.BaseBarCode) * 1000
+          let count = 0;
+          count = 1;
+          for (j = 0; j < count; j++) {
+            const saveBarcode = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn, PreOrder)values(${CompanyID},${ShopID},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, now(),1)`)
+          }
+        }
+      }
+      console.log(connected("Barcode Data Save SuccessFUlly !!!"));
     }
 
 
