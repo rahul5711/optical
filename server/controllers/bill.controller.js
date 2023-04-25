@@ -146,6 +146,7 @@ module.exports = {
         }
     },
     saveBill: async (req, res, next) => {
+        return res.send({success : false , message : "it will be work as soon as possible"})
         const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
@@ -221,7 +222,6 @@ module.exports = {
                         item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item)
                         const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser)
 
-
                         let result = await connection.query(
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
@@ -236,8 +236,48 @@ module.exports = {
                 })
             );
 
-            return
+            // fetch bill detail so that we can save and update barcode master table data
 
+            let detailDataForBarCode = await connection.query(
+                `select * from billdetail where BillID = ${bMasterID} and CompanyID = ${CompanyID}`
+            );
+
+
+            // save and update barcode master accordingly condition like manual, preorder and stock
+
+            for (const ele of detailDataForBarCode) {
+                if (ele.PreOrder === 1) {
+                    let count = ele.Quantity;
+                    let j = 0;
+                    for (j = 0; j < count; j++) {
+                        const result = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, PreOrder,Po, TransferStatus, TransferToShop, MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn) VALUES ('${CompanyID}', ${shopid},${ele.ID},${ele.Barcode}, 'Pre Order', ${ele.UnitPrice}, 0 ,'0',${ele.WholeSale},'${ele.UnitPrice}',0, 1, 1, '', 0, '${ele.MeasurementID}','${ele.Option}','${ele.Family}', 1, '${LoggedOnUser}', now())`);
+                    }
+                } else if (ele.Manual === 1) {
+                    // let qryx = `SELECT * FROM barcodemasternew WHERE CompanyID = '${CompanyID}' AND ShopID = ${shopid} AND CurrentStatus = "Not Available" AND Status =1 LIMIT ${ele.Quantity}`;
+                    // let selectRows = await connection.query(qryx);
+
+                    // await Promise.all(
+                    //     selectRows.map(async (ele1) => {
+                    //         let qry = `Update BarcodeMaster set CurrentStatus = "Sold" , MeasurementID = '${ele.MeasurementID}', Family = '${ele.Family}',Option = '${ele.Option}', BillDetailID = '${ele.ID}', SupplierID = '${ele.SupplierID}' Where ID = '${ele1.ID}'`;
+                    //         let resultn = await connection.query(qry);
+                    //     })
+                    // );
+
+                    let count = ele.Quantity;
+                    let j = 0;
+                    for (j = 0; j < count; j++) {
+                        const result = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn) VALUES ('${CompanyID}', ${shopid},${ele.ID},${ele.Barcode}, 'Not Available','${ele.MeasurementID}','${ele.Option}','${ele.Family}', 1, '${LoggedOnUser}', now())`);
+                    }
+
+                } else {
+                    let selectRows1 = await connection.query(`SELECT * FROM barcodemasternew WHERE CompanyID = ${CompanyID} AND ShopID = ${shopid} AND CurrentStatus = "Available" AND Status = 1 AND Barcode = '${ele.Barcode}' LIMIT ${ele.Quantity}`);
+                    await Promise.all(
+                        selectRows1.map(async (ele1) => {
+                            let resultn = await connection.query(`Update barcodemasternew set CurrentStatus = "Sold" , MeasurementID = '${ele.MeasurementID}', Family = '${ele.Family}',Optionsss = '${ele.Option}', BillDetailID = ${ele.ID} Where ID = ${ele1.ID}`);
+                        })
+                    );
+                }
+            }
             // save employee commission
 
             if (billMaseterData.Employee !== 0 && billMaseterData.Employee !== undefined && billMaseterData.Employee !== null) {
@@ -258,6 +298,11 @@ module.exports = {
             const savePaymentDetail = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${billMaseterData.InvoiceNo}',${bMasterID},${billMaseterData.CustomerID},${CompanyID},0,${billMaseterData.TotalAmount},'Customer','Credit',1,${LoggedOnUser}, now())`)
 
             console.log(connected("Payment Initiate SuccessFUlly !!!"));
+
+            response.message = "data fetch sucessfully"
+            response.data = bMasterID
+            // connection.release()
+            res.send(response)
 
 
 

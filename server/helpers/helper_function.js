@@ -352,16 +352,14 @@ module.exports = {
     const paymentStatus = "Unpaid"
     const supplierData = await connection.query(`select * from supplier where CompanyID = ${CompanyID} and Name = 'PreOrder Supplier'`)
 
-    const purchaseDetailData = await connection.query(`select * from purchasedetailnew left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID where purchasemasternew.PStatus = 1 and purchasemasternew.SupplierID = ${supplierData[0].ID} and purchasemasternew.CompanyID = ${CompanyID} and purchasemasternew.ShopID = ${ShopID} order by purchasemasternew.ID desc`)
+    const purchaseMasterData = await connection.query(`select * from purchasemasternew where CompanyID = ${CompanyID} and ShopID = ${ShopID} and purchasemasternew.SupplierID = ${supplierData[0].ID} order by purchasemasternew.ID desc`)
 
-    if (purchaseDetailData.length <= 50) {
+    if (purchaseMasterData[0]?.Quantity === undefined || purchaseMasterData[0]?.Quantity <= 50) {
       console.log("Quantity less than 50");
       let updatePurchaseMasterData = []
       let updatePurchaseDetailData = []
 
       const purchaseMasterData = await connection.query(`select * from purchasemasternew where CompanyID = ${CompanyID} and ShopID = ${ShopID} and purchasemasternew.SupplierID = ${supplierData[0].ID} order by purchasemasternew.ID desc`)
-
-      console.log(purchaseMasterData, 'purchaseMasterData');
 
       if (!purchaseMasterData.length) {
         // save
@@ -463,10 +461,7 @@ module.exports = {
 
       }
 
-      console.log(updatePurchaseMasterData, 'updatePurchaseMasterData');
-      console.log(updatePurchaseDetailData, 'updatePurchaseDetailData');
-
-    } else if (purchaseDetailData.length > 50) {
+    } else if (purchaseMasterData[0]?.Quantity > 50) {
       let updatePurchaseMasterData = []
       let updatePurchaseDetailData = []
       console.log("Quantity greater than 50");
