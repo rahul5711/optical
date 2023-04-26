@@ -212,7 +212,8 @@
 
                                                         <input class="inputWidth box" type="text" name="REDPSPH"
                                                             [(ngModel)]="spectacle.REDPSPH" id="REDPSPH"
-                                                            list="dpsphList" (change)="calculate('Lens', 'RD', 0.00)">
+                                                            list="dpsphList"  (change)="calculate('Lens', 'RD', 0.00)"
+                                                             >
                                                         <datalist id="dpsphList">
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH">
                                                                 {{d.Name}}</option>

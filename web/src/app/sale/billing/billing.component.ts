@@ -19,24 +19,24 @@ import { CustomerPowerCalculationService } from 'src/app/service/helpers/custome
 import { EmployeeService } from 'src/app/service/employee.service';
 import { BillService } from 'src/app/service/bill.service';
 import { ProductService } from 'src/app/service/product.service';
-import {trigger, style, animate, transition} from '@angular/animations';
+import { trigger, style, animate, transition } from '@angular/animations';
 
 @Component({
   selector: 'app-billing',
   templateUrl: './billing.component.html',
   styleUrls: ['./billing.component.css'],
   animations: [
-    trigger('fade', [ 
+    trigger('fade', [
       transition('void => *', [
-        style({ opacity: 0 }), 
-        animate(1000, style({opacity: 1}))
-      ]) 
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 }))
+      ])
     ])
   ]
 })
 
 export class BillingComponent implements OnInit {
-  
+
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   env = environment;
@@ -50,10 +50,11 @@ export class BillingComponent implements OnInit {
   docList: any;
   ReferenceList: any;
   OtherList: any;
-  spectacleLists:any=[]
-  contactList: any=[]
-  otherList: any=[]
+  spectacleLists: any = []
+  contactList: any = []
+  otherList: any = []
   toggleChecked = false;
+  formValue: any=[];
 
   constructor(
     private router: Router,
@@ -74,7 +75,7 @@ export class BillingComponent implements OnInit {
   }
 
   data: CustomerModel = {
-    ID: '', CompanyID: '',  Idd: 0, Name: '', Sno: '', TotalCustomer: '', VisitDate: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: '', DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
+    ID: '', CompanyID: '', Idd: 0, Name: '', Sno: '', TotalCustomer: '', VisitDate: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: '', DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
   };
 
   spectacle: SpectacleModel = {
@@ -83,7 +84,7 @@ export class BillingComponent implements OnInit {
     R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: '', FileURL: '', Family: 'Self', ExpiryDate: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
   };
 
-  clens: ContactModel   = {
+  clens: ContactModel = {
     ID: 'null', CustomerID: '', REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
     LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
     R_Addition: '', L_Addition: '', R_KR: '', L_KR: '', R_HVID: '', L_HVID: '', R_CS: '', L_CS: '', R_BC: '', L_BC: '',
@@ -200,7 +201,7 @@ export class BillingComponent implements OnInit {
     { Name: '+0.75' },
     { Name: '+0.50' },
     { Name: '+0.25' },
-    { Name: ' ' },
+    { Name: 'PIANO' },
     { Name: '-0.25' },
     { Name: '-0.50' },
     { Name: '-0.75' },
@@ -412,28 +413,28 @@ export class BillingComponent implements OnInit {
 
   ngOnInit(): void {
     this.data.VisitDate = moment().format('YYYY-MM-DD');
-    if(this.id != 0){
-      this.getCustomerById(); 
+    if (this.id != 0) {
+      this.getCustomerById();
     }
   }
 
-  specCheck(mode:any){
-   if(mode === 'spec'){
-    this.Check.ContactCheck = false
-    this.Check.OtherCheck = false
-   }else if (mode === 'con'){
-    this.Check.SpectacleCheck = false
-    this.Check.OtherCheck = false
-   }else if (mode === 'other'){
-    this.Check.SpectacleCheck = false
-    this.Check.ContactCheck = false
-   }
+  specCheck(mode: any) {
+    if (mode === 'spec') {
+      this.Check.ContactCheck = false
+      this.Check.OtherCheck = false
+    } else if (mode === 'con') {
+      this.Check.SpectacleCheck = false
+      this.Check.OtherCheck = false
+    } else if (mode === 'other') {
+      this.Check.SpectacleCheck = false
+      this.Check.ContactCheck = false
+    }
   }
-  
+
   calculateAge() {
     if (this.data.DOB) {
       var timeDiff = Math.abs(Date.now() - new Date(this.data.DOB).getTime());
-      this.data.Age = Math.floor(timeDiff / (1000 * 3600 * 24) / 365.25);    
+      this.data.Age = Math.floor(timeDiff / (1000 * 3600 * 24) / 365.25);
     }
   }
 
@@ -442,31 +443,31 @@ export class BillingComponent implements OnInit {
   }
 
   onsubmit() {
-    if(this.Check.SpectacleCheck === true) {
+    if (this.Check.SpectacleCheck === true) {
       this.data.tablename = 'spectacle_rx'
       this.data.spectacle_rx = this.spectacle
       this.spectacle.ExpiryDate = moment().add(Number(this.spectacle.Reminder), 'M').format('YYYY-MM-DD');
     }
-    if(this.Check.ContactCheck === true) {
+    if (this.Check.ContactCheck === true) {
       this.data.tablename = 'contact_lens_rx'
       this.data.contact_lens_rx = this.clens
     }
-    if(this.Check.OtherCheck === true) {
+    if (this.Check.OtherCheck === true) {
       this.data.tablename = 'other_rx'
       this.data.other_rx = this.other
     }
-    
+
     const subs: Subscription = this.cs.saveCustomer(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
-        if(res.data[0].ID !== 0) {
-          this.id = res.data[0].ID;
-          this.spectacle.CustomerID = this.id;
-          this.clens.CustomerID = this.id;
-          this.other.CustomerID = this.id;
-          this.router.navigate(['/sale/billing', 0,res.data[0].ID]); 
-          this.getCustomerById();
-        }
+          if (res.data[0].ID !== 0) {
+            this.id = res.data[0].ID;
+            this.spectacle.CustomerID = this.id;
+            this.clens.CustomerID = this.id;
+            this.other.CustomerID = this.id;
+            this.router.navigate(['/sale/billing', 0, res.data[0].ID]);
+            this.getCustomerById();
+          }
           Swal.fire({
             position: 'center',
             icon: 'success',
@@ -486,25 +487,25 @@ export class BillingComponent implements OnInit {
     this.contactList
   }
 
-  getCustomerById(){
+  getCustomerById() {
     const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.contactList = res.contact_lens_rx
-          if(this.contactList.length !== 0){
-            this.clens = res.contact_lens_rx[0] 
+          if (this.contactList.length !== 0) {
+            this.clens = res.contact_lens_rx[0]
             this.clensImage = this.env.apiUrl + res.contact_lens_rx[0].PhotoURL;
           }
           this.data = res.data[0]
           this.data.Idd = res.data[0].Idd
           this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
           this.otherList = res.other_rx
-          if(this.otherList.length !== 0){
-            this.other = res.other_rx[0] 
+          if (this.otherList.length !== 0) {
+            this.other = res.other_rx[0]
           }
           this.spectacleLists = res.spectacle_rx
-          if(this.spectacleLists.length !== 0){
-            this.spectacle =  res.spectacle_rx[0]
+          if (this.spectacleLists.length !== 0) {
+            this.spectacle = res.spectacle_rx[0]
             this.spectacleImage = this.env.apiUrl + res.spectacle_rx[0].PhotoURL;
           }
           this.as.successToast(res.message)
@@ -544,18 +545,18 @@ export class BillingComponent implements OnInit {
     })
   }
 
-  clearFrom(){
+  clearFrom() {
     this.sp.show();
     this.data = {
       ID: '', CompanyID: '', Idd: 0, Name: '', Sno: '', TotalCustomer: '', VisitDate: this.data.VisitDate, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: '', DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
     };
-  
+
     this.spectacle = {
       ID: '', CustomerID: '', REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
       LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
       R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: '', FileURL: '', Family: 'Self', ExpiryDate: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
     };
-  
+
     this.clens = {
       ID: ' ', CustomerID: '', REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
       LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
@@ -564,7 +565,7 @@ export class BillingComponent implements OnInit {
       NearWork: false, DistanceWork: false, Multifocal: false, PhotoURL: '', FileURL: '', Family: 'Self', Status: 1, CreatedBy: 0,
       CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
     };
-  
+
     this.other = {
       ID: '', CustomerID: '', BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '',
       R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
@@ -572,7 +573,7 @@ export class BillingComponent implements OnInit {
 
     this.Check = { SpectacleCheck: true, ContactCheck: false, OtherCheck: false, };
     this.id = 0;
-    this.router.navigate(['/sale/billing', 0 ,0]);
+    this.router.navigate(['/sale/billing', 0, 0]);
     this.ngOnInit();
     this.spectacleLists = [];
     this.contactList = [];
@@ -580,14 +581,14 @@ export class BillingComponent implements OnInit {
     this.sp.hide();
   }
 
-  NewVisit(mode:any){
-    if(mode === 'spectacle'){
+  NewVisit(mode: any) {
+    if (mode === 'spectacle') {
       this.spectacle = {
         ID: 'null', CustomerID: this.id, REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '', R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: '', FileURL: '', Family: 'Self', ExpiryDate: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
       };
     }
-   
-    if(mode === 'contact'){
+
+    if (mode === 'contact') {
       this.clens = {
         ID: 'null', CustomerID: this.id, REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
         LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '', R_Addition: '', L_Addition: '', R_KR: '', L_KR: '', R_HVID: '', L_HVID: '', R_CS: '', L_CS: '', R_BC: '', L_BC: '',
@@ -595,13 +596,13 @@ export class BillingComponent implements OnInit {
         NearWork: false, DistanceWork: false, Multifocal: false, PhotoURL: '', FileURL: '', Family: 'Self', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
       };
     }
-   
+
     this.other = {
-      ID: 'null', CustomerID: this.id, BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: '',  Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
+      ID: 'null', CustomerID: this.id, BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
     };
   }
 
-  deleteSpec(i:any,mode:any){
+  deleteSpec(i: any, mode: any) {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -612,14 +613,14 @@ export class BillingComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
-        if(mode === 'spectacle_rx'){
-          const subs: Subscription = this.cs.deleteSpec(this.spectacleLists[i].ID,this.spectacleLists[i].CustomerID,'spectacle_rx').subscribe({
+        if (mode === 'spectacle_rx') {
+          const subs: Subscription = this.cs.deleteSpec(this.spectacleLists[i].ID, this.spectacleLists[i].CustomerID, 'spectacle_rx').subscribe({
             next: (res: any) => {
               this.spectacleLists.splice(i, 1);
-              if(this.spectacleLists.length === 0){
-                let spec:any = []
+              if (this.spectacleLists.length === 0) {
+                let spec: any = []
                 this.spectacle = spec
-              }else{
+              } else {
                 this.getCustomerById()
               }
               this.as.successToast(res.message)
@@ -627,15 +628,15 @@ export class BillingComponent implements OnInit {
             error: (err: any) => console.log(err.message),
             complete: () => subs.unsubscribe(),
           });
-         
-        }else if(mode === 'contact'){
-          const subs: Subscription = this.cs.deleteSpec(this.contactList[i].ID,this.contactList[i].CustomerID,'contact_lens_rx').subscribe({
+
+        } else if (mode === 'contact') {
+          const subs: Subscription = this.cs.deleteSpec(this.contactList[i].ID, this.contactList[i].CustomerID, 'contact_lens_rx').subscribe({
             next: (res: any) => {
               this.contactList.splice(i, 1);
-              if(this.contactList.length === 0){
-                let con:any = []
+              if (this.contactList.length === 0) {
+                let con: any = []
                 this.clens = con
-              }else{
+              } else {
                 this.getCustomerById()
               }
               this.as.successToast(res.message)
@@ -643,14 +644,14 @@ export class BillingComponent implements OnInit {
             error: (err: any) => console.log(err.message),
             complete: () => subs.unsubscribe(),
           });
-        }else if(mode === 'other'){
-          const subs: Subscription = this.cs.deleteSpec(this.otherList[i].ID,this.otherList[i].CustomerID,'other_rx').subscribe({
+        } else if (mode === 'other') {
+          const subs: Subscription = this.cs.deleteSpec(this.otherList[i].ID, this.otherList[i].CustomerID, 'other_rx').subscribe({
             next: (res: any) => {
               this.otherList.splice(i, 1);
-              if(this.otherList.length === 0){
-                let orx:any = []
+              if (this.otherList.length === 0) {
+                let orx: any = []
                 this.other = orx
-              }else{
+              } else {
                 this.getCustomerById()
               }
               this.as.successToast(res.message)
@@ -670,26 +671,26 @@ export class BillingComponent implements OnInit {
     })
   }
 
-  edits(data:any,mode:any){
-     if(mode === 'spectacle_rx'){
-       this.spectacle = data;
-     }if(mode === 'contact'){
-       this.clens = data;
-     } if(mode === 'other'){
-       this.other = data;
-     }
+  edits(data: any, mode: any) {
+    if (mode === 'spectacle_rx') {
+      this.spectacle = data;
+    } if (mode === 'contact') {
+      this.clens = data;
+    } if (mode === 'other') {
+      this.other = data;
+    }
   }
 
-  updateCustomer(){
-    if(this.Check.SpectacleCheck === true) {
+  updateCustomer() {
+    if (this.Check.SpectacleCheck === true) {
       this.data.tablename = 'spectacle_rx'
       this.data.spectacle_rx = this.spectacle
     }
-    if(this.Check.ContactCheck === true) {
+    if (this.Check.ContactCheck === true) {
       this.data.tablename = 'contact_lens_rx'
       this.data.contact_lens_rx = this.clens
     }
-    if(this.Check.OtherCheck === true) {
+    if (this.Check.OtherCheck === true) {
       this.data.tablename = 'other_rx'
       this.data.other_rx = this.other
     }
@@ -715,15 +716,16 @@ export class BillingComponent implements OnInit {
     });
   }
 
-  copyPower(mode:any){
+  copyPower(mode: any) {
     this.calculation.copyPower(mode, this.spectacle, this.clens)
   }
 
-  calculate(mode:any,x:any,y:any){
-   this.calculation.calculate(mode, x, y ,this.spectacle , this.clens)
+  calculate(mode: any, x: any, y: any) {
+    this.calculation.calculate(mode, x, y, this.spectacle, this.clens)
   }
 
   // Billing
 
- 
+
+
 }

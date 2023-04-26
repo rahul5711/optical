@@ -157,11 +157,11 @@ export class BillCalculationService {
     billItemList.forEach((element: any) => {
       if (element.Status !== 0) {
         BillMaster.Quantity = +BillMaster.Quantity + +element.Quantity;
-        BillMaster.SubTotal = +BillMaster.SubTotal + +element.SubTotal;
-        BillMaster.DiscountAmount = +BillMaster.DiscountAmount + +element.DiscountAmount;
-        BillMaster.GSTAmount = +BillMaster.GSTAmount + +element.GSTAmount;
-        BillMaster.TotalAmount = +BillMaster.TotalAmount + +element.TotalAmount;
-        BillMaster.DueAmount = BillMaster.TotalAmount;
+        BillMaster.SubTotal = (+BillMaster.SubTotal + +element.SubTotal).toFixed(2);
+        BillMaster.DiscountAmount = (+BillMaster.DiscountAmount + +element.DiscountAmount).toFixed(2);
+        BillMaster.GSTAmount = (+BillMaster.GSTAmount + +element.GSTAmount).toFixed(2);
+        BillMaster.TotalAmount = (+BillMaster.TotalAmount + +element.TotalAmount).toFixed(2);
+        BillMaster.DueAmount = (BillMaster.TotalAmount).toFixed(2);
       }
     });
 
