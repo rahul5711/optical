@@ -3,7 +3,11 @@
     <div class="header">
         <div class="row">
             <div class="col-md-1 col-6">
-                <h4>Bill Info </h4>
+                <h4 style="font-weight: 800;">Bill Info </h4>
+            </div>
+            <div class="col-md-1 p-0 col-6 ms-auto">
+                <mat-slide-toggle name="Multiple" color="primary"  [(ngModel)]="disableAddButtons" class="example-margin" #Multiplecontrol style="font-weight: 800;" >
+                    Quick Entry</mat-slide-toggle>
             </div>
         </div>
     </div>
@@ -182,6 +186,22 @@
                                 {{spec.FieldName}} is Required
                             </mat-error>
                         </mat-form-field>
+                        <mat-form-field class="mr-0 mb-0" *ngIf="spec.DisplayAdd === 1">
+                            <mat-label>Add {{spec.FieldName}}</mat-label>
+                            <input matInput name="{{spec.FieldName+'1'}}"
+                                [(ngModel)]="spec.SelectedValue"
+                                (ngModelChange)="spec.SelectedValue = onChange($event)" required
+                                #NewProductTypecontrol>
+                        </mat-form-field>
+                        <button style="background: none;border:none"
+                            *ngIf="spec.DisplayAdd === 0 && disableAddButtons"
+                            (click)="displayAddField(i)">
+                            <mat-icon class="col-white plus_icon">add</mat-icon>
+                        </button>
+                        <button style="background: none;border:none" *ngIf="spec.DisplayAdd === 1"
+                        (click)="saveFieldData(i)">
+                        <mat-icon class="col-white plus_icon">save</mat-icon>
+                    </button>
                     </div>
                     <div *ngIf="spec.FieldType === 'Text'" class="d-flex">
                         <mat-form-field class=" mr-0 mb-0">

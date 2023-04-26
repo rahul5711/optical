@@ -132,7 +132,7 @@
                                         <mat-checkbox class="pt-3" name="{{spec.FieldName+'0'}}" color="primary"
                                             [(ngModel)]="spec.CheckBoxValue"></mat-checkbox>
 
-                                        <mat-form-field class="mr-0 mb-0" *ngIf="spec.DisplayAdd === 1">
+                                        <mat-form-field class="mr-0 mb-0" *ngIf="spec.DisplayAdd === 1 ">
                                             <mat-label>Add {{spec.FieldName}}</mat-label>
                                             <input matInput name="{{spec.FieldName+'1'}}"
                                                 [(ngModel)]="spec.SelectedValue"
@@ -143,11 +143,10 @@
                                             *ngIf="spec.DisplayAdd === 0 && disableAddButtons"
                                             (click)="displayAddField(i)">
                                             <mat-icon class="col-white plus_icon">add</mat-icon>
-                                        </button>
-                                        <button mat-mini-fab color="primary" *ngIf="spec.DisplayAdd === 1"
-                                            (click)="saveFieldData(i)"
-                                            aria-label="Example icon button with a bookmark icon">
-                                            <mat-icon>save</mat-icon>
+                                        </button >
+                                        <button style="background: none;border:none" *ngIf="spec.DisplayAdd === 1"
+                                            (click)="saveFieldData(i)">
+                                            <mat-icon class="col-white plus_icon">save</mat-icon>
                                         </button>
                                     </div>
                                     <div *ngIf="spec.FieldType === 'Text'" class="d-flex">

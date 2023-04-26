@@ -99,7 +99,9 @@ export class BillComponent implements OnInit {
   serviceType: any;
   gstList: any;
   BarcodeList: any;
-  loginShopID: any
+  disableAddButtons = false;
+  loginShopID: any;
+
   ngOnInit(): void {
     this.loginShopID = Number(this.selectedShop[0])
     this.BillMaster.Employee = this.user.ID
@@ -307,6 +309,52 @@ export class BillComponent implements OnInit {
     });
   }
 
+  displayAddField(i: any) {
+    this.specList[i].DisplayAdd = 1;
+    this.specList[i].SelectedValue = '';
+  }
+  saveFieldData(i: any) {
+    this.specList[i].DisplayAdd = 0;
+    const Ref = this.specList[i].Ref;
+    let RefValue = 0;
+    if (Ref !== 0) {
+      this.specList.forEach((element: any, j: any) => {
+        if (element.FieldName === Ref) { RefValue = element.SelectedValue; }
+      });
+    }
+    const subs: Subscription = this.ps.saveProductSupportData(this.specList[i].SptTableName, RefValue, this.specList[i].SelectedValue).subscribe({
+      next: (res: any) => {
+        const subss: Subscription = this.ps.getProductSupportData(RefValue, this.specList[i].SptTableName).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.specList[i].SptTableData = res.data;
+              this.specList[i].SptFilterData = res.data;
+            } else {
+              this.as.errorToast(res.message)
+            }
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subss.unsubscribe(),
+        });
+        if (res.success) {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Save.',
+            showConfirmButton: false,
+            timer: 1200
+          })
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
     if (this.companysetting.DataFormat === '1') {
       event = event.toUpperCase()
@@ -495,7 +543,7 @@ export class BillComponent implements OnInit {
         backdrop: false,
       });
     }
-    else {
+    else if(this.BillItem.Option != null ) {
       // Lens option
       this.BillItem.Quantity = 1;
       if (this.BillItem.Option === 'Full Glass' || this.BillItem.Quantity !== 1) {
@@ -503,7 +551,10 @@ export class BillComponent implements OnInit {
       } else {
         this.BillItem.Quantity = 1;
       }
+      this.billCalculation.calculations(fieldName, mode, this.BillItem, this.Service)
+      this.getGSTList();
       // Lens option
+    }else{
       this.billCalculation.calculations(fieldName, mode, this.BillItem, this.Service)
       this.getGSTList();
     }
@@ -630,7 +681,6 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.bill.saveBill(this.data).subscribe({
       next: (res: any) => {
         console.log(res);
-        
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
