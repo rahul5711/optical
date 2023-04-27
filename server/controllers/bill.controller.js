@@ -200,6 +200,12 @@ module.exports = {
                         manual = 1;
                     }
 
+                    let wholesale = 0
+
+                    if (item.WholeSale === true) {
+                        wholesale = 1;
+                    }
+
                     if (manual === 0 && preorder === 0) {
                         let result = await connection.query(
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
@@ -212,9 +218,8 @@ module.exports = {
                         item.Multiple = 0
                         item.Ledger = 0
                         item.BrandType = 0
-                        item.WholeSale = 0
-                        item.RetailPrice = 0
-                        item.WholeSalePrice = 0
+                        item.WholeSale = wholesale
+                        item.RetailPrice = item.UnitPrice
 
                         item.BaseBarCode = await generateBarcode(CompanyID, 'PB')
                         item.Barcode = Number(item.BaseBarCode) * 1000
@@ -250,30 +255,20 @@ module.exports = {
                     let count = ele.Quantity;
                     let j = 0;
                     for (j = 0; j < count; j++) {
-                        const result = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, PreOrder,Po, TransferStatus, TransferToShop, MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn) VALUES ('${CompanyID}', ${shopid},${ele.ID},${ele.Barcode}, 'Pre Order', ${ele.UnitPrice}, 0 ,'0',${ele.WholeSale},'${ele.UnitPrice}',0, 1, 1, '', 0, '${ele.MeasurementID}','${ele.Option}','${ele.Family}', 1, '${LoggedOnUser}', now())`);
+                        const result = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, PreOrder,Po, TransferStatus, TransferToShop, MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn,AvailableDate, GSTType, GSTPercentage, PurchaseDetailID) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Pre Order', ${ele.UnitPrice}, 0 ,0,${ele.WholeSale},${ele.UnitPrice},0, 1, 1, '', 0, '${ele.MeasurementID}','${ele.Option}','${ele.Family}', 1, ${LoggedOnUser}, now(),  now(), '${ele.GSTType}',${ele.GSTPercentage},0)`);
                     }
                 } else if (ele.Manual === 1) {
-                    // let qryx = `SELECT * FROM barcodemasternew WHERE CompanyID = '${CompanyID}' AND ShopID = ${shopid} AND CurrentStatus = "Not Available" AND Status =1 LIMIT ${ele.Quantity}`;
-                    // let selectRows = await connection.query(qryx);
-
-                    // await Promise.all(
-                    //     selectRows.map(async (ele1) => {
-                    //         let qry = `Update BarcodeMaster set CurrentStatus = "Sold" , MeasurementID = '${ele.MeasurementID}', Family = '${ele.Family}',Option = '${ele.Option}', BillDetailID = '${ele.ID}', SupplierID = '${ele.SupplierID}' Where ID = '${ele1.ID}'`;
-                    //         let resultn = await connection.query(qry);
-                    //     })
-                    // );
-
                     let count = ele.Quantity;
                     let j = 0;
                     for (j = 0; j < count; j++) {
-                        const result = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn) VALUES ('${CompanyID}', ${shopid},${ele.ID},${ele.Barcode}, 'Not Available','${ele.MeasurementID}','${ele.Option}','${ele.Family}', 1, '${LoggedOnUser}', now())`);
+                        const result = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn, AvailableDate, GSTType, GSTPercentage, PurchaseDetailID,RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,PreOrder, TransferStatus, TransferToShop) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Not Available','${ele.MeasurementID}','${ele.Option}','${ele.Family}', 1,${LoggedOnUser}, now(), now(), '${ele.GSTType}',${ele.GSTPercentage}, 0, ${ele.UnitPrice}, 0, 0, ${ele.WholeSale}, 0,0,0,'',0)`);
                     }
 
                 } else {
                     let selectRows1 = await connection.query(`SELECT * FROM barcodemasternew WHERE CompanyID = ${CompanyID} AND ShopID = ${shopid} AND CurrentStatus = "Available" AND Status = 1 AND Barcode = '${ele.Barcode}' LIMIT ${ele.Quantity}`);
                     await Promise.all(
                         selectRows1.map(async (ele1) => {
-                            let resultn = await connection.query(`Update barcodemasternew set CurrentStatus = "Sold" , MeasurementID = '${ele.MeasurementID}', Family = '${ele.Family}',Optionsss = '${ele.Option}', BillDetailID = ${ele.ID} Where ID = ${ele1.ID}`);
+                            let resultn = await connection.query(`Update barcodemasternew set CurrentStatus = "Sold" , MeasurementID = '${ele.MeasurementID}', Family = '${ele.Family}',Optionsss = '${ele.Option}', BillDetailID = ${ele.ID}, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() Where ID = ${ele1.ID}`);
                         })
                     );
                 }
@@ -307,6 +302,7 @@ module.exports = {
 
 
         } catch (err) {
+            console.log(err);
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
             throw err;
