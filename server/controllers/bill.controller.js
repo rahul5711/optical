@@ -146,7 +146,6 @@ module.exports = {
         }
     },
     saveBill: async (req, res, next) => {
-        return res.send({success : false , message : "it will be work as soon as possible"})
         const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
@@ -295,7 +294,10 @@ module.exports = {
             console.log(connected("Payment Initiate SuccessFUlly !!!"));
 
             response.message = "data fetch sucessfully"
-            response.data = bMasterID
+            response.data = {
+                ID: bMasterID,
+                CustomerID: billMaseterData.CustomerID
+            }
             // connection.release()
             res.send(response)
 
