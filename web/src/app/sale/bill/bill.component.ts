@@ -18,18 +18,18 @@ import { BillService } from 'src/app/service/bill.service';
 import { ProductService } from 'src/app/service/product.service';
 import { BillCalculationService } from 'src/app/service/helpers/bill-calculation.service';
 import { SupportService } from 'src/app/service/support.service';
-import {trigger, style, animate, transition} from '@angular/animations';
+import { trigger, style, animate, transition } from '@angular/animations';
 
 @Component({
   selector: 'app-bill',
   templateUrl: './bill.component.html',
   styleUrls: ['./bill.component.css'],
   animations: [
-    trigger('fade', [ 
+    trigger('fade', [
       transition('void => *', [
-        style({ opacity: 0 }), 
-        animate(2000, style({opacity: 1}))
-      ]) 
+        style({ opacity: 0 }),
+        animate(2000, style({ opacity: 1 }))
+      ])
     ])
   ]
 })
@@ -56,15 +56,15 @@ export class BillComponent implements OnInit {
   ) {
     this.id2 = this.route.snapshot.params['id'];
   }
- 
-  
+
+
 
   BillMaster: any = {
-    ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "",  BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, Doctor: null, Employee: null, TrayNo:null,  ProductStatus: 'Pending', Balance: 0,  Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0.00, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0.00, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
   }
 
   BillItem: any = {
-    ID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null,  Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null, Remark:'', Warranty:'', RetailPrice:0.00, WholeSalePrice:0.00
+    ID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null, Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00
   };
 
   Service: any = {
@@ -72,10 +72,10 @@ export class BillComponent implements OnInit {
   };
 
   customer: any = {
-    ID: '', CompanyID: '',  Idd: 0, Name: '', Sno: '', TotalCustomer: '', VisitDate: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: '', DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
+    ID: '', CompanyID: '', Idd: 0, Name: '', Sno: '', TotalCustomer: '', VisitDate: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: '', DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
   };
 
-  customerPower:any=[]
+  customerPower: any = []
   data = { billMaseterData: null, billDetailData: null, service: null };
 
   category = 'Product';
@@ -115,7 +115,7 @@ export class BillComponent implements OnInit {
     this.getCustomerById()
   }
 
-  getCustomerById(){
+  getCustomerById() {
     const subs: Subscription = this.cs.getCustomerById(this.customerID2).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -190,8 +190,19 @@ export class BillComponent implements OnInit {
         if (res.success) {
           if (this.BillItem.GSTPercentage === 0) {
             this.BillItem.GSTType = 'None'
-          } else {
-            this.gstList = res.data
+          } else if (this.BillItem.GSTPercentage !== 0) {
+            if (this.BillItem.GSTType !== 'None') {
+              this.gstList = res.data
+            }
+            else {
+              Swal.fire({
+                icon: 'warning',
+                title: 'Please Select GST Type',
+                footer: '',
+                backdrop: false,
+              });
+              this.BillItem.Quantity = 0
+            }
           }
         } else {
           this.as.errorToast(res.message)
@@ -313,6 +324,7 @@ export class BillComponent implements OnInit {
     this.specList[i].DisplayAdd = 1;
     this.specList[i].SelectedValue = '';
   }
+
   saveFieldData(i: any) {
     this.specList[i].DisplayAdd = 0;
     const Ref = this.specList[i].Ref;
@@ -376,56 +388,60 @@ export class BillComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.searchList = res.data[0];
+            console.log(this.searchList);
+
+            if (this.searchList === undefined || this.searchList.Barcode === null || this.searchList.length === 0) {
+              Swal.fire({
+                icon: 'warning',
+                title: 'Please Enter Correct Barcode ',
+                text: 'Incorrect Barcode OR Product not available in this Shop.',
+                footer: '',
+                backdrop: false,
+              });
+              this.Req = {}
+            }
+            this.selectedProduct = this.searchList.ProductTypeName;
+            this.BillItem.ProductName = this.searchList.ProductName.toUpperCase();
+            this.BillItem.Barcode = this.searchList.Barcode;
+            this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
+            this.BillItem.BaseBarCode = this.searchList.BaseBarCode;
+            this.BillItem.Quantity = 0;
+
+            this.prodList.forEach((e: any) => {
+              if (e.ID === this.searchList.ProductTypeID) {
+                this.BillItem.ProductTypeID = e.ID;
+                this.BillItem.ProductTypeName = e.Name;
+                this.BillItem.HSNCode = e.HSNCode;
+                this.BillItem.GSTPercentage = e.GSTPercentage;
+                this.BillItem.GSTType = e.GSTType;
+              }
+            })
+
+            if (this.searchList !== undefined || this.searchList.Barcode !== null && this.searchList.BarCodeCount !== 0) {
+              if (this.billItemList.length !== 0 && this.BillItem.ProductName !== "") {
+                let itemCount = 0;
+                this.billItemList.forEach((element: any) => {
+                  if (element.ProductName === this.BillItem.ProductName && element.ID === null) {
+                    itemCount = itemCount + element.Quantity;
+                  }
+                })
+                this.searchList.BarCodeCount = this.searchList.BarCodeCount - itemCount;
+              }
+            }
+
+            if (this.BillItem.WholeSale === true) {
+              this.BillItem.UnitPrice = this.searchList.WholeSalePrice;
+            }
+            else if (this.BillItem.PreOrder === true) {
+              this.BillItem.UnitPrice = this.searchList.RetailPrice;
+            }
+            else {
+              this.BillItem.UnitPrice = this.searchList.RetailPrice;
+            }
           } else {
             this.as.errorToast(res.message)
           }
           this.sp.hide();
-          if (this.searchList.length === 0 || this.searchList.Barcode === null) {
-            Swal.fire({
-              icon: 'warning',
-              title: 'Please Enter Correct Barcode ',
-              text: 'Incorrect Barcode OR Product not available in this Shop.',
-              footer: '',
-              backdrop: false,
-            });
-          }
-          this.selectedProduct = this.searchList.ProductTypeName;
-          this.BillItem.ProductName = this.searchList.ProductName.toUpperCase();
-          this.prodList.forEach((e: any) => {
-            if (e.ID === this.searchList.ProductTypeID) {
-              this.BillItem.ProductTypeID = e.ID;
-              this.BillItem.ProductTypeName = e.Name;
-              this.BillItem.HSNCode = e.HSNCode;
-              this.BillItem.GSTPercentage = e.GSTPercentage;
-              this.BillItem.GSTType = e.GSTType;
-            }
-          })
-          if (this.searchList.Barcode !== null && this.searchList.BarCodeCount !== 0) {
-            if (this.billItemList.length !== 0 && this.BillItem.ProductName !== "") {
-              let itemCount = 0;
-              this.billItemList.forEach((element: any) => {
-                if (element.ProductName === this.BillItem.ProductName && element.ID === null) {
-                  itemCount = itemCount + element.Quantity;
-                }
-              })
-              this.searchList.BarCodeCount = this.searchList.BarCodeCount - itemCount;
-            }
-          }
-          this.BillItem.Barcode = this.searchList.Barcode;
-          this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
-          this.BillItem.BaseBarCode = this.searchList.BaseBarCode;
-          if (this.BillItem.WholeSale === true) {
-            this.BillItem.UnitPrice = this.searchList.WholeSalePrice;
-            this.BillItem.Quantity = 1
-          }
-          else if (this.BillItem.PreOrder === true) {
-            this.BillItem.UnitPrice = this.searchList.RetailPrice;
-            this.BillItem.Quantity = 1
-          }
-          else {
-            this.BillItem.UnitPrice = this.searchList.RetailPrice;
-            this.BillItem.Quantity = 1
-          }
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
@@ -440,6 +456,7 @@ export class BillComponent implements OnInit {
         backdrop: false,
       });
     }
+    this.sp.hide();
   }
 
   getSearchByString() {
@@ -543,7 +560,7 @@ export class BillComponent implements OnInit {
         backdrop: false,
       });
     }
-    else if(this.BillItem.Option != null ) {
+    else if (this.BillItem.Option != null) {
       // Lens option
       this.BillItem.Quantity = 1;
       if (this.BillItem.Option === 'Full Glass' || this.BillItem.Quantity !== 1) {
@@ -554,7 +571,7 @@ export class BillComponent implements OnInit {
       this.billCalculation.calculations(fieldName, mode, this.BillItem, this.Service)
       this.getGSTList();
       // Lens option
-    }else{
+    } else {
       this.billCalculation.calculations(fieldName, mode, this.BillItem, this.Service)
       this.getGSTList();
     }
@@ -591,7 +608,7 @@ export class BillComponent implements OnInit {
       console.log(this.billItemList);
 
       this.BillItem = {
-        ID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null,  Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null, Remark:'', Warranty:'',
+        ID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null, Remark: '', Warranty: '',
       };
 
       this.selectedProduct = "";
@@ -651,10 +668,10 @@ export class BillComponent implements OnInit {
           this.BillItem.ProductName = searchString
           this.BillItem.Barcode = '0'
           this.BillItem.BaseBarCode = '0'
-          if(this.BillItem.WholeSale === true){
-            this.BillItem.WholeSalePrice = this.BillItem.UnitPrice 
-          }else{
-            this.BillItem.RetailPrice = this.BillItem.UnitPrice 
+          if (this.BillItem.WholeSale === true) {
+            this.BillItem.WholeSalePrice = this.BillItem.UnitPrice
+          } else {
+            this.BillItem.RetailPrice = this.BillItem.UnitPrice
           }
         }
       }
@@ -681,6 +698,14 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.bill.saveBill(this.data).subscribe({
       next: (res: any) => {
         console.log(res);
+        if (res.success) {
+          this.BillMaster.ID = res.data.ID;
+          this.router.navigate(['/sale/billing', this.BillMaster.ID, this.customerID2]);
+          // this.BillMaster.CustomerID = res.data.CustomerID;
+        } else {
+          this.as.errorToast(res.message)
+        }
+
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),

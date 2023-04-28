@@ -161,7 +161,7 @@ export class BillCalculationService {
         BillMaster.DiscountAmount = (+BillMaster.DiscountAmount + +element.DiscountAmount).toFixed(2);
         BillMaster.GSTAmount = (+BillMaster.GSTAmount + +element.GSTAmount).toFixed(2);
         BillMaster.TotalAmount = (+BillMaster.TotalAmount + +element.TotalAmount).toFixed(2);
-        BillMaster.DueAmount = (BillMaster.TotalAmount).toFixed(2);
+        BillMaster.DueAmount = this.convertToDecimal(BillMaster.TotalAmount, 2)
       }
     });
 

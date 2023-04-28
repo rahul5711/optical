@@ -18,12 +18,12 @@ export class DashboradComponent implements OnInit {
     {
       "icon" : "assets/images/customer.png",
       "title": "Customer",
-      "routersLinks" : "/sale/billing/0"
+      "routersLinks" : "/sale/billing/0/0"
     },
     {
       "icon" : "assets/images/billing.png",
       "title": "Billing",
-      "routersLinks" : "/sale/billing/0"
+      "routersLinks" : "/sale/billing/0/0"
     },
     {
       "icon" : "assets/images/supp.png",
