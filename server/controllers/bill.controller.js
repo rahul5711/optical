@@ -3,7 +3,7 @@ const mysql = require('../helpers/db')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const { now } = require('lodash')
-const { shopID, generateInvoiceNo, generateBillSno, generateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder } = require('../helpers/helper_function')
+const { shopID, generateInvoiceNo, generateBillSno, generateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder, gstDetailBill } = require('../helpers/helper_function')
 const _ = require("lodash")
 
 module.exports = {
@@ -390,6 +390,41 @@ module.exports = {
             response.count = data.length
             // connection.release()
             res.send(response)
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+    getBillById: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { result: { billMaster: null, billDetail: null, service: null }, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const { ID } = req.body;
+
+            if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
+
+            const billMaster = await connection.query(`select * from  billmaster where CompanyID =  ${CompanyID} and ID = ${ID} and Status = 1 Order By ID Desc`)
+
+            const billDetail = await connection.query(`select * from  billdetail where CompanyID =  ${CompanyID} and BillID = ${ID} Order By ID Desc`)
+
+            const service = await connection.query(`SELECT billservice.*, servicemaster.Name AS ServiceType  FROM  billservice  LEFT JOIN servicemaster ON servicemaster.ID = billservice.ServiceType WHERE billservice.CompanyID =  ${CompanyID} and BillID = ${ID} Order By ID Desc`)
+
+            const gst_detail = await gstDetailBill(CompanyID, ID) || []
+
+            response.message = "data fetch sucessfully"
+            response.result.billMaster = billMaster
+            response.result.billMaster[0].gst_detail =  gst_detail || []
+            response.result.billDetail = billDetail
+            response.result.service = service
+            // connection.release()
+            return res.send(response)
 
         } catch (err) {
             await connection.query("ROLLBACK");

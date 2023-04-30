@@ -11,5 +11,6 @@ router.post('/searchByString', verifyAccessTokenAdmin, Controller.searchByString
 router.post('/saveBill', verifyAccessTokenAdmin, Controller.saveBill)
 router.post('/list', verifyAccessTokenAdmin, Controller.list)
 router.post('/searchByFeild', verifyAccessTokenAdmin, Controller.searchByFeild)
+router.post('/getBillById', verifyAccessTokenAdmin, Controller.getBillById)
 
 module.exports = router
