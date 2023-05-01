@@ -834,6 +834,115 @@
 			"response": []
 		},
 		{
+			"name": "paymentHistory",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": 7,\r\n    \"InvoiceNo\": \"2304R00007\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/bill/paymentHistory",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"bill",
+						"paymentHistory"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "paymentHistory",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 7,\r\n    \"InvoiceNo\": \"2304R00007\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/paymentHistory",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"paymentHistory"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "766"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"2fe-GCSZaTCWQ6DsTorNwiB3N02LDOE\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 01 May 2023 15:18:52 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 7,\n            \"PaymentMasterID\": 8,\n            \"BillID\": \"2304R00007\",\n            \"BillMasterID\": 7,\n            \"CustomerID\": 19199,\n            \"CompanyID\": 1,\n            \"Amount\": 0,\n            \"DueAmount\": 1500,\n            \"PaymentType\": \"Customer\",\n            \"Credit\": \"Credit\",\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-04-30 23:59:18\",\n            \"UpdatedOn\": null,\n            \"ShopID\": 1,\n            \"Sno\": \"7\",\n            \"BillDate\": \"2023-04-30\",\n            \"DeliveryDate\": \"2023-04-30\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"InvoiceNo\": \"2304R00007\",\n            \"GSTNo\": \"undefined\",\n            \"Quantity\": 5,\n            \"SubTotal\": 1500,\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 0,\n            \"AddlDiscount\": 0,\n            \"TotalAmount\": 1500,\n            \"Invoice\": null,\n            \"Receipt\": null,\n            \"LastUpdate\": \"2023-04-30 23:59:18\",\n            \"Doctor\": null,\n            \"TrayNo\": \"null\",\n            \"ProductStatus\": \"Pending\",\n            \"Employee\": 2,\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"Dueamount\": 1500\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\"\n}"
+				}
+			]
+		},
+		{
 			"name": "getBillById",
 			"request": {
 				"method": "POST",

@@ -434,6 +434,33 @@ module.exports = {
             await connection.release();
         }
     },
+    paymentHistory: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const { ID, InvoiceNo } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
 
+            if (ID === null || ID === undefined) return res.send({ message: "Invalid Query Data" })
+            if (InvoiceNo === null || InvoiceNo === undefined) return res.send({ message: "Invalid Query Data" })
+
+            let qry = `SELECT paymentdetail.*, billmaster.*, paymentmaster.PaymentType AS PaymentType, paymentmaster.PaymentMode AS PaymentMode, paymentmaster.PaidAmount, paymentdetail.DueAmount AS Dueamount FROM paymentdetail LEFT JOIN billmaster ON billmaster.ID = paymentdetail.BillMasterID LEFT JOIN paymentmaster  ON paymentmaster.ID = paymentdetail.PaymentMasterID WHERE paymentdetail.PaymentType = 'Customer' AND billmaster.ID = ${ID} AND paymentdetail.BillID = '${InvoiceNo}' and billmaster.CompanyID = ${CompanyID} and billmaster.ShopID = ${shopid}`
+
+            let data = await connection.query(qry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            // connection.release()
+            res.send(response)
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
 
 }
