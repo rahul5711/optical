@@ -40,7 +40,8 @@ export class BillingComponent implements OnInit {
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   env = environment;
 
-  id: any;
+  id: any = 0;
+  id2: any = 0;
   customerImage: any;
   clensImage: any;
   spectacleImage: any;
@@ -70,6 +71,7 @@ export class BillingComponent implements OnInit {
     public bill: BillService,
     private ps: ProductService,
   ) {
+    this.id2 = this.route.snapshot.params['id2'];
     this.id = this.route.snapshot.params['id'];
   }
 

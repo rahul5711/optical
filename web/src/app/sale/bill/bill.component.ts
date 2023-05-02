@@ -40,7 +40,8 @@ export class BillComponent implements OnInit {
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   env = environment;
-
+  id : any = 0
+  id2 : any = 0
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -54,12 +55,11 @@ export class BillComponent implements OnInit {
     private supps: SupportService,
     private cs: CustomerService,
   ) {
-      this.id = Number(this.route.snapshot.paramMap.get('id'),);
-      this.id2 = Number(this.route.snapshot.paramMap.get('id2'),);
+      this.id = this.route.snapshot.params['id'];
+      this.id2 = this.route.snapshot.params['id2'];
   }
  
-  id :number
-  id2 :number
+
 
   BillMaster: any = {
     ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, GSTNo:'', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0,  AddlDiscount: 0, AddlDiscountPercentage: 0.00, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
@@ -116,11 +116,14 @@ export class BillComponent implements OnInit {
     this.getProductList();
     this.getService();
     this.getCustomerById1()
+    if (this.id2 !== 0) {
+      this.getBillById(this.id2)
+    }
   }
 
   getCustomerById1() {
-    if (this.id2 !== 0) {
-      const subs: Subscription = this.cs.getCustomerById(this.id2).subscribe({
+    if (this.id !== 0) {
+      const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
         next: (res: any) => {
           if (res.success) {
             this.customer = res.data[0]
@@ -146,7 +149,6 @@ export class BillComponent implements OnInit {
   }
 
   getBillById(id:any) {
-    id = this.id
     const subs: Subscription = this.bill.getBillById(id).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -757,12 +759,13 @@ export class BillComponent implements OnInit {
         console.log(res);
         if (res.success) {
           this.BillMaster.ID = res.data.ID;
-          this.id = res.data.ID;
-          this.id2 = res.data.CustomerID;
-          this.router.navigate(['/sale/billing', this.id , this.id2]);
+          this.id2 = res.data.ID;
+          this.id = res.data.CustomerID;
           if (this.id !== 0) {
-            this.getBillById(this.id)
+            this.getBillById(this.id2)
           }
+          this.router.navigate(['/sale/billing', this.id2 , this.id]);
+
         } else {
           this.as.errorToast(res.message)
         }

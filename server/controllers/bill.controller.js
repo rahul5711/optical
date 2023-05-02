@@ -217,8 +217,8 @@ module.exports = {
                         );
                     } else if (preorder === 1 && item.Barcode === "0") {
                         if (item.WholeSale === false) {
-                         item.WholeSalePrice = 0
-                         item.RetailPrice = item.UnitPrice
+                            item.WholeSalePrice = 0
+                            item.RetailPrice = item.UnitPrice
                         } else {
                             item.WholeSalePrice = item.WholeSalePrice
                             item.RetailPrice = 0
@@ -420,7 +420,10 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.result.billMaster = billMaster
-            response.result.billMaster[0].gst_detail =  gst_detail || []
+            if (response.result.billMaster.length) {
+                response.result.billMaster[0].gst_detail = gst_detail || []
+            }
+
             response.result.billDetail = billDetail
             response.result.service = service
             // connection.release()
