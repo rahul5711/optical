@@ -169,7 +169,7 @@
               <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm table-bordered"
                   style="border: 2px solid #fff !important;">
-                  <thead [ngClass]="{'old': UpdateBarcode, 'new': !UpdateBarcode}">
+                  <thead [ngClass]="{'old': UpdateMode, 'new': !UpdateMode}">
                     <tr (click)="showInput()">
                       <th style="text-align: left;">S.No</th>
                       <th >PaymentDate</th>
@@ -182,8 +182,8 @@
                     <tr *ngFor="let data of paymentHistoryList  let i = index;">
                       <td class="ps-3">{{ i + 1 }}</td>
                       <td class="text-center">{{data.PaymentDate}}</td>
-                      <td *ngIf="!UpdateBarcode" class="text-center">{{data.PaymentMode}}</td>
-                      <td *ngIf="UpdateBarcode" style=" text-align: center;">
+                      <td *ngIf="!UpdateMode" class="text-center">{{data.PaymentMode}}</td>
+                      <td *ngIf="UpdateMode" style=" text-align: center;">
                         <select style="height: 26px;" name="PaymentMode" [(ngModel)]="data.PaymentMode" #name="ngModel" [ngModelOptions]="{standalone: true}" name="data{{i}}">
                             <option value="Payment Initiated">Payment Initiated</option>
                             <option value="Gpay">Gpay</option>

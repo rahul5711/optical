@@ -33,7 +33,7 @@ export class BillListComponent implements OnInit {
   page = 4;
   suBtn = false;
   paymentHistoryList :any = []
-  UpdateBarcode = false;
+  UpdateMode = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -83,7 +83,7 @@ export class BillListComponent implements OnInit {
   }
 
   showInput(){
-    this.UpdateBarcode = !this.UpdateBarcode;
+    this.UpdateMode = !this.UpdateMode;
   }
 
   openModal(content: any,data:any) {
