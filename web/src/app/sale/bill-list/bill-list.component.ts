@@ -33,6 +33,7 @@ export class BillListComponent implements OnInit {
   page = 4;
   suBtn = false;
   paymentHistoryList :any = []
+  UpdateBarcode = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -81,6 +82,9 @@ export class BillListComponent implements OnInit {
     this.sp.hide();
   }
 
+  showInput(){
+    this.UpdateBarcode = !this.UpdateBarcode;
+  }
 
   openModal(content: any,data:any) {
     this.sp.show();
