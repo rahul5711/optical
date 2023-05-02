@@ -36,7 +36,6 @@ import { trigger, style, animate, transition } from '@angular/animations';
 })
 
 export class BillingComponent implements OnInit {
-
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   env = environment;

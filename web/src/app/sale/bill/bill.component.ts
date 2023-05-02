@@ -34,16 +34,16 @@ import { trigger, style, animate, transition } from '@angular/animations';
   ]
 })
 export class BillComponent implements OnInit {
+
   @Input() customerID2: any
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   env = environment;
-  id2: any
 
   constructor(
-    private router: Router,
     private route: ActivatedRoute,
+    private router: Router,
     private formBuilder: FormBuilder,
     public as: AlertService,
     private sp: NgxSpinnerService,
@@ -54,13 +54,15 @@ export class BillComponent implements OnInit {
     private supps: SupportService,
     private cs: CustomerService,
   ) {
-    this.id2 = this.route.snapshot.params['id'];
+      this.id = Number(this.route.snapshot.paramMap.get('id'),);
+      this.id2 = Number(this.route.snapshot.paramMap.get('id2'),);
   }
-
-
+ 
+  id :number
+  id2 :number
 
   BillMaster: any = {
-    ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0.00, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, GSTNo:'', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0,  AddlDiscount: 0, AddlDiscountPercentage: 0.00, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
   }
 
   BillItem: any = {
@@ -72,7 +74,7 @@ export class BillComponent implements OnInit {
   };
 
   customer: any = {
-    ID: '', CompanyID: '', Idd: 0, Name: '', Sno: '', TotalCustomer: '', VisitDate: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: '', DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
+    ID: null, CompanyID: '', Idd: 0, Name: '', Sno: '', TotalCustomer: '', VisitDate: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: '', DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
   };
 
   customerPower: any = []
@@ -101,29 +103,58 @@ export class BillComponent implements OnInit {
   BarcodeList: any;
   disableAddButtons = false;
   loginShopID: any;
+  gst_detail: any = [];
 
   ngOnInit(): void {
-    this.loginShopID = Number(this.selectedShop[0])
     this.BillMaster.Employee = this.user.ID
     this.BillMaster.BillDate = moment().format('YYYY-MM-DD');
     this.BillMaster.DeliveryDate = moment(new Date()).add(this.companysetting.DeliveryDay, 'days').format('YYYY-MM-DD');
+    this.loginShopID = Number(this.selectedShop[0])
     this.getTrayNo();
     this.getEmployee();
     this.getDoctor();
     this.getProductList();
     this.getService();
-    this.getCustomerById()
+    this.getCustomerById1()
   }
 
-  getCustomerById() {
-    const subs: Subscription = this.cs.getCustomerById(this.customerID2).subscribe({
+  getCustomerById1() {
+    if (this.id2 !== 0) {
+      const subs: Subscription = this.cs.getCustomerById(this.id2).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.customer = res.data[0]
+            this.customerPower = res
+            this.BillMaster.CustomerID = this.customer.ID
+            this.BillMaster.GSTNo = this.customer.GSTNo
+            this.BillMaster.PaymentStatus = 'unpaid';
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+        },
+        error: (err: any) => {
+          console.log(err.message);
+        },
+        complete: () => subs.unsubscribe(),
+      })
+    }
+
+    if(this.id !== 0){
+      this.getBillById(this.id)
+    }
+  }
+
+  getBillById(id:any) {
+    id = this.id
+    const subs: Subscription = this.bill.getBillById(id).subscribe({
       next: (res: any) => {
         if (res.success) {
-          console.log(res);
-          this.customer = res.data[0]
-          this.customerPower = res
-          this.BillMaster.CustomerID = this.customer.ID
-          this.BillMaster.PaymentStatus = 'unpaid';
+          console.log(res.result.billDetail);
+          this.BillMaster = res.result.billMaster[0]
+          this.gst_detail = this.BillMaster.gst_detail
+          this.billItemList = res.result.billDetail
+          this.Service = res.result.service
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
@@ -185,6 +216,31 @@ export class BillComponent implements OnInit {
   }
 
   getGSTList() {
+    this.sp.show();
+    const subs: Subscription = this.supps.getList('TaxType').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.gstList = res.data
+          this.gst_detail = [];
+          res.data.forEach((ele: any) => {
+            if (ele.Name !== ' ') {
+              let obj = { GSTType: '', Amount: 0 };
+              obj.GSTType = ele.Name;
+              this.gst_detail.push(obj);
+            }
+          })
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    this.sp.hide();
+  }
+
+  getGSTListss() {
     const subs: Subscription = this.supps.getList('TaxType').subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -675,8 +731,8 @@ export class BillComponent implements OnInit {
           }
         }
       }
-      this.searchList.MeasurementID = JSON.stringify(this.customerPower.spectacle_rx[0]);
-      this.BillItem.MeasurementID = JSON.stringify(this.customerPower.spectacle_rx[0]);
+      // this.searchList.MeasurementID = JSON.stringify(this.customerPower.spectacle_rx[0]);
+      // this.BillItem.MeasurementID = JSON.stringify(this.customerPower.spectacle_rx[0]);
       this.addProductItem();
     }
     this.BillMaster.Quantity = 0;
@@ -691,6 +747,7 @@ export class BillComponent implements OnInit {
 
   onSubmit() {
     this.BillMaster.ShopID = this.loginShopID
+    this.BillMaster.CustomerID = this.customerID2
     this.data.billMaseterData = this.BillMaster;
     this.data.billDetailData = this.billItemList;
     this.data.service = this.serviceLists;
@@ -700,8 +757,12 @@ export class BillComponent implements OnInit {
         console.log(res);
         if (res.success) {
           this.BillMaster.ID = res.data.ID;
-          this.router.navigate(['/sale/billing', this.BillMaster.ID, this.customerID2]);
-          // this.BillMaster.CustomerID = res.data.CustomerID;
+          this.id = res.data.ID;
+          this.id2 = res.data.CustomerID;
+          this.router.navigate(['/sale/billing', this.id , this.id2]);
+          if (this.id !== 0) {
+            this.getBillById(this.id)
+          }
         } else {
           this.as.errorToast(res.message)
         }
@@ -710,6 +771,23 @@ export class BillComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+  }
+
+  update(){
+    this.data.service = this.serviceLists;
+    this.BillMaster.ShopID = this.loginShopID
+    this.BillMaster.CustomerID = this.customerID2
+    this.data.billMaseterData = this.BillMaster;
+    let items: any = [];
+    this.billItemList.forEach((ele: any) => {
+      if (ele.ID === null || ele.Status == 2 ) {
+          ele.UpdatedBy = this.user.ID;
+          items.push(ele);
+      }
+    })
+    this.data.billDetailData = items;
+    console.log(this.data);
+    
   }
 
   deleteItem(category: any, i: any) {

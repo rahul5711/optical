@@ -27,6 +27,7 @@ import { CustomerListComponent } from './customer-list/customer-list.component';
 import { CustomerPowerListComponent } from './customer-power-list/customer-power-list.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { BillComponent } from './bill/bill.component';
+import { BillListComponent } from './bill-list/bill-list.component';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { BillComponent } from './bill/bill.component';
     BillingComponent,
     CustomerListComponent,
     CustomerPowerListComponent,
-    BillComponent
+    BillComponent,
+    BillListComponent
   ],
   imports: [
     CommonModule,
