@@ -116,13 +116,13 @@ export class BillComponent implements OnInit {
     this.getProductList();
     this.getService();
     this.getCustomerById1()
-    if (this.id2 !== 0) {
+    if (this.id2 != 0) {
       this.getBillById(this.id2)
     }
   }
 
   getCustomerById1() {
-    if (this.id !== 0) {
+    if (this.id != 0) {
       const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
         next: (res: any) => {
           if (res.success) {
@@ -143,7 +143,7 @@ export class BillComponent implements OnInit {
       })
     }
 
-    if(this.id !== 0){
+    if(this.id != 0){
       this.getBillById(this.id)
     }
   }
@@ -748,6 +748,7 @@ export class BillComponent implements OnInit {
   }
 
   onSubmit() {
+    this.sp.show()
     this.BillMaster.ShopID = this.loginShopID
     this.BillMaster.CustomerID = this.customerID2
     this.data.billMaseterData = this.BillMaster;
@@ -765,7 +766,7 @@ export class BillComponent implements OnInit {
             this.getBillById(this.id2)
           }
           this.router.navigate(['/sale/billing', this.id2 , this.id]);
-
+          this.sp.hide()
         } else {
           this.as.errorToast(res.message)
         }
@@ -774,9 +775,11 @@ export class BillComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   update(){
+    this.sp.show()
     this.data.service = this.serviceLists;
     this.BillMaster.ShopID = this.loginShopID
     this.BillMaster.CustomerID = this.customerID2
@@ -790,6 +793,7 @@ export class BillComponent implements OnInit {
     })
     this.data.billDetailData = items;
     console.log(this.data);
+    this.sp.hide()
     
   }
 
