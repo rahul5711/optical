@@ -143,8 +143,8 @@ export class BillComponent implements OnInit {
       })
     }
 
-    if(this.id != 0){
-      this.getBillById(this.id)
+    if(this.id2 != 0){
+      this.getBillById(this.id2)
     }
   }
 
@@ -157,7 +157,6 @@ export class BillComponent implements OnInit {
           this.gst_detail = this.BillMaster.gst_detail
           this.billItemList = res.result.billDetail
           this.Service = res.result.service
-          this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
         }
