@@ -71,8 +71,8 @@ export class BillingComponent implements OnInit {
     public bill: BillService,
     private ps: ProductService,
   ) {
-    this.id2 = this.route.snapshot.params['id2'];
-    this.id = this.route.snapshot.params['id'];
+    this.id = this.route.snapshot.params['customerid'];
+    this.id2 = this.route.snapshot.params['billid'];
   }
 
   data: CustomerModel = {
@@ -466,7 +466,7 @@ export class BillingComponent implements OnInit {
             this.spectacle.CustomerID = this.id;
             this.clens.CustomerID = this.id;
             this.other.CustomerID = this.id;
-            this.router.navigate(['/sale/billing', 0, res.data[0].ID]);
+            this.router.navigate(['/sale/billing', res.data[0].ID ,0 ]);
             this.getCustomerById();
           }
           Swal.fire({

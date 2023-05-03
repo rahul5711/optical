@@ -2207,7 +2207,7 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const currentStatus = "PreOrder";
+            const currentStatus = "Pre Order";
             const paymentStatus = "Unpaid"
             const {
                 PurchaseMaster,

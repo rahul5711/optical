@@ -8,8 +8,8 @@ import { BillListComponent } from './bill-list/bill-list.component';
 
 const routes: Routes = [ { path: '',
 children: [
-  { path: 'billing/:id2/:id', component: BillingComponent },  
-  { path: 'billinglist/:id', component: BillListComponent },
+  { path: 'billing/:customerid/:billid', component: BillingComponent },
+  { path: 'billinglist/:billid', component: BillListComponent },
   { path: 'customerList', component: CustomerListComponent },  
   { path: 'doctor/:id', component: DoctorComponent },  
   { path: 'doctorList', component: DoctorListComponent },  

@@ -55,10 +55,10 @@ export class BillComponent implements OnInit {
     private supps: SupportService,
     private cs: CustomerService,
   ) {
-      this.id = this.route.snapshot.params['id'];
-      this.id2 = this.route.snapshot.params['id2'];
+      this.id = this.route.snapshot.params['customerid'];
+      this.id2 = this.route.snapshot.params['billid'];
   }
- 
+
 
 
   BillMaster: any = {
@@ -764,7 +764,7 @@ export class BillComponent implements OnInit {
           if (this.id !== 0) {
             this.getBillById(this.id2)
           }
-          this.router.navigate(['/sale/billing', this.id2 , this.id]);
+          this.router.navigate(['/sale/billing', this.id , this.id2]);
           this.sp.hide()
         } else {
           this.as.errorToast(res.message)
@@ -793,7 +793,7 @@ export class BillComponent implements OnInit {
     this.data.billDetailData = items;
     console.log(this.data);
     this.sp.hide()
-    
+
   }
 
   deleteItem(category: any, i: any) {
