@@ -176,6 +176,8 @@ module.exports = {
                 `insert into billmaster (CustomerID,CompanyID, Sno,ShopID,BillDate, DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}','${billMaseterData.DeliveryDate}', 'Unpaid',  '${billMaseterData.InvoiceNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.SubTotal}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount - billMaseterData.AddlDiscount}, 1, ${LoggedOnUser}, now(), now(), ${billMaseterData.Doctor}, '${billMaseterData.TrayNo}', ${billMaseterData.Employee})`
             );
 
+            console.log(connected("BillMaster Add SuccessFUlly !!!"));
+
             let bMasterID = bMaster.insertId;
 
 
@@ -313,6 +315,78 @@ module.exports = {
 
         } catch (err) {
             console.log(err);
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+    updateBill: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            return
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const { billMaseterData, billDetailData, service } = req.body
+
+            if (!billMaseterData) return res.send({ message: "Invalid Query Data" })
+            if (!billDetailData) return res.send({ message: "Invalid Query Data" })
+            if (!billDetailData.length) return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.ID === null || billMaseterData.ID === undefined || billMaseterData.ID == 0 || billMaseterData.ID === "") return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.ShopID === null || billMaseterData.ShopID === undefined || billMaseterData.ShopID == 0 || billMaseterData.ShopID === "") return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.InvoiceNo === null || billMaseterData.InvoiceNo === undefined || billMaseterData.InvoiceNo == 0 || billMaseterData.InvoiceNo === "") return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.CustomerID === null || billMaseterData.CustomerID === undefined) return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.PaymentStatus !== "Unpaid") return res.send({ message: "You have already paid amount of this invoice, you can not add more product in this invoice" })
+            if (billMaseterData.ProductStatus !== "Pending") return res.send({ message: "You have already deliverd product of this invoice, you can not add more product in this invoice" })
+
+            const doesCheckPayment = await connection.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${billMaseterData.InvoiceNo}' and BillMasterID = ${billMaseterData.ID}`)
+
+            if (doesCheckPayment.length > 1) {
+                return res.send({ message: `You Can't Add Product !!, You have Already Paid Amount of this Invoice` })
+            }
+
+            let bMasterID = billMaseterData.ID;
+
+            const bMaster = await connection.query(`update billmaster set BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.TotalAmount - billMaseterData.AddlDiscount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now(), LastUpdate = now(), TrayNo = '${billMaseterData.TrayNo}' where ID = ${bMasterID}`)
+
+            console.log(connected("BillMaster Update SuccessFUlly !!!"));
+
+            // save service
+            await Promise.all(
+                service.map(async (ele) => {
+                    if (ele.ID === null) {
+                        let result1 = await connection.query(
+                            `insert into billservice ( BillID, ServiceType ,CompanyID,Description, Price, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn ) values (${bMasterID}, '${ele.ServiceType}', ${CompanyID},  '${ele.Description}', ${ele.Price}, ${ele.GSTPercentage}, ${ele.GSTAmount}, '${ele.GSTType}', ${ele.TotalAmount},1,${LoggedOnUser}, now())`
+                        );
+                    }
+
+                })
+            );
+
+            console.log(connected("Service Added SuccessFUlly !!!"));
+
+            await Promise.all(
+                billDetailData.map(async (item) => {
+                    let preorder = 0;
+                    if (item.PreOrder === true) {
+                        preorder = 1;
+                    }
+                    let manual = 0;
+                    if (item.Manual === true) {
+                        manual = 1;
+                    }
+                    let wholesale = 0
+                    if (item.WholeSale === true) {
+                        wholesale = 1;
+                    }
+                })
+            );
+
+        } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
             throw err;
