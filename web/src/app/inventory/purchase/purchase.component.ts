@@ -27,6 +27,7 @@ export class PurchaseComponent implements OnInit {
   selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '');
   editBtn = false;
   addDis: any
+  GstTypeDis = false
 
   constructor(
     private router: Router,
@@ -57,7 +58,7 @@ export class PurchaseComponent implements OnInit {
 
   charge: any = {
     ID: null, PurchaseID: null, ChargeType: null, CompanyID: null, Description: '', Amount: 0.00, GSTPercentage: 0.00, GSTAmount: 0.00,
-    GSTType: '', TotalAmount: 0.00, Status: 1
+    GSTType: 'None', TotalAmount: 0.00, Status: 1
   };
 
   data: any = { PurchaseMaster: null, Product: null, PurchaseDetail: null, Charge: null };
@@ -327,12 +328,13 @@ export class PurchaseComponent implements OnInit {
 
   calculateFields(fieldName: any, mode: any,) {
     this.calculation.calculateFields(fieldName, mode, this.item, this.charge)
-
+    this.GstTypeDis = false
   }
 
   calculateGrandTotal() {
     this.calculation.calculateGrandTotal(this.selectedPurchaseMaster, this.itemList, this.chargeList)
   }
+
 
   addItem() {
 
@@ -360,6 +362,15 @@ export class PurchaseComponent implements OnInit {
       this.item.ProductTypeID = this.item.ProductTypeID
       this.item.ProductTypeName = this.item.ProductTypeName
       this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
+
+      if (this.item.GSTPercentage === 0 || this.item.GSTAmount === 0) {
+        this.item.GSTType = 'None'
+        this.GstTypeDis = false
+      } else if (this.item.GSTType !== 'None') {
+        if (this.item.GSTPercentage === 0) {
+          this.GstTypeDis = false
+        }
+      }
 
       let AddQty = 0;
       if (this.item.Quantity !== 0 && this.item.Quantity !== "0") {
@@ -417,15 +428,33 @@ export class PurchaseComponent implements OnInit {
           element.SelectedValue = element.SelectedValue;
         }
       });
+
     }
     if (this.category === 'Charges') {
       if (this.selectedPurchaseMaster.ID !== null) { this.charge.Status = 2; }
       this.charge.ID = null;
+
+
       this.chargeOptions.forEach((ele: any) => {
         if (ele.ID !== null) {
           this.charge.ChargeType = ele.Name
         }
       });
+
+      if (this.charge.GSTPercentage === 0 || this.charge.GSTAmount === 0) {
+        this.charge.GSTType = 'None'
+        this.GstTypeDis = false
+      } else if (this.charge.GSTType !== 'None') {
+        if (this.charge.GSTPercentage === 0 || this.charge.GSTAmount === 0) {
+          this.GstTypeDis = false
+        } 
+      }else if (this.charge.GSTType === 'None') {
+        if (this.charge.GSTPercentage !== 0 || this.charge.GSTAmount !== 0) {
+          this.GstTypeDis = false
+        }
+      }
+
+
       this.chargeList.push(this.charge);
       this.charge = {
         ID: null, ChargeType: null, CompanyID: null, Description: '', Amount: 0.00, Price: 0.00, GSTPercentage: 0, GSTAmount: 0.00,
@@ -438,7 +467,27 @@ export class PurchaseComponent implements OnInit {
   notifyGst() {
     if (this.item.GSTPercentage !== 0 && this.item.GSTPercentage !== "0") {
       if (this.item.GSTType === 'None') {
-        alert("please select GstType");
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Please Select GSTType',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        this.GstTypeDis = true
+      }
+    }
+
+    if (this.charge.GSTPercentage !== 0 && this.charge.GSTPercentage !== "0") {
+      if (this.charge.GSTType === 'None') {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Please Select GSTType',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        this.GstTypeDis = true
       }
     }
   }
@@ -671,11 +720,11 @@ export class PurchaseComponent implements OnInit {
     let body = { PurchaseMaster: this.selectedPurchaseMaster, PurchaseDetails: this.itemList, PurchaseCharge: this.chargeList }
     const subs: Subscription = this.purchaseService.purchaseDetailPDF(body).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           console.log(res);
           const url = this.env.apiUrl + "/uploads/" + res;
           window.open(url, "_blank");
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -697,10 +746,10 @@ export class PurchaseComponent implements OnInit {
     this.BarcodeData.Quantity = Number(this.BarcodeQuantity)
     const subs: Subscription = this.purchaseService.PrintBarcode(this.BarcodeData).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           window.open(res, "_blank");
           this.modalService.dismissAll();
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();

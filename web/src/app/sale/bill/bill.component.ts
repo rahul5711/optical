@@ -66,7 +66,7 @@ export class BillComponent implements OnInit {
   }
 
   BillItem: any = {
-    ID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null, Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00
+    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null, Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00
   };
 
   Service: any = {
@@ -104,6 +104,7 @@ export class BillComponent implements OnInit {
   disableAddButtons = false;
   loginShopID: any;
   gst_detail: any = [];
+  GstTypeDis = false
 
   ngOnInit(): void {
     this.BillMaster.Employee = this.user.ID
@@ -288,6 +289,8 @@ export class BillComponent implements OnInit {
   setValues() {
     this.serviceType.forEach((element: any) => {
       if (element.ID === this.Service.ServiceType) {
+        this.Service.ID = null
+        this.Service.CompanyID = element.CompanyID
         this.Service.Name = element.Name
         this.Service.Price = element.Price;
         this.Service.Cost = element.Cost;
@@ -632,10 +635,39 @@ export class BillComponent implements OnInit {
       this.billCalculation.calculations(fieldName, mode, this.BillItem, this.Service)
       this.getGSTList();
     }
+    this.GstTypeDis = false
   }
 
   calculateGrandTotal() {
     this.billCalculation.calculateGrandTotal(this.BillMaster, this.billItemList, this.serviceLists)
+  }
+
+  notifyGst() {
+    if (this.BillItem.GSTPercentage !== 0 && this.BillItem.GSTPercentage !== "0") {
+      if (this.BillItem.GSTType === 'None') {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Please Select GSTType',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        this.GstTypeDis = true
+      }
+    }
+
+    if (this.Service.GSTPercentage !== 0 && this.Service.GSTPercentage !== "0") {
+      if (this.Service.GSTType === 'None') {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Please Select GSTType',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        this.GstTypeDis = true
+      }
+    }
   }
 
   AddDiscalculate(fieldName: any, mode: any) {
@@ -646,6 +678,8 @@ export class BillComponent implements OnInit {
     if (this.BillMaster.ID !== null) {
       this.BillItem.Status = 2;
     }
+ 
+
     if (!this.BillItem.PreOrder && !this.BillItem.Manual && this.BillItem.Quantity > this.searchList.BarCodeCount) {
       Swal.fire({
         icon: 'warning',
@@ -680,6 +714,22 @@ export class BillComponent implements OnInit {
     // additem Services
     if (this.category === 'Services') {
       if (this.BillMaster.ID !== null) { this.Service.Status = 2; }
+
+      if (this.Service.GSTPercentage === 0 || this.Service.GSTAmount === 0) {
+        this.Service.GSTType = 'None'
+        this.GstTypeDis = false
+      }
+       else if (this.Service.GSTType !== 'None') {
+        if (this.Service.GSTPercentage === 0 || this.Service.GSTAmount === 0) {
+          this.GstTypeDis = false
+        } 
+      }
+      else if (this.Service.GSTType === 'None') {
+        if (this.Service.GSTPercentage !== 0 || this.Service.GSTAmount !== 0) {
+          this.GstTypeDis = false
+        }
+      }
+
       this.serviceLists.push(this.Service);
 
       this.Service = {
@@ -689,6 +739,42 @@ export class BillComponent implements OnInit {
 
     // additem Product
     if (this.category === 'Product') {
+      if(this.BillItem.ProductTypeName === 'Lens' || this.BillItem.ProductTypeName === 'LENS'){
+        if(this.customerPower.spectacle_rx.length !== 0){
+          this.searchList.MeasurementID = JSON.stringify(this.customerPower.spectacle_rx[0]);
+          this.BillItem.MeasurementID = JSON.stringify(this.customerPower.spectacle_rx[0])
+          this.addProductItem();
+        } else{
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: 'Customer Power Not Be Found',
+              showConfirmButton: true,
+              backdrop: false,
+            })
+         }
+         
+      }else{
+
+      // GSTType disable condition
+      if (this.BillItem.GSTPercentage === 0 || this.BillItem.GSTAmount === 0) {
+        this.BillItem.GSTType = 'None'
+        this.GstTypeDis = false
+      }
+      
+      else if (this.BillItem.GSTType !== 'None') {
+        if (this.BillItem.GSTPercentage === 0) {
+          this.GstTypeDis = false
+        }
+      }
+
+      else if (this.BillItem.GSTType === 'None') {
+        if (this.BillItem.GSTPercentage !== 0 || this.BillItem.GSTAmount !== 0) {
+          this.GstTypeDis = false
+        }
+      }
+      // GSTType disable condition
+
       // additem Manual
       if (this.BillItem.Manual) {
         let searchString = "";
@@ -732,10 +818,13 @@ export class BillComponent implements OnInit {
           }
         }
       }
-      // this.searchList.MeasurementID = JSON.stringify(this.customerPower.spectacle_rx[0]);
-      // this.BillItem.MeasurementID = JSON.stringify(this.customerPower.spectacle_rx[0]);
+      this.searchList.MeasurementID = JSON.stringify(this.customerPower.spectacle_rx[0]);
+      this.BillItem.MeasurementID = JSON.stringify(this.customerPower.spectacle_rx[0])
       this.addProductItem();
     }
+
+    }
+
     this.BillMaster.Quantity = 0;
     this.BillMaster.SubTotal = 0;
     this.BillMaster.DiscountAmount = 0;

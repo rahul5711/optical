@@ -269,7 +269,7 @@
                                         <mat-label>TAX Type</mat-label>
                                         <mat-select name="GSTType" [(ngModel)]="item.GSTType" #GSTTypeacontrol
                                             (selectionChange)="calculateFields('TotalAmount', 'total')"
-                                            (blur)="notifyGst()" required>
+                                             required>
                                             <mat-option value="None" *ngIf="item.GSTPercentage  === 0">None
                                             </mat-option>
                                             <span *ngIf="item.GSTPercentage !== 0">
@@ -335,8 +335,8 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ml-auto">
                                     <button *ngIf="editBtn === false" class="mr-3" type="submit"
-                                        [disabled]="!f1.valid || item.Quantity == 0 || item.GSTPercentage === 0 &&  item.GSTType !== 'None' && item.GSTType !== 'NONE' || item.GSTType === '' "
-                                        mat-raised-button color="primary">Add</button>
+                                        [disabled]="!f1.valid || item.Quantity == 0 || this.GstTypeDis"
+                                        mat-raised-button color="primary"  (click)="notifyGst();">Add</button>
                                     <!-- <button *ngIf="editBtn === true" class="mr-3" type="submit" [disabled]=" item.Quantity == 0"
                                         mat-raised-button color="primary" (click)="editUpdate()">Update</button> -->
                                 </div>
@@ -376,7 +376,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>GST%</mat-label>
-                                        <input matInput name="GST" [(ngModel)]="charge.GSTPercentage" required
+                                        <input matInput name="GSTPercentage" [(ngModel)]="charge.GSTPercentage" required
                                             #GSTcontrol [autocomplete]="false"
                                             (blur)="calculateFields('GSTPercentage', 'chgst')">
                                         <mat-error>
@@ -396,10 +396,13 @@
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>GST Type</mat-label>
                                         <mat-select name="GSTType" [(ngModel)]="charge.GSTType" required
-                                            #GSTTypecontrol1 (blur)="calculateFields('TAmount', 'chtotal')">
-                                            <mat-option value="None">None</mat-option>
-                                            <mat-option [value]="g.Name" *ngFor="let g of gstList">{{g.Name}}
-                                            </mat-option>
+                                            #GSTTypecontrol1 (selectionChange)="calculateFields('TAmount', 'chtotal')">
+                                            <mat-option *ngIf="this.charge.GSTAmount === 0 || this.charge.GSTPercentage === 0" value="None" >None</mat-option>
+                                            <span *ngIf="this.charge.GSTAmount !== 0 || this.charge.GSTPercentage !== 0">
+                                                <mat-option [value]="g.Name" *ngFor="let g of gstList">{{g.Name}}
+                                                </mat-option>
+                                            </span>
+
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
@@ -412,8 +415,8 @@
                                 </div>
                                 <div *ngIf="category === 'Charges'"
                                     class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ml-auto">
-                                    <button class="mr-3" (click)="calculateFields('TAmount', 'chtotal')" type="submit"
-                                        [disabled]="!f1.valid " mat-raised-button color="primary">Add</button>
+                                    <button class="mr-3"  (click)="calculateFields('TAmount', 'chtotal');notifyGst();" type="submit"
+                                        [disabled]="!f1.valid || this.GstTypeDis" mat-raised-button color="primary" >Add</button>
 
                                 </div>
                             </div>

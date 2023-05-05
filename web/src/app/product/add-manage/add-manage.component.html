@@ -16,7 +16,7 @@
                             <div class="row">
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>Product</mat-label>
+                                        <mat-label>Type</mat-label>
                                         <mat-select name="FieldType" [(ngModel)]="selectedProduct"
                                             (selectionChange)="getfieldList()" required #Typecontrol
                                             appAutoFoucsDirectives>
@@ -26,7 +26,7 @@
                                             </mat-option>
                                         </mat-select>
                                         <mat-error>
-                                            Select Product Type
+                                            Select Type
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
@@ -87,7 +87,7 @@
                             <div class="row">
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="  !showAddCharge">
                                     <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>Product Name</mat-label>
+                                        <mat-label>Type</mat-label>
                                         <mat-select name="Field Type" [(ngModel)]="selectedRow.Name" (selectionChange)="setValues()" required #Typecontrol appAutoFoucsDirectives>
                                           <mat-option *ngFor="let data of dataList  let i = index;" [value]="data.Name">
                                             {{data.Name | uppercase}}
@@ -208,7 +208,7 @@
                             <div class="row">
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="  !showAddService">
                                     <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>Product Name</mat-label>
+                                        <mat-label>Type</mat-label>
                                         <mat-select name="Field Type" [(ngModel)]="Service.Name" (selectionChange)="setValuesService()" required #Typecontrol appAutoFoucsDirectives>
                                           <mat-option *ngFor="let data of serviceList  let i = index;" [value]="data.Name">
                                             {{data.Name | uppercase}}

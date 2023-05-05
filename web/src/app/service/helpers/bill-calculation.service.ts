@@ -115,10 +115,29 @@ export class BillCalculationService {
       // serviceCalcultion    
       case 'serviceGst':
         if (fieldName === 'GSTPercentage') {
-          Service.GSTAmount = +Service.Price * +Service.GSTPercentage / 100;
+          if (Service.GSTPercentage === null || Service.GSTPercentage === '' || (Number(Service.GSTPercentage) > 100)) {
+            Swal.fire({
+              icon: 'warning',
+              title: `You can't give more than 100% GSTPercentage`,
+              text: ``,
+              footer: '',
+              backdrop: false,
+            });
+            Service.GSTPercentage = 0;
+            Service.GSTType = 'None'
+          }
+          else {
+            Service.GSTAmount = +Service.Price * +Service.GSTPercentage / 100;
+          }
         }
+
         if (fieldName === 'GSTAmount') {
-          Service.GSTPercentage = 100 * +Service.GSTAmount / (+Service.Price);
+          if (Service.GSTAmount === null || Service.GSTAmount === '') {
+            Service.GSTAmount = 0;
+          } else {
+            Service.GSTPercentage = 100 * +Service.GSTAmount / (+Service.Price);
+          }
+        
         }
         break;
 

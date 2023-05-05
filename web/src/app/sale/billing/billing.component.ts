@@ -617,12 +617,13 @@ export class BillingComponent implements OnInit {
         if (mode === 'spectacle_rx') {
           const subs: Subscription = this.cs.deleteSpec(this.spectacleLists[i].ID, this.spectacleLists[i].CustomerID, 'spectacle_rx').subscribe({
             next: (res: any) => {
-              this.spectacleLists.splice(i, 1);
-              if (this.spectacleLists.length === 0) {
-                let spec: any = []
-                this.spectacle = spec
-              } else {
+              if(res.success){
+                this.spectacleLists.splice(i, 1);
                 this.getCustomerById()
+                // if (this.spectacleLists.length === 0) {
+                //   let spec: any = []
+                //   this.spectacle = spec
+                // }
               }
               this.as.successToast(res.message)
             },

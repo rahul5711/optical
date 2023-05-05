@@ -96,11 +96,21 @@ export class CalculationService {
         // charges calculation start
         case 'chgst':
           if (fieldName === 'GSTPercentage') {
-            charges.GSTAmount = (+charges.Price) * +charges.GSTPercentage / 100;
+            if(Number(charges.GSTPercentage) > 100 ) {
+              alert("you can't give 100% above GST Percentage");
+              charges.GSTPercentage = 0;
+            }
+            else{
+              charges.GSTAmount = (+charges.Price) * +charges.GSTPercentage / 100;
+            }
           }
-          if (fieldName === 'GSTAmount') {
+
+          if (fieldName === 'GSTAmount' || charges.GSTPercentage !== 0) {
             charges.GSTPercentage = 100 * +charges.GSTAmount / (+charges.Price);
-          }
+         }else{
+          charges.GSTType = 'None'
+         }
+
         break;
 
         case 'chtotal':
