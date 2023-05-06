@@ -213,7 +213,7 @@ module.exports = {
             const doesCheckPayment = await connection.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${PurchaseMaster.InvoiceNo}' and BillMasterID = ${PurchaseMaster.ID}`)
 
             if (doesCheckPayment.length > 1) {
-                return res.send({ message: `You Can't Delete Charge !!, You have Already Paid Amount of this Invoice` })
+                return res.send({ message: `You Can't Add Product !!, You have Already Paid Amount of this Invoice` })
             }
 
             // update purchasemaster
