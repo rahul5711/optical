@@ -48,6 +48,10 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  updateBill(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/updateBill', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
   getList(Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/list', Body, httpOptions)
     .pipe(catchError(this.handleError));

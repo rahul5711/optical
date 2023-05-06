@@ -880,7 +880,13 @@ export class BillComponent implements OnInit {
       }
     })
     this.data.billDetailData = items;
-    console.log(this.data);
+    const subs: Subscription = this.bill.updateBill(this.data).subscribe({
+      next: (res: any) => {
+        console.log(res);
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
     this.sp.hide()
 
   }
