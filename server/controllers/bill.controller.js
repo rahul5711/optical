@@ -634,5 +634,39 @@ module.exports = {
             await connection.release();
         }
     },
+    billHistoryByCustomer: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, sumData: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const { CustomerID } = req.body;
+
+            if (!CustomerID || CustomerID === undefined || CustomerID === null) return res.send({ message: "Invalid Query Data" })
+
+            let qry = `SELECT billmaster.*, Customer1.Name AS CustomerName, Customer1.MobileNo1 AS CustomerMob,Customer1.Sno AS Sno,Customer1.Idd AS Idd, shop.Name AS ShopName, shop.AreaName AS AreaName, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser FROM billmaster LEFT JOIN shop ON shop.ID = billmaster.ShopID LEFT JOIN user ON user.ID = billmaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = billmaster.UpdatedBy LEFT JOIN customer AS Customer1 ON Customer1.ID = billmaster.CustomerID WHERE  billmaster.CustomerID = ${CustomerID} and billmaster.CompanyID = ${CompanyID}  AND billmaster.Status = 1   Order By billmaster.ID Desc `
+
+            let SumQry = `SELECT SUM(billmaster.Quantity) as Quantity , SUM(billmaster.SubTotal) as SubTotal , SUM(billmaster.DiscountAmount) as DiscountAmount , SUM(billmaster.GSTAmount) as GSTAmount , SUM(billmaster.TotalAmount) as TotalAmount , SUM(billmaster.DueAmount) as DueAmount FROM billmaster LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE  billmaster.CustomerID = ${CustomerID} and billmaster.CompanyID = ${CompanyID}  AND billmaster.Status = 1   Order By billmaster.ID Desc `
+
+            let finalQuery = qry;
+            let data = await connection.query(finalQuery);
+            let sumData = await connection.query(SumQry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.sumData = sumData[0]
+            // connection.release()
+            res.send(response)
+
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
 
 }

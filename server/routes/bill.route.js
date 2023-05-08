@@ -15,3 +15,5 @@ router.post('/searchByFeild', verifyAccessTokenAdmin, Controller.searchByFeild)
 router.post('/getBillById', verifyAccessTokenAdmin, Controller.getBillById)
 router.post('/paymentHistory', verifyAccessTokenAdmin, Controller.paymentHistory)
 module.exports = router
+router.post('/billHistoryByCustomer', verifyAccessTokenAdmin, Controller.billHistoryByCustomer)
+module.exports = router
