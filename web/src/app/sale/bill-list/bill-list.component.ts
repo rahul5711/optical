@@ -262,32 +262,32 @@ export class BillListComponent implements OnInit {
           })
         }
         this.sp.hide()
-        // const subs: Subscription = this.bill.deleteData(this.dataList[i].ID).subscribe({
-        //   next: (res: any) => {
-        //     if(res.success){
-        //       this.dataList.splice(i, 1);
-        //       this.as.successToast(res.message)
-        //       Swal.fire({
-        //         position: 'center',
-        //         icon: 'success',
-        //         title: 'Your file has been deleted.',
-        //         showConfirmButton: false,
-        //         timer: 1000
-        //       })
-        //     }else{
-        //       this.as.errorToast(res.message)
-        //       Swal.fire({
-        //         position: 'center',
-        //         icon: 'warning',
-        //         title: res.message,
-        //         showCancelButton: true,
-        //       })
-        //     }
-        //     this.sp.hide()
-        //   },
-        //   error: (err: any) => console.log(err.message),
-        //   complete: () => subs.unsubscribe(),
-        // });
+        const subs: Subscription = this.bill.deleteData(this.dataList[i].ID).subscribe({
+          next: (res: any) => {
+            if(res.success){
+              this.dataList.splice(i, 1);
+              this.as.successToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been deleted.',
+                showConfirmButton: false,
+                timer: 1000
+              })
+            }else{
+              this.as.errorToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: res.message,
+                showCancelButton: true,
+              })
+            }
+            this.sp.hide()
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
       }
     })
     this.sp.hide()

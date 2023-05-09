@@ -77,6 +77,10 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  deleteData(ID:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/deleteBill', {ID: ID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
