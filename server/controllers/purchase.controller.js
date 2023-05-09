@@ -376,6 +376,38 @@ module.exports = {
             await connection.release();
         }
     },
+    purchaseHistoryBySupplier: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, sumData: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+           const { SupplierID } = req.body
+
+           if (!SupplierID || SupplierID === undefined || SupplierID === null) return res.send({ message: "Invalid Query Data" })
+
+            let qry = `select purchasemasternew.*, supplier.Name as SupplierName,  supplier.GSTNo as GSTNo, users1.Name as CreatedPerson,shop.Name as ShopName, shop.AreaName as AreaName, users.Name as UpdatedPerson from purchasemasternew left join user as users1 on users1.ID = purchasemasternew.CreatedBy left join user as users on users.ID = purchasemasternew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and purchasemasternew.PStatus = 0 and purchasemasternew.CompanyID = ${CompanyID} and purchasemasternew.SupplierID = ${SupplierID}  order by purchasemasternew.ID desc`
+
+            let data = await connection.query(qry);
+
+            let SumQry = `select SUM(purchasemasternew.Quantity) as Quantity, SUM(purchasemasternew.SubTotal) as SubTotal, SUM(purchasemasternew.DiscountAmount) as DiscountAmount, SUM(purchasemasternew.GSTAmount) as GSTAmount, SUM(purchasemasternew.TotalAmount) as TotalAmount , SUM(purchasemasternew.DueAmount) as DueAmount from purchasemasternew  where purchasemasternew.Status = 1 and purchasemasternew.PStatus = 0 and purchasemasternew.CompanyID = ${CompanyID} and purchasemasternew.SupplierID = ${SupplierID}  order by purchasemasternew.ID desc`
+
+
+            let sumData = await connection.query(SumQry);
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.sumData = sumData
+            // connection.release()
+            res.send(response)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
 
     delete: async (req, res, next) => {
         const connection = await mysql.connection();

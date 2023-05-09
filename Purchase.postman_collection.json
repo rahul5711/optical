@@ -108,6 +108,123 @@
 			"response": []
 		},
 		{
+			"name": "purchaseHistoryBySupplier",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODM2NTIyMDIsImV4cCI6MTY4MzczODYwMiwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ._rkXmem5FvksSLq3Xcskn0B9l0QYcgsAk3hP8Bd_DpA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"SupplierID\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchase/purchaseHistoryBySupplier",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"purchaseHistoryBySupplier"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "purchaseHistoryBySupplier",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"SupplierID\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchase/purchaseHistoryBySupplier",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchase",
+								"purchaseHistoryBySupplier"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1137"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"471-fDRensN8q+FBxzb1trigdS0GMr0\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 09 May 2023 17:32:37 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 4,\n            \"SupplierID\": 2,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"PurchaseDate\": \"2023-05-08\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"InvoiceNo\": \"xc\",\n            \"GSTNo\": \"\",\n            \"Quantity\": 20,\n            \"SubTotal\": 6000,\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 720,\n            \"TotalAmount\": 6720,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-05-08 22:24:18\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"PStatus\": 0,\n            \"DueAmount\": 6720,\n            \"LastUpdate\": null,\n            \"SupplierName\": \"rahul supplier 2 \",\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"UpdatedPerson\": null\n        },\n        {\n            \"ID\": 3,\n            \"SupplierID\": 2,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"PurchaseDate\": \"2023-05-08\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"InvoiceNo\": \"r2\",\n            \"GSTNo\": \"\",\n            \"Quantity\": 25,\n            \"SubTotal\": 12500,\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 2250,\n            \"TotalAmount\": 14750,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-05-08 22:22:04\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"PStatus\": 0,\n            \"DueAmount\": 14750,\n            \"LastUpdate\": null,\n            \"SupplierName\": \"rahul supplier 2 \",\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"UpdatedPerson\": null\n        }\n    ],\n    \"sumData\": [\n        {\n            \"Quantity\": 45,\n            \"SubTotal\": 18500,\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 2970,\n            \"TotalAmount\": 21470,\n            \"DueAmount\": 21470\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\"\n}"
+				}
+			]
+		},
+		{
 			"name": "deleteProduct",
 			"request": {
 				"method": "POST",
