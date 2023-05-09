@@ -668,5 +668,45 @@ module.exports = {
             await connection.release();
         }
     },
+    deleteBill: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, sumData: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const { ID } = req.body;
+
+            if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
+
+            const doesExist = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${ID}`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "bill doesnot exist from this id " })
+            }
+
+            const doesCheckLen = await connection.query(`select * from billdetail where CompanyID = ${CompanyID} and Status = 1 and BillID = ${ID}`)
+
+            console.log(doesCheckLen.length, 'doesCheckLen')
+
+            if (doesCheckLen.length !== 0) {
+                return res.send({ message: `First you'll have to delete product` })
+            }
+
+            const deleteBill = await connection.query(`update billmaster set Status = 0, CreatedBy = ${LoggedOnUser}, UpdatedBy = now() where ID = ${ID}`)
+
+            response.message = "data delete sucessfully"
+            response.data = []
+            // connection.release()
+            res.send(response)
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    }
 
 }
