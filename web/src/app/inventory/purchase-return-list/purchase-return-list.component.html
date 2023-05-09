@@ -53,7 +53,8 @@
                             <th>Action</th>
                             <th>S.No</th>
                             <th>SupplierName</th>
-                            <th>SystemCn</th>
+                            <th>SystemDb No.</th>
+                            <th>SupplierCn No.</th>
                             <th>ReceivedAt</th>
                             <th>PurchaseDate</th>
                             <th>GSTNo</th>
@@ -83,6 +84,7 @@
                           <td>{{dataList.length - i }}</td>
                           <td>{{data.SupplierName}}</td>
                           <td>{{data.SystemCn}}</td>
+                          <td>{{data.SupplierCn}}</td>
                           <td>{{data.ShopName}}<span [style.color]="'blue'"
                               *ngIf="data.AreaName !== 'null'">({{data.AreaName}})</span></td>
                           <td>{{data.PurchaseDate}}</td>

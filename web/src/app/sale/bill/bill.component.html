@@ -96,9 +96,13 @@
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-6 col-sm-12 mb-0 ">
-                    <mat-form-field class="example-full-width mb-0" style="color:red">
+                    <mat-form-field class="example-full-width mb-0 ">
                         <mat-label>Balance</mat-label>
-                        <input matInput name="Balance" [(ngModel)]="BillMaster.Balance" disabled>
+                        <div class="d-flex">
+                            <input style="color:red" matInput name="Balance" [(ngModel)]="BillMaster.DueAmount" disabled>
+                            <span *ngIf="BillMaster.PaymentStatus === 'Paid' && BillMaster.DueAmount === 0" style="border: 1px solid; padding: 0px 2px; color:green; font-weight: 600; font-size: 12px;">Paid</span>
+                            <span *ngIf="BillMaster.PaymentStatus === 'Unpaid' || BillMaster.DueAmount !== 0"style=" border: 1px solid; padding: 0px 2px; color: red; font-weight: 600; font-size: 12px; ">Unpaid</span>
+                        </div>
                     </mat-form-field>
                 </div>
                 <div class="col-md-1 col-6 pt-3">
@@ -157,7 +161,7 @@
                         <mat-label>Select Barcode</mat-label>
                         <mat-select name="FieldType" [(ngModel)]="Req.SearchBarCode" #Typecontrol (selectionChange)="getSearchByBarcodeNo()">
                             <mat-option [disabled]="this.loginShopID !== bc.ShopID" [ngClass]="{'otherShopClass': this.loginShopID !== bc.ShopID }" *ngFor="let bc of BarcodeList ; let i = index;" [value]="bc.Barcode">
-                                {{bc.Barcode}} # {{bc.BarCodeCount}} {{bc.p}}| {{bc.ProductName | uppercase}} |
+                                {{bc.Barcode}} # {{bc.BarCodeCount }} {{bc.p}}| {{bc.ProductName | uppercase}} |
                                 {{bc.ShopName | titlecase }} <span [style.color]="'blue'"
                                     *ngIf="bc.AreaName !== 'null'">({{bc.AreaName | titlecase}})</span>
                             </mat-option>
@@ -288,7 +292,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Available</mat-label>
                         <input style="color: rgb(255 0 0);" matInput name="BarCodeCount"
-                            [(ngModel)]="BillItem.BarCodeCount" [disabled]=true>
+                            [(ngModel)]="searchList.BarCodeCount" [disabled]=true>
                     </mat-form-field>
                 </div>
             </div>
@@ -306,7 +310,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Quantity</mat-label>
-                        <input matInput name="Quantity" min="0" [(ngModel)]="BillItem.Quantity" type="number"
+                        <input matInput name="Quantity" min="1" [(ngModel)]="BillItem.Quantity" type="number"
                             (blur)="calculations('Quantity', 'subTotal');calculations('GSTPercentage', 'gst');calculations('TotalAmount', 'total')" required #Quantitycontrol
                             [autocomplete]="false">
                         <mat-error>
@@ -401,7 +405,7 @@
                 <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Service Type</mat-label>
-                        <mat-select name="Name" [(ngModel)]="Service.ServiceType" required
+                        <mat-select name="ServiceType" [(ngModel)]="Service.ServiceType" required
                             (selectionChange)="setValues()" #ServiceTypecontrol1>
                             <mat-option *ngFor="let service of serviceType let i = index;" [value]="service.ID">
                                 {{service.Name}}
@@ -429,7 +433,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>(GST/VAT)%</mat-label>
                         <input matInput name="GST" [(ngModel)]="Service.GSTPercentage"
-                            (blur)="calculations('GSTPercentage', 'serviceGst')" required #GSTcontrol
+                            (blur)="calculations('GSTPercentageSer', 'serviceGst')" required #GSTcontrol
                             [autocomplete]="false">
                         <mat-error>
                             GST is required
@@ -440,7 +444,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX Amt</mat-label>
                         <input matInput name="GSTAmt" [(ngModel)]="Service.GSTAmount"
-                            (blur)="calculations('GSTAmount', 'serviceGst')" required #GSTAmtcontrol
+                            (blur)="calculations('GSTAmountSer', 'serviceGst')" required #GSTAmtcontrol
                             [autocomplete]="false">
                     </mat-form-field>
                 </div>
@@ -448,11 +452,11 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX Type</mat-label>
                         <mat-select name="GSTType" [(ngModel)]="Service.GSTType"
-                            (selectionChange)="calculations('TotalAmount', 'serviceTotal')" required #GSTTypecontrol1>
-                            <mat-option value="None" *ngIf="Service.GSTPercentage === 0">None</mat-option>
-                            <span *ngIf="Service.GSTPercentage !== 0">
-                                <mat-option [value]="g.Name" *ngFor="let g of gstList">{{g.Name}}</mat-option>
-                            </span>
+                            (blur)="calculations('TotalAmount', 'serviceTotal')" required #GSTTypecontrol1>
+                            <mat-option value = "None" >None</mat-option>
+                          
+                                <mat-option [value]="gs.Name" *ngFor="let gs of gstList">{{gs.Name}}</mat-option>
+                           
                         </mat-select>
                     </mat-form-field>
                 </div>
@@ -553,7 +557,7 @@
                                 class="text-center">C{{i+1}}</td>
                                 <td>
                                     <button class="bgRemove" *ngIf="data.Status !== 0" >
-                                        <mat-icon class="deletes_icon ms-1">delete_forever</mat-icon>
+                                        <mat-icon class="deletes_icon ms-1" (click)="deleteItem('Service', i)">delete_forever</mat-icon>
                                     </button>
                                 </td>
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"

@@ -12,6 +12,7 @@ import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { CustomerService } from 'src/app/service/customer.service';
 import { BillService } from 'src/app/service/bill.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -20,12 +21,15 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./bill-list.component.css']
 })
 export class BillListComponent implements OnInit {
-
+  
   @ViewChild('searching') searching: ElementRef | any;
+  user = JSON.parse(localStorage.getItem('user') || '');
+  id :any
   env = environment;
+
   gridview = true
   term = "";
-  dataList: any;
+  dataList: any =[];
   currentPage = 1;
   itemsPerPage = 10;
   pageSize!: number;
@@ -34,18 +38,27 @@ export class BillListComponent implements OnInit {
   suBtn = false;
   paymentHistoryList :any = []
   UpdateMode = false;
+  CustomerTotal:any = []
 
   constructor(
+    private router: Router,
+    private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     public as: AlertService,
     private sp: NgxSpinnerService,
     private excelService: ExcelService,
     public bill: BillService,
     private modalService: NgbModal,
-  ) { }
+  ) { 
+    this.id = this.route.snapshot.params['customerid'];
+  }
 
   ngOnInit(): void {
-    this.getList()
+    if(this.id != "0"){
+      this.paymentHistory()
+    }else{
+      this.getList()
+    }
   }
   
   changePagesize(num: number): void {
@@ -199,9 +212,85 @@ export class BillListComponent implements OnInit {
     this.sp.hide();
   }
 
-
   exportAsXLSX(): void {
     this.excelService.exportAsExcelFile(this.dataList, 'customer_list');
+  }
+
+  paymentHistory() {
+    this.sp.show();
+    let CustomerID = Number(this.id)
+    const subs: Subscription = this.bill.billHistoryByCustomer(CustomerID).subscribe({
+      next: (res: any) => {
+        if(res.success){
+          console.log(res);
+          this.dataList = res.data;
+          this.CustomerTotal = res.sumData;
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    this.sp.hide();
+  }
+
+  deleteItem(i:any){
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.sp.show()
+        if(this.dataList[i].Quantity == 0) {
+
+        }else {
+          Swal.fire({
+            title: 'Alert',
+            text: "you can not delete this invoice, please delete product first!",
+            icon: 'warning',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'OK!'
+          })
+        }
+        this.sp.hide()
+        // const subs: Subscription = this.bill.deleteData(this.dataList[i].ID).subscribe({
+        //   next: (res: any) => {
+        //     if(res.success){
+        //       this.dataList.splice(i, 1);
+        //       this.as.successToast(res.message)
+        //       Swal.fire({
+        //         position: 'center',
+        //         icon: 'success',
+        //         title: 'Your file has been deleted.',
+        //         showConfirmButton: false,
+        //         timer: 1000
+        //       })
+        //     }else{
+        //       this.as.errorToast(res.message)
+        //       Swal.fire({
+        //         position: 'center',
+        //         icon: 'warning',
+        //         title: res.message,
+        //         showCancelButton: true,
+        //       })
+        //     }
+        //     this.sp.hide()
+        //   },
+        //   error: (err: any) => console.log(err.message),
+        //   complete: () => subs.unsubscribe(),
+        // });
+      }
+    })
+    this.sp.hide()
   }
 
 }

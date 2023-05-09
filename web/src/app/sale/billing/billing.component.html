@@ -134,7 +134,9 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-0 ms-auto">
+                                        <div class="col-xl-5 col-lg-8 col-md-6 col-sm-12 mb-0 ms-auto">
+                                            <button  class="me-2" mat-raised-button color="primary"
+                                            style="padding: 0px 10px;" [routerLink]="['/sale/billinglist/',data.ID]">Bill History</button>
 
                                             <button *ngIf="id != 0" (click)="updateCustomer()" [disabled]="!f.valid"
                                                 mat-raised-button color="primary"

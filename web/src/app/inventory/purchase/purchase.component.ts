@@ -548,15 +548,6 @@ export class PurchaseComponent implements OnInit {
             const subs: Subscription = this.purchaseService.deleteProduct(this.itemList[i].ID, this.selectedPurchaseMaster).subscribe({
               next: (res: any) => {
                 if (res.success) {
-                  if (res.message === "You have product already sold") {
-                    Swal.fire({
-                      position: 'center',
-                      icon: 'warning',
-                      title: 'You have product' + `<span style ="font-size:20px;color:red;font-weight:bold;"> ${this.itemList[i].ProductName}</span>` + ' already sold',
-                      showConfirmButton: true,
-                      backdrop: false,
-                    })
-                  } else {
                     this.itemList[i].Status = 0;
                     this.getPurchaseById()
                     Swal.fire({
@@ -566,10 +557,15 @@ export class PurchaseComponent implements OnInit {
                       showConfirmButton: false,
                       timer: 1000
                     })
-                    this.as.successToast(res.message)
-                  }
                 } else {
                   this.as.errorToast(res.message)
+                  Swal.fire({
+                    position: 'center',
+                    icon: 'warning',
+                    title: res.message + `<span style ="font-size:20px;color:red;font-weight:bold;"> ${this.itemList[i].ProductName}</span>`,
+                    showConfirmButton: true,
+                    backdrop: false,
+                  })
                 }
                 this.sp.hide();
               },

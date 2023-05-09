@@ -114,7 +114,7 @@ export class BillCalculationService {
 
       // serviceCalcultion    
       case 'serviceGst':
-        if (fieldName === 'GSTPercentage') {
+        if (fieldName === 'GSTPercentageSer') {
           if (Service.GSTPercentage === null || Service.GSTPercentage === '' || (Number(Service.GSTPercentage) > 100)) {
             Swal.fire({
               icon: 'warning',
@@ -124,14 +124,14 @@ export class BillCalculationService {
               backdrop: false,
             });
             Service.GSTPercentage = 0;
-            Service.GSTType = 'None'
+            // Service.GSTType = 'None'
           }
           else {
             Service.GSTAmount = +Service.Price * +Service.GSTPercentage / 100;
           }
         }
 
-        if (fieldName === 'GSTAmount') {
+        if (fieldName === 'GSTAmountSer') {
           if (Service.GSTAmount === null || Service.GSTAmount === '') {
             Service.GSTAmount = 0;
           } else {
@@ -141,7 +141,7 @@ export class BillCalculationService {
         }
         break;
 
-      case 'serviceTotal':
+      case 'serviceTotal': 
         Service.TotalAmount = +Service.GSTAmount + +Service.Price;
         break;
     }

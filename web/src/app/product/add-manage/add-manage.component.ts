@@ -28,6 +28,7 @@ export class AddManageComponent implements OnInit {
   gstList:any
   setValueDisbled = false
   setValueServiceDisbled = false
+  GstTypeDis = false
   
   constructor(
     private supps: SupportService,
@@ -53,7 +54,7 @@ export class AddManageComponent implements OnInit {
   data1: any = { ID : null, CompanyID : null,  Name:'', Category : null, Status : 1, CreatedBy: null, UpdatedBy: null,};
   newDepartment: any  = {ID: null, CompanyID: null, Name: "", TableName:null,   Status: 1};
 
-  selectedRow: any = {ID: null, CompanyID: null, Name: null, Description:null, Cost:0,  Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
+  selectedRow: any = {ID: null, CompanyID: null, Name: null, Description:null, Cost:0,  Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None"};
   Service: any = {ID: null, CompanyID: null, Name: null, Description:null, Cost:0,  Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
   
   ngOnInit(): void {
@@ -168,26 +169,48 @@ export class AddManageComponent implements OnInit {
     switch (mode) {
       case 'chgst':
         if (fieldName === 'GSTPercentage') {
-          this.selectedRow.GSTAmount =+this.selectedRow.Price * +this.selectedRow.GSTPercentage / 100;
+          if (this.selectedRow.GSTPercentage === null || this.selectedRow.GSTPercentage === '' || (Number(this.selectedRow.GSTPercentage) > 100)) {
+            Swal.fire({
+              icon: 'warning',
+              title: `You can't give more than 100% GSTPercentage`,
+              text: ``,
+              footer: '',
+              backdrop: false,
+            });
+            this.selectedRow.GSTPercentage = 0;
+            // this.selectedRow.GSTType = 'None'
+          } else {
+            this.selectedRow.GSTAmount =+this.selectedRow.Price * +this.selectedRow.GSTPercentage / 100;
+          }
         }
+
         if (fieldName === 'GSTAmount') {
-          this.selectedRow.GSTPercentage = 100 * +this.selectedRow.GSTAmount / (+this.selectedRow.Price);
+          if (this.selectedRow.GSTAmount === null || this.selectedRow.GSTAmount === '') {
+            this.selectedRow.GSTAmount = 0;
+            this.selectedRow.GSTType = 'None'
+          } else {
+            this.selectedRow.GSTPercentage = 100 * +this.selectedRow.GSTAmount / (+this.selectedRow.Price);
+          }
         }
+
         break;
         case 'chtotal':
           this.selectedRow.TotalAmount = +this.selectedRow.GSTAmount + +this.selectedRow.Price;
         break;
     }
-  
+ 
   }
+
 
   resetData(){
     this.setValueDisbled = false
-    this.selectedRow = {ID: null, CompanyID: null, Name: null, Cost: 0, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
+    this.selectedRow = {ID: null, CompanyID: null, Name: null, Cost: 0, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None",};
   }
+
 
   chargesave(){
     this.sp.show()
+ 
     const subs: Subscription =  this.supps.chargesave( this.selectedRow).subscribe({
       next: (res: any) => {
         // this.dataList = res.result;
@@ -312,11 +335,29 @@ export class AddManageComponent implements OnInit {
     switch (mode) {
       case 'chgst1':
         if (fieldName === 'GSTPercentage') {
+        if (this.Service.GSTPercentage === null || this.Service.GSTPercentage === '' || (Number(this.Service.GSTPercentage) > 100)) {
+          Swal.fire({
+            icon: 'warning',
+            title: `You can't give more than 100% GSTPercentage`,
+            text: ``,
+            footer: '',
+            backdrop: false,
+          });
+          this.Service.GSTPercentage = 0;
+          this.Service.GSTType = 'None'
+        } else {
           this.Service.GSTAmount =+this.Service.Price * +this.Service.GSTPercentage / 100;
         }
-        if (fieldName === 'GSTAmount') {
+      }
+      if (fieldName === 'GSTAmount') {
+        if (this.Service.GSTAmount === null || this.Service.GSTAmount === '') {
+          this.Service.GSTAmount = 0;
+          this.Service.GSTType = 'None'
+        } else {
           this.Service.GSTPercentage = 100 * +this.Service.GSTAmount / (+this.Service.Price);
         }
+      }
+
         break;
         case 'chtotal1':
           this.Service.TotalAmount = +this.Service.GSTAmount + +this.Service.Price;

@@ -84,14 +84,7 @@ export class PurchaseListComponent implements OnInit {
         this.sp.show()
         const subs: Subscription = this.purchaseService.deleteData(this.dataList[i].ID).subscribe({
           next: (res: any) => {
-            if(res.message === "First you'll have to delete product"){
-              Swal.fire({
-                position: 'center',
-                icon: 'warning',
-                title: `First you'll have to delete product`,
-                showCancelButton: true,
-              })
-            }else if(res.success){
+            if(res.success){
               this.dataList.splice(i, 1);
               this.as.successToast(res.message)
               Swal.fire({
@@ -103,6 +96,12 @@ export class PurchaseListComponent implements OnInit {
               })
             }else{
               this.as.errorToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: res.message,
+                showCancelButton: true,
+              })
             }
             this.sp.hide()
           },

@@ -9,7 +9,7 @@ import { BillListComponent } from './bill-list/bill-list.component';
 const routes: Routes = [ { path: '',
 children: [
   { path: 'billing/:customerid/:billid', component: BillingComponent },
-  { path: 'billinglist/:billid', component: BillListComponent },
+  { path: 'billinglist/:customerid', component: BillListComponent },
   { path: 'customerList', component: CustomerListComponent },  
   { path: 'doctor/:id', component: DoctorComponent },  
   { path: 'doctorList', component: DoctorListComponent },  

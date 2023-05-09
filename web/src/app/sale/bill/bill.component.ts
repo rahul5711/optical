@@ -295,8 +295,8 @@ export class BillComponent implements OnInit {
         this.Service.Price = element.Price;
         this.Service.Cost = element.Cost;
         this.Service.Description = element.Description;
-        this.Service.GSTAmount = element.GSTAmount;
         this.Service.GSTPercentage = element.GSTPercentage;
+        this.Service.GSTAmount = element.GSTAmount;
         this.Service.GSTType = element.GSTType;
         this.Service.TotalAmount = element.TotalAmount;
       }
@@ -309,6 +309,7 @@ export class BillComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.prodList = res.data;
+          this.BillItem.Quantity = 1
         } else {
           this.as.errorToast(res.message)
         }
@@ -460,23 +461,13 @@ export class BillComponent implements OnInit {
               });
               this.Req = {}
             }
+
             this.selectedProduct = this.searchList.ProductTypeName;
             this.BillItem.ProductName = this.searchList.ProductName.toUpperCase();
             this.BillItem.Barcode = this.searchList.Barcode;
             this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
             this.BillItem.BaseBarCode = this.searchList.BaseBarCode;
             this.BillItem.Quantity = 0;
-
-            this.prodList.forEach((e: any) => {
-              if (e.ID === this.searchList.ProductTypeID) {
-                this.BillItem.ProductTypeID = e.ID;
-                this.BillItem.ProductTypeName = e.Name;
-                this.BillItem.HSNCode = e.HSNCode;
-                this.BillItem.GSTPercentage = e.GSTPercentage;
-                this.BillItem.GSTType = e.GSTType;
-              }
-            })
-
             if (this.searchList !== undefined || this.searchList.Barcode !== null && this.searchList.BarCodeCount !== 0) {
               if (this.billItemList.length !== 0 && this.BillItem.ProductName !== "") {
                 let itemCount = 0;
@@ -489,6 +480,16 @@ export class BillComponent implements OnInit {
               }
             }
 
+            this.prodList.forEach((e: any) => {
+              if (e.ID === this.searchList.ProductTypeID) {
+                this.BillItem.ProductTypeID = e.ID;
+                this.BillItem.ProductTypeName = e.Name;
+                this.BillItem.HSNCode = e.HSNCode;
+                this.BillItem.GSTPercentage = e.GSTPercentage;
+                this.BillItem.GSTType = e.GSTType;
+              }
+            })
+
             if (this.BillItem.WholeSale === true) {
               this.BillItem.UnitPrice = this.searchList.WholeSalePrice;
             }
@@ -498,6 +499,7 @@ export class BillComponent implements OnInit {
             else {
               this.BillItem.UnitPrice = this.searchList.RetailPrice;
             }
+            this.BillItem.Quantity = 1;
           } else {
             this.as.errorToast(res.message)
           }
@@ -517,6 +519,7 @@ export class BillComponent implements OnInit {
       });
     }
     this.sp.hide();
+
   }
 
   getSearchByString() {
@@ -702,9 +705,9 @@ export class BillComponent implements OnInit {
         ID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null, Remark: '', Warranty: '',
       };
 
+      this.searchList.BarCodeCount = 0;
       this.selectedProduct = "";
       this.specList = [];
-      this.BillItem.BarCodeCount = 0;
       this.BarcodeList = [];
       this.Req = {};
     }
@@ -791,6 +794,7 @@ export class BillComponent implements OnInit {
 
         // additem Manual
         if (this.BillItem.Manual) {
+          
           let searchString = "";
           this.prodList.forEach((e: any) => {
             if (e.Name === this.selectedProduct) {
@@ -806,10 +810,12 @@ export class BillComponent implements OnInit {
           this.BillItem.ProductTypeName = this.selectedProduct
           this.BillItem.ProductName = searchString
           this.BillItem.Barcode = 'ManualProduct'
+          
         }
         // additem Pre order
         if (this.BillItem.Barcode === null || this.BillItem.Barcode === '') {
           if (this.BillItem.PreOrder) {
+            this.BillItem.Quantity = 1
             let searchString = "";
             this.prodList.forEach((e: any) => {
               if (e.Name === this.selectedProduct) {
@@ -929,9 +935,25 @@ export class BillComponent implements OnInit {
       if (this.billItemList[i].ID === null) {
         this.billItemList.splice(i, 1);
       } else {
-        this.billItemList[i].Status = 0;
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!',
+          backdrop: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // this.sp.show();
+
+          }
+        })
       }
-    } else if (category === "Service") {
+    } 
+    
+    else if (category === "Service") {
       if (this.serviceLists[i].ID === null) {
         this.serviceLists.splice(i, 1);
       } else {
@@ -940,7 +962,6 @@ export class BillComponent implements OnInit {
     }
     this.calculateGrandTotal();
   }
-
 
 
 }

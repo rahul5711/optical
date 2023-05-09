@@ -72,6 +72,11 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  billHistoryByCustomer(CustomerID: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/billHistoryByCustomer', {CustomerID: CustomerID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
