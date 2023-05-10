@@ -29,6 +29,7 @@ import { InventoryReportComponent } from './inventory-report/inventory-report.co
 import { EyetestReportComponent } from './eyetest-report/eyetest-report.component';
 import { ProductReturnComponent } from './product-return/product-return.component';
 import { NgxPrintModule } from 'ngx-print';
+import { SaleReportComponent } from './sale-report/sale-report.component';
 
 
 @NgModule({
@@ -38,6 +39,7 @@ import { NgxPrintModule } from 'ngx-print';
     InventoryReportComponent,
     EyetestReportComponent,
     ProductReturnComponent,
+    SaleReportComponent,
 
 
   ],
