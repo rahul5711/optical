@@ -17,6 +17,7 @@ import { SupportService } from 'src/app/service/support.service';
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { SupplierModel } from 'src/app/interface/Supplier';
+import { PurchaseService } from 'src/app/service/purchase.service';
 
 @Component({
   selector: 'app-supplier',
@@ -37,7 +38,7 @@ export class SupplierComponent implements OnInit {
   id: any;
   companyImage: any;
   img: any;
-  dataList: any;
+  dataList: any = [];
   currentPage = 1;
   itemsPerPage = 10;
   pageSize!: number;
@@ -46,7 +47,7 @@ export class SupplierComponent implements OnInit {
   suBtn = false;
   purchasVariable: any = 0;
   gstList: any;
-
+  CustomerTotal:any = []
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -59,7 +60,7 @@ export class SupplierComponent implements OnInit {
     private compressImage: CompressImageService,
     private excelService: ExcelService,
     private supps: SupportService,
-
+    private purchaseService: PurchaseService,
   ) {
     this.id = this.route.snapshot.params['id'];
     this.env = environment
@@ -348,6 +349,8 @@ export class SupplierComponent implements OnInit {
     });
     this.sp.hide();
   }
+
+
 
   formReset() {
     this.data = {
