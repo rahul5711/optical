@@ -17,4 +17,8 @@ router.post('/paymentHistory', verifyAccessTokenAdmin, Controller.paymentHistory
 router.post('/billHistoryByCustomer', verifyAccessTokenAdmin, Controller.billHistoryByCustomer)
 router.post('/deleteBill', verifyAccessTokenAdmin, Controller.deleteBill)
 
+// sale report
+
+router.post('/saleServiceReport', verifyAccessTokenAdmin, Controller.saleServiceReport)
+
 module.exports = router

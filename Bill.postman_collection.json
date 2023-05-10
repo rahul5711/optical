@@ -1642,6 +1642,115 @@
 					"body": "{\n    \"data\": [\n        {\n            \"ID\": 6,\n            \"CustomerID\": 19200,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"Sno\": \"\",\n            \"BillDate\": \"2023-04-30\",\n            \"DeliveryDate\": \"2023-04-30\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"InvoiceNo\": \"2304R00006\",\n            \"GSTNo\": \"undefined\",\n            \"Quantity\": 4,\n            \"SubTotal\": 1240,\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 0,\n            \"AddlDiscount\": 0,\n            \"TotalAmount\": 1240,\n            \"DueAmount\": 1240,\n            \"Invoice\": null,\n            \"Receipt\": null,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-04-30 23:54:02\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"LastUpdate\": \"2023-04-30 23:54:02\",\n            \"Doctor\": null,\n            \"TrayNo\": \"null\",\n            \"ProductStatus\": \"Pending\",\n            \"Employee\": 2,\n            \"CustomerName\": \"rahul ji\",\n            \"CustomerMob\": \"\",\n            \"Idd\": \"19200\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"CreatedByUser\": \"Rahul Gothi\",\n            \"UpdatedByUser\": null\n        },\n        {\n            \"ID\": 4,\n            \"CustomerID\": 19200,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"Sno\": \"\",\n            \"BillDate\": \"2023-04-30\",\n            \"DeliveryDate\": \"2023-04-30\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"InvoiceNo\": \"2304R00004\",\n            \"GSTNo\": \"undefined\",\n            \"Quantity\": 3,\n            \"SubTotal\": 601,\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 0,\n            \"AddlDiscount\": 0,\n            \"TotalAmount\": 601,\n            \"DueAmount\": 601,\n            \"Invoice\": null,\n            \"Receipt\": null,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-04-30 23:37:32\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"LastUpdate\": \"2023-04-30 23:37:32\",\n            \"Doctor\": null,\n            \"TrayNo\": \"null\",\n            \"ProductStatus\": \"Pending\",\n            \"Employee\": 2,\n            \"CustomerName\": \"rahul ji\",\n            \"CustomerMob\": \"\",\n            \"Idd\": \"19200\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"CreatedByUser\": \"Rahul Gothi\",\n            \"UpdatedByUser\": null\n        },\n        {\n            \"ID\": 3,\n            \"CustomerID\": 19200,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"Sno\": \"\",\n            \"BillDate\": \"2023-04-30\",\n            \"DeliveryDate\": \"2023-04-30\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"InvoiceNo\": \"2304R00003\",\n            \"GSTNo\": \"undefined\",\n            \"Quantity\": 2,\n            \"SubTotal\": 240,\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 0,\n            \"AddlDiscount\": 0,\n            \"TotalAmount\": 240,\n            \"DueAmount\": 240,\n            \"Invoice\": null,\n            \"Receipt\": null,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-04-30 23:28:51\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"LastUpdate\": \"2023-04-30 23:28:51\",\n            \"Doctor\": null,\n            \"TrayNo\": \"null\",\n            \"ProductStatus\": \"Pending\",\n            \"Employee\": 2,\n            \"CustomerName\": \"rahul ji\",\n            \"CustomerMob\": \"\",\n            \"Idd\": \"19200\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"CreatedByUser\": \"Rahul Gothi\",\n            \"UpdatedByUser\": null\n        },\n        {\n            \"ID\": 2,\n            \"CustomerID\": 19200,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"Sno\": \"\",\n            \"BillDate\": \"2023-04-30\",\n            \"DeliveryDate\": \"2023-04-30\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"InvoiceNo\": \"2304R00002\",\n            \"GSTNo\": \"undefined\",\n            \"Quantity\": 1,\n            \"SubTotal\": 300,\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 0,\n            \"AddlDiscount\": 0,\n            \"TotalAmount\": 300,\n            \"DueAmount\": 300,\n            \"Invoice\": null,\n            \"Receipt\": null,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-04-30 23:27:42\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"LastUpdate\": \"2023-04-30 23:27:42\",\n            \"Doctor\": null,\n            \"TrayNo\": \"null\",\n            \"ProductStatus\": \"Pending\",\n            \"Employee\": 2,\n            \"CustomerName\": \"rahul ji\",\n            \"CustomerMob\": \"\",\n            \"Idd\": \"19200\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"CreatedByUser\": \"Rahul Gothi\",\n            \"UpdatedByUser\": null\n        },\n        {\n            \"ID\": 1,\n            \"CustomerID\": 19200,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"Sno\": \"\",\n            \"BillDate\": \"2023-04-30\",\n            \"DeliveryDate\": \"2023-04-30\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"InvoiceNo\": \"2304R00001\",\n            \"GSTNo\": \"undefined\",\n            \"Quantity\": 1,\n            \"SubTotal\": 300,\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 0,\n            \"AddlDiscount\": 0,\n            \"TotalAmount\": 300,\n            \"DueAmount\": 300,\n            \"Invoice\": null,\n            \"Receipt\": null,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-04-30 23:25:10\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"LastUpdate\": \"2023-04-30 23:25:10\",\n            \"Doctor\": null,\n            \"TrayNo\": \"null\",\n            \"ProductStatus\": \"Pending\",\n            \"Employee\": 2,\n            \"CustomerName\": \"rahul ji\",\n            \"CustomerMob\": \"\",\n            \"Idd\": \"19200\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"CreatedByUser\": \"Rahul Gothi\",\n            \"UpdatedByUser\": null\n        }\n    ],\n    \"sumData\": {\n        \"Quantity\": 11,\n        \"SubTotal\": 2681,\n        \"DiscountAmount\": 0,\n        \"GSTAmount\": 0,\n        \"TotalAmount\": 2681,\n        \"DueAmount\": 2681\n    },\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\"\n}"
 				}
 			]
+		},
+		{
+			"name": "saleServiceReport",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Parem\": \"and billmaster.BillDate between '2023-05-08' and '2023-05-10' and billmaster.ShopID IN (0,2,1)\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/bill/saleServiceReport",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"bill",
+						"saleServiceReport"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "saleServiceReport",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Parem\": \"and billmaster.BillDate between '2023-05-08' and '2023-05-10' and billmaster.ShopID IN (0,2,1)\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/saleServiceReport",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"saleServiceReport"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "509"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1fd-cKp5JNCpR2tD8KulbeTPJsOtIAw\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 10 May 2023 17:50:49 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 1,\n            \"BillID\": 12,\n            \"CompanyID\": 1,\n            \"ServiceType\": \"5\",\n            \"Description\": \"bill\",\n            \"Price\": 300,\n            \"GSTPercentage\": 18,\n            \"GSTAmount\": 54,\n            \"GSTType\": \"CGST-SGST\",\n            \"TotalAmount\": 354,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-05-10 23:03:29\",\n            \"ShopName\": \"shop-1\",\n            \"InvoiceNo\": \"2305R00005\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\",\n    \"calculation\": [\n        {\n            \"totalGstAmount\": 54,\n            \"totalAmount\": null,\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"IGST\",\n                    \"Amount\": 0\n                },\n                {\n                    \"GSTType\": \"SGST-CGST\",\n                    \"Amount\": 0\n                },\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 27\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 27\n                }\n            ]\n        }\n    ]\n}"
+				}
+			]
 		}
 	],
 	"auth": {
@@ -1649,7 +1758,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODM1Njc1MjksImV4cCI6MTY4MzY1MzkyOSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.JDTOSlvMxKw9cix1dkMpPwTFCrtCv2kAnrpss1mPnt8",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODM3MzkzMDMsImV4cCI6MTY4MzgyNTcwMywiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.G7ALrdPfj3obkp29b6No-WarHbp2UcUfw9Jtd3D_4QI",
 				"type": "string"
 			}
 		]
