@@ -620,7 +620,59 @@ module.exports = {
         } finally {
             await connection.release();
         }
-    }
+    },
+
+    dropdownlist: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            let qry = `select customer.ID as ID, customer.Name as Name from customer where customer.Status = 1 and customer.CompanyID = '${CompanyID}'  order by customer.ID desc`
+
+
+            let finalQuery = qry ;
+
+            let data = await connection.query(finalQuery);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            // connection.release()
+            res.send(response)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+
+    customerGSTNumber: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            let qry = `select customer.ID as ID, customer.Name as Name, customer.GSTNo as GSTNumber from customer where customer.Status = 1 and customer.GSTNo != '' and customer.CompanyID = '${CompanyID}'  order by customer.ID desc`
+
+
+            let finalQuery = qry ;
+
+            let data = await connection.query(finalQuery);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            // connection.release()
+            res.send(response)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
 
 
 }
