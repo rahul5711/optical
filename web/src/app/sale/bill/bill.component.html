@@ -453,10 +453,10 @@
                         <mat-label>TAX Type</mat-label>
                         <mat-select name="GSTType" [(ngModel)]="Service.GSTType"
                             (blur)="calculations('TotalAmount', 'serviceTotal')" required #GSTTypecontrol1>
-                            <mat-option value = "None" >None</mat-option>
-                          
+                            <mat-option *ngIf="this.Service.GSTPercentage === 0" value = "None" >None</mat-option>
+                            <div *ngIf="this.Service.GSTPercentage !== 0">
                                 <mat-option [value]="gs.Name" *ngFor="let gs of gstList">{{gs.Name}}</mat-option>
-                           
+                            </div>
                         </mat-select>
                     </mat-form-field>
                 </div>
@@ -464,7 +464,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Total Amount</mat-label>
                         <input matInput name="TAmount" [(ngModel)]="Service.TotalAmount" required #TAmountcontrol
-                            [autocomplete]="false">
+                            [autocomplete]="false" disabled>
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-6 col-sm-12 mb-0  mb-3">

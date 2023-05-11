@@ -115,6 +115,7 @@ export class BillComponent implements OnInit {
     this.getEmployee();
     this.getDoctor();
     this.getProductList();
+    this.getGSTList();
     this.getService();
     this.getCustomerById1()
     if (this.id2 != 0) {

@@ -476,7 +476,6 @@ export class SaleReportComponent implements OnInit {
     if (this.service.ShopID != 0){
       Parem = Parem + ' and billmaster.ShopID IN ' +  `(${this.service.ShopID})`;}
 
-      console.log(Parem,'service');
       
     const subs: Subscription =  this.bill.saleServiceReport(Parem).subscribe({
       next: (res: any) => {

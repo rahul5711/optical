@@ -124,7 +124,7 @@ export class BillCalculationService {
               backdrop: false,
             });
             Service.GSTPercentage = 0;
-            // Service.GSTType = 'None'
+            Service.GSTType = 'None'
           }
           else {
             Service.GSTAmount = +Service.Price * +Service.GSTPercentage / 100;
