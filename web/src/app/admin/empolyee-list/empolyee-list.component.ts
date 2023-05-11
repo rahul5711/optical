@@ -222,7 +222,23 @@ export class EmpolyeeListComponent implements OnInit {
   }
 
   exportAsXLSX(): void {
-    this.excelService.exportAsExcelFile(this.dataList, 'empolyee_list');
-
+    let data = this.dataList.map((e: any) => {
+      return{
+        Name: `${e.Name}`,
+        MobileNo1 : e.MobileNo1,
+        MobileNo2 : e.MobileNo2,
+        PhoneNo : e.PhoneNo,
+        Email : e.Email,
+        DOB : e.DOB,
+        Anniversary : e.Anniversary,
+        LoginName : e.LoginName,
+        UserGroup : e.UserGroup,
+        Address : e.Address,
+        CreatedPerson : e.CreatedPerson,
+        UpdatedPerson : e.UpdatedPerson,
+      }
+    })
+    this.excelService.exportAsExcelFile(data, 'empolyee_list');
   }
+  
 }

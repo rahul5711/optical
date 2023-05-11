@@ -66,7 +66,7 @@
                             Reset
                           </button>
                           <button  mat-raised-button color="primary"  
-                          printTitle="Purchase Retrun Report"  printSectionId="PurchaseRetrunPDF"  ngxPrint [useExistingCss]="true">
+                          printTitle="Purchase Retrun Report"  printSectionId="Purchase Retrun Report {{this.selectsShop}}"  ngxPrint [useExistingCss]="true">
                             <i  class="far fa-file-pdf "
                             style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
                         </button>
@@ -255,7 +255,7 @@
                           <button type="button" class="me-2 ms-2" mat-raised-button color="warn" (click)="RetureDetailsFromReset()">
                              Reset
                           </button>
-                          <button mat-raised-button color="primary"  printTitle="Product return (ProductType) Report"  printSectionId="ProductTypesPDF"  ngxPrint styleSheetFile="../../../assets/pdf.css">
+                          <button mat-raised-button color="primary"  printTitle="Product return (ProductType) Report {{this.selectsShop}}"  printSectionId="ProductTypesPDF"  ngxPrint styleSheetFile="../../../assets/pdf.css">
                             <i  class="far fa-file-pdf "
                             style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
                         </button>

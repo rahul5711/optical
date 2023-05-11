@@ -157,7 +157,25 @@ export class PurchaseReturnListComponent implements OnInit {
   }
 
   exportAsXLSX(): void {
-    this.excelService.exportAsExcelFile(this.dataList, 'Purchase_return_list');
+    let data = this.dataList.map((e: any) => {
+      return{
+        SupplierName: e.SupplierName,
+        SystemCn : e.SystemCn,
+        SupplierCn : e.SupplierCn,
+        PurchaseDate : e.PurchaseDate,
+        Quantity : e.Quantity,
+        DiscountAmount : e.DiscountAmount,
+        SubTotal : e.SubTotal,
+        GSTAmount : e.GSTAmount,
+        InvoiceAmount : e.TotalAmount,
+        GSTNo : e.GSTNo,
+        ShopName : e.ShopName,
+        AreaName : e.AreaName,
+        CreatedPerson : e.CreatedPerson,
+        UpdatedPerson : e.UpdatedPerson,
+      }
+    })
+    this.excelService.exportAsExcelFile(data, 'Purchase_return_list');
   }
 
   openModal(content: any,data:any) {

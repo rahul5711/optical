@@ -172,7 +172,24 @@ export class DoctorListComponent implements OnInit {
   }
 
   exportAsXLSX(): void {
-    this.excelService.exportAsExcelFile(this.dataList, 'doctor_list');
+    let data = this.dataList.map((e: any) => {
+      return{
+        Name: e.Name,
+        MobileNo1 : e.MobileNo1,
+        MobileNo2 : e.MobileNo2,
+        PhoneNo : e.PhoneNo,
+        Email : e.Email,
+        HospitalName : e.HospitalName,
+        LoginName : e.LoginName,
+        Designation : e.Designation,
+        Address : e.Address,
+        DOB : e.DOB,
+        Anniversary : e.Anniversary,
+        CreatedPerson : e.CreatedPerson,
+        UpdatedPerson : e.UpdatedPerson,
+      }
+    })
+    this.excelService.exportAsExcelFile(data, 'doctor_list');
   }
 
 }

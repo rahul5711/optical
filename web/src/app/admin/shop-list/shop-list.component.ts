@@ -393,7 +393,23 @@ export class ShopListComponent implements OnInit {
   }
 
   exportAsXLSX(): void {
-    this.excelService.exportAsExcelFile(this.dataList, 'shop_list');
+    let data = this.dataList.map((e: any) => {
+      return{
+        Name: e.Name,
+        AreaName: e.AreaName,
+        MobileNo1 : e.MobileNo1,
+        MobileNo2 : e.MobileNo2,
+        PhoneNo : e.PhoneNo,
+        Email : e.Email,
+        Website : e.Website,
+        GSTNo : e.GSTNo,
+        CINNo : e.CINNo,
+        ShopTiming : e.ShopTiming,
+        CreatedPerson : e.CreatedPerson,
+        UpdatedPerson : e.UpdatedPerson,
+      }
+    })
+    this.excelService.exportAsExcelFile(data, 'shop_list');
   }
 
   formReset() {

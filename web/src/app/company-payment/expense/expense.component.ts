@@ -251,7 +251,23 @@ export class ExpenseComponent implements OnInit {
   }
 
   exportAsXLSX(): void {
-    this.excelService.exportAsExcelFile(this.dataList, 'expense_list');
+    let data = this.dataList.map((e: any) => {
+      return{
+        ExpenseDate: e.ExpenseDate,
+        InvoiceNo : e.InvoiceNo,
+        ShopName : e.ShopName,
+        AreaName : e.AreaName,
+        Name : e.Name,
+        Category : e.Category,
+        Amount : e.Amount,
+        PaymentMode : e.PaymentMode,
+        RefereceNo : e.PaymentRefereceNo,
+        Comments : e.Comments,
+        CreatedPerson : e.CreatedPerson,
+        UpdatedPerson : e.UpdatedPerson,
+      }
+    })
+    this.excelService.exportAsExcelFile(data, 'expense_list');
   }
 
   ngAfterViewInit() {

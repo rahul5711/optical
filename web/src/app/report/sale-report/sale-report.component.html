@@ -122,7 +122,7 @@
                                                     (click)="billMasterFromReset()">
                                                     Reset
                                                 </button>
-                                                <button mat-raised-button color="primary" printTitle="sale Report"
+                                                <button mat-raised-button color="primary" printTitle="sale Report {{this.shopLists}}"
                                                     printSectionId="PurchasePDF" ngxPrint
                                                     styleSheetFile="../../../assets/pdf.css">
                                                     <i class="far fa-file-pdf "
@@ -414,7 +414,7 @@
                                           <button type="button" mat-raised-button color="warn" (click)="BillDetailsFromReset()">
                                              Reset
                                           </button>
-                                          <button  class=" ms-3" mat-raised-button color="primary"  printTitle="Sale Report"  printSectionId="producttype"  ngxPrint styleSheetFile="../../../assets/pdf.css">
+                                          <button  class=" ms-3" mat-raised-button color="primary"  printTitle="Sale Product Report {{this.shopLists}}"  printSectionId="producttype"  ngxPrint styleSheetFile="../../../assets/pdf.css">
                                             <i  class="far fa-file-pdf "
                                             style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
                                         </button>
@@ -563,7 +563,7 @@
                                                     color="primary">Search</button>
                                                 <button class="mr-0" type="button" mat-raised-button color="warn"
                                                     (click)="BillServiceFromReset()">Reset</button>
-                                                    <button class=" ms-3" mat-raised-button color="primary"  printTitle={{this.shopLists}}  [useExistingCss]="true" printSectionId="Purchasecharge" ngxPrint >
+                                                    <button class=" ms-3" mat-raised-button color="primary"  printTitle= 'Bill Service {{this.shopLists}}'  [useExistingCss]="true" printSectionId="Purchasecharge" ngxPrint >
                                                       <i  class="far fa-file-pdf "
                                                       style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
                                                   </button>

@@ -241,7 +241,20 @@ export class PettyCashComponent implements OnInit {
   }
 
   exportAsXLSX(): void {
-    this.excelService.exportAsExcelFile(this.dataList, 'pettycash_list');
+    let data = this.dataList.map((e: any) => {
+      return{
+        InvoiceNo : e.InvoiceNo,
+        EmployeeName: e.EmployeeName,
+        CashType : e.CashType,
+        CreditType : e.CreditType,
+        Amount : e.Amount,
+        Comments : e.Comments,
+        CreatedOn : e.CreatedOn,
+        CreatedPerson : e.CreatedPerson,
+        UpdatedPerson : e.UpdatedPerson,
+      }
+    })
+    this.excelService.exportAsExcelFile(data, 'pettycash_list');
   }
 
   ngAfterViewInit() {

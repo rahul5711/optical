@@ -20,7 +20,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 
 export class InventoryReportComponent implements OnInit {
- 
+  selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -36,6 +37,7 @@ export class InventoryReportComponent implements OnInit {
 
   supplierList :any;
   shopList :any;
+  selectsShop :any;
   inventoryList: any;
   selectedProduct: any;
   prodList:any;
@@ -92,6 +94,9 @@ export class InventoryReportComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.shopList  = res.data
+          let shop = res.data
+          this.selectsShop = shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
+          this.selectsShop =  '/ ' + this.selectsShop[0].Name + ' (' + this.selectsShop[0].AreaName + ')'
         }else{
           this.as.errorToast(res.message)
         }

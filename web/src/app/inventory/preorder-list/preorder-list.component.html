@@ -61,7 +61,7 @@
                                                     <th style="text-align: left;">InvoiceNo</th>
                                                     <th style="text-align: left;">ReceivedAt</th>
                                                     <th style="text-align: left;">PurchaseDate</th>
-                                                    <th style="text-align: left;">PaymentStatus</th>
+                                                    <!-- <th style="text-align: left;">PaymentStatus</th> -->
                                                     <th style="text-align: left;">GSTNo</th>
                                                     <th style="text-align: left;">Quantity</th>
                                                     <th style="text-align: left;">InvoiceAmount</th>
@@ -91,7 +91,7 @@
                                                             *ngIf="data.AreaName !== 'null'">({{data.AreaName}})</span>
                                                     </td>
                                                     <td>{{data.PurchaseDate}}</td>
-                                                    <td>{{data.PaymentStatus}}</td>
+                                                    <!-- <td>{{data.PaymentStatus}}</td> -->
                                                     <td>{{(data.GSTNo !== 'null')? data.GSTNo: ''}}</td>
                                                     <td>{{data.Quantity}}</td>
                                                     <td>{{data.TotalAmount}}</td>

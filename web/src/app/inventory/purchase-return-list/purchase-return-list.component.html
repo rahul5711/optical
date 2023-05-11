@@ -55,13 +55,14 @@
                             <th>SupplierName</th>
                             <th>SystemDb No.</th>
                             <th>SupplierCn No.</th>
-                            <th>ReceivedAt</th>
                             <th>PurchaseDate</th>
-                            <th>GSTNo</th>
                             <th>Quantity</th>
-                            <th>InvoiceAmount</th>
                             <th>Discount</th>
+                            <th>Subtotal</th>
                             <th>GSTAmount</th>
+                            <th>InvoiceAmount</th>
+                            <th>GSTNo</th>
+                            <th>ReceivedAt</th>
                             <th>CreatedBy</th>
                             <th>UpdatedBy</th>
                           </tr>
@@ -85,14 +86,15 @@
                           <td>{{data.SupplierName}}</td>
                           <td>{{data.SystemCn}}</td>
                           <td>{{data.SupplierCn}}</td>
-                          <td>{{data.ShopName}}<span [style.color]="'blue'"
-                              *ngIf="data.AreaName !== 'null'">({{data.AreaName}})</span></td>
                           <td>{{data.PurchaseDate}}</td>
-                          <td>{{(data.GSTNo !== 'null')? data.GSTNo: ''}}</td>
                           <td>{{data.Quantity}}</td>
-                          <td>{{data.TotalAmount}}</td>
                           <td>{{data.DiscountAmount}}</td>
+                          <td>{{data.SubTotal}}</td>
                           <td>{{data.GSTAmount}}</td>
+                          <td>{{data.TotalAmount}}</td>
+                          <td>{{(data.GSTNo !== 'null')? data.GSTNo: ''}}</td>
+                          <td>{{data.ShopName}}<span [style.color]="'blue'"
+                            *ngIf="data.AreaName !== 'null'">({{data.AreaName}})</span></td>
                           <td>{{data.CreatedPerson}}</td>
                           <td>{{data.UpdatedPerson}}</td>
                         </tr>

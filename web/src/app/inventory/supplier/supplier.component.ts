@@ -330,7 +330,22 @@ export class SupplierComponent implements OnInit {
   }
 
   exportAsXLSX(): void {
-    this.excelService.exportAsExcelFile(this.dataList, 'supplier_list');
+    let data = this.dataList.map((e: any) => {
+      return{
+        Name: e.Name,
+        MobileNo1 : e.MobileNo1,
+        MobileNo2 : e.MobileNo2,
+        GSTType : e.GSTType,
+        GSTNo : e.GSTNo,
+        PhoneNo : e.PhoneNo,
+        Email : e.Email,
+        Address : e.Address,
+        ContactPerson : e.ContactPerson,
+        CreatedPerson : e.CreatedPerson,
+        UpdatedPerson : e.UpdatedPerson,
+      }
+    })
+    this.excelService.exportAsExcelFile(data, 'supplier_list');
   }
 
   getGSTList() {

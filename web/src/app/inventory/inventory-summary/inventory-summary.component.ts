@@ -267,6 +267,26 @@ export class InventorySummaryComponent implements OnInit {
   }
 
   exportAsXLSX(): void {
-    this.excelService.exportAsExcelFile(this.SummaryList, 'Summary_List');
+    let data = this.SummaryList.map((e: any) => {
+      return{
+        ProductTypeName: e.ProductTypeName,
+        ProductName : e.ProductName,
+        BrandType : e.BrandType,
+        PurchaseDate : e.PurchaseDate,
+        Quantity : e.Count,
+        ShopName : e.ShopName,
+        AreaName : e.AreaName,
+        CurrentStatus : e.CurrentStatus,
+        Barcode : e.Barcode,
+        SupplierName : e.SupplierName,
+        UnitPrice : e.UnitPrice,
+        DiscountPercentage : e.DiscountPercentage,
+        GSTPercentage : e.GSTPercentagex,
+        GSTType : e.GSTTypex,
+        RetailPrice : e.RetailPrice,
+        WholeSalePrice : e.WholeSalePrice,
+      }
+    })
+    this.excelService.exportAsExcelFile(data, 'Summary_List');
   }
 }

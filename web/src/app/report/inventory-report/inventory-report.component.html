@@ -170,7 +170,7 @@
                         <button type="button" mat-raised-button color="warn" (click)="inventorysFromReset()">
                           Reset
                         </button>
-                        <button  class=" ms-3" mat-raised-button color="primary"  printTitle="inventory Report"  printSectionId="inventorysPDF" ngxPrint styleSheetFile="../../../assets/pdf.css">
+                        <button  class=" ms-3" mat-raised-button color="primary"  printTitle="inventory Report {{this.selectsShop}}"  printSectionId="inventorysPDF" ngxPrint styleSheetFile="../../../assets/pdf.css">
                           <i  class="far fa-file-pdf "
                           style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
                       </button>
@@ -494,7 +494,7 @@
                         <button class="me-3" type="submit" mat-raised-button color="primary"> Search </button>
                         <button type="button" mat-raised-button color="warn" (click)="productExpiryFromReset()"> Reset
                         </button>
-                        <button  class=" ms-3" mat-raised-button color="primary"  printTitle="Prodcut Expiry Report" styleSheetFile="../../../assets/pdf.css" printSectionId="ProdcutExpiry" ngxPrint >
+                        <button  class=" ms-3" mat-raised-button color="primary"  printTitle="Prodcut Expiry Report {{this.selectsShop}}" styleSheetFile="../../../assets/pdf.css" printSectionId="ProdcutExpiry" ngxPrint >
                           <i  class="far fa-file-pdf "
                           style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
                       </button>

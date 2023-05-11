@@ -20,9 +20,11 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 
 export class ProductReturnComponent implements OnInit {
+  selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
 
   supplierList :any;
   shopList :any;
+  selectsShop :any;
   ReturnMasterList:any
   totalQty: any;
   totalDiscount: any;
@@ -90,6 +92,9 @@ export class ProductReturnComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.shopList  = res.data
+          let shop = res.data
+          this.selectsShop = shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
+          this.selectsShop =  '/ ' + this.selectsShop[0].Name + ' (' + this.selectsShop[0].AreaName + ')'
         }else{
           this.as.errorToast(res.message)
         }

@@ -14,6 +14,7 @@ import * as XLSX from 'xlsx';
   styleUrls: ['./transfer-product-report.component.css']
 })
 export class TransferProductReportComponent implements OnInit {
+  selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
 
   constructor(
     private purchaseService: PurchaseService,
@@ -26,6 +27,7 @@ export class TransferProductReportComponent implements OnInit {
   TransfermasterList:any
   totalQty:any
   shopList :any;
+  selectsShop :any;
   selectedProduct: any;
   prodList:any;
   specList: any;
@@ -50,6 +52,9 @@ export class TransferProductReportComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.shopList  = res.data
+          let shop = res.data
+          this.selectsShop = shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
+          this.selectsShop =  '/ ' + this.selectsShop[0].Name + ' (' + this.selectsShop[0].AreaName + ')'
         }else{
           this.as.errorToast(res.message)
         }

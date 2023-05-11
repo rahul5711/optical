@@ -150,7 +150,23 @@ export class PreorderListComponent implements OnInit {
   }
 
   exportAsXLSX(): void {
-    this.excelService.exportAsExcelFile(this.dataList, 'perOrder_list');
+    let data = this.dataList.map((e: any) => {
+      return{
+        SupplierName: e.SupplierName,
+        InvoiceNo : e.InvoiceNo,
+        ShopName : e.ShopName,
+        AreaName : e.AreaName,
+        PurchaseDate : e.PurchaseDate,
+        GSTNo : e.GSTNo,
+        Quantity : e.Quantity,
+        TotalAmount : e.TotalAmount,
+        DiscountAmount : e.DiscountAmount,
+        GSTAmount : e.GSTAmount,
+        CreatedPerson : e.CreatedPerson,
+        UpdatedPerson : e.UpdatedPerson,
+      }
+    })
+    this.excelService.exportAsExcelFile(data, 'perOrder_list');
   }
 
 }

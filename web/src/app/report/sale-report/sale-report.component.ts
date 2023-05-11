@@ -105,7 +105,7 @@ export class SaleReportComponent implements OnInit {
           this.shopList  = res.data
           let shop = res.data
           this.shopLists = shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
-          this.shopLists = 'Bill Service' + '/ ' + this.shopLists[0].Name + ' (' + this.shopLists[0].AreaName + ')'
+          this.shopLists =  '/ ' + this.shopLists[0].Name + ' (' + this.shopLists[0].AreaName + ')'
           console.log(this.shopLists);
           
         }else{

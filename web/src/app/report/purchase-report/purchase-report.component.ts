@@ -21,10 +21,11 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./purchase-report.component.css']
 })
 export class PurchaseReportComponent implements OnInit {
-
+  selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
 
   supplierList :any;
   shopList :any;
+  selectsShop :any;
   PurchaseMasterList:any
   totalQty: any;
   totalDiscount: any;
@@ -125,6 +126,8 @@ export class PurchaseReportComponent implements OnInit {
     const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
       next: (res: any) => {
         this.shopList  = res.data
+        let shop = res.data
+        this.selectsShop = shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),

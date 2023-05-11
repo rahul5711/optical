@@ -74,7 +74,7 @@
                         <button type="button"   class=" ms-2 me-2" mat-raised-button color="warn" (click)="purchaseFromReset()">
                           Reset
                         </button>
-                        <button mat-raised-button color="primary"  printTitle="Purchase Report"  printSectionId="PurchasePDF"  ngxPrint styleSheetFile="../../../assets/pdf.css">
+                        <button mat-raised-button color="primary"  printTitle="Purchase Report {{this.selectsShop}}"  printSectionId="PurchasePDF"  ngxPrint styleSheetFile="../../../assets/pdf.css">
                           <i  class="far fa-file-pdf "
                           style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
                       </button>
@@ -288,7 +288,7 @@
                         <button type="button" mat-raised-button color="warn" (click)="purchaseDetailsFromReset()">
                            Reset
                         </button>
-                        <button  class=" ms-3" mat-raised-button color="primary"  printTitle="Purchase Report"  printSectionId="producttype"  ngxPrint styleSheetFile="../../../assets/pdf.css">
+                        <button  class=" ms-3" mat-raised-button color="primary"  printTitle="Purchase Product Report {{this.selectsShop}}"  printSectionId="producttype"  ngxPrint styleSheetFile="../../../assets/pdf.css">
                           <i  class="far fa-file-pdf "
                           style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
                       </button>
@@ -436,7 +436,7 @@
                                     color="primary">Search</button>
                                 <button class="mr-0" type="button" mat-raised-button color="warn"
                                     (click)="purchaseChargeFromReset()">Reset</button>
-                                    <button class=" ms-3" mat-raised-button color="primary"  printTitle="Purchase Charge" [useExistingCss]="true" printSectionId="Purchasecharge" ngxPrint >
+                                    <button class=" ms-3" mat-raised-button color="primary"  printTitle="Purchase Charge {{this.selectsShop}}" [useExistingCss]="true" printSectionId="Purchasecharge" ngxPrint >
                                       <i  class="far fa-file-pdf "
                                       style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
                                   </button>
@@ -627,7 +627,7 @@
                       <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
                         <button class="me-3" type="submit" mat-raised-button color="primary"> Search </button>
                         <button type="button" mat-raised-button color="warn" (click)="productExpiryFromReset()"> Reset </button>
-                        <button mat-raised-button color="primary"  printTitle="Prodcut Expriy Report"  printSectionId="productExpiryPDF"  ngxPrint styleSheetFile="../../../assets/pdf.css">
+                        <button mat-raised-button color="primary"  printTitle="Prodcut Expriy Report {{this.selectsShop}}"  printSectionId="productExpiryPDF"  ngxPrint styleSheetFile="../../../assets/pdf.css">
                           <i  class="far fa-file-pdf "
                           style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
                       </button>

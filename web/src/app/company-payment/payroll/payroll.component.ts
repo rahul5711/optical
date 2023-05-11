@@ -234,7 +234,21 @@ export class PayrollComponent implements OnInit {
   }
 
   exportAsXLSX(): void {
-    this.excelService.exportAsExcelFile(this.dataList, 'payroll_list');
+    let data = this.dataList.map((e: any) => {
+      return{
+        InvoiceNo : e.InvoiceNo,
+        EmployeeName: e.EmployeeName,
+        Month : e.Month,
+        Year : e.Year,
+        LeaveDays : e.LeaveDays,
+        Salary : e.Salary,
+        PaymentMode : e.PaymentMode,
+        Comments : e.Comments,
+        CreatedPerson : e.CreatedPerson,
+        UpdatedPerson : e.UpdatedPerson,
+      }
+    })
+    this.excelService.exportAsExcelFile(data, 'payroll_list');
   }
 
   ngAfterViewInit() {

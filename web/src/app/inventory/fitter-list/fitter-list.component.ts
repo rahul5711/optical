@@ -169,7 +169,21 @@ export class FitterListComponent implements OnInit {
   }
 
   exportAsXLSX(): void {
-    this.excelService.exportAsExcelFile(this.dataList, 'fitter_list');
+    let data = this.dataList.map((e: any) => {
+      return{
+        Name: e.Name,
+        MobileNo1 : e.MobileNo1,
+        MobileNo2 : e.MobileNo2,
+        PhoneNo : e.PhoneNo,
+        Email : e.Email,
+        Address : e.Address,
+        DOB : e.DOB,
+        Anniversary : e.Anniversary,
+        CreatedPerson : e.CreatedPerson,
+        UpdatedPerson : e.UpdatedPerson,
+      }
+    })
+    this.excelService.exportAsExcelFile(data, 'fitter_list');
   }
 
 }
