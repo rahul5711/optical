@@ -15,6 +15,8 @@ import { SupportService } from 'src/app/service/support.service';
 import html2canvas from 'html2canvas';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EmployeeService } from 'src/app/service/employee.service';
+import { BillService } from 'src/app/service/bill.service';
+import { CustomerService } from 'src/app/service/customer.service';
 
 @Component({
   selector: 'app-sale-report',
@@ -22,17 +24,20 @@ import { EmployeeService } from 'src/app/service/employee.service';
   styleUrls: ['./sale-report.component.css']
 })
 export class SaleReportComponent implements OnInit {
+  selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private ss: ShopService,
+    private bill: BillService,
     private emp: EmployeeService,
     private supps: SupportService,
     private ps: ProductService,
     public as: AlertService,
     private modalService: NgbModal,
     private sp: NgxSpinnerService,
+    private customer: CustomerService 
   ) { }
 
   shopList :any = [];
@@ -78,12 +83,17 @@ export class SaleReportComponent implements OnInit {
     FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0
   };
 
+  shopLists:any =[]
+
   ngOnInit(): void {
     // billmaster
     this.dropdownShoplist()
     this.dropdownUserlist()
     this.getProductList();
     this.getGSTList();
+    this.dropdownCustomerlist();
+    this.dropdownCustomerGSTNo();
+
   }
 
   // billmaster
@@ -93,6 +103,45 @@ export class SaleReportComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.shopList  = res.data
+          let shop = res.data
+          this.shopLists = shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
+          this.shopLists = 'Bill Service' + '/ ' + this.shopLists[0].Name + ' (' + this.shopLists[0].AreaName + ')'
+          console.log(this.shopLists);
+          
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    this.sp.hide()
+  }
+
+  dropdownCustomerlist(){
+    this.sp.show()
+    const subs: Subscription = this.customer.dropdownlist().subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.customerList  = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    this.sp.hide()
+  }
+
+  dropdownCustomerGSTNo(){
+    this.sp.show()
+    const subs: Subscription = this.customer.customerGSTNumber(this.customerList).subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.customerListGST  = res.data
         }else{
           this.as.errorToast(res.message)
         }
@@ -429,22 +478,22 @@ export class SaleReportComponent implements OnInit {
 
       console.log(Parem,'service');
       
-    // const subs: Subscription =  this.purchaseService.getPurchaseChargeReport(Parem).subscribe({
-    //   next: (res: any) => {
-    //     if(res.success){
-    //       this.as.successToast(res.message)
-    //       this.PurchaseChargeList = res.data
-    //       this.ChargeAmount = res.calculation[0].totalAmount.toFixed(2);
-    //       this.ChargetotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
-    //       this.gstCharge = res.calculation[0].gst_details
-    //     }else{
-    //       this.as.errorToast(res.message)
-    //     }
-    //     this.sp.hide()
-    //   },
-    //   error: (err: any) => console.log(err.message),
-    //   complete: () => subs.unsubscribe(),
-    // })       
+    const subs: Subscription =  this.bill.saleServiceReport(Parem).subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.as.successToast(res.message)
+          this.BillServiceList = res.data
+          this.ServiceAmount = res.calculation[0].totalAmount;
+          this.ServicetotalGstAmount = res.calculation[0].totalGstAmount;
+          this.gstService = res.calculation[0].gst_details
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    })       
     this.sp.hide()
   }
 

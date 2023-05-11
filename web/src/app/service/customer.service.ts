@@ -59,6 +59,20 @@ export class CustomerService {
     .pipe(catchError(this.handleError));
   }
 
+  dropdownlist(): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/dropdownlist', { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
+  customerGSTNumber( Body: any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/customerGSTNumber', Body, { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

@@ -70,7 +70,7 @@
                                             <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Customer</mat-label>
-                                                    <mat-select name="customerID" [(ngModel)]="BillMaster.customerID">
+                                                    <mat-select name="CustomerID" [(ngModel)]="BillMaster.CustomerID">
                                                         <mat-option [value]=0>All</mat-option>
                                                         <mat-option [value]="c.ID"
                                                             *ngFor="let c of customerList  let i = index;"> {{c.Name}}
@@ -85,9 +85,9 @@
                                                     <mat-select name="CustomerGSTNo"
                                                         [(ngModel)]="BillMaster.CustomerGSTNo">
                                                         <mat-option [value]=0>All</mat-option>
-                                                        <mat-option [value]="c.GSTNo"
+                                                        <mat-option [value]="c.GSTNumber"
                                                             *ngFor="let c of customerListGST let i = index;">
-                                                            {{c.GSTNo}}
+                                                            {{c.GSTNumber}}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
@@ -259,7 +259,7 @@
                                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Customer</mat-label>
-                                                <mat-select name="customerID" [(ngModel)]="Billdetail.customerID">
+                                                <mat-select name="customerID" [(ngModel)]="Billdetail.CustomerID">
                                                     <mat-option [value]=0>All</mat-option>
                                                     <mat-option [value]="c.ID"
                                                         *ngFor="let c of customerList  let i = index;"> {{c.Name}}
@@ -274,9 +274,9 @@
                                                 <mat-select name="CustomerGSTNo"
                                                     [(ngModel)]="Billdetail.CustomerGSTNo">
                                                     <mat-option [value]=0>All</mat-option>
-                                                    <mat-option [value]="c.GSTNo"
+                                                    <mat-option [value]="c.GSTNumber"
                                                         *ngFor="let c of customerListGST let i = index;">
-                                                        {{c.GSTNo}}
+                                                        {{c.GSTNumber}}
                                                     </mat-option>
                                                 </mat-select>
                                             </mat-form-field>
@@ -563,7 +563,7 @@
                                                     color="primary">Search</button>
                                                 <button class="mr-0" type="button" mat-raised-button color="warn"
                                                     (click)="BillServiceFromReset()">Reset</button>
-                                                    <button class=" ms-3" mat-raised-button color="primary"  printTitle="Purchase Charge" [useExistingCss]="true" printSectionId="Purchasecharge" ngxPrint >
+                                                    <button class=" ms-3" mat-raised-button color="primary"  printTitle={{this.shopLists}}  [useExistingCss]="true" printSectionId="Purchasecharge" ngxPrint >
                                                       <i  class="far fa-file-pdf "
                                                       style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
                                                   </button>
@@ -586,7 +586,7 @@
                                                         <th>GST Amount</th>
                                                         <th>GrandTotal</th>
                                                     </tr>
-                                                    <tr class="totolRow" *ngIf="this.ServiceAmount != null && this.ServiceAmount != '' ">
+                                                    <tr class="totolRow text-center" >
                                                         <td>
                                                             <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                                 aria-hidden="true" type="button"
@@ -605,19 +605,19 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody class="text-center">
-                                                    <!-- <tr *ngFor="let c of BillServiceList; let i = index" text="left">
+                                                    <tr *ngFor="let c of BillServiceList; let i = index" text="left">
                                                         <td> {{i+1 }} </td>
                                                         <td>{{c.ShopName}}<span [style.color]="'blue'"
                                                                 *ngIf="c.AreaName !== 'null'">({{c.AreaName}})</span>
                                                         </td>
                                                         <td>{{c.InvoiceNo}}</td>
                                                         <td>{{c.Description}}</td>
-                                                        <td>{{c.Amount}}</td>
+                                                        <td>{{c.Price}}</td>
                                                         <td>{{c.GSTType}}</td>
                                                         <td>{{c.GSTPercentage}}%</td>
                                                         <td>{{c.GSTAmount}}</td>
                                                         <td>{{c.TotalAmount}}</td>
-                                                    </tr> -->
+                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </div>

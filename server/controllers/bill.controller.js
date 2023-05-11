@@ -725,7 +725,15 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
 
-            qry = `select billservice.*, shop.name as ShopName, billmaster.InvoiceNo as InvoiceNo from billservice left join billmaster on billmaster.ID = billservice.BillID left join shop on shop.ID = billmaster.ShopID ` + Parem;
+            let shopId = ``
+
+            if (Parem === "" || Parem === undefined || Parem === null) {
+                if (shopid !== 0) {
+                    shopId = `and billmaster.ShopID = ${shopid}`
+                }
+            }
+
+            qry = `select billservice.*, shop.name as ShopName, shop.AreaName as AreaName, billmaster.InvoiceNo as InvoiceNo from billservice left join billmaster on billmaster.ID = billservice.BillID left join shop on shop.ID = billmaster.ShopID WHERE billservice.CompanyID = ${CompanyID} AND billservice.Status = 1 ` + Parem;
 
             let data = await connection.query(qry);
 
@@ -760,7 +768,7 @@ module.exports = {
             if (data.length) {
                 for (const item of data) {
                     response.calculation[0].totalGstAmount += item.GSTAmount
-                    response.calculation[0].totalAmount += item.Amount
+                    response.calculation[0].totalAmount += item.Price
 
                     if (values) {
                         values.forEach(e => {
