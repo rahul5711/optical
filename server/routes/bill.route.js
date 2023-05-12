@@ -21,4 +21,6 @@ router.post('/deleteBill', verifyAccessTokenAdmin, Controller.deleteBill)
 
 router.post('/saleServiceReport', verifyAccessTokenAdmin, Controller.saleServiceReport)
 
+router.post('/getSalereports', verifyAccessTokenAdmin, Controller.getSalereports)
+
 module.exports = router

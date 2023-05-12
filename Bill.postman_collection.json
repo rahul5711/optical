@@ -1751,6 +1751,125 @@
 					"body": "{\n    \"data\": [\n        {\n            \"ID\": 1,\n            \"BillID\": 12,\n            \"CompanyID\": 1,\n            \"ServiceType\": \"5\",\n            \"Description\": \"bill\",\n            \"Price\": 300,\n            \"GSTPercentage\": 18,\n            \"GSTAmount\": 54,\n            \"GSTType\": \"CGST-SGST\",\n            \"TotalAmount\": 354,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-05-10 23:03:29\",\n            \"ShopName\": \"shop-1\",\n            \"InvoiceNo\": \"2305R00005\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\",\n    \"calculation\": [\n        {\n            \"totalGstAmount\": 54,\n            \"totalAmount\": null,\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"IGST\",\n                    \"Amount\": 0\n                },\n                {\n                    \"GSTType\": \"SGST-CGST\",\n                    \"Amount\": 0\n                },\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 27\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 27\n                }\n            ]\n        }\n    ]\n}"
 				}
 			]
+		},
+		{
+			"name": "getSalereports",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODM5MDQ4MDAsImV4cCI6MTY4Mzk5MTIwMCwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.6byfzrtqxMMBLu2ZttKzATNEO5OdBZ7Kj7K4Rgjdspk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Parem\": \"and billmaster.BillDate between '2023-05-12' and '2023-05-12'\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/bill/getSalereports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"bill",
+						"getSalereports"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getSalereports",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Parem\": \"and billmaster.BillDate between '2023-05-12' and '2023-05-12'\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/getSalereports",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"getSalereports"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1899"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"76b-CeEd9g9172sdODe3ab3ua3i6Sz8\""
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 12 May 2023 16:07:02 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 14,\n            \"CustomerID\": 19208,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"Sno\": \"14\",\n            \"BillDate\": \"2023-05-12\",\n            \"DeliveryDate\": \"2023-05-12\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"InvoiceNo\": \"2305R00007\",\n            \"GSTNo\": \"1234567890\",\n            \"Quantity\": 1,\n            \"SubTotal\": 423.73,\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 76.27,\n            \"AddlDiscount\": 0,\n            \"TotalAmount\": 500,\n            \"DueAmount\": 500,\n            \"Invoice\": null,\n            \"Receipt\": null,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-05-12 21:30:46\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"LastUpdate\": \"2023-05-12 21:30:46\",\n            \"Doctor\": null,\n            \"TrayNo\": \"null\",\n            \"ProductStatus\": 0,\n            \"Employee\": 2,\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"CustomerName\": \"archu\",\n            \"MobileNo1\": \"\",\n            \"HSNCode\": \"test-2\",\n            \"ProductDeliveryDate\": null,\n            \"GSTType\": \"IGST\",\n            \"UnitPrice\": 500,\n            \"EmployeeName\": \"Rahul Gothi\",\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"IGST\",\n                    \"Amount\": 76.27\n                }\n            ]\n        },\n        {\n            \"ID\": 13,\n            \"CustomerID\": 19200,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"Sno\": \"13\",\n            \"BillDate\": \"2023-05-12\",\n            \"DeliveryDate\": \"2023-05-12\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"InvoiceNo\": \"2305R00006\",\n            \"GSTNo\": \"\",\n            \"Quantity\": 4,\n            \"SubTotal\": 1797.46,\n            \"DiscountAmount\": 50,\n            \"GSTAmount\": 152.54,\n            \"AddlDiscount\": 0,\n            \"TotalAmount\": 1950,\n            \"DueAmount\": 1950,\n            \"Invoice\": null,\n            \"Receipt\": null,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-05-12 20:56:24\",\n            \"UpdatedBy\": 2,\n            \"UpdatedOn\": \"2023-05-12 20:58:58\",\n            \"LastUpdate\": \"2023-05-12 20:58:58\",\n            \"Doctor\": null,\n            \"TrayNo\": \"null\",\n            \"ProductStatus\": 0,\n            \"Employee\": 2,\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"CustomerName\": \"rahul ji\",\n            \"MobileNo1\": \"\",\n            \"HSNCode\": \"test-2\",\n            \"ProductDeliveryDate\": null,\n            \"GSTType\": \"CGST-SGST\",\n            \"UnitPrice\": 500,\n            \"EmployeeName\": \"Rahul Gothi\",\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 76.27\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 76.27\n                }\n            ]\n        }\n    ],\n    \"calculation\": [\n        {\n            \"totalQty\": 5,\n            \"totalGstAmount\": \"228.81\",\n            \"totalAmount\": \"2450.00\",\n            \"totalDiscount\": \"50.00\",\n            \"totalUnitPrice\": \"2221.19\",\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"IGST\",\n                    \"Amount\": 76.27\n                },\n                {\n                    \"GSTType\": \"SGST-CGST\",\n                    \"Amount\": 0\n                },\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 76.27\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 76.27\n                }\n            ]\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				}
+			]
 		}
 	],
 	"auth": {
