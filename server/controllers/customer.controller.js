@@ -674,5 +674,61 @@ module.exports = {
         }
     },
 
+    getMeasurementByCustomer: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            const { CustomerID, type } = req.body;
+
+            if (CustomerID === "" || CustomerID === undefined) {
+                return res.send({ message: "Invalid CustomerID" })
+            }
+            if (type === "" || type === undefined) {
+                return res.send({ message: "Invalid type" })
+            }
+
+            let check = false
+            if ( type === "Lens" ) {
+                check = true
+            } else if (type === "ContactLens" ) {
+                check = true
+            }
+
+
+            if (!check) {
+                return res.send({ message: `Invalid type , Accept Only :- Lens ||  ContactLens` })
+            }
+
+            let tableName = ''
+
+            if (type === "ContactLens") {
+                tableName = 'contact_lens_rx'
+            } else {
+                tableName = 'spectacle_rx'
+            }
+
+            let qry = `select * from ${tableName} where Status = 1 and CustomerID = ${CustomerID} and CompanyID = ${CompanyID}`
+
+            let data = await connection.query(qry);
+
+            if (!data.length) {
+                response.success = false
+            }
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            // connection.release()
+            res.send(response)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+
 
 }

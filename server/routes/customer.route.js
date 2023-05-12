@@ -22,6 +22,8 @@ router.post('/dropdownlist', verifyAccessTokenAdmin, Controller.dropdownlist)
 
 router.post('/customerGSTNumber', verifyAccessTokenAdmin, Controller.customerGSTNumber)
 
+router.post('/getMeasurementByCustomer', verifyAccessTokenAdmin, Controller.getMeasurementByCustomer)
+
 
 
 module.exports = router

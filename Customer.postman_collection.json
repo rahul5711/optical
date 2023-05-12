@@ -879,6 +879,113 @@
 			]
 		},
 		{
+			"name": "getMeasurementByCustomer",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODM5MDQ4MDAsImV4cCI6MTY4Mzk5MTIwMCwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.6byfzrtqxMMBLu2ZttKzATNEO5OdBZ7Kj7K4Rgjdspk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"CustomerID\": 19208,\r\n  \"type\": \"Lens\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/customer/getMeasurementByCustomer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"customer",
+						"getMeasurementByCustomer"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getMeasurementByCustomer",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"CustomerID\": 19208,\r\n  \"type\": \"Lens\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/customer/getMeasurementByCustomer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"customer",
+								"getMeasurementByCustomer"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "773"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"305-8xrLM+6xb4Olm/d94FurOJsPE4I\""
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 12 May 2023 18:04:07 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 21,\n            \"VisitNo\": 1,\n            \"CompanyID\": 1,\n            \"CustomerID\": 19208,\n            \"REDPSPH\": \"\",\n            \"REDPCYL\": \"\",\n            \"REDPAxis\": \"\",\n            \"REDPVA\": \"\",\n            \"LEDPSPH\": \"\",\n            \"LEDPCYL\": \"\",\n            \"LEDPAxis\": \"\",\n            \"LEDPVA\": \"\",\n            \"RENPSPH\": \"\",\n            \"RENPCYL\": \"\",\n            \"RENPAxis\": \"\",\n            \"RENPVA\": \"\",\n            \"LENPSPH\": \"\",\n            \"LENPCYL\": \"\",\n            \"LENPAxis\": \"\",\n            \"LENPVA\": \"\",\n            \"REPD\": \"\",\n            \"LEPD\": \"\",\n            \"R_Addition\": \"\",\n            \"L_Addition\": \"\",\n            \"R_Prism\": \"\",\n            \"L_Prism\": \"\",\n            \"Lens\": \"\",\n            \"Shade\": \"\",\n            \"Frame\": \"\",\n            \"VertexDistance\": \"\",\n            \"RefractiveIndex\": \"\",\n            \"FittingHeight\": \"\",\n            \"ConstantUse\": 0,\n            \"NearWork\": 0,\n            \"DistanceWork\": 0,\n            \"UploadBy\": \"Upload\",\n            \"PhotoURL\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-05-08 22:41:11\",\n            \"UpdatedBy\": 2,\n            \"Updatedon\": \"2023-05-10 22:41:38\",\n            \"FileURL\": \"\",\n            \"Family\": \"Self\",\n            \"RefferedByDoc\": \"Self\",\n            \"Reminder\": \"6\",\n            \"ExpiryDate\": \"2023-11-08\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\"\n}"
+				}
+			]
+		},
+		{
 			"name": "update",
 			"request": {
 				"method": "POST",
