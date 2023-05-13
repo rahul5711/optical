@@ -15,6 +15,6 @@
 }
 
 .my_class {
-    color: rgb(255, 255, 255) !important;
-    background-color: rgb(242, 32, 32) !important;
+    color: rgb(255, 0, 0) !important;
+    /* background-color: rgb(242, 32, 32) !important; */
 }

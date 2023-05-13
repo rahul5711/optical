@@ -198,7 +198,7 @@ export class SaleReportComponent implements OnInit {
       Parem = Parem + ' and billmaster.ShopID IN ' +  `(${this.BillMaster.ShopID})`;}
 
     if (this.BillMaster.EmployeeID !== 0){
-      Parem = Parem + ' and billmaster.EmployeeID = ' +  this.BillMaster.EmployeeID ; }
+      Parem = Parem + ' and billmaster.Employee = ' +  this.BillMaster.EmployeeID ; }
 
     if (this.BillMaster.CustomerID !== 0){
       Parem = Parem + ' and billmaster.CustomerID = ' +  this.BillMaster.CustomerID ; }
@@ -214,45 +214,45 @@ export class SaleReportComponent implements OnInit {
 
       console.log(Parem,'BillMaster');
       
-    // const subs: Subscription =  this.purchaseService.getPurchasereports(Parem).subscribe({
-    //   next: (res: any) => {
-    //     if(res.success){
-    //       this.as.successToast(res.message)
-    //       this.PurchaseMasterList = res.data;
+    const subs: Subscription =  this.bill.getSalereports(Parem).subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.as.successToast(res.message)
+          this.BillMasterList = res.data;
  
-    //       this.PurchaseMasterList.forEach((e: any) => {
-    //         let g :any = {type: 'iGST' , amt : 0}
-    //         let gs : any = {type: 'cGST-sGST' , amt : 0}
-    //         let c: any[] = []
+          this.BillMasterList.forEach((e: any) => {
+            let g :any = {type: 'iGST' , amt : 0}
+            let gs : any = {type: 'cGST-sGST' , amt : 0}
+            let c: any[] = []
 
-    //         e.gst_details.forEach((el: any) => {
-    //           if(el.InvoiceNo === e.InvoiceNo){
-    //             if(el.GSTType === 'IGST'){
-    //               g.amt =  g.amt + el.GSTAmount;
-    //             }else if(el.GSTType === 'CGST-SGST'){
-    //               gs.amt =  gs.amt + el.GSTAmount;
-    //             }
-    //           }
-    //         })
-    //         c.push(g)
-    //         c.push(gs)
-    //         e.gst_detailssss.push(c)
-    //       })
+            e.gst_details.forEach((el: any) => {
+              if(el.InvoiceNo === e.InvoiceNo){
+                if(el.GSTType === 'IGST'){
+                  g.amt =  g.amt + el.Amount;
+                }else if(el.GSTType === 'CGST'){
+                  gs.amt =  gs.amt + el.Amount;
+                }
+              }
+            })
+            c.push(g)
+            c.push(gs)
+            e.gst_detailssss.push(c)
+          })
 
-    //       this.totalQty = res.calculation[0].totalQty;
-    //       this.totalDiscount = res.calculation[0].totalDiscount.toFixed(2);
-    //       this.totalUnitPrice = res.calculation[0].totalUnitPrice.toFixed(2);
-    //       this.totalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
-    //       this.totalAmount = res.calculation[0].totalAmount.toFixed(2);
-    //       this.gstMaster = res.calculation[0].gst_details
-    //     }else{
-    //       this.as.errorToast(res.message)
-    //     }
-    //     this.sp.hide()
-    //   },
-    //   error: (err: any) => console.log(err.message),
-    //   complete: () => subs.unsubscribe(),
-    // });
+          this.totalQty = res.calculation[0].totalQty;
+          this.totalDiscount = res.calculation[0].totalDiscount;
+          this.totalUnitPrice = res.calculation[0].totalUnitPrice;
+          this.totalGstAmount = res.calculation[0].totalGstAmount;
+          this.totalAmount = res.calculation[0].totalAmount;
+          this.gstMaster = res.calculation[0].gst_details
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
     this.sp.hide()
   }
 
@@ -429,8 +429,25 @@ export class SaleReportComponent implements OnInit {
           Parem = Parem + ' and billdetail.Manual = ' + '0';
         }
     }
-
-      console.log(Parem,'Billdetail');
+    const subs: Subscription =  this.bill.getSalereportsDetail(Parem).subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.as.successToast(res.message)
+          this.BillDetailList = res.data
+          this.DetailtotalQty = res.calculation[0].totalQty;
+          this.DetailtotalDiscount = res.calculation[0].totalDiscount;
+          this.DetailtotalUnitPrice = res.calculation[0].totalUnitPrice;
+          this.DetailtotalGstAmount = res.calculation[0].totalGstAmount;
+          this.DetailtotalAmount = res.calculation[0].totalAmount;
+          this.gstdetails = res.calculation[0].gst_details
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
     this.sp.hide()
   }
 

@@ -924,11 +924,13 @@ module.exports = {
             if (data.length && values2.length) {
                 for (const item of data) {
                     item.gst_details = []
+                    item.gst_detailssss = []
                     values2.forEach(e => {
                         if (e.GSTType === item.GSTType) {
                             item.gst_details.push({
                                 GSTType : item.GSTType,
-                                Amount : item.GSTAmount
+                                Amount : item.GSTAmount,
+                                InvoiceNo : item.InvoiceNo,
                             })
                         }
 
@@ -939,14 +941,17 @@ module.exports = {
                             if (e.GSTType === 'CGST') {
                                 item.gst_details.push({
                                     GSTType : 'CGST',
-                                    Amount : item.GSTAmount / 2
+                                    Amount : item.GSTAmount / 2,
+                                    InvoiceNo : item.InvoiceNo,
                                 })
                             }
 
                             if (e.GSTType === 'SGST') {
                                 item.gst_details.push({
                                     GSTType : 'SGST',
-                                    Amount : item.GSTAmount / 2
+                                    Amount : item.GSTAmount / 2,
+                                    InvoiceNo : item.InvoiceNo,
+
                                 })
                             }
                         }
