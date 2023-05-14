@@ -3333,7 +3333,7 @@ module.exports = {
                 return res.send({ message: "purchasereturn doesnot exist from this id " })
             }
 
-            if (doesExist.SupplierCn !== "") {
+            if (doesExist[0].SupplierCn !== "") {
                 return res.send({ message: "You have already added supplierCn" })
             }
 
