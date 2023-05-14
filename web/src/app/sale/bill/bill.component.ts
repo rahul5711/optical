@@ -987,7 +987,9 @@ export class BillComponent implements OnInit {
     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
     this.PowerByRow = []
     this.customerPowerLists = []
-    this.PowerByRow = JSON.parse(data.MeasurementID) 
+    if(data.MeasurementID !== ''){
+      this.PowerByRow = JSON.parse(data.MeasurementID) 
+    }
     this.ProductDetails =  data.ProductTypeName + '/' + data.ProductName 
     this.UpdatePowerID = data
     let type = '';
