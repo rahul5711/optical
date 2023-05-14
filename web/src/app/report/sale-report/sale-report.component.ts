@@ -84,7 +84,7 @@ export class SaleReportComponent implements OnInit {
   };
 
   shopLists:any =[]
-
+  serviceType :any =[]
   ngOnInit(): void {
     // billmaster
     this.dropdownShoplist()
@@ -93,7 +93,9 @@ export class SaleReportComponent implements OnInit {
     this.getGSTList();
     this.dropdownCustomerlist();
     this.dropdownCustomerGSTNo();
-
+    this.BillMaster.FromDate = moment().format('YYYY-MM-DD');
+    this.BillMaster.ToDate = moment().format('YYYY-MM-DD');
+    this.getBillMaster();
   }
 
   // billmaster

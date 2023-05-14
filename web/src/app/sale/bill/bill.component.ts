@@ -20,6 +20,7 @@ import { BillCalculationService } from 'src/app/service/helpers/bill-calculation
 import { SupportService } from 'src/app/service/support.service';
 import { trigger, style, animate, transition } from '@angular/animations';
 
+
 @Component({
   selector: 'app-bill',
   templateUrl: './bill.component.html',
@@ -54,6 +55,8 @@ export class BillComponent implements OnInit {
     private billCalculation: BillCalculationService,
     private supps: SupportService,
     private cs: CustomerService,
+    private modalService: NgbModal,
+
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.id2 = this.route.snapshot.params['billid'];
@@ -105,6 +108,10 @@ export class BillComponent implements OnInit {
   loginShopID: any;
   gst_detail: any = [];
   GstTypeDis = false
+  PowerSelect :any
+  PowerByRow:any = []
+  customerVisiList:any = []
+  customerPowerLists:any = []
 
   ngOnInit(): void {
     this.BillMaster.Employee = this.user.ID
@@ -682,8 +689,7 @@ export class BillComponent implements OnInit {
     if (this.BillMaster.ID !== null) {
       this.BillItem.Status = 2;
     }
-
-
+     
     if (!this.BillItem.PreOrder && !this.BillItem.Manual && this.BillItem.Quantity > this.searchList.BarCodeCount) {
       Swal.fire({
         icon: 'warning',
@@ -701,7 +707,7 @@ export class BillComponent implements OnInit {
     } else {
       this.billItemList.unshift(this.BillItem);
       console.log(this.billItemList);
-
+      this.calculateGrandTotal()
       this.BillItem = {
         ID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null, Remark: '', Warranty: '',
       };
@@ -713,7 +719,6 @@ export class BillComponent implements OnInit {
       this.Req = {};
     }
   }
-
 
   addItem() {
     // additem Services
@@ -744,31 +749,7 @@ export class BillComponent implements OnInit {
 
     // additem Product
     if (this.category === 'Product') {
-     
-      if (this.BillItem.ProductTypeName === 'LENS' || this.BillItem.ProductTypeName === "CONTACT LENS") {
-        if (this.customerPower.spectacle_rx.length !== 0 && this.BillItem.ProductTypeName !== "CONTACT LENS") {
-          if (this.BillItem.ProductTypeName === 'Lens' || this.BillItem.ProductTypeName === 'LENS' || this.BillItem.ProductTypeName === 'Lenses' || this.BillItem.ProductTypeName === 'LENSES') {
-            this.searchList.MeasurementID = JSON.stringify(this.customerPower.spectacle_rx[0]);
-            this.BillItem.MeasurementID = JSON.stringify(this.customerPower.spectacle_rx[0])
-            this.addProductItem();
-          }
-        }else if(this.customerPower.contact_lens_rx.length !== 0 && this.BillItem.ProductTypeName !== 'LENS'){
-          if (this.customerPower.contact_lens_rx !== undefined || this.BillItem.ProductTypeName === "CONTACT LENS" || this.BillItem.ProductTypeName === " Contact Lens") {
-            this.searchList.MeasurementID = JSON.stringify(this.customerPower.contact_lens_rx[0]);
-            this.BillItem.MeasurementID = JSON.stringify(this.customerPower.contact_lens_rx[0])
-            this.addProductItem();
-          }
-        }
-        else {
-          Swal.fire({
-            position: 'center',
-            icon: 'warning',
-            title: 'Customer Power Not Be Found',
-            showConfirmButton: true,
-            backdrop: false,
-          })
-        }
-      }else{
+
         // GSTType disable condition
         if (this.BillItem.GSTPercentage === 0 || this.BillItem.GSTAmount === 0) {
           this.BillItem.GSTType = 'None'
@@ -836,8 +817,45 @@ export class BillComponent implements OnInit {
             }
           }
         }
+
+        if(this.BillItem.ProductTypeName  === 'LENS' || this.BillItem.ProductTypeName  === 'LENSES' || this.BillItem.ProductTypeName === 'CONTACT LENS'){
+          let type = ''
+           if(this.BillItem.ProductTypeName === 'LENS'){
+              type = 'Lens'
+           }else if(this.BillItem.ProductTypeName === 'CONTACT LENS'){
+            type = 'ContactLens'
+           }
+          const subs: Subscription = this.cs.getMeasurementByCustomer(this.id , type).subscribe({
+            next: (res: any) => {
+              console.log(res);
+              if (res.data.length !== 0) {
+                if(res.success ){
+                  this.BillItem.MeasurementID = JSON.stringify(res.data) ;
+                  this.addProductItem();
+                  this.sp.hide()
+                }else{
+                  this.as.errorToast(res.message)
+                  Swal.fire({
+                    position: 'center',
+                    icon: 'warning',
+                    title: 'Opps !!',
+                    text: res.message,
+                    showConfirmButton: true,
+                    backdrop : false,
+                  })
+                }
+              } else {
+                this.BillItem.MeasurementID = []
+                this.addProductItem();
+              }
+      
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subs.unsubscribe(),
+          });
+        }else{
           this.addProductItem();
-    }
+        }
   }
 
     this.BillMaster.Quantity = 0;
@@ -849,11 +867,6 @@ export class BillComponent implements OnInit {
     this.sgst = 0;
     this.calculateGrandTotal()
   }
-
-  powerCheck(){
-
-  }
-
 
   onSubmit() {
     this.sp.show()
@@ -964,5 +977,48 @@ export class BillComponent implements OnInit {
     this.calculateGrandTotal();
   }
 
+  
+
+  openModal(content: any, data:any){
+    this.sp.show()
+    this.PowerByRow = []
+    this.customerPowerLists = []
+    this.PowerByRow.push(data)
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
+    let type = '';
+    if(data.ProductTypeName === "LENS" || data.ProductTypeName === "LENSES"){
+       type = 'Lens'
+    }else{
+      type = 'ContactLens'
+    }
+   
+    const subs: Subscription = this.cs.getMeasurementByCustomerForDropDown(this.id , type).subscribe({
+      next: (res: any) => {
+          if(res.success ){
+             this.customerVisiList = res.data
+          }else{
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: 'Opps !!',
+              text: res.message,
+              showConfirmButton: true,
+              backdrop : false,
+            })
+          }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    this.sp.hide()
+  }
+
+  customerPowerDropdown(){
+      let VisitNumber =   this.customerVisiList
+      this.customerPowerLists = VisitNumber.filter((s:any) => s.VisitNo === this.PowerSelect);
+      console.log(this.customerPowerLists);
+  }
 
 }

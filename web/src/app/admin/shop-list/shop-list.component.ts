@@ -255,7 +255,7 @@ export class ShopListComponent implements OnInit {
               position: 'center',
               icon: 'warning',
               title: 'Opps !!',
-              text: 'You Can Not Create Shop !! Your has been permission end',
+              text: res.message,
               showConfirmButton: true,
               backdrop : false,
             })

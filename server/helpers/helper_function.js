@@ -438,7 +438,7 @@ module.exports = {
 
   },
   generatePreOrderProduct: async (CompanyID, ShopID, Item, LoggedOnUser) => {
-    delete Item.MeasurementID
+    // delete Item.MeasurementID
 
      // calcultaion
 

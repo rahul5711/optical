@@ -73,6 +73,20 @@ export class CustomerService {
     .pipe(catchError(this.handleError));
   }
 
+  getMeasurementByCustomer( CustomerID: any, type:any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/getMeasurementByCustomer', {CustomerID:CustomerID ,type:type}, { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
+  getMeasurementByCustomerForDropDown( CustomerID: any, type:any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/getMeasurementByCustomerForDropDown', {CustomerID:CustomerID ,type:type}, { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

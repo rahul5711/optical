@@ -144,16 +144,15 @@
                                                         <th>InvoiceNo</th>
                                                         <th>CustomerName</th>
                                                         <th>MobileNo</th>
-                                                        <th>ShopName</th>
                                                         <th>PaymentStatus</th>
                                                         <th>Qty</th>
                                                         <th>Discount</th>
                                                         <th>SubTotal</th>
                                                         <th>GSTType</th>
                                                         <th>GSTAmount</th>
-                                                        <th>IGSTAmt</th>
                                                         <th>CGSTAmt</th>
                                                         <th>SGSTAmt</th>
+                                                        <th>IGSTAmt</th>
                                                         <th>GrandTotal</th>
                                                         <th>AddDiscount</th>
                                                         <th>Paid</th>
@@ -161,6 +160,7 @@
                                                         <th>ProductStatus</th>
                                                         <th>DeliveryDate</th>
                                                         <th>Cust_GSTNo</th>
+                                                        <th>ShopName</th>
                                                     </tr>
                                                     <tr class="totolRow">
                                                         <td>
@@ -177,7 +177,6 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td></td>
                                                         <td>{{this.totalQty}}</td>
                                                         <td>{{this.totalDiscount}}</td>
                                                         <td>{{this.totalUnitPrice}}</td>
@@ -188,6 +187,7 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td>{{this.totalAmount}}</td>
+                                                        <td></td>
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
@@ -212,10 +212,7 @@
                                                             d.CustomerName }} </td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.MobileNo1 }} </td>
-                                                        <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
-                                                            d.ShopName }} <span [style.color]="'blue'"
-                                                                *ngIf="d.AreaName !== 'null'">({{d.AreaName}})</span>
-                                                        </td>
+                                                      
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.PaymentStatus }} </td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
@@ -228,15 +225,16 @@
                                                             {{d.GSTType}} </td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.GSTAmount}} </td>
+                                                      
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"
+                                                            *ngIf="d.gst_detailssss[0][1].type === 'cGST-sGST'">
+                                                            {{d.gst_detailssss[0][1].amt }}</td>
+                                                        <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"
+                                                            *ngIf="d.gst_detailssss[0][1].type === 'cGST-sGST'">
+                                                            {{d.gst_detailssss[0][1].amt }}</td>
+                                                            <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"
                                                             *ngIf="d.gst_detailssss[0][0].type === 'iGST'">
                                                             {{d.gst_detailssss[0][0].amt }}</td>
-                                                        <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"
-                                                            *ngIf="d.gst_detailssss[0][1].type === 'cGST-sGST'">
-                                                            {{d.gst_detailssss[0][1].amt }}</td>
-                                                        <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"
-                                                            *ngIf="d.gst_detailssss[0][1].type === 'cGST-sGST'">
-                                                            {{d.gst_detailssss[0][1].amt }}</td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             {{d.TotalAmount - d.AddlDiscount}} </td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
@@ -255,6 +253,10 @@
                                                             {{d.DeliveryDate}} </td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             {{d.GSTNo}} </td>
+                                                            <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
+                                                                d.ShopName }} <span [style.color]="'blue'"
+                                                                    *ngIf="d.AreaName !== 'null'">({{d.AreaName}})</span>
+                                                            </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
