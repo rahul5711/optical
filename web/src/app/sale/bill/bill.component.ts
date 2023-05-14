@@ -364,6 +364,8 @@ export class BillComponent implements OnInit {
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
+      } else {
+        this.sp.hide();
       }
     });
   }
