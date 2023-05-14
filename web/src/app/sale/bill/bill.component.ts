@@ -110,6 +110,8 @@ export class BillComponent implements OnInit {
   GstTypeDis = false
   PowerSelect :any
   PowerByRow:any = []
+  ProductDetails:any 
+  UpdatePowerID:any 
   customerVisiList:any = []
   customerPowerLists:any = []
 
@@ -368,6 +370,7 @@ export class BillComponent implements OnInit {
         this.sp.hide();
       }
     });
+    this.sp.hide();
   }
 
   getFieldSupportData(index: any) {
@@ -979,14 +982,14 @@ export class BillComponent implements OnInit {
     this.calculateGrandTotal();
   }
 
-  
-
   openModal(content: any, data:any){
     this.sp.show()
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
     this.PowerByRow = []
     this.customerPowerLists = []
-    this.PowerByRow.push(data)
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
+    this.PowerByRow = JSON.parse(data.MeasurementID) 
+    this.ProductDetails =  data.ProductTypeName + '/' + data.ProductName 
+    this.UpdatePowerID = data
     let type = '';
     if(data.ProductTypeName === "LENS" || data.ProductTypeName === "LENSES"){
        type = 'Lens'
@@ -1021,6 +1024,42 @@ export class BillComponent implements OnInit {
       let VisitNumber =   this.customerVisiList
       this.customerPowerLists = VisitNumber.filter((s:any) => s.VisitNo === this.PowerSelect);
       console.log(this.customerPowerLists);
+  }
+
+  updatePower(){
+    this.sp.show()
+   let ID = this.UpdatePowerID.ID
+   let MeasurementID = JSON.stringify(this.customerPowerLists) 
+    const subs: Subscription = this.bill.updatePower(ID , MeasurementID).subscribe({
+      next: (res: any) => {
+          if(res.success ){
+            this.getBillById(this.id2)
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your Customer Power has been update.',
+              showConfirmButton: false,
+              timer: 1000
+            })
+          }else{
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: 'Opps !!',
+              text: res.message,
+              showConfirmButton: true,
+              backdrop : false,
+            })
+          }
+          this.modalService.dismissAll()
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    this.sp.hide()
+
   }
 
 }
