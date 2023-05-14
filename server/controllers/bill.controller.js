@@ -709,6 +709,45 @@ module.exports = {
             await connection.release();
         }
     },
+    updatePower: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const { ID, MeasurementID } = req.body;
+
+            if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
+
+            if (!MeasurementID || MeasurementID === undefined || MeasurementID === null) return res.send({ message: "Invalid Query Data" })
+
+            const doesExist = await connection.query(`select * from billdetail where CompanyID = ${CompanyID} and Status = 1 and ID = ${ID}`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "product doesnot exist from this id " })
+            }
+
+            const updateBill = await connection.query(`update billdetail set MeasurementID = '${MeasurementID}', UpdatedBy = ${LoggedOnUser} where ID = ${ID} and CompanyID = ${CompanyID}`)
+
+            const updateBarcode = await connection.query(`update barcodemasternew set MeasurementID = '${MeasurementID}', UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where BillDetailID = ${ID} and CompanyID = ${CompanyID}`)
+
+            response.message = "data update sucessfully"
+            response.data = [{
+                ID: ID,
+                MeasurementID: MeasurementID
+            }]
+            // connection.release()
+            res.send(response)
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
 
     saleServiceReport: async (req, res, next) => {
         const connection = await mysql.connection();

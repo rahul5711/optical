@@ -1989,6 +1989,125 @@
 					"body": "{\n    \"data\": [\n        {\n            \"ID\": 26,\n            \"BillID\": 13,\n            \"CompanyID\": 1,\n            \"ProductName\": \"PT-2/DDD/DDD\",\n            \"ProductTypeID\": 4,\n            \"ProductTypeName\": \"testproduct-2\",\n            \"HSNCode\": \"test-2\",\n            \"UnitPrice\": 500,\n            \"Quantity\": 2,\n            \"SubTotal\": 847.46,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 18,\n            \"GSTAmount\": 152.54,\n            \"GSTType\": \"CGST-SGST\",\n            \"TotalAmount\": 1000,\n            \"WholeSale\": 0,\n            \"Manual\": 0,\n            \"PreOrder\": 0,\n            \"BaseBarCode\": \"10004\",\n            \"Barcode\": \"10004000\",\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-05-12 20:56:24\",\n            \"MeasurementID\": \"null\",\n            \"Family\": \"Self\",\n            \"Optionsss\": \"null\",\n            \"SupplierID\": null,\n            \"Remark\": \"\",\n            \"Warranty\": \"\",\n            \"ProductStatus\": 0,\n            \"ProductDeliveryDate\": null,\n            \"ProductExpDate\": \"null\",\n            \"UpdatedBy\": 0,\n            \"CustomerName\": \"rahul ji\",\n            \"CustomerMoblieNo1\": \"\",\n            \"GSTNo\": \"\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"BillInvoiceNo\": \"2305R00006\",\n            \"BillDate\": \"2023-05-12\",\n            \"DeliveryDate\": \"2023-05-12\",\n            \"EmployeeName\": \"Rahul Gothi\",\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 76.27\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 76.27\n                }\n            ]\n        },\n        {\n            \"ID\": 27,\n            \"BillID\": 13,\n            \"CompanyID\": 1,\n            \"ProductName\": \"PT-2/DDD/DDD\",\n            \"ProductTypeID\": 4,\n            \"ProductTypeName\": \"testproduct-2\",\n            \"HSNCode\": \"test-2\",\n            \"UnitPrice\": 500,\n            \"Quantity\": 1,\n            \"SubTotal\": 500,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 500,\n            \"WholeSale\": 0,\n            \"Manual\": 0,\n            \"PreOrder\": 0,\n            \"BaseBarCode\": \"10004\",\n            \"Barcode\": \"10004000\",\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-05-12 20:56:24\",\n            \"MeasurementID\": \"null\",\n            \"Family\": \"Self\",\n            \"Optionsss\": \"null\",\n            \"SupplierID\": null,\n            \"Remark\": \"\",\n            \"Warranty\": \"\",\n            \"ProductStatus\": 0,\n            \"ProductDeliveryDate\": null,\n            \"ProductExpDate\": \"null\",\n            \"UpdatedBy\": 0,\n            \"CustomerName\": \"rahul ji\",\n            \"CustomerMoblieNo1\": \"\",\n            \"GSTNo\": \"\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"BillInvoiceNo\": \"2305R00006\",\n            \"BillDate\": \"2023-05-12\",\n            \"DeliveryDate\": \"2023-05-12\",\n            \"EmployeeName\": \"Rahul Gothi\",\n            \"gst_details\": []\n        },\n        {\n            \"ID\": 28,\n            \"BillID\": 13,\n            \"CompanyID\": 1,\n            \"ProductName\": \"PT-2/DDD/DDD\",\n            \"ProductTypeID\": 4,\n            \"ProductTypeName\": \"testproduct-2\",\n            \"HSNCode\": \"test-2\",\n            \"UnitPrice\": 500,\n            \"Quantity\": 1,\n            \"SubTotal\": 450,\n            \"DiscountPercentage\": 10,\n            \"DiscountAmount\": 50,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 450,\n            \"WholeSale\": 0,\n            \"Manual\": 0,\n            \"PreOrder\": 0,\n            \"BaseBarCode\": \"10004\",\n            \"Barcode\": \"10004000\",\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-05-12 20:58:58\",\n            \"MeasurementID\": \"null\",\n            \"Family\": \"Self\",\n            \"Optionsss\": \"null\",\n            \"SupplierID\": null,\n            \"Remark\": \"\",\n            \"Warranty\": \"\",\n            \"ProductStatus\": 0,\n            \"ProductDeliveryDate\": null,\n            \"ProductExpDate\": \"null\",\n            \"UpdatedBy\": 0,\n            \"CustomerName\": \"rahul ji\",\n            \"CustomerMoblieNo1\": \"\",\n            \"GSTNo\": \"\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"BillInvoiceNo\": \"2305R00006\",\n            \"BillDate\": \"2023-05-12\",\n            \"DeliveryDate\": \"2023-05-12\",\n            \"EmployeeName\": \"Rahul Gothi\",\n            \"gst_details\": []\n        },\n        {\n            \"ID\": 29,\n            \"BillID\": 14,\n            \"CompanyID\": 1,\n            \"ProductName\": \"PT-2/DDD/DDD\",\n            \"ProductTypeID\": 4,\n            \"ProductTypeName\": \"testproduct-2\",\n            \"HSNCode\": \"test-2\",\n            \"UnitPrice\": 500,\n            \"Quantity\": 1,\n            \"SubTotal\": 423.73,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 18,\n            \"GSTAmount\": 76.27,\n            \"GSTType\": \"IGST\",\n            \"TotalAmount\": 500,\n            \"WholeSale\": 0,\n            \"Manual\": 0,\n            \"PreOrder\": 0,\n            \"BaseBarCode\": \"10004\",\n            \"Barcode\": \"10004000\",\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-05-12 21:30:46\",\n            \"MeasurementID\": \"null\",\n            \"Family\": \"Self\",\n            \"Optionsss\": \"null\",\n            \"SupplierID\": null,\n            \"Remark\": \"\",\n            \"Warranty\": \"\",\n            \"ProductStatus\": 0,\n            \"ProductDeliveryDate\": null,\n            \"ProductExpDate\": \"null\",\n            \"UpdatedBy\": 0,\n            \"CustomerName\": \"archu\",\n            \"CustomerMoblieNo1\": \"\",\n            \"GSTNo\": \"1234567890\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"BillInvoiceNo\": \"2305R00007\",\n            \"BillDate\": \"2023-05-12\",\n            \"DeliveryDate\": \"2023-05-12\",\n            \"EmployeeName\": \"Rahul Gothi\",\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"IGST\",\n                    \"Amount\": 76.27\n                }\n            ]\n        }\n    ],\n    \"calculation\": [\n        {\n            \"totalQty\": 5,\n            \"totalGstAmount\": \"228.81\",\n            \"totalAmount\": \"2450.00\",\n            \"totalDiscount\": \"50.00\",\n            \"totalUnitPrice\": \"2221.19\",\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"IGST\",\n                    \"Amount\": 76.27\n                },\n                {\n                    \"GSTType\": \"SGST-CGST\",\n                    \"Amount\": 0\n                },\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 76.27\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 76.27\n                }\n            ]\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
 				}
 			]
+		},
+		{
+			"name": "updatePower",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODQwNjM2ODEsImV4cCI6MTY4NDE1MDA4MSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.SZjlPumjX3qGQ6zvvYuI5yZeFB7rDkfaweBO-_QT39c",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": 31,\r\n    \"MeasurementID\":  \"{\\\"ID\\\":13,\\\"VisitNo\\\":2,\\\"CompanyID\\\":1,\\\"CustomerID\\\":19199,\\\"REDPSPH\\\":\\\"+21.00\\\",\\\"REDPCYL\\\":\\\"\\\",\\\"REDPAxis\\\":\\\"\\\",\\\"REDPVA\\\":\\\"\\\",\\\"LEDPSPH\\\":\\\"\\\",\\\"LEDPCYL\\\":\\\"\\\",\\\"LEDPAxis\\\":\\\"\\\",\\\"LEDPVA\\\":\\\"\\\",\\\"RENPSPH\\\":\\\"\\\",\\\"RENPCYL\\\":\\\"\\\",\\\"RENPAxis\\\":\\\"\\\",\\\"RENPVA\\\":\\\"\\\",\\\"LENPSPH\\\":\\\"\\\",\\\"LENPCYL\\\":\\\"\\\",\\\"LENPAxis\\\":\\\"\\\",\\\"LENPVA\\\":\\\"\\\",\\\"REPD\\\":\\\"\\\",\\\"LEPD\\\":\\\"\\\",\\\"R_Addition\\\":\\\"\\\",\\\"L_Addition\\\":\\\"\\\",\\\"R_Prism\\\":\\\"\\\",\\\"L_Prism\\\":\\\"\\\",\\\"Lens\\\":\\\"\\\",\\\"Shade\\\":\\\"\\\",\\\"Frame\\\":\\\"\\\",\\\"VertexDistance\\\":\\\"\\\",\\\"RefractiveIndex\\\":\\\"\\\",\\\"FittingHeight\\\":\\\"\\\",\\\"ConstantUse\\\":0,\\\"NearWork\\\":0,\\\"DistanceWork\\\":0,\\\"UploadBy\\\":\\\"Upload\\\",\\\"PhotoURL\\\":\\\"\\\",\\\"Status\\\":1,\\\"CreatedBy\\\":2,\\\"CreatedOn\\\":\\\"2023-04-26 01:07:48\\\",\\\"UpdatedBy\\\":null,\\\"Updatedon\\\":\\\"0000-00-00 00:00:00\\\",\\\"FileURL\\\":\\\"\\\",\\\"Family\\\":\\\"Self\\\",\\\"RefferedByDoc\\\":\\\"Self\\\",\\\"Reminder\\\":\\\"6\\\",\\\"ExpiryDate\\\":\\\"0000-00-00\\\"}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/bill/updatePower",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"bill",
+						"updatePower"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "updatePower",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 31,\r\n    \"MeasurementID\":  \"{\\\"ID\\\":13,\\\"VisitNo\\\":2,\\\"CompanyID\\\":1,\\\"CustomerID\\\":19199,\\\"REDPSPH\\\":\\\"+21.00\\\",\\\"REDPCYL\\\":\\\"\\\",\\\"REDPAxis\\\":\\\"\\\",\\\"REDPVA\\\":\\\"\\\",\\\"LEDPSPH\\\":\\\"\\\",\\\"LEDPCYL\\\":\\\"\\\",\\\"LEDPAxis\\\":\\\"\\\",\\\"LEDPVA\\\":\\\"\\\",\\\"RENPSPH\\\":\\\"\\\",\\\"RENPCYL\\\":\\\"\\\",\\\"RENPAxis\\\":\\\"\\\",\\\"RENPVA\\\":\\\"\\\",\\\"LENPSPH\\\":\\\"\\\",\\\"LENPCYL\\\":\\\"\\\",\\\"LENPAxis\\\":\\\"\\\",\\\"LENPVA\\\":\\\"\\\",\\\"REPD\\\":\\\"\\\",\\\"LEPD\\\":\\\"\\\",\\\"R_Addition\\\":\\\"\\\",\\\"L_Addition\\\":\\\"\\\",\\\"R_Prism\\\":\\\"\\\",\\\"L_Prism\\\":\\\"\\\",\\\"Lens\\\":\\\"\\\",\\\"Shade\\\":\\\"\\\",\\\"Frame\\\":\\\"\\\",\\\"VertexDistance\\\":\\\"\\\",\\\"RefractiveIndex\\\":\\\"\\\",\\\"FittingHeight\\\":\\\"\\\",\\\"ConstantUse\\\":0,\\\"NearWork\\\":0,\\\"DistanceWork\\\":0,\\\"UploadBy\\\":\\\"Upload\\\",\\\"PhotoURL\\\":\\\"\\\",\\\"Status\\\":1,\\\"CreatedBy\\\":2,\\\"CreatedOn\\\":\\\"2023-04-26 01:07:48\\\",\\\"UpdatedBy\\\":null,\\\"Updatedon\\\":\\\"0000-00-00 00:00:00\\\",\\\"FileURL\\\":\\\"\\\",\\\"Family\\\":\\\"Self\\\",\\\"RefferedByDoc\\\":\\\"Self\\\",\\\"Reminder\\\":\\\"6\\\",\\\"ExpiryDate\\\":\\\"0000-00-00\\\"}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/updatePower",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"updatePower"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "979"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"3d3-bSrRcu14LGWeGkaVqMuU8QcN+oU\""
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 14 May 2023 11:39:44 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 31,\n            \"MeasurementID\": \"{\\\"ID\\\":13,\\\"VisitNo\\\":2,\\\"CompanyID\\\":1,\\\"CustomerID\\\":19199,\\\"REDPSPH\\\":\\\"+21.00\\\",\\\"REDPCYL\\\":\\\"\\\",\\\"REDPAxis\\\":\\\"\\\",\\\"REDPVA\\\":\\\"\\\",\\\"LEDPSPH\\\":\\\"\\\",\\\"LEDPCYL\\\":\\\"\\\",\\\"LEDPAxis\\\":\\\"\\\",\\\"LEDPVA\\\":\\\"\\\",\\\"RENPSPH\\\":\\\"\\\",\\\"RENPCYL\\\":\\\"\\\",\\\"RENPAxis\\\":\\\"\\\",\\\"RENPVA\\\":\\\"\\\",\\\"LENPSPH\\\":\\\"\\\",\\\"LENPCYL\\\":\\\"\\\",\\\"LENPAxis\\\":\\\"\\\",\\\"LENPVA\\\":\\\"\\\",\\\"REPD\\\":\\\"\\\",\\\"LEPD\\\":\\\"\\\",\\\"R_Addition\\\":\\\"\\\",\\\"L_Addition\\\":\\\"\\\",\\\"R_Prism\\\":\\\"\\\",\\\"L_Prism\\\":\\\"\\\",\\\"Lens\\\":\\\"\\\",\\\"Shade\\\":\\\"\\\",\\\"Frame\\\":\\\"\\\",\\\"VertexDistance\\\":\\\"\\\",\\\"RefractiveIndex\\\":\\\"\\\",\\\"FittingHeight\\\":\\\"\\\",\\\"ConstantUse\\\":0,\\\"NearWork\\\":0,\\\"DistanceWork\\\":0,\\\"UploadBy\\\":\\\"Upload\\\",\\\"PhotoURL\\\":\\\"\\\",\\\"Status\\\":1,\\\"CreatedBy\\\":2,\\\"CreatedOn\\\":\\\"2023-04-26 01:07:48\\\",\\\"UpdatedBy\\\":null,\\\"Updatedon\\\":\\\"0000-00-00 00:00:00\\\",\\\"FileURL\\\":\\\"\\\",\\\"Family\\\":\\\"Self\\\",\\\"RefferedByDoc\\\":\\\"Self\\\",\\\"Reminder\\\":\\\"6\\\",\\\"ExpiryDate\\\":\\\"0000-00-00\\\"}\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data update sucessfully\"\n}"
+				}
+			]
 		}
 	],
 	"auth": {
