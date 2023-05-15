@@ -19,6 +19,11 @@ router.post('/deleteBill', verifyAccessTokenAdmin, Controller.deleteBill)
 router.post('/updatePower', verifyAccessTokenAdmin, Controller.updatePower)
 router.post('/deleteProduct', verifyAccessTokenAdmin, Controller.deleteProduct)
 
+// customer bills and their payments
+
+router.post('/billByCustomer', verifyAccessTokenAdmin, Controller.billByCustomer)
+router.post('/paymentHistoryByMasterID', verifyAccessTokenAdmin, Controller.paymentHistoryByMasterID)
+
 // sale report
 
 router.post('/saleServiceReport', verifyAccessTokenAdmin, Controller.saleServiceReport)

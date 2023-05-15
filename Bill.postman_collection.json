@@ -2108,6 +2108,244 @@
 					"body": "{\n    \"data\": [\n        {\n            \"ID\": 31,\n            \"MeasurementID\": \"{\\\"ID\\\":13,\\\"VisitNo\\\":2,\\\"CompanyID\\\":1,\\\"CustomerID\\\":19199,\\\"REDPSPH\\\":\\\"+21.00\\\",\\\"REDPCYL\\\":\\\"\\\",\\\"REDPAxis\\\":\\\"\\\",\\\"REDPVA\\\":\\\"\\\",\\\"LEDPSPH\\\":\\\"\\\",\\\"LEDPCYL\\\":\\\"\\\",\\\"LEDPAxis\\\":\\\"\\\",\\\"LEDPVA\\\":\\\"\\\",\\\"RENPSPH\\\":\\\"\\\",\\\"RENPCYL\\\":\\\"\\\",\\\"RENPAxis\\\":\\\"\\\",\\\"RENPVA\\\":\\\"\\\",\\\"LENPSPH\\\":\\\"\\\",\\\"LENPCYL\\\":\\\"\\\",\\\"LENPAxis\\\":\\\"\\\",\\\"LENPVA\\\":\\\"\\\",\\\"REPD\\\":\\\"\\\",\\\"LEPD\\\":\\\"\\\",\\\"R_Addition\\\":\\\"\\\",\\\"L_Addition\\\":\\\"\\\",\\\"R_Prism\\\":\\\"\\\",\\\"L_Prism\\\":\\\"\\\",\\\"Lens\\\":\\\"\\\",\\\"Shade\\\":\\\"\\\",\\\"Frame\\\":\\\"\\\",\\\"VertexDistance\\\":\\\"\\\",\\\"RefractiveIndex\\\":\\\"\\\",\\\"FittingHeight\\\":\\\"\\\",\\\"ConstantUse\\\":0,\\\"NearWork\\\":0,\\\"DistanceWork\\\":0,\\\"UploadBy\\\":\\\"Upload\\\",\\\"PhotoURL\\\":\\\"\\\",\\\"Status\\\":1,\\\"CreatedBy\\\":2,\\\"CreatedOn\\\":\\\"2023-04-26 01:07:48\\\",\\\"UpdatedBy\\\":null,\\\"Updatedon\\\":\\\"0000-00-00 00:00:00\\\",\\\"FileURL\\\":\\\"\\\",\\\"Family\\\":\\\"Self\\\",\\\"RefferedByDoc\\\":\\\"Self\\\",\\\"Reminder\\\":\\\"6\\\",\\\"ExpiryDate\\\":\\\"0000-00-00\\\"}\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data update sucessfully\"\n}"
 				}
 			]
+		},
+		{
+			"name": "billByCustomer",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODQxNzE0OTMsImV4cCI6MTY4NDI1Nzg5MywiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.uUBUlJB2BIJEv1PG3BLpcU4YogrQv0J9Bj8qGNbprPI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"CustomerID\": 19200\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/bill/billByCustomer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"bill",
+						"billByCustomer"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "billByCustomer",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"CustomerID\": 19200\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/billByCustomer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"billByCustomer"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "415"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"19f-4qcVIt9W+AJVC0JTJEe7B8heY6U\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 15 May 2023 17:29:24 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"InvoiceNo\": \"2305R00006\",\n            \"TotalAmount\": 1950,\n            \"DueAmount\": 1950\n        },\n        {\n            \"InvoiceNo\": \"2304R00006\",\n            \"TotalAmount\": 1240,\n            \"DueAmount\": 1240\n        },\n        {\n            \"InvoiceNo\": \"2304R00004\",\n            \"TotalAmount\": 601,\n            \"DueAmount\": 601\n        },\n        {\n            \"InvoiceNo\": \"2304R00003\",\n            \"TotalAmount\": 240,\n            \"DueAmount\": 240\n        },\n        {\n            \"InvoiceNo\": \"2304R00002\",\n            \"TotalAmount\": 300,\n            \"DueAmount\": 300\n        },\n        {\n            \"InvoiceNo\": \"2304R00001\",\n            \"TotalAmount\": 300,\n            \"DueAmount\": 300\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				}
+			]
+		},
+		{
+			"name": "paymentHistoryByMasterID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODQxNzE0OTMsImV4cCI6MTY4NDI1Nzg5MywiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.uUBUlJB2BIJEv1PG3BLpcU4YogrQv0J9Bj8qGNbprPI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"CustomerID\": 19200,\r\n    \"BillMasterID\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/bill/paymentHistoryByMasterID",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"bill",
+						"paymentHistoryByMasterID"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "paymentHistoryByMasterID",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"CustomerID\": 19200,\r\n    \"BillMasterID\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/paymentHistoryByMasterID",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"paymentHistoryByMasterID"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "180"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"b4-EZRHvrLvpxrF5vOK5PBKdhKLtNQ\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 15 May 2023 17:48:39 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Amount\": 0,\n            \"PaymentDate\": \"2023-04-30\",\n            \"PaymentType\": \"Customer\",\n            \"PaymentMode\": \"Payment Initiated\",\n            \"CardNo\": \"\",\n            \"PaymentReferenceNo\": \"\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				}
+			]
 		}
 	],
 	"auth": {
