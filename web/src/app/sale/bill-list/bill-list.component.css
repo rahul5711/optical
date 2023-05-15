@@ -52,3 +52,11 @@
 .new{
   background-color: rgb(220, 220, 220);
 }
+
+.datanotFound{
+  position: absolute;
+   font-size: 14.8em;
+   margin-top: 1.4em;
+   rotate: 10deg;
+   color: rgba(255, 0, 0, 0.24); 
+}

@@ -179,14 +179,21 @@ export class PurchaseReturnListComponent implements OnInit {
   }
 
   openModal(content: any,data:any) {
-    if(data.SupplierCn === ''){
+    if(data.SupplierCn === '' && data.Quantity !== 0){
       this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
       this.supplierCnPRlist = data
+    }else if(data.Quantity === 0){
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: `You have invoice quantity has been zero`,
+        showCancelButton: true,
+      })
     }else{
       Swal.fire({
         position: 'center',
         icon: 'warning',
-        title: `You have already added SupplierCn NO.`,
+        title: `You have already added SupplierCn NO. `,
         showCancelButton: true,
       })
     }
@@ -219,6 +226,13 @@ export class PurchaseReturnListComponent implements OnInit {
               })
             }else{
               this.as.errorToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: res.message,
+                showConfirmButton: false,
+                timer: 1200
+            })
             }
             this.sp.hide();
           },

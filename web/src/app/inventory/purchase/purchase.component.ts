@@ -532,6 +532,7 @@ export class PurchaseComponent implements OnInit {
     if (Category === 'Product') {
       if (this.itemList[i].ID === null) {
         this.itemList.splice(i, 1);
+        this.calculateGrandTotal();
       } else {
         Swal.fire({
           title: 'Are you sure?',
@@ -545,6 +546,10 @@ export class PurchaseComponent implements OnInit {
         }).then((result) => {
           if (result.isConfirmed) {
             this.sp.show();
+            if(this.itemList[i].ID !== null || this.itemList[i].Status === 1){
+              this.itemList[i].Status = 0;
+              this.calculateGrandTotal();
+            }
             const subs: Subscription = this.purchaseService.deleteProduct(this.itemList[i].ID, this.selectedPurchaseMaster).subscribe({
               next: (res: any) => {
                 if (res.success) {
@@ -559,10 +564,12 @@ export class PurchaseComponent implements OnInit {
                     })
                 } else {
                   this.as.errorToast(res.message)
+                  this.itemList[i].Status = 1;
+                  this.calculateGrandTotal();
                   Swal.fire({
                     position: 'center',
                     icon: 'warning',
-                    title: res.message + `<span style ="font-size:20px;color:red;font-weight:bold;"> ${this.itemList[i].ProductName}</span>`,
+                    title: res.message ,
                     showConfirmButton: true,
                     backdrop: false,
                   })
@@ -712,12 +719,17 @@ export class PurchaseComponent implements OnInit {
   }
 
   PurchaseDetailPDF() {
+    let itemList2:any = []
+    this.itemList.forEach((ele: any) => {
+      if(ele.Status === 1){
+        itemList2.push(ele)
+      }
+    });
+    let body = { PurchaseMaster: this.selectedPurchaseMaster, PurchaseDetails: itemList2, PurchaseCharge: this.chargeList }
     this.sp.show();
-    let body = { PurchaseMaster: this.selectedPurchaseMaster, PurchaseDetails: this.itemList, PurchaseCharge: this.chargeList }
     const subs: Subscription = this.purchaseService.purchaseDetailPDF(body).subscribe({
       next: (res: any) => {
-        if (res.success) {
-          console.log(res);
+        if (res) {
           const url = this.env.apiUrl + "/uploads/" + res;
           window.open(url, "_blank");
         } else {

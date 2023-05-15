@@ -31,3 +31,11 @@
   cursor: pointer;
   box-shadow: 2px 2px 6px #9c9795fa;
 }
+
+.datanotFound{
+  position: absolute;
+   font-size: 14.8em;
+   margin-top: 1.4em;
+   rotate: 10deg;
+   color: rgba(255, 0, 0, 0.24); 
+}

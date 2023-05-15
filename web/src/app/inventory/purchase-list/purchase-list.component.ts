@@ -212,7 +212,6 @@ export class PurchaseListComponent implements OnInit {
     const subs: Subscription = this.purchaseService.purchaseHistoryBySupplier(SupplierID).subscribe({
       next: (res: any) => {
         if(res.success){
-          console.log(res);
           this.dataList = res.data;
           this.CustomerTotal = res.sumData[0];
           this.as.successToast(res.message)

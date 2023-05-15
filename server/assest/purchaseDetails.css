@@ -9,39 +9,39 @@ body{
 }
 
 .main{
-    width: 100% !important; height: 100px;
+    width: 100% !important; height: 100px; display: flex;
 }
 
 .row1{
-    width: 50% !important; float: left; 
+    width: 50% !important; float: left !important; height: 100px; ; 
 }
 
 .row1 .col-1{
-    width: 100%;float: left;
+    width: 40%;float: left !important;
 }
 
 .row1 .col-1 .logo{
-    width: 150px; height: 150px; object-fit: cover;
+    width: 100px; height: 100px; object-fit: cover;
 }
 
 .row2{
-    padding-top: 0%; width: 100% !important; float: right; font-size: 20px;
+    padding-top: 0%; width: 50% !important; float: right !important; font-size: 16px ; height: 100px; 
 }
 
 .row2 .col-1{
-     width: 15%; float: left;
+     width: 30%; float: left !important;
 }
 
 .row2 .col-2{ 
-    width: 85%;float: right;
+    width: 69%;float: right !important;
 }
 
 table{
-    width: 100% !important; text-align:center; border: none; margin: 0;padding: 0;
+    width: 100% !important; text-align:center; border: none; margin: 0;padding: 10px; margin-top: 1%;
 }
 
 table thead tr{
-    height: 25px; white-space: nowrap; background-color: rgb(224, 224, 224); font-size: 15px;
+    height: 25px; white-space: nowrap; background-color: rgb(224, 224, 224); font-size: 13px;
 }
 
 table thead tr th{
@@ -49,7 +49,7 @@ table thead tr th{
 }
 
 table tbody tr{
-    height: 25px; white-space: nowrap; font-size: 14px;
+    height: 25px; white-space: nowrap; font-size: 12px;
 }
 
 table tbody tr th{
@@ -61,5 +61,6 @@ tr:nth-child(even) {
 }
 
 table tfoot tr th{
+    border-top: 1px solid;
     color: red; padding: 5px !important;
 }

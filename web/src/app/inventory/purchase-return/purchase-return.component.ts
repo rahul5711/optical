@@ -252,6 +252,12 @@ export class PurchaseReturnComponent implements OnInit {
           }
         }else{
           this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showCancelButton: true,
+          })
         }
       },
       error: (err: any) => console.log(err.message),
@@ -272,6 +278,12 @@ export class PurchaseReturnComponent implements OnInit {
           this.barCodeList = res.data;
         }else{
           this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: res.message,
+              showCancelButton: true,
+            })
         }
       },
       error: (err: any) => console.log(err.message),
@@ -368,16 +380,22 @@ export class PurchaseReturnComponent implements OnInit {
             this.getPurchaseReturnById();
             this.selectedProduct = "";
             this.specList = [];
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been Save.',
+              showConfirmButton: false,
+              timer: 1200
+            })
           }
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Your file has been Save.',
-            showConfirmButton: false,
-            timer: 1200
-          })
         } else {
           this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showCancelButton: true,
+          })
         }
         this.sp.hide()
       },
@@ -392,7 +410,7 @@ export class PurchaseReturnComponent implements OnInit {
     this.data.PurchaseMaster = this.selectedPurchaseMaster;
     let items:any = [];
     this.itemList.forEach((ele: any) => {
-      if(ele.ID !== null || ele.ID === null || ele.Status == 0 && ele.UpdatedBy === null) {
+      if(ele.ID !== null || ele.ID === null || ele.Status === 0  && ele.UpdatedBy === null) {
         ele.UpdatedBy = this.user.ID;
         items.push(ele);
       }
@@ -415,6 +433,13 @@ export class PurchaseReturnComponent implements OnInit {
           })
         } else {
           this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: res.message,
+            showConfirmButton: false,
+            timer: 1200
+          })
         }
         this.sp.hide()
       },
@@ -430,6 +455,7 @@ export class PurchaseReturnComponent implements OnInit {
     if(Category === 'Product'){
       if (this.itemList[i].ID === null){
         this.itemList.splice(i, 1);
+        this.calculateGrandTotal();
       }else{
         Swal.fire({
           title: 'Are you sure?',
@@ -443,11 +469,16 @@ export class PurchaseReturnComponent implements OnInit {
         }).then((result) => {
           if (result.isConfirmed) {
             this.sp.show()
+
+            if(this.itemList[i].ID !== null || this.itemList[i].Status === 1){
+              this.itemList[i].Status = 0;
+              this.calculateGrandTotal();
+            }
+
             const subs: Subscription = this.purchaseService.deleteProductPR(this.itemList[i].ID,this.selectedPurchaseMaster).subscribe({
               next: (res: any) => {
                 if (res.success) {
                   this.itemList[i].Status = 0;
-                  // this.getPurchaseReturnById()
                   Swal.fire({
                     position: 'center',
                     icon: 'success',
@@ -460,7 +491,7 @@ export class PurchaseReturnComponent implements OnInit {
                   Swal.fire({
                     position: 'center',
                     icon: 'warning',
-                    title: `You have already added SupplierCn NO.`,
+                    title: res.message,
                     showCancelButton: true,
                   })
                   this.as.errorToast(res.message)
