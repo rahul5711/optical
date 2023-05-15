@@ -335,7 +335,7 @@ module.exports = {
 
             if (!billMaseterData) return res.send({ message: "Invalid Query Data" })
             if (!billDetailData) return res.send({ message: "Invalid Query Data" })
-            if (!billDetailData.length) return res.send({ message: "Invalid Query Data" })
+            if (!billDetailData.length && !service.length) return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.ID === null || billMaseterData.ID === undefined || billMaseterData.ID == 0 || billMaseterData.ID === "") return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.ShopID === null || billMaseterData.ShopID === undefined || billMaseterData.ShopID == 0 || billMaseterData.ShopID === "") return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.InvoiceNo === null || billMaseterData.InvoiceNo === undefined || billMaseterData.InvoiceNo == 0 || billMaseterData.InvoiceNo === "") return res.send({ message: "Invalid Query Data" })
@@ -393,7 +393,7 @@ module.exports = {
                         `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                     );
                 } else if (preorder === 1 && item.Barcode === "0") {
-                    
+
                     if (item.WholeSale === false) {
                         item.WholeSalePrice = 0
                         item.RetailPrice = item.UnitPrice
@@ -411,7 +411,7 @@ module.exports = {
                     // generate unique barcode
                     item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item)
                     const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser)
-                     console.log(item,'item');
+                    console.log(item, 'item');
                     result = await connection.query(
                         `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                     );
@@ -452,7 +452,9 @@ module.exports = {
 
             }
 
-
+            // delete comission
+            const delComm = await connection.query(`delete from commissiondetail where BillMasterID = ${bMasterID}`)
+            console.log(connected("Delete Comission and Again Initiated!!!"));
             // save employee commission
 
             if (billMaseterData.Employee !== 0 && billMaseterData.Employee !== undefined && billMaseterData.Employee !== null) {
@@ -749,6 +751,45 @@ module.exports = {
         }
     },
 
+    deleteProduct: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const { billMaseterData, billDetailData, service } = req.body
+
+            if (!billMaseterData) return res.send({ message: "Invalid Query Data" })
+            if (!billDetailData) return res.send({ message: "Invalid Query Data" })
+            if (!billDetailData.length && !service.length) return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.ID === null || billMaseterData.ID === undefined || billMaseterData.ID == 0 || billMaseterData.ID === "") return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.ShopID === null || billMaseterData.ShopID === undefined || billMaseterData.ShopID == 0 || billMaseterData.ShopID === "") return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.InvoiceNo === null || billMaseterData.InvoiceNo === undefined || billMaseterData.InvoiceNo == 0 || billMaseterData.InvoiceNo === "") return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.CustomerID === null || billMaseterData.CustomerID === undefined) return res.send({ message: "Invalid Query Data" })
+
+            let bMaster = {
+                ID,
+                Quantity,
+                SubTotal,
+                DiscountAmount,
+                GSTAmount,
+                AddlDiscount,
+                TotalAmount,
+                DueAmount
+            }
+
+
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+
     saleServiceReport: async (req, res, next) => {
         const connection = await mysql.connection();
         try {
@@ -874,7 +915,7 @@ module.exports = {
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, billdetail.ProductStatus as ProductStatus, billdetail.HSNCode as HSNCode, billdetail.ProductDeliveryDate as ProductDeliveryDate,billdetail.GSTType AS GSTType ,billdetail.UnitPrice AS UnitPrice,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and (billdetail.Manual = 0 || billdetail.Manual = 1 ) and billmaster.Status = 1 AND shop.Status = 1 ` +
-            Parem + " GROUP BY billmaster.InvoiceNo ORDER BY billmaster.ID DESC"
+                Parem + " GROUP BY billmaster.InvoiceNo ORDER BY billmaster.ID DESC"
 
             let datum = await connection.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
             left join user on user.ID = billmaster.Employee
@@ -968,9 +1009,9 @@ module.exports = {
                     values2.forEach(e => {
                         if (e.GSTType === item.GSTType) {
                             item.gst_details.push({
-                                GSTType : item.GSTType,
-                                Amount : item.GSTAmount,
-                                InvoiceNo : item.InvoiceNo,
+                                GSTType: item.GSTType,
+                                Amount: item.GSTAmount,
+                                InvoiceNo: item.InvoiceNo,
                             })
                         }
 
@@ -980,17 +1021,17 @@ module.exports = {
 
                             if (e.GSTType === 'CGST') {
                                 item.gst_details.push({
-                                    GSTType : 'CGST',
-                                    Amount : item.GSTAmount / 2,
-                                    InvoiceNo : item.InvoiceNo,
+                                    GSTType: 'CGST',
+                                    Amount: item.GSTAmount / 2,
+                                    InvoiceNo: item.InvoiceNo,
                                 })
                             }
 
                             if (e.GSTType === 'SGST') {
                                 item.gst_details.push({
-                                    GSTType : 'SGST',
-                                    Amount : item.GSTAmount / 2,
-                                    InvoiceNo : item.InvoiceNo,
+                                    GSTType: 'SGST',
+                                    Amount: item.GSTAmount / 2,
+                                    InvoiceNo: item.InvoiceNo,
 
                                 })
                             }
@@ -1136,8 +1177,8 @@ module.exports = {
                     values2.forEach(e => {
                         if (e.GSTType === item.GSTType) {
                             item.gst_details.push({
-                                GSTType : item.GSTType,
-                                Amount : item.GSTAmount
+                                GSTType: item.GSTType,
+                                Amount: item.GSTAmount
                             })
                         }
 
@@ -1147,15 +1188,15 @@ module.exports = {
 
                             if (e.GSTType === 'CGST') {
                                 item.gst_details.push({
-                                    GSTType : 'CGST',
-                                    Amount : item.GSTAmount / 2
+                                    GSTType: 'CGST',
+                                    Amount: item.GSTAmount / 2
                                 })
                             }
 
                             if (e.GSTType === 'SGST') {
                                 item.gst_details.push({
-                                    GSTType : 'SGST',
-                                    Amount : item.GSTAmount / 2
+                                    GSTType: 'SGST',
+                                    Amount: item.GSTAmount / 2
                                 })
                             }
                         }

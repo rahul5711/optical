@@ -17,6 +17,7 @@ router.post('/paymentHistory', verifyAccessTokenAdmin, Controller.paymentHistory
 router.post('/billHistoryByCustomer', verifyAccessTokenAdmin, Controller.billHistoryByCustomer)
 router.post('/deleteBill', verifyAccessTokenAdmin, Controller.deleteBill)
 router.post('/updatePower', verifyAccessTokenAdmin, Controller.updatePower)
+router.post('/deleteProduct', verifyAccessTokenAdmin, Controller.deleteProduct)
 
 // sale report
 
