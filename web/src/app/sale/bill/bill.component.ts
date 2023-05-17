@@ -114,6 +114,8 @@ export class BillComponent implements OnInit {
   UpdatePowerID:any 
   customerVisiList:any = []
   customerPowerLists:any = []
+  invoiceList:any = []
+  paidList:any = []
 
   ngOnInit(): void {
     this.BillMaster.Employee = this.user.ID
@@ -890,6 +892,7 @@ export class BillComponent implements OnInit {
           this.id = res.data.CustomerID;
           if (this.id2 !== 0) {
             this.getBillById(this.id2)
+            this.billByCustomer()
           }
           this.router.navigate(['/sale/billing', this.id, this.id2]);
           Swal.fire({
@@ -1062,6 +1065,72 @@ export class BillComponent implements OnInit {
     });
     this.sp.hide()
 
+  }
+
+  openModal1(content: any,){
+    this.sp.show()
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
+    this.billByCustomer()
+    this.paymentHistoryByMasterID()
+    this.sp.hide()
+  }
+
+  billByCustomer(){
+    this.sp.show()
+    let CustomerID = Number(this.id)
+    const subs: Subscription = this.bill.billByCustomer(CustomerID).subscribe({
+      next: (res: any) => {
+        console.log(res);
+        
+          if(res.success ){
+             this.invoiceList = res.data
+          }else{
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: 'Opps !!',
+              text: res.message,
+              showConfirmButton: true,
+              backdrop : false,
+            })
+          }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    this.sp.hide()
+  }
+
+
+  paymentHistoryByMasterID(){
+    this.sp.show()
+    let CustomerID = Number(this.id)
+    let BillMasterID = Number(this.id2)
+    const subs: Subscription = this.bill.paymentHistoryByMasterID(CustomerID,BillMasterID).subscribe({
+      next: (res: any) => {
+        console.log(res);
+        
+          if(res.success ){
+             this.paidList = res.data
+          }else{
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: 'Opps !!',
+              text: res.message,
+              showConfirmButton: true,
+              backdrop : false,
+            })
+          }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    this.sp.hide()
   }
 
 }

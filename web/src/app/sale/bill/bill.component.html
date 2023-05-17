@@ -696,6 +696,8 @@
                     <button type="button" mat-raised-button color="primary" (click)="onSubmit()" [disabled]="(billItemList?.length === 0 && serviceLists?.length === 0) || BillMaster.ID !== null" >Save</button>
                     <button type="button" class="me-3 ms-3" mat-raised-button color="primary" 
                      [disabled]="BillMaster.ID === null" (click)="update()">Update</button>
+                     <button type="button" class="me-3 ms-3" mat-raised-button color="primary" 
+                     [disabled]="BillMaster.ID === null" (click)="openModal1(content1)">Payment</button>
                     <button type="button" mat-raised-button color="primary">Receipt</button>
                     <button type="button" class="me-3 ms-3" mat-raised-button color="primary">Receipt +
                         Power</button>
@@ -923,5 +925,67 @@
                 <button type="button" class="me-3 ms-3" mat-raised-button color="primary" (click)="updatePower()" >Update</button>
             </div>
         </div>
+    </div>
+  </ng-template>
+
+
+  <ng-template #content1 role="document" let-modal>
+    <div class="modal-header" style="height: 50px;">
+      <h3 class="modal-title header pt-2" id="exampleModalLabel" style="font-weight: bolder;">Payment</h3>
+      <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+         <div class="row">
+            <div class="col-md-5">
+                <div class="table-responsive " style="border: 1px solid #ff5100;">
+                    <table
+                        class="table table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important; margin: 0;">
+                        <thead>
+                          <tr>
+                            <th style="background-color: #ff5100; color: #fff !important;">Invoice No</th>
+                            <th>Bill Amount</th>
+                            <th>Due Amount</th>  
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="text-center" *ngFor="let inv of invoiceList; let i = index;">
+                                <td class="text-left" style="background-color: #ff5100; color: #fff;">{{inv.InvoiceNo}}</td>
+                                <td class="text-left">{{inv.TotalAmount}}</td>
+                                <td class="text-left">{{inv.DueAmount}}</td>
+                               
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-6 ms-auto">
+                <div class="table-responsive " style="border: 1px solid #ff5100;">
+                    <table
+                        class="table table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important; margin: 0;">
+                        <thead>
+                          <tr>
+                            <th>PaymentDate</th>
+                            <th>PaymentMode</th>
+                            <th>CardNo</th>  
+                            <th>ReferenceNo</th>   
+                            <th style="background-color: #ff5100; color: #fff !important;">PaidAmount</th>  
+                          </tr>
+                        </thead>
+                        <tbody >
+                            <tr style="white-space:nowrap;" class="text-center" *ngFor="let paid of paidList; let i = index;"  >
+                                <td class="text-left">{{paid.PaymentDate | date: 'dd/MM/YYYY'}}</td>
+                                <td class="text-left">{{paid.PaymentMode}}</td>
+                                <td class="text-left">{{paid.CardNo}}</td>
+                                <td class="text-left">{{paid.PaymentReferenceNo}}</td>
+                                <td class="text-left" style="background-color: #ff5100; color: #fff;">{{paid.Amount}}</td>
+                               
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+         </div>
     </div>
   </ng-template>
