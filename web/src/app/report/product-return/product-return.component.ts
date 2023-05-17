@@ -335,7 +335,6 @@ export class ProductReturnComponent implements OnInit {
     const subs: Subscription =  this.purchaseService.getPurchasereturndetailreports(Parem).subscribe({
       next: (res: any) => {
         if(res.success){
-          this.as.successToast(res.message)
           this.RetureDetailList = res.data
           this.DetailtotalQty = res.calculation[0].totalQty;
           this.DetailtotalDiscount = res.calculation[0].totalDiscount.toFixed(2);

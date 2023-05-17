@@ -352,7 +352,6 @@ export class PurchaseReportComponent implements OnInit {
     const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem).subscribe({
       next: (res: any) => {
         if(res.success){
-          this.as.successToast(res.message)
           this.PurchaseDetailList = res.data
           this.DetailtotalQty = res.calculation[0].totalQty;
           this.DetailtotalDiscount = res.calculation[0].totalDiscount.toFixed(2);
@@ -428,7 +427,6 @@ export class PurchaseReportComponent implements OnInit {
     const subs: Subscription =  this.purchaseService.getPurchaseChargeReport(Parem).subscribe({
       next: (res: any) => {
         if(res.success){
-          this.as.successToast(res.message)
           this.PurchaseChargeList = res.data
           this.ChargeAmount = res.calculation[0].totalAmount.toFixed(2);
           this.ChargetotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
@@ -568,7 +566,6 @@ export class PurchaseReportComponent implements OnInit {
     const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem).subscribe({
       next: (res: any) => {
         if(res.success){
-          this.as.successToast(res.message)
           this.ProductExpiryList = res.data
           this.ProductExpiryList.forEach((element: any) => {
             if(element.ProductExpDate < this.todaydate) {

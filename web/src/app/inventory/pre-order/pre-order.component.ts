@@ -425,19 +425,16 @@ export class PreOrderComponent implements OnInit {
         }).then((result) => {
           if (result.isConfirmed) {
            this.sp.show()
+           if(this.itemList[i].ID !== null || this.itemList[i].Status === 1){
+            this.itemList[i].Status = 0;
+            this.calculateGrandTotal();
+          }
             const subs: Subscription = this.purchaseService.deleteProductPreOrder(this.itemList[i].ID,this.selectedPurchaseMaster).subscribe({
               next: (res: any) => {
-                if(res.message === "You have product already sold"){
-                  Swal.fire({
-                    position: 'center',
-                    icon: 'warning',
-                    title: 'You have product'  + `<span style ="font-size:20px;color:red;font-weight:bold;"> ${this.itemList[i].ProductName}</span>` + ' already sold',
-                    showConfirmButton: true,
-                    backdrop : false,
-                  })
-                }else{
+                if(res.success){
                   this.itemList[i].Status = 0;
                   this.getPurchaseByIdPreOrder()
+                  this.as.successToast(res.message)
                   Swal.fire({
                     position: 'center',
                     icon: 'success',
@@ -445,7 +442,17 @@ export class PreOrderComponent implements OnInit {
                     showConfirmButton: false,
                     timer: 1000
                   })
-                  this.as.successToast(res.message)
+                }else{
+                  this.as.errorToast(res.message)
+                  this.itemList[i].Status = 1;
+                  this.calculateGrandTotal();
+                  Swal.fire({
+                    position: 'center',
+                    icon: 'warning',
+                    title: res.message ,
+                    showConfirmButton: true,
+                    backdrop: false,
+                  })
                 }
               this.sp.hide()
               },

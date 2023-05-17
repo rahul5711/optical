@@ -39,7 +39,7 @@
                                     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
                                         <mat-form-field class="example-full-width mb-0">
                                             <mat-label>ShopName</mat-label>
-                                            <mat-select name="ToShop" [(ngModel)]="data.ToShop" multiple>
+                                            <mat-select name="ShopID" [(ngModel)]="data.ShopID" multiple>
                                                 <mat-option [value]=0>All</mat-option>
                                                 <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
                                                     <span [style.color]="'blue'"

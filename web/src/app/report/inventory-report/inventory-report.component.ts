@@ -433,7 +433,6 @@ export class InventoryReportComponent implements OnInit {
       const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem).subscribe({
         next: (res: any) => {
           if(res.success){
-            this.as.successToast(res.message)
             this.ProductExpiryList = res.data
             this.ProductExpiryList.forEach((element: any) => {
               if(element.ProductExpDate < this.todaydate) {
