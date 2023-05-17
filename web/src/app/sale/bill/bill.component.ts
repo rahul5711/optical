@@ -875,7 +875,7 @@ export class BillComponent implements OnInit {
     this.calculateGrandTotal()
   }
 
-  onSubmit() {
+  onSubmit(content1: any) {
     this.sp.show()
     this.BillMaster.ShopID = this.loginShopID
     this.BillMaster.CustomerID = this.customerID2
@@ -895,14 +895,16 @@ export class BillComponent implements OnInit {
             this.billByCustomer()
           }
           this.router.navigate(['/sale/billing', this.id, this.id2]);
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Your file has been save.',
-            showConfirmButton: false,
-            timer: 1000
-          })
+          // Swal.fire({
+          //   position: 'center',
+          //   icon: 'success',
+          //   title: 'Your file has been save.',
+          //   showConfirmButton: false,
+          //   timer: 1000
+          // })
+          this.as.successToast(res.message)
           this.sp.hide()
+          this. openModal1(content1)
         } else {
           this.as.errorToast(res.message)
         }
@@ -1066,10 +1068,12 @@ export class BillComponent implements OnInit {
     this.sp.hide()
 
   }
+  
 
-  openModal1(content: any,){
+
+  openModal1(content1: any){
     this.sp.show()
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
+    this.modalService.open(content1, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
     this.billByCustomer()
     this.paymentHistoryByMasterID()
     this.sp.hide()

@@ -693,10 +693,10 @@
             </div>
             <div class="row">
                 <div class="col-md-12 col-12">
-                    <button type="button" mat-raised-button color="primary" (click)="onSubmit()" [disabled]="(billItemList?.length === 0 && serviceLists?.length === 0) || BillMaster.ID !== null" >Save</button>
+                    <button type="button" mat-raised-button color="primary" (click)="onSubmit(content1)" [disabled]="(billItemList?.length === 0 && serviceLists?.length === 0) || BillMaster.ID !== null" >Save</button>
                     <button type="button" class="me-3 ms-3" mat-raised-button color="primary" 
                      [disabled]="BillMaster.ID === null" (click)="update()">Update</button>
-                     <button type="button" class="me-3 ms-3" mat-raised-button color="primary" 
+                     <button type="button" class=" me-3" mat-raised-button color="primary" 
                      [disabled]="BillMaster.ID === null" (click)="openModal1(content1)">Payment</button>
                     <button type="button" mat-raised-button color="primary">Receipt</button>
                     <button type="button" class="me-3 ms-3" mat-raised-button color="primary">Receipt +
@@ -712,6 +712,7 @@
     </div>
 </div>
 
+<!-- power update -->
 <ng-template #content role="document" let-modal>
     <div class="modal-header" style="height: 50px;">
       <h3 class="modal-title header pt-2" id="exampleModalLabel">Customer Power</h3>
@@ -926,9 +927,9 @@
             </div>
         </div>
     </div>
-  </ng-template>
+</ng-template>
 
-
+<!-- payment -->
   <ng-template #content1 role="document" let-modal>
     <div class="modal-header" style="height: 50px;">
       <h3 class="modal-title header pt-2" id="exampleModalLabel" style="font-weight: bolder;">Payment</h3>
