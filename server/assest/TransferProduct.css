@@ -9,7 +9,7 @@ body{
 }
 
 .main{
-    width: 100% !important; height: 100px;
+    width: 100% !important; height: 80px;
 }
 
 .row1{
@@ -25,15 +25,15 @@ body{
 }
 
 .row2{
-    padding-top: 1%; width: 45% !important; float: right;
+    padding-top: 0%; width: 45% !important; float: right;
 }
 
 .row2 .col-1{
-     width: 20%; float: left;
+     width: 25%; float: left;
 }
 
 .row2 .col-2{ 
-    width: 80%;float: right;
+    width: 75%;float: right;
 }
 
 table{
@@ -41,7 +41,7 @@ table{
 }
 
 table thead tr{
-    height: 25px; white-space: nowrap; background-color: rgb(224, 224, 224); font-size: 15px;
+    height: 25px; white-space: nowrap; background-color: rgb(224, 224, 224); font-size: 13px;
 }
 
 table thead tr th{
@@ -49,7 +49,7 @@ table thead tr th{
 }
 
 table tbody tr{
-    height: 25px; white-space: nowrap; font-size: 14px;
+    height: 25px; white-space: nowrap; font-size: 12px;
 }
 
 table tbody tr th{

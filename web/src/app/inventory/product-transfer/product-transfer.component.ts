@@ -472,7 +472,7 @@ export class ProductTransferComponent implements OnInit {
     let PDFtransfer = JSON.stringify(this.xferList)    
     const subs: Subscription =  this.purchaseService.transferProductPDF(PDFtransfer).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if(res){
           const url = this.env.apiUrl + "/uploads/" + res;
           window.open(url, "_blank");
         }else{
