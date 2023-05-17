@@ -421,14 +421,17 @@ export class BillingComponent implements OnInit {
 
   specCheck(mode: any) {
     if (mode === 'spec') {
+      this.Check.SpectacleCheck = true
       this.Check.ContactCheck = false
       this.Check.OtherCheck = false
     } else if (mode === 'con') {
+      this.Check.ContactCheck = true
       this.Check.SpectacleCheck = false
       this.Check.OtherCheck = false
     } else if (mode === 'other') {
       this.Check.SpectacleCheck = false
       this.Check.ContactCheck = false
+      this.Check.OtherCheck = true
     }
   }
 
