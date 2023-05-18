@@ -402,6 +402,7 @@ module.exports = {
 
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
 
 
             filepath = destination + '/' + filename
@@ -420,17 +421,18 @@ module.exports = {
                 count += 1
                 console.log(count);
                 let newData = {
-                    "Name": fd[0] ? fd[0] : "",
-                    "MobileNo1": fd[1] ? fd[1] : "",
-                    "MobileNo2": fd[2] ? fd[2] : "",
-                    "PhoneNo": fd[3] ? fd[3] : "",
-                    "Address": fd[4] ? fd[4] : "",
-                    "Email": fd[5] ? fd[5] : "",
-                    "DOB": fd[6] ? fd[6] : '"0000-00-00"',
-                    "Age": fd[7] ? fd[7] : 0,
-                    "Anniversary": fd[8] ? fd[8] : '"0000-00-00"',
-                    "Gender": fd[9] ? fd[9] : "",
-                    "VisitDate": fd[10] ? fd[10] : '"0000-00-00"'
+                    "SystemID": `${CompanyID}-${fd[0]}` ? `${CompanyID}-${fd[0]}` : "",
+                    "Name": fd[1] ? fd[1] : "",
+                    "MobileNo1": fd[2] ? fd[2] : "",
+                    "MobileNo2": fd[3] ? fd[3] : "",
+                    "PhoneNo": fd[4] ? fd[4] : "",
+                    "Address": fd[5] ? fd[5] : "",
+                    "Email": fd[6] ? fd[6] : "",
+                    "DOB": fd[7] ? fd[7] : '"0000-00-00"',
+                    "Age": fd[8] ? fd[8] : 0,
+                    "Anniversary": fd[9] ? fd[9] : '"0000-00-00"',
+                    "Gender": fd[10] ? fd[10] : "",
+                    "VisitDate": fd[11] ? fd[11] : '"0000-00-00"'
                 }
 
                 newData.Idd = 0
@@ -472,7 +474,7 @@ module.exports = {
                     console.log(Id);
                     datum.Idd = Id
 
-                    const customer = await connection.query(`insert into customer(Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Status,CreatedBy,CreatedOn,VisitDate) values('${datum.Idd}', '${datum.Name}','${datum.Sno}',${datum.CompanyID},'${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Address}','${datum.GSTNo}','${datum.Email}','${datum.PhotoURL}',${datum.DOB},'${datum.RefferedByDoc}','${datum.Age}',${datum.Anniversary},'${datum.ReferenceType}','${datum.Gender}','${datum.Other}','${datum.Remarks}',1,'${LoggedOnUser}',now(),${datum.VisitDate})`);
+                    const customer = await connection.query(`insert into customer(SystemID,ShopID,Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Status,CreatedBy,CreatedOn,VisitDate) values('${datum.SystemID}',${shopid},'${datum.Idd}', '${datum.Name}','${datum.Sno}',${datum.CompanyID},'${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Address}','${datum.GSTNo}','${datum.Email}','${datum.PhotoURL}',${datum.DOB},'${datum.RefferedByDoc}','${datum.Age}',${datum.Anniversary},'${datum.ReferenceType}','${datum.Gender}','${datum.Other}','${datum.Remarks}',1,'${LoggedOnUser}',now(),${datum.VisitDate})`);
 
                     console.log(connected("Customer Added SuccessFUlly !!!"));
                 }
@@ -521,7 +523,7 @@ module.exports = {
 
             for (const fd of fileData) {
                 let newData = {
-                    "Idd": fd[0] || 0,
+                    "SystemID": `${CompanyID}-${fd[0]}` || 0,
                     "REDPSPH": fd[1] || '',
                     "REDPCYL": fd[2] || '',
                     "REDPAxis": fd[3] || '',
@@ -582,10 +584,9 @@ module.exports = {
                     return next(createError.BadRequest())
                 }
                 for (const datum of data) {
-                    const cID = await connection.query(`select * from customer where CompanyID = ${CompanyID} and Idd = ${datum.Idd}`)
 
+                    const cID = await connection.query(`select * from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
                     if (cID.length) {
-
                         datum.CustomerID = cID[0].ID
 
                         const saveSpec = await connection.query(`insert into spectacle_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_Prism,L_Prism,Lens,Shade,Frame,VertexDistance,RefractiveIndex,FittingHeight,ConstantUse,NearWork,DistanceWork,UploadBy,PhotoURL,FileURL,Family,RefferedByDoc,Reminder,ExpiryDate,Status,CreatedBy,CreatedOn) values(${datum.VisitNo}, ${CompanyID}, ${datum.CustomerID},'${datum.REDPSPH}','${datum.REDPCYL}','${datum.REDPAxis}','${datum.REDPVA}','${datum.LEDPSPH}','${datum.LEDPCYL}','${datum.LEDPAxis}','${datum.LEDPVA}','${datum.RENPSPH}','${datum.RENPCYL}','${datum.RENPAxis}','${datum.RENPVA}','${datum.LENPSPH}','${datum.LENPCYL}','${datum.LENPAxis}','${datum.LENPVA}','${datum.REPD}','${datum.LEPD}','${datum.R_Addition}','${datum.L_Addition}','${datum.R_Prism}','${datum.L_Prism}','${datum.Lens}','${datum.Shade}','${datum.Frame}','${datum.VertexDistance}','${datum.RefractiveIndex}','${datum.FittingHeight}','${datum.ConstantUse}','${datum.NearWork}','${datum.DistanceWork}','${datum.UploadBy}','${datum.PhotoURL}','${datum.FileURL}','${datum.Family}','${datum.RefferedByDoc}','${datum.Reminder}','${datum.ExpiryDate}',1,${LoggedOnUser},now())`)
@@ -639,7 +640,7 @@ module.exports = {
 
             for (const fd of fileData) {
                 let newData = {
-                    "Idd": fd[0] || 0,
+                    "SystemID": `${CompanyID}-${fd[0]}` || 0,
                     "REDPSPH": fd[1] || '',
                     "REDPCYL": fd[2] || '',
                     "REDPAxis": fd[3] || '',
@@ -710,7 +711,7 @@ module.exports = {
                 for (const datum of data) {
                     console.log(datum);
 
-                    const cID = await connection.query(`select * from customer where CompanyID = ${CompanyID} and Idd = ${datum.Idd}`)
+                    const cID = await connection.query(`select * from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
 
                     if (cID.length) {
                         datum.CustomerID = cID[0].ID

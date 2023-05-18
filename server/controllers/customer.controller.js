@@ -1,7 +1,7 @@
 const createError = require('http-errors')
 const mysql = require('../helpers/db')
 const pass_init = require('../helpers/generate_password')
-const { Idd, generateVisitNo } = require('../helpers/helper_function')
+const { Idd, generateVisitNo, shopID } = require('../helpers/helper_function')
 const _ = require("lodash")
 const bcrypt = require('bcrypt')
 const { now } = require('lodash')
@@ -15,6 +15,7 @@ module.exports = {
             const response = { data: null, success: true, message: "", CustomerID: null, spectacle_rx: [], contact_lens_rx: [], other_rx: [] }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
 
             const { Name, Sno, MobileNo1, MobileNo2, PhoneNo, Address, GSTNo, Email, PhotoURL, DOB, RefferedByDoc, Age, Anniversary, ReferenceType, Gender, Other, Remarks, VisitDate, spectacle_rx, contact_lens_rx, other_rx, tablename } = req.body
 
@@ -27,7 +28,7 @@ module.exports = {
 
 
             const Id = await Idd(req)
-            const customer = await connection.query(`insert into customer(Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Status,CreatedBy,CreatedOn,VisitDate) values('${Id}', '${Name}','${Sno}',${CompanyID},'${MobileNo1}','${MobileNo2}','${PhoneNo}','${Address}','${GSTNo}','${Email}','${PhotoURL}','${DOB}','${RefferedByDoc}','${Age}','${Anniversary}','${ReferenceType}','${Gender}','${Other}','${Remarks}',1,'${LoggedOnUser}',now(),'${VisitDate}')`);
+            const customer = await connection.query(`insert into customer(ShopID,Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Status,CreatedBy,CreatedOn,VisitDate) values(${shopid},'${Id}', '${Name}','${Sno}',${CompanyID},'${MobileNo1}','${MobileNo2}','${PhoneNo}','${Address}','${GSTNo}','${Email}','${PhotoURL}','${DOB}','${RefferedByDoc}','${Age}','${Anniversary}','${ReferenceType}','${Gender}','${Other}','${Remarks}',1,'${LoggedOnUser}',now(),'${VisitDate}')`);
 
             console.log(connected("Customer Added SuccessFUlly !!!"));
 
@@ -184,7 +185,7 @@ module.exports = {
 
             response.CustomerID = customer.insertId,
                 response.message = "data save sucessfully",
-                response.data = await connection.query(`select * from customer where CompanyID = ${CompanyID} and ID = ${customer.insertId}`)
+                response.data = await connection.query(`select customer.*, shop.Name as ShopName, shop.AreaName as AreaName from customer left join shop on shop.ID = customer.ShopID where customer.CompanyID = ${CompanyID} and customer.ID = ${customer.insertId}`)
 
             return res.send(response)
 
@@ -208,7 +209,7 @@ module.exports = {
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select customer.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy where customer.Status = 1 and customer.CompanyID = '${CompanyID}'  order by customer.ID desc`
+            let qry = `select customer.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson, shop.Name as ShopName, shop.AreaName as AreaName from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy left join shop on shop.ID = customer.ShopID where customer.Status = 1 and customer.CompanyID = '${CompanyID}'  order by customer.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -312,7 +313,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            let qry = `select customer.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy where customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.Name like '%${Body.searchQuery}%' OR customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.MobileNo1 like '%${Body.searchQuery}%' `
+            let qry = `select customer.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson, shop.Name as ShopName, shop.AreaName as AreaName from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy left join shop on shop.ID = customer.ShopID where customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.Name like '%${Body.searchQuery}%' OR customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.MobileNo1 like '%${Body.searchQuery}%' OR customer.Status = 1 and customer.CompanyID = '${CompanyID}' and shop.Name like '%${Body.searchQuery}%' `
 
             let data = await connection.query(qry);
 
@@ -405,6 +406,7 @@ module.exports = {
             const response = { data: null, success: true, message: "", CustomerID: null, spectacle_rx: [], contact_lens_rx: [], other_rx: [] }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
 
             const { ID, Name, Sno, MobileNo1, MobileNo2, PhoneNo, Address, GSTNo, Email, PhotoURL, DOB, RefferedByDoc, Age, Anniversary, ReferenceType, Gender, Other, Remarks, VisitDate, spectacle_rx, contact_lens_rx, other_rx, tablename } = req.body
 

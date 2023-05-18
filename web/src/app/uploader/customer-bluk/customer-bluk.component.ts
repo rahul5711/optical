@@ -65,6 +65,7 @@ export class CustomerBlukComponent implements OnInit {
 
   josnData = [
     {
+    'SystemID' : '',
     'Name' : '',
     'MobileNo1' : '',
     'MobileNo2' : '',
@@ -81,7 +82,7 @@ export class CustomerBlukComponent implements OnInit {
 
   josnDataSpec = [
     {
-      "Idd": '',
+      "SystemID": '',
       "REDPSPH": '',
       "REDPCYL": '',
       "REDPAxis": '',
@@ -118,7 +119,7 @@ export class CustomerBlukComponent implements OnInit {
 
   josnDataCon = [
     {
-      "Idd": '',
+      "SystemID": '',
       "REDPSPH": '',
       "REDPCYL": '',
       "REDPAxis": '',
