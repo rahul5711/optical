@@ -52,16 +52,16 @@
 
                 <div *ngIf="this.dataList.length != 0" class="col-md-2 col-4 pt-2" style="border: 1px solid #b4b4b4; height: 38px;">
                   <span style="font-size:15px;font-weight:bold;">Total Amount : </span>
-                  <span style="color:#232323;font-size:15px;font-weight:bold;">{{CustomerTotal.TotalAmount}}</span>
+                  <span style="color:#232323;font-size:15px;font-weight:bold;">{{this.TotalAmountInv}}</span>
                 </div>
                 <div *ngIf="this.dataList.length != 0" class="col-md-2 col-4 pt-2" style="border: 1px solid #b4b4b4; height: 38px;">
                   <span style="font-size:15px;font-weight:bold;">Due Amount : </span>
-                  <span style="color:#232323;font-size:15px;font-weight:bold;">{{CustomerTotal.DueAmount}}</span>
+                  <span style="color:#232323;font-size:15px;font-weight:bold;">{{this.DueAmountInv}}</span>
                 </div>
                 <div *ngIf="this.dataList.length != 0" class="col-md-2 col-4 pt-2" style="border: 1px solid #b4b4b4; height: 38px;">
                   <span style="font-size:15px;font-weight:bold;">Paid Amount : </span>
                   <span
-                    style="color:#232323;font-size:15px;font-weight:bold;">{{CustomerTotal.TotalAmount-CustomerTotal.DueAmount}}</span>
+                    style="color:#232323;font-size:15px;font-weight:bold;">{{this.CustomerTotal}}</span>
                 </div>
                 
                 <div class="col-md-2 col-4 ms-auto">

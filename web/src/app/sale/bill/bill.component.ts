@@ -483,6 +483,7 @@ export class BillComponent implements OnInit {
             this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
             this.BillItem.BaseBarCode = this.searchList.BaseBarCode;
             this.BillItem.Quantity = 0;
+            
             if (this.searchList !== undefined || this.searchList.Barcode !== null && this.searchList.BarCodeCount !== 0) {
               if (this.billItemList.length !== 0 && this.BillItem.ProductName !== "") {
                 let itemCount = 0;

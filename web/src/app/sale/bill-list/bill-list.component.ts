@@ -38,7 +38,9 @@ export class BillListComponent implements OnInit {
   suBtn = false;
   paymentHistoryList :any = []
   UpdateMode = false;
-  CustomerTotal:any = []
+  CustomerTotal:any 
+  TotalAmountInv:any 
+  DueAmountInv:any 
 
   constructor(
     private router: Router,
@@ -224,7 +226,9 @@ export class BillListComponent implements OnInit {
         if(res.success){
           console.log(res);
           this.dataList = res.data;
-          this.CustomerTotal = res.sumData;
+          this.TotalAmountInv = res.sumData.TotalAmount.toFixed(2);
+          this.DueAmountInv = res.sumData.DueAmount.toFixed(2);
+          this.CustomerTotal = (this.TotalAmountInv-this.DueAmountInv).toFixed(2);
           this.as.successToast(res.message)
         }else{
           this.as.errorToast(res.message)

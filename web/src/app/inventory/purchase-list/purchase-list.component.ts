@@ -35,6 +35,8 @@ export class PurchaseListComponent implements OnInit {
   page = 4;
   paymentHistoryList:any;
   CustomerTotal:any = []
+  TotalAmountInv:any
+  DueAmountIvn:any
 
   constructor(
     private router: Router,
@@ -213,7 +215,9 @@ export class PurchaseListComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.dataList = res.data;
-          this.CustomerTotal = res.sumData[0];
+          this.DueAmountIvn = res.sumData[0].DueAmount.toFixed(2);
+          this.TotalAmountInv = res.sumData[0].TotalAmount.toFixed(2);
+          this.CustomerTotal = (this.TotalAmountInv - this.DueAmountIvn).toFixed(2) ;
           this.as.successToast(res.message)
         }else{
           this.as.errorToast(res.message)

@@ -38,7 +38,7 @@ export class PurchaseReturnComponent implements OnInit {
   xferList: any;
   showAdd = false;
   shopMode = 'false';
-  item: any;
+  item: any = [];
   itemList: any = [];
   Req :any= {SearchBarCode : ''} 
   gst_detail:any = [];
@@ -246,10 +246,26 @@ export class PurchaseReturnComponent implements OnInit {
               backdrop : false,
             });
           }else{
-            this.xferItem.ProductName = (this.item.ProductTypeName + '/' +  this.item.ProductName).toUpperCase();
+            this.xferItem.ProductTypeName = this.item.ProductTypeName;
+            this.xferItem.ProductName = this.item.ProductName;
             this.xferItem.Barcode = this.item.Barcode;
             this.xferItem.BarCodeCount = this.item.BarCodeCount;
+            this.xferItem.Quantity = 0
+
+            if (this.item !== undefined || this.item.Barcode !== null && this.item.BarCodeCount !== 0) {
+              if (this.itemList.length !== 0 && this.xferItem.ProductName !== "") {
+                let itemCount = 0;
+                this.itemList.forEach((element: any) => {
+                  if (element.ProductName === this.xferItem.ProductName && element.ID === null) {
+                    itemCount = itemCount + element.Quantity;
+                  }
+                })
+                this.item.BarCodeCount = this.item.BarCodeCount - itemCount;
+              }
+            }
           }
+
+
         }else{
           this.as.errorToast(res.message)
           Swal.fire({
@@ -343,6 +359,8 @@ export class PurchaseReturnComponent implements OnInit {
         this. xferItem = {
           ID: null, CompanyID: null, PurchaseDetailID:null, ProductName: '', ProductTypeName: '', ProductTypeID: null,  Barcode: null, BarCodeCount: null, Quantity:0, Remark : '', UnitPrice: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1
         };
+
+        this.item.BarCodeCount = 0;
         this.specList = [];
         this.Req = {SearchBarCode : ''}
         this.calculateFields();
@@ -355,7 +373,6 @@ export class PurchaseReturnComponent implements OnInit {
           footer: '',
           backdrop : false,
         });
-        this.xferItem.Quantity = 0;
       }
     }else{
       Swal.fire({
