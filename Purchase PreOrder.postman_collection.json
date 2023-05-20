@@ -292,6 +292,123 @@
 			]
 		},
 		{
+			"name": "listPreOrderDummy",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODQ2MDE2NTcsImV4cCI6MTY4NDY4ODA1NywiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.wdI35n1wXYe-c8JZ57FcU1cSYhugxrK-WlzNrV_0StY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/purchase/listPreOrderDummy",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"listPreOrderDummy"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "listPreOrderDummy",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/purchase/listPreOrderDummy",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchase",
+								"listPreOrderDummy"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "7740"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1e3c-TjfSd0XV0bsX58pBCYwfPJdPl0M\""
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 20 May 2023 17:03:21 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 10,\n            \"PurchaseID\": 2,\n            \"CompanyID\": 1,\n            \"ProductName\": \"uylens/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"UnitPrice\": 300,\n            \"Quantity\": 1,\n            \"SubTotal\": 300,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 300,\n            \"RetailPrice\": 300,\n            \"WholeSalePrice\": 0,\n            \"MultipleBarCode\": 0,\n            \"WholeSale\": 0,\n            \"BaseBarCode\": \"90008\",\n            \"Ledger\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-05-14 16:36:43\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"NewBarcode\": \"90008\",\n            \"ReturnRef\": 0,\n            \"BrandType\": 0,\n            \"UniqueBarcode\": \"23053/30033\",\n            \"ProductExpDate\": \"0000-00-00\",\n            \"Checked\": 0,\n            \"BillDetailIDForPreOrder\": 0,\n            \"SupplierName\": \"PreOrder Supplier\",\n            \"GSTNo\": \"\",\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"UpdatedPerson\": null,\n            \"PurchaseMasterData\": {\n                \"ID\": 2,\n                \"SupplierID\": 3,\n                \"CompanyID\": 1,\n                \"ShopID\": 1,\n                \"PurchaseDate\": \"2023-04-30\",\n                \"PaymentStatus\": \"Unpaid\",\n                \"InvoiceNo\": \"1682877310919\",\n                \"GSTNo\": \"\",\n                \"Quantity\": 6,\n                \"SubTotal\": 1701,\n                \"DiscountAmount\": 0,\n                \"GSTAmount\": 0,\n                \"TotalAmount\": 1701,\n                \"Status\": 1,\n                \"CreatedBy\": 2,\n                \"CreatedOn\": \"2023-04-30 23:25:10\",\n                \"UpdatedBy\": 2,\n                \"UpdatedOn\": \"2023-05-14 16:36:43\",\n                \"PStatus\": 1,\n                \"DueAmount\": 1701,\n                \"LastUpdate\": null,\n                \"SupplierName\": \"PreOrder Supplier\",\n                \"CreatedPerson\": \"Rahul Gothi\",\n                \"ShopName\": \"shop-1\",\n                \"AreaName\": \"one\",\n                \"UpdatedPerson\": \"Rahul Gothi\"\n            }\n        },\n        {\n            \"ID\": 7,\n            \"PurchaseID\": 2,\n            \"CompanyID\": 1,\n            \"ProductName\": \"pt-2/gbgb/gbgb/\",\n            \"ProductTypeID\": 4,\n            \"ProductTypeName\": \"testproduct-2\",\n            \"UnitPrice\": 300,\n            \"Quantity\": 1,\n            \"SubTotal\": 300,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 300,\n            \"RetailPrice\": 300,\n            \"WholeSalePrice\": 0,\n            \"MultipleBarCode\": 0,\n            \"WholeSale\": 0,\n            \"BaseBarCode\": \"90007\",\n            \"Ledger\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-05-06 21:10:18\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"NewBarcode\": \"90007\",\n            \"ReturnRef\": 0,\n            \"BrandType\": 0,\n            \"UniqueBarcode\": \"23053/30033\",\n            \"ProductExpDate\": \"0000-00-00\",\n            \"Checked\": 0,\n            \"BillDetailIDForPreOrder\": 0,\n            \"SupplierName\": \"PreOrder Supplier\",\n            \"GSTNo\": \"\",\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"UpdatedPerson\": null,\n            \"PurchaseMasterData\": {\n                \"ID\": 2,\n                \"SupplierID\": 3,\n                \"CompanyID\": 1,\n                \"ShopID\": 1,\n                \"PurchaseDate\": \"2023-04-30\",\n                \"PaymentStatus\": \"Unpaid\",\n                \"InvoiceNo\": \"1682877310919\",\n                \"GSTNo\": \"\",\n                \"Quantity\": 6,\n                \"SubTotal\": 1701,\n                \"DiscountAmount\": 0,\n                \"GSTAmount\": 0,\n                \"TotalAmount\": 1701,\n                \"Status\": 1,\n                \"CreatedBy\": 2,\n                \"CreatedOn\": \"2023-04-30 23:25:10\",\n                \"UpdatedBy\": 2,\n                \"UpdatedOn\": \"2023-05-14 16:36:43\",\n                \"PStatus\": 1,\n                \"DueAmount\": 1701,\n                \"LastUpdate\": null,\n                \"SupplierName\": \"PreOrder Supplier\",\n                \"CreatedPerson\": \"Rahul Gothi\",\n                \"ShopName\": \"shop-1\",\n                \"AreaName\": \"one\",\n                \"UpdatedPerson\": \"Rahul Gothi\"\n            }\n        },\n        {\n            \"ID\": 6,\n            \"PurchaseID\": 2,\n            \"CompanyID\": 1,\n            \"ProductName\": \"pt-2/xc/xc/\",\n            \"ProductTypeID\": 4,\n            \"ProductTypeName\": \"testproduct-2\",\n            \"UnitPrice\": 300,\n            \"Quantity\": 1,\n            \"SubTotal\": 300,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 300,\n            \"RetailPrice\": 300,\n            \"WholeSalePrice\": 0,\n            \"MultipleBarCode\": 0,\n            \"WholeSale\": 0,\n            \"BaseBarCode\": \"90006\",\n            \"Ledger\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-05-06 21:05:24\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"NewBarcode\": \"90006\",\n            \"ReturnRef\": 0,\n            \"BrandType\": 0,\n            \"UniqueBarcode\": \"23053/30033\",\n            \"ProductExpDate\": \"0000-00-00\",\n            \"Checked\": 0,\n            \"BillDetailIDForPreOrder\": 0,\n            \"SupplierName\": \"PreOrder Supplier\",\n            \"GSTNo\": \"\",\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"UpdatedPerson\": null,\n            \"PurchaseMasterData\": {\n                \"ID\": 2,\n                \"SupplierID\": 3,\n                \"CompanyID\": 1,\n                \"ShopID\": 1,\n                \"PurchaseDate\": \"2023-04-30\",\n                \"PaymentStatus\": \"Unpaid\",\n                \"InvoiceNo\": \"1682877310919\",\n                \"GSTNo\": \"\",\n                \"Quantity\": 6,\n                \"SubTotal\": 1701,\n                \"DiscountAmount\": 0,\n                \"GSTAmount\": 0,\n                \"TotalAmount\": 1701,\n                \"Status\": 1,\n                \"CreatedBy\": 2,\n                \"CreatedOn\": \"2023-04-30 23:25:10\",\n                \"UpdatedBy\": 2,\n                \"UpdatedOn\": \"2023-05-14 16:36:43\",\n                \"PStatus\": 1,\n                \"DueAmount\": 1701,\n                \"LastUpdate\": null,\n                \"SupplierName\": \"PreOrder Supplier\",\n                \"CreatedPerson\": \"Rahul Gothi\",\n                \"ShopName\": \"shop-1\",\n                \"AreaName\": \"one\",\n                \"UpdatedPerson\": \"Rahul Gothi\"\n            }\n        },\n        {\n            \"ID\": 5,\n            \"PurchaseID\": 2,\n            \"CompanyID\": 1,\n            \"ProductName\": \"pt-2/p/p\",\n            \"ProductTypeID\": 4,\n            \"ProductTypeName\": \"testproduct-2\",\n            \"UnitPrice\": 300,\n            \"Quantity\": 1,\n            \"SubTotal\": 300,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 300,\n            \"RetailPrice\": 1,\n            \"WholeSalePrice\": 2,\n            \"MultipleBarCode\": 0,\n            \"WholeSale\": 0,\n            \"BaseBarCode\": \"90005\",\n            \"Ledger\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-05-03 21:34:06\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"NewBarcode\": \"90005\",\n            \"ReturnRef\": 0,\n            \"BrandType\": 0,\n            \"UniqueBarcode\": \"23053/30033\",\n            \"ProductExpDate\": \"0000-00-00\",\n            \"Checked\": 0,\n            \"BillDetailIDForPreOrder\": 0,\n            \"SupplierName\": \"PreOrder Supplier\",\n            \"GSTNo\": \"\",\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"UpdatedPerson\": null,\n            \"PurchaseMasterData\": {\n                \"ID\": 2,\n                \"SupplierID\": 3,\n                \"CompanyID\": 1,\n                \"ShopID\": 1,\n                \"PurchaseDate\": \"2023-04-30\",\n                \"PaymentStatus\": \"Unpaid\",\n                \"InvoiceNo\": \"1682877310919\",\n                \"GSTNo\": \"\",\n                \"Quantity\": 6,\n                \"SubTotal\": 1701,\n                \"DiscountAmount\": 0,\n                \"GSTAmount\": 0,\n                \"TotalAmount\": 1701,\n                \"Status\": 1,\n                \"CreatedBy\": 2,\n                \"CreatedOn\": \"2023-04-30 23:25:10\",\n                \"UpdatedBy\": 2,\n                \"UpdatedOn\": \"2023-05-14 16:36:43\",\n                \"PStatus\": 1,\n                \"DueAmount\": 1701,\n                \"LastUpdate\": null,\n                \"SupplierName\": \"PreOrder Supplier\",\n                \"CreatedPerson\": \"Rahul Gothi\",\n                \"ShopName\": \"shop-1\",\n                \"AreaName\": \"one\",\n                \"UpdatedPerson\": \"Rahul Gothi\"\n            }\n        },\n        {\n            \"ID\": 3,\n            \"PurchaseID\": 2,\n            \"CompanyID\": 1,\n            \"ProductName\": \"pt-2/pre/pre/\",\n            \"ProductTypeID\": 4,\n            \"ProductTypeName\": \"testproduct-2\",\n            \"UnitPrice\": 201,\n            \"Quantity\": 1,\n            \"SubTotal\": 201,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 201,\n            \"RetailPrice\": 201,\n            \"WholeSalePrice\": 0,\n            \"MultipleBarCode\": 0,\n            \"WholeSale\": 0,\n            \"BaseBarCode\": \"90004\",\n            \"Ledger\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-04-30 23:37:32\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"NewBarcode\": \"90004\",\n            \"ReturnRef\": 0,\n            \"BrandType\": 0,\n            \"UniqueBarcode\": \"23043/31023\",\n            \"ProductExpDate\": \"0000-00-00\",\n            \"Checked\": 0,\n            \"BillDetailIDForPreOrder\": 0,\n            \"SupplierName\": \"PreOrder Supplier\",\n            \"GSTNo\": \"\",\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"UpdatedPerson\": null,\n            \"PurchaseMasterData\": {\n                \"ID\": 2,\n                \"SupplierID\": 3,\n                \"CompanyID\": 1,\n                \"ShopID\": 1,\n                \"PurchaseDate\": \"2023-04-30\",\n                \"PaymentStatus\": \"Unpaid\",\n                \"InvoiceNo\": \"1682877310919\",\n                \"GSTNo\": \"\",\n                \"Quantity\": 6,\n                \"SubTotal\": 1701,\n                \"DiscountAmount\": 0,\n                \"GSTAmount\": 0,\n                \"TotalAmount\": 1701,\n                \"Status\": 1,\n                \"CreatedBy\": 2,\n                \"CreatedOn\": \"2023-04-30 23:25:10\",\n                \"UpdatedBy\": 2,\n                \"UpdatedOn\": \"2023-05-14 16:36:43\",\n                \"PStatus\": 1,\n                \"DueAmount\": 1701,\n                \"LastUpdate\": null,\n                \"SupplierName\": \"PreOrder Supplier\",\n                \"CreatedPerson\": \"Rahul Gothi\",\n                \"ShopName\": \"shop-1\",\n                \"AreaName\": \"one\",\n                \"UpdatedPerson\": \"Rahul Gothi\"\n            }\n        },\n        {\n            \"ID\": 2,\n            \"PurchaseID\": 2,\n            \"CompanyID\": 1,\n            \"ProductName\": \"pt-2/pt/pt/\",\n            \"ProductTypeID\": 4,\n            \"ProductTypeName\": \"testproduct-2\",\n            \"UnitPrice\": 300,\n            \"Quantity\": 1,\n            \"SubTotal\": 300,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 300,\n            \"RetailPrice\": 300,\n            \"WholeSalePrice\": 0,\n            \"MultipleBarCode\": 0,\n            \"WholeSale\": 0,\n            \"BaseBarCode\": \"90003\",\n            \"Ledger\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-04-30 23:25:10\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"NewBarcode\": \"90003\",\n            \"ReturnRef\": 0,\n            \"BrandType\": 0,\n            \"UniqueBarcode\": \"23043/30033\",\n            \"ProductExpDate\": \"0000-00-00\",\n            \"Checked\": 0,\n            \"BillDetailIDForPreOrder\": 0,\n            \"SupplierName\": \"PreOrder Supplier\",\n            \"GSTNo\": \"\",\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"UpdatedPerson\": null,\n            \"PurchaseMasterData\": {\n                \"ID\": 2,\n                \"SupplierID\": 3,\n                \"CompanyID\": 1,\n                \"ShopID\": 1,\n                \"PurchaseDate\": \"2023-04-30\",\n                \"PaymentStatus\": \"Unpaid\",\n                \"InvoiceNo\": \"1682877310919\",\n                \"GSTNo\": \"\",\n                \"Quantity\": 6,\n                \"SubTotal\": 1701,\n                \"DiscountAmount\": 0,\n                \"GSTAmount\": 0,\n                \"TotalAmount\": 1701,\n                \"Status\": 1,\n                \"CreatedBy\": 2,\n                \"CreatedOn\": \"2023-04-30 23:25:10\",\n                \"UpdatedBy\": 2,\n                \"UpdatedOn\": \"2023-05-14 16:36:43\",\n                \"PStatus\": 1,\n                \"DueAmount\": 1701,\n                \"LastUpdate\": null,\n                \"SupplierName\": \"PreOrder Supplier\",\n                \"CreatedPerson\": \"Rahul Gothi\",\n                \"ShopName\": \"shop-1\",\n                \"AreaName\": \"one\",\n                \"UpdatedPerson\": \"Rahul Gothi\"\n            }\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\",\n    \"count\": 6\n}"
+				}
+			]
+		},
+		{
 			"name": "getPurchaseByIdPreOrder",
 			"request": {
 				"method": "POST",
