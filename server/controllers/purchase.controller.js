@@ -2127,7 +2127,7 @@ module.exports = {
             if (data.length) {
                 for(let item of data) {
                     item.PurchaseMasterData = {}
-                    const purchasedata = await connection.query(`SELECT purchasemasternew.*, supplier.Name AS SupplierName,  supplier.GSTNo AS GSTNo, users1.Name AS CreatedPerson,shop.Name AS ShopName, shop.AreaName AS AreaName, users.Name AS UpdatedPerson FROM purchasemasternew LEFT JOIN USER AS users1 ON users1.ID = purchasemasternew.CreatedBy LEFT JOIN USER AS users ON users.ID = purchasemasternew.UpdatedBy LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID WHERE purchasemasternew.Status = 1 AND purchasemasternew.PStatus = 1 and purchasemasternew.CompanyID = ${CompanyID} ${shopId}`)
+                    const purchasedata = await connection.query(`SELECT purchasemasternew.*, supplier.Name AS SupplierName,  supplier.GSTNo AS GSTNo, users1.Name AS CreatedPerson,shop.Name AS ShopName, shop.AreaName AS AreaName, users.Name AS UpdatedPerson FROM purchasemasternew LEFT JOIN USER AS users1 ON users1.ID = purchasemasternew.CreatedBy LEFT JOIN USER AS users ON users.ID = purchasemasternew.UpdatedBy LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID WHERE purchasemasternew.Status = 1 AND purchasemasternew.PStatus = 1 and purchasemasternew.ID = ${item.PurchaseID} and purchasemasternew.CompanyID = ${CompanyID} ${shopId}  `)
                     item.PurchaseMasterData = purchasedata[0]
                 }
 
@@ -2291,6 +2291,7 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
             const currentStatus = "Pre Order";
             const paymentStatus = "Unpaid"
+            console.log(req.body,'pre');
             const {
                 PurchaseMaster,
                 PurchaseDetail,

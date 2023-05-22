@@ -972,7 +972,13 @@ export class BillComponent implements OnInit {
         }).then((result) => {
           if (result.isConfirmed) {
             // this.sp.show();
-
+            if(this.billItemList[i].ID !== null || this.billItemList[i].Status === 1){
+              this.billItemList[i].Status = 0;
+              this.calculateGrandTotal();
+            }
+            console.log(this.billItemList[i].ID, 'item');
+            console.log(this.BillMaster,'Bill');
+            
           }
         })
       }

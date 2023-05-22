@@ -1,0 +1,147 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                    <div class="card p-0">
+                        <div class="header p-2 py-0 pt-1">
+                            <div class="row">
+                                <div class="col-md-2 col-8 p-0 ms-3">
+                                    <h2>Dummy Preorder List
+                                        <button class="bg-btn" >
+                                            <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true"
+                                                type="button"></i>
+                                        </button>
+                                    </h2>
+                                </div>
+                                <div class="col-md-2 col-1 ps-md-0 ps-1">
+                                    <select class=" form-control"
+                                        style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
+                                        [(ngModel)]="itemsPerPage" (change)="getList();">
+                                        <option [ngValue]="10">Show 10 Row</option>
+                                        <option [ngValue]="25">Show 25 Row</option>
+                                        <option [ngValue]="50">Show 50 Row</option>
+                                        <option [ngValue]="100">Show 100 Row</option>
+                                        <option [ngValue]="250">Show 250Row</option>
+                                        <option [ngValue]="500">Show 500 Row</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 col-4 mx-md-auto" style="margin-top:0px;">
+                                    <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false"
+                                        ngbPaginationEllipsis [collectionSize]="collectionSize" #numPages
+                                        [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="getList()"
+                                        [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                                    </ngb-pagination>
+                                </div>
+                                <div class="col-md-2 col-4 ms-auto">
+                                    <div class="input-group">
+                                        <input placeholder="Search" [(ngModel)]="term" #searching mdbInput type="search"
+                                            id="form1" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col-md-1 col-1" style="width: 40px;padding: 0;">
+                                    <button class="bg-none" [routerLink]="['/inventory/pre-order',0]">
+                                        <mat-icon class="col-white plus_icon me-1"> add</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- purchase list start -->
+                        <div class="body mt-md-2 mt-5 p-2">
+                            <div class="row" *ngIf="gridview">
+                                <div class="col-sm-12" style="overflow: auto; height: 530px;">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover table-sm table-bordered"
+                                            style="border: 2px solid #fff !important;">
+                                            <thead>
+                                                <tr class="text-center">
+                                                    <th>Action</th>
+                                                    <th>S.No</th>
+                                                    <th>ProductName</th>
+                                                    <th>ProductTypeName</th>
+                                                    <th>Quantity</th>
+                                                    <th>BarCode</th>
+                                                    <th>UnitPrice</th>
+                                                    <th>Discount</th>
+                                                    <th>GST</th>
+                                                    <th>GSTType</th>
+                                                    <th>RetailPrice</th>
+                                                    <th>WholeSalePrice</th>
+                                                    <th>CreatedBy</th>
+                                                    <th>CreatedOn</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="text-center" *ngFor="let data of dataList let i = index;"
+                                                    style="white-space: nowrap;">
+                                                    <td style="width: 5%;">
+                                                        <button *ngIf="!data.UpdateProduct" class="bg-btn" (click)="showInput(data)">
+                                                            <mat-icon class="edit_icon ms-1" >edit
+                                                            </mat-icon>
+                                                        </button>
+                                                        <button class="bg-btn" (click)="showInput(data) ;updataEditProdcut('','',data)">
+                                                            <mat-icon *ngIf="data.UpdateProduct" class="edit_icon ms-1" >save
+                                                            </mat-icon>
+                                                        </button>
+                                                        <button class="bg-btn" (click)="deleteItem('Product',i)">
+                                                            <mat-icon class="delete_icon ms-1" >delete_forever</mat-icon>
+                                                        </button>
+                                                    </td>
+                                                    <td>{{ dataList.length - i }}</td>
+                                                    <td [ngClass]="{'my_class': data.RetailPrice === data.UnitPrice}" class="text-left">{{data.ProductName}}</td>
+                                                    <td>{{data.ProductTypeName}}</td>
+                                                    <td>{{data.Quantity}}</td>
+                                                    <td>{{data.BarCode}}</td>
+                                                    
+
+                                                    <td *ngIf="!data.UpdateProduct" class="text-center" >
+                                                    {{data.UnitPrice }}</td>
+                                                <td *ngIf="data.UpdateProduct" style=" width:60px;text-align: center;">
+                                                    <input style=" width:60px;text-align: center;" min="0" type="number"
+                                                        [(ngModel)]="data.UnitPrice"
+                                                        (ngModelChange)="data.UnitPrice"
+                                                        (change)="updataEditProdcut('UnitPrice', 'unit',data);"
+                                                        #name="ngModel" [ngModelOptions]="{standalone: true}"
+                                                        name="data{{i}}">
+                                                </td>
+
+                                                    <td>{{data.DiscountPercentage}}%</td>
+                                                    <td>{{data.GSTPercentage}}%</td>
+                                                    <td>{{data.GSTType}}</td>
+                                                    <td *ngIf="!data.UpdateProduct" class="text-center" >
+                                                        {{data.RetailPrice }}</td>
+                                                    <td *ngIf="data.UpdateProduct" style=" width:60px;text-align: center;">
+                                                        <input style=" width:60px;text-align: center;" min="0" type="number"
+                                                            [(ngModel)]="data.RetailPrice"
+                                                            (ngModelChange)="data.RetailPrice"
+                                                            (change)="updataEditProdcut('', '',data)"
+                                                            #name="ngModel" [ngModelOptions]="{standalone: true}"
+                                                            name="data{{i}}">
+                                                    </td>
+
+                                                    <td *ngIf="!data.UpdateProduct" class="text-center" >
+                                                        {{data.WholeSalePrice }}</td>
+                                                    <td *ngIf="data.UpdateProduct" style=" width:60px;text-align: center;">
+                                                        <input style=" width:60px;text-align: center;" min="0" type="number"
+                                                            [(ngModel)]="data.WholeSalePrice"
+                                                            (ngModelChange)="data.WholeSalePrice"
+                                                            (change)="updataEditProdcut('', '',data)"
+                                                            #name="ngModel" [ngModelOptions]="{standalone: true}"
+                                                            name="data{{i}}">
+                                                    </td>
+                                                    <td>{{data.CreatedPerson}}</td>
+                                                    <td>{{data.CreatedOn}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- purchase list end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

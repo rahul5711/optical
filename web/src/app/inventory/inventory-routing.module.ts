@@ -12,6 +12,7 @@ import { PurchaseReturnComponent } from './purchase-return/purchase-return.compo
 import { PurchaseComponent } from './purchase/purchase.component';
 import { SearchBarcodeComponent } from './search-barcode/search-barcode.component';
 import { SupplierComponent } from './supplier/supplier.component';
+import { PerorderDummyListComponent } from './perorder-dummy-list/perorder-dummy-list.component';
 
 const routes: Routes = [
   { path: '',
@@ -26,6 +27,7 @@ const routes: Routes = [
     { path: 'inventory-summary', component: InventorySummaryComponent },  
     { path: 'pre-order/:id', component: PreOrderComponent },  
     { path: 'preOrderList', component: PreorderListComponent },  
+    { path: 'dummyPreorderList', component: PerorderDummyListComponent },  
     { path: 'purchase-return/:id', component: PurchaseReturnComponent },  
     { path: 'purchase-returnList', component: PurchaseReturnListComponent },  
   ]}

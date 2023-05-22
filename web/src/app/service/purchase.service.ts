@@ -158,6 +158,11 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+  listPreOrderDummy(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/listPreOrderDummy', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   deleteProductPreOrder(ID:any,PurchaseMaster:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/deleteProductPreOrder', {ID: ID, PurchaseMaster: PurchaseMaster},  httpOptions)
     .pipe(catchError(this.handleError));
