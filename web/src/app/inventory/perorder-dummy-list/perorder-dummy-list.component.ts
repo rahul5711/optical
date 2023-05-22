@@ -108,10 +108,12 @@ export class PerorderDummyListComponent implements OnInit {
 
     this.dataList.forEach((ele: any) =>{
       if(ele.PurchaseID === data.PurchaseMasterData.ID){
+        if(ele.Status !== 0){
+
         data.PurchaseMasterData.DiscountAmount = (+data.PurchaseMasterData.DiscountAmount + + ele.DiscountAmount).toFixed(2);
         data.PurchaseMasterData.SubTotal = (+data.PurchaseMasterData.SubTotal + + ele.SubTotal).toFixed(2);
         data.PurchaseMasterData.GSTAmount = (+data.PurchaseMasterData.GSTAmount + + ele.GSTAmount).toFixed(2);
-        data.PurchaseMasterData.TotalAmount = (+data.PurchaseMasterData.TotalAmount + + ele.TotalAmount).toFixed(2);
+        data.PurchaseMasterData.TotalAmount = (+data.PurchaseMasterData.TotalAmount + + ele.TotalAmount).toFixed(2);      }
       }
     })
   }
@@ -149,11 +151,8 @@ export class PerorderDummyListComponent implements OnInit {
     });
   }
 
-  deleteItem(Category: any, i: any) {
+  deleteItem(Category: any,i:any , data: any ) {
     if (Category === 'Product') {
-      if (this.dataList[i].ID === null) {
-        this.dataList.splice(i, 1);
-      } else {
         Swal.fire({
           title: 'Are you sure?',
           text: "You won't be able to revert this!",
@@ -168,16 +167,16 @@ export class PerorderDummyListComponent implements OnInit {
             this.sp.show();
             if(this.dataList[i].ID !== null || this.dataList[i].Status === 1){
               this.dataList[i].Status = 0;
-              this.calculate('','','');
+              this.dataList[i].Quantity = 0;
+              this.calculatesss(data)
             }
-         console.log(this.dataList[i]);
-     
+            console.log(this.dataList[i]);
           }
+          this.sp.hide();
         })
-      }
-      this.sp.hide();
     }
+    this.sp.hide();
 
   }
-
+  
 }
