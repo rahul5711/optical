@@ -66,6 +66,8 @@ router.post('/getPurchasereportsDetail', verifyAccessTokenAdmin, Controller.getP
 router.post('/createPreOrder', verifyAccessTokenAdmin, Controller.createPreOrder)
 router.post('/listPreOrder', verifyAccessTokenAdmin, Controller.listPreOrder)
 router.post('/listPreOrderDummy', verifyAccessTokenAdmin, Controller.listPreOrderDummy)
+router.post('/deletePreOrderDummy', verifyAccessTokenAdmin, Controller.deletePreOrderDummy)
+router.post('/updatePreOrderDummy', verifyAccessTokenAdmin, Controller.updatePreOrderDummy)
 router.post('/getPurchaseByIdPreOrder', verifyAccessTokenAdmin, Controller.getPurchaseByIdPreOrder)
 router.post('/deletePreOrder', verifyAccessTokenAdmin, Controller.deletePreOrder)
 router.post('/deleteProductPreOrder', verifyAccessTokenAdmin, Controller.deleteProductPreOrder)

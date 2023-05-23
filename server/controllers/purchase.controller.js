@@ -520,7 +520,7 @@ module.exports = {
             await connection.release();
         }
     },
-    
+
     updateProduct: async (req, res, next) => {
         const connection = await mysql.connection();
         try {
@@ -672,7 +672,7 @@ module.exports = {
             printdata.PurchaseDetails = PurchaseDetail
             printdata.PurchaseCharge = PurchaseCharges
 
-            const shopdetails = await connection.query(`select * from shop where ID = ${shopid}`)           
+            const shopdetails = await connection.query(`select * from shop where ID = ${shopid}`)
             const companysetting = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
             const supplier = await connection.query(`select * from supplier where CompanyID = ${CompanyID} and ID = ${PurchaseMasters.SupplierID}`)
 
@@ -686,7 +686,7 @@ module.exports = {
             var formatName = "PurchasePDF.ejs";
             var file = formatName + "_" + CompanyID + ".pdf";
             fileName = "uploads/" + file;
-            
+
             console.log(fileName);
 
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
@@ -767,7 +767,7 @@ module.exports = {
                         res.send(err);
                     } else {
                         let options;
-    
+
                         if (printdata.CompanyBarcode == 5) {
                             options = {
                                 "height": "0.70in",
@@ -783,7 +783,7 @@ module.exports = {
                                     res.json(updateUrl);
                                 }
                             });
-    
+
                     }
                 }
             );
@@ -1200,7 +1200,7 @@ module.exports = {
     },
 
     transferProductPDF: async (req, res, next) => {
-        
+
             var printdata = req.body;
             printdata.TXdata = printdata;
             var PassNo = Math.trunc(Math.random() * 10000).toString();
@@ -1208,9 +1208,9 @@ module.exports = {
             var fileName = "";
             var file = "TransferProduct" + "_" + printdata[0].CompanyID  + ".pdf";
             var formatName = "TransferProduct.ejs";
-            // var appURL = "http://navient.in:50060/"; 
+            // var appURL = "http://navient.in:50060/";
             fileName = "uploads/" + file;
-        
+
         ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
             if (err) {
                 res.send(err);
@@ -2115,7 +2115,7 @@ module.exports = {
                 shopId = `and purchasemasternew.ShopID = ${shopid}`
             }
 
-            let qry = `select purchasedetailnew.*, supplier.Name as SupplierName,  supplier.GSTNo as GSTNo, users1.Name as CreatedPerson,shop.Name as ShopName, shop.AreaName as AreaName, users.Name as UpdatedPerson from purchasedetailnew LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID left join user as users1 on users1.ID = purchasedetailnew.CreatedBy left join user as users on users.ID = purchasedetailnew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and purchasemasternew.PStatus = 1 and purchasemasternew.CompanyID = ${CompanyID} ${shopId} order by purchasedetailnew.ID desc`
+            let qry = `select purchasedetailnew.*, supplier.Name as SupplierName,  supplier.GSTNo as GSTNo, users1.Name as CreatedPerson,shop.Name as ShopName, shop.AreaName as AreaName, users.Name as UpdatedPerson from purchasedetailnew LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID left join user as users1 on users1.ID = purchasedetailnew.CreatedBy left join user as users on users.ID = purchasedetailnew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and purchasemasternew.PStatus = 1 and purchasedetailnew.Status = 1 and purchasemasternew.CompanyID = ${CompanyID} ${shopId} order by purchasedetailnew.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -2136,6 +2136,79 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
+            // connection.release()
+            res.send(response)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+    deletePreOrderDummy: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+
+            const {
+                PurchaseMaster,
+                PurchaseDetail,
+            } = req.body;
+
+          // update purchasemaster
+            const updatePurchaseMaster = await connection.query(`update purchasemasternew set  Quantity = ${PurchaseMaster.Quantity}, SubTotal = ${PurchaseMaster.SubTotal}, DiscountAmount = ${PurchaseMaster.DiscountAmount}, GSTAmount=${PurchaseMaster.GSTAmount}, TotalAmount = ${PurchaseMaster.TotalAmount}, DueAmount = ${PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and ShopID = ${shopid} and ID=${PurchaseMaster.ID}`)
+
+            console.log(connected("Purchase Update SuccessFUlly !!!"));
+
+            const deletePurchasedetail = await connection.query(`update purchasedetailnew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${PurchaseDetail.ID} and CompanyID = ${CompanyID}`)
+
+            console.log("Product Delete SuccessFUlly !!!");
+
+            const deleteBarcode = await connection.query(`update barcodemasternew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where purchaseDetailID = ${PurchaseDetail.ID} and CompanyID = ${CompanyID}`)
+
+            console.log("Barcode Delete SuccessFUlly !!!");
+
+            response.message = "data delete sucessfully"
+            response.data = []
+            // connection.release()
+            res.send(response)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+    updatePreOrderDummy: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+
+            const {
+                PurchaseMaster,
+                PurchaseDetail,
+            } = req.body;
+
+          // update purchasemaster
+            const updatePurchaseMaster = await connection.query(`update purchasemasternew set  Quantity = ${PurchaseMaster.Quantity}, SubTotal = ${PurchaseMaster.SubTotal}, DiscountAmount = ${PurchaseMaster.DiscountAmount}, GSTAmount=${PurchaseMaster.GSTAmount}, TotalAmount = ${PurchaseMaster.TotalAmount}, DueAmount = ${PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and ShopID = ${shopid} and ID=${PurchaseMaster.ID}`)
+
+            console.log(connected("Purchase Update SuccessFUlly !!!"));
+
+            const updatePurchasedetail = await connection.query(`update purchasedetailnew set UnitPrice=${PurchaseDetail.UnitPrice}, Quantity=${PurchaseDetail.Quantity}, SubTotal=${PurchaseDetail.SubTotal},DiscountPercentage=${PurchaseDetail.DiscountPercentage},DiscountAmount=${PurchaseDetail.DiscountAmount},GSTPercentage=${PurchaseDetail.GSTPercentage},GSTAmount=${PurchaseDetail.GSTAmount},GSTType='${PurchaseDetail.GSTType}',RetailPrice=${PurchaseDetail.RetailPrice},WholeSalePrice=${PurchaseDetail.WholeSalePrice}, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${PurchaseDetail.ID} and CompanyID = ${CompanyID}`)
+
+            console.log("Product Update SuccessFUlly !!!");
+
+
+            response.message = "data update sucessfully"
+            response.data = []
             // connection.release()
             res.send(response)
         } catch (err) {
@@ -3215,7 +3288,7 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const shopid = await shopID(req.headers) || 0;
-       
+
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
