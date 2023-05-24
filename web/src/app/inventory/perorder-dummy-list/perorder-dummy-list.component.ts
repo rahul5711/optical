@@ -10,6 +10,8 @@ import { environment } from 'src/environments/environment';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { CalculationService } from 'src/app/service/helpers/calculation.service';
+import { ProductService } from 'src/app/service/product.service';
+import { SupplierService } from 'src/app/service/supplier.service';
 
 @Component({
   selector: 'app-perorder-dummy-list',
@@ -18,9 +20,16 @@ import { CalculationService } from 'src/app/service/helpers/calculation.service'
 })
 export class PerorderDummyListComponent implements OnInit {
   @ViewChild('searching') searching: ElementRef | any;
+  companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+
   env = environment;
   gridview = true;
   term: any;
+
+  supplierList: any;
+  selectedProduct: any;
+  prodList:any;
+  specList: any;
   dataList: any;
   currentPage = 1;
   itemsPerPage = 10;
@@ -35,7 +44,8 @@ export class PerorderDummyListComponent implements OnInit {
     private excelService: ExcelService,
     private purchaseService: PurchaseService,
     public calculation: CalculationService,
-
+    private ps: ProductService,
+    private sup: SupplierService,
   ) { }
 
   selectedPurchaseMaster: any = {
@@ -49,10 +59,190 @@ export class PerorderDummyListComponent implements OnInit {
     Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: 0.00, WholeSalePrice: 0.00, Ledger: false, WholeSale: false, BaseBarCode: '', NewBarcode: '', Status: 1, BrandType: 0, UpdateProduct: false
   };
 
+  data1:any = {SupplierID: 0,  Barcode: "", stringProductName :'', ProductCategory : 0, ProductName:'',  };
+
   data: any = { PurchaseMaster: null, PurchaseDetail: null };
 
   ngOnInit(): void {
+    this.dropdownSupplierlist();
+    this.getProductList();
     this.getList();
+  }
+
+  dropdownSupplierlist(){
+    this.sp.show()
+    const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.supplierList  = res.data
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    this.sp.hide()
+  }
+
+  getProductList(){
+    this.sp.show()
+    const subs: Subscription =  this.ps.getList().subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.prodList  = res.data
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    this.sp.hide()
+  }
+
+  getFieldList(){
+    if(this.data1.ProductCategory !== 0){
+      this.prodList.forEach((element: any) => {
+        if (element.ID === this.data1.ProductCategory) {
+          this.selectedProduct = element.Name;
+        }
+      })
+      const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
+        next: (res: any) => {
+          if(res.success){
+            this.specList = res.data;
+            this.getSptTableData();
+            this.as.successToast(res.message)
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+       },
+       error: (err: any) => console.log(err.message),
+       complete: () => subs.unsubscribe(),
+     });
+     this.sp.hide()
+    }
+    else {
+      this.specList = [];
+      this.data1.ProductName = '';
+      this.data1.ProductCategory = 0;
+    }
+  }
+
+  getSptTableData() { 
+    this.sp.show()
+    this.specList.forEach((element: any) => {
+     if (element.FieldType === 'DropDown' && element.Ref === '0') {
+       const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
+         next: (res: any) => {
+          if(res.success){
+            element.SptTableData = res.data;   
+            element.SptFilterData = res.data; 
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+         },
+         error: (err: any) => console.log(err.message),
+         complete: () => subs.unsubscribe(),
+       });
+     }
+    });
+    this.sp.hide()
+  }
+
+  getFieldSupportData(index:any) {
+    this.sp.show()
+    this.specList.forEach((element: any) => {
+     if (element.Ref === this.specList[index].FieldName.toString() ) {
+       const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
+         next: (res: any) => {
+          if(res.success){
+            element.SptTableData = res.data; 
+            element.SptFilterData = res.data;   
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+         },
+         error: (err: any) => console.log(err.message),
+         complete: () => subs.unsubscribe(),
+       });
+      }
+     });
+     this.sp.hide()
+  }
+
+  onChange(event: any) {
+    if (this.companysetting.DataFormat === '1') {
+      event = event.toUpperCase()
+    } else if (this.companysetting.DataFormat == '2') {
+      event = event.toTitleCase()
+    }
+    return event;
+  }
+
+  filter() {
+    let productName = '';
+    this.specList.forEach((element: any) => {
+     if (productName === '') {
+        productName = element.SelectedValue;
+     } else if (element.SelectedValue !== '') {
+        productName += '/' + element.SelectedValue;
+     }
+    });
+    this.data1.ProductName = productName;
+  }
+
+  getDummyData(){
+    this.sp.show()
+    let Parem = '';
+
+    if (this.data1.SupplierID !== 0){
+      Parem = Parem + ' and purchasemasternew.SupplierID = ' +  this.data1.SupplierID;}
+
+    if (this.data1.Barcode !== ''){
+      Parem = Parem + ' and barcodemasternew.Barcode Like ' + '"' + this.data1.Barcode + '%"';}
+
+    if (this.data1.stringProductName !== ''){
+      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + '"' + this.data1.stringProductName + '%"';}
+
+    if (this.data1.ProductCategory  !== 0){
+      Parem = Parem + ' and purchasedetailnew.ProductTypeID = ' +  this.data1.ProductCategory ;
+      this.filter();}
+
+    if (this.data1.ProductName !== '') {
+      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + '"' + this.data1.ProductName + '%"';}
+
+      const dtm = {
+        currentPage: 1,
+        itemsPerPage: 50000,
+        Parem : Parem
+      }
+
+      const subs: Subscription = this.purchaseService.listPreOrderDummy(dtm).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.collectionSize = 1;
+            this.page = 1;
+            this.dataList = res.data;
+            this.as.successToast(res.message)
+          } else {
+            this.as.successToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+      this.sp.hide();
+
   }
 
   changePagesize(num: number): void {
@@ -63,7 +253,7 @@ export class PerorderDummyListComponent implements OnInit {
     this.sp.show()
     const dtm = {
       currentPage: this.currentPage,
-      itemsPerPage: this.itemsPerPage
+      itemsPerPage: this.itemsPerPage,
     }
     const subs: Subscription = this.purchaseService.listPreOrderDummy(dtm).subscribe({
       next: (res: any) => {
@@ -93,11 +283,8 @@ export class PerorderDummyListComponent implements OnInit {
         data.SubTotal = +data.Quantity * +data.UnitPrice - +data.DiscountAmount;
         data.GSTAmount = (+data.UnitPrice * +data.Quantity - data.DiscountAmount) * +data.GSTPercentage / 100;
         data.TotalAmount = +data.SubTotal + +data.GSTAmount;
-
-
         break;
     }
-
   }
 
   calculatesss(data: any) {
@@ -119,6 +306,7 @@ export class PerorderDummyListComponent implements OnInit {
   }
 
   updataEditProdcut(fieldName: any, mode: any, data: any) {
+    this.sp.show()
     this.calculate(fieldName, mode, data)
     this.calculatesss(data)
     const dtm: any = {
@@ -148,6 +336,7 @@ export class PerorderDummyListComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
   }
 
   deleteItem(Category: any, i: any, data: any) {
@@ -207,4 +396,26 @@ export class PerorderDummyListComponent implements OnInit {
     this.sp.hide();
   }
 
+  exportAsXLSX(): void {
+    let data = this.dataList.map((e: any) => {
+      return{
+        ProductName : e.ProductName,
+        ProductTypeName: e.ProductTypeName,
+        Quantity : e.Quantity,
+        BaseBarCode : e.BaseBarCode,
+        UnitPrice : e.UnitPrice,
+        DiscountPercentage : e.DiscountPercentage,
+        GSTPercentage : e.GSTPercentage,
+        GSTType : e.GSTType,
+        RetailPrice : e.RetailPrice,
+        WholeSalePrice : e.WholeSalePrice,
+        ShopName : e.ShopName,
+        AreaName : e.AreaName,
+      }
+    })
+    this.excelService.exportAsExcelFile(data, 'PreorderDummyList');
+  }
+
+
 }
+
