@@ -478,8 +478,7 @@
                                                 </td>
                                                 <td class="text-center"
                                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    <span *ngIf="data.BaseBarCode !== ''">{{data.BaseBarCode *
-                                                        1000}}</span> </td>
+                                                    <span *ngIf="data.BaseBarCode !== ''">{{data.BaseBarCode * 1000}}</span> </td>
                                                 <td class="text-center"
                                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                                     {{data.UniqueBarcode}}</td>
