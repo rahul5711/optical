@@ -109,7 +109,6 @@ export class PerorderDummyListComponent implements OnInit {
     this.dataList.forEach((ele: any) => {
       if (ele.PurchaseID === data.PurchaseMasterData.ID) {
         if (ele.Status !== 0) {
-
           data.PurchaseMasterData.DiscountAmount = (+data.PurchaseMasterData.DiscountAmount + + ele.DiscountAmount).toFixed(2);
           data.PurchaseMasterData.SubTotal = (+data.PurchaseMasterData.SubTotal + + ele.SubTotal).toFixed(2);
           data.PurchaseMasterData.GSTAmount = (+data.PurchaseMasterData.GSTAmount + + ele.GSTAmount).toFixed(2);
@@ -131,7 +130,6 @@ export class PerorderDummyListComponent implements OnInit {
     const subs: Subscription = this.purchaseService.updatePreOrderDummy(dtm).subscribe({
       next: (res: any) => {
         if (res.success) {
-
           Swal.fire({
             position: 'center',
             icon: 'success',
@@ -139,6 +137,7 @@ export class PerorderDummyListComponent implements OnInit {
             showConfirmButton: false,
             timer: 1200
           })
+          this.getList();
         } else {
           this.as.errorToast(res.message)
         }
@@ -183,6 +182,13 @@ export class PerorderDummyListComponent implements OnInit {
           const subs: Subscription = this.purchaseService.deletePreOrderDummy(body).subscribe({
             next: (res: any) => {
               if (res.success) {
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Your file has been delete.',
+                  showConfirmButton: false,
+                  timer: 1200
+                })
                 this.getList()
                 this.as.successToast(res.message)
               } else {
@@ -193,14 +199,12 @@ export class PerorderDummyListComponent implements OnInit {
             error: (err: any) => console.log(err.message),
             complete: () => subs.unsubscribe(),
           });
-
           console.log(body);
         }
         this.sp.hide();
       })
     }
     this.sp.hide();
-
   }
 
 }

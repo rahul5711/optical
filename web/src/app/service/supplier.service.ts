@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular
 import { Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { SupplierModel} from '../interface/Supplier';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import { SupplierModel} from '../interface/Supplier';
 export class SupplierService {
 
   constructor(private httpClient: HttpClient) { }
-  private url = 'http://localhost:3000/supplier';
+  private url = environment.apiUrl + '/supplier';
 
 
   supplierSave( Body: any): Observable<SupplierModel> {

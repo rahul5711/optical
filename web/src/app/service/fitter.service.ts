@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ import { catchError } from 'rxjs/operators';
 export class FitterService {
 
   constructor(private httpClient: HttpClient) { }
-  private url = 'http://localhost:3000/fitter';
+  private url = environment.apiUrl + '/fitter';
 
 
   saveFitter( Body: any): Observable<any> {

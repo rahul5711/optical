@@ -3,6 +3,11 @@ import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular
 import { Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { CompanyModel } from '../interface/Company';
+import { environment } from '../../environments/environment';
+
+const httpOptions = {
+  headers: new HttpHeaders({'Content-Type': 'application/json'})
+};
 
 @Injectable({
   providedIn: 'root'
@@ -11,69 +16,53 @@ import { CompanyModel } from '../interface/Company';
 export class CompanyService {
 
   loggedInUser:any = localStorage.getItem('LoggedINUser');
+  private url = environment.apiUrl + '/company';
 
   constructor(private httpClient: HttpClient) { }
-  private url = 'http://localhost:3000/company';
   
   
   createCompany( Body: any): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/create', Body, { headers, params })
+    return this.httpClient.post<any>(this.url + '/create', Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   updateCompany( Body: any): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/update', Body, { headers, params })
+    return this.httpClient.post<any>(this.url + '/update', Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
-  getCompanyById(ID:any): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams();
-    return this.httpClient.post<any>(this.url + '/getCompanyById', {ID: ID},  { headers, params })
+  getCompanyById(ID:any): Observable<any> {;
+    return this.httpClient.post<any>(this.url + '/getCompanyById', {ID: ID}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
-  deleteData(ID:any): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams();
-    return this.httpClient.post<any>(this.url + '/delete', {ID: ID},  { headers, params })
+  deleteData(ID:any): Observable<any> {;
+    return this.httpClient.post<any>(this.url + '/delete', {ID: ID},  httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   getList(Body: any): Observable<any> {
-    const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/list', Body, { params })
+    return this.httpClient.post<any>(this.url + '/list', Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   getUserList(Body: any): Observable<any> {
-    const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/user', Body, { params })
+    return this.httpClient.post<any>(this.url + '/user', Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
   
   getLoginList(Body: any): Observable<any> {
-    const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/LoginHistory', Body, { params })
+    return this.httpClient.post<any>(this.url + '/LoginHistory', Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
-
   updatePassword(Body:any): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/updatePassword',  Body, { headers, params })
+    return this.httpClient.post<any>(this.url + '/updatePassword',  Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   updatecompanysetting(Body:any): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/updatecompanysetting',  Body, { headers, params })
+    return this.httpClient.post<any>(this.url + '/updatecompanysetting',  Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
@@ -88,23 +77,18 @@ export class CompanyService {
   }
 
   deactive(ID:any): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/deactive', {ID: ID},  { headers, params })
+    return this.httpClient.post<any>(this.url + '/deactive', {ID: ID},  httpOptions)
     .pipe(catchError(this.handleError));
   }
 
 
   activecompany(ID:any): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/activecompany', {ID: ID},  { headers, params })
+    return this.httpClient.post<any>(this.url + '/activecompany', {ID: ID}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   Deactivelist(Body: any): Observable<any> {
-    const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/Deactivelist', Body, { params })
+    return this.httpClient.post<any>(this.url + '/Deactivelist', Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
 

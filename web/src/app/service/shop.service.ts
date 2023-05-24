@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { catchError } from 'rxjs/operators';
 export class ShopService {
 
   constructor(private httpClient: HttpClient) { }
-  private url = 'http://localhost:3000/shop';
+  private url = environment.apiUrl + '/shop';
 
 
   shopSave( Body: any): Observable<any> {

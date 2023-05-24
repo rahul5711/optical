@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular
 import { Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { CompanyModel } from '../../interface/Company';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class FileUploadService {
   loggedInUser:any = localStorage.getItem('LoggedINUser');
 
   constructor(private httpClient: HttpClient) { }
-  private url = 'http://localhost:3000/file';
+  private url = environment.apiUrl + '/file';
 
 
   uploadFile(file:any): Observable<any> {

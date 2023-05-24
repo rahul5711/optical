@@ -124,6 +124,13 @@ export class CompanyListComponent implements OnInit {
               })
             }else{
               this.as.successToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: res.message,
+                showConfirmButton: false,
+                timer: 1000
+              })
             }
             this.sp.hide();
           },

@@ -2202,7 +2202,7 @@ module.exports = {
 
             console.log(connected("Purchase Update SuccessFUlly !!!"));
 
-            const updatePurchasedetail = await connection.query(`update purchasedetailnew set UnitPrice=${PurchaseDetail.UnitPrice}, Quantity=${PurchaseDetail.Quantity}, SubTotal=${PurchaseDetail.SubTotal},DiscountPercentage=${PurchaseDetail.DiscountPercentage},DiscountAmount=${PurchaseDetail.DiscountAmount},GSTPercentage=${PurchaseDetail.GSTPercentage},GSTAmount=${PurchaseDetail.GSTAmount},GSTType='${PurchaseDetail.GSTType}',RetailPrice=${PurchaseDetail.RetailPrice},WholeSalePrice=${PurchaseDetail.WholeSalePrice}, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${PurchaseDetail.ID} and CompanyID = ${CompanyID}`)
+            const updatePurchasedetail = await connection.query(`update purchasedetailnew set UnitPrice=${PurchaseDetail.UnitPrice}, Quantity=${PurchaseDetail.Quantity}, SubTotal=${PurchaseDetail.SubTotal},DiscountPercentage=${PurchaseDetail.DiscountPercentage},DiscountAmount=${PurchaseDetail.DiscountAmount},GSTPercentage=${PurchaseDetail.GSTPercentage},GSTAmount=${PurchaseDetail.GSTAmount},GSTType='${PurchaseDetail.GSTType}',  TotalAmount = ${PurchaseDetail.TotalAmount}, RetailPrice=${PurchaseDetail.RetailPrice},WholeSalePrice=${PurchaseDetail.WholeSalePrice}, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${PurchaseDetail.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Product Update SuccessFUlly !!!");
 

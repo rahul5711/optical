@@ -79,7 +79,7 @@
                                                             <mat-icon class="edit_icon ms-1" >edit
                                                             </mat-icon>
                                                         </button>
-                                                        <button class="bg-btn" (click)="showInput(data) ;updataEditProdcut('','',data)">
+                                                        <button class="bg-btn" (click)="showInput(data) ;updataEditProdcut('UnitPrice', 'unit',data);">
                                                             <mat-icon *ngIf="data.UpdateProduct" class="edit_icon ms-1" >save
                                                             </mat-icon>
                                                         </button>
@@ -100,7 +100,7 @@
                                                     <input style=" width:60px;text-align: center;" min="0" type="number"
                                                         [(ngModel)]="data.UnitPrice"
                                                         (ngModelChange)="data.UnitPrice"
-                                                        (change)="updataEditProdcut('UnitPrice', 'unit',data);"
+                                                       
                                                         #name="ngModel" [ngModelOptions]="{standalone: true}"
                                                         name="data{{i}}">
                                                 </td>
@@ -114,7 +114,7 @@
                                                         <input style=" width:60px;text-align: center;" min="0" type="number"
                                                             [(ngModel)]="data.RetailPrice"
                                                             (ngModelChange)="data.RetailPrice"
-                                                            (change)="updataEditProdcut('', '',data)"
+                                                            
                                                             #name="ngModel" [ngModelOptions]="{standalone: true}"
                                                             name="data{{i}}">
                                                     </td>
@@ -125,7 +125,7 @@
                                                         <input style=" width:60px;text-align: center;" min="0" type="number"
                                                             [(ngModel)]="data.WholeSalePrice"
                                                             (ngModelChange)="data.WholeSalePrice"
-                                                            (change)="updataEditProdcut('', '',data)"
+                                                            
                                                             #name="ngModel" [ngModelOptions]="{standalone: true}"
                                                             name="data{{i}}">
                                                     </td>
