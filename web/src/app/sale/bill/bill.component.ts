@@ -110,8 +110,8 @@ export class BillComponent implements OnInit {
   GstTypeDis = false
   PowerSelect :any
   PowerByRow:any = []
-  ProductDetails:any 
-  UpdatePowerID:any 
+  ProductDetails:any
+  UpdatePowerID:any
   customerVisiList:any = []
   customerPowerLists:any = []
   invoiceList:any = []
@@ -483,7 +483,7 @@ export class BillComponent implements OnInit {
             this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
             this.BillItem.BaseBarCode = this.searchList.BaseBarCode;
             this.BillItem.Quantity = 0;
-            
+
             if (this.searchList !== undefined || this.searchList.Barcode !== null && this.searchList.BarCodeCount !== 0) {
               if (this.billItemList.length !== 0 && this.BillItem.ProductName !== "") {
                 let itemCount = 0;
@@ -697,7 +697,7 @@ export class BillComponent implements OnInit {
     if (this.BillMaster.ID !== null) {
       this.BillItem.Status = 2;
     }
-     
+
     if (!this.BillItem.PreOrder && !this.BillItem.Manual && this.BillItem.Quantity > this.searchList.BarCodeCount) {
       Swal.fire({
         icon: 'warning',
@@ -779,7 +779,7 @@ export class BillComponent implements OnInit {
 
         // additem Manual
         if (this.BillItem.Manual) {
-          
+
           let searchString = "";
           this.prodList.forEach((e: any) => {
             if (e.Name === this.selectedProduct) {
@@ -856,7 +856,7 @@ export class BillComponent implements OnInit {
                 this.BillItem.MeasurementID = []
                 this.addProductItem();
               }
-      
+
             },
             error: (err: any) => console.log(err.message),
             complete: () => subs.unsubscribe(),
@@ -977,7 +977,20 @@ export class BillComponent implements OnInit {
             this.data.billMaseterData = this.BillMaster;
             this.data.billDetailData = this.billItemList[i];
             delete this.data.service
-            console.log(this.data);
+            const subs: Subscription = this.bill.deleteProduct(this.data).subscribe({
+              next: (res: any) => {
+                if (res.success) {
+                  console.log(res);
+
+                  this.sp.hide()
+                } else {
+                  this.as.errorToast(res.message)
+                }
+                console.log(res);
+              },
+              error: (err: any) => console.log(err.message),
+              complete: () => subs.unsubscribe(),
+            });
           }
         })
       }
@@ -1004,7 +1017,20 @@ export class BillComponent implements OnInit {
             this.data.service = this.serviceLists[i];
             this.data.billMaseterData = this.BillMaster;
             delete this.data.billDetailData
-            console.log(this.data);
+            const subs: Subscription = this.bill.deleteProduct(this.data).subscribe({
+              next: (res: any) => {
+                if (res.success) {
+                  console.log(res);
+
+                  this.sp.hide()
+                } else {
+                  this.as.errorToast(res.message)
+                }
+                console.log(res);
+              },
+              error: (err: any) => console.log(err.message),
+              complete: () => subs.unsubscribe(),
+            });
           }
         })
 
@@ -1020,9 +1046,9 @@ export class BillComponent implements OnInit {
     this.PowerByRow = []
     this.customerPowerLists = []
     if(data.MeasurementID !== ''){
-      this.PowerByRow = JSON.parse(data.MeasurementID) 
+      this.PowerByRow = JSON.parse(data.MeasurementID)
     }
-    this.ProductDetails =  data.ProductTypeName + '/' + data.ProductName 
+    this.ProductDetails =  data.ProductTypeName + '/' + data.ProductName
     this.UpdatePowerID = data
     let type = '';
     if(data.ProductTypeName === "LENS" || data.ProductTypeName === "LENSES"){
@@ -1030,7 +1056,7 @@ export class BillComponent implements OnInit {
     }else{
       type = 'ContactLens'
     }
-   
+
     const subs: Subscription = this.cs.getMeasurementByCustomerForDropDown(this.id , type).subscribe({
       next: (res: any) => {
           if(res.success ){
@@ -1063,7 +1089,7 @@ export class BillComponent implements OnInit {
   updatePower(){
     this.sp.show()
    let ID = this.UpdatePowerID.ID
-   let MeasurementID = JSON.stringify(this.customerPowerLists) 
+   let MeasurementID = JSON.stringify(this.customerPowerLists)
     const subs: Subscription = this.bill.updatePower(ID , MeasurementID).subscribe({
       next: (res: any) => {
           if(res.success ){
@@ -1095,7 +1121,7 @@ export class BillComponent implements OnInit {
     this.sp.hide()
 
   }
-  
+
 
 
   openModal1(content1: any){
@@ -1112,7 +1138,7 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.bill.billByCustomer(CustomerID).subscribe({
       next: (res: any) => {
         console.log(res);
-        
+
           if(res.success ){
              this.invoiceList = res.data
           }else{
@@ -1142,7 +1168,7 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.bill.paymentHistoryByMasterID(CustomerID,BillMasterID).subscribe({
       next: (res: any) => {
         console.log(res);
-        
+
           if(res.success ){
              this.paidList = res.data
           }else{

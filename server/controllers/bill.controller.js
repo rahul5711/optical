@@ -752,7 +752,9 @@ module.exports = {
     },
 
     deleteProduct: async (req, res, next) => {
+        const connection = await mysql.connection();
         try {
+            return res.send({message: "coming soon !!!!"})
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -761,23 +763,90 @@ module.exports = {
             const { billMaseterData, billDetailData, service } = req.body
 
             if (!billMaseterData) return res.send({ message: "Invalid Query Data" })
-            if (!billDetailData) return res.send({ message: "Invalid Query Data" })
-            if (!billDetailData.length && !service.length) return res.send({ message: "Invalid Query Data" })
+            // if (!billDetailData) return res.send({ message: "Invalid Query Data" })
+            // if (!billDetailData.length && !service.length) return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.ID === null || billMaseterData.ID === undefined || billMaseterData.ID == 0 || billMaseterData.ID === "") return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.ShopID === null || billMaseterData.ShopID === undefined || billMaseterData.ShopID == 0 || billMaseterData.ShopID === "") return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.InvoiceNo === null || billMaseterData.InvoiceNo === undefined || billMaseterData.InvoiceNo == 0 || billMaseterData.InvoiceNo === "") return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.CustomerID === null || billMaseterData.CustomerID === undefined) return res.send({ message: "Invalid Query Data" })
 
+
             let bMaster = {
-                ID,
-                Quantity,
-                SubTotal,
-                DiscountAmount,
-                GSTAmount,
-                AddlDiscount,
-                TotalAmount,
-                DueAmount
+                ID: billMaseterData.ID,
+                Quantity: billMaseterData.Quantity,
+                SubTotal: billMaseterData.SubTotal,
+                GSTAmount: billMaseterData.GSTAmount,
+                DiscountAmount: billMaseterData.DiscountAmount,
+                AddlDiscount: billMaseterData.AddlDiscount,
+                TotalAmount: billMaseterData.TotalAmount,
+                DueAmount: billMaseterData.DueAmount
             }
+
+            console.log(bMaster, 'previous');
+
+
+            if (billDetailData) {
+
+                const bDetail = {
+                    ID: billDetailData.ID,
+                    Quantity: billDetailData.Quantity,
+                    SubTotal: billDetailData.SubTotal,
+                    GSTAmount: billDetailData.GSTAmount,
+                    DiscountAmount: billDetailData.DiscountAmount,
+                    TotalAmount: billDetailData.TotalAmount,
+                    Manual: billDetailData.Manual,
+                    PreOrder: billDetailData.PreOrder
+                }
+
+                // update calculation
+                bMaster.Quantity -= bDetail.Quantity
+                bMaster.SubTotal -= bDetail.SubTotal
+                bMaster.GSTAmount -= bDetail.GSTAmount
+                bMaster.DiscountAmount -= bDetail.DiscountAmount
+                bMaster.TotalAmount -= bDetail.TotalAmount
+                bMaster.DueAmount -= bDetail.TotalAmount
+
+                // delete bill product
+
+                const delProduct = await connection.query(`update billdetail set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn= now() where ID = ${bDetail.ID}`)
+
+                if (bDetail.Manual === 1) {
+
+                }
+
+                if (bDetail.PreOrder === 1) {
+
+                }
+
+                if (bDetail.Manual === 0 && bDetail.PreOrder === 0) {
+
+                }
+            }
+
+            if (service) {
+
+                const bService = {
+                    ID: service.ID,
+                    BillID: service.BillID,
+                    GSTAmount: service.GSTAmount,
+                    Price: service.Price,
+                    TotalAmount: service.TotalAmount
+                }
+                // update calculation
+                bMaster.SubTotal -= bService.Price
+                bMaster.GSTAmount -= bService.GSTAmount
+                bMaster.TotalAmount -= bService.TotalAmount
+                bMaster.DueAmount -= bService.TotalAmount
+
+                // delete service
+
+                const delService = await connection.query(`update billservice set Status = 0 where ID = ${bService.ID}`)
+            }
+
+
+
+            console.log(bMaster, 'update');
+
 
 
 
