@@ -81,7 +81,7 @@ export class BillComponent implements OnInit {
   };
 
   customerPower: any = []
-  data = { billMaseterData: null, billDetailData: null, service: null };
+  data:any = { billMaseterData: null, billDetailData: null, service: null };
 
   category = 'Product';
   employeeList: any;
@@ -973,9 +973,10 @@ export class BillComponent implements OnInit {
         }).then((result) => {
           if (result.isConfirmed) {
             // this.sp.show();
+            this.billItemList[i].Status = 0;
             this.data.billMaseterData = this.BillMaster;
             this.data.billDetailData = this.billItemList[i];
-            this.data.service = this.serviceLists;
+            delete this.data.service
             console.log(this.data);
           }
         })
@@ -987,7 +988,27 @@ export class BillComponent implements OnInit {
         this.serviceLists.splice(i, 1);
         this.calculateGrandTotal();
       } else {
-        this.serviceLists[i].Status = 0;
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!',
+          backdrop: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // this.sp.show();
+            this.serviceLists[i].Status = 0;
+            this.data.service = this.serviceLists[i];
+            this.data.billMaseterData = this.BillMaster;
+            delete this.data.billDetailData
+            console.log(this.data);
+          }
+        })
+
+
       }
     }
 
