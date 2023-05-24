@@ -208,7 +208,7 @@ export class PerorderDummyListComponent implements OnInit {
       Parem = Parem + ' and purchasemasternew.SupplierID = ' +  this.data1.SupplierID;}
 
     if (this.data1.Barcode !== ''){
-      Parem = Parem + ' and barcodemasternew.Barcode Like ' + '"' + this.data1.Barcode + '%"';}
+      Parem = Parem + ' and purchasedetailnew.BaseBarCode Like ' + '"' + this.data1.Barcode + '%"';}
 
     if (this.data1.stringProductName !== ''){
       Parem = Parem + ' and purchasedetailnew.ProductName Like ' + '"' + this.data1.stringProductName + '%"';}
