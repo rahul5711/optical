@@ -956,10 +956,11 @@ export class BillComponent implements OnInit {
   }
 
   deleteItem(category: any, i: any) {
-    if (category === "Product") {
+    if (category === "Product" ) {
       if (this.billItemList[i].ID === null) {
-        this.billItemList.splice(i, 1);
-      } else {
+         this.billItemList.splice(i, 1);
+         this.calculateGrandTotal();
+      }  else {
         Swal.fire({
           title: 'Are you sure?',
           text: "You won't be able to revert this!",
@@ -984,11 +985,12 @@ export class BillComponent implements OnInit {
     else if (category === "Service") {
       if (this.serviceLists[i].ID === null) {
         this.serviceLists.splice(i, 1);
+        this.calculateGrandTotal();
       } else {
         this.serviceLists[i].Status = 0;
       }
     }
-    this.calculateGrandTotal();
+
   }
 
   openModal(content: any, data:any){
