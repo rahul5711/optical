@@ -809,17 +809,31 @@ module.exports = {
                 // delete bill product
 
                 const delProduct = await connection.query(`update billdetail set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn= now() where ID = ${bDetail.ID}`)
+                console.log(connected("Bill Detail Update SuccessFUlly !!!"));
 
                 if (bDetail.Manual === 1) {
-
+                    const updateBarcode = await connection.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Not Available' limit ${bDetail.Quantity}`)
+                    console.log(connected("Barcode Update SuccessFUlly !!!"));
                 }
 
                 if (bDetail.PreOrder === 1) {
+                    const fetchBarcode = await connection.query(`select * from barcodemasternew where BillDetailID = ${bDetail.ID} and PurchaseDetailID = 0 and CurrentStatus = 'Pre Order' limit ${bDetail.Quantity}`);
 
+                    // if length available it means product in only pre order not purchsed right now, you have to only delete
+                    if (fetchBarcode.length && fetchBarcode.length === bDetail.Quantity) {
+                        const updateBarcode = await connection.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Pre Order' and PurchaseDetailID = 0 limit ${bDetail.Quantity}`)
+                        console.log(connected("Barcode Update SuccessFUlly !!!"));
+                    }
+                    // if product is in preorder and has been purchased so we have to update for availlable
+                    else if (!fetchBarcode.length) {
+                        const updateBarcode = await connection.query(`update barcodemasternew set BillDetailID=0,CurrentStatus='Available' where BillDetailID = ${bDetail.ID} and PurchaseDetailID != 0 limit ${bDetail.Quantity}`)
+                        console.log(connected("Barcode Update SuccessFUlly !!!"));
+                    }
                 }
 
                 if (bDetail.Manual === 0 && bDetail.PreOrder === 0) {
-
+                    const updateBarcode = await connection.query(`update barcodemasternew set CurrentStatus='Available', BillDetailID=0 where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Sold' limit ${bDetail.Quantity}`)
+                    console.log(connected("Barcode Update SuccessFUlly !!!"));
                 }
             }
 
@@ -841,9 +855,39 @@ module.exports = {
                 // delete service
 
                 const delService = await connection.query(`update billservice set Status = 0 where ID = ${bService.ID}`)
+
+                console.log(connected("Bill Service Update SuccessFUlly !!!"));
             }
 
+            let DueAmount = 0
+            let CreditAmount = 0
+            DueAmount = bMaster.DueAmount
 
+            if (DueAmount < 0) {
+                CreditAmount = Math.abs(DueAmount)
+                bMaster.DueAmount = 0
+            }
+
+            // update bill naster
+            const updateMaster = await connection.query(`update billmaster set Quantity=${bMaster.Quantity}, SubTotal=${bMaster.SubTotal}, GSTAmount=${bMaster.GSTAmount}, DiscountAmount=${bMaster.DiscountAmount}, TotalAmount=${bMaster.TotalAmount}, DueAmount=${bMaster.DueAmount} where ID=${bMaster.ID}`)
+            console.log(connected("Bill Master Update SuccessFUlly !!!"));
+
+
+            // if payment length zero we have to update payment
+            const doesCheckPayment = await connection.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${bMaster.InvoiceNo}' and BillMasterID = ${bMaster.ID}`)
+
+            if (doesCheckPayment.length === 1) {
+             //  update payment
+            const updatePaymentMaster = await connection.query(`update paymentmaster set PayableAmount = ${bMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+
+            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount = 0 , DueAmount = ${bMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
+            console.log(connected("Payment Update SuccessFUlly !!!"));
+            }
+
+            // generate credit note
+            if (CreditAmount !== 0) {
+
+            }
 
             console.log(bMaster, 'update');
 
