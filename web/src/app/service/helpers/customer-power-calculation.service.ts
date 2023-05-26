@@ -32,6 +32,19 @@ export class CustomerPowerCalculationService {
         alert("please fill up Number value");
         spectacle.REDPSPH = 0.00;
       }
+      if(isNaN(Number(spectacle.L_Addition)) === true) {
+        alert("please fill up Number value");
+        spectacle.L_Addition = 0.00;
+      }
+      if(isNaN(Number(spectacle.LENPSPH )) === true) {
+        alert("please fill up Number value");
+        spectacle.LENPSPH  = 0.00;
+      }
+      if(isNaN(Number(spectacle.LEDPSPH )) === true) {
+        alert("please fill up Number value");
+        spectacle.LEDPSPH  = 0.00;
+      }
+
       // right spectacle calculate start
       if (x === 'RD')
       { if(spectacle.R_Addition !== ''){

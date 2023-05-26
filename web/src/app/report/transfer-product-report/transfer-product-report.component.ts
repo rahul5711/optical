@@ -11,7 +11,7 @@ import * as XLSX from 'xlsx';
 @Component({
   selector: 'app-transfer-product-report',
   templateUrl: './transfer-product-report.component.html',
-  styleUrls: ['./transfer-product-report.component.css']
+  styleUrls: ['./transfer-product-report.component.scss']
 })
 export class TransferProductReportComponent implements OnInit {
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;

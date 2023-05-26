@@ -30,7 +30,7 @@ import { EyetestReportComponent } from './eyetest-report/eyetest-report.componen
 import { ProductReturnComponent } from './product-return/product-return.component';
 import { NgxPrintModule } from 'ngx-print';
 import { SaleReportComponent } from './sale-report/sale-report.component';
-
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   declarations: [
@@ -68,7 +68,8 @@ import { SaleReportComponent } from './sale-report/sale-report.component';
     MatTabsModule,
     NgbModule,
     SharedModule,
-    NgxPrintModule
+    NgxPrintModule,
+    NgSelectModule
 
   ]
 })

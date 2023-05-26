@@ -15,20 +15,20 @@
                             <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getTransferReport()">
                                 <div class="row">
                                     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
-                                        <mat-form-field class="example-full-width mb-0">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>From</mat-label>
                                             <input matInput name="FromDate" type="date" [(ngModel)]="data.FromDate"
                                                 #DOBcontrol />
                                         </mat-form-field>
                                     </div>
                                     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
-                                        <mat-form-field class="example-full-width mb-0">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp ">
                                             <mat-label>To</mat-label>
                                             <input matInput type="date" name="ToDate" [(ngModel)]="data.ToDate" />
                                         </mat-form-field>
                                     </div>
                                     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
-                                        <mat-form-field class="example-full-width mb-0">
+                                        <!-- <mat-form-field class="example-full-width mb-0">
                                             <mat-label>From Shop</mat-label>
                                             <mat-select name="FromShop" [(ngModel)]="data.FromShop" multiple>
                                                 <mat-option [value]=0>All</mat-option>
@@ -37,10 +37,17 @@
                                                         *ngIf="Fs.AreaName !== 'null'">({{Fs.AreaName}})</span>
                                                 </mat-option>
                                             </mat-select>
-                                        </mat-form-field>
+                                        </mat-form-field> -->
+
+                                        <ng-select bindLabel="FromShop" name="FromShop" placeholder="FromShop" [(ngModel)]="data.FromShop" [required]="true" #ShopID="ngModel" [closeOnSelect]="true" [searchable]="true" [multiple]="true"    groupBy="selectedAllGroup" [selectableGroup]="true"  >
+                                            <ng-option [value]=0>All</ng-option>
+                                            <ng-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}}
+                                                 <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'"> ({{s.AreaName}})</span>
+                                            </ng-option>
+                                         </ng-select>
                                     </div>
                                     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
-                                        <mat-form-field class="example-full-width mb-0">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>To Shop</mat-label>
                                             <mat-select name="ToShop" [(ngModel)]="data.ToShop" multiple>
                                                 <mat-option [value]=0>All</mat-option>
@@ -52,7 +59,7 @@
                                         </mat-form-field>
                                     </div>
                                     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
-                                        <mat-form-field class="example-full-width mb-0">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>Transfer Status</mat-label>
                                             <mat-select name="ProductStatus" [(ngModel)]="data.ProductStatus">
                                                 <mat-option [value]="0">All</mat-option>
@@ -63,7 +70,7 @@
                                         </mat-form-field>
                                     </div>
                                     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
-                                        <mat-form-field class="example-full-width mb-0">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>Select Product</mat-label>
                                             <mat-select name="FieldType" [(ngModel)]="data.ProductCategory"
                                                 (selectionChange)="getFieldList()" required #Typecontrol>

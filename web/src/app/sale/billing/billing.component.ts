@@ -79,7 +79,7 @@ export class BillingComponent implements OnInit {
     ID: '', CompanyID: '', Idd: 0, Name: '', Sno: '', TotalCustomer: '', VisitDate: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: '', DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
   };
 
-  spectacle = {
+  spectacle :any = {
     ID: 'null', CustomerID: '', REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
     LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
     R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: '', FileURL: '', Family: 'Self', ExpiryDate: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
@@ -491,27 +491,17 @@ export class BillingComponent implements OnInit {
     this.contactList
   }
 
-  getCustomerById() {
+  getScoList(){
     const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.contactList = res.contact_lens_rx
-          if (this.contactList.length !== 0) {
-            this.clens = res.contact_lens_rx[0]
-            this.clensImage = this.env.apiUrl + res.contact_lens_rx[0].PhotoURL;
-          }
+
           this.data = res.data[0]
           this.data.Idd = res.data[0].Idd
           this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
-          this.otherList = res.other_rx
-          if (this.otherList.length !== 0) {
-            this.other = res.other_rx[0]
-          }
           this.spectacleLists = res.spectacle_rx
-          if (this.spectacleLists.length !== 0) {
-            this.spectacle = res.spectacle_rx[0]
-            this.spectacleImage = this.env.apiUrl + res.spectacle_rx[0].PhotoURL;
-          }
+          this.contactList = res.contact_lens_rx
+          this.otherList = res.other_rx
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
@@ -522,6 +512,45 @@ export class BillingComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     })
+  }
+
+  getCustomerById() {
+    this.sp.show()
+    const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+
+          this.data = res.data[0]
+          this.data.Idd = res.data[0].Idd
+          this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
+
+          if (res.spectacle_rx.length !== 0) {
+            this.spectacle = res.spectacle_rx[0]
+            this.spectacleImage = this.env.apiUrl + res.spectacle_rx[0].PhotoURL;
+          }
+
+          if (this.contactList.length !== 0) {
+            this.clens = res.contact_lens_rx[0]
+            this.clensImage = this.env.apiUrl + res.contact_lens_rx[0].PhotoURL;
+          }
+
+          if (this.otherList.length !== 0) {
+            this.other = res.other_rx[0]
+          }
+           this.getScoList()
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+  
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
+    this.sp.hide()
   }
 
   uploadImage(e: any, mode: any) {
