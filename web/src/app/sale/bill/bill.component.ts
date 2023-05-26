@@ -980,13 +980,11 @@ export class BillComponent implements OnInit {
             const subs: Subscription = this.bill.deleteProduct(this.data).subscribe({
               next: (res: any) => {
                 if (res.success) {
-                  console.log(res);
-
+                  this.getBillById(res.data[0].BillMasterID)
                   this.sp.hide()
                 } else {
                   this.as.errorToast(res.message)
                 }
-                console.log(res);
               },
               error: (err: any) => console.log(err.message),
               complete: () => subs.unsubscribe(),
@@ -1020,13 +1018,11 @@ export class BillComponent implements OnInit {
             const subs: Subscription = this.bill.deleteProduct(this.data).subscribe({
               next: (res: any) => {
                 if (res.success) {
-                  console.log(res);
-
+                  this.getBillById(res.data[0].BillMasterID)
                   this.sp.hide()
                 } else {
                   this.as.errorToast(res.message)
                 }
-                console.log(res);
               },
               error: (err: any) => console.log(err.message),
               complete: () => subs.unsubscribe(),

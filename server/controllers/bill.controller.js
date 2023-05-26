@@ -754,7 +754,7 @@ module.exports = {
     deleteProduct: async (req, res, next) => {
         const connection = await mysql.connection();
         try {
-            return res.send({message: "coming soon !!!!"})
+            // return res.send({message: "coming soon !!!!"})
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -773,6 +773,8 @@ module.exports = {
 
             let bMaster = {
                 ID: billMaseterData.ID,
+                CustomerID: billMaseterData.CustomerID,
+                InvoiceNo: billMaseterData.InvoiceNo,
                 Quantity: billMaseterData.Quantity,
                 SubTotal: billMaseterData.SubTotal,
                 GSTAmount: billMaseterData.GSTAmount,
@@ -808,7 +810,7 @@ module.exports = {
 
                 // delete bill product
 
-                const delProduct = await connection.query(`update billdetail set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn= now() where ID = ${bDetail.ID}`)
+                const delProduct = await connection.query(`update billdetail set Status = 0, UpdatedBy=${LoggedOnUser} where ID = ${bDetail.ID}`)
                 console.log(connected("Bill Detail Update SuccessFUlly !!!"));
 
                 if (bDetail.Manual === 1) {
@@ -885,13 +887,22 @@ module.exports = {
             }
 
             // generate credit note
+            console.log(CreditAmount, 'CreditAmount');
             if (CreditAmount !== 0) {
+                const savePaymentMaster = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${bMaster.CustomerID}, ${CompanyID}, ${shopid},'Customer', 'Debit', now(), 'Customer Credit', '', '${bMaster.InvoiceNo}', ${CreditAmount}, 0, '',1,${LoggedOnUser}, now())`);
 
+                const savePaymentDetail = await connection.query(`insert into paymentdetail(PaymentMasterID, BillID, BillMasterID, CustomerID, CompanyID, Amount, DueAmount, PaymentType, Credit, Status, CreatedBy, CreatedOn)values(${savePaymentMaster.insertId},'${bMaster.InvoiceNo}',${bMaster.ID}, ${bMaster.CustomerID},${CompanyID}, ${CreditAmount}, 0, 'Customer Credit', 'Debit', 1,${LoggedOnUser}, now())`);
+
+                console.log(connected("Customer Credit Update SuccessFUlly !!!"));
             }
 
-            console.log(bMaster, 'update');
-
-
+            response.data = [{
+                "CustomerID" : bMaster.CustomerID,
+                "BillMasterID" : bMaster.ID
+            }]
+            response.message = "success";
+            // connection.release()
+            res.send(response)
 
 
         } catch (err) {
