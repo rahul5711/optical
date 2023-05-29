@@ -7,6 +7,7 @@ import { PurchaseService } from 'src/app/service/purchase.service';
 import { ShopService } from 'src/app/service/shop.service';
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-transfer-product-report',
@@ -15,6 +16,7 @@ import * as XLSX from 'xlsx';
 })
 export class TransferProductReportComponent implements OnInit {
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
+  form: any;
 
   constructor(
     private purchaseService: PurchaseService,
@@ -22,7 +24,13 @@ export class TransferProductReportComponent implements OnInit {
     private ps: ProductService,
     public as: AlertService,
     public sp: NgxSpinnerService,
-  ) { }
+    private fb: FormBuilder,
+
+  ) {
+    this.form = this.fb.group({
+      billerIds: []
+    })
+   }
 
   TransfermasterList:any
   totalQty:any
@@ -32,11 +40,13 @@ export class TransferProductReportComponent implements OnInit {
   prodList:any;
   specList: any;
   DetailtotalQty: any;
-
+  billerList :any = []
+  
   data: any =  {
     FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ToShop: 0, FromShop : 0,ProductStatus: 0,  ProductCategory : 0, ProductName:''
   };
 
+  
   ngOnInit(): void {
     this.getProductList();
     this. dropdownShoplist();
@@ -55,6 +65,15 @@ export class TransferProductReportComponent implements OnInit {
           let shop = res.data
           this.selectsShop = shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
           this.selectsShop =  '/ ' + this.selectsShop[0].Name + ' (' + this.selectsShop[0].AreaName + ')'
+
+          this.billerList = res.data.map((o: any) => {
+            return {
+              id: o.ID,
+              text: `${o.Name}`,
+              // text: `${o.blr_id}`,
+            };
+          });
+
         }else{
           this.as.errorToast(res.message)
         }
@@ -217,5 +236,18 @@ export class TransferProductReportComponent implements OnInit {
     };
     this.TransfermasterList = [];
   }
+
+  public onSelectAll() {
+    const selected = this.billerList.map((item: any) => item.Name);
+    this.form.get('billerIds').patchValue(selected);
+  }
+  
+  public onClearAll() {
+    this.form.get('billerIds').patchValue([]);
+  }
+
+  onClose() {
+    const doc = document.getElementsByClassName('.ng-dropdown-panel')
+}
 
 }

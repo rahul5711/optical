@@ -69,7 +69,7 @@ export class BillComponent implements OnInit {
   }
 
   BillItem: any = {
-    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null, Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00
+    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null, Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal : ''
   };
 
   Service: any = {
@@ -165,7 +165,6 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.bill.getBillById(id).subscribe({
       next: (res: any) => {
         if (res.success) {
-          console.log(res.result.billDetail);
           this.BillMaster = res.result.billMaster[0]
           this.gst_detail = this.BillMaster.gst_detail
           this.billItemList = res.result.billDetail
@@ -696,6 +695,8 @@ export class BillComponent implements OnInit {
   addProductItem() {
     if (this.BillMaster.ID !== null) {
       this.BillItem.Status = 2;
+      this.BillItem.DuaCal = 'yes';
+
     }
 
     if (!this.BillItem.PreOrder && !this.BillItem.Manual && this.BillItem.Quantity > this.searchList.BarCodeCount) {
@@ -866,14 +867,14 @@ export class BillComponent implements OnInit {
         }
   }
 
-    this.BillMaster.Quantity = 0;
-    this.BillMaster.SubTotal = 0;
-    this.BillMaster.DiscountAmount = 0;
-    this.BillMaster.GSTAmount = 0;
-    this.BillMaster.TotalAmount = 0;
-    this.cgst = 0;
-    this.sgst = 0;
-    this.calculateGrandTotal()
+    // this.BillMaster.Quantity = 0;
+    // this.BillMaster.SubTotal = 0;
+    // this.BillMaster.DiscountAmount = 0;
+    // this.BillMaster.GSTAmount = 0;
+    // this.BillMaster.TotalAmount = 0;
+    // this.cgst = 0;
+    // this.sgst = 0;
+    // this.calculateGrandTotal()
   }
 
   onSubmit(content1: any) {
@@ -931,6 +932,7 @@ export class BillComponent implements OnInit {
     })
     this.data.billDetailData = items;
     this.data.service = this.serviceLists;
+    console.log(this.data);
     const subs: Subscription = this.bill.updateBill(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -958,8 +960,11 @@ export class BillComponent implements OnInit {
   deleteItem(category: any, i: any) {
     if (category === "Product" ) {
       if (this.billItemList[i].ID === null) {
-         this.billItemList.splice(i, 1);
-         this.calculateGrandTotal();
+        this.billItemList[i].DuaCal = 'delete';
+        this.calculateGrandTotal();
+        this.billItemList.splice(i, 1);
+        this.calculateGrandTotal();
+
       }  else {
         Swal.fire({
           title: 'Are you sure?',

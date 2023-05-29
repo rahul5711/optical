@@ -47,7 +47,7 @@
               <!-- Bill CustomerID Wise List Of Row -->
               <div *ngIf="this.id !== '0' && user.UserGroup === 'CompanyAdmin'" class="row">
                 <div class="col-md-3 col-12 p-0 ms-3">
-                  <h2>Bill List For <span style="color:#232323;">{{this.dataList[0]?.CustomerName}} </span> </h2>
+                  <h2>Bill List For <span style="color:#232323;">{{this.dataList[0]?.CustomerName | titlecase }} </span> </h2>
                 </div>
 
                 <div *ngIf="this.dataList.length != 0" class="col-md-2 col-4 pt-2" style="border: 1px solid #b4b4b4; height: 38px;">
@@ -65,10 +65,10 @@
                 </div>
                 
                 <div class="col-md-2 col-4 ms-auto">
-                  <div class="input-group">
+                  <!-- <div class="input-group">
                     <input placeholder="Search" [(ngModel)]="term" #searching mdbInput type="search" id="form1"
                       class="form-control" />
-                  </div>
+                  </div> -->
                 </div>
                 <div [routerLink]="['/sale/billing',0,0]" class="col-md-1 col-1" style="width: 40px; padding: 0;">
                   <mat-icon class="col-white plus_icon me-1">
