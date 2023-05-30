@@ -879,11 +879,11 @@ module.exports = {
             const doesCheckPayment = await connection.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${bMaster.InvoiceNo}' and BillMasterID = ${bMaster.ID}`)
 
             if (doesCheckPayment.length === 1) {
-             //  update payment
-            const updatePaymentMaster = await connection.query(`update paymentmaster set PayableAmount = ${bMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+                //  update payment
+                const updatePaymentMaster = await connection.query(`update paymentmaster set PayableAmount = ${bMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
 
-            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount = 0 , DueAmount = ${bMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
-            console.log(connected("Payment Update SuccessFUlly !!!"));
+                const updatePaymentDetail = await connection.query(`update paymentdetail set Amount = 0 , DueAmount = ${bMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
+                console.log(connected("Payment Update SuccessFUlly !!!"));
             }
 
             // generate credit note
@@ -897,8 +897,8 @@ module.exports = {
             }
 
             response.data = [{
-                "CustomerID" : bMaster.CustomerID,
-                "BillMasterID" : bMaster.ID
+                "CustomerID": bMaster.CustomerID,
+                "BillMasterID": bMaster.ID
             }]
             response.message = "success";
             // connection.release()
@@ -1409,5 +1409,47 @@ module.exports = {
         }
 
     },
+
+    // po
+
+    getSupplierPo: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const { ID, Parem } = req.body;
+
+            console.log(req.body);
+
+            if (ID === null || ID === undefined) return res.send({ message: "Invalid Query Data" })
+
+            let masterParam = ``
+            let parem = ``
+            if (Parem !== undefined) {
+                parem  = Parem
+            }
+            if (ID !== 0) {
+                masterParam = ` and billdetail.BillID = ${ID}`
+            }
+
+            let qry = `SELECT 0 AS Sel , barcodemasternew.Barcode, barcodemasternew.BillDetailID, barcodemasternew.PurchaseDetailID, billdetail.BillID,barcodemasternew.CurrentStatus,barcodemasternew.SupplierID,billdetail.BaseBarcode, shop.Name AS ShopName, shop.AreaName, billdetail.ProductName, billdetail.ProductTypeID, billdetail.ProductTypeName, billdetail.HSNCode, billdetail.UnitPrice, billdetail.Quantity, billdetail.SubTotal, billdetail.DiscountPercentage, billdetail.DiscountAmount,billdetail.GSTPercentage, billdetail.GSTAmount, billdetail.GSTType, billdetail.TotalAmount, barcodemasternew.MeasurementID, barcodemasternew.CreatedOn, barcodemasternew.CreatedBy, user.Name AS CreatedPerson FROM  barcodemasternew LEFT JOIN billdetail ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN USER ON user.ID =  barcodemasternew.CreatedBy LEFT JOIN shop ON shop.ID =  barcodemasternew.ShopID WHERE  barcodemasternew.BillDetailID != 0 AND  barcodemasternew.CompanyID = 1 AND barcodemasternew.CurrentStatus = 'Pre Order' AND billdetail.PreOrder = 1  ${masterParam}  ${parem} GROUP BY barcodemasternew.BillDetailID ORDER BY barcodemasternew.ID DESC`
+
+            const data = await connection.query(qry)
+            response.data = data
+            response.message = "success";
+            // connection.release()
+            res.send(response)
+
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    }
 
 }

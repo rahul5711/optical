@@ -32,4 +32,8 @@ router.post('/getSalereports', verifyAccessTokenAdmin, Controller.getSalereports
 
 router.post('/getSalereportsDetail', verifyAccessTokenAdmin, Controller.getSalereportsDetail)
 
+// po
+router.post('/getSupplierPo', verifyAccessTokenAdmin, Controller.getSupplierPo)
+
+
 module.exports = router

@@ -1,0 +1,393 @@
+{
+	"info": {
+		"_postman_id": "b3f79a1e-376c-411c-823e-0566d2e83f6a",
+		"name": "PO",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getSupplierPo",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODU0NzMwMjIsImV4cCI6MTY4NTU1OTQyMiwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.o8IyAU5HBLxdW9Te6kwrOmuveB_txSAmeWNFZG7Rd1s",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": 0,\r\n    \"Parem\": \" and billdetail.ProductTypeID = 4\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/bill/getSupplierPo",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"bill",
+						"getSupplierPo"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getSupplierPo-billpage",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/getSupplierPo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"getSupplierPo"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2011"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"7db-q4hbf9pbcZE6A5x+ySrRmkCX6lc\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 30 May 2023 19:02:44 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Sel\": 0,\n            \"Barcode\": \"90007000\",\n            \"BillDetailID\": 21,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 10,\n            \"CurrentStatus\": \"Pre Order\",\n            \"SupplierID\": 0,\n            \"BaseBarcode\": \"90007\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"PT-2/GBGB/GBGB/\",\n            \"ProductTypeID\": 4,\n            \"ProductTypeName\": \"testproduct-2\",\n            \"HSNCode\": \"test-2\",\n            \"UnitPrice\": 300,\n            \"Quantity\": 3,\n            \"SubTotal\": 900,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 900,\n            \"MeasurementID\": \"{\\\"ID\\\":15,\\\"VisitNo\\\":1,\\\"CompanyID\\\":1,\\\"CustomerID\\\":19202,\\\"REDPSPH\\\":\\\"\\\",\\\"REDPCYL\\\":\\\"\\\",\\\"REDPAxis\\\":\\\"\\\",\\\"REDPVA\\\":\\\"\\\",\\\"LEDPSPH\\\":\\\"\\\",\\\"LEDPCYL\\\":\\\"\\\",\\\"LEDPAxis\\\":\\\"\\\",\\\"LEDPVA\\\":\\\"\\\",\\\"RENPSPH\\\":\\\"\\\",\\\"RENPCYL\\\":\\\"\\\",\\\"RENPAxis\\\":\\\"\\\",\\\"RENPVA\\\":\\\"\\\",\\\"LENPSPH\\\":\\\"\\\",\\\"LENPCYL\\\":\\\"\\\",\\\"LENPAxis\\\":\\\"\\\",\\\"LENPVA\\\":\\\"\\\",\\\"REPD\\\":\\\"\\\",\\\"LEPD\\\":\\\"\\\",\\\"R_Addition\\\":\\\"\\\",\\\"L_Addition\\\":\\\"\\\",\\\"R_Prism\\\":\\\"\\\",\\\"L_Prism\\\":\\\"\\\",\\\"Lens\\\":\\\"\\\",\\\"Shade\\\":\\\"\\\",\\\"Frame\\\":\\\"\\\",\\\"VertexDistance\\\":\\\"\\\",\\\"RefractiveIndex\\\":\\\"\\\",\\\"FittingHeight\\\":\\\"\\\",\\\"ConstantUse\\\":0,\\\"NearWork\\\":0,\\\"DistanceWork\\\":0,\\\"UploadBy\\\":\\\"Upload\\\",\\\"PhotoURL\\\":\\\"\\\",\\\"Status\\\":1,\\\"CreatedBy\\\":2,\\\"CreatedOn\\\":\\\"2023-05-03 01:10:22\\\",\\\"UpdatedBy\\\":null,\\\"Updatedon\\\":\\\"0000-00-00 00:00:00\\\",\\\"FileURL\\\":\\\"\\\",\\\"Family\\\":\\\"Self\\\",\\\"RefferedByDoc\\\":\\\"Self\\\",\\\"Reminder\\\":\\\"6\\\",\\\"ExpiryDate\\\":\\\"2023-11-03\\\"}\",\n            \"CreatedOn\": \"2023-05-06 21:11:11\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\"\n        },\n        {\n            \"Sel\": 0,\n            \"Barcode\": \"90007000\",\n            \"BillDetailID\": 20,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 10,\n            \"CurrentStatus\": \"Pre Order\",\n            \"SupplierID\": 0,\n            \"BaseBarcode\": \"90007\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"pt-2/gbgb/gbgb/\",\n            \"ProductTypeID\": 4,\n            \"ProductTypeName\": \"testproduct-2\",\n            \"HSNCode\": \"test-2\",\n            \"UnitPrice\": 300,\n            \"Quantity\": 1,\n            \"SubTotal\": 300,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 300,\n            \"MeasurementID\": \"undefined\",\n            \"CreatedOn\": \"2023-05-06 21:10:18\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				},
+				{
+					"name": "getSupplierPo-main",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/getSupplierPo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"getSupplierPo"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "3958"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"f76-GoPQ+Gb5hCLRX/BgaPCWX5jopVg\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 30 May 2023 19:03:02 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Sel\": 0,\n            \"Barcode\": \"90008000\",\n            \"BillDetailID\": 31,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 16,\n            \"CurrentStatus\": \"Pre Order\",\n            \"SupplierID\": 0,\n            \"BaseBarcode\": \"90008\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"uylens/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 300,\n            \"Quantity\": 1,\n            \"SubTotal\": 300,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 300,\n            \"MeasurementID\": \"{\\\"ID\\\":13,\\\"VisitNo\\\":2,\\\"CompanyID\\\":1,\\\"CustomerID\\\":19199,\\\"REDPSPH\\\":\\\"+21.00\\\",\\\"REDPCYL\\\":\\\"\\\",\\\"REDPAxis\\\":\\\"\\\",\\\"REDPVA\\\":\\\"\\\",\\\"LEDPSPH\\\":\\\"\\\",\\\"LEDPCYL\\\":\\\"\\\",\\\"LEDPAxis\\\":\\\"\\\",\\\"LEDPVA\\\":\\\"\\\",\\\"RENPSPH\\\":\\\"\\\",\\\"RENPCYL\\\":\\\"\\\",\\\"RENPAxis\\\":\\\"\\\",\\\"RENPVA\\\":\\\"\\\",\\\"LENPSPH\\\":\\\"\\\",\\\"LENPCYL\\\":\\\"\\\",\\\"LENPAxis\\\":\\\"\\\",\\\"LENPVA\\\":\\\"\\\",\\\"REPD\\\":\\\"\\\",\\\"LEPD\\\":\\\"\\\",\\\"R_Addition\\\":\\\"\\\",\\\"L_Addition\\\":\\\"\\\",\\\"R_Prism\\\":\\\"\\\",\\\"L_Prism\\\":\\\"\\\",\\\"Lens\\\":\\\"\\\",\\\"Shade\\\":\\\"\\\",\\\"Frame\\\":\\\"\\\",\\\"VertexDistance\\\":\\\"\\\",\\\"RefractiveIndex\\\":\\\"\\\",\\\"FittingHeight\\\":\\\"\\\",\\\"ConstantUse\\\":0,\\\"NearWork\\\":0,\\\"DistanceWork\\\":0,\\\"UploadBy\\\":\\\"Upload\\\",\\\"PhotoURL\\\":\\\"\\\",\\\"Status\\\":1,\\\"CreatedBy\\\":2,\\\"CreatedOn\\\":\\\"2023-04-26 01:07:48\\\",\\\"UpdatedBy\\\":null,\\\"Updatedon\\\":\\\"0000-00-00 00:00:00\\\",\\\"FileURL\\\":\\\"\\\",\\\"Family\\\":\\\"Self\\\",\\\"RefferedByDoc\\\":\\\"Self\\\",\\\"Reminder\\\":\\\"6\\\",\\\"ExpiryDate\\\":\\\"0000-00-00\\\"}\",\n            \"CreatedOn\": \"2023-05-14 16:36:43\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\"\n        },\n        {\n            \"Sel\": 0,\n            \"Barcode\": \"90007000\",\n            \"BillDetailID\": 21,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 10,\n            \"CurrentStatus\": \"Pre Order\",\n            \"SupplierID\": 0,\n            \"BaseBarcode\": \"90007\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"PT-2/GBGB/GBGB/\",\n            \"ProductTypeID\": 4,\n            \"ProductTypeName\": \"testproduct-2\",\n            \"HSNCode\": \"test-2\",\n            \"UnitPrice\": 300,\n            \"Quantity\": 3,\n            \"SubTotal\": 900,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 900,\n            \"MeasurementID\": \"{\\\"ID\\\":15,\\\"VisitNo\\\":1,\\\"CompanyID\\\":1,\\\"CustomerID\\\":19202,\\\"REDPSPH\\\":\\\"\\\",\\\"REDPCYL\\\":\\\"\\\",\\\"REDPAxis\\\":\\\"\\\",\\\"REDPVA\\\":\\\"\\\",\\\"LEDPSPH\\\":\\\"\\\",\\\"LEDPCYL\\\":\\\"\\\",\\\"LEDPAxis\\\":\\\"\\\",\\\"LEDPVA\\\":\\\"\\\",\\\"RENPSPH\\\":\\\"\\\",\\\"RENPCYL\\\":\\\"\\\",\\\"RENPAxis\\\":\\\"\\\",\\\"RENPVA\\\":\\\"\\\",\\\"LENPSPH\\\":\\\"\\\",\\\"LENPCYL\\\":\\\"\\\",\\\"LENPAxis\\\":\\\"\\\",\\\"LENPVA\\\":\\\"\\\",\\\"REPD\\\":\\\"\\\",\\\"LEPD\\\":\\\"\\\",\\\"R_Addition\\\":\\\"\\\",\\\"L_Addition\\\":\\\"\\\",\\\"R_Prism\\\":\\\"\\\",\\\"L_Prism\\\":\\\"\\\",\\\"Lens\\\":\\\"\\\",\\\"Shade\\\":\\\"\\\",\\\"Frame\\\":\\\"\\\",\\\"VertexDistance\\\":\\\"\\\",\\\"RefractiveIndex\\\":\\\"\\\",\\\"FittingHeight\\\":\\\"\\\",\\\"ConstantUse\\\":0,\\\"NearWork\\\":0,\\\"DistanceWork\\\":0,\\\"UploadBy\\\":\\\"Upload\\\",\\\"PhotoURL\\\":\\\"\\\",\\\"Status\\\":1,\\\"CreatedBy\\\":2,\\\"CreatedOn\\\":\\\"2023-05-03 01:10:22\\\",\\\"UpdatedBy\\\":null,\\\"Updatedon\\\":\\\"0000-00-00 00:00:00\\\",\\\"FileURL\\\":\\\"\\\",\\\"Family\\\":\\\"Self\\\",\\\"RefferedByDoc\\\":\\\"Self\\\",\\\"Reminder\\\":\\\"6\\\",\\\"ExpiryDate\\\":\\\"2023-11-03\\\"}\",\n            \"CreatedOn\": \"2023-05-06 21:11:11\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\"\n        },\n        {\n            \"Sel\": 0,\n            \"Barcode\": \"90007000\",\n            \"BillDetailID\": 20,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 10,\n            \"CurrentStatus\": \"Pre Order\",\n            \"SupplierID\": 0,\n            \"BaseBarcode\": \"90007\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"pt-2/gbgb/gbgb/\",\n            \"ProductTypeID\": 4,\n            \"ProductTypeName\": \"testproduct-2\",\n            \"HSNCode\": \"test-2\",\n            \"UnitPrice\": 300,\n            \"Quantity\": 1,\n            \"SubTotal\": 300,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 300,\n            \"MeasurementID\": \"undefined\",\n            \"CreatedOn\": \"2023-05-06 21:10:18\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\"\n        },\n        {\n            \"Sel\": 0,\n            \"Barcode\": \"90003000\",\n            \"BillDetailID\": 1,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 1,\n            \"CurrentStatus\": \"Pre Order\",\n            \"SupplierID\": 0,\n            \"BaseBarcode\": \"90003\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"pt-2/pt/pt/\",\n            \"ProductTypeID\": 4,\n            \"ProductTypeName\": \"testproduct-2\",\n            \"HSNCode\": \"test-2\",\n            \"UnitPrice\": 300,\n            \"Quantity\": 1,\n            \"SubTotal\": 300,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 300,\n            \"MeasurementID\": \"undefined\",\n            \"CreatedOn\": \"2023-04-30 23:25:10\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				},
+				{
+					"name": "getSupplierPo-filter",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 0,\r\n    \"Parem\": \" and billdetail.ProductTypeID = 4\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/getSupplierPo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"getSupplierPo"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2551"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"9f7-ebMrPmNNY2ibwMilUCD7aqt+aAI\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 30 May 2023 19:05:56 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Sel\": 0,\n            \"Barcode\": \"90007000\",\n            \"BillDetailID\": 21,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 10,\n            \"CurrentStatus\": \"Pre Order\",\n            \"SupplierID\": 0,\n            \"BaseBarcode\": \"90007\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"PT-2/GBGB/GBGB/\",\n            \"ProductTypeID\": 4,\n            \"ProductTypeName\": \"testproduct-2\",\n            \"HSNCode\": \"test-2\",\n            \"UnitPrice\": 300,\n            \"Quantity\": 3,\n            \"SubTotal\": 900,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 900,\n            \"MeasurementID\": \"{\\\"ID\\\":15,\\\"VisitNo\\\":1,\\\"CompanyID\\\":1,\\\"CustomerID\\\":19202,\\\"REDPSPH\\\":\\\"\\\",\\\"REDPCYL\\\":\\\"\\\",\\\"REDPAxis\\\":\\\"\\\",\\\"REDPVA\\\":\\\"\\\",\\\"LEDPSPH\\\":\\\"\\\",\\\"LEDPCYL\\\":\\\"\\\",\\\"LEDPAxis\\\":\\\"\\\",\\\"LEDPVA\\\":\\\"\\\",\\\"RENPSPH\\\":\\\"\\\",\\\"RENPCYL\\\":\\\"\\\",\\\"RENPAxis\\\":\\\"\\\",\\\"RENPVA\\\":\\\"\\\",\\\"LENPSPH\\\":\\\"\\\",\\\"LENPCYL\\\":\\\"\\\",\\\"LENPAxis\\\":\\\"\\\",\\\"LENPVA\\\":\\\"\\\",\\\"REPD\\\":\\\"\\\",\\\"LEPD\\\":\\\"\\\",\\\"R_Addition\\\":\\\"\\\",\\\"L_Addition\\\":\\\"\\\",\\\"R_Prism\\\":\\\"\\\",\\\"L_Prism\\\":\\\"\\\",\\\"Lens\\\":\\\"\\\",\\\"Shade\\\":\\\"\\\",\\\"Frame\\\":\\\"\\\",\\\"VertexDistance\\\":\\\"\\\",\\\"RefractiveIndex\\\":\\\"\\\",\\\"FittingHeight\\\":\\\"\\\",\\\"ConstantUse\\\":0,\\\"NearWork\\\":0,\\\"DistanceWork\\\":0,\\\"UploadBy\\\":\\\"Upload\\\",\\\"PhotoURL\\\":\\\"\\\",\\\"Status\\\":1,\\\"CreatedBy\\\":2,\\\"CreatedOn\\\":\\\"2023-05-03 01:10:22\\\",\\\"UpdatedBy\\\":null,\\\"Updatedon\\\":\\\"0000-00-00 00:00:00\\\",\\\"FileURL\\\":\\\"\\\",\\\"Family\\\":\\\"Self\\\",\\\"RefferedByDoc\\\":\\\"Self\\\",\\\"Reminder\\\":\\\"6\\\",\\\"ExpiryDate\\\":\\\"2023-11-03\\\"}\",\n            \"CreatedOn\": \"2023-05-06 21:11:11\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\"\n        },\n        {\n            \"Sel\": 0,\n            \"Barcode\": \"90007000\",\n            \"BillDetailID\": 20,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 10,\n            \"CurrentStatus\": \"Pre Order\",\n            \"SupplierID\": 0,\n            \"BaseBarcode\": \"90007\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"pt-2/gbgb/gbgb/\",\n            \"ProductTypeID\": 4,\n            \"ProductTypeName\": \"testproduct-2\",\n            \"HSNCode\": \"test-2\",\n            \"UnitPrice\": 300,\n            \"Quantity\": 1,\n            \"SubTotal\": 300,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 300,\n            \"MeasurementID\": \"undefined\",\n            \"CreatedOn\": \"2023-05-06 21:10:18\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\"\n        },\n        {\n            \"Sel\": 0,\n            \"Barcode\": \"90003000\",\n            \"BillDetailID\": 1,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 1,\n            \"CurrentStatus\": \"Pre Order\",\n            \"SupplierID\": 0,\n            \"BaseBarcode\": \"90003\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"pt-2/pt/pt/\",\n            \"ProductTypeID\": 4,\n            \"ProductTypeName\": \"testproduct-2\",\n            \"HSNCode\": \"test-2\",\n            \"UnitPrice\": 300,\n            \"Quantity\": 1,\n            \"SubTotal\": 300,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 300,\n            \"MeasurementID\": \"undefined\",\n            \"CreatedOn\": \"2023-04-30 23:25:10\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				}
+			]
+		},
+		{
+			"name": "getSupplierDropDown",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODU0NzMwMjIsImV4cCI6MTY4NTU1OTQyMiwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.o8IyAU5HBLxdW9Te6kwrOmuveB_txSAmeWNFZG7Rd1s",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": 0,\r\n    \"Parem\": \" and billdetail.ProductTypeID = 4\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/supplier/dropdownlist",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"supplier",
+						"dropdownlist"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getSupplierDropDown",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 0,\r\n    \"Parem\": \" and billdetail.ProductTypeID = 4\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/supplier/dropdownlist",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"supplier",
+								"dropdownlist"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1665"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"681-g4qnflTfcF6702TEdq7xYULKg/8\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 30 May 2023 19:08:02 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 1,\n            \"Sno\": \"1\",\n            \"Name\": \"rahul supplier\",\n            \"CompanyID\": 1,\n            \"MobileNo1\": \"9752885711\",\n            \"MobileNo2\": \"\",\n            \"PhoneNo\": \"\",\n            \"Address\": \"indore\",\n            \"GSTNo\": \"\",\n            \"GSTType\": \"None\",\n            \"Email\": \"\",\n            \"Website\": \"\",\n            \"CINNo\": \"\",\n            \"Fax\": \"\",\n            \"PhotoURL\": \"/uploads/2023/1/1/images/1674485811642.png\",\n            \"ContactPerson\": \"\",\n            \"Remark\": \"\",\n            \"DOB\": \"\",\n            \"Anniversary\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": 2,\n            \"CreatedOn\": \"2023-01-04 22:03:46\",\n            \"UpdatedOn\": \"2023-01-23 20:26:55\"\n        },\n        {\n            \"ID\": 2,\n            \"Sno\": \"2\",\n            \"Name\": \"rahul supplier 2 \",\n            \"CompanyID\": 1,\n            \"MobileNo1\": \"9131860873\",\n            \"MobileNo2\": \"\",\n            \"PhoneNo\": \"\",\n            \"Address\": \"indore 2\",\n            \"GSTNo\": \"\",\n            \"GSTType\": \"None\",\n            \"Email\": \"\",\n            \"Website\": \"\",\n            \"CINNo\": \"\",\n            \"Fax\": \"\",\n            \"PhotoURL\": \"/uploads/2023/3/1/images/1679121906188.png\",\n            \"ContactPerson\": \"\",\n            \"Remark\": \"\",\n            \"DOB\": \"\",\n            \"Anniversary\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": 2,\n            \"CreatedOn\": \"2023-01-07 23:50:27\",\n            \"UpdatedOn\": \"2023-03-18 12:15:09\"\n        },\n        {\n            \"ID\": 3,\n            \"Sno\": \"3\",\n            \"Name\": \"PreOrder Supplier\",\n            \"CompanyID\": 1,\n            \"MobileNo1\": \"9766666248\",\n            \"MobileNo2\": \"\",\n            \"PhoneNo\": \"\",\n            \"Address\": \"pune\",\n            \"GSTNo\": \"\",\n            \"GSTType\": \"None\",\n            \"Email\": \"\",\n            \"Website\": \"\",\n            \"CINNo\": \"\",\n            \"Fax\": \"\",\n            \"PhotoURL\": \"\",\n            \"ContactPerson\": \"\",\n            \"Remark\": \"\",\n            \"DOB\": \"\",\n            \"Anniversary\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-04-23 17:49:39\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\"\n        },\n        {\n            \"ID\": 4,\n            \"Sno\": \"4\",\n            \"Name\": \"santosh\",\n            \"CompanyID\": 1,\n            \"MobileNo1\": \"9766655510\",\n            \"MobileNo2\": \"\",\n            \"PhoneNo\": \"\",\n            \"Address\": \"indore\",\n            \"GSTNo\": \"\",\n            \"GSTType\": \"None\",\n            \"Email\": \"\",\n            \"Website\": \"\",\n            \"CINNo\": \"\",\n            \"Fax\": \"\",\n            \"PhotoURL\": \"\",\n            \"ContactPerson\": \"\",\n            \"Remark\": \"\",\n            \"DOB\": \"\",\n            \"Anniversary\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"UpdatedBy\": null,\n            \"CreatedOn\": \"2023-05-14 17:14:08\",\n            \"UpdatedOn\": \"0000-00-00 00:00:00\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\"\n}"
+				}
+			]
+		}
+	]
+}
