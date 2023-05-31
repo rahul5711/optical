@@ -35,5 +35,7 @@ router.post('/getSalereportsDetail', verifyAccessTokenAdmin, Controller.getSaler
 // po
 router.post('/getSupplierPo', verifyAccessTokenAdmin, Controller.getSupplierPo)
 
+// save supplier getfitter po and save fitter po
+
 
 module.exports = router
