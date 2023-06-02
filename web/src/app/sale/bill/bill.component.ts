@@ -1047,6 +1047,7 @@ export class BillComponent implements OnInit {
 
   }
 
+  // update power 
   openModal(content: any, data:any){
     this.sp.show()
     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
@@ -1129,7 +1130,7 @@ export class BillComponent implements OnInit {
 
   }
 
-
+  // update payment 
 
   openModal1(content1: any){
     this.sp.show()
@@ -1167,7 +1168,6 @@ export class BillComponent implements OnInit {
     this.sp.hide()
   }
 
-
   paymentHistoryByMasterID(){
     this.sp.show()
     let CustomerID = Number(this.id)
@@ -1197,6 +1197,8 @@ export class BillComponent implements OnInit {
     this.sp.hide()
   }
 
+
+  // order supplier 
   openModal12(content12: any){
     this.sp.show()
     this.modalService.open(content12, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
