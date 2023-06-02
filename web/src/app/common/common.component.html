@@ -112,6 +112,16 @@
             </div>
           </div>
           <!-- companyadmin end Bliing -->
+          <!-- companyadmin  Bliing -->
+          <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown">
+            <a class="dropBtn" data-target="#collapseExample">Po <i class="fa fa-caret-down"
+                aria-hidden="true"></i></a>
+            <div class="drop-content" id="collapseExample">
+              <!-- <a href="javascript:void(0)" [routerLink]="['/sale/billing',0,0]" id="collapseExample">Billing</a> -->
+              <a href="javascript:void(0)" [routerLink]="['/po/supplierPo']" id="collapseExample">Supplier Po</a>
+            </div>
+          </div>
+          <!-- companyadmin end Bliing -->
           <!-- companyadmin  company payment start -->
           <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown">
             <a class="dropBtn" data-target="#collapseExample">Payment <i class="fa fa-caret-down"

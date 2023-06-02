@@ -19,6 +19,7 @@ import { ProductService } from 'src/app/service/product.service';
 import { BillCalculationService } from 'src/app/service/helpers/bill-calculation.service';
 import { SupportService } from 'src/app/service/support.service';
 import { trigger, style, animate, transition } from '@angular/animations';
+import { SupplierService } from 'src/app/service/supplier.service';
 
 
 @Component({
@@ -56,6 +57,8 @@ export class BillComponent implements OnInit {
     private supps: SupportService,
     private cs: CustomerService,
     private modalService: NgbModal,
+    private sup: SupplierService,
+
 
   ) {
     this.id = this.route.snapshot.params['customerid'];
@@ -116,6 +119,9 @@ export class BillComponent implements OnInit {
   customerPowerLists:any = []
   invoiceList:any = []
   paidList:any = []
+  orderList:any = []
+  filtersList:any = []
+  supplierList:any = []
 
   ngOnInit(): void {
     this.BillMaster.Employee = this.user.ID
@@ -1188,6 +1194,90 @@ export class BillComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    this.sp.hide()
+  }
+
+  openModal12(content12: any){
+    this.sp.show()
+    this.modalService.open(content12, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
+    const subs: Subscription = this.bill.getSupplierPo(this.id2,'' ).subscribe({
+      next: (res: any) => {
+          if(res.success ){
+             this.orderList = res.data
+          }else{
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: 'Opps !!',
+              text: res.message,
+              showConfirmButton: true,
+              backdrop : false,
+            })
+          }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    this.dropdownSupplierlist()
+    this.sp.hide()
+  }
+
+  validate(v: { Sel: number | null; }, event: any) {
+    if (v.Sel === 0 || v.Sel === null) {
+        v.Sel = 1;
+    } else {
+        v.Sel = 0;
+    }
+  }
+
+  multicheck() {
+    for (var i = 0; i < this.orderList.length; i++) {
+      const index = this.orderList.findIndex(((x: any) => x === this.orderList[i]));
+      if (this.orderList[index].Sel == null || this.orderList[index].Sel === 0) {
+        this.orderList[index].Sel = 1;
+      } else {
+        this.orderList[index].Sel = 0;
+      }
+    }
+  }
+
+  dropdownSupplierlist(){
+    const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
+      next: (res: any) => {
+        this.supplierList  = res.data
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  assignSupplierPo(){
+    this.sp.show()
+    this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
+    if (this.filtersList.length > 0) {
+    this.filtersList.forEach((element: any) => {
+      element.BillID = this.data.ID
+      element.SupplierID = this.data.SupplierID;
+    });
+
+    let Body = this.filtersList
+    const subs: Subscription =  this.bill.assignSupplierPo(Body).subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.modalService.dismissAll()
+          // this.getList()
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    }
     this.sp.hide()
   }
 

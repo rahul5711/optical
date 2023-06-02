@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { ProductService } from 'src/app/service/product.service';
-import { Subscription } from 'rxjs';
+import { Subscription ,fromEvent} from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { ShopService } from 'src/app/service/shop.service';
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder,FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-transfer-product-report',
@@ -16,7 +16,7 @@ import { FormBuilder } from '@angular/forms';
 })
 export class TransferProductReportComponent implements OnInit {
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
-  form: any;
+   form :any | FormGroup;
 
   constructor(
     private purchaseService: PurchaseService,
@@ -238,7 +238,7 @@ export class TransferProductReportComponent implements OnInit {
   }
 
   public onSelectAll() {
-    const selected = this.billerList.map((item: any) => item.Name);
+    const selected = this.billerList.map((item: any) => item.id);
     this.form.get('billerIds').patchValue(selected);
   }
   
