@@ -37,6 +37,8 @@ router.post('/getSupplierPo', verifyAccessTokenAdmin, Controller.getSupplierPo)
 router.post('/assignSupplierPo', verifyAccessTokenAdmin, Controller.assignSupplierPo)
 router.post('/getSupplierPoList', verifyAccessTokenAdmin, Controller.getSupplierPoList)
 
+router.post('/getSupplierPoPurchaseList', verifyAccessTokenAdmin, Controller.getSupplierPoPurchaseList)
+
 // save supplier getfitter po and save fitter po
 
 
