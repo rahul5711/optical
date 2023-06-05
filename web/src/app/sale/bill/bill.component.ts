@@ -111,14 +111,17 @@ export class BillComponent implements OnInit {
   loginShopID: any;
   gst_detail: any = [];
   GstTypeDis = false
+  
   PowerSelect :any
   PowerByRow:any = []
   ProductDetails:any
   UpdatePowerID:any
   customerVisiList:any = []
   customerPowerLists:any = []
+
   invoiceList:any = []
   paidList:any = []
+
   orderList:any = []
   filtersList:any = []
   supplierList:any = []

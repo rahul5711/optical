@@ -175,7 +175,37 @@ export class CalculationService {
     }
 
   };
-  // purchase Master calculation start
+  // purchase Master calculation end
+
+
+  //  convert to purchase calculation start
+
+  calculateGrandTotals(selectedPurchaseMaster:any, itemList:any, chargeList:any ,gstdividelist:any){
+    selectedPurchaseMaster.Quantity = 0;
+    selectedPurchaseMaster.SubTotal = 0;
+    selectedPurchaseMaster.DiscountAmount = 0;
+    selectedPurchaseMaster.GSTAmount = 0;
+    selectedPurchaseMaster.TotalAmount = 0;
+
+   gstdividelist.forEach((ele: { Amount: number; }) => {
+      ele.Amount = 0;
+    })
+
+   itemList.forEach((element: any) => {
+      if (element.sel === 1) {
+       gstdividelist.forEach((ele: { GSTType: any; Amount: string; }) => {
+          if (element.GSTType === ele.GSTType && element.Status !== 0 ) {
+            ele.Amount += Number(element.GSTAmount).toFixed(2);
+          }
+        })
+        selectedPurchaseMaster.Quantity = +selectedPurchaseMaster.Quantity + +element.Quantity;
+        selectedPurchaseMaster.SubTotal = (+selectedPurchaseMaster.SubTotal + +element.SubTotal).toFixed(2);
+        selectedPurchaseMaster.DiscountAmount = (+selectedPurchaseMaster.DiscountAmount + +element.DiscountAmount).toFixed(2);
+        selectedPurchaseMaster.GSTAmount = (+selectedPurchaseMaster.GSTAmount + +element.GSTAmount).toFixed(2);
+        selectedPurchaseMaster.TotalAmount = (+selectedPurchaseMaster.TotalAmount + +element.TotalAmount).toFixed(2);
+      }
+    });
+  };
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

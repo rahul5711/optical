@@ -36,12 +36,19 @@ export class SupplierPoComponent implements OnInit {
     private sup: SupplierService,
   ) { }
 
-  data = {ID:'', FromDate: '', ToDate: '',SupplierID :'All', ShopID:'All', stringProductName:'' }
+  data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' }
+
+  sendData: any = { supplier: null, filterList: null, supplierList: null };
+
   mode = "Unassigned";
-  shopList:any = []
-  supplierList:any = []
-  orderList:any = []
-  filtersList:any = []
+  shopList: any = []
+  supplierList: any = []
+  orderList: any = []
+  filtersList: any = [];
+
+  supplier: any;
+  supplierID: any
+
   ID = 0
   currentPage = 1;
   itemsPerPage = 10;
@@ -51,49 +58,49 @@ export class SupplierPoComponent implements OnInit {
 
   orderSupplier = false
   orderComplete = false
-  Orderpower :any = []
+  Orderpower: any = []
   ngOnInit(): void {
-    this.sp.show()
     this.sp.show()
     this.dropdownShoplist();
     this.dropdownSupplierlist();
     this.getSupplierPo();
+    this.sp.hide()
   }
 
   changePagesize(num: number): void {
     this.itemsPerPage = this.pageSize + num;
   }
 
-  dropdownShoplist(){
+  dropdownShoplist() {
     const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
       next: (res: any) => {
-        this.shopList  = res.data
+        this.shopList = res.data
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
   }
 
-  dropdownSupplierlist(){
+  dropdownSupplierlist() {
     const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
       next: (res: any) => {
-        this.supplierList  = res.data
+        this.supplierList = res.data
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
   }
 
-  Reset(){
-    this.data =  {ID:'', FromDate: '', ToDate: '', SupplierID :'All', ShopID:'All', stringProductName:'' }
+  Reset() {
+    this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' }
     this.Search(this.mode);
   }
 
   validate(v: { Sel: number | null; }, event: any) {
     if (v.Sel === 0 || v.Sel === null) {
-        v.Sel = 1;
+      v.Sel = 1;
     } else {
-        v.Sel = 0;
+      v.Sel = 0;
     }
   }
 
@@ -108,24 +115,24 @@ export class SupplierPoComponent implements OnInit {
     }
   }
 
-  getSupplierPo(){
+  getSupplierPo() {
     this.sp.show()
     this.orderSupplier = true
-    const subs: Subscription = this.bill.getSupplierPo(this.ID,'').subscribe({
+    const subs: Subscription = this.bill.getSupplierPo(this.ID, '').subscribe({
       next: (res: any) => {
-          if(res.success ){
-             this.orderList = res.data
-          }else{
-            this.as.errorToast(res.message)
-            Swal.fire({
-              position: 'center',
-              icon: 'warning',
-              title: 'Opps !!',
-              text: res.message,
-              showConfirmButton: true,
-              backdrop : false,
-            })
-          }
+        if (res.success) {
+          this.orderList = res.data
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Opps !!',
+            text: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
+        }
         this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
@@ -134,13 +141,13 @@ export class SupplierPoComponent implements OnInit {
     this.sp.hide()
   }
 
-  openModal(content: any){
+  openModal(content: any) {
     this.sp.show()
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
     this.sp.hide()
   }
 
-  Search(mode:any){
+  Search(mode: any) {
     this.sp.show()
 
     let ID = 0
@@ -156,20 +163,21 @@ export class SupplierPoComponent implements OnInit {
       Parem = Parem + ' and ' + `'${ToDate}'`;
     }
 
-    if (this.data.SupplierID !== null &&  this.data.SupplierID !== 'All'){
-        Parem = Parem + ' and barcodemasternew.SupplierID = ' +  this.data.SupplierID ; }
-
-    if (this.data.ShopID !== null &&  this.data.ShopID !== 'All') {
-        Parem = Parem + ' and barcodemasternew.ShopID = ' + this.data.ShopID;
+    if (this.supplierID !== null && this.supplierID !== 'All') {
+      Parem = Parem + ' and barcodemasternew.SupplierID = ' + this.supplierID;
     }
-    
-    if(this.orderComplete === false){
-      const subs: Subscription =  this.bill.getSupplierPo(ID,Parem).subscribe({
+
+    if (this.data.ShopID !== null && this.data.ShopID !== 'All') {
+      Parem = Parem + ' and barcodemasternew.ShopID = ' + this.data.ShopID;
+    }
+
+    if (this.orderComplete === false) {
+      const subs: Subscription = this.bill.getSupplierPo(ID, Parem).subscribe({
         next: (res: any) => {
-          if(res.success){
+          if (res.success) {
             this.orderList = res.data
             this.as.successToast(res.message)
-          }else{
+          } else {
             this.as.errorToast(res.message)
           }
           this.sp.hide()
@@ -177,11 +185,11 @@ export class SupplierPoComponent implements OnInit {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
-    }else{
+    } else {
       const dtm = {
         currentPage: 1,
         itemsPerPage: 50000,
-        Parem : Parem
+        Parem: Parem
       }
       const subs: Subscription = this.bill.getSupplierPoList(dtm).subscribe({
         next: (res: any) => {
@@ -190,7 +198,7 @@ export class SupplierPoComponent implements OnInit {
             this.page = 1;
             this.orderList = res.data;
             this.as.successToast(res.message)
-          }else{
+          } else {
             this.as.errorToast(res.message)
           }
           this.sp.hide();
@@ -199,34 +207,64 @@ export class SupplierPoComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     }
- 
+
     this.sp.hide()
   }
 
-  assignSupplierPo(){
+  assignSupplierPo(mode: any) {
     this.sp.show()
     this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
-    if (this.filtersList.length > 0) {
-    this.filtersList.forEach((element: any) => {
-      element.BillID = this.data.ID
-      element.SupplierID = this.data.SupplierID;
-    });
 
-    let Body = this.filtersList
-    const subs: Subscription =  this.bill.assignSupplierPo(Body).subscribe({
-      next: (res: any) => {
-        if(res.success){
-          this.modalService.dismissAll()
-          this.getList()
-          this.as.successToast(res.message)
-        }else{
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+    if (this.filtersList.length > 0) {
+      switch (mode) {
+        case "Assign":
+          this.filtersList.forEach((element: any) => {
+            element.BillID = this.data.ID
+            element.SupplierID = this.supplierID;
+          });
+          this.orderSupplier = false
+          this.orderComplete = true
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your Per-Order Supplier To Assign !!',
+            showConfirmButton: false,
+            timer: 1200
+          })
+          break;
+        case "Cancel":
+          this.filtersList.forEach((element: any) => {
+            this.data.ID = element.BillID;
+            element.SupplierID = '0';
+          });
+          this.orderSupplier = true
+          this.orderComplete = false
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your Order Cancel !!',
+            showConfirmButton: false,
+            timer: 1200
+          })
+          break;
+      }
+
+      let Body = this.filtersList;
+
+      const subs: Subscription = this.bill.assignSupplierPo(Body).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.modalService.dismissAll()
+            this.getList()
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     }
     this.sp.hide()
   }
@@ -243,7 +281,7 @@ export class SupplierPoComponent implements OnInit {
           this.collectionSize = res.count;
           this.orderList = res.data;
           this.as.successToast(res.message)
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -254,22 +292,23 @@ export class SupplierPoComponent implements OnInit {
     this.sp.hide()
   }
 
-  Unassigned(){
+  Unassigned() {
     this.getSupplierPo()
     this.orderSupplier = true
-   this.orderComplete = false
+    this.orderComplete = false
 
   }
 
-  Assigned(){
-   this.getList()
-   this.orderSupplier = false
-   this.orderComplete = true
+  Assigned() {
+    this.getList()
+    this.orderSupplier = false
+    this.orderComplete = true
   }
 
-  openModal1(content1: any,data:any){
+
+  openModal1(content1: any, data: any) {
     this.sp.show()
-    if(data.MeasurementID == "undefined" ){
+    if (data.MeasurementID == "undefined") {
       Swal.fire({
         icon: 'warning',
         title: 'Customer Power Not Be Found',
@@ -277,9 +316,9 @@ export class SupplierPoComponent implements OnInit {
         footer: '',
         backdrop: false,
       });
-    }else{
+    } else {
       this.Orderpower = JSON.parse(data.MeasurementID)
-      this.modalService.open(content1, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
+      this.modalService.open(content1, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     }
     this.sp.hide()
   }

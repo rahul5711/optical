@@ -85,8 +85,11 @@
                                 ORDER PENDING 
                             </button>
                             <button class="hover" (click)="Assigned()" [ngClass]="{'bcolor': this.orderComplete  == true }" class="ms-3" type="button" mat-raised-button color="primary">
-                             ORDER COMPLETE 
+                             ORDER LIST 
                             </button>
+                            <button *ngIf="this.orderComplete" class="hover" (click)="assignSupplierPo('Cancel')"  class="ms-3" type="button" mat-raised-button color="primary">
+                                ORDER CANCEL 
+                               </button>
                         </div>
                        
                         <div *ngIf="this.orderComplete == true" class="col-md-3 col-4 mx-md-auto" style="margin-top:0px;">
@@ -179,7 +182,7 @@
             <div class="col-md-8">
                 <mat-form-field class="example-full-width mb-0">
                     <mat-label>Select Supplier</mat-label>
-                    <mat-select name="supplier" [(ngModel)]="data.SupplierID" [ngModelOptions]="{standalone: true}">
+                    <mat-select name="supplier" [(ngModel)]="supplierID" [ngModelOptions]="{standalone: true}">
                         <mat-option value="All">All</mat-option>
                         <mat-option *ngFor="let s of supplierList  let i = index;" value="{{s.ID}}">
                             {{s.Name}}
@@ -188,7 +191,7 @@
                 </mat-form-field>
             </div>
             <div class="col-md-4">
-                <button  class="ms-2" type="button" mat-raised-button color="primary" (click)="assignSupplierPo()">
+                <button  class="ms-2" type="button" mat-raised-button color="primary" (click)="assignSupplierPo('Assign')">
                     Assign
                 </button>
             </div>

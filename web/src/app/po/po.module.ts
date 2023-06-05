@@ -22,10 +22,12 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { PurchaseConvertComponent } from './purchase-convert/purchase-convert.component';
 
 @NgModule({
   declarations: [
-    SupplierPoComponent
+    SupplierPoComponent,
+    PurchaseConvertComponent
   ],
   imports: [
     CommonModule,

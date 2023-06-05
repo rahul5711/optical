@@ -26,6 +26,7 @@ router.post('/getMeasurementByCustomer', verifyAccessTokenAdmin, Controller.getM
 
 router.post('/getMeasurementByCustomerForDropDown', verifyAccessTokenAdmin, Controller.getMeasurementByCustomerForDropDown)
 
+router.post('/customerPowerPDF', verifyAccessTokenAdmin, Controller.customerPowerPDF)
 
 
 module.exports = router

@@ -758,6 +758,25 @@ export class BillingComponent implements OnInit {
     this.calculation.calculate(mode, x, y, this.spectacle, this.clens)
   }
 
+  customerPowerPDF(){
+    this.sp.show()
+    let body = { customer: this.data, spectacle: this.spectacle, contact: this.clens, other: this.other,}
+    this.sp.show();
+    const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
+      next: (res: any) => {
+        if (res) {
+          const url = this.env.apiUrl + "/uploads/" + res;
+          window.open(url, "_blank");
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    this.sp.hide();
+  }
   // Billing
 
 

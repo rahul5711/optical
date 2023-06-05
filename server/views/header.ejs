@@ -1,0 +1,28 @@
+<html>
+<link rel="stylesheet" href="http://localhost:3000/assest/header.css">
+
+<body>
+
+    <% if (data.companysetting.BillHeader == 3){%>
+        <header class="headerSize" >
+            <div class="row">
+                <div class="col1">
+                    <img src=<%=data.LogoURL%>  alt="LOGO">
+                </div>
+                <div class="col2">
+                    <h5><%=data.shopdetails.Name%> </h5>  
+                    <h5><%=data.shopdetails.Address%> </h5>  
+                    <h6><%=data.shopdetails.MobileNo1%> 
+                        <% if (data.shopdetails.MobileNo2){%> 
+                            ,
+                        <%}%>
+                        <%=(data.shopdetails.MobileNo2 !== 'null') ? data.shopdetails.MobileNo2 : '' %>
+                    </h6>
+                     <h6><%=data.shopdetails.Email%></h6>
+                     <h6><%=(data.shopdetails.PhoneNo !== 'null') ? data.shopdetails.PhoneNo : '' %></h6>
+                </div>
+            </div>    
+        </header>
+        <%}%>
+</body>
+</html>

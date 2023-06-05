@@ -7,6 +7,10 @@ const bcrypt = require('bcrypt')
 const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
+let ejs = require("ejs");
+let path = require("path");
+let pdf = require("html-pdf");
+var TinyURL = require('tinyurl');
 
 module.exports = {
     save: async (req, res, next) => {
@@ -775,6 +779,75 @@ module.exports = {
         } finally {
             await connection.release();
         }
+    },
+    customerPowerPDF:async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const printdata = req.body
+            const customer = req.body.customer
+            const spectacle = req.body.spectacle
+            const contact = req.body.contact
+            const other = req.body.other
+
+
+
+
+            const shopdetails = await connection.query(`select * from shop where ID = ${shopid}`)
+            const companysetting = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+
+
+            printdata.shopdetails = shopdetails[0]
+            printdata.companysetting = companysetting[0]
+             console.log(shopdetails);
+
+            var fileName = "";
+            printdata.LogoURL = 'http://localhost:3000/'+ printdata.companysetting.LogoURL;
+            var formatName = "customerPowerPDF.ejs";
+            var file = formatName + "_" + CompanyID + "-" + customer.ID + ".pdf";
+            fileName = "uploads/" + file;
+
+            console.log(fileName);
+
+            ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    res.send(err);
+                } else {
+                    let options = {
+                        "height": "11.25in",
+                        "width": "8.5in",
+                        header: {
+                            height: "0mm"
+                        },
+                        footer: {
+                            height: "0mm",
+                            contents: {
+                                last: ``,
+                            },
+                        },
+                    };
+                    pdf.create(data, options).toFile(fileName, function (err, data) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            res.json(file);
+                        }
+                    });
+                }
+            });
+
+        }
+        catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+
     },
 
 

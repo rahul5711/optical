@@ -4,6 +4,10 @@ import { Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
+const httpOptions = {
+  headers: new HttpHeaders({'Content-Type': 'application/json'})
+};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -87,6 +91,12 @@ export class CustomerService {
     return this.httpClient.post<any>(this.url + '/getMeasurementByCustomerForDropDown', {CustomerID:CustomerID ,type:type}, { headers, params })
     .pipe(catchError(this.handleError));
   }
+
+  customerPowerPDF(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/customerPowerPDF',Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
