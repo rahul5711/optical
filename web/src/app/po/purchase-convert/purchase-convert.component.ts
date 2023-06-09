@@ -45,7 +45,7 @@ export class PurchaseConvertComponent implements OnInit {
   PurchaseMaster: any = {
     ID: null, SupplierID: null, SupplierName: null, CompanyID: null, GSTNo: null, ShopID: 0, ShopName: null, PurchaseDate: null,
     PaymentStatus: null, InvoiceNo: null, Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0,
-    GSTAmount: 0, TotalAmount: 0
+    GSTAmount: 0, TotalAmount: 0,FromDate:'',ToDate:''
   };
 
 
@@ -65,6 +65,8 @@ export class PurchaseConvertComponent implements OnInit {
 
   ngOnInit(): void {
     this.PurchaseMaster.PurchaseDate = moment().format('YYYY-MM-DD');
+    this.PurchaseMaster.FromDate = moment().format('YYYY-MM-DD');
+    this.PurchaseMaster.ToDate = moment().format('YYYY-MM-DD');
     this.dropdownShoplist();
     this.dropdownSupplierlist();
     this.getList();
@@ -144,16 +146,9 @@ export class PurchaseConvertComponent implements OnInit {
   getList() {
     this.sp.show()
 
-  let parem = ''
-
-  if(this.PurchaseMaster.ShopID !== 0){
-    parem = 'and barcodemasternew.SupplierID = ' + this.PurchaseMaster.SupplierID + ' and barcodemasternew.ShopID = ' + this.PurchaseMaster.ShopID
-  }
-
     const dtm = {
       currentPage: this.currentPage,
       itemsPerPage: this.itemsPerPage,
-      Parem: parem
     }
 
     const subs: Subscription = this.bill.getSupplierPoList(dtm).subscribe({
@@ -171,6 +166,51 @@ export class PurchaseConvertComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
     this.sp.hide()
+  }
+
+  getParem(){
+    this.sp.show()
+
+    let parem = ''
+  
+
+    if (this.PurchaseMaster.FromDate !== '' && this.PurchaseMaster.FromDate !== null){
+      let FromDate =  moment(this.PurchaseMaster.FromDate).format('YYYY-MM-DD')
+      parem = parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between ' +  `'${FromDate}'`;}
+
+    if (this.PurchaseMaster.ToDate !== '' && this.PurchaseMaster.ToDate !== null){
+      let ToDate =  moment(this.PurchaseMaster.ToDate).format('YYYY-MM-DD')
+      parem = parem + ' and ' +  `'${ToDate}'`;}
+
+    if (this.PurchaseMaster.ShopID != 0){
+      parem = parem + ' and barcodemasternew.ShopID = ' +  `(${this.PurchaseMaster.ShopID})`;}
+  
+    if (this.PurchaseMaster.SupplierID !== 0){
+      parem = parem + ' and barcodemasternew.SupplierID = '  + `'${this.PurchaseMaster.SupplierID}'`;}
+
+
+      const dtm = {
+        currentPage: 1,
+        itemsPerPage: 5000,
+        Parem: parem
+      }
+  
+      const subs: Subscription = this.bill.getSupplierPoList(dtm).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.collectionSize = res.count;
+            this.page = 1;
+            this.dataList = res.data;
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+      this.sp.hide()
   }
 
   calculateFields(fieldName: any, mode: any, item:any) {
@@ -203,6 +243,8 @@ export class PurchaseConvertComponent implements OnInit {
     }else{
       this.calculateGrandTotal();
       this.PurchaseMaster.ShopID = this.selectedShop[0];
+      delete this.PurchaseMaster.FromDate
+      delete this.PurchaseMaster.ToDate
       this.data.PurchaseMaster = this.PurchaseMaster;
       this.data.PurchaseDetail = JSON.stringify(this.filterList);
       console.log(this.data);

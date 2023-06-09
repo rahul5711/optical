@@ -13,7 +13,7 @@ body{
 }
 
 .row .col1{
-    width:48wh; height:60vh; float: left; 
+    width:45%; height:60vh; float: left; 
 }
 
 .row .col1 img{
@@ -21,11 +21,11 @@ body{
 }
 
 .row .col2{
-    width:48wh;  height:60vh; float: right; 
+    width:45%;  height:60vh; float: right; 
 }
 
 .row .col2 h5{
-    font-size: 22px !important; padding: 0; margin: 0;
+    font-size: 20px !important; padding: 0; margin: 0;
 }
 
 .row .col2 h6{

@@ -11,7 +11,22 @@
                     <div class="body">
                         <form #f="ngForm" autocomplete="off">
                             <div class="row">
-                                <div class="col-md-2" >
+                                
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp">
+                                            <mat-label>From</mat-label>
+                                            <input matInput name="FromDate" type="date" [(ngModel)]="PurchaseMaster.FromDate"
+                                                #DOBcontrol />
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp ">
+                                            <mat-label>To</mat-label>
+                                            <input matInput type="date" name="ToDate" [(ngModel)]="PurchaseMaster.ToDate" />
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0 ">
+
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Select Supplier</mat-label>
                                         <mat-select name="supplier" [(ngModel)]="PurchaseMaster.SupplierID"
@@ -22,12 +37,13 @@
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
+
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0 ">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Shop Name</mat-label>
                                         <mat-select name="Supplier" editable="true" [(ngModel)]="PurchaseMaster.ShopID"
-                                            [ngModelOptions]="{standalone: true}" #singleSelect (selectionChange)="getList()" required>
+                                            [ngModelOptions]="{standalone: true}" #singleSelect (selectionChange)="getParem()" required>
                                             <mat-option [value]=0>All</mat-option>
                                             <mat-option *ngFor="let sup of shopList  let i = index;" [value]="sup.ID">
                                                 {{sup.Name}} <span [style.color]="'blue'"
@@ -122,7 +138,7 @@
                                             <td>{{ dataList.length - i }}</td>
                                             <td>{{item.InvoiceDate}}</td>
                                             <td>{{item.CustomerName}}</td>
-                                            <td>{{item.MobileNo}}</td>
+                                            <td>{{item.MobileNo1}}</td>
                                             <td>{{item.InvoiceNo}}</td>
                                             <td>{{item.ProductName}}</td>
                                             <td>{{item.InvoiceDate}}</td>

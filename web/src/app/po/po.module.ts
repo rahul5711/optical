@@ -23,11 +23,13 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { PurchaseConvertComponent } from './purchase-convert/purchase-convert.component';
+import { SupplierPoListComponent } from './supplier-po-list/supplier-po-list.component';
 
 @NgModule({
   declarations: [
     SupplierPoComponent,
-    PurchaseConvertComponent
+    PurchaseConvertComponent,
+    SupplierPoListComponent
   ],
   imports: [
     CommonModule,

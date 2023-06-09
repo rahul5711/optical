@@ -1,12 +1,146 @@
 <html>
 <link rel="stylesheet" href="http://localhost:3000/assest/customerPower.css">
 
+<head>
+   <style>
+      .headingName {
+         position: absolute;
+         margin-left: 39.2%;
+         width: 30%;
+         color: red;
+         margin-top: 0px;
+         font-size: 14px !important;
+      }
+   </style>
+</head>
+
 <body>
- <h1>
-    <%- include('./header.ejs', {pageNumber: 1}) %>
-    <!-- <%=data.customer.Name%> -->
- </h1>
-   
+   <section>
+      <%- include('./header.ejs', {pageNumber: 1}) %>
+         <!-- <%=data.customer.Name%> -->
+
+         <div>
+            <div style="border-bottom: 1px solid; width: 38%; position:absolute; margin-top: 1%;"> </div>
+            <div style="border-bottom: 1px solid; width: 38%; float: right; position: relative; margin-top: 1%;"></div>
+            <span class="headingName">Computerized Eye Testing</span>
+         </div>
+   </section>
+
+   <!-- customer details -->
+   <section class="customer_details">
+      <div class="row1">
+         <div class="col-1">
+            <p class="cus_p">Cust_ID</p>
+            <p class="cus_p">Name </p>
+            <p class="cus_p">Rx_By </p>
+         </div>
+         <div class="col-2">
+            <p class="cus_p"> : <%=data.customer.Idd%></p>
+            <p class="cus_p"> : <%=data.customer.Name%> </p>
+            <p class="cus_p"> : <%=data.customer.RefferedByDoc%></p>
+         </div>
+      </div>
+      <div class="row2">
+         <div class="col-1">
+            <p class="cus_p">VistingDate</p>
+            <p class="cus_p">MoblieNo </p>
+            <p class="cus_p">PhoneNo </p>
+         </div>
+         <div class="col-2">
+            <p class="cus_p"> : <%=data.customer.VisitDate%> </p>
+            <p class="cus_p"> : <%=data.customer.MobileNo1%> </p>
+            <p class="cus_p"> : <%=data.customer.PhoneNo%>
+            </p>
+         </div>
+      </div>
+   </section>
+   <!-- <h6 class="titleName"> <%=data.rx%></h6> -->
+   <section class="titleName">
+      <h6> Spectacle RX</h6>
+   </section>
+    <!-- power spec -->
+   <section class="power_spec">
+      <table class="tbl0">
+         <tr style="background-color: rgb(211, 211, 211);">
+            <th> </th> 
+          </tr>
+         <tr>
+            <th></th>
+         </tr>
+         <tr>
+           <td class="top_btm"> DP-</td> 
+         </tr>
+         <tr>
+            <td> NP- </td> 
+          </tr>
+      </table>
+      <table class="tbl1">
+         <tr style="background-color: rgb(211, 211, 211);">
+            <th> </th> 
+            <th> </th> 
+            <th>Right </th> 
+            <th> </th> 
+            <th> </th> 
+          </tr>
+         <tr>
+            <th  >SPH</th>
+            <th  >CYL</th>
+            <th>AXIS</th>
+            <th >VA</th>
+            <th  >ADD</th>
+         </tr>
+         <tr>
+           <td class="top_btm"> <%=data.spectacle.REDPSPH%> </td> 
+           <td class="top_btm"> <%=data.spectacle.REDPCYL%> </td> 
+           <td class="top_btm"> <%=data.spectacle.REDPAxis%> </td> 
+           <td class="top_btm"> <%=data.spectacle.REDPVA%> </td> 
+           <td class="top_btm"> <%=data.spectacle.R_Addition%> </td> 
+         </tr>
+         <tr>
+            <td> <%=data.spectacle.RENPSPH%> </td> 
+            <td> <%=data.spectacle.RENPCYL%> </td> 
+            <td> <%=data.spectacle.RENPAxis%> </td> 
+            <td> <%=data.spectacle.RENPVA%> </td> 
+            <!-- <td> <%=data.spectacle.R_Addition%> </td>  -->
+          </tr>
+      </table>
+
+     <table class="tbl2">
+      <tr style="background-color: rgb(211, 211, 211);"> 
+         <th> </th> 
+         <th> </th> 
+         <th>Left </th> 
+         <th> </th> 
+         <th> </th> 
+      </tr>
+      <tr>
+        <th>SPH</th>
+        <th>CYL</th>
+        <th>AXIS</th>
+        <th>VA</th>
+        <th>ADD</th>
+      </tr>
+      <tr>
+        <td class="top_btm"> <%=data.spectacle.LEDPSPH%> </td> 
+        <td class="top_btm"> <%=data.spectacle.LEDPCYL%> </td> 
+        <td class="top_btm"> <%=data.spectacle.LEDPAxis%> </td> 
+        <td class="top_btm"> <%=data.spectacle.LEDPVA%> </td> 
+        <td class="top_btm"> <%=data.spectacle.L_Addition%> </td> 
+      </tr>
+      <tr>
+        <td > <%=data.spectacle.LENPSPH%> </td> 
+        <td > <%=data.spectacle.LENPCYL%> </td> 
+        <td > <%=data.spectacle.LENPAxis%> </td> 
+        <td > <%=data.spectacle.LENPVA%> </td> 
+        <!-- <td> <%=data.spectacle.L_Addition%> </td>  -->
+      </tr>
+     </table>
+   </section>
+    <!-- footer -->
+    <div class="rowFooter">
+       
+    </div>
+
 </body>
 
 </html>

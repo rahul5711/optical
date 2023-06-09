@@ -1,61 +1,91 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
 
 * {
-    box-sizing: border-box;
+    box-sizing: border-box; font-family: "Arial", sans-serif;
 }
 
 body{
     margin: 10px !important; font-family: 'Roboto', sans-serif;
 }
 
-.main{
-    width: 100% !important; height: 80px;
+.customer_details{
+    width: 100% !important; height: 70px; display: flex;
 }
 
-.row1{
-    width: 50% !important; float: left; 
+.customer_details .row1{
+    width: 50% !important;float: left !important; height: 70px; padding-top: 1% !important;
 }
 
-.row1 .col-1{
-    width: 10%;float: left;
+.customer_details .row1 .col-1{
+    width: 10% !important;float: left !important; height: 70px;
 }
 
-.row1 .col-2{
-    width: 90%; float: right;
+.cus_p{
+  padding: 0; margin: 0; line-height: 30px;
 }
 
-.row2{
-    padding-top: 0%; width: 45% !important; float: right;
+.customer_details .row1 .col-2{
+    width: 85% !important;float: right !important; height: 70px;
 }
 
-.row2 .col-1{
-     width: 25%; float: left;
+.customer_details .row2{
+    width: 37% !important; float: right !important; height: 70px;
 }
 
-.row2 .col-2{ 
-    width: 75%;float: right;
+.customer_details .row2 .col-1{
+    width: 30% !important;float: left !important; height: 70px;
 }
 
-table{
-    width: 100% !important; text-align:center; border: none; margin: 0;padding: 0;
+.customer_details .row2 .col-2{
+    width: 70% !important;float: right !important; height: 70px;
 }
 
-table thead tr{
-    height: 25px; white-space: nowrap; background-color: rgb(224, 224, 224); font-size: 13px;
+.titleName{
+    width: 100% !important; text-align: center;  
 }
 
-table thead tr th{
-    padding: 5px !important;
+.titleName h6{
+    font-size: 16px; font-weight: 600; text-align: center; color:red; padding: 0; 
 }
 
-table tbody tr{
-    height: 25px; white-space: nowrap; font-size: 12px;
+.power_spec{
+    width: 100% !important; height: 150px; text-align: center;  margin-top: -20px; 
 }
 
-table tbody tr th{
-    padding: 5px !important;
+.power_spec .tbl0{
+    width: 3% !important; float: left ; text-align: center;
 }
 
-tr:nth-child(even) {
-    background-color: #f2f2f2;
+.power_spec .tbl0 tr{
+    height: 30px; font-size: 16px !important;
 }
+
+.power_spec .tbl1{
+    width: 45% !important; float: left ; text-align: center;
+}
+
+.power_spec .tbl1 tr{
+    height: 30px; font-size: 16px !important;
+}
+
+.power_spec .tbl2{
+    width: 45% !important; float: right;  text-align: center;
+}
+
+.power_spec .tbl2 tr{
+    height: 30px;font-size: 16px !important;
+}
+
+.top_btm{
+    border-bottom: 1px solid #000 !important; border-top: 1px solid #000;
+}
+
+table  {
+    border-spacing: 0px;
+}
+
+
+
+
+
+
