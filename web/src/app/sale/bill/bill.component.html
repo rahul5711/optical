@@ -1005,7 +1005,7 @@
                 <mat-form-field class="example-full-width mb-0">
                     <mat-label>Select Supplier</mat-label>
                     <mat-select name="supplier" [(ngModel)]="data.SupplierID" [ngModelOptions]="{standalone: true}">
-                        <mat-option value="All">All</mat-option>
+                        <!-- <mat-option value="All">All</mat-option> -->
                         <mat-option *ngFor="let s of supplierList  let i = index;" value="{{s.ID}}">
                             {{s.Name}}
                         </mat-option>

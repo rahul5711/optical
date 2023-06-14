@@ -124,6 +124,8 @@
                                             <th>GSTAmt</th>
                                             <th>GSTType</th>
                                             <th>TotalAmt</th>
+                                            <th *ngIf="dataList[0]?.WholeSale == 0">RetailPrice</th>
+                                            <th *ngIf="dataList[0]?.WholeSale == 1">WholeSale</th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-center">
@@ -197,6 +199,16 @@
                                                 <input class="inputWidth"  name="TotalAmount{{item.ID}}"
                                                     [(ngModel)]="item.TotalAmount" required disabled
                                                     #TAmountcontrol [autocomplete]="false">
+                                            </td>
+                                            <td *ngIf="item.WholeSale === 0">
+                                                <input class="inputWidth"  name="RetailPrice{{item.ID}}"
+                                                    [(ngModel)]="item.RetailPrice" required 
+                                                    #TAmountcontrol [autocomplete]="false"  [disabled]="item.sel !== 1" >
+                                            </td>
+                                            <td *ngIf="item.WholeSale === 1">
+                                                <input class="inputWidth"  name="WholeSalePrice{{item.ID}}"
+                                                    [(ngModel)]="item.WholeSalePrice" required 
+                                                    #TAmountcontrol [autocomplete]="false"  [disabled]="item.sel !== 1" >
                                             </td>
                                         </tr>
                                     </tbody>

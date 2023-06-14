@@ -69,7 +69,7 @@ export class PurchaseConvertComponent implements OnInit {
     this.PurchaseMaster.ToDate = moment().format('YYYY-MM-DD');
     this.dropdownShoplist();
     this.dropdownSupplierlist();
-    this.getList();
+    // this.getList();
     this.getGSTList();
   }
 
@@ -183,7 +183,7 @@ export class PurchaseConvertComponent implements OnInit {
       parem = parem + ' and ' +  `'${ToDate}'`;}
 
     if (this.PurchaseMaster.ShopID != 0){
-      parem = parem + ' and barcodemasternew.ShopID = ' +  `(${this.PurchaseMaster.ShopID})`;}
+      parem = parem + ' and barcodemasternew.ShopID = ' +  `'${this.PurchaseMaster.ShopID}'`;}
   
     if (this.PurchaseMaster.SupplierID !== 0){
       parem = parem + ' and barcodemasternew.SupplierID = '  + `'${this.PurchaseMaster.SupplierID}'`;}
@@ -246,7 +246,7 @@ export class PurchaseConvertComponent implements OnInit {
       delete this.PurchaseMaster.FromDate
       delete this.PurchaseMaster.ToDate
       this.data.PurchaseMaster = this.PurchaseMaster;
-      this.data.PurchaseDetail = JSON.stringify(this.filterList);
+      this.data.PurchaseDetail = this.filterList;
       console.log(this.data);
       
     }

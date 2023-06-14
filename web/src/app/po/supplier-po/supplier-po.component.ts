@@ -47,7 +47,7 @@ export class SupplierPoComponent implements OnInit {
   filtersList: any = [];
 
   supplier: any;
-  supplierID: any
+  supplierID = 'All'
 
   ID = 0
   currentPage = 1;
@@ -57,6 +57,7 @@ export class SupplierPoComponent implements OnInit {
   page = 4;
 
   orderSupplier = false
+  orderSupplierbtn = true
   orderComplete = false
   Orderpower: any = []
   ngOnInit(): void {
@@ -96,24 +97,29 @@ export class SupplierPoComponent implements OnInit {
     this.Search(this.mode);
   }
 
-  validate(v: { Sel: number | null; }, event: any) {
-    if (v.Sel === 0 || v.Sel === null) {
-      v.Sel = 1;
-    } else {
-      v.Sel = 0;
-    }
-  }
-
   multicheck() {
     for (var i = 0; i < this.orderList.length; i++) {
       const index = this.orderList.findIndex(((x: any) => x === this.orderList[i]));
-      if (this.orderList[index].Sel == null || this.orderList[index].Sel === 0) {
+      if (this.orderList[index].Sel === 0 || this.orderList[index].Sel === null) {
         this.orderList[index].Sel = 1;
+        this.orderSupplierbtn = false
       } else {
         this.orderList[index].Sel = 0;
+        this.orderSupplierbtn = true
       }
     }
   }
+
+  validate(v: { Sel: number | null; }, event: any) {
+    if (v.Sel === 0 || v.Sel === null) {
+      v.Sel = 1;
+      this.orderSupplierbtn = false
+    } else {
+      v.Sel = 0;
+      this.orderSupplierbtn = true
+    }
+  }
+
 
   getSupplierPo() {
     this.sp.show()
@@ -162,7 +168,8 @@ export class SupplierPoComponent implements OnInit {
       let ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' + `'${ToDate}'`;
     }
-
+  
+    
     if (this.supplierID !== null && this.supplierID !== 'All') {
       Parem = Parem + ' and barcodemasternew.SupplierID = ' + this.supplierID;
     }
@@ -222,8 +229,8 @@ export class SupplierPoComponent implements OnInit {
             element.BillID = this.data.ID
             element.SupplierID = this.supplierID;
           });
-          this.orderSupplier = false
-          this.orderComplete = true
+          this.orderSupplier = true
+          this.orderComplete = false
           Swal.fire({
             position: 'center',
             icon: 'success',
@@ -232,13 +239,42 @@ export class SupplierPoComponent implements OnInit {
             timer: 1200
           })
           break;
+      }
+
+      let Body = this.filtersList;
+
+      const subs: Subscription = this.bill.assignSupplierPo(Body).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.modalService.dismissAll()
+            this.supplierID = ''
+            this.getSupplierPo()
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+    this.sp.hide()
+  }
+  
+  assignSupplierPoCancel(mode: any) {
+    this.sp.show()
+    this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
+
+    if (this.filtersList.length > 0) {
+      switch (mode) {
         case "Cancel":
           this.filtersList.forEach((element: any) => {
             this.data.ID = element.BillID;
             element.SupplierID = '0';
           });
-          this.orderSupplier = true
-          this.orderComplete = false
+          this.orderSupplier = false
+          this.orderComplete = true
           Swal.fire({
             position: 'center',
             icon: 'success',
@@ -296,13 +332,14 @@ export class SupplierPoComponent implements OnInit {
     this.getSupplierPo()
     this.orderSupplier = true
     this.orderComplete = false
-
+    this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' }
   }
 
   Assigned() {
     this.getList()
     this.orderSupplier = false
     this.orderComplete = true
+    this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' }
   }
 
 
