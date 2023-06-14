@@ -185,7 +185,7 @@ module.exports = {
             const UserGroup = req.user.UserGroup ? req.user.UserGroup : 'CompanyAdmin';
 
 
-            let data = await connection.query(`select * from supplier where Status = 1 and CompanyID = ${CompanyID}`);
+            let data = await connection.query(`select * from supplier where Status = 1 and Name != 'PreOrder Supplier' and CompanyID = ${CompanyID}`);
             response.message = "data fetch sucessfully"
             response.data = data
             // connection.release()
