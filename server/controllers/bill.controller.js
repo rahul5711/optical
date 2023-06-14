@@ -1484,6 +1484,40 @@ module.exports = {
             await connection.release();
         }
     },
+    assignSupplierDoc: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const { Body } = req.body;
+
+            for(let item of Body) {
+                if (!item.ID || item.ID === null || item.ID === undefined) return res.send({ message: "Invalid Query Data" })
+                if (!item.SupplierID || item.SupplierID === null || item.SupplierID === undefined) return res.send({ message: "Invalid Query Data" })
+                if (!item.Sel || item.Sel == 0) return res.send({ message: "Invalid Query Data" })
+                if (!item.SupplierDocNo || item.SupplierDocNo === null || item.SupplierDocNo === "" || item.SupplierDocNo === undefined) return res.send({ message: "Invalid Query Data" })
+            }
+
+
+            for(let item of Body) {
+                const update = await connection.query(`update barcodemasternew set SupplierDocNo = ${item.SupplierDocNo}, UpdatedOn=now() where ID = ${item.ID}`);
+            }
+
+            response.data = null
+            response.message = "Supplier Doc Assign SuccessFully !!!";
+            // connection.release()
+            res.send(response)
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
     getSupplierPoList: async (req, res, next) => {
         const connection = await mysql.connection();
         try {
