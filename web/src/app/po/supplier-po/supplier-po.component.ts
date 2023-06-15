@@ -60,11 +60,14 @@ export class SupplierPoComponent implements OnInit {
   orderSupplierbtn = true
   orderComplete = false
   Orderpower: any = []
+  multiCheck: any 
+
   ngOnInit(): void {
     this.sp.show()
     this.dropdownShoplist();
     this.dropdownSupplierlist();
     this.getSupplierPo();
+  
     this.sp.hide()
   }
 
@@ -97,10 +100,10 @@ export class SupplierPoComponent implements OnInit {
     this.Search(this.mode);
   }
 
-  multicheck() {
+  multicheck($event:any) {
     for (var i = 0; i < this.orderList.length; i++) {
       const index = this.orderList.findIndex(((x: any) => x === this.orderList[i]));
-      if (this.orderList[index].Sel === 0 || this.orderList[index].Sel === null) {
+      if (this.orderList[index].Sel === 0 || this.orderList[index].Sel === null || this.orderList[index].Sel === undefined) {
         this.orderList[index].Sel = 1;
         this.orderSupplierbtn = false
       } else {
@@ -108,10 +111,13 @@ export class SupplierPoComponent implements OnInit {
         this.orderSupplierbtn = true
       }
     }
+    console.log($event);
   }
 
-  validate(v: { Sel: number | null; }, event: any) {
-    if (v.Sel === 0 || v.Sel === null) {
+
+
+  validate(v:any,event:any) {
+    if (v.Sel === 0 || v.Sel === null || v.Sel === undefined) {
       v.Sel = 1;
       this.orderSupplierbtn = false
     } else {
@@ -128,6 +134,7 @@ export class SupplierPoComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.orderList = res.data
+          this.multiCheck = false
         } else {
           this.as.errorToast(res.message)
           Swal.fire({
@@ -169,13 +176,16 @@ export class SupplierPoComponent implements OnInit {
       Parem = Parem + ' and ' + `'${ToDate}'`;
     }
   
-    
     if (this.supplierID !== null && this.supplierID !== 'All') {
       Parem = Parem + ' and barcodemasternew.SupplierID = ' + this.supplierID;
     }
 
     if (this.data.ShopID !== null && this.data.ShopID !== 'All') {
       Parem = Parem + ' and barcodemasternew.ShopID = ' + this.data.ShopID;
+    }
+
+    if (this.data.stringProductName !== '') {
+      Parem = Parem + ' and billdetail.ProductName = ' +  `'${this.data.stringProductName}'`;
     }
 
     if (this.orderComplete === false) {
@@ -247,7 +257,9 @@ export class SupplierPoComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.modalService.dismissAll()
+            this.multiCheck = true
             this.supplierID = ''
+            this.assignSupplierDoc()
             this.getSupplierPo()
             this.as.successToast(res.message)
           } else {
@@ -272,6 +284,7 @@ export class SupplierPoComponent implements OnInit {
           this.filtersList.forEach((element: any) => {
             this.data.ID = element.BillID;
             element.SupplierID = '0';
+            element.SupplierDocNo = null
           });
           this.orderSupplier = false
           this.orderComplete = true
@@ -290,7 +303,7 @@ export class SupplierPoComponent implements OnInit {
       const subs: Subscription = this.bill.assignSupplierPo(Body).subscribe({
         next: (res: any) => {
           if (res.success) {
-            this.modalService.dismissAll()
+            this.multiCheck = true
             this.getList()
             this.as.successToast(res.message)
           } else {
@@ -357,6 +370,40 @@ export class SupplierPoComponent implements OnInit {
       this.Orderpower = JSON.parse(data.MeasurementID)
       this.modalService.open(content1, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     }
+    this.sp.hide()
+  }
+
+  assignSupplierDoc() {
+    this.sp.show()
+    this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
+
+          this.filtersList.forEach((element: any) => {
+            this.data.ID = element.BillID 
+            this.supplierID =  element.SupplierID 
+            element.Sel = element.Sel;
+            if(element.SupplierDocNo === '' || element.SupplierDocNo === null || element.SupplierDocNo === undefined){
+              element.SupplierDocNo = 'NA'
+            }else{
+              element.SupplierDocNo = element.SupplierDocNo;
+            }
+          });
+         
+
+      let Body = this.filtersList;
+
+      const subs: Subscription = this.bill.assignSupplierDoc(Body).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.modalService.dismissAll()
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     this.sp.hide()
   }
 }

@@ -45,8 +45,10 @@ export class PurchaseConvertComponent implements OnInit {
   PurchaseMaster: any = {
     ID: null, SupplierID: null, SupplierName: null, CompanyID: null, GSTNo: null, ShopID: 0, ShopName: null, PurchaseDate: null,
     PaymentStatus: null, InvoiceNo: null, Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0,
-    GSTAmount: 0, TotalAmount: 0,FromDate:'',ToDate:''
+    GSTAmount: 0, TotalAmount: 0, FromDate:'', ToDate:''
   };
+
+  
 
 
 
@@ -121,13 +123,15 @@ export class PurchaseConvertComponent implements OnInit {
   multicheck() {
     for (var i = 0; i < this.dataList.length; i++) {
       const index = this.dataList.findIndex(((x: any) => x === this.dataList[i]));
-      if (this.dataList[index].sel == null || this.dataList[index].sel === 0) {
+      if (this.dataList[index].sel == null || this.dataList[index].sel === 0 || this.dataList[index].sel === undefined) {
         this.dataList[index].sel = 1;
+        this.calculateGrandTotal()
       } else {
         this.dataList[index].sel = 0;
+        this.calculateGrandTotal()
       }
     }
-    this.calculateGrandTotal()
+  
   }
 
   validate(v:any, event: any) {
@@ -246,7 +250,12 @@ export class PurchaseConvertComponent implements OnInit {
       delete this.PurchaseMaster.FromDate
       delete this.PurchaseMaster.ToDate
       this.data.PurchaseMaster = this.PurchaseMaster;
-      this.data.PurchaseDetail = this.filterList;
+      this.filterList.forEach((el: any) =>{
+         if(el.WholeSale === 0){
+            el.WholeSalePrice = 0
+         }
+      })
+      this.data.PurchaseDetail =JSON.stringify(this.filterList) ;
       console.log(this.data);
       
     }

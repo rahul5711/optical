@@ -1502,7 +1502,7 @@ module.exports = {
 
 
             for(let item of Body) {
-                const update = await connection.query(`update barcodemasternew set SupplierDocNo = ${item.SupplierDocNo}, UpdatedOn=now() where ID = ${item.ID}`);
+                const update = await connection.query(`update barcodemasternew set SupplierDocNo = '${item.SupplierDocNo}', UpdatedOn=now() where ID = ${item.ID}`);
             }
 
             response.data = null

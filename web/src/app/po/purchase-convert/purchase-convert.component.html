@@ -109,10 +109,11 @@
                                                 (click)="multicheck()" ></mat-checkbox>
                                             </th>
                                             <th>SNo</th>
+                                            <th>SupplierDocNo</th>
                                             <th>InvoiceDate</th>
+                                            <th>InvoiceNo</th>
                                             <th>CustomerName</th>
                                             <th>MobileNo</th>
-                                            <th>InvoiceNo</th>
                                             <th>ProductName</th>
                                             <th>RequestedDate</th>
                                             <th>UnitPrice</th>
@@ -138,10 +139,11 @@
                                                     height: 17px; ">
                                             </td>
                                             <td>{{ dataList.length - i }}</td>
+                                            <td>{{item.SupplierDocNo}}</td>
                                             <td>{{item.InvoiceDate}}</td>
+                                            <td>{{item.InvoiceNo}}</td>
                                             <td>{{item.CustomerName}}</td>
                                             <td>{{item.MobileNo1}}</td>
-                                            <td>{{item.InvoiceNo}}</td>
                                             <td>{{item.ProductName}}</td>
                                             <td>{{item.InvoiceDate}}</td>
                                             <td>
@@ -189,7 +191,7 @@
                                             </td>
                                             <td>
                                                 <select [disabled]="item.sel !== 1" class="inputselectWidth"  name="GSTType{{item.ID}}" [(ngModel)]="item.GSTType"
-                                                    required #GSTTypecontrol1 (change)="calculateGrandTotal()">
+                                                    required #GSTTypecontrol1 (blur)="calculateGrandTotal()">
                                                     <option value="None">None</option>
                                                     <option [value]="g.Name" *ngFor="let g of gstList">
                                                             {{g.Name}}</option>

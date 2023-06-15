@@ -187,15 +187,15 @@ export class CalculationService {
     selectedPurchaseMaster.GSTAmount = 0;
     selectedPurchaseMaster.TotalAmount = 0;
 
-   gstdividelist.forEach((ele: { Amount: number; }) => {
+   gstdividelist.forEach((ele: any) => {
       ele.Amount = 0;
     })
 
    itemList.forEach((element: any) => {
       if (element.sel === 1) {
-       gstdividelist.forEach((ele: { GSTType: any; Amount: string; }) => {
-          if (element.GSTType === ele.GSTType && element.Status !== 0 ) {
-            ele.Amount += Number(element.GSTAmount).toFixed(2);
+       gstdividelist.forEach((ele: any) => {
+          if (ele.GSTType == element.GSTType   ) {
+              ele.Amount = +ele.Amount + +element.GSTAmount;
           }
         })
         selectedPurchaseMaster.Quantity = +selectedPurchaseMaster.Quantity + +element.Quantity;
