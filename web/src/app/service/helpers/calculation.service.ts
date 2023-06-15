@@ -180,7 +180,7 @@ export class CalculationService {
 
   //  convert to purchase calculation start
 
-  calculateGrandTotals(selectedPurchaseMaster:any, itemList:any, chargeList:any ,gstdividelist:any){
+  calculateGrandTotals(selectedPurchaseMaster:any | number, itemList:any, chargeList:any ,gstdividelist:any){
     selectedPurchaseMaster.Quantity = 0;
     selectedPurchaseMaster.SubTotal = 0;
     selectedPurchaseMaster.DiscountAmount = 0;
@@ -199,10 +199,10 @@ export class CalculationService {
           }
         })
         selectedPurchaseMaster.Quantity = +selectedPurchaseMaster.Quantity + +element.Quantity;
-        selectedPurchaseMaster.SubTotal = (+selectedPurchaseMaster.SubTotal + +element.SubTotal).toFixed(2);
-        selectedPurchaseMaster.DiscountAmount = (+selectedPurchaseMaster.DiscountAmount + +element.DiscountAmount).toFixed(2);
-        selectedPurchaseMaster.GSTAmount = (+selectedPurchaseMaster.GSTAmount + +element.GSTAmount).toFixed(2);
-        selectedPurchaseMaster.TotalAmount = (+selectedPurchaseMaster.TotalAmount + +element.TotalAmount).toFixed(2);
+        selectedPurchaseMaster.SubTotal = +selectedPurchaseMaster.SubTotal + +element.SubTotal;
+        selectedPurchaseMaster.DiscountAmount = +selectedPurchaseMaster.DiscountAmount + +element.DiscountAmount;
+        selectedPurchaseMaster.GSTAmount = +selectedPurchaseMaster.GSTAmount + +element.GSTAmount;
+        selectedPurchaseMaster.TotalAmount = +selectedPurchaseMaster.TotalAmount + +element.TotalAmount;
       }
     });
   };

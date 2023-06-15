@@ -44,12 +44,10 @@ export class PurchaseConvertComponent implements OnInit {
 
   PurchaseMaster: any = {
     ID: null, SupplierID: null, SupplierName: null, CompanyID: null, GSTNo: null, ShopID: 0, ShopName: null, PurchaseDate: null,
-    PaymentStatus: null, InvoiceNo: null, Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0,
-    GSTAmount: 0, TotalAmount: 0, FromDate:'', ToDate:''
+    PaymentStatus: 'Unpaid', InvoiceNo: null, Status: 1,  Quantity: 0, SubTotal: 0, DiscountAmount: 0,
+    GSTAmount: 0, TotalAmount: 0, DueAmount: 0, PStatus: 0, FromDate: '', ToDate: '',
+    CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
   };
-
-  
-
 
 
   shopList: any = []
@@ -246,7 +244,8 @@ export class PurchaseConvertComponent implements OnInit {
       });
     }else{
       this.calculateGrandTotal();
-      this.PurchaseMaster.ShopID = this.selectedShop[0];
+      this.PurchaseMaster.ShopID = Number(this.selectedShop[0]);
+      this.PurchaseMaster.DueAmount = this.PurchaseMaster.TotalAmount;
       delete this.PurchaseMaster.FromDate
       delete this.PurchaseMaster.ToDate
       this.data.PurchaseMaster = this.PurchaseMaster;
