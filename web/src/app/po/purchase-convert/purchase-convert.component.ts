@@ -24,6 +24,7 @@ import { SupportService } from 'src/app/service/support.service';
 export class PurchaseConvertComponent implements OnInit {
   evn = environment
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
+  company = JSON.parse(localStorage.getItem('company') || '');
 
   constructor(
     private route: ActivatedRoute,
@@ -43,9 +44,9 @@ export class PurchaseConvertComponent implements OnInit {
   data = { PurchaseMaster: null, PurchaseDetail: {} };
 
   PurchaseMaster: any = {
-    ID: null, SupplierID: null, SupplierName: null, CompanyID: null, GSTNo: null, ShopID: 0, ShopName: null, PurchaseDate: null,
+    ID: 0, SupplierID: null, SupplierName: null, CompanyID: null, GSTNo: null, ShopID: 0, ShopName: null, PurchaseDate: null,
     PaymentStatus: 'Unpaid', InvoiceNo: null, Status: 1,  Quantity: 0, SubTotal: 0, DiscountAmount: 0,
-    GSTAmount: 0, TotalAmount: 0, DueAmount: 0, PStatus: 0, FromDate: '', ToDate: '',
+    GSTAmount: 0, TotalAmount: 0, DueAmount: 0, PStatus: 1, FromDate: '', ToDate: '',
     CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
   };
 
@@ -129,7 +130,7 @@ export class PurchaseConvertComponent implements OnInit {
         this.calculateGrandTotal()
       }
     }
-  
+
   }
 
   validate(v:any, event: any) {
@@ -174,7 +175,7 @@ export class PurchaseConvertComponent implements OnInit {
     this.sp.show()
 
     let parem = ''
-  
+
 
     if (this.PurchaseMaster.FromDate !== '' && this.PurchaseMaster.FromDate !== null){
       let FromDate =  moment(this.PurchaseMaster.FromDate).format('YYYY-MM-DD')
@@ -186,7 +187,7 @@ export class PurchaseConvertComponent implements OnInit {
 
     if (this.PurchaseMaster.ShopID != 0){
       parem = parem + ' and barcodemasternew.ShopID = ' +  `'${this.PurchaseMaster.ShopID}'`;}
-  
+
     if (this.PurchaseMaster.SupplierID !== 0){
       parem = parem + ' and barcodemasternew.SupplierID = '  + `'${this.PurchaseMaster.SupplierID}'`;}
 
@@ -196,7 +197,7 @@ export class PurchaseConvertComponent implements OnInit {
         itemsPerPage: 5000,
         Parem: parem
       }
-  
+
       const subs: Subscription = this.bill.getSupplierPoList(dtm).subscribe({
         next: (res: any) => {
           if (res.success) {
@@ -232,7 +233,7 @@ export class PurchaseConvertComponent implements OnInit {
   onSubmit() {
     this.filterList = this.dataList.filter((d: any) => d.sel === 1);
     if (this.filterList.length > 0) {
-      
+
     }
 
     if (this.PurchaseMaster.InvoiceNo === null || this.PurchaseMaster.InvoiceNo === '') {
@@ -245,6 +246,8 @@ export class PurchaseConvertComponent implements OnInit {
     }else{
       this.calculateGrandTotal();
       this.PurchaseMaster.ShopID = Number(this.selectedShop[0]);
+      this.PurchaseMaster.SupplierID = Number(this.PurchaseMaster.SupplierID);
+      this.PurchaseMaster.CompanyID = this.company.ID;
       this.PurchaseMaster.DueAmount = this.PurchaseMaster.TotalAmount;
       delete this.PurchaseMaster.FromDate
       delete this.PurchaseMaster.ToDate
@@ -254,9 +257,20 @@ export class PurchaseConvertComponent implements OnInit {
             el.WholeSalePrice = 0
          }
       })
-      this.data.PurchaseDetail =JSON.stringify(this.filterList) ;
-      console.log(this.data);
-      
+      this.data.PurchaseDetail =JSON.stringify(this.filterList);
+
+      const subs: Subscription = this.bill.saveConvertPurchase(this.data).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.router.navigate(['/inventory/purchase', res.data])
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     }
   }
 }

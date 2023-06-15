@@ -47,6 +47,10 @@ export class BillService {
     return this.httpClient.post<any>(this.url + '/saveBill', Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
+  saveConvertPurchase(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/saveConvertPurchase', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
   updateBill(Body:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/updateBill', Body, httpOptions)
