@@ -192,7 +192,7 @@ export class CalculationService {
     })
 
    itemList.forEach((element: any) => {
-      if (element.sel === 1) {
+      if (element.Sel === 1) {
        gstdividelist.forEach((ele: any) => {
           if (ele.GSTType == element.GSTType   ) {
               ele.Amount = +ele.Amount + +element.GSTAmount;

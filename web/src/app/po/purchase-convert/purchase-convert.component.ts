@@ -65,9 +65,9 @@ export class PurchaseConvertComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.PurchaseMaster.PurchaseDate = moment().format('YYYY-MM-DD');
-    this.PurchaseMaster.FromDate = moment().format('YYYY-MM-DD');
-    this.PurchaseMaster.ToDate = moment().format('YYYY-MM-DD');
+    // this.PurchaseMaster.PurchaseDate = moment().format('YYYY-MM-DD');
+    // this.PurchaseMaster.FromDate = moment().format('YYYY-MM-DD');
+    // this.PurchaseMaster.ToDate = moment().format('YYYY-MM-DD');
     this.dropdownShoplist();
     this.dropdownSupplierlist();
     // this.getList();
@@ -122,11 +122,11 @@ export class PurchaseConvertComponent implements OnInit {
   multicheck() {
     for (var i = 0; i < this.dataList.length; i++) {
       const index = this.dataList.findIndex(((x: any) => x === this.dataList[i]));
-      if (this.dataList[index].sel == null || this.dataList[index].sel === 0 || this.dataList[index].sel === undefined) {
-        this.dataList[index].sel = 1;
+      if (this.dataList[index].Sel == null || this.dataList[index].Sel === 0 || this.dataList[index].Sel === undefined) {
+        this.dataList[index].Sel = 1;
         this.calculateGrandTotal()
       } else {
-        this.dataList[index].sel = 0;
+        this.dataList[index].Sel = 0;
         this.calculateGrandTotal()
       }
     }
@@ -134,10 +134,10 @@ export class PurchaseConvertComponent implements OnInit {
   }
 
   validate(v:any, event: any) {
-    if (v.sel === 0 || v.sel === null || v.sel === undefined) {
-      v.sel = 1;
+    if (v.Sel === 0 || v.Sel === null || v.Sel === undefined) {
+      v.Sel = 1;
     } else {
-      v.sel = 0;
+      v.Sel = 0;
     }
     this.calculateGrandTotal()
   }
@@ -223,7 +223,7 @@ export class PurchaseConvertComponent implements OnInit {
   calculateGrandTotal() {
     let selectList: any = []
     this.dataList.forEach((el: any)=>{
-       if(el.sel === 1){
+       if(el.Sel === 1){
         selectList.push(el)
        }
     })
@@ -231,7 +231,8 @@ export class PurchaseConvertComponent implements OnInit {
   }
 
   onSubmit() {
-    this.filterList = this.dataList.filter((d: any) => d.sel === 1);
+    this.sp.show();
+    this.filterList = this.dataList.filter((d: any) => d.Sel === 1);
     if (this.filterList.length > 0) {
 
     }
@@ -258,7 +259,6 @@ export class PurchaseConvertComponent implements OnInit {
          }
       })
       this.data.PurchaseDetail =JSON.stringify(this.filterList);
-
       const subs: Subscription = this.bill.saveConvertPurchase(this.data).subscribe({
         next: (res: any) => {
           if (res.success) {

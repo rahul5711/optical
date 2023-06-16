@@ -827,7 +827,6 @@ export class BillComponent implements OnInit {
             this.BillItem.Barcode = '0'
             this.BillItem.BaseBarCode = '0'
 
-
             if (this.BillItem.WholeSale === true) {
               this.BillItem.WholeSalePrice = this.BillItem.UnitPrice
             } else {
@@ -1272,6 +1271,7 @@ export class BillComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.modalService.dismissAll()
+          this.data.SupplierID = ''
           // this.getList()
           this.as.successToast(res.message)
         }else{
@@ -1282,6 +1282,14 @@ export class BillComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+    }else{
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Opps !! <br> Select the check box !!',
+        showConfirmButton: true,
+        backdrop : false,
+      })
     }
     this.sp.hide()
   }

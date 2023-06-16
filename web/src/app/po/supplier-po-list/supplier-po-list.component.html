@@ -104,6 +104,7 @@
                                             <th>ProductName</th>
                                             <th>Qty</th>
                                             <th>SupplierName</th>
+                                            <th>SupplierDocNo</th>
                                             <th>ShopName</th>
                                         </tr>
                                     </thead>
@@ -119,6 +120,7 @@
                                             <td>{{v.ProductName}}</td>
                                             <td>{{v.Quantity}}</td>
                                             <td>{{v.SupplierID === -1 ? v.ShopName : v.SupplierName}}</td>
+                                            <td>{{v.SupplierDocNo}}</td>
                                             <td>{{v.ShopName}}<span [style.color]="'blue'" *ngIf="v.AreaName !== 'null'">({{v.AreaName}})</span></td>
                                         </tr>
                                     </tbody>

@@ -133,9 +133,9 @@
                                         <tr *ngFor="let item of dataList ; let i = index;">
                                             <td>
                                                 <input (click)="validate(item, $event)" type="checkbox" class="example-margin" id="{{item.ID}}"
-                                                    [(ngModel)]="item.checked" color="primary" [checked]="item.sel"
+                                                    [(ngModel)]="item.checked" color="primary" [checked]="item.Sel"
                                                      name="feature{{item.ID}}"
-                                                    value="{{item.sel}}" style="width: 25px;
+                                                    value="{{item.Sel}}" style="width: 25px;
                                                     height: 17px; ">
                                             </td>
                                             <td>{{ dataList.length - i }}</td>
@@ -151,13 +151,13 @@
                                                     [(ngModel)]="item.UnitPrice"
                                                     (blur)="calculateFields('UnitPrice', 'subTotal',item)"
                                                     required #UnitPricecontrol [autocomplete]="false"
-                                                    [disabled]="item.sel !== 1">
+                                                    [disabled]="item.Sel !== 1">
                                             </td>
                                             <td>
                                                 <input class="inputWidth" name="Quantity{{item.ID}}"
                                                     [(ngModel)]="item.Quantity"
                                                     (blur)="calculateFields('Quantity', 'subTotal',item)"
-                                                    required [disabled]="item.sel !== 1" #Quantitycontrol
+                                                    required [disabled]="item.Sel !== 1" #Quantitycontrol
                                                     [autocomplete]="false">
                                             </td>
                                             <td>
@@ -165,7 +165,7 @@
                                                     [(ngModel)]="item.DiscountPercentage"
                                                     (blur)="calculateFields('DiscountPercentage', 'discount',item);"
                                                     [required]=true #DiscountPercentagecontrol
-                                                    [disabled]="item.sel !== 1" [autocomplete]="false">
+                                                    [disabled]="item.Sel !== 1" [autocomplete]="false">
                                             </td>
                                             <td>
                                                 <input class="inputWidth"  disabled  name="DiscountAmount{{item.ID}}"
@@ -182,7 +182,7 @@
                                                     [(ngModel)]="item.GSTPercentage"
                                                     (blur)="calculateFields('GSTPercentage', 'gst',item)"
                                                     required #GSTPercentagecontrol [autocomplete]="false"
-                                                    [disabled]="item.sel !== 1">
+                                                    [disabled]="item.Sel !== 1">
                                             </td>
                                             <td>
                                                 <input class="inputWidth"  disabled  name="GSTAmount{{item.ID}}"
@@ -190,7 +190,7 @@
                                                     [autocomplete]="false">
                                             </td>
                                             <td>
-                                                <select [disabled]="item.sel !== 1" class="inputselectWidth"  name="GSTType{{item.ID}}" [(ngModel)]="item.GSTType"
+                                                <select [disabled]="item.Sel !== 1" class="inputselectWidth"  name="GSTType{{item.ID}}" [(ngModel)]="item.GSTType"
                                                     required #GSTTypecontrol1 (blur)="calculateGrandTotal()">
                                                     <option value="None">None</option>
                                                     <option [value]="g.Name" *ngFor="let g of gstList">
@@ -205,12 +205,12 @@
                                             <td *ngIf="item.WholeSale === 0">
                                                 <input class="inputWidth"  name="RetailPrice{{item.ID}}"
                                                     [(ngModel)]="item.RetailPrice" required 
-                                                    #TAmountcontrol [autocomplete]="false"  [disabled]="item.sel !== 1" >
+                                                    #TAmountcontrol [autocomplete]="false"  [disabled]="item.Sel !== 1" >
                                             </td>
                                             <td *ngIf="item.WholeSale === 1">
                                                 <input class="inputWidth"  name="WholeSalePrice{{item.ID}}"
                                                     [(ngModel)]="item.WholeSalePrice" required 
-                                                    #TAmountcontrol [autocomplete]="false"  [disabled]="item.sel !== 1" >
+                                                    #TAmountcontrol [autocomplete]="false"  [disabled]="item.Sel !== 1" >
                                             </td>
                                         </tr>
                                     </tbody>

@@ -82,6 +82,8 @@ export class PurchaseComponent implements OnInit {
   gst_detail: any = [];
   BarcodeQuantity = 0;
   BarcodeData: any = {};
+
+  disbaleupdate = false
   ngOnInit(): void {
     this.getProductList();
     this.getdropdownSupplierlist();
@@ -654,6 +656,7 @@ export class PurchaseComponent implements OnInit {
 
   updatedPurchase() {
     this.sp.show()
+    this.data.UpdateProduct = true
     this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
     this.data.PurchaseMaster = this.selectedPurchaseMaster;
     this.data.Charge = this.chargeList;
@@ -672,7 +675,6 @@ export class PurchaseComponent implements OnInit {
             this.getPurchaseById();
             this.selectedProduct = "";
             this.specList = [];
-            this.data.UpdateProduct = false
           }
           Swal.fire({
             position: 'center',
@@ -696,6 +698,7 @@ export class PurchaseComponent implements OnInit {
 
   showInput(data: any) {
     data.UpdateProduct = !data.UpdateProduct
+    this.disbaleupdate = true
   }
 
   calculateFields1(fieldName: any, mode: any, data: any) {
@@ -703,6 +706,7 @@ export class PurchaseComponent implements OnInit {
   }
 
   updataEditProdcut(fieldName: any, mode: any, data: any) {
+    this.sp.show();
     this.calculateFields1(fieldName, mode, data)
     this.calculateGrandTotal();
     const dtm = {
@@ -711,8 +715,26 @@ export class PurchaseComponent implements OnInit {
     }
     const subs: Subscription = this.purchaseService.updateProduct(dtm).subscribe({
       next: (res: any) => {
-        // console.log(res);
+        if (res.success) {
+          // this.showInput(data)
+          // this.as.successToast(res.message)
+        
+        } else {
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: res.message + ', you can not change anything',
+            showConfirmButton: true,
+            backdrop: false,
+          })
+            this.showInput(data)
+            this.getPurchaseById()
+
+        }
+        this.disbaleupdate = false
+        this.sp.hide();
       },
+
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });

@@ -376,7 +376,6 @@ export class SupplierPoComponent implements OnInit {
   assignSupplierDoc() {
     this.sp.show()
     this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
-
           this.filtersList.forEach((element: any) => {
             this.data.ID = element.BillID 
             this.supplierID =  element.SupplierID 
@@ -387,14 +386,11 @@ export class SupplierPoComponent implements OnInit {
               element.SupplierDocNo = element.SupplierDocNo;
             }
           });
-         
-
       let Body = this.filtersList;
 
       const subs: Subscription = this.bill.assignSupplierDoc(Body).subscribe({
         next: (res: any) => {
           if (res.success) {
-            this.modalService.dismissAll()
             this.as.successToast(res.message)
           } else {
             this.as.errorToast(res.message)

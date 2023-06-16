@@ -734,7 +734,7 @@
                                 </div>
                                 <div *ngIf="selectedPurchaseMaster.ID !== null"
                                     class="col-xl-1 col-lg-1 col-md-6 col-sm-12 col-6  mb-0 mr-3">
-                                    <button type="button" [disabled]="itemList.length === 0" (click)="updatedPurchase()"
+                                    <button type="button" [disabled]="itemList.length === 0 || this.disbaleupdate === true" (click)="updatedPurchase()"
                                         mat-raised-button color="primary">Update</button>
                                 </div>
                             </div>
