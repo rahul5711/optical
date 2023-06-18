@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt')
 const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
-
+const { shopID, generateInvoiceNo, generateBillSno, generateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder, gstDetailBill, generateUniqueBarcode } = require('../helpers/helper_function')
 
 module.exports = {
     save: async (req, res, next) => {
@@ -168,7 +168,7 @@ module.exports = {
             const UserGroup = req.user.UserGroup ? req.user.UserGroup : 'CompanyAdmin';
 
 
-            let data = await connection.query(`select * from fitter where Status = 1 and CompanyID = ${CompanyID}`);
+            let data = await connection.query(`select fitter.ID, fitter.Name from fitter where Status = 1 and CompanyID = ${CompanyID}`);
             response.message = "data fetch sucessfully"
             response.data = data
             // connection.release()
@@ -182,6 +182,28 @@ module.exports = {
         }
     },
 
+    getRateCard: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+            if (!Body.FitterID) res.send({ message: "Invalid Query Data" })
+            response.message = "data fetch sucessfully"
+            response.data = await connection.query(`select fitterratecard.FitterID, fitterratecard.LensType, fitterratecard.Rate, fitterassignedshop.ShopID  from fitterratecard left join fitterassignedshop on fitterassignedshop.FitterID = fitterratecard.FitterID where  fitterratecard.Status = 1 and fitterratecard.FitterID = ${Body.FitterID} and fitterratecard.CompanyID = ${CompanyID} and fitterassignedshop.ShopID = ${shopid} and fitterassignedshop.Status = 1 `)
+
+            // connection.release()
+            res.send(response)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
     getFitterById: async (req, res, next) => {
         const connection = await mysql.connection();
         try {
@@ -221,7 +243,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.LensType) return res.send({ message: "Invalid Query Data" })
 
-            doesExist = await connection.query(`select * from fitterratecard where Status = 1 and LensType='${Body.LensType}'`);
+            doesExist = await connection.query(`select * from fitterratecard where Status = 1 and CompanyID = ${CompanyID} and FitterID = ${Body.FitterID} and LensType='${Body.LensType}'`);
 
             if (doesExist.length) {
                 return res.send({ message: `User have already LensType in this shop` });

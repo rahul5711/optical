@@ -32,7 +32,7 @@ router.post('/getSalereports', verifyAccessTokenAdmin, Controller.getSalereports
 
 router.post('/getSalereportsDetail', verifyAccessTokenAdmin, Controller.getSalereportsDetail)
 
-// po
+// po supplier
 router.post('/getSupplierPo', verifyAccessTokenAdmin, Controller.getSupplierPo)
 router.post('/assignSupplierPo', verifyAccessTokenAdmin, Controller.assignSupplierPo)
 router.post('/assignSupplierDoc', verifyAccessTokenAdmin, Controller.assignSupplierDoc)
@@ -41,7 +41,8 @@ router.post('/saveConvertPurchase', verifyAccessTokenAdmin, Controller.saveConve
 
 router.post('/getSupplierPoPurchaseList', verifyAccessTokenAdmin, Controller.getSupplierPoPurchaseList)
 
-// save supplier getfitter po and save fitter po
+// po fitter
+router.post('/getFitterPo', verifyAccessTokenAdmin, Controller.getFitterPo)
 
 
 module.exports = router
