@@ -72,7 +72,7 @@ export class BillComponent implements OnInit {
   }
 
   BillItem: any = {
-    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null, Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal : ''
+    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null, Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal : '', PurchasePrice:0
   };
 
   Service: any = {
@@ -826,10 +826,13 @@ export class BillComponent implements OnInit {
             this.BillItem.ProductName = searchString
             this.BillItem.Barcode = '0'
             this.BillItem.BaseBarCode = '0'
+            this.BillItem.PurchasePrice = 0
 
             if (this.BillItem.WholeSale === true) {
               this.BillItem.WholeSalePrice = this.BillItem.UnitPrice
-            } else {
+            } else if(this.BillItem.Barcode === 0) {
+              this.BillItem.PurchasePrice = this.BillItem.PurchasePrice
+            }else{
               this.BillItem.RetailPrice = this.BillItem.UnitPrice
             }
           }
