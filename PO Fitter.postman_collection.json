@@ -125,6 +125,536 @@
 			]
 		},
 		{
+			"name": "assignFitterPo",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODcyODIyNzEsImV4cCI6MTY4NzM2ODY3MSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.MFlk1iPooPf5E14pD_uBIgJBkYRASSsDTejBy8SY6FI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Body\": [\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 60,\r\n            \"LensType\": \"supra\",\r\n            \"FitterCost\": 300,\r\n            \"FitterID\": 1,\r\n            \"FitterStatus\": \"qc cancel\"\r\n        },\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 58,\r\n            \"LensType\": \"supra\",\r\n            \"FitterCost\": 300,\r\n            \"FitterID\": 1,\r\n            \"FitterStatus\": \"qc cancel\"\r\n        },\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 56,\r\n            \"LensType\": \"supra\",\r\n            \"FitterCost\": 300,\r\n            \"FitterID\": 1,\r\n            \"FitterStatus\": \"qc cancel\"\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/bill/assignFitterPo",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"bill",
+						"assignFitterPo"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "assignFitterPo",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Body\": [\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 60,\r\n            \"LensType\": \"supra\",\r\n            \"FitterCost\": 300,\r\n            \"FitterID\": 1,\r\n            \"FitterStatus\": \"assign fitter\"\r\n        },\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 58,\r\n            \"LensType\": \"supra\",\r\n            \"FitterCost\": 300,\r\n            \"FitterID\": 1,\r\n            \"FitterStatus\": \"assign fitter\"\r\n        },\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 56,\r\n            \"LensType\": \"supra\",\r\n            \"FitterCost\": 300,\r\n            \"FitterID\": 1,\r\n            \"FitterStatus\": \"assign fitter\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/assignFitterPo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"assignFitterPo"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "71"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"47-/eLPyswiLZoICkmEM6/HWSBTQ1g\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 20 Jun 2023 17:32:31 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": null,\n    \"success\": true,\n    \"message\": \"Fitter Assign SuccessFully !!!\"\n}"
+				},
+				{
+					"name": "cancelFitterPo",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Body\": [\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 60,\r\n            \"LensType\": \"\",\r\n            \"FitterCost\": 0,\r\n            \"FitterID\": 0,\r\n            \"FitterStatus\": \"initiate\"\r\n        },\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 58,\r\n            \"LensType\": \"\",\r\n            \"FitterCost\": 0,\r\n            \"FitterID\": 0,\r\n            \"FitterStatus\": \"initiate\"\r\n        },\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 56,\r\n            \"LensType\": \"\",\r\n            \"FitterCost\": 0,\r\n            \"FitterID\": 0,\r\n            \"FitterStatus\": \"initiate\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/assignFitterPo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"assignFitterPo"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "71"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"47-/eLPyswiLZoICkmEM6/HWSBTQ1g\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 20 Jun 2023 17:36:23 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": null,\n    \"success\": true,\n    \"message\": \"Fitter Assign SuccessFully !!!\"\n}"
+				},
+				{
+					"name": "qc check",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Body\": [\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 60,\r\n            \"LensType\": \"supra\",\r\n            \"FitterCost\": 300,\r\n            \"FitterID\": 1,\r\n            \"FitterStatus\": \"qc check\"\r\n        },\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 58,\r\n            \"LensType\": \"supra\",\r\n            \"FitterCost\": 300,\r\n            \"FitterID\": 1,\r\n            \"FitterStatus\": \"qc check\"\r\n        },\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 56,\r\n            \"LensType\": \"supra\",\r\n            \"FitterCost\": 300,\r\n            \"FitterID\": 1,\r\n            \"FitterStatus\": \"qc check\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/assignFitterPo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"assignFitterPo"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "71"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"47-/eLPyswiLZoICkmEM6/HWSBTQ1g\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 20 Jun 2023 17:46:00 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": null,\n    \"success\": true,\n    \"message\": \"Fitter Assign SuccessFully !!!\"\n}"
+				},
+				{
+					"name": "qc cancel",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Body\": [\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 60,\r\n            \"LensType\": \"supra\",\r\n            \"FitterCost\": 300,\r\n            \"FitterID\": 1,\r\n            \"FitterStatus\": \"qc cancel\"\r\n        },\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 58,\r\n            \"LensType\": \"supra\",\r\n            \"FitterCost\": 300,\r\n            \"FitterID\": 1,\r\n            \"FitterStatus\": \"qc cancel\"\r\n        },\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 56,\r\n            \"LensType\": \"supra\",\r\n            \"FitterCost\": 300,\r\n            \"FitterID\": 1,\r\n            \"FitterStatus\": \"qc cancel\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/assignFitterPo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"assignFitterPo"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "71"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"47-/eLPyswiLZoICkmEM6/HWSBTQ1g\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 20 Jun 2023 17:47:17 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": null,\n    \"success\": true,\n    \"message\": \"Fitter Assign SuccessFully !!!\"\n}"
+				},
+				{
+					"name": "complete",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Body\": [\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 60,\r\n            \"LensType\": \"supra\",\r\n            \"FitterCost\": 300,\r\n            \"FitterID\": 1,\r\n            \"FitterStatus\": \"complete\"\r\n        },\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 58,\r\n            \"LensType\": \"supra\",\r\n            \"FitterCost\": 300,\r\n            \"FitterID\": 1,\r\n            \"FitterStatus\": \"complete\"\r\n        },\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 56,\r\n            \"LensType\": \"supra\",\r\n            \"FitterCost\": 300,\r\n            \"FitterID\": 1,\r\n            \"FitterStatus\": \"complete\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/assignFitterPo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"assignFitterPo"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "71"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"47-/eLPyswiLZoICkmEM6/HWSBTQ1g\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 20 Jun 2023 17:49:50 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": null,\n    \"success\": true,\n    \"message\": \"Fitter Assign SuccessFully !!!\"\n}"
+				}
+			]
+		},
+		{
+			"name": "assignFitterDoc",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODcyODIyNzEsImV4cCI6MTY4NzM2ODY3MSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.MFlk1iPooPf5E14pD_uBIgJBkYRASSsDTejBy8SY6FI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Body\": [\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 60,\r\n            \"Remark\": \"qc cancel\",\r\n            \"FitterDocNo\": \"qc cancel\"\r\n        },\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 58,\r\n            \"Remark\": \"qc cancel\",\r\n            \"FitterDocNo\": \"qc cancel\"\r\n        },\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 56,\r\n            \"Remark\": \"qc cancel\",\r\n            \"FitterDocNo\": \"qc cancel\"\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/bill/assignFitterDoc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"bill",
+						"assignFitterDoc"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "assignFitterDoc",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Body\": [\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 60,\r\n            \"Remark\": \"qc cancel\",\r\n            \"FitterDocNo\": \"qc cancel\"\r\n        },\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 58,\r\n            \"Remark\": \"qc cancel\",\r\n            \"FitterDocNo\": \"qc cancel\"\r\n        },\r\n        {\r\n            \"Sel\": 1,\r\n            \"ID\": 56,\r\n            \"Remark\": \"qc cancel\",\r\n            \"FitterDocNo\": \"qc cancel\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/assignFitterDoc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"assignFitterDoc"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "75"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"4b-gRxmzmsdB3xr+JUrTj8L9NaEHU0\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 20 Jun 2023 17:59:40 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": null,\n    \"success\": true,\n    \"message\": \"Fitter Doc Assign SuccessFully !!!\"\n}"
+				}
+			]
+		},
+		{
 			"name": "dropdownlist",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
@@ -364,6 +894,374 @@
 					"body": "{\n    \"data\": [\n        {\n            \"FitterID\": 3,\n            \"LensType\": \"Rimless\",\n            \"Rate\": 100,\n            \"ShopID\": 1\n        },\n        {\n            \"FitterID\": 3,\n            \"LensType\": \"Supra\",\n            \"Rate\": 100,\n            \"ShopID\": 1\n        },\n        {\n            \"FitterID\": 3,\n            \"LensType\": \"Tilt\",\n            \"Rate\": 100,\n            \"ShopID\": 1\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\"\n}"
 				}
 			]
+		},
+		{
+			"name": "getFitterPoList",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODcyODIyNzEsImV4cCI6MTY4NzM2ODY3MSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.MFlk1iPooPf5E14pD_uBIgJBkYRASSsDTejBy8SY6FI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/bill/getFitterPoList",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"bill",
+						"getFitterPoList"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getFitterPoList-assign fitter",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/getFitterPoList",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"getFitterPoList"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2299"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"8fb-4Ufa+5ZasXZqiBJFsRnb/NkyRPs\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 20 Jun 2023 17:44:12 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Sel\": 0,\n            \"ID\": 60,\n            \"Barcode\": \"90024000\",\n            \"BillDetailID\": 16,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 9,\n            \"BaseBarcode\": \"90024\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"kljkl/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 500,\n            \"Quantity\": 1,\n            \"SubTotal\": 500,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 500,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:37:12\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"ssss\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00009\",\n            \"LensType\": \"supra\",\n            \"FitterCost\": 300,\n            \"FitterID\": 1,\n            \"FitterStatus\": \"assign fitter\",\n            \"Option\": \"Full Glass\",\n            \"FitterDocNo\": null,\n            \"Remark\": null\n        },\n        {\n            \"Sel\": 0,\n            \"ID\": 58,\n            \"Barcode\": \"90023000\",\n            \"BillDetailID\": 15,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 9,\n            \"BaseBarcode\": \"90023\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"gfhgh/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 200,\n            \"Quantity\": 1,\n            \"SubTotal\": 200,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 200,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:36:16\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"ssss\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00009\",\n            \"LensType\": \"supra\",\n            \"FitterCost\": 300,\n            \"FitterID\": 1,\n            \"FitterStatus\": \"assign fitter\",\n            \"Option\": \"Full Glass\",\n            \"FitterDocNo\": null,\n            \"Remark\": null\n        },\n        {\n            \"Sel\": 0,\n            \"ID\": 56,\n            \"Barcode\": \"90022000\",\n            \"BillDetailID\": 14,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 10,\n            \"BaseBarcode\": \"90022\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"sdsdsd/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 250,\n            \"Quantity\": 1,\n            \"SubTotal\": 250,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 250,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:31:59\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"saloni\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00010\",\n            \"LensType\": \"supra\",\n            \"FitterCost\": 300,\n            \"FitterID\": 1,\n            \"FitterStatus\": \"assign fitter\",\n            \"Option\": \"Half Glass Right\",\n            \"FitterDocNo\": null,\n            \"Remark\": null\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				},
+				{
+					"name": "getFitterPoList-qc check",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/getFitterPoList",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"getFitterPoList"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2284"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"8ec-7bY89mb5kaVjz0e7yWU+Hj6Lqnc\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 20 Jun 2023 17:46:19 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Sel\": 0,\n            \"ID\": 60,\n            \"Barcode\": \"90024000\",\n            \"BillDetailID\": 16,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 9,\n            \"BaseBarcode\": \"90024\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"kljkl/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 500,\n            \"Quantity\": 1,\n            \"SubTotal\": 500,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 500,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:37:12\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"ssss\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00009\",\n            \"LensType\": \"supra\",\n            \"FitterCost\": 300,\n            \"FitterID\": 1,\n            \"FitterStatus\": \"qc check\",\n            \"Option\": \"Full Glass\",\n            \"FitterDocNo\": null,\n            \"Remark\": null\n        },\n        {\n            \"Sel\": 0,\n            \"ID\": 58,\n            \"Barcode\": \"90023000\",\n            \"BillDetailID\": 15,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 9,\n            \"BaseBarcode\": \"90023\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"gfhgh/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 200,\n            \"Quantity\": 1,\n            \"SubTotal\": 200,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 200,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:36:16\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"ssss\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00009\",\n            \"LensType\": \"supra\",\n            \"FitterCost\": 300,\n            \"FitterID\": 1,\n            \"FitterStatus\": \"qc check\",\n            \"Option\": \"Full Glass\",\n            \"FitterDocNo\": null,\n            \"Remark\": null\n        },\n        {\n            \"Sel\": 0,\n            \"ID\": 56,\n            \"Barcode\": \"90022000\",\n            \"BillDetailID\": 14,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 10,\n            \"BaseBarcode\": \"90022\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"sdsdsd/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 250,\n            \"Quantity\": 1,\n            \"SubTotal\": 250,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 250,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:31:59\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"saloni\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00010\",\n            \"LensType\": \"supra\",\n            \"FitterCost\": 300,\n            \"FitterID\": 1,\n            \"FitterStatus\": \"qc check\",\n            \"Option\": \"Half Glass Right\",\n            \"FitterDocNo\": null,\n            \"Remark\": null\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				},
+				{
+					"name": "getFitterPoList- qc cancel",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/getFitterPoList",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"getFitterPoList"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2287"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"8ef-euQ3D9sB2M31j1nwKGAhxbHZYR4\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 20 Jun 2023 17:49:13 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Sel\": 0,\n            \"ID\": 60,\n            \"Barcode\": \"90024000\",\n            \"BillDetailID\": 16,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 9,\n            \"BaseBarcode\": \"90024\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"kljkl/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 500,\n            \"Quantity\": 1,\n            \"SubTotal\": 500,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 500,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:37:12\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"ssss\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00009\",\n            \"LensType\": \"supra\",\n            \"FitterCost\": 300,\n            \"FitterID\": 1,\n            \"FitterStatus\": \"qc cancel\",\n            \"Option\": \"Full Glass\",\n            \"FitterDocNo\": null,\n            \"Remark\": null\n        },\n        {\n            \"Sel\": 0,\n            \"ID\": 58,\n            \"Barcode\": \"90023000\",\n            \"BillDetailID\": 15,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 9,\n            \"BaseBarcode\": \"90023\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"gfhgh/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 200,\n            \"Quantity\": 1,\n            \"SubTotal\": 200,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 200,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:36:16\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"ssss\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00009\",\n            \"LensType\": \"supra\",\n            \"FitterCost\": 300,\n            \"FitterID\": 1,\n            \"FitterStatus\": \"qc cancel\",\n            \"Option\": \"Full Glass\",\n            \"FitterDocNo\": null,\n            \"Remark\": null\n        },\n        {\n            \"Sel\": 0,\n            \"ID\": 56,\n            \"Barcode\": \"90022000\",\n            \"BillDetailID\": 14,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 10,\n            \"BaseBarcode\": \"90022\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"sdsdsd/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 250,\n            \"Quantity\": 1,\n            \"SubTotal\": 250,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 250,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:31:59\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"saloni\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00010\",\n            \"LensType\": \"supra\",\n            \"FitterCost\": 300,\n            \"FitterID\": 1,\n            \"FitterStatus\": \"qc cancel\",\n            \"Option\": \"Half Glass Right\",\n            \"FitterDocNo\": null,\n            \"Remark\": null\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				},
+				{
+					"name": "getFitterPoList-complete",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/getFitterPoList",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"getFitterPoList"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2284"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"8ec-/zgfEvvd2vobCgZ2IyjIXV/fsGQ\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 20 Jun 2023 17:50:05 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Sel\": 0,\n            \"ID\": 60,\n            \"Barcode\": \"90024000\",\n            \"BillDetailID\": 16,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 9,\n            \"BaseBarcode\": \"90024\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"kljkl/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 500,\n            \"Quantity\": 1,\n            \"SubTotal\": 500,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 500,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:37:12\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"ssss\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00009\",\n            \"LensType\": \"supra\",\n            \"FitterCost\": 300,\n            \"FitterID\": 1,\n            \"FitterStatus\": \"complete\",\n            \"Option\": \"Full Glass\",\n            \"FitterDocNo\": null,\n            \"Remark\": null\n        },\n        {\n            \"Sel\": 0,\n            \"ID\": 58,\n            \"Barcode\": \"90023000\",\n            \"BillDetailID\": 15,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 9,\n            \"BaseBarcode\": \"90023\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"gfhgh/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 200,\n            \"Quantity\": 1,\n            \"SubTotal\": 200,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 200,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:36:16\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"ssss\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00009\",\n            \"LensType\": \"supra\",\n            \"FitterCost\": 300,\n            \"FitterID\": 1,\n            \"FitterStatus\": \"complete\",\n            \"Option\": \"Full Glass\",\n            \"FitterDocNo\": null,\n            \"Remark\": null\n        },\n        {\n            \"Sel\": 0,\n            \"ID\": 56,\n            \"Barcode\": \"90022000\",\n            \"BillDetailID\": 14,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 10,\n            \"BaseBarcode\": \"90022\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"sdsdsd/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 250,\n            \"Quantity\": 1,\n            \"SubTotal\": 250,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 250,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:31:59\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"saloni\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00010\",\n            \"LensType\": \"supra\",\n            \"FitterCost\": 300,\n            \"FitterID\": 1,\n            \"FitterStatus\": \"complete\",\n            \"Option\": \"Half Glass Right\",\n            \"FitterDocNo\": null,\n            \"Remark\": null\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODcyODA0NDEsImV4cCI6MTY4NzM2Njg0MSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.sBVHwDAOxCFMNI-ybY343s5hesg8qBG1D217dRGrpTg",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
