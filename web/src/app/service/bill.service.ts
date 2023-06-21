@@ -145,6 +145,25 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  getFitterPo(ID:any,Parem:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getFitterPo',{ID:ID, Parem:Parem}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  assignFitterPo(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/assignFitterPo',{Body:Body}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getFitterPoList(ID:any,Parem:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getFitterPoList', {ID:ID, Parem:Parem}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  assignFitterDoc(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/assignFitterDoc',{Body:Body}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

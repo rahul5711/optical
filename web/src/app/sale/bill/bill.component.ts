@@ -809,7 +809,6 @@ export class BillComponent implements OnInit {
         // additem Pre order
         if (this.BillItem.Barcode === null || this.BillItem.Barcode === '') {
           if (this.BillItem.PreOrder) {
-            this.BillItem.Quantity = 1
             let searchString = "";
             this.prodList.forEach((e: any) => {
               if (e.Name === this.selectedProduct) {
@@ -1273,8 +1272,9 @@ export class BillComponent implements OnInit {
     const subs: Subscription =  this.bill.assignSupplierPo(Body).subscribe({
       next: (res: any) => {
         if(res.success){
-          this.modalService.dismissAll()
+          this.assignSupplierDoc()
           this.data.SupplierID = ''
+          this.modalService.dismissAll()
           // this.getList()
           this.as.successToast(res.message)
         }else{
@@ -1294,6 +1294,36 @@ export class BillComponent implements OnInit {
         backdrop : false,
       })
     }
+    this.sp.hide()
+  }
+
+  assignSupplierDoc() {
+    this.sp.show()
+    this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
+          this.filtersList.forEach((element: any) => {
+            this.data.ID = element.BillID 
+            this.data.SupplierID =  element.SupplierID 
+            element.Sel = element.Sel;
+            if(element.SupplierDocNo === '' || element.SupplierDocNo === null || element.SupplierDocNo === undefined){
+              element.SupplierDocNo = 'NA'
+            }else{
+              element.SupplierDocNo = element.SupplierDocNo;
+            }
+          });
+      let Body = this.filtersList;
+
+      const subs: Subscription = this.bill.assignSupplierDoc(Body).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            // this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     this.sp.hide()
   }
 

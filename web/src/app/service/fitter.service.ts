@@ -76,9 +76,26 @@ export class FitterService {
   }
  
   searchByFeild(searchQuery: any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams();
     return this.httpClient.post<any>(this.url + '/searchByFeild', searchQuery)
     .pipe(catchError(this.handleError));
   }
+
+  dropdownlist(): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams();
+    return this.httpClient.get<any>(this.url + '/dropdownlist', { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
+  getRateCard(FitterID:any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams();
+    return this.httpClient.post<any>(this.url + '/getRateCard', {FitterID: FitterID}, { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

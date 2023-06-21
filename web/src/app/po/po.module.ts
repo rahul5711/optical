@@ -24,12 +24,14 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { PurchaseConvertComponent } from './purchase-convert/purchase-convert.component';
 import { SupplierPoListComponent } from './supplier-po-list/supplier-po-list.component';
+import { FitterPoComponent } from './fitter-po/fitter-po.component';
 
 @NgModule({
   declarations: [
     SupplierPoComponent,
     PurchaseConvertComponent,
-    SupplierPoListComponent
+    SupplierPoListComponent,
+    FitterPoComponent
   ],
   imports: [
     CommonModule,

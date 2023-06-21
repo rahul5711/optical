@@ -114,8 +114,6 @@ export class SupplierPoComponent implements OnInit {
     console.log($event);
   }
 
-
-
   validate(v:any,event:any) {
     if (v.Sel === 0 || v.Sel === null || v.Sel === undefined) {
       v.Sel = 1;
@@ -125,7 +123,6 @@ export class SupplierPoComponent implements OnInit {
       this.orderSupplierbtn = true
     }
   }
-
 
   getSupplierPo() {
     this.sp.show()
@@ -354,7 +351,6 @@ export class SupplierPoComponent implements OnInit {
     this.orderComplete = true
     this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' }
   }
-
 
   openModal1(content1: any, data: any) {
     this.sp.show()
