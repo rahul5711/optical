@@ -825,7 +825,7 @@ export class BillComponent implements OnInit {
             this.BillItem.ProductName = searchString
             this.BillItem.Barcode = '0'
             this.BillItem.BaseBarCode = '0'
-            this.BillItem.PurchasePrice = 0
+            
 
             if (this.BillItem.WholeSale === true) {
               this.BillItem.WholeSalePrice = this.BillItem.UnitPrice

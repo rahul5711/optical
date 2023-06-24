@@ -25,13 +25,17 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { PurchaseConvertComponent } from './purchase-convert/purchase-convert.component';
 import { SupplierPoListComponent } from './supplier-po-list/supplier-po-list.component';
 import { FitterPoComponent } from './fitter-po/fitter-po.component';
+import { FitterInvoiceComponent } from './fitter-invoice/fitter-invoice.component';
+import { FitterInvoiceListComponent } from './fitter-invoice-list/fitter-invoice-list.component';
 
 @NgModule({
   declarations: [
     SupplierPoComponent,
     PurchaseConvertComponent,
     SupplierPoListComponent,
-    FitterPoComponent
+    FitterPoComponent,
+    FitterInvoiceComponent,
+    FitterInvoiceListComponent
   ],
   imports: [
     CommonModule,

@@ -5,7 +5,7 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
                 <div class="card">
                     <div class="header">
-                        <h2>Fitter PreOrder </h2>
+                        <h2>Fitter Order </h2>
                     </div>
                     <div class="body">
                         <form #f="ngForm" autocomplete="off">
@@ -86,7 +86,6 @@
                                 mat-raised-button color="primary">
                                 ORDER DONE
                             </button>
-
                         </div>
 
                         <!-- <div *ngIf="this.orderComplete == true" class="col-md-4 col-4 mx-md-auto" style="margin-top:0px;">
@@ -122,7 +121,7 @@
                                                     [checked]="this.multiCheck"></mat-checkbox>
                                             </th>
                                             <th>SNo</th>
-                                            <th>MRD No</th>
+                                            <th>MRDNo</th>
                                             <th>CustomerName</th>
                                             <th>MobileNo</th>
                                             <th>InvoiceDate</th>
@@ -131,15 +130,13 @@
                                             <th>ProductName</th>
                                             <th>Qty</th>
                                             <th>Option</th>
-                                            <th *ngIf="this.orderComplete === true">Fitter</th>
-                                            <th *ngIf="this.orderComplete === true">FitterCost</th>
+                                            <th *ngIf="!this.orderFitter">Fitter</th>
+                                            <th *ngIf="!this.orderFitter">FitterCost</th>
                                             <th>FitterStatus</th>
                                             <th>LensType</th>
                                             <th>Remark</th>
-                                            <th *ngIf="this.orderComplete === true">FitterDocNo</th>
-                                            <th *ngIf="this.orderComplete === true">QcRemark</th>
+                                            <th *ngIf="!this.orderFitter">FitterDocNo</th>
                                             <th>ShopName</th>
-
                                         </tr>
                                     </thead>
                                     <tbody class="text-center">
@@ -163,25 +160,15 @@
                                             <td>{{v.InvoiceNo}}</td>
                                             <td>{{v.ProductName}}</td>
                                             <td>{{v.Quantity}}</td>
-                                            <td>{{v.Option}}</td>
-                                            <td *ngIf="this.orderComplete === true">{{v.FitterID}}</td>
-                                            <td *ngIf="this.orderComplete === true">{{v.FitterCost}}</td>
+                                            <td>{{(v.Option !== 'undefined')? v.Option: ''}}</td>
+                                            <td *ngIf="!this.orderFitter">{{v.FitterID}}</td>
+                                            <td *ngIf="!this.orderFitter">{{v.FitterCost}}</td>
+                                            <td> {{(v.FitterStatus !== 'initiate')? v.FitterStatus: ''}}</td>
                                             <td>
-                                                <select [disabled]="v.FitterStatus === 'initiate'"  class="inputselectWidth"
-                                                name="FitterStatus" [(ngModel)]="v.FitterStatus" #FitterStatusControl="ngModel"
-                                                required #FitterStatuscontrol1  >
-                                                <option value="initiate" *ngIf="v.FitterID === 0">  </option>
-                                                <option value="assign fitter"> Assign Fitter</option>
-                                                <!-- <option value="qc check"> qc check</option>
-                                                <option value="qc cancel"> qc cancel</option> -->
-                                                <option value="complete"> Complete(Qc Done) </option>
-                                            </select>
-                                            </td>
-                                            <td>
-                                                <select  [disabled]="v.FitterStatus !== 'initiate' " class="inputselectWidth"
+                                                <select (change)="check(v)" [disabled]="v.FitterStatus !== 'initiate'" class="inputselectWidth"
                                                     name="LensType" [(ngModel)]="v.LensType" #LensTypeControl="ngModel"
-                                                    required #LensTypecontrol1  >
-                                                    <option [value]="l.Name" *ngFor="let l of lensList" required >
+                                                    required #LensTypecontrol1 >
+                                                    <option  [value]="l.Name" *ngFor="let l of lensList" required >
                                                         {{l.Name}}
                                                     </option>
                                                 </select>
@@ -189,17 +176,12 @@
                                             <td>
                                                 <input class="inputWidth" name="Remark{{v.ID}}"
                                                     [(ngModel)]="v.Remark" #Remarkcontrol [autocomplete]="false"
-                                                    [disabled]="v.Sel !== 1 && v.FitterStatus !== 'initiate'">
+                                                    [disabled]="v.Sel !== 1">
                                             </td>
-                                            <td *ngIf="this.orderComplete === true">
+                                            <td *ngIf="!this.orderFitter">
                                                 <input class="inputWidth"  name="FitterDocNo{{v.ID}}"
                                                  [(ngModel)]="v.FitterDocNo"  required 
                                                 #TAmountcontrol [autocomplete]="false" [disabled]="v.Sel !== 1" >
-                                            </td>
-                                            <td *ngIf="this.orderComplete === true">
-                                                <input class="inputWidth" name="Remark{{v.ID}}"
-                                                    [(ngModel)]="v.Remark" #Remarkcontrol [autocomplete]="false"
-                                                    [disabled]="v.FitterStatus !== 'initiate'" [disabled]="v.Sel !== 1">
                                             </td>
                                             <td>{{v.ShopName}}<span [style.color]="'blue'"
                                                     *ngIf="v.AreaName !== 'null'">({{v.AreaName}})</span>
@@ -211,13 +193,13 @@
                         </div>
                         <div class="row" style="border-top: 1px solid #00000047;">
                             <div class="col-md-2 mx-auto p-3" *ngIf="this.orderFitter">
-                                <button class="hover mx-auto" [disabled]="this.orderFitterbtn"
+                                <button class="hover mx-auto" [disabled]="this.assginfitterbtn "
                                     (click)="openModal(content)" type="button" mat-raised-button color="primary">
                                     Order (Fitter)
                                 </button>
                             </div>
-                            <div class="col-md-3 mx-auto p-3" *ngIf="this.orderComplete">
-                                <button [disabled]="this.orderFitterbtn" (click)="assignFitterPoCancel('Cancel')"
+                            <div class="col-md-5 mx-auto p-3" *ngIf="this.orderComplete">
+                                <button [disabled]="this.orderFitterbtn" (click)="assignAllFitterPo('Cancel')"
                                     class="hover" class="ms-3" type="button" mat-raised-button color="primary">
                                     ORDER CANCEL
                                 </button>
@@ -225,6 +207,21 @@
                                 <button [disabled]="this.orderFitterbtn" (click)="assignFitterDoc()" class="hover" class="ms-3" type="button"
                                     mat-raised-button color="primary">
                                     Fitter DocNo
+                                </button>
+
+                                <button [disabled]="this.orderFitterbtn" (click)="assignAllFitterPo('QcCheck')" class="hover" class="ms-3" type="button"
+                                    mat-raised-button color="primary">
+                                    Qc Check
+                                </button>
+
+                                <button [disabled]="this.orderFitterbtn" class="hover" (click)="assignAllFitterPo('QCCancel')" class="ms-3" type="button"
+                                    mat-raised-button color="primary">
+                                    QC Cancel
+                                </button>
+
+                                <button [disabled]="this.orderFitterbtn" (click)="completePo('Complete')" class="hover" class="ms-3" type="button"
+                                     mat-raised-button color="primary">
+                                     Complete
                                 </button>
                             </div>
                         </div>

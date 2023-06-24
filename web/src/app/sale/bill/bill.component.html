@@ -498,6 +498,7 @@
                                 <th class="text-center">Barcode</th>
                                 <th class="text-center">ProductName</th>
                                 <th class="text-center">UnitPrice</th>
+                                <!-- <th class="text-center">PurchasePrice</th> -->
                                 <th class="text-center">Quantity</th>
                                 <th class="text-center">SubTotal</th>
                                 <th class="text-center">GSTAmt</th>
@@ -529,6 +530,8 @@
                                     {{data.ProductTypeName}}/{{data.ProductName}}</td>
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     {{data.UnitPrice}}</td>
+                                <!-- <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    {{data.PurchasePrice}}</td> -->
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     {{data.Quantity}}</td>
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
@@ -709,7 +712,9 @@
                      <button type="button" class=" me-3" mat-raised-button color="primary" 
                      [disabled]="BillMaster.ID === null" (click)="openModal1(content1)">Payment</button>
                      <button type="button" class=" me-3" mat-raised-button color="primary" 
-                     [disabled]="BillMaster.ID === null" (click)="openModal12(content12)">Order</button>
+                     [disabled]="BillMaster.ID === null" (click)="openModal12(content12)">Lens Order</button>
+                     <button type="button" class=" me-3" mat-raised-button color="primary" 
+                     [disabled]="BillMaster.ID === null" >Fitter Order</button>
                     <button type="button" mat-raised-button color="primary">Receipt</button>
                     <button type="button" class="me-3 ms-3" mat-raised-button color="primary">Receipt +
                         Power</button>

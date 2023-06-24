@@ -62,10 +62,11 @@ export class FitterPoComponent implements OnInit {
   page = 4;
 
   orderFitter = false
+  assginfitterbtn = true
   orderFitterbtn = true
   orderComplete = false
   Orderpower: any = []
-  multiCheck: any 
+  multiCheck: any
 
   // call Api ngOnInit start 
   ngOnInit(): void {
@@ -105,31 +106,35 @@ export class FitterPoComponent implements OnInit {
   }
   // call Api ngOnInit end 
 
-  multicheck($event:any) {
+  multicheck($event: any) {
     for (var i = 0; i < this.orderList.length; i++) {
       const index = this.orderList.findIndex(((x: any) => x === this.orderList[i]));
       if (this.orderList[index].Sel === 0 || this.orderList[index].Sel === null || this.orderList[index].Sel === undefined) {
         this.orderList[index].Sel = 1;
         this.orderFitterbtn = false
+        this.assginfitterbtn = false
       } else {
         this.orderList[index].Sel = 0;
         this.orderFitterbtn = true
+        this.assginfitterbtn = true
       }
     }
-    console.log($event);
+    this.check('')
   }
 
-  validate(v:any,event:any) {
+  validate(v: any, event: any) {
     if (v.Sel === 0 || v.Sel === null || v.Sel === undefined) {
       v.Sel = 1;
       this.orderFitterbtn = false
+      this.assginfitterbtn = false
     } else {
       v.Sel = 0;
       this.orderFitterbtn = true
+      this.assginfitterbtn = true
     }
+    this.check(v)
   }
 
-  
   // order pendding list 
   getFitterPo() {
     this.sp.show()
@@ -178,7 +183,7 @@ export class FitterPoComponent implements OnInit {
 
   // select fitter then rate to fittercost
   getRateCard() {
-    let FitterID = Number(this.fitter) 
+    let FitterID = Number(this.fitter)
     const subs: Subscription = this.fitters.getRateCard(FitterID).subscribe({
       next: (res: any) => {
         this.rateCardList = res.data
@@ -198,20 +203,20 @@ export class FitterPoComponent implements OnInit {
       switch (mode) {
         case "Assign":
           this.filtersList.forEach((element: any) => {
-              this.data.ID = element.BillID 
-              element.FitterID = Number(this.fitter)  
-              element.FitterStatus = "assign fitter"
-              element.Remark =  element.Remark ? element.Remark : ''
+            this.data.ID = element.BillID
+            element.FitterID = Number(this.fitter)
+            element.FitterStatus = "assign fitter"
+            element.Remark = element.Remark ? element.Remark : ''
 
-              const i = this.rateCardList.findIndex((ele: any, i: any) => {
-                return  ele.LensType === element.LensType
+            const i = this.rateCardList.findIndex((ele: any, i: any) => {
+              return ele.LensType === element.LensType
             })
-            if (i === -1){
-              missingType = missingType + element.LensType + " "; 
-            } 
+            if (i === -1) {
+              missingType = missingType + element.LensType + " ";
+            }
             else {
               element.FitterCost = this.rateCardList[i].Rate;
-            }  
+            }
           });
           Swal.fire({
             position: 'center',
@@ -230,8 +235,9 @@ export class FitterPoComponent implements OnInit {
           if (res.success) {
             this.modalService.dismissAll()
             this.multiCheck = true
+            this.assginfitterbtn = true
             this.fitter = ''
-            this.assignFitterDoc() 
+            this.assignFitterDoc()
             this.getFitterPo()
 
           } else {
@@ -249,11 +255,12 @@ export class FitterPoComponent implements OnInit {
   // order done 
   getList() {
     this.sp.show()
-    const subs: Subscription = this.bill.getFitterPoList(this.ID,'').subscribe({
+    const subs: Subscription = this.bill.getFitterPoList(this.ID, '').subscribe({
       next: (res: any) => {
         if (res.success) {
           this.collectionSize = res.count;
           this.orderList = res.data;
+          this.multiCheck = false
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
@@ -266,8 +273,8 @@ export class FitterPoComponent implements OnInit {
     this.sp.hide()
   }
 
-  // order cancel 
-  assignFitterPoCancel(mode: any) {
+  // order All prosecc this function order cancel/ qc check/ qc cancel/ Complete 
+  assignAllFitterPo(mode: any) {
     this.sp.show()
     this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
 
@@ -280,13 +287,52 @@ export class FitterPoComponent implements OnInit {
             element.FitterCost = '0';
             element.FitterID = '0'
             element.FitterStatus = "initiate"
+            element.Remark = element.Remark ? element.Remark : ''
           });
           this.orderFitter = false
           this.orderComplete = true
           Swal.fire({
             position: 'center',
             icon: 'success',
-            title: 'Your Order Cancel !!',
+            title: 'Your Per-Order Fitter Order Cancel !!',
+            showConfirmButton: false,
+            timer: 1200
+          })
+          break;
+
+        case "QcCheck":
+          this.filtersList.forEach((element: any) => {
+            element.Sel = element.Sel
+            element.BillID = element.BillID
+            element.LensType = element.LensType
+            element.FitterCost = element.FitterCost
+            element.FitterID = element.FitterID
+            element.FitterStatus = "qc check"
+            element.Remark = element.Remark ? element.Remark : ''
+          });
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your Per-Order Fitter To QC Check !!',
+            showConfirmButton: false,
+            timer: 1200
+          })
+          break;
+
+        case "QCCancel":
+          this.filtersList.forEach((element: any) => {
+            element.Sel = element.Sel
+            element.BillID = element.BillID
+            element.LensType = element.LensType
+            element.FitterCost = element.FitterCost
+            element.FitterID = element.FitterID
+            element.FitterStatus = "qc cancel"
+            element.Remark = element.Remark ? element.Remark : ''
+          });
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your Per-Order Fitter To QC cancel !!',
             showConfirmButton: false,
             timer: 1200
           })
@@ -294,13 +340,12 @@ export class FitterPoComponent implements OnInit {
       }
 
       let Body = this.filtersList;
-
       const subs: Subscription = this.bill.assignFitterPo(Body).subscribe({
         next: (res: any) => {
           if (res.success) {
             this.multiCheck = true
             this.getList()
-            this.as.successToast(res.message)
+            // this.as.successToast(res.message)
           } else {
             this.as.errorToast(res.message)
           }
@@ -313,47 +358,108 @@ export class FitterPoComponent implements OnInit {
     this.sp.hide()
   }
 
+  completePo(mode: any) {
+    this.sp.show()
+    this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
+
+    if (this.filtersList.length > 0) {
+      Swal.fire({
+        title: 'Are you sure? <br> You have not been able to edit anything after completing !!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, complete it!',
+        backdrop: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.sp.show()
+          switch (mode) {
+            case "Complete":
+              this.filtersList.forEach((element: any) => {
+                element.Sel = element.Sel
+                element.BillID = element.BillID
+                element.LensType = element.LensType
+                element.FitterCost = element.FitterCost
+                element.FitterID = element.FitterID
+                element.FitterStatus = "complete"
+                element.Remark = element.Remark ? element.Remark : ''
+              });
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your Per-Order Fitter Process Are Complete !!',
+                showConfirmButton: false,
+                timer: 1200
+              })
+              break;
+          }
+          let Body = this.filtersList;
+
+          const subs: Subscription = this.bill.assignFitterPo(Body).subscribe({
+            next: (res: any) => {
+              if (res.success) {
+                this.multiCheck = true
+                this.getList()
+                // this.as.successToast(res.message)
+              } else {
+                this.as.errorToast(res.message)
+              }
+              this.sp.hide()
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subs.unsubscribe(),
+          });
+        }
+      })
+
+
+    }
+    this.sp.hide()
+  }
+
   // fitter doc No  
   assignFitterDoc() {
     this.sp.show()
     this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
-          this.filtersList.forEach((element: any) => {
-            this.data.ID = element.BillID 
-            element.FitterID = Number(this.fitter)  
-            element.Sel = element.Sel;
-            element.Remark =  element.Remark
-            if(element.FitterDocNo === '' || element.FitterDocNo === null || element.FitterDocNo === undefined){
-              element.FitterDocNo = 'NA'
-            }else{
-              element.FitterDocNo = element.FitterDocNo;
-            }
-          });
-      let Body = this.filtersList;
+    this.filtersList.forEach((element: any) => {
+      this.data.ID = element.BillID
+      element.FitterID = Number(this.fitter)
+      element.Sel = element.Sel;
+      element.Remark = element.Remark
+      if (element.FitterDocNo === '' || element.FitterDocNo === null || element.FitterDocNo === undefined) {
+        element.FitterDocNo = 'NA'
+      } else {
+        element.FitterDocNo = element.FitterDocNo;
+      }
+    });
+    let Body = this.filtersList;
 
-      const subs: Subscription = this.bill.assignFitterDoc(Body).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.as.successToast(res.message)
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide()
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
+    const subs: Subscription = this.bill.assignFitterDoc(Body).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
     this.sp.hide()
   }
-  
+
   // top buttons to function
   Assigned() {
-    this.getList()
     this.orderFitter = false
     this.orderComplete = true
+    this.orderFitterbtn = true
+    this.getList()
     this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '' }
   }
 
- // top buttons to function
+  // top buttons to function
   Unassigned() {
     this.getFitterPo()
     this.orderFitter = true
@@ -395,7 +501,7 @@ export class FitterPoComponent implements OnInit {
       let ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' + `'${ToDate}'`;
     }
-  
+
     if (this.fitterID !== null && this.fitterID !== 'All') {
       Parem = Parem + ' and barcodemasternew.FitterID = ' + this.fitterID;
     }
@@ -405,42 +511,42 @@ export class FitterPoComponent implements OnInit {
     }
 
     if (this.data.stringProductName !== '') {
-      Parem = Parem + ' and billdetail.ProductTypeName = ' +  `'${this.data.stringProductName}'`;
+      Parem = Parem + ' and billdetail.ProductTypeName = ' + `'${this.data.stringProductName}'`;
     }
 
 
-      if (this.orderComplete === false) {
-        const subs: Subscription = this.bill.getFitterPo(ID, Parem).subscribe({
-          next: (res: any) => {
-            if (res.success) {
-              this.orderList = res.data
-              this.as.successToast(res.message)
-            } else {
-              this.as.errorToast(res.message)
-            }
-            this.sp.hide()
-          },
-          error: (err: any) => console.log(err.message),
-          complete: () => subs.unsubscribe(),
-        });
-      } else {
-      
-        const subs: Subscription = this.bill.getFitterPoList(ID, Parem).subscribe({
-          next: (res: any) => {
-            if (res.success) {
-              this.collectionSize = 1;
-              this.page = 1;
-              this.orderList = res.data;
-              this.as.successToast(res.message)
-            } else {
-              this.as.errorToast(res.message)
-            }
-            this.sp.hide();
-          },
-          error: (err: any) => console.log(err.message),
-          complete: () => subs.unsubscribe(),
-        });
-      }
+    if (this.orderComplete === false) {
+      const subs: Subscription = this.bill.getFitterPo(ID, Parem).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.orderList = res.data
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    } else {
+
+      const subs: Subscription = this.bill.getFitterPoList(ID, Parem).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.collectionSize = 1;
+            this.page = 1;
+            this.orderList = res.data;
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
 
     this.sp.hide()
   }
@@ -449,6 +555,17 @@ export class FitterPoComponent implements OnInit {
   Reset() {
     this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '' }
     // this.Search(this.mode);
+  }
+
+  check(v: any) {
+    this.orderList.forEach((ele: any) => {
+      if (ele.Sel == 1 && ele.LensType == '') {
+        this.assginfitterbtn = true;
+      } else if (ele.Sel == 1 && ele.LensType != '') {
+        this.assginfitterbtn = false;
+      }
+    })
+
   }
 
 }
