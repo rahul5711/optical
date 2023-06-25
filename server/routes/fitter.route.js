@@ -20,4 +20,10 @@ router.post('/deleteFitterAssignedShop', verifyAccessTokenAdmin, Controller.dele
 
 router.post('/searchByFeild',verifyAccessTokenAdmin, Controller.searchByFeild)
 
+
+// fitter inoice
+
+router.post('/getFitterInvoice',verifyAccessTokenAdmin, Controller.getFitterInvoice)
+
+
 module.exports = router

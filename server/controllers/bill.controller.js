@@ -1770,6 +1770,7 @@ module.exports = {
                 if (!item.ID || item.ID === null || item.ID === undefined) return res.send({ message: "Invalid Query Data1" })
                 if (item.FitterID === null || item.FitterID === undefined) return res.send({ message: "Invalid Query Data2" })
                 if (!item.Sel || item.Sel == 0) return res.send({ message: "Invalid Query Data3" })
+                if (!item.Sel || item.Sel == 0) return res.send({ message: "Invalid Query Data3" })
             }
 
 
@@ -1843,7 +1844,7 @@ module.exports = {
                 masterParam = ` and billdetail.BillID = ${ID}`
             }
 
-            let qry = `SELECT 0 AS Sel , barcodemasternew.ID, barcodemasternew.Barcode, barcodemasternew.BillDetailID, barcodemasternew.PurchaseDetailID, billdetail.BillID,billdetail.BaseBarcode, shop.Name AS ShopName, shop.AreaName, billdetail.ProductName, billdetail.ProductTypeID, billdetail.ProductTypeName, billdetail.HSNCode, billdetail.UnitPrice, billdetail.Quantity, billdetail.SubTotal, billdetail.DiscountPercentage, billdetail.DiscountAmount,billdetail.GSTPercentage, billdetail.GSTAmount, billdetail.GSTType, billdetail.TotalAmount, barcodemasternew.MeasurementID, barcodemasternew.CreatedOn, barcodemasternew.CreatedBy, user.Name AS CreatedPerson, customer.Name as CustomerName, customer.MobileNo1, customer.Sno as MRDNo, billmaster.BillDate as InvoiceDate, billmaster.DeliveryDate, billmaster.InvoiceNo, barcodemasternew.LensType, barcodemasternew.FitterCost,barcodemasternew.FitterID,barcodemasternew.FitterStatus, barcodemasternew.Optionsss as Option, barcodemasternew.FitterDocNo, barcodemasternew.Remark FROM  barcodemasternew LEFT JOIN billdetail ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN billmaster on billmaster.ID = billdetail.BillID LEFT JOIN customer on customer.ID = billmaster.CustomerID LEFT JOIN USER ON user.ID =  barcodemasternew.CreatedBy LEFT JOIN shop ON shop.ID =  barcodemasternew.ShopID WHERE  barcodemasternew.FitterID != 0 and barcodemasternew.BillDetailID != 0 and billdetail.Status = 1 and barcodemasternew.ShopID = ${shopid}  and barcodemasternew.CompanyID = ${CompanyID}  ${masterParam}  ${parem} ${productTypes} GROUP BY barcodemasternew.BillDetailID ORDER BY barcodemasternew.ID DESC`
+            let qry = `SELECT 0 AS Sel , barcodemasternew.ID, barcodemasternew.Barcode, barcodemasternew.BillDetailID, barcodemasternew.PurchaseDetailID, billdetail.BillID,billdetail.BaseBarcode, shop.Name AS ShopName, shop.AreaName, billdetail.ProductName, billdetail.ProductTypeID, billdetail.ProductTypeName, billdetail.HSNCode, billdetail.UnitPrice, billdetail.Quantity, billdetail.SubTotal, billdetail.DiscountPercentage, billdetail.DiscountAmount,billdetail.GSTPercentage, billdetail.GSTAmount, billdetail.GSTType, billdetail.TotalAmount, barcodemasternew.MeasurementID, barcodemasternew.CreatedOn, barcodemasternew.CreatedBy, user.Name AS CreatedPerson, customer.Name as CustomerName, customer.MobileNo1, customer.Sno as MRDNo, billmaster.BillDate as InvoiceDate, billmaster.DeliveryDate, billmaster.InvoiceNo, barcodemasternew.LensType, barcodemasternew.FitterCost,barcodemasternew.FitterID,barcodemasternew.FitterStatus, barcodemasternew.Optionsss as Option, barcodemasternew.FitterDocNo, barcodemasternew.Remark, Fitter.Name as FitterName FROM  barcodemasternew LEFT JOIN billdetail ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN billmaster on billmaster.ID = billdetail.BillID LEFT JOIN customer on customer.ID = billmaster.CustomerID LEFT JOIN USER ON user.ID =  barcodemasternew.CreatedBy LEFT JOIN shop ON shop.ID =  barcodemasternew.ShopID LEFT JOIN fitter ON fitter.ID =  barcodemasternew.FitterID WHERE  barcodemasternew.FitterID != 0 and barcodemasternew.BillDetailID != 0 and billdetail.Status = 1 and barcodemasternew.ShopID = ${shopid}  and barcodemasternew.CompanyID = ${CompanyID}  ${masterParam}  ${parem} ${productTypes} GROUP BY barcodemasternew.BillDetailID ORDER BY barcodemasternew.ID DESC`
 
             console.log(qry);
 
@@ -1855,6 +1856,7 @@ module.exports = {
 
 
         } catch (err) {
+            console.log(err);
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
             throw err;
