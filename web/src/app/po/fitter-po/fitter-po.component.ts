@@ -51,7 +51,7 @@ export class FitterPoComponent implements OnInit {
   lensList: any = [];
   rateCardList: any = [];
 
-  fitter: any;
+  fitter: any = '';
   fitterID = 'All'
 
   ID = 0
@@ -187,6 +187,16 @@ export class FitterPoComponent implements OnInit {
     const subs: Subscription = this.fitters.getRateCard(FitterID).subscribe({
       next: (res: any) => {
         this.rateCardList = res.data
+        if(this.rateCardList.length === 0){
+          this.fitter = ''
+          Swal.fire({
+            icon: 'error',
+            title: 'Can not Assign Fitter as Selected Fitter Does not have Rates Available for LensType !!!',
+            footer: '',
+            backdrop: false,
+            showCancelButton: true,
+          });
+        }
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -559,9 +569,9 @@ export class FitterPoComponent implements OnInit {
 
   check(v: any) {
     this.orderList.forEach((ele: any) => {
-      if (ele.Sel == 1 && ele.LensType == '') {
+      if (ele.Sel === 1 && ele.LensType === '' || ele.LensType === null) {
         this.assginfitterbtn = true;
-      } else if (ele.Sel == 1 && ele.LensType != '') {
+      } else if (ele.Sel === 1 && ele.LensType !== '' || ele.LensType !== null) {
         this.assginfitterbtn = false;
       }
     })

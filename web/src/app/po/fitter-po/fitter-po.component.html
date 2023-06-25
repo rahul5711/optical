@@ -193,7 +193,7 @@
                         </div>
                         <div class="row" style="border-top: 1px solid #00000047;">
                             <div class="col-md-2 mx-auto p-3" *ngIf="this.orderFitter">
-                                <button class="hover mx-auto" [disabled]="this.assginfitterbtn "
+                                <button class="hover mx-auto" [disabled]="this.assginfitterbtn"
                                     (click)="openModal(content)" type="button" mat-raised-button color="primary">
                                     Order (Fitter)
                                 </button>
@@ -253,7 +253,7 @@
                 </mat-form-field>
             </div>
             <div class="col-md-4">
-                <button class="ms-2" type="button" mat-raised-button color="primary" (click)="assignFitterPo('Assign')">
+                <button class="ms-2" [disabled]="fitter == ''" type="button" mat-raised-button color="primary" (click)="assignFitterPo('Assign')">
                     Assign
                 </button>
             </div>
