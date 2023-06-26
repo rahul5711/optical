@@ -38,14 +38,17 @@
   transform: 0.5ms !important;
 }
 
-
 .bcolor1{
   background-color:rgb(233, 39, 39) !important;
   transform: 0.5ms !important;
-
 }
+
 .bcolor2{
   background-color:rgb(233, 39, 39) !important;
   transform: 0.5ms !important;
+}
 
+.borderLens{
+  border: 1px solid rgb(233, 39, 39)  !important;
+  transform: 0.5ms !important;
 }

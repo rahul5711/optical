@@ -20,6 +20,7 @@ import { BillCalculationService } from 'src/app/service/helpers/bill-calculation
 import { SupportService } from 'src/app/service/support.service';
 import { trigger, style, animate, transition } from '@angular/animations';
 import { SupplierService } from 'src/app/service/supplier.service';
+import { FitterService } from 'src/app/service/fitter.service';
 
 
 @Component({
@@ -58,8 +59,7 @@ export class BillComponent implements OnInit {
     private cs: CustomerService,
     private modalService: NgbModal,
     private sup: SupplierService,
-
-
+    private fitters: FitterService,
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.id2 = this.route.snapshot.params['billid'];
@@ -125,6 +125,10 @@ export class BillComponent implements OnInit {
   orderList:any = []
   filtersList:any = []
   supplierList:any = []
+
+  fitterList:any = []
+  lensList:any = []
+  rateCardList:any = []
 
   ngOnInit(): void {
     this.BillMaster.Employee = this.user.ID
@@ -1297,6 +1301,8 @@ export class BillComponent implements OnInit {
     this.sp.hide()
   }
 
+ 
+
   assignSupplierDoc() {
     this.sp.show()
     this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
@@ -1313,6 +1319,174 @@ export class BillComponent implements OnInit {
       let Body = this.filtersList;
 
       const subs: Subscription = this.bill.assignSupplierDoc(Body).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            // this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    this.sp.hide()
+  }
+
+  // fitter order
+  dropdownfitterlist() {
+    const subs: Subscription = this.fitters.dropdownlist().subscribe({
+      next: (res: any) => {
+        this.fitterList = res.data
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getRateCard() {
+    let FitterID = this.data.FitterID
+    const subs: Subscription = this.fitters.getRateCard(FitterID).subscribe({
+      next: (res: any) => {
+        this.rateCardList = res.data
+        if(this.rateCardList.length === 0){
+          this.data.FitterID = ''
+          Swal.fire({
+            icon: 'error',
+            title: 'Can not Assign Fitter as Selected Fitter Does not have Rates Available for LensType !!!',
+            footer: '',
+            backdrop: false,
+            showCancelButton: true,
+          });
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getLensTypeList() {
+    this.sp.show();
+    const subs: Subscription = this.supps.getList('LensType').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.lensList = res.data
+          this.orderList.forEach((element: any) => {
+            if(element.ProductTypeName === 'LENS'){
+              element.LensType = '';
+            }else{
+              element.LensType = 'NO';
+            }
+          });
+          console.log(this.orderList);
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    this.sp.hide();
+  }
+
+  openModal13(content12: any){
+    this.dropdownfitterlist()
+    this.getLensTypeList()
+    this.sp.show()
+    this.modalService.open(content12, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
+    const subs: Subscription = this.bill.getFitterPo(this.id2,'' ).subscribe({
+      next: (res: any) => {
+          if(res.success ){
+             this.orderList = res.data
+          }else{
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: 'Opps !!',
+              text: res.message,
+              showConfirmButton: true,
+              backdrop : false,
+            })
+          }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    this.dropdownSupplierlist()
+    this.sp.hide()
+  }
+
+  assignFitterPo(){
+    let missingType = '';
+    this.sp.show()
+    this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
+    if (this.filtersList.length > 0) {
+    this.filtersList.forEach((element: any) => {
+      element.BillID = this.data.ID
+      element.FitterID = this.data.FitterID;
+      element.FitterStatus = "assign fitter"
+      element.Remark = element.Remark ? element.Remark : ''
+
+      const i = this.rateCardList.findIndex((ele: any, i: any) => {
+        return ele.LensType === element.LensType
+      })
+      if (i === -1) {
+        missingType = missingType + element.LensType + " ";
+      }
+      else {
+        element.FitterCost = this.rateCardList[i].Rate;
+      }
+
+    });
+
+    let Body = this.filtersList
+    const subs: Subscription =  this.bill.assignFitterPo(Body).subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.assignFitterDoc()
+          this.data.FitterID = ''
+          this.modalService.dismissAll()
+          // this.getList()
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    }else{
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Opps !! <br> Select the check box !!',
+        showConfirmButton: true,
+        backdrop : false,
+      })
+    }
+    this.sp.hide()
+  }
+
+  assignFitterDoc() {
+    this.sp.show()
+    this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
+          this.filtersList.forEach((element: any) => {
+            this.data.ID = element.BillID 
+            this.data.FitterID =  element.FitterID 
+            element.Sel = element.Sel;
+            if(element.FitterDocNo === '' || element.FitterDocNo === null || element.FitterDocNo === undefined){
+              element.FitterDocNo = 'NA'
+            }else{
+              element.FitterDocNo = element.FitterDocNo;
+            }
+          });
+      let Body = this.filtersList;
+
+      const subs: Subscription = this.bill.assignFitterDoc(Body).subscribe({
         next: (res: any) => {
           if (res.success) {
             // this.as.successToast(res.message)

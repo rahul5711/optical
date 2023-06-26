@@ -174,7 +174,6 @@ export class FitterInvoiceComponent implements OnInit {
   }
 
   onSubmit(){
-
     this.calculateGrandTotal();
     this.FitterMaster.ShopID = Number(this.selectedShop[0]);
     this.FitterMaster.FitterID = Number(this.FitterMaster.FitterID);

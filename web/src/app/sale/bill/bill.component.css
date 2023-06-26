@@ -65,3 +65,8 @@ input::-webkit-inner-spin-button {
     transition: 0.5s;
     box-shadow: 2px 2px 6px #9c9795fa;
 }
+
+.borderLens{
+    border: 1px solid rgb(233, 39, 39)  !important;
+    transform: 0.5ms !important;
+  }

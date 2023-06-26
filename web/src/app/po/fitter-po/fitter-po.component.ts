@@ -48,7 +48,7 @@ export class FitterPoComponent implements OnInit {
   fitterList: any = []
   orderList: any = []
   filtersList: any = [];
-  lensList: any = [];
+  lensList: any ;
   rateCardList: any = [];
 
   fitter: any = '';
@@ -75,7 +75,7 @@ export class FitterPoComponent implements OnInit {
     this.dropdownfitterlist();
     this.getFitterPo();
     this.getLensTypeList();
-    this.sp.hide()
+    this.sp.hide(); 
   }
 
   dropdownShoplist() {
@@ -143,6 +143,14 @@ export class FitterPoComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.orderList = res.data
+          this.orderList.forEach((element: any) => {
+            if(element.LensType !== null || element.ProductTypeName === 'LENS'){
+              element.LensType = '';
+            }else{
+              element.LensType = 'NO';
+            }
+          });
+
           this.multiCheck = false
         } else {
           this.as.errorToast(res.message)
@@ -465,7 +473,7 @@ export class FitterPoComponent implements OnInit {
     this.orderFitter = false
     this.orderComplete = true
     this.orderFitterbtn = true
-    this.getList()
+    this.getList();
     this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '' }
   }
 

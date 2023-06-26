@@ -130,7 +130,7 @@
                                             <th>ProductName</th>
                                             <th>Qty</th>
                                             <th>Option</th>
-                                            <th *ngIf="!this.orderFitter">Fitter</th>
+                                            <th *ngIf="!this.orderFitter">FitterName</th>
                                             <th *ngIf="!this.orderFitter">FitterCost</th>
                                             <th>FitterStatus</th>
                                             <th>LensType</th>
@@ -160,14 +160,15 @@
                                             <td>{{v.InvoiceNo}}</td>
                                             <td>{{v.ProductName}}</td>
                                             <td>{{v.Quantity}}</td>
-                                            <td>{{(v.Option !== 'undefined')? v.Option: ''}}</td>
-                                            <td *ngIf="!this.orderFitter">{{v.FitterID}}</td>
+                                            <td>{{(v.Option !== 'undefined' && v.Option !== 'null')? v.Option: ''}}</td>
+                                            <td *ngIf="!this.orderFitter">{{v.FitterName}}</td>
                                             <td *ngIf="!this.orderFitter">{{v.FitterCost}}</td>
                                             <td> {{(v.FitterStatus !== 'initiate')? v.FitterStatus: ''}}</td>
                                             <td>
-                                                <select (change)="check(v)" [disabled]="v.FitterStatus !== 'initiate'" class="inputselectWidth"
-                                                    name="LensType" [(ngModel)]="v.LensType" #LensTypeControl="ngModel"
-                                                    required #LensTypecontrol1 >
+                                                <select (change)="check(v)" [disabled]="v.FitterStatus !== 'initiate'"  [ngClass]="{'borderLens': v.ProductTypeName === 'LENS'}" class="inputselectWidth"
+                                                name="LensType{{v.ID}}" [(ngModel)]="v.LensType" #LensTypeControl
+                                                    required  >
+                                                    <option value="NO">None</option>
                                                     <option  [value]="l.Name" *ngFor="let l of lensList" required >
                                                         {{l.Name}}
                                                     </option>
