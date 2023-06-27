@@ -345,9 +345,9 @@ module.exports = {
 
             const doesCheckPayment = await connection.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${billMaseterData.InvoiceNo}' and BillMasterID = ${billMaseterData.ID}`)
 
-            if (doesCheckPayment.length > 1) {
-                return res.send({ message: `You Can't Add Product !!, You have Already Paid Amount of this Invoice` })
-            }
+            // if (doesCheckPayment.length > 1) {
+            //     return res.send({ message: `You Can't Add Product !!, You have Already Paid Amount of this Invoice` })
+            // }
 
             let bMasterID = billMaseterData.ID;
 

@@ -1106,7 +1106,7 @@
                 </mat-form-field>
             </div>
             <div class="col-md-4">
-                <button  class="ms-2" type="button" mat-raised-button color="primary" (click)="assignFitterPo()">
+                <button [disabled]="data.FitterID == ''" class="ms-2" type="button" mat-raised-button color="primary" (click)="assignFitterPo()">
                     Assign
                 </button>
             </div>

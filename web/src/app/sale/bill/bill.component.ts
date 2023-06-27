@@ -1301,8 +1301,6 @@ export class BillComponent implements OnInit {
     this.sp.hide()
   }
 
- 
-
   assignSupplierDoc() {
     this.sp.show()
     this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
@@ -1371,14 +1369,6 @@ export class BillComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.lensList = res.data
-          this.orderList.forEach((element: any) => {
-            if(element.ProductTypeName === 'LENS'){
-              element.LensType = '';
-            }else{
-              element.LensType = 'NO';
-            }
-          });
-          console.log(this.orderList);
         } else {
           this.as.errorToast(res.message)
         }
@@ -1399,6 +1389,13 @@ export class BillComponent implements OnInit {
       next: (res: any) => {
           if(res.success ){
              this.orderList = res.data
+             this.orderList.forEach((element: any) => {
+              if(element.LensType !== null || element.ProductTypeName === 'LENS'){
+                element.LensType = '';
+              }else{
+                element.LensType = 'NO';
+              }
+            });
           }else{
             this.as.errorToast(res.message)
             Swal.fire({
@@ -1423,7 +1420,7 @@ export class BillComponent implements OnInit {
     let missingType = '';
     this.sp.show()
     this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
-    if (this.filtersList.length > 0) {
+    if (this.filtersList.length > 0 ) {
     this.filtersList.forEach((element: any) => {
       element.BillID = this.data.ID
       element.FitterID = this.data.FitterID;
@@ -1460,6 +1457,7 @@ export class BillComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
     }else{
+
       Swal.fire({
         position: 'center',
         icon: 'warning',
