@@ -45,5 +45,6 @@ router.post('/getSupplierPoPurchaseList', verifyAccessTokenAdmin, Controller.get
 router.post('/getFitterPo', verifyAccessTokenAdmin, Controller.getFitterPo)
 router.post('/assignFitterPo', verifyAccessTokenAdmin, Controller.assignFitterPo)
 router.post('/getFitterPoList', verifyAccessTokenAdmin, Controller.getFitterPoList)
+router.post('/getFitterPoPurchaseList', verifyAccessTokenAdmin, Controller.getFitterPoPurchaseList)
 router.post('/assignFitterDoc', verifyAccessTokenAdmin, Controller.assignFitterDoc)
 module.exports = router

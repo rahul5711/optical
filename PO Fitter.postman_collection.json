@@ -898,16 +898,6 @@
 		{
 			"name": "getFitterPoList",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODcyODIyNzEsImV4cCI6MTY4NzM2ODY3MSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.MFlk1iPooPf5E14pD_uBIgJBkYRASSsDTejBy8SY6FI",
-							"type": "string"
-						}
-					]
-				},
 				"method": "POST",
 				"header": [
 					{
@@ -1232,6 +1222,125 @@
 					"body": "{\n    \"data\": [\n        {\n            \"Sel\": 0,\n            \"ID\": 60,\n            \"Barcode\": \"90024000\",\n            \"BillDetailID\": 16,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 9,\n            \"BaseBarcode\": \"90024\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"kljkl/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 500,\n            \"Quantity\": 1,\n            \"SubTotal\": 500,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 500,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:37:12\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"ssss\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00009\",\n            \"LensType\": \"supra\",\n            \"FitterCost\": 300,\n            \"FitterID\": 1,\n            \"FitterStatus\": \"complete\",\n            \"Option\": \"Full Glass\",\n            \"FitterDocNo\": null,\n            \"Remark\": null\n        },\n        {\n            \"Sel\": 0,\n            \"ID\": 58,\n            \"Barcode\": \"90023000\",\n            \"BillDetailID\": 15,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 9,\n            \"BaseBarcode\": \"90023\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"gfhgh/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 200,\n            \"Quantity\": 1,\n            \"SubTotal\": 200,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 200,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:36:16\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"ssss\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00009\",\n            \"LensType\": \"supra\",\n            \"FitterCost\": 300,\n            \"FitterID\": 1,\n            \"FitterStatus\": \"complete\",\n            \"Option\": \"Full Glass\",\n            \"FitterDocNo\": null,\n            \"Remark\": null\n        },\n        {\n            \"Sel\": 0,\n            \"ID\": 56,\n            \"Barcode\": \"90022000\",\n            \"BillDetailID\": 14,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 10,\n            \"BaseBarcode\": \"90022\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"sdsdsd/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 250,\n            \"Quantity\": 1,\n            \"SubTotal\": 250,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 250,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:31:59\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"saloni\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00010\",\n            \"LensType\": \"supra\",\n            \"FitterCost\": 300,\n            \"FitterID\": 1,\n            \"FitterStatus\": \"complete\",\n            \"Option\": \"Half Glass Right\",\n            \"FitterDocNo\": null,\n            \"Remark\": null\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
 				}
 			]
+		},
+		{
+			"name": "getFitterPoPurchaseList",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODc5Njg2MzUsImV4cCI6MTY4ODA1NTAzNSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.U6KK202UEpttBL4qPQPSrUmw78-jA5xsmqTX7JnB4wY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/bill/getFitterPoPurchaseList",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"bill",
+						"getFitterPoPurchaseList"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getFitterPoPurchaseList",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/getFitterPoPurchaseList",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"getFitterPoPurchaseList"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "3914"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"f4a-OZyb3bWvZ+FA7FvMw3HFNQX4DfA\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 28 Jun 2023 17:33:20 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Sel\": 0,\n            \"ID\": 63,\n            \"Barcode\": \"12000\",\n            \"BillDetailID\": 19,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 11,\n            \"BaseBarcode\": \"12\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"sung/\",\n            \"ProductTypeID\": 12,\n            \"ProductTypeName\": \"Sunglases\",\n            \"HSNCode\": \"sunglasesss\",\n            \"UnitPrice\": 500,\n            \"Quantity\": 1,\n            \"SubTotal\": 500,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 500,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 21:55:03\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"ANIL PATIL\",\n            \"MobileNo1\": \"9175773955\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00011\",\n            \"LensType\": \"Supra\",\n            \"FitterCost\": 100,\n            \"FitterID\": 3,\n            \"FitterStatus\": \"invoice\",\n            \"Option\": \"null\",\n            \"FitterDocNo\": \"NA\",\n            \"Remark\": \"\",\n            \"FitterName\": \"rahul fitter 3\"\n        },\n        {\n            \"Sel\": 0,\n            \"ID\": 61,\n            \"Barcode\": \"11000\",\n            \"BillDetailID\": 18,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 9,\n            \"BaseBarcode\": \"11\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"fgg/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 300,\n            \"Quantity\": 2,\n            \"SubTotal\": 600,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 600,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:42:35\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"ssss\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00009\",\n            \"LensType\": \"Supra\",\n            \"FitterCost\": 100,\n            \"FitterID\": 3,\n            \"FitterStatus\": \"invoice\",\n            \"Option\": \"Full Glass\",\n            \"FitterDocNo\": \"NA\",\n            \"Remark\": \"\",\n            \"FitterName\": \"rahul fitter 3\"\n        },\n        {\n            \"Sel\": 0,\n            \"ID\": 60,\n            \"Barcode\": \"90024000\",\n            \"BillDetailID\": 16,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 9,\n            \"BaseBarcode\": \"90024\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"kljkl/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 500,\n            \"Quantity\": 1,\n            \"SubTotal\": 500,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 500,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:37:12\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"ssss\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00009\",\n            \"LensType\": \"Supra\",\n            \"FitterCost\": 100,\n            \"FitterID\": 3,\n            \"FitterStatus\": \"invoice\",\n            \"Option\": \"Full Glass\",\n            \"FitterDocNo\": \"NA\",\n            \"Remark\": \"\",\n            \"FitterName\": \"rahul fitter 3\"\n        },\n        {\n            \"Sel\": 0,\n            \"ID\": 58,\n            \"Barcode\": \"90023000\",\n            \"BillDetailID\": 15,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 9,\n            \"BaseBarcode\": \"90023\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"gfhgh/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 200,\n            \"Quantity\": 1,\n            \"SubTotal\": 200,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 200,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:36:16\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"ssss\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00009\",\n            \"LensType\": \"Supra\",\n            \"FitterCost\": 100,\n            \"FitterID\": 3,\n            \"FitterStatus\": \"invoice\",\n            \"Option\": \"Full Glass\",\n            \"FitterDocNo\": \"NA\",\n            \"Remark\": \"\",\n            \"FitterName\": \"rahul fitter 3\"\n        },\n        {\n            \"Sel\": 0,\n            \"ID\": 56,\n            \"Barcode\": \"90022000\",\n            \"BillDetailID\": 14,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 10,\n            \"BaseBarcode\": \"90022\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"sdsdsd/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 250,\n            \"Quantity\": 1,\n            \"SubTotal\": 250,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 250,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:31:59\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"saloni\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00010\",\n            \"LensType\": \"Supra\",\n            \"FitterCost\": 100,\n            \"FitterID\": 3,\n            \"FitterStatus\": \"invoice\",\n            \"Option\": \"Half Glass Right\",\n            \"FitterDocNo\": \"NA\",\n            \"Remark\": \"\",\n            \"FitterName\": \"rahul fitter 3\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				}
+			]
 		}
 	],
 	"auth": {
@@ -1239,7 +1348,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODcyODA0NDEsImV4cCI6MTY4NzM2Njg0MSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.sBVHwDAOxCFMNI-ybY343s5hesg8qBG1D217dRGrpTg",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODc2NjQzNzQsImV4cCI6MTY4Nzc1MDc3NCwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.rlw1C-4CO30f1TKZ-0U-KjE5Iz9OE0lCBETA9NkhMZs",
 				"type": "string"
 			}
 		]

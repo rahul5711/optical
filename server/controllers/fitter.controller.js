@@ -442,5 +442,305 @@ module.exports = {
             await connection.release();
         }
     },
+    saveFitterInvoice: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            let {
+                FitterMaster,
+                FitterDetail,
+            } = req.body;
+
+            FitterDetail = JSON.parse(req.body.FitterDetail)
+
+            if (!FitterMaster || FitterMaster === undefined) return res.send({ message: "Invalid FitterMaster Data" })
+
+            if (!FitterDetail || FitterDetail === undefined) return res.send({ message: "Invalid FitterDetail Data" })
+
+            if (!FitterMaster.FitterID || FitterMaster.FitterID === undefined) return res.send({ message: "Invalid FitterID Data" })
+
+            if (!FitterMaster.PurchaseDate || FitterMaster.PurchaseDate === undefined) return res.send({ message: "Invalid PurchaseDate Data" })
+
+            if (!FitterMaster.InvoiceNo || FitterMaster.InvoiceNo === undefined || FitterMaster.InvoiceNo.trim() === "") return res.send({ message: "Invalid InvoiceNo Data" })
+
+            if (FitterMaster.Quantity == 0 || !FitterMaster?.Quantity || FitterMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
+
+            const doesExistInvoiceNo = await connection.query(`select * from fittermaster where Status = 1 and InvoiceNo = '${FitterMaster.InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${FitterMaster.ShopID}`)
+
+            if (doesExistInvoiceNo.length) {
+                return res.send({ message: `Purchase Already exist from this InvoiceNo ${FitterMaster.InvoiceNo}` })
+            }
+
+            if (FitterDetail.length === 0) {
+                return res.send({ message: "Invalid Query Data FitterDetail" })
+            }
+
+            const purchase = {
+                ID: null,
+                FitterID: FitterMaster.FitterID,
+                CompanyID: CompanyID,
+                ShopID: FitterMaster.ShopID,
+                PurchaseDate: FitterMaster.PurchaseDate ? FitterMaster.PurchaseDate : now(),
+                PaymentStatus: FitterMaster.PaymentStatus,
+                InvoiceNo: FitterMaster.InvoiceNo,
+                GSTNo: FitterMaster.GSTNo ? FitterMaster.GSTNo : '',
+                Quantity: FitterMaster.Quantity,
+                SubTotal: FitterMaster.SubTotal,
+                GSTAmount: FitterMaster.GSTAmount,
+                GSTPercentage: FitterMaster.GSTPercentage,
+                GSTType: FitterMaster.GSTType,
+                TotalAmount: FitterMaster.TotalAmount,
+                Status: 1,
+                PStatus: 1,
+                DueAmount: FitterMaster.DueAmount
+            }
+
+            //  save purchase data
+            const savePurchase = await connection.query(`insert into fittermaster(FitterID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,GSTAmount,GSTPercentage,GSTType,TotalAmount,PStatus,Status,DueAmount,CreatedBy,CreatedOn)values(${purchase.FitterID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${purchase.PaymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.GSTAmount},${purchase.GSTPercentage},'${purchase.GSTType}',${purchase.TotalAmount},1,1,${purchase.DueAmount}, ${LoggedOnUser}, now())`);
+
+            console.log(connected("Data Save SuccessFUlly !!!"));
+
+
+            for (const item of FitterDetail) {
+                const savePurchaseDetail = await connection.query(`insert into fitterdetail(FitterMasterID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,TotalAmount,Status, CustomerInvoice, BarcodeID, LensType, AssignedOn,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.TotalAmount},1,'${item.InvoiceNo}','${item.Barcode}','${item.LensType}','${item.CreatedOn}',${LoggedOnUser},now())`)
+
+                const updateBarcode = await connection.query(`update barcodemasternew set FitterStatus='invoice', UpdatedOn=now() where ID = ${item.ID}`)
+            }
+            console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
+
+            const savePaymentMaster = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${purchase.FitterID}, ${CompanyID}, ${purchase.ShopID}, 'Fitter','Debit',now(), 'Payment Initiated', '', '', ${purchase.TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
+
+            const savePaymentDetail = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${purchase.InvoiceNo}',${savePurchase.insertId},${purchase.FitterID},${CompanyID},0,${purchase.TotalAmount},'Fitter','Debit',1,${LoggedOnUser}, now())`)
+
+            console.log(connected("Payment Initiate SuccessFUlly !!!"));
+
+            response.message = "data save sucessfully"
+            response.data = purchase.FitterID
+            // connection.release()
+            return res.send(response)
+
+        } catch (err) {
+            console.log(err);
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+    getFitterInvoiceList: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "", calculation: [{
+                "totalGstAmount": 0,
+                "totalAmount": 0,
+                "gst_details": []
+            }] }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const Body = req.body;
+
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+
+            let page = Body.currentPage;
+            let limit = Body.itemsPerPage;
+            let skip = page * limit - limit;
+
+            let shopId = ``
+
+            if (shopid !== 0) {
+                shopId = `and fittermaster.ShopID = ${shopid}`
+            }
+
+            let qry = `SELECT fittermaster.*, Customer1.Name AS CustomerName, Customer1.MobileNo1 AS CustomerMob, shop.Name AS ShopName, shop.AreaName AS AreaName, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser FROM fittermaster LEFT JOIN shop ON shop.ID = fittermaster.ShopID LEFT JOIN user ON user.ID = fittermaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = fittermaster.UpdatedBy LEFT JOIN fitter AS Customer1 ON Customer1.ID = fittermaster.FitterID WHERE  fittermaster.CompanyID = ${CompanyID} ${shopId}  AND fittermaster.Status = 1   Order By fittermaster.ID Desc `
+
+            let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
+            let finalQuery = qry + skipQuery;
+
+            let data = await connection.query(finalQuery);
+            let count = await connection.query(qry);
+
+            let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            const values = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        values.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        values.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+
+            if (data.length) {
+                for (const item of data) {
+                    response.calculation[0].totalGstAmount += item.GSTAmount
+                    response.calculation[0].totalAmount += item.TotalAmount
+
+                    if (values) {
+                        values.forEach(e => {
+                            if (e.GSTType === item.GSTType) {
+                                e.Amount += item.GSTAmount
+                            }
+
+                            // CGST-SGST
+
+                            if (item.GSTType === 'CGST-SGST') {
+
+                                if (e.GSTType === 'CGST') {
+                                    e.Amount += item.GSTAmount / 2
+                                }
+
+                                if (e.GSTType === 'SGST') {
+                                    e.Amount += item.GSTAmount / 2
+                                }
+                            }
+                        })
+                    }
+
+                }
+
+
+            }
+
+            response.calculation[0].gst_details = values;
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = count.length
+            // connection.release()
+            res.send(response)
+
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+    getFitterInvoiceListByID: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "", calculation: [{
+                "totalGstAmount": 0,
+                "totalAmount": 0,
+                "gst_details": []
+            }] }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const Body = req.body;
+
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+
+            let ID = Body.FitterID;
+            let shopId = ``
+            if (shopid !== 0) {
+                shopId = `and fittermaster.ShopID = ${shopid}`
+            }
+
+            let qry = `SELECT fittermaster.*, Customer1.Name AS CustomerName, Customer1.MobileNo1 AS CustomerMob, shop.Name AS ShopName, shop.AreaName AS AreaName, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser FROM fittermaster LEFT JOIN shop ON shop.ID = fittermaster.ShopID LEFT JOIN user ON user.ID = fittermaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = fittermaster.UpdatedBy LEFT JOIN fitter AS Customer1 ON Customer1.ID = fittermaster.FitterID WHERE  fittermaster.CompanyID = ${CompanyID} ${shopId}  and fittermaster.FitterID = ${ID} AND fittermaster.Status = 1   Order By fittermaster.ID Desc `
+
+            let finalQuery = qry;
+
+            let data = await connection.query(finalQuery);
+
+            let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            const values = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        values.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        values.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+
+            if (data.length) {
+                for (const item of data) {
+                    response.calculation[0].totalGstAmount += item.GSTAmount
+                    response.calculation[0].totalAmount += item.TotalAmount
+
+                    if (values) {
+                        values.forEach(e => {
+                            if (e.GSTType === item.GSTType) {
+                                e.Amount += item.GSTAmount
+                            }
+
+                            // CGST-SGST
+
+                            if (item.GSTType === 'CGST-SGST') {
+
+                                if (e.GSTType === 'CGST') {
+                                    e.Amount += item.GSTAmount / 2
+                                }
+
+                                if (e.GSTType === 'SGST') {
+                                    e.Amount += item.GSTAmount / 2
+                                }
+                            }
+                        })
+                    }
+
+                }
+
+
+            }
+
+            response.calculation[0].gst_details = values;
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            // connection.release()
+            res.send(response)
+
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
 
 }

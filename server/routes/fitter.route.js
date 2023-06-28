@@ -24,6 +24,9 @@ router.post('/searchByFeild',verifyAccessTokenAdmin, Controller.searchByFeild)
 // fitter inoice
 
 router.post('/getFitterInvoice',verifyAccessTokenAdmin, Controller.getFitterInvoice)
+router.post('/saveFitterInvoice',verifyAccessTokenAdmin, Controller.saveFitterInvoice)
+router.post('/getFitterInvoiceList',verifyAccessTokenAdmin, Controller.getFitterInvoiceList)
+router.post('/getFitterInvoiceListByID',verifyAccessTokenAdmin, Controller.getFitterInvoiceListByID)
 
 
 module.exports = router

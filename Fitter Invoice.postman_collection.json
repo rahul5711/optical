@@ -186,6 +186,509 @@
 					"body": "{\n    \"data\": [\n        {\n            \"Sel\": 0,\n            \"ID\": 60,\n            \"Barcode\": \"90024000\",\n            \"BillDetailID\": 16,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 9,\n            \"BaseBarcode\": \"90024\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"kljkl/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 500,\n            \"Quantity\": 1,\n            \"SubTotal\": 500,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 500,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:37:12\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"ssss\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00009\",\n            \"LensType\": \"supra\",\n            \"FitterCost\": 300,\n            \"FitterID\": 1,\n            \"FitterStatus\": \"complete\",\n            \"Option\": \"Full Glass\",\n            \"FitterDocNo\": \"qc cancel\",\n            \"Remark\": \"qc cancel\",\n            \"FitterName\": \"rahul fitter\"\n        },\n        {\n            \"Sel\": 0,\n            \"ID\": 58,\n            \"Barcode\": \"90023000\",\n            \"BillDetailID\": 15,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 9,\n            \"BaseBarcode\": \"90023\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"gfhgh/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 200,\n            \"Quantity\": 1,\n            \"SubTotal\": 200,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 200,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:36:16\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"ssss\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00009\",\n            \"LensType\": \"supra\",\n            \"FitterCost\": 300,\n            \"FitterID\": 1,\n            \"FitterStatus\": \"complete\",\n            \"Option\": \"Full Glass\",\n            \"FitterDocNo\": \"qc cancel\",\n            \"Remark\": \"qc cancel\",\n            \"FitterName\": \"rahul fitter\"\n        },\n        {\n            \"Sel\": 0,\n            \"ID\": 56,\n            \"Barcode\": \"90022000\",\n            \"BillDetailID\": 14,\n            \"PurchaseDetailID\": 0,\n            \"BillID\": 10,\n            \"BaseBarcode\": \"90022\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"ProductName\": \"sdsdsd/\",\n            \"ProductTypeID\": 10,\n            \"ProductTypeName\": \"lens\",\n            \"HSNCode\": \"len\",\n            \"UnitPrice\": 250,\n            \"Quantity\": 1,\n            \"SubTotal\": 250,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTAmount\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 250,\n            \"MeasurementID\": \"null\",\n            \"CreatedOn\": \"2023-06-18 19:31:59\",\n            \"CreatedBy\": 2,\n            \"CreatedPerson\": \"Rahul Gothi\",\n            \"CustomerName\": \"saloni\",\n            \"MobileNo1\": \"\",\n            \"MRDNo\": \"\",\n            \"InvoiceDate\": \"2023-06-18\",\n            \"DeliveryDate\": \"2023-06-18\",\n            \"InvoiceNo\": \"2306R00010\",\n            \"LensType\": \"supra\",\n            \"FitterCost\": 300,\n            \"FitterID\": 1,\n            \"FitterStatus\": \"complete\",\n            \"Option\": \"Half Glass Right\",\n            \"FitterDocNo\": \"qc cancel\",\n            \"Remark\": \"qc cancel\",\n            \"FitterName\": \"rahul fitter\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
 				}
 			]
+		},
+		{
+			"name": "saveFitterInvoice",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODc5Njg2MzUsImV4cCI6MTY4ODA1NTAzNSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.U6KK202UEpttBL4qPQPSrUmw78-jA5xsmqTX7JnB4wY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"FitterMaster\": {\r\n        \"ID\": null,\r\n        \"FitterID\": 3,\r\n        \"CompanyID\": 1,\r\n        \"ShopID\": 1,\r\n        \"PaymentStatus\": \"Unpaid\",\r\n        \"InvoiceNo\": \"ggg\",\r\n        \"GSTNo\": null,\r\n        \"Quantity\": 3,\r\n        \"SubTotal\": 300,\r\n        \"TotalAmount\": 336,\r\n        \"GSTPercentage\": 12,\r\n        \"GSTAmount\": 36,\r\n        \"GSTType\": \"IGST\",\r\n        \"Status\": 1,\r\n        \"CreatedBy\": null,\r\n        \"PurchaseDate\": \"2023-06-28\",\r\n        \"DueAmount\": 336\r\n    },\r\n    \"FitterDetail\": \"[{\\\"Sel\\\":1,\\\"ID\\\":60,\\\"Barcode\\\":\\\"90024000\\\",\\\"BillDetailID\\\":16,\\\"PurchaseDetailID\\\":0,\\\"BillID\\\":9,\\\"BaseBarcode\\\":\\\"90024\\\",\\\"ShopName\\\":\\\"shop-1\\\",\\\"AreaName\\\":\\\"one\\\",\\\"ProductName\\\":\\\"kljkl/\\\",\\\"ProductTypeID\\\":10,\\\"ProductTypeName\\\":\\\"lens\\\",\\\"HSNCode\\\":\\\"len\\\",\\\"UnitPrice\\\":500,\\\"Quantity\\\":1,\\\"SubTotal\\\":100,\\\"DiscountPercentage\\\":0,\\\"DiscountAmount\\\":0,\\\"GSTPercentage\\\":0,\\\"GSTAmount\\\":0,\\\"GSTType\\\":\\\"None\\\",\\\"TotalAmount\\\":500,\\\"MeasurementID\\\":\\\"null\\\",\\\"CreatedOn\\\":\\\"2023-06-18 19:37:12\\\",\\\"CreatedBy\\\":2,\\\"CreatedPerson\\\":\\\"Rahul Gothi\\\",\\\"CustomerName\\\":\\\"ssss\\\",\\\"MobileNo1\\\":\\\"\\\",\\\"MRDNo\\\":\\\"\\\",\\\"InvoiceDate\\\":\\\"2023-06-18\\\",\\\"DeliveryDate\\\":\\\"2023-06-18\\\",\\\"InvoiceNo\\\":\\\"2306R00009\\\",\\\"LensType\\\":\\\"Supra\\\",\\\"FitterCost\\\":100,\\\"FitterID\\\":3,\\\"FitterStatus\\\":\\\"complete\\\",\\\"Option\\\":\\\"Full Glass\\\",\\\"FitterDocNo\\\":\\\"NA\\\",\\\"Remark\\\":\\\"\\\",\\\"FitterName\\\":\\\"rahul fitter 3\\\"},{\\\"Sel\\\":1,\\\"ID\\\":58,\\\"Barcode\\\":\\\"90023000\\\",\\\"BillDetailID\\\":15,\\\"PurchaseDetailID\\\":0,\\\"BillID\\\":9,\\\"BaseBarcode\\\":\\\"90023\\\",\\\"ShopName\\\":\\\"shop-1\\\",\\\"AreaName\\\":\\\"one\\\",\\\"ProductName\\\":\\\"gfhgh/\\\",\\\"ProductTypeID\\\":10,\\\"ProductTypeName\\\":\\\"lens\\\",\\\"HSNCode\\\":\\\"len\\\",\\\"UnitPrice\\\":200,\\\"Quantity\\\":1,\\\"SubTotal\\\":100,\\\"DiscountPercentage\\\":0,\\\"DiscountAmount\\\":0,\\\"GSTPercentage\\\":0,\\\"GSTAmount\\\":0,\\\"GSTType\\\":\\\"None\\\",\\\"TotalAmount\\\":200,\\\"MeasurementID\\\":\\\"null\\\",\\\"CreatedOn\\\":\\\"2023-06-18 19:36:16\\\",\\\"CreatedBy\\\":2,\\\"CreatedPerson\\\":\\\"Rahul Gothi\\\",\\\"CustomerName\\\":\\\"ssss\\\",\\\"MobileNo1\\\":\\\"\\\",\\\"MRDNo\\\":\\\"\\\",\\\"InvoiceDate\\\":\\\"2023-06-18\\\",\\\"DeliveryDate\\\":\\\"2023-06-18\\\",\\\"InvoiceNo\\\":\\\"2306R00009\\\",\\\"LensType\\\":\\\"Supra\\\",\\\"FitterCost\\\":100,\\\"FitterID\\\":3,\\\"FitterStatus\\\":\\\"complete\\\",\\\"Option\\\":\\\"Full Glass\\\",\\\"FitterDocNo\\\":\\\"NA\\\",\\\"Remark\\\":\\\"\\\",\\\"FitterName\\\":\\\"rahul fitter 3\\\"},{\\\"Sel\\\":1,\\\"ID\\\":56,\\\"Barcode\\\":\\\"90022000\\\",\\\"BillDetailID\\\":14,\\\"PurchaseDetailID\\\":0,\\\"BillID\\\":10,\\\"BaseBarcode\\\":\\\"90022\\\",\\\"ShopName\\\":\\\"shop-1\\\",\\\"AreaName\\\":\\\"one\\\",\\\"ProductName\\\":\\\"sdsdsd/\\\",\\\"ProductTypeID\\\":10,\\\"ProductTypeName\\\":\\\"lens\\\",\\\"HSNCode\\\":\\\"len\\\",\\\"UnitPrice\\\":250,\\\"Quantity\\\":1,\\\"SubTotal\\\":100,\\\"DiscountPercentage\\\":0,\\\"DiscountAmount\\\":0,\\\"GSTPercentage\\\":0,\\\"GSTAmount\\\":0,\\\"GSTType\\\":\\\"None\\\",\\\"TotalAmount\\\":250,\\\"MeasurementID\\\":\\\"null\\\",\\\"CreatedOn\\\":\\\"2023-06-18 19:31:59\\\",\\\"CreatedBy\\\":2,\\\"CreatedPerson\\\":\\\"Rahul Gothi\\\",\\\"CustomerName\\\":\\\"saloni\\\",\\\"MobileNo1\\\":\\\"\\\",\\\"MRDNo\\\":\\\"\\\",\\\"InvoiceDate\\\":\\\"2023-06-18\\\",\\\"DeliveryDate\\\":\\\"2023-06-18\\\",\\\"InvoiceNo\\\":\\\"2306R00010\\\",\\\"LensType\\\":\\\"Supra\\\",\\\"FitterCost\\\":100,\\\"FitterID\\\":3,\\\"FitterStatus\\\":\\\"complete\\\",\\\"Option\\\":\\\"Half Glass Right\\\",\\\"FitterDocNo\\\":\\\"NA\\\",\\\"Remark\\\":\\\"\\\",\\\"FitterName\\\":\\\"rahul fitter 3\\\"}]\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/fitter/saveFitterInvoice",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"fitter",
+						"saveFitterInvoice"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "saveFitterInvoice",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"FitterMaster\": {\r\n        \"ID\": null,\r\n        \"FitterID\": 2,\r\n        \"CompanyID\": 1,\r\n        \"ShopID\": 1,\r\n        \"PaymentStatus\": \"Unpaid\",\r\n        \"InvoiceNo\": \"pppp\",\r\n        \"GSTNo\": null,\r\n        \"Quantity\": 3,\r\n        \"SubTotal\": 300,\r\n        \"TotalAmount\": 354,\r\n        \"GSTPercentage\": 18,\r\n        \"GSTAmount\": 54,\r\n        \"GSTType\": \"CGST-SGST\",\r\n        \"Status\": 1,\r\n        \"CreatedBy\": null,\r\n        \"PurchaseDate\": \"2023-06-27\",\r\n        \"DueAmount\": 354\r\n    },\r\n    \"FitterDetail\": \"[{\\\"Sel\\\":1,\\\"ID\\\":63,\\\"Barcode\\\":\\\"12000\\\",\\\"BillDetailID\\\":19,\\\"PurchaseDetailID\\\":0,\\\"BillID\\\":11,\\\"BaseBarcode\\\":\\\"12\\\",\\\"ShopName\\\":\\\"shop-1\\\",\\\"AreaName\\\":\\\"one\\\",\\\"ProductName\\\":\\\"sung/\\\",\\\"ProductTypeID\\\":12,\\\"ProductTypeName\\\":\\\"Sunglases\\\",\\\"HSNCode\\\":\\\"sunglasesss\\\",\\\"UnitPrice\\\":500,\\\"Quantity\\\":1,\\\"SubTotal\\\":100,\\\"DiscountPercentage\\\":0,\\\"DiscountAmount\\\":0,\\\"GSTPercentage\\\":0,\\\"GSTAmount\\\":0,\\\"GSTType\\\":\\\"None\\\",\\\"TotalAmount\\\":500,\\\"MeasurementID\\\":\\\"null\\\",\\\"CreatedOn\\\":\\\"2023-06-18 21:55:03\\\",\\\"CreatedBy\\\":2,\\\"CreatedPerson\\\":\\\"Rahul Gothi\\\",\\\"CustomerName\\\":\\\"ANIL PATIL\\\",\\\"MobileNo1\\\":\\\"9175773955\\\",\\\"MRDNo\\\":\\\"\\\",\\\"InvoiceDate\\\":\\\"2023-06-18\\\",\\\"DeliveryDate\\\":\\\"2023-06-18\\\",\\\"InvoiceNo\\\":\\\"2306R00011\\\",\\\"LensType\\\":\\\"Supra\\\",\\\"FitterCost\\\":100,\\\"FitterID\\\":3,\\\"FitterStatus\\\":\\\"complete\\\",\\\"Option\\\":\\\"null\\\",\\\"FitterDocNo\\\":\\\"NA\\\",\\\"Remark\\\":\\\"\\\",\\\"FitterName\\\":\\\"rahul fitter 3\\\",\\\"checked\\\":true},{\\\"Sel\\\":1,\\\"ID\\\":61,\\\"Barcode\\\":\\\"11000\\\",\\\"BillDetailID\\\":18,\\\"PurchaseDetailID\\\":0,\\\"BillID\\\":9,\\\"BaseBarcode\\\":\\\"11\\\",\\\"ShopName\\\":\\\"shop-1\\\",\\\"AreaName\\\":\\\"one\\\",\\\"ProductName\\\":\\\"fgg/\\\",\\\"ProductTypeID\\\":10,\\\"ProductTypeName\\\":\\\"lens\\\",\\\"HSNCode\\\":\\\"len\\\",\\\"UnitPrice\\\":300,\\\"Quantity\\\":2,\\\"SubTotal\\\":200,\\\"DiscountPercentage\\\":0,\\\"DiscountAmount\\\":0,\\\"GSTPercentage\\\":0,\\\"GSTAmount\\\":0,\\\"GSTType\\\":\\\"None\\\",\\\"TotalAmount\\\":600,\\\"MeasurementID\\\":\\\"null\\\",\\\"CreatedOn\\\":\\\"2023-06-18 19:42:35\\\",\\\"CreatedBy\\\":2,\\\"CreatedPerson\\\":\\\"Rahul Gothi\\\",\\\"CustomerName\\\":\\\"ssss\\\",\\\"MobileNo1\\\":\\\"\\\",\\\"MRDNo\\\":\\\"\\\",\\\"InvoiceDate\\\":\\\"2023-06-18\\\",\\\"DeliveryDate\\\":\\\"2023-06-18\\\",\\\"InvoiceNo\\\":\\\"2306R00009\\\",\\\"LensType\\\":\\\"Supra\\\",\\\"FitterCost\\\":100,\\\"FitterID\\\":3,\\\"FitterStatus\\\":\\\"complete\\\",\\\"Option\\\":\\\"Full Glass\\\",\\\"FitterDocNo\\\":\\\"NA\\\",\\\"Remark\\\":\\\"\\\",\\\"FitterName\\\":\\\"rahul fitter 3\\\",\\\"checked\\\":true}]\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/saveFitterInvoice",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
+								"saveFitterInvoice"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "59"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"3b-rYwqU/8Xzde221OI12xnUTW9gnI\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 28 Jun 2023 16:56:05 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": 2,\n    \"success\": true,\n    \"message\": \"data save sucessfully\"\n}"
+				},
+				{
+					"name": "saveFitterInvoice",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"FitterMaster\": {\r\n        \"ID\": null,\r\n        \"FitterID\": 3,\r\n        \"CompanyID\": 1,\r\n        \"ShopID\": 1,\r\n        \"PaymentStatus\": \"Unpaid\",\r\n        \"InvoiceNo\": \"ggg\",\r\n        \"GSTNo\": null,\r\n        \"Quantity\": 3,\r\n        \"SubTotal\": 300,\r\n        \"TotalAmount\": 336,\r\n        \"GSTPercentage\": 12,\r\n        \"GSTAmount\": 36,\r\n        \"GSTType\": \"IGST\",\r\n        \"Status\": 1,\r\n        \"CreatedBy\": null,\r\n        \"PurchaseDate\": \"2023-06-28\",\r\n        \"DueAmount\": 336\r\n    },\r\n    \"FitterDetail\": \"[{\\\"Sel\\\":1,\\\"ID\\\":60,\\\"Barcode\\\":\\\"90024000\\\",\\\"BillDetailID\\\":16,\\\"PurchaseDetailID\\\":0,\\\"BillID\\\":9,\\\"BaseBarcode\\\":\\\"90024\\\",\\\"ShopName\\\":\\\"shop-1\\\",\\\"AreaName\\\":\\\"one\\\",\\\"ProductName\\\":\\\"kljkl/\\\",\\\"ProductTypeID\\\":10,\\\"ProductTypeName\\\":\\\"lens\\\",\\\"HSNCode\\\":\\\"len\\\",\\\"UnitPrice\\\":500,\\\"Quantity\\\":1,\\\"SubTotal\\\":100,\\\"DiscountPercentage\\\":0,\\\"DiscountAmount\\\":0,\\\"GSTPercentage\\\":0,\\\"GSTAmount\\\":0,\\\"GSTType\\\":\\\"None\\\",\\\"TotalAmount\\\":500,\\\"MeasurementID\\\":\\\"null\\\",\\\"CreatedOn\\\":\\\"2023-06-18 19:37:12\\\",\\\"CreatedBy\\\":2,\\\"CreatedPerson\\\":\\\"Rahul Gothi\\\",\\\"CustomerName\\\":\\\"ssss\\\",\\\"MobileNo1\\\":\\\"\\\",\\\"MRDNo\\\":\\\"\\\",\\\"InvoiceDate\\\":\\\"2023-06-18\\\",\\\"DeliveryDate\\\":\\\"2023-06-18\\\",\\\"InvoiceNo\\\":\\\"2306R00009\\\",\\\"LensType\\\":\\\"Supra\\\",\\\"FitterCost\\\":100,\\\"FitterID\\\":3,\\\"FitterStatus\\\":\\\"complete\\\",\\\"Option\\\":\\\"Full Glass\\\",\\\"FitterDocNo\\\":\\\"NA\\\",\\\"Remark\\\":\\\"\\\",\\\"FitterName\\\":\\\"rahul fitter 3\\\"},{\\\"Sel\\\":1,\\\"ID\\\":58,\\\"Barcode\\\":\\\"90023000\\\",\\\"BillDetailID\\\":15,\\\"PurchaseDetailID\\\":0,\\\"BillID\\\":9,\\\"BaseBarcode\\\":\\\"90023\\\",\\\"ShopName\\\":\\\"shop-1\\\",\\\"AreaName\\\":\\\"one\\\",\\\"ProductName\\\":\\\"gfhgh/\\\",\\\"ProductTypeID\\\":10,\\\"ProductTypeName\\\":\\\"lens\\\",\\\"HSNCode\\\":\\\"len\\\",\\\"UnitPrice\\\":200,\\\"Quantity\\\":1,\\\"SubTotal\\\":100,\\\"DiscountPercentage\\\":0,\\\"DiscountAmount\\\":0,\\\"GSTPercentage\\\":0,\\\"GSTAmount\\\":0,\\\"GSTType\\\":\\\"None\\\",\\\"TotalAmount\\\":200,\\\"MeasurementID\\\":\\\"null\\\",\\\"CreatedOn\\\":\\\"2023-06-18 19:36:16\\\",\\\"CreatedBy\\\":2,\\\"CreatedPerson\\\":\\\"Rahul Gothi\\\",\\\"CustomerName\\\":\\\"ssss\\\",\\\"MobileNo1\\\":\\\"\\\",\\\"MRDNo\\\":\\\"\\\",\\\"InvoiceDate\\\":\\\"2023-06-18\\\",\\\"DeliveryDate\\\":\\\"2023-06-18\\\",\\\"InvoiceNo\\\":\\\"2306R00009\\\",\\\"LensType\\\":\\\"Supra\\\",\\\"FitterCost\\\":100,\\\"FitterID\\\":3,\\\"FitterStatus\\\":\\\"complete\\\",\\\"Option\\\":\\\"Full Glass\\\",\\\"FitterDocNo\\\":\\\"NA\\\",\\\"Remark\\\":\\\"\\\",\\\"FitterName\\\":\\\"rahul fitter 3\\\"},{\\\"Sel\\\":1,\\\"ID\\\":56,\\\"Barcode\\\":\\\"90022000\\\",\\\"BillDetailID\\\":14,\\\"PurchaseDetailID\\\":0,\\\"BillID\\\":10,\\\"BaseBarcode\\\":\\\"90022\\\",\\\"ShopName\\\":\\\"shop-1\\\",\\\"AreaName\\\":\\\"one\\\",\\\"ProductName\\\":\\\"sdsdsd/\\\",\\\"ProductTypeID\\\":10,\\\"ProductTypeName\\\":\\\"lens\\\",\\\"HSNCode\\\":\\\"len\\\",\\\"UnitPrice\\\":250,\\\"Quantity\\\":1,\\\"SubTotal\\\":100,\\\"DiscountPercentage\\\":0,\\\"DiscountAmount\\\":0,\\\"GSTPercentage\\\":0,\\\"GSTAmount\\\":0,\\\"GSTType\\\":\\\"None\\\",\\\"TotalAmount\\\":250,\\\"MeasurementID\\\":\\\"null\\\",\\\"CreatedOn\\\":\\\"2023-06-18 19:31:59\\\",\\\"CreatedBy\\\":2,\\\"CreatedPerson\\\":\\\"Rahul Gothi\\\",\\\"CustomerName\\\":\\\"saloni\\\",\\\"MobileNo1\\\":\\\"\\\",\\\"MRDNo\\\":\\\"\\\",\\\"InvoiceDate\\\":\\\"2023-06-18\\\",\\\"DeliveryDate\\\":\\\"2023-06-18\\\",\\\"InvoiceNo\\\":\\\"2306R00010\\\",\\\"LensType\\\":\\\"Supra\\\",\\\"FitterCost\\\":100,\\\"FitterID\\\":3,\\\"FitterStatus\\\":\\\"complete\\\",\\\"Option\\\":\\\"Half Glass Right\\\",\\\"FitterDocNo\\\":\\\"NA\\\",\\\"Remark\\\":\\\"\\\",\\\"FitterName\\\":\\\"rahul fitter 3\\\"}]\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/saveFitterInvoice",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
+								"saveFitterInvoice"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "59"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"3b-hDzqdQu4VoW+vppzfr7tFSG5hq8\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 28 Jun 2023 17:19:50 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": 3,\n    \"success\": true,\n    \"message\": \"data save sucessfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "getFitterInvoiceList",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODc5Njg2MzUsImV4cCI6MTY4ODA1NTAzNSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.U6KK202UEpttBL4qPQPSrUmw78-jA5xsmqTX7JnB4wY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/fitter/getFitterInvoiceList",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"fitter",
+						"getFitterInvoiceList"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getFitterInvoiceList",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPage\": 1,\r\n   \"itemsPerPage\": 10 \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/getFitterInvoiceList",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
+								"getFitterInvoiceList"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1281"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"501-YVCn5Xt9EYRcDNPJq4QH4yI0Xl0\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 28 Jun 2023 17:25:14 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 10,\n            \"FitterID\": 3,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"PaymentStatus\": \"Unpaid\",\n            \"InvoiceNo\": \"ggg\",\n            \"GSTNo\": \"\",\n            \"Quantity\": 3,\n            \"TotalAmount\": 336,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-06-28 22:49:50\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"PStatus\": 1,\n            \"PurchaseDate\": \"2023-06-28 00:00:00\",\n            \"DueAmount\": 336,\n            \"LastUpdate\": null,\n            \"GSTPercentage\": 12,\n            \"GSTAmount\": 36,\n            \"GSTType\": \"IGST\",\n            \"CustomerName\": \"rahul fitter 3\",\n            \"CustomerMob\": \"9826032831\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"CreatedByUser\": \"Rahul Gothi\",\n            \"UpdatedByUser\": null\n        },\n        {\n            \"ID\": 9,\n            \"FitterID\": 2,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"PaymentStatus\": \"Unpaid\",\n            \"InvoiceNo\": \"pppp\",\n            \"GSTNo\": \"\",\n            \"Quantity\": 3,\n            \"TotalAmount\": 354,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-06-28 22:26:05\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"PStatus\": 1,\n            \"PurchaseDate\": \"2023-06-27 00:00:00\",\n            \"DueAmount\": 354,\n            \"LastUpdate\": null,\n            \"GSTPercentage\": 18,\n            \"GSTAmount\": 54,\n            \"GSTType\": \"CGST-SGST\",\n            \"CustomerName\": \"rahul2\",\n            \"CustomerMob\": \"9131860873\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"CreatedByUser\": \"Rahul Gothi\",\n            \"UpdatedByUser\": null\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\",\n    \"calculation\": [\n        {\n            \"totalGstAmount\": 90,\n            \"totalAmount\": 690,\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"IGST\",\n                    \"Amount\": 36\n                },\n                {\n                    \"GSTType\": \"SGST-CGST\",\n                    \"Amount\": 0\n                },\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 27\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 27\n                }\n            ]\n        }\n    ],\n    \"count\": 2\n}"
+				}
+			]
+		},
+		{
+			"name": "getFitterInvoiceListByID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODc5Njg2MzUsImV4cCI6MTY4ODA1NTAzNSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.U6KK202UEpttBL4qPQPSrUmw78-jA5xsmqTX7JnB4wY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"FitterID\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/fitter/getFitterInvoiceListByID",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"fitter",
+						"getFitterInvoiceListByID"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getFitterInvoiceListByID",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"FitterID\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/getFitterInvoiceListByID",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
+								"getFitterInvoiceListByID"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "255"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"ff-NW7Wd+mdblLXg7rPG8WVhQUAZBQ\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 28 Jun 2023 17:30:07 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\",\n    \"calculation\": [\n        {\n            \"totalGstAmount\": 0,\n            \"totalAmount\": 0,\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"IGST\",\n                    \"Amount\": 0\n                },\n                {\n                    \"GSTType\": \"SGST-CGST\",\n                    \"Amount\": 0\n                },\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 0\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 0\n                }\n            ]\n        }\n    ]\n}"
+				},
+				{
+					"name": "getFitterInvoiceListByID",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"FitterID\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/fitter/getFitterInvoiceListByID",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"fitter",
+								"getFitterInvoiceListByID"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "765"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"2fd-dytRQFWCWipegGnqQdaQ0woPuqo\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 28 Jun 2023 17:30:37 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 10,\n            \"FitterID\": 3,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"PaymentStatus\": \"Unpaid\",\n            \"InvoiceNo\": \"ggg\",\n            \"GSTNo\": \"\",\n            \"Quantity\": 3,\n            \"TotalAmount\": 336,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-06-28 22:49:50\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"PStatus\": 1,\n            \"PurchaseDate\": \"2023-06-28 00:00:00\",\n            \"DueAmount\": 336,\n            \"LastUpdate\": null,\n            \"GSTPercentage\": 12,\n            \"GSTAmount\": 36,\n            \"GSTType\": \"IGST\",\n            \"CustomerName\": \"rahul fitter 3\",\n            \"CustomerMob\": \"9826032831\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"CreatedByUser\": \"Rahul Gothi\",\n            \"UpdatedByUser\": null\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\",\n    \"calculation\": [\n        {\n            \"totalGstAmount\": 36,\n            \"totalAmount\": 336,\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"IGST\",\n                    \"Amount\": 36\n                },\n                {\n                    \"GSTType\": \"SGST-CGST\",\n                    \"Amount\": 0\n                },\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 0\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 0\n                }\n            ]\n        }\n    ]\n}"
+				}
+			]
 		}
 	],
 	"auth": {
