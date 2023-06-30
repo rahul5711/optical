@@ -187,6 +187,18 @@ export class FitterInvoiceComponent implements OnInit {
     })
 
     this.data.FitterDetail = JSON.stringify(FitterDetails);
-    console.log(this.data);
+    const subs: Subscription = this.fitters.saveFitterInvoice(this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          // this.router.navigate(['/po/fitterInvoiceList', res.data])
+          this.router.navigate(['/po/fitterInvoiceList', res.data])
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 }

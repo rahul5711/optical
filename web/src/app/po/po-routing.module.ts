@@ -6,6 +6,7 @@ import { SupplierPoListComponent } from './supplier-po-list/supplier-po-list.com
 import { FitterPoComponent } from './fitter-po/fitter-po.component';
 import { FitterInvoiceComponent } from './fitter-invoice/fitter-invoice.component';
 import { FitterInvoiceListComponent } from './fitter-invoice-list/fitter-invoice-list.component';
+import { FitterInvoiceDetailComponent } from './fitter-invoice-detail/fitter-invoice-detail.component';
 
 const routes: Routes = [ { path: '',
 children: [
@@ -14,7 +15,8 @@ children: [
   { path: 'supplierPoList', component: SupplierPoListComponent }, 
   { path: 'fitterPo', component: FitterPoComponent }, 
   { path: 'fitterInvoice', component: FitterInvoiceComponent }, 
-  { path: 'fitterInvoiceList', component: FitterInvoiceListComponent }, 
+  { path: 'fitterInvoiceList/:id', component: FitterInvoiceListComponent }, 
+  { path: 'fitterInvoiceDetail/:id', component: FitterInvoiceDetailComponent }, 
  ]}
 ];
 

@@ -36,8 +36,6 @@ export class SupplierPoListComponent implements OnInit {
     private sup: SupplierService,
     public calculation: CalculationService,
     private supps: SupportService,
-
-
   ) { }
 
   data: any = {

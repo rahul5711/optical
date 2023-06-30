@@ -134,6 +134,9 @@
                                                 [disabled]="!f.valid" *ngIf="id == 0">Save</button>
                                             <button type="button" mat-raised-button
                                                 [routerLink]="['/inventory/fitterList']">Back</button>
+                                                <button class="ms-3" type="button" mat-raised-button color="primary"
+                                                [disabled]="!f.valid" *ngIf="id != 0"
+                                                [routerLink]="['/po/fitterInvoiceList',this.id]">Fitter Invoice List</button>
                                         </div>
                                     </div>
                                 </div>

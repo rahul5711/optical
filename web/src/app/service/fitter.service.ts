@@ -96,12 +96,36 @@ export class FitterService {
     .pipe(catchError(this.handleError));
   }
 
-  getFitterInvoice(Body:any): Observable<any> {
+  getFitterInvoice(ID:any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams();
-    return this.httpClient.post<any>(this.url + '/getFitterInvoice', {Body:Body}, { headers, params })
+    return this.httpClient.post<any>(this.url + '/getFitterInvoice', {ID:ID}, { headers, params })
     .pipe(catchError(this.handleError));
   }
+
+  saveFitterInvoice(Body:any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams();
+    return this.httpClient.post<any>(this.url + '/saveFitterInvoice', Body, { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
+  getFitterInvoiceList(Body:any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams();
+    return this.httpClient.post<any>(this.url + '/getFitterInvoiceList', Body, { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
+  getFitterInvoiceListByID(FitterID:any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams();
+    return this.httpClient.post<any>(this.url + '/getFitterInvoiceListByID', {FitterID:FitterID}, { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
+
+
 
 
   private handleError(errorResponse: HttpErrorResponse) {

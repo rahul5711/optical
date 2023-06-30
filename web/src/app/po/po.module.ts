@@ -27,6 +27,7 @@ import { SupplierPoListComponent } from './supplier-po-list/supplier-po-list.com
 import { FitterPoComponent } from './fitter-po/fitter-po.component';
 import { FitterInvoiceComponent } from './fitter-invoice/fitter-invoice.component';
 import { FitterInvoiceListComponent } from './fitter-invoice-list/fitter-invoice-list.component';
+import { FitterInvoiceDetailComponent } from './fitter-invoice-detail/fitter-invoice-detail.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { FitterInvoiceListComponent } from './fitter-invoice-list/fitter-invoice
     SupplierPoListComponent,
     FitterPoComponent,
     FitterInvoiceComponent,
-    FitterInvoiceListComponent
+    FitterInvoiceListComponent,
+    FitterInvoiceDetailComponent
   ],
   imports: [
     CommonModule,
