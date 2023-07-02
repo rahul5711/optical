@@ -27,6 +27,8 @@ router.post('/getFitterInvoice',verifyAccessTokenAdmin, Controller.getFitterInvo
 router.post('/saveFitterInvoice',verifyAccessTokenAdmin, Controller.saveFitterInvoice)
 router.post('/getFitterInvoiceList',verifyAccessTokenAdmin, Controller.getFitterInvoiceList)
 router.post('/getFitterInvoiceListByID',verifyAccessTokenAdmin, Controller.getFitterInvoiceListByID)
+router.post('/getFitterInvoiceDetailByID',verifyAccessTokenAdmin, Controller.getFitterInvoiceDetailByID)
+router.post('/updateFitterInvoiceNo',verifyAccessTokenAdmin, Controller.updateFitterInvoiceNo)
 
 
 module.exports = router

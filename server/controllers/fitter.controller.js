@@ -534,11 +534,13 @@ module.exports = {
     getFitterInvoiceList: async (req, res, next) => {
         const connection = await mysql.connection();
         try {
-            const response = { data: null, success: true, message: "", calculation: [{
-                "totalGstAmount": 0,
-                "totalAmount": 0,
-                "gst_details": []
-            }] }
+            const response = {
+                data: null, success: true, message: "", calculation: [{
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "gst_details": []
+                }]
+            }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -643,11 +645,13 @@ module.exports = {
     getFitterInvoiceListByID: async (req, res, next) => {
         const connection = await mysql.connection();
         try {
-            const response = { data: null, success: true, message: "", calculation: [{
-                "totalGstAmount": 0,
-                "totalAmount": 0,
-                "gst_details": []
-            }] }
+            const response = {
+                data: null, success: true, message: "", calculation: [{
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "gst_details": []
+                }]
+            }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -742,5 +746,73 @@ module.exports = {
             await connection.release();
         }
     },
+    getFitterInvoiceDetailByID: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const { ID } = req.body;
+
+            if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
+
+
+
+            let master = `SELECT fittermaster.*, Customer1.Name AS CustomerName, Customer1.MobileNo1 AS CustomerMob, shop.Name AS ShopName, shop.AreaName AS AreaName, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser FROM fittermaster LEFT JOIN shop ON shop.ID = fittermaster.ShopID LEFT JOIN user ON user.ID = fittermaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = fittermaster.UpdatedBy LEFT JOIN fitter AS Customer1 ON Customer1.ID = fittermaster.FitterID WHERE fittermaster.CompanyID = ${CompanyID} and fittermaster.ID = ${ID} AND fittermaster.Status = 1`
+
+            let detail = `select * from fitterdetail where CompanyID = ${CompanyID} and Status=1 and FitterMasterID = ${ID}`
+
+
+
+            response.message = "data fetch sucessfully"
+            response.FitterMaster = await connection.query(master)
+            response.FitterDetail = await connection.query(detail)
+            // connection.release()
+            res.send(response)
+
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+    updateFitterInvoiceNo: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const { ID, InvoiceNo } = req.body;
+
+            if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
+            if (!InvoiceNo || InvoiceNo === undefined) return res.send({ message: "Invalid InvoiceNo Data" })
+
+            const doesExistInvoiceNo = await connection.query(`select * from fittermaster where Status = 1 and InvoiceNo = '${InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${ID} `)
+
+            if (doesExistInvoiceNo.length) {
+                return res.send({ message: `Purchase Already exist from this InvoiceNo ${InvoiceNo}` })
+            }
+
+            const updateFitterMaster = await connection.query(`update fittermaster set InvoiceNo='${InvoiceNo}', UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where ID = ${ID}`)
+
+            const updatePaymentDetail = await connection.query(`update paymentdetail set BillID='${InvoiceNo}', UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where BillMasterID = ${ID}`)
+
+            response.message = "data update sucessfully"
+            // connection.release()
+            res.send(response)
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    }
 
 }
