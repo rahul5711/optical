@@ -5,6 +5,11 @@ const connected = chalk.bold.cyan;
 const { now } = require('lodash')
 const { shopID, generateInvoiceNo, generateBillSno, generateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder, gstDetailBill, generateUniqueBarcode } = require('../helpers/helper_function')
 const _ = require("lodash")
+let ejs = require("ejs");
+let path = require("path");
+let pdf = require("html-pdf");
+var TinyURL = require('tinyurl');
+var moment = require("moment");
 
 module.exports = {
     getDoctor: async (req, res, next) => {
@@ -1561,6 +1566,71 @@ module.exports = {
             await connection.release();
         }
     },
+
+    AssignSupplierPDF:async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const printdata = req.body
+            const productList = req.body.productList;
+            printdata.todaydate = moment().format("DD/MM/YYYY");
+            printdata.productList = productList
+
+            const shopdetails = await connection.query(`select * from shop where ID = ${shopid}`)
+            const companysetting = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+           
+            printdata.shopdetails = shopdetails[0]
+            printdata.companysetting = companysetting[0]
+
+            var fileName = "";
+            printdata.LogoURL = 'http://localhost:3000/'+ printdata.companysetting.LogoURL;
+            var formatName = "AssignSupplierPDF.ejs";
+            var file = formatName + "_" + CompanyID + ".pdf";
+            fileName = "uploads/" + file;
+
+            console.log(fileName);
+
+            ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    res.send(err);
+                } else {
+                    let options = {
+                        "height": "11.25in",
+                        "width": "8.5in",
+                        header: {
+                            height: "0mm"
+                        },
+                        footer: {
+                            height: "0mm",
+                            contents: {
+                                last: ``,
+                            },
+                        },
+                    };
+                    pdf.create(data, options).toFile(fileName, function (err, data) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            res.json(file);
+                        }
+                    });
+                }
+            });
+
+        }
+        catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+
+    },
+
     saveConvertPurchase: async (req, res, next) => {
         const connection = await mysql.connection();
         try {

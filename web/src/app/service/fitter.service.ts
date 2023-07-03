@@ -124,6 +124,13 @@ export class FitterService {
     .pipe(catchError(this.handleError));
   }
 
+  getFitterInvoiceDetailByID(ID:any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams();
+    return this.httpClient.post<any>(this.url + '/getFitterInvoiceDetailByID', {ID:ID}, { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
 
 
 

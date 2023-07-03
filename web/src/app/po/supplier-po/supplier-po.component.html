@@ -66,7 +66,7 @@
                                     <button (click)="Reset()" class="ms-2" type="button" mat-raised-button color="warn">
                                         Reset
                                     </button>
-                                    <button  class="ms-2" type="button" mat-raised-button color="warn">
+                                    <button *ngIf="this.orderComplete === true" class="ms-2" (click)="AssignSupplierPDF()" type="button" mat-raised-button color="warn">
                                         PDF
                                     </button>
                                    

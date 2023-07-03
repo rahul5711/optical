@@ -6,3 +6,11 @@
     width: 30px;
     border-radius: 3px
 }
+
+.mat-input-element:disabled {
+    color: rgb(0 0 0) !important;
+}
+
+.mat-select-disabled .mat-select-value {
+    color: rgb(0, 0, 0);
+}

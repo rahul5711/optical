@@ -22,7 +22,8 @@ import { ShopService } from 'src/app/service/shop.service';
   styleUrls: ['./supplier-po.component.css']
 })
 export class SupplierPoComponent implements OnInit {
-
+  
+  env = environment;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -397,5 +398,27 @@ export class SupplierPoComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     this.sp.hide()
+  }
+
+  AssignSupplierPDF(){
+    this.sp.show();
+    this.filtersList = this.orderList.filter((d: any) => d.Sel === 1);
+      if(this.filtersList.length > 0){
+        let body: any = { productList: this.filtersList }
+         const subs: Subscription = this.bill.AssignSupplierPDF(body).subscribe({
+           next: (res: any) => {
+             if (res) {
+               const url = this.env.apiUrl + "/uploads/" + res;
+               window.open(url, "_blank");
+             } else {
+               this.as.errorToast(res.message)
+             }
+             this.sp.hide();
+           },
+           error: (err: any) => console.log(err.message),
+           complete: () => subs.unsubscribe(),
+         });
+         this.sp.hide();
+      }
   }
 }

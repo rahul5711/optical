@@ -158,7 +158,9 @@ export class FitterInvoiceComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             res.data.forEach((e: any) =>{
-             e.SubTotal = (e.FitterCost * e.Quantity)
+             e.UnitPrice = (e.FitterCost)
+             e.SubTotal = (e.UnitPrice * e.Quantity)
+             e.TotalAmount = (e.SubTotal)
             })
             this.dataList = res.data;
             this.as.successToast(res.message)
@@ -187,6 +189,9 @@ export class FitterInvoiceComponent implements OnInit {
     })
 
     this.data.FitterDetail = JSON.stringify(FitterDetails);
+    console.log(this.data);
+    
+
     const subs: Subscription = this.fitters.saveFitterInvoice(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {

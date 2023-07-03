@@ -586,4 +586,13 @@ export class FitterPoComponent implements OnInit {
 
   }
 
+  AssignSupplierPDF(){
+    this.sp.show();
+    this.filtersList = this.orderList.filter((d: any) => d.Sel === 1);
+      if(this.filtersList.length > 0){
+        let data1: any = { productList: this.filtersList }
+         console.log(data1);
+         
+      }
+  }
 }

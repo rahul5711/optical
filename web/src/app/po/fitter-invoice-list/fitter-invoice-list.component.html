@@ -98,7 +98,7 @@
                                       <tbody class="text-center">
                                         <tr *ngFor="let v of dataList ; let i = index;">
                                             <td>
-                                                <button class="bg-btn" [routerLink]="['/po/fitterInvoiceDetail',v.FitterID]">
+                                                <button class="bg-btn" [routerLink]="['/po/fitterInvoiceDetail',v.ID]">
                                                     <mat-icon class="edit_icon ms-1">edit
                                                     </mat-icon>
                                                   </button>
@@ -108,7 +108,7 @@
                                             <td>{{v.CustomerMob}}</td>
                                             <td>{{v.InvoiceNo}}</td>
                                             <td>{{v.ShopName}}<span [style.color]="'blue'" *ngIf="v.AreaName !== 'null'">({{v.AreaName}})</span></td>
-                                            <td>{{v.PurchaseDate}}</td>
+                                            <td>{{v.PurchaseDate }}</td>
                                             <td>{{v.PaymentStatus}}</td>
                                             <td>{{v.TotalAmount}}</td>
                                         </tr>
