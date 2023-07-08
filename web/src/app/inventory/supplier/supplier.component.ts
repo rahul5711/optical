@@ -253,10 +253,11 @@ export class SupplierComponent implements OnInit {
   }
 
   openModal(content: any) {
+    this.companyImage = ''
     this.suBtn = false;
     this.id = 0;
-
-    if (this.dataList.length == 0) {
+     
+    if (this.dataList.length === 0) {
       this.data.Sno = Number(this.data.Sno) + 1;
     } else {
       if (this.dataList[0].Sno != 'null') {

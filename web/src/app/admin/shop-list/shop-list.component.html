@@ -82,24 +82,24 @@
                                             style="border: 2px solid #fff !important;">
                                             <thead>
                                                 <tr>
-                                                    <th class="text-left">Action</th>
-                                                    <th class="text-left">S.No</th>
-                                                    <th class="text-left">Shop Name</th>
-                                                    <th class="text-left">Area Name</th>
-                                                    <th class="text-left">Mobile No1</th>
-                                                    <th class="text-left">Mobile No2</th>
-                                                    <th class="text-left">Phone No</th>
-                                                    <th class="text-left">Email</th>
-                                                    <th class="text-left">Website</th>
-                                                    <th class="text-left">GST No</th>
-                                                    <th class="text-left">CIN No</th>
-                                                    <th class="text-left">Shop Timing</th>
-                                                    <th class="text-left">CreatedBy</th>
-                                                    <th class="text-left">UpdatedBy</th>
+                                                    <th>Action</th>
+                                                    <th>S.No</th>
+                                                    <th>Shop Name</th>
+                                                    <th>Area Name</th>
+                                                    <th>Mobile No1</th>
+                                                    <th>Mobile No2</th>
+                                                    <th>Phone No</th>
+                                                    <th>Email</th>
+                                                    <th>Website</th>
+                                                    <th>GST No</th>
+                                                    <th>CIN No</th>
+                                                    <th>Shop Timing</th>
+                                                    <th>CreatedBy</th>
+                                                    <th>UpdatedBy</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr class="text-center" *ngFor="let data of dataList let i = index;"
+                                                <tr   class="text-center" *ngFor="let data of dataList let i = index;"
                                                     style="white-space: nowrap;">
                                                     <td style="width: 7%;">
                                                         <button class="bg-none" (click)="openModalEdit(content,data)">
@@ -110,25 +110,19 @@
                                                             <mat-icon class="delete_icon ms-1" > delete_forever</mat-icon>
                                                         </button>
                                                     </td>
-                                                    <td class="text-left">{{ dataList.length - i }}</td>
-                                                    <td class="text-left">{{data.Name}}</td>
-                                                    <td class="text-left">{{data.AreaName}}</td>
-                                                    <td class="text-left">{{data.MobileNo1 }}</td>
-                                                    <td class="text-left">{{(data.MobileNo2 !== 'null')? data.MobileNo2:
-                                                        ''}}</td>
-                                                    <td class="text-left">{{(data.PhoneNo !== 'null')? data.PhoneNo:
-                                                        ''}}</td>
-                                                    <td class="text-left">{{(data.Email !== 'null')? data.Email: ''}}
-                                                    </td>
-                                                    <td class="text-left">{{(data.Website !== 'null')? data.Website:
-                                                        ''}}</td>
-                                                    <td class="text-left">{{(data.GSTNo !== 'null')? data.GSTNo: ''}}
-                                                    </td>
-                                                    <td class="text-left">{{(data.CINNo !== 'null')? data.CINNo: ''}}
-                                                    </td>
-                                                    <td class="text-left">{{data.ShopTiming}}</td>
-                                                    <td class="text-left">{{data.CreatedPerson}}</td>
-                                                    <td class="text-left">{{data.UpdatedPerson}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{dataList.length - i }}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.Name}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.AreaName}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.MobileNo1 }}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.MobileNo2 !== 'null')? data.MobileNo2:''}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.PhoneNo !== 'null')? data.PhoneNo:''}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.Email !== 'null')? data.Email: ''}} </td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.Website !== 'null')? data.Website:''}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.GSTNo !== 'null')? data.GSTNo: ''}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.CINNo !== 'null')? data.CINNo: ''}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.ShopTiming}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.CreatedPerson}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.UpdatedPerson}}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -284,7 +278,7 @@
                         <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 " (click)="fileInput.click()"
                             style="cursor: pointer;">
                             <i class="fa-solid fa-cloud-arrow-up upload_icon">
-                                <span style="font-size: 10px;letter-spacing: 2px;"> Company Image </span>
+                                <span style="font-size: 10px;letter-spacing: 2px;"> Shop Image </span>
                             </i>
                             <input #fileInput id="my-input" name='LogoURL' type="file"
                                 (change)="uploadImage($event, 'company')" style="display:none;">

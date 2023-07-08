@@ -5,7 +5,7 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
                 <div class="card">
                     <div class="header">
-                        <h2>Product Return </h2>
+                        <h2>Purchase Return </h2>
                     </div>
                     <div class="body">
                         <!-- save Product Return start -->
@@ -205,6 +205,7 @@
                                             <thead>
                                                 <tr style="white-space: nowrap;">
                                                     <th>Action</th>
+                                                    <th>InvoiceNo</th>
                                                     <th>Barcode</th>
                                                     <th>Product</th>
                                                     <th>PurchasePrice</th>
@@ -224,6 +225,7 @@
                                                     <td class="text-center">
                                                         <mat-icon *ngIf="data.Status !== 0" class="delete_icons ms-1" (click)="deleteItem('Product',i)">delete_forever</mat-icon>
                                                     </td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.InvoiceNo}}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.Barcode}}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.ProductTypeName}}/{{data.ProductName}}</td>
                                                     <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.UnitPrice }}</td>

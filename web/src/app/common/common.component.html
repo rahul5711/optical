@@ -173,8 +173,8 @@
           <mat-option *ngIf="user?.UserGroup === 'CompanyAdmin'" [value]="0">All</mat-option>
           <mat-option *ngFor="let s of dropShoplist let i = index;" [value]="s.ID">
             <span style="color: rgb(47, 47, 47); "> {{s.Name || s.ShopName}}
-              <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
-              <i *ngIf="s.Status == 0" class="fas fa-times" style="color: red;"> </i>
+              <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}}) </span>
+              <i *ngIf="s.Status == 0" class="fas fa-times" style="color: red; font-size: 20px; padding-left: 5px;"> </i>
             </span>
           </mat-option>
         </mat-select>

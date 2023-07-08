@@ -61,7 +61,7 @@ export class PurchaseReturnComponent implements OnInit {
   }
 
   xferItem: any = {
-    ID: null, CompanyID: null, PurchaseDetailID:null, ProductName: '', ProductTypeName: '', ProductTypeID: null,  Barcode: null, BarCodeCount: null, Quantity:0,  UnitPrice: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, Remark : ''
+    ID: null, CompanyID: null, PurchaseDetailID:null, ProductName: '', ProductTypeName: '', ProductTypeID: null, InvoiceNo:null, Barcode: null, BarCodeCount: null, Quantity:0,  UnitPrice: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, Remark : ''
   };
 
   selectedPurchaseMaster: any = {
@@ -249,6 +249,7 @@ export class PurchaseReturnComponent implements OnInit {
             this.xferItem.ProductTypeName = this.item.ProductTypeName;
             this.xferItem.ProductName = this.item.ProductName;
             this.xferItem.Barcode = this.item.Barcode;
+            this.xferItem.InvoiceNo = this.item.InvoiceNo;
             this.xferItem.BarCodeCount = this.item.BarCodeCount;
             this.xferItem.Quantity = 0
 
@@ -357,7 +358,7 @@ export class PurchaseReturnComponent implements OnInit {
         this.xferItem.ProductName = this.item.ProductName
         this.itemList.unshift(this.xferItem);
         this. xferItem = {
-          ID: null, CompanyID: null, PurchaseDetailID:null, ProductName: '', ProductTypeName: '', ProductTypeID: null,  Barcode: null, BarCodeCount: null, Quantity:0, Remark : '', UnitPrice: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1
+          ID: null, CompanyID: null, PurchaseDetailID:null, ProductName: '', ProductTypeName: '', ProductTypeID: null, InvoiceNo:null, Barcode: null, BarCodeCount: null, Quantity:0, Remark : '', UnitPrice: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1
         };
 
         this.item.BarCodeCount = 0;

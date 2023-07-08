@@ -75,7 +75,7 @@ module.exports = {
                     );
 
 
-                    const shop = await connection.query(`select * from shop where Status = 1 and CompanyID = '${User[0].CompanyID}'`)
+                    const shop = await connection.query(`select * from shop where CompanyID = '${User[0].CompanyID}'`)
 
                     return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], shop: shop, success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
                 } else {

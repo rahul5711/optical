@@ -23,10 +23,10 @@ module.exports = {
 
             const doesCount = await connection.query(`select * from company where Status = 1 and ID = ${CompanyID}`)
 
-            const doesShopCount = await connection.query(`select * from shop where CompanyID = ${CompanyID}`)
+            const doesShopCount = await connection.query(`select * from shop where Status = 1 and  CompanyID = ${CompanyID}`)
 
             if (doesShopCount.length === Number(doesCount[0].NoOfShops)) {
-                return res.send({ message: `You Can't Create Shop !! You Have permission Of ${Number(doesCount[0].NoOfShops)} Shop` })
+                return res.send({ message: `You can't create shop !! You have permission of ${Number(doesCount[0].NoOfShops)} shop` })
             }
 
             const saveData = await connection.query(`insert into shop (CompanyID,Name, AreaName,  Address,  MobileNo1, MobileNo2 , PhoneNo, Email, Website, GSTNo,CINNo, BarcodeName, Discount, GSTnumber, LogoURL, ShopTiming, WelcomeNote, Status,CreatedBy,CreatedOn,HSNCode,CustGSTNo,Rate,Discounts,Tax, SubTotal,Total,BillShopWise,ShopStatus ) values (${CompanyID},'${Body.Name}', '${Body.AreaName}', '${Body.Address}', '${Body.MobileNo1}','${Body.MobileNo1}','${Body.PhoneNo}','${Body.Email}','${Body.Website}','${Body.GSTNo}','${Body.CINNo}','${Body.BarcodeName}','${Body.Discount}','${Body.GSTnumber}','${Body.LogoURL}','${Body.ShopTiming}','${Body.WelcomeNote}',1,${LoggedOnUser}, now(),'${Body.HSNCode}','${Body.CustGSTNo}','${Body.Rate}','${Body.Discounts}','${Body.Tax}','${Body.SubTotal}','${Body.Total}','${Body.BillShopWise}',${Body.ShopStatus})`)
@@ -58,7 +58,7 @@ module.exports = {
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select shop.*, user.Name as CreatedPerson, users.Name as UpdatedPerson from shop left join user on user.ID = shop.CreatedBy left join user as users on users.ID = shop.UpdatedBy where shop.Status = 1 and shop.CompanyID = '${CompanyID}'  order by ID desc`
+            let qry = `select shop.*, user.Name as CreatedPerson, users.Name as UpdatedPerson from shop left join user on user.ID = shop.CreatedBy left join user as users on users.ID = shop.UpdatedBy where  shop.CompanyID = '${CompanyID}'  order by ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -91,7 +91,7 @@ module.exports = {
             let qry = ``
 
             if (UserGroup === 'CompanyAdmin') {
-                qry = `select * from shop where Status = 1 and CompanyID = '${CompanyID}'  order by ID desc`;
+                qry = `select * from shop where  CompanyID = '${CompanyID}'  order by ID desc`;
             } else {
                 qry = `SELECT * FROM shop LEFT JOIN usershop ON usershop.ShopID = shop.ID WHERE usershop.Status = 1 AND shop.CompanyID = ${CompanyID} AND usershop.UserID = ${UserID} order by shop.ID desc`
             }
@@ -404,7 +404,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            let qry = `select shop.*, user.Name as CreatedPerson, users.Name as UpdatedPerson from shop left join user on user.ID = shop.CreatedBy left join user as users on users.ID = shop.UpdatedBy where shop.Status = 1 and shop.CompanyID = '${CompanyID}' and shop.Name like '%${Body.searchQuery}%' OR shop.Status = 1 and shop.CompanyID = '${CompanyID}' and shop.MobileNo1 like '%${Body.searchQuery}%' OR shop.Status = 1 and shop.CompanyID = '${CompanyID}' and shop.AreaName like '%${Body.searchQuery}%' `
+            let qry = `select shop.*, user.Name as CreatedPerson, users.Name as UpdatedPerson from shop left join user on user.ID = shop.CreatedBy left join user as users on users.ID = shop.UpdatedBy where  shop.CompanyID = '${CompanyID}' and shop.Name like '%${Body.searchQuery}%' OR  shop.CompanyID = '${CompanyID}' and shop.MobileNo1 like '%${Body.searchQuery}%' OR  shop.CompanyID = '${CompanyID}' and shop.AreaName like '%${Body.searchQuery}%' `
 
             let data = await connection.query(qry);
 

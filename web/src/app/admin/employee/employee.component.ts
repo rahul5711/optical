@@ -83,9 +83,8 @@ export class EmployeeComponent implements OnInit {
           this.as.errorToast(res.message)
           Swal.fire({
             position: 'center',
-            icon: 'error',
-            title: 'Already exist',
-            text:'LoginName Already exist from this LoginName ' + this.data.LoginName,
+            icon: 'warning',
+            title: 'Already Exist <br>' + res.message,
             showConfirmButton: true,
             backdrop: false
           })

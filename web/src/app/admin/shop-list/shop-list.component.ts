@@ -122,7 +122,7 @@ export class ShopListComponent implements OnInit {
         const subs: Subscription = this.ss.deleteData(this.dataList[i].ID).subscribe({
           next: (res: any) => {
             if(res.success){
-              this.dataList.splice(i, 1);
+              this.getList()
               this.as.successToast(res.message)
               Swal.fire({
                 position: 'center',
@@ -144,17 +144,20 @@ export class ShopListComponent implements OnInit {
   }
 
   openModal(content: any) {
-    if (this.dataList.length >= this.company.NoOfShops){
-      Swal.fire({
-        icon: 'error',
-        title: 'You Can Not Create Shop',
-        text: 'New Shop Can Not Be Added As Your Plan Does Not Allow. ',
-        footer: ''
-      });
-    }else{
-      this.suBtn = false;
-      this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
-    }
+    // if (this.dataList.length >= this.company.NoOfShops){
+    //   Swal.fire({
+    //     icon: 'warning',
+    //     title: 'You can not create shop !! <br> New shop can not be added as your plan does not allow. ',
+    //     footer: '',
+    //     backdrop : false,
+    //   });
+    // }else{
+    //   this.suBtn = false;
+    //   this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+    // }
+        this.companyImage = '';
+        this.suBtn = false;
+        this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
   }
 
   openModalEdit(content: any, datas: any) {

@@ -21,10 +21,10 @@ module.exports = {
             if (Body.Email === "") return res.send({ message: "Invalid Query Data" })
 
             const doesExistUser = await connection.query(`select * from user where Email = '${Body.Email}' and Status = 1`)
-            if (doesExistUser.length) return res.send({ message: `User Already exist from this Email ${Body.Email}` })
+            if (doesExistUser.length) return res.send({ message: `User already exist from this Email ${Body.Email}` })
 
             const doesExistLoginName = await connection.query(`select * from user where LoginName = '${Body.LoginName}'`)
-            if (doesExistLoginName.length) return res.send({ message: `LoginName Already exist from this LoginName ${Body.LoginName}` })
+            if (doesExistLoginName.length) return res.send({ message: `LoginName already exist from this LoginName ${Body.LoginName}` })
 
             const pass = await pass_init.hash_password(Body.Password)
 
