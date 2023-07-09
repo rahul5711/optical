@@ -86,22 +86,33 @@
                                           <tr>
                                             <th>Action</th>
                                             <th>S.No</th>
-                                            <th>Fitter Name</th>
+                                            <th>FitterName</th>
                                             <th>MoblieNo</th>
-                                            <th>Invoice No</th>
-                                            <th>Received At</th>
-                                            <th>Purchase Date</th>
-                                            <th>Payment Status</th>
+                                            <th>InvoiceNo</th>
+                                            <th>ReceivedAt</th>
+                                            <th>PurchaseDate</th>
+                                            <th>PaymentStatus</th>
+                                            <th>GSTPercentage</th>
+                                            <th>GSTAmount</th>
+                                            <th>GSTType</th>
                                             <th>Invoice Amount</th>
                                           </tr>
                                       </thead>
                                       <tbody class="text-center">
-                                        <tr *ngFor="let v of dataList ; let i = index;">
+                                        <tr *ngFor="let v of dataList ; let i = index;" >
                                             <td>
                                                 <button class="bg-btn" [routerLink]="['/po/fitterInvoiceDetail',v.ID]">
                                                     <mat-icon class="edit_icon ms-1">edit
                                                     </mat-icon>
                                                   </button>
+                                                <button  *ngIf="!UpdateProduct" class="bg-btn" (click)="editInvoice()">
+                                                    <mat-icon class="edit_icon ms-1">edit
+                                                    </mat-icon>
+                                                </button>
+                                                <button *ngIf="UpdateProduct"  class="bg-btn" (click)="updateInvoice(v)">
+                                                    <mat-icon class="edit_icon ms-1">save
+                                                    </mat-icon>
+                                                </button>
                                             </td>
                                             <td>{{dataList.length - i}}</td>
                                             <td>{{v.CustomerName}} {{v.FitterName}}</td>
@@ -110,6 +121,26 @@
                                             <td>{{v.ShopName}}<span [style.color]="'blue'" *ngIf="v.AreaName !== 'null'">({{v.AreaName}})</span></td>
                                             <td>{{v.PurchaseDate }}</td>
                                             <td>{{v.PaymentStatus}}</td>
+                                            <td>
+                                              <input class="inputWidth"  name="GSTPercentage{{v.ID}}"
+                                              [(ngModel)]="v.GSTPercentage"
+                                              required #GSTPercentagecontrol [autocomplete]="false"
+                                              [disabled]="!UpdateProduct" (change)="calculateGrandTotal(v)">
+                                            </td>
+                                            <td>
+                                              <input class="inputWidth"  name="GSTAmount{{v.ID}}"
+                                              [(ngModel)]="v.GSTAmount" required #GSTAmountcontrol [autocomplete]="false"
+                                              disabled>
+                                            </td>
+                                            <td>
+                                              <select [disabled]="!UpdateProduct" class="inputselectWidth"  name="GSTType{{v.ID}}" [(ngModel)]="v.GSTType"
+                                                    required #GSTTypecontrol1 >
+                                                    <option value="None">None</option>
+                                                    <option [value]="g.Name" *ngFor="let g of gstList" >
+                                                        {{g.Name}}
+                                                      </option>
+                                                </select>
+                                            </td>
                                             <td>{{v.TotalAmount}}</td>
                                         </tr>
                                       </tbody>

@@ -11,6 +11,7 @@ import { CalculationService } from 'src/app/service/helpers/calculation.service'
 import { FitterService } from 'src/app/service/fitter.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
+import { SupportService } from 'src/app/service/support.service';
 
 
 @Component({
@@ -36,6 +37,8 @@ export class FitterInvoiceListComponent implements OnInit {
     public calculation: CalculationService,
     private modalService: NgbModal,
     private excelService: ExcelService,
+    private supps: SupportService,
+
   ) {
     this.id = this.route.snapshot.params['id'];
    }
@@ -51,6 +54,10 @@ export class FitterInvoiceListComponent implements OnInit {
   TotalAmountInv:any 
   TotalGSTAmount:any 
   gst_details:any =[]
+  gst_detail: any = [];
+  gstList: any;
+
+  UpdateProduct = false
 
   ngOnInit(): void {
     if(this.id != 0){
@@ -58,6 +65,32 @@ export class FitterInvoiceListComponent implements OnInit {
     }else{
       this.getList();
     }
+    this.getGSTList()
+  }
+
+  getGSTList() {
+    this.sp.show();
+    const subs: Subscription = this.supps.getList('TaxType').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.gstList = res.data
+          this.gst_detail = [];
+          res.data.forEach((ele: any) => {
+            if (ele.Name !== '') {
+              let obj = { GSTType: '', Amount: 0 };
+              obj.GSTType = ele.Name;
+              this.gst_detail.push(obj);
+            }
+          })
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    this.sp.hide();
   }
 
   changePagesize(num: number): void {
@@ -109,6 +142,33 @@ export class FitterInvoiceListComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     })
     this.sp.hide();
+  }
+
+  calculateGrandTotal(v:any){
+    v.GSTAmount = Number((+v.TotalAmount) * +v.GSTPercentage / 100);
+    v.TotalAmount = Number(+v.TotalAmount +  v.GSTAmount)
+  }
+
+
+  editInvoice() {
+    this.UpdateProduct = !this.UpdateProduct
+  }
+
+  updateInvoice(v:any){
+    this.UpdateProduct = false
+    const subs: Subscription = this.fitters.updateFitterInvoiceNo(v.ID, v.InvoiceNo).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   openModal(content: any) {

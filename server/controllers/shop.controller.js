@@ -91,7 +91,7 @@ module.exports = {
             let qry = ``
 
             if (UserGroup === 'CompanyAdmin') {
-                qry = `select * from shop where  CompanyID = '${CompanyID}'  order by ID desc`;
+                qry = `select * from shop where Status = 1 and CompanyID = '${CompanyID}'  order by ID desc`;
             } else {
                 qry = `SELECT * FROM shop LEFT JOIN usershop ON usershop.ShopID = shop.ID WHERE usershop.Status = 1 AND shop.CompanyID = ${CompanyID} AND usershop.UserID = ${UserID} order by shop.ID desc`
             }
