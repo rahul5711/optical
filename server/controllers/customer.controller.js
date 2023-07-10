@@ -858,7 +858,7 @@ module.exports = {
 
             const { searchString } = req.body
 
-            let qry = `select customer.ID as ID, customer.Idd, customer.Name as Name, customer.MobileNo1, customer.MobileNo2  from customer where customer.Status = 1 and customer.Name like '%${searchString}%' OR customer.MobileNo1 like'%${searchString}%' and customer.MobileNo2 like '%${searchString}%' and customer.CompanyID = '${CompanyID}'  order by customer.ID desc`
+            let qry = `select customer.ID as ID, customer.Idd, customer.Name as Name, customer.MobileNo1, customer.MobileNo2  from customer where customer.Status = 1 and customer.Name like '%${searchString}%' OR customer.MobileNo1 like'%${searchString}%' OR customer.MobileNo2 like '%${searchString}%' OR customer.Idd like '%${searchString}%' and customer.CompanyID = '${CompanyID}'  order by customer.ID desc`
 
 
             let finalQuery = qry ;
