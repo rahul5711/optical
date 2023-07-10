@@ -190,9 +190,13 @@
                                                     [autocomplete]="false">
                                             </td>
                                             <td>
-                                                <select [disabled]="item.Sel !== 1" class="inputselectWidth"  name="GSTType{{item.ID}}" [(ngModel)]="item.GSTType"
+                                                <select *ngIf="item.GSTPercentage == 0" [disabled]="item.Sel !== 1" class="inputselectWidth"  name="GSTType{{item.ID}}" [(ngModel)]="item.GSTType"
                                                     required #GSTTypecontrol1 (blur)="calculateGrandTotal()">
                                                     <option value="None">None</option>
+                                                </select>
+                                                
+                                                <select  *ngIf="item.GSTPercentage != 0"[disabled]="item.Sel !== 1" class="inputselectWidth"  name="GSTType{{item.ID}}" [(ngModel)]="item.GSTType"
+                                                    required #GSTTypecontrol1 (blur)="calculateGrandTotal()">
                                                     <option [value]="g.Name" *ngFor="let g of gstList">
                                                             {{g.Name}}</option>
                                                 </select>

@@ -787,7 +787,13 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const { ID, InvoiceNo } = req.body;
+            console.log(req.body);
+            const { ID, InvoiceNo, PaymentStatus, TotalAmount, GSTAmount, GSTPercentage, GSTType, DueAmount } = req.body;
+
+            if (!PaymentStatus || PaymentStatus !== 'Unpaid') {
+                return res.send({ message: `you have already paid amount` })
+ 
+            }
 
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
             if (!InvoiceNo || InvoiceNo === undefined) return res.send({ message: "Invalid InvoiceNo Data" })
@@ -798,9 +804,13 @@ module.exports = {
                 return res.send({ message: `Purchase Already exist from this InvoiceNo ${InvoiceNo}` })
             }
 
-            const updateFitterMaster = await connection.query(`update fittermaster set InvoiceNo='${InvoiceNo}', UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where ID = ${ID}`)
+            const updateFitterMaster = await connection.query(`update fittermaster set InvoiceNo='${InvoiceNo}', GSTPercentage = ${GSTPercentage}, GSTAmount=${GSTAmount}, GSTType = '${GSTType}', TotalAmount=${TotalAmount}, DueAmount=${DueAmount}, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where ID = ${ID}`)
 
-            const updatePaymentDetail = await connection.query(`update paymentdetail set BillID='${InvoiceNo}', UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where BillMasterID = ${ID}`)
+            const updatePaymentDetail = await connection.query(`update paymentdetail set BillID='${InvoiceNo}', DueAmount = ${DueAmount}, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where BillMasterID = ${ID}`)
+
+            const fetchPaymentID = await connection.query(`select * from paymentdetail where  BillMasterID = ${ID}`)
+
+            const updatePayment = await connection.query(`update paymentmaster set PayableAmount = ${DueAmount}, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where ID = ${fetchPaymentID[0].PaymentMasterID}`)
 
             response.message = "data update sucessfully"
             // connection.release()

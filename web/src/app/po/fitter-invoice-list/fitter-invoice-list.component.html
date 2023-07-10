@@ -102,10 +102,10 @@
                                         <tr *ngFor="let v of dataList ; let i = index;" >
                                             <td>
                                                 <button class="bg-btn" [routerLink]="['/po/fitterInvoiceDetail',v.ID]">
-                                                    <mat-icon class="edit_icon ms-1">edit
+                                                    <mat-icon class="edit_icon ms-1 p-1">remove_red_eye
                                                     </mat-icon>
                                                   </button>
-                                                <button  *ngIf="!UpdateProduct" class="bg-btn" (click)="editInvoice()">
+                                                <button  *ngIf="!UpdateProduct && v.PaymentStatus === 'Unpaid'" class="bg-btn" (click)="editInvoice()">
                                                     <mat-icon class="edit_icon ms-1">edit
                                                     </mat-icon>
                                                 </button>
@@ -117,7 +117,12 @@
                                             <td>{{dataList.length - i}}</td>
                                             <td>{{v.CustomerName}} {{v.FitterName}}</td>
                                             <td>{{v.CustomerMob}}</td>
-                                            <td>{{v.InvoiceNo}}</td>
+                                            <td>
+                                              <input class="inputWidth"  name="InvoiceNo{{v.ID}}"
+                                              [(ngModel)]="v.InvoiceNo"
+                                              required #InvoiceNocontrol [autocomplete]="false"
+                                              [disabled]="!UpdateProduct" >
+                                            </td>
                                             <td>{{v.ShopName}}<span [style.color]="'blue'" *ngIf="v.AreaName !== 'null'">({{v.AreaName}})</span></td>
                                             <td>{{v.PurchaseDate }}</td>
                                             <td>{{v.PaymentStatus}}</td>
@@ -125,17 +130,17 @@
                                               <input class="inputWidth"  name="GSTPercentage{{v.ID}}"
                                               [(ngModel)]="v.GSTPercentage"
                                               required #GSTPercentagecontrol [autocomplete]="false"
-                                              [disabled]="!UpdateProduct" (change)="calculateGrandTotal(v)">
+                                              [disabled]="!UpdateProduct" (blur)="calculateGrandTotal(v); gstCheck(v)">
                                             </td>
+                                            <td>{{v.GSTAmount}}</td>
                                             <td>
-                                              <input class="inputWidth"  name="GSTAmount{{v.ID}}"
-                                              [(ngModel)]="v.GSTAmount" required #GSTAmountcontrol [autocomplete]="false"
-                                              disabled>
-                                            </td>
-                                            <td>
-                                              <select [disabled]="!UpdateProduct" class="inputselectWidth"  name="GSTType{{v.ID}}" [(ngModel)]="v.GSTType"
+                                              <select *ngIf="v.GSTPercentage == 0" [disabled]="!UpdateProduct" class="inputselectWidth"  name="GSTType{{v.ID}}" [(ngModel)]="v.GSTType"
                                                     required #GSTTypecontrol1 >
-                                                    <option value="None">None</option>
+                                                    <option value="None" >None</option>
+                                                </select>
+
+                                              <select *ngIf="v.GSTPercentage != 0" [disabled]="!UpdateProduct" class="inputselectWidth"  name="GSTType{{v.ID}}" [(ngModel)]="v.GSTType"
+                                                    required #GSTTypecontrol1 >
                                                     <option [value]="g.Name" *ngFor="let g of gstList" >
                                                         {{g.Name}}
                                                       </option>

@@ -12,6 +12,7 @@ import { FitterService } from 'src/app/service/fitter.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { SupportService } from 'src/app/service/support.service';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -60,10 +61,10 @@ export class FitterInvoiceListComponent implements OnInit {
   UpdateProduct = false
 
   ngOnInit(): void {
-    if(this.id != 0){
-      this.getFitterInvoiceListByID()
-    }else{
+    if(this.id == 0){
       this.getList();
+    }else{
+      this.getFitterInvoiceListByID()
     }
     this.getGSTList()
   }
@@ -109,7 +110,14 @@ export class FitterInvoiceListComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.collectionSize = res.count;
+          
+          res.data.forEach((e: any) =>{
+            e.SubTotal = ( e.TotalAmount - e.GSTAmount)
+            e.TotalAmount = (e.SubTotal + e.GSTAmount)
+           })
+
           this.dataList = res.data;
+ 
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
@@ -127,9 +135,13 @@ export class FitterInvoiceListComponent implements OnInit {
     const subs: Subscription = this.fitters.getFitterInvoiceListByID(this.id).subscribe({
       next: (res: any) => {
         if (res.success) {
+          res.data.forEach((e: any) =>{
+            e.SubTotal = ( e.TotalAmount - e.GSTAmount)
+            e.TotalAmount = (e.SubTotal + e.GSTAmount)
+           })
           this.dataList = res.data;
-          this.TotalAmountInv = res.calculation[0].totalAmount ;
-          this.TotalGSTAmount= res.calculation[0].totalGstAmount;
+          this.TotalAmountInv = (res.calculation[0].totalAmount).toFixed(2) ;
+          this.TotalGSTAmount= (res.calculation[0].totalGstAmount).toFixed(2);
           this.gst_details = res.calculation[0].gst_details;
         } else {
           this.as.errorToast(res.message)
@@ -145,8 +157,9 @@ export class FitterInvoiceListComponent implements OnInit {
   }
 
   calculateGrandTotal(v:any){
-    v.GSTAmount = Number((+v.TotalAmount) * +v.GSTPercentage / 100);
-    v.TotalAmount = Number(+v.TotalAmount +  v.GSTAmount)
+    v.GSTAmount = +v.SubTotal * + v.GSTPercentage / 100;
+    v.TotalAmount = +v.SubTotal + v.GSTAmount
+    v.DueAmount = v.TotalAmount
   }
 
 
@@ -154,21 +167,40 @@ export class FitterInvoiceListComponent implements OnInit {
     this.UpdateProduct = !this.UpdateProduct
   }
 
+gstCheck(v:any){
+  if(v.GSTPercentage == 0){
+     v.GSTType = 'None'
+  }
+
+  if(v.GSTPercentage != 0){
+    if(v.GSTType == 'NONE' ||  v.GSTType == 'None'){
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Opps !! <br> Please Select GSTType.',
+        backdrop : false,
+      })
+    }
+  }
+}
+
   updateInvoice(v:any){
-    this.UpdateProduct = false
-    const subs: Subscription = this.fitters.updateFitterInvoiceNo(v.ID, v.InvoiceNo).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          
-          this.as.successToast(res.message)
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+
+      this.calculateGrandTotal(v)
+      this.UpdateProduct = false
+      const subs: Subscription = this.fitters.updateFitterInvoiceNo(v).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
   }
 
   openModal(content: any) {
