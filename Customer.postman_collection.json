@@ -1255,6 +1255,113 @@
 					"body": "{\n    \"data\": [\n        {\n            \"ID\": 1,\n            \"Idd\": \"1\",\n            \"Sno\": \"\",\n            \"Name\": \"Rahul Customer 1 \",\n            \"CompanyID\": 129,\n            \"MobileNo1\": \"9752885711\",\n            \"MobileNo2\": \"\",\n            \"PhoneNo\": \"\",\n            \"Address\": \"\",\n            \"GSTNo\": \"\",\n            \"Email\": \"\",\n            \"PhotoURL\": \"\",\n            \"DOB\": \"\",\n            \"RefferedByDoc\": \"\",\n            \"Age\": \"\",\n            \"Anniversary\": \"\",\n            \"ReferenceType\": \"\",\n            \"Gender\": \"\",\n            \"Category\": null,\n            \"Other\": \"\",\n            \"Remarks\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 450,\n            \"UpdatedBy\": 450,\n            \"CreatedOn\": \"2022-12-16 22:19:11\",\n            \"UpdatedOn\": \"2022-12-16 22:36:00\",\n            \"TotalCustomer\": null,\n            \"VisitDate\": \"2022-12-08\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data update sucessfully\",\n    \"CustomerID\": 1,\n    \"spectacle_rx\": [\n        {\n            \"ID\": 3,\n            \"VisitNo\": 3,\n            \"CompanyID\": 129,\n            \"CustomerID\": 1,\n            \"REDPSPH\": \"4\",\n            \"REDPCYL\": \"18\",\n            \"REDPAxis\": \"\",\n            \"REDPVA\": \"\",\n            \"LEDPSPH\": \"\",\n            \"LEDPCYL\": \"\",\n            \"LEDPAxis\": \"\",\n            \"LEDPVA\": \"\",\n            \"RENPSPH\": \"\",\n            \"RENPCYL\": \"\",\n            \"RENPAxis\": \"\",\n            \"RENPVA\": \"\",\n            \"LENPSPH\": \"\",\n            \"LENPCYL\": \"\",\n            \"LENPAxis\": \"\",\n            \"LENPVA\": \"\",\n            \"REPD\": \"\",\n            \"LEPD\": \"\",\n            \"R_Addition\": \"\",\n            \"L_Addition\": \"\",\n            \"R_Prism\": \"\",\n            \"L_Prism\": \"\",\n            \"Lens\": \"\",\n            \"Shade\": \"\",\n            \"Frame\": \"\",\n            \"VertexDistance\": \"\",\n            \"RefractiveIndex\": \"\",\n            \"FittingHeight\": \"\",\n            \"ConstantUse\": 0,\n            \"NearWork\": 0,\n            \"DistanceWork\": 0,\n            \"UploadBy\": \"\",\n            \"PhotoURL\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 450,\n            \"CreatedOn\": \"2022-12-16 22:35:06\",\n            \"UpdatedBy\": 450,\n            \"Updatedon\": \"2022-12-16 22:36:00\",\n            \"FileURL\": \"\",\n            \"Family\": \"\",\n            \"RefferedByDoc\": \"\",\n            \"Reminder\": \"\",\n            \"ExpiryDate\": \"0000-00-00\"\n        },\n        {\n            \"ID\": 2,\n            \"VisitNo\": 2,\n            \"CompanyID\": 129,\n            \"CustomerID\": 1,\n            \"REDPSPH\": \"4\",\n            \"REDPCYL\": \"5\",\n            \"REDPAxis\": \"\",\n            \"REDPVA\": \"\",\n            \"LEDPSPH\": \"\",\n            \"LEDPCYL\": \"\",\n            \"LEDPAxis\": \"\",\n            \"LEDPVA\": \"\",\n            \"RENPSPH\": \"\",\n            \"RENPCYL\": \"\",\n            \"RENPAxis\": \"\",\n            \"RENPVA\": \"\",\n            \"LENPSPH\": \"\",\n            \"LENPCYL\": \"\",\n            \"LENPAxis\": \"\",\n            \"LENPVA\": \"\",\n            \"REPD\": \"\",\n            \"LEPD\": \"\",\n            \"R_Addition\": \"\",\n            \"L_Addition\": \"\",\n            \"R_Prism\": \"\",\n            \"L_Prism\": \"\",\n            \"Lens\": \"\",\n            \"Shade\": \"\",\n            \"Frame\": \"\",\n            \"VertexDistance\": \"\",\n            \"RefractiveIndex\": \"\",\n            \"FittingHeight\": \"\",\n            \"ConstantUse\": 0,\n            \"NearWork\": 0,\n            \"DistanceWork\": 0,\n            \"UploadBy\": \"\",\n            \"PhotoURL\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 450,\n            \"CreatedOn\": \"2022-12-16 22:29:03\",\n            \"UpdatedBy\": 450,\n            \"Updatedon\": \"2022-12-16 22:34:39\",\n            \"FileURL\": \"\",\n            \"Family\": \"\",\n            \"RefferedByDoc\": \"\",\n            \"Reminder\": \"\",\n            \"ExpiryDate\": \"0000-00-00\"\n        },\n        {\n            \"ID\": 1,\n            \"VisitNo\": 1,\n            \"CompanyID\": 129,\n            \"CustomerID\": 1,\n            \"REDPSPH\": \"2\",\n            \"REDPCYL\": \"\",\n            \"REDPAxis\": \"\",\n            \"REDPVA\": \"\",\n            \"LEDPSPH\": \"\",\n            \"LEDPCYL\": \"\",\n            \"LEDPAxis\": \"\",\n            \"LEDPVA\": \"\",\n            \"RENPSPH\": \"\",\n            \"RENPCYL\": \"\",\n            \"RENPAxis\": \"\",\n            \"RENPVA\": \"\",\n            \"LENPSPH\": \"\",\n            \"LENPCYL\": \"\",\n            \"LENPAxis\": \"\",\n            \"LENPVA\": \"\",\n            \"REPD\": \"\",\n            \"LEPD\": \"\",\n            \"R_Addition\": \"\",\n            \"L_Addition\": \"\",\n            \"R_Prism\": \"\",\n            \"L_Prism\": \"\",\n            \"Lens\": \"\",\n            \"Shade\": \"\",\n            \"Frame\": \"\",\n            \"VertexDistance\": \"\",\n            \"RefractiveIndex\": \"\",\n            \"FittingHeight\": \"\",\n            \"ConstantUse\": 0,\n            \"NearWork\": 0,\n            \"DistanceWork\": 0,\n            \"UploadBy\": \"\",\n            \"PhotoURL\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 450,\n            \"CreatedOn\": \"2022-12-16 22:19:11\",\n            \"UpdatedBy\": 450,\n            \"Updatedon\": \"2022-12-16 22:23:56\",\n            \"FileURL\": \"\",\n            \"Family\": \"\",\n            \"RefferedByDoc\": \"\",\n            \"Reminder\": \"\",\n            \"ExpiryDate\": \"0000-00-00\"\n        }\n    ],\n    \"contact_lens_rx\": [],\n    \"other_rx\": []\n}"
 				}
 			]
+		},
+		{
+			"name": "customerSearch",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODkwMDI3OTMsImV4cCI6MTY4OTA4OTE5MywiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.ZEnKI_u_7rE9dMSNUL_NXJrAPMpngPi79Hafa4Dxca4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"searchString\": \"VILAS\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/customer/customerSearch",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"customer",
+						"customerSearch"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "customerSearch",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"searchString\": \"VILAS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/customer/customerSearch",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"customer",
+								"customerSearch"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "3267"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"cc3-1r9TomCYzSgo8wpm6aSSboKbQg4\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 10 Jul 2023 15:29:38 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 18763,\n            \"Idd\": \"18763\",\n            \"Name\": \"MORE VILAS\",\n            \"MobileNo1\": \"7057347979\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 17469,\n            \"Idd\": \"17469\",\n            \"Name\": \"UNAWANE VILAS\",\n            \"MobileNo1\": \"9920394994\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 17271,\n            \"Idd\": \"17271\",\n            \"Name\": \"KALBHOR VILAS\",\n            \"MobileNo1\": \"9422320299\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 16297,\n            \"Idd\": \"16297\",\n            \"Name\": \"GADEKAR VILAS\",\n            \"MobileNo1\": \"9765053132\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 15924,\n            \"Idd\": \"15924\",\n            \"Name\": \"VITVEKAR VILAS\",\n            \"MobileNo1\": \"7276359893\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 15048,\n            \"Idd\": \"15048\",\n            \"Name\": \"JADHAV VILAS V\",\n            \"MobileNo1\": \"9096444661\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 14994,\n            \"Idd\": \"14994\",\n            \"Name\": \"KIRTANE VILAS\",\n            \"MobileNo1\": \"9422232803\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 14408,\n            \"Idd\": \"14408\",\n            \"Name\": \"GHODAKE ROHINI VILAS\",\n            \"MobileNo1\": \"9922810785\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 13176,\n            \"Idd\": \"13176\",\n            \"Name\": \"THANGE VILAS SHIVAJI\",\n            \"MobileNo1\": \"8055575220\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 12707,\n            \"Idd\": \"12707\",\n            \"Name\": \"SHINDE VILAS\",\n            \"MobileNo1\": \"7083638132\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 11821,\n            \"Idd\": \"11821\",\n            \"Name\": \"SARJERAV VILAS\",\n            \"MobileNo1\": \"9665403608\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 11476,\n            \"Idd\": \"11476\",\n            \"Name\": \"KHESE VILAS M\",\n            \"MobileNo1\": \"7028729588\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 11384,\n            \"Idd\": \"11384\",\n            \"Name\": \"GAIKWAD VILAS\",\n            \"MobileNo1\": \"9021447738\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 11131,\n            \"Idd\": \"11131\",\n            \"Name\": \"HONRAO VILAS\",\n            \"MobileNo1\": \"9763331031\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 10804,\n            \"Idd\": \"10804\",\n            \"Name\": \"KHESE VILAS\",\n            \"MobileNo1\": \"7028729588\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 10387,\n            \"Idd\": \"10387\",\n            \"Name\": \"SHINDE VILAS\",\n            \"MobileNo1\": \"7083638132\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 9501,\n            \"Idd\": \"9501\",\n            \"Name\": \"SARJERAV VILAS\",\n            \"MobileNo1\": \"9665403608\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 9156,\n            \"Idd\": \"9156\",\n            \"Name\": \"KHESE VILAS M\",\n            \"MobileNo1\": \"7028729588\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 9064,\n            \"Idd\": \"9064\",\n            \"Name\": \"GAIKWAD VILAS\",\n            \"MobileNo1\": \"9021447738\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 8811,\n            \"Idd\": \"8811\",\n            \"Name\": \"HONRAO VILAS\",\n            \"MobileNo1\": \"9763331031\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 8484,\n            \"Idd\": \"8484\",\n            \"Name\": \"KHESE VILAS\",\n            \"MobileNo1\": \"7028729588\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 8005,\n            \"Idd\": \"8005\",\n            \"Name\": \"MORE VILAS\",\n            \"MobileNo1\": \"7057347979\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 6711,\n            \"Idd\": \"6711\",\n            \"Name\": \"UNAWANE VILAS\",\n            \"MobileNo1\": \"9920394994\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 6513,\n            \"Idd\": \"6513\",\n            \"Name\": \"KALBHOR VILAS\",\n            \"MobileNo1\": \"9422320299\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 5539,\n            \"Idd\": \"5539\",\n            \"Name\": \"GADEKAR VILAS\",\n            \"MobileNo1\": \"9765053132\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 5166,\n            \"Idd\": \"5166\",\n            \"Name\": \"VITVEKAR VILAS\",\n            \"MobileNo1\": \"7276359893\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 4290,\n            \"Idd\": \"4290\",\n            \"Name\": \"JADHAV VILAS V\",\n            \"MobileNo1\": \"9096444661\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 4236,\n            \"Idd\": \"4236\",\n            \"Name\": \"KIRTANE VILAS\",\n            \"MobileNo1\": \"9422232803\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 3650,\n            \"Idd\": \"3650\",\n            \"Name\": \"GHODAKE ROHINI VILAS\",\n            \"MobileNo1\": \"9922810785\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 2418,\n            \"Idd\": \"2418\",\n            \"Name\": \"THANGE VILAS SHIVAJI\",\n            \"MobileNo1\": \"8055575220\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 1949,\n            \"Idd\": \"1949\",\n            \"Name\": \"SHINDE VILAS\",\n            \"MobileNo1\": \"7083638132\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 1063,\n            \"Idd\": \"1063\",\n            \"Name\": \"SARJERAV VILAS\",\n            \"MobileNo1\": \"9665403608\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 718,\n            \"Idd\": \"718\",\n            \"Name\": \"KHESE VILAS M\",\n            \"MobileNo1\": \"7028729588\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 626,\n            \"Idd\": \"626\",\n            \"Name\": \"GAIKWAD VILAS\",\n            \"MobileNo1\": \"9021447738\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 373,\n            \"Idd\": \"373\",\n            \"Name\": \"HONRAO VILAS\",\n            \"MobileNo1\": \"9763331031\",\n            \"MobileNo2\": \"\"\n        },\n        {\n            \"ID\": 46,\n            \"Idd\": \"46\",\n            \"Name\": \"KHESE VILAS\",\n            \"MobileNo1\": \"7028729588\",\n            \"MobileNo2\": \"\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\"\n}"
+				}
+			]
 		}
 	],
 	"auth": {

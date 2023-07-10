@@ -850,5 +850,31 @@ module.exports = {
 
     },
 
+    customerSearch: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
+            const { searchString } = req.body
+
+            let qry = `select customer.ID as ID, customer.Idd, customer.Name as Name, customer.MobileNo1, customer.MobileNo2  from customer where customer.Status = 1 and customer.Name like '%${searchString}%' OR customer.MobileNo1 like'%${searchString}%' and customer.MobileNo2 like '%${searchString}%' and customer.CompanyID = '${CompanyID}'  order by customer.ID desc`
+
+
+            let finalQuery = qry ;
+
+            let data = await connection.query(finalQuery);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            // connection.release()
+            res.send(response)
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
 }
