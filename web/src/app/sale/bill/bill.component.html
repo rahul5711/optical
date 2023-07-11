@@ -523,11 +523,11 @@
                                     <mat-icon class="edit_icon ms-1" (click)="openModal(content,data)"  >remove_red_eye</mat-icon>
 
                                     <mat-icon class="edit_icon1 ms-1" (click)="showInput(data)"
-                                    *ngIf="data.Status != 0 && data.ID !== null && !data.UpdateProduct">edit
+                                    *ngIf="!data.UpdateProduct">edit
                                 </mat-icon>
                                 <mat-icon class="edit_icon1 ms-1"
                                     (click)="showInput(data)"
-                                    *ngIf="data.Status != 0 && data.ID !== null && data.UpdateProduct" (click)="updataEditProdcut('', '', data)">save
+                                    *ngIf="data.UpdateProduct" (click)="updataEditProdcut('', '', data)">save
                                 </mat-icon>
 
                                 </button></td>
@@ -600,10 +600,6 @@
                                             </option>
                                         </select>
                                     </td>
-
-                                
-
-                               
 
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     {{data.TotalAmount}}</td>
