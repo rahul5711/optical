@@ -1,4 +1,4 @@
-.searchStringInput{
+.searchStringInput {
     width: 100%;
     border-width: 0px 0px 1px 0px;
     height: 39px;
@@ -19,13 +19,13 @@ input::-webkit-inner-spin-button {
 
 .addClass {
     color: green;
-} 
+}
 
-.otherShopClass{
+.otherShopClass {
     color: red;
 }
 
-.bgRemove{
+.bgRemove {
     background: none;
     border: none;
 }
@@ -66,7 +66,27 @@ input::-webkit-inner-spin-button {
     box-shadow: 2px 2px 6px #9c9795fa;
 }
 
-.borderLens{
-    border: 1px solid rgb(233, 39, 39)  !important;
+.borderLens {
+    border: 1px solid rgb(233, 39, 39) !important;
     transform: 0.5ms !important;
-  }
+}
+
+.email {
+    font-size: 20px;
+    background: #f71a1c;
+    border: none;
+    border-radius: 5px;
+    padding: 7px 6px;
+    color: #fff;
+    box-shadow: 1px 1px 10px #0003;
+}
+
+.whatsapp {
+    font-size: 20px;
+    background: #72ff55;
+    border: none;
+    border-radius: 5px;
+    padding: 6px;
+    color: #fff;
+    box-shadow: 1px 1px 10px #0003;
+}

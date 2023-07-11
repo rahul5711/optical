@@ -72,7 +72,7 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label> Name</mat-label>
                                                 <input matInput name="Name" minlength="3" [(ngModel)]="data.Name"
-                                                    required #UserNamecontrol appAutoFoucsDirectives />
+                                                (input)="customerSearch(UserNamecontrol.value, 'Name')"  required #UserNamecontrol appAutoFoucsDirectives />
                                                 <mat-error>
                                                     Name is required
                                                 </mat-error>
@@ -154,6 +154,7 @@
                                                 PDF
                                             </button>
                                         </div>
+
                                     </div>
                                 </div>
                                 <!-- Customer from end  -->

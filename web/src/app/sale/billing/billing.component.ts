@@ -100,6 +100,7 @@ export class BillingComponent implements OnInit {
 
   Check: any = { SpectacleCheck: true, ContactCheck: false, OtherCheck: false, };
 
+  param = {Name: '', MobileNo1: '' , Address:'', Sno:''};
   // dropdown values in satics
   dataSPH: any = [
     { Name: '+25.00' },
@@ -779,6 +780,22 @@ export class BillingComponent implements OnInit {
   }
   // Billing
 
-
+  customerSearch(searchKey:any, mode:any) {
+    this.param = {Name: '', MobileNo1: '', Address:'', Sno:''};
+     if(mode === 'Name') {
+       this.param.Name = searchKey;
+     } 
+     else if(mode === 'MobileNo1') {
+       this.param.MobileNo1 = searchKey;
+     }
+     else if(mode === 'Address') {
+       this.param.Address = searchKey;
+     }
+     else if(mode === 'Sno') {
+       this.param.Sno = searchKey;
+     }
+     let searchParam = JSON.stringify(this.param);
+     console.log(searchParam);
+   }
 
 }

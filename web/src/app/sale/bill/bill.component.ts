@@ -45,6 +45,7 @@ export class BillComponent implements OnInit {
   env = environment;
   id: any = 0
   id2: any = 0
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -65,8 +66,6 @@ export class BillComponent implements OnInit {
     this.id2 = this.route.snapshot.params['billid'];
   }
 
-
-
   BillMaster: any = {
     ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, GSTNo: '', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0.00, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
   }
@@ -81,6 +80,12 @@ export class BillComponent implements OnInit {
 
   customer: any = {
     ID: null, CompanyID: '', Idd: 0, Name: '', Sno: '', TotalCustomer: '', VisitDate: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: '', DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
+  };
+
+  applyPayment:any = {
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: null, PaidAmount: 0, 
+    CustomerCredit: 0, PaymentMode: null, CardNo: null, PaymentReferenceNo: null, Comments: null, Status: 1, CreatedBy: null, CreatedOn: null, 
+    UpdatedBy: null, UpdatedOn: null, pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
   };
 
   customerPower: any = []
@@ -130,6 +135,8 @@ export class BillComponent implements OnInit {
   lensList:any = []
   rateCardList:any = []
 
+  PaymentModesList:any=[]
+
   ngOnInit(): void {
     this.BillMaster.Employee = this.user.ID
     this.BillMaster.BillDate = moment().format('YYYY-MM-DD');
@@ -142,6 +149,7 @@ export class BillComponent implements OnInit {
     this.getGSTList();
     this.getService();
     this.getCustomerById1()
+    this.getPaymentModesList()
     if (this.id2 != 0) {
       this.getBillById(this.id2)
     }
@@ -1148,6 +1156,20 @@ export class BillComponent implements OnInit {
     this.sp.hide()
   }
 
+  getPaymentModesList() {
+    const subs: Subscription = this.supps.getList('PaymentModeType').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.PaymentModesList = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
   billByCustomer(){
     this.sp.show()
     let CustomerID = Number(this.id)
@@ -1204,7 +1226,6 @@ export class BillComponent implements OnInit {
     });
     this.sp.hide()
   }
-
 
   // order supplier 
   openModal12(content12: any){
@@ -1498,5 +1519,6 @@ export class BillComponent implements OnInit {
       });
     this.sp.hide()
   }
+
 
 }

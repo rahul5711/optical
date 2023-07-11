@@ -953,7 +953,94 @@
       <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-         <div class="row">
+        <form  #f3="ngForm" >
+                <div class="row">
+                        <div class="col-md-1 mb-0">
+                            <mat-form-field class="example-full-width mb-0" >
+                                <mat-label>Balance</mat-label>
+                                <input style="color: rgb(255 0 0 / 75%); font-size: 17px !important;" matInput name="Total Amount" value="{{BillMaster.DueAmount}}" disabled #TOutstandingcontrol [autocomplete]="false">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-1 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>New Payment</mat-label>
+                                <input  style="font-size: 17px !important;" matInput name="PaymentAmount" [(ngModel)]="applyPayment.PaidAmount" [autocomplete]="false" >
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-2 mb-0" *ngIf="applyPayment.ApplyReward !== true && applyPayment.ApplyReturn !== true">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Payment Mode</mat-label>
+                                <mat-select name="PayMode" [(ngModel)]="applyPayment.PaymentMode" required #GSTTypecontrol1>
+                                    <mat-option  [value]="p.Name" *ngFor="let p of PaymentModesList"> {{p.Name}} </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-2 mb-0" *ngIf="applyPayment.ApplyReward === true || applyPayment.ApplyReturn === true">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Payment Mode</mat-label>
+                                <mat-select name="PayMode" [(ngModel)]="applyPayment.PaymentMode" required #GSTTypecontrol1>
+                                    <mat-option value="Customer Return" *ngIf="applyPayment.CustomerCredit !== 0 && applyPayment.ApplyReturn === true">Customer Return</mat-option>
+                                    <mat-option value="Customer Reward" *ngIf="applyPayment.RewardPayment != null &&applyPayment.RewardPayment != 0 && applyPayment.ApplyReward === true">Customer Reward</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-2 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label> Card No.</mat-label>
+                                <input  style="font-size: 17px !important;" matInput name="CardNo" [(ngModel)]="applyPayment.CardNo" #CardNocontrol [autocomplete]="false">
+                                <mat-error>
+                                    Card No. is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-2 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Reference</mat-label>
+                                <input  style="font-size: 17px !important;" matInput name="NamePay" [(ngModel)]="applyPayment.PaymentReferenceNo" #NamePaycontrol [autocomplete]="false">
+                                <mat-error>
+                                    Name is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-2 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Customer Reward </mat-label>
+                                <div class="row mt-0">
+                                    <div class="col-md-2 p-0" style="height: 16px;">
+                                        <mat-checkbox color="primary" style="margin-left: 10px;" name="applyPayment.ApplyReward" [(ngModel)]="applyPayment.ApplyReward"></mat-checkbox>
+                                    </div>
+                                    <div class="col-md-10 ">
+                                        <input  style="font-size: 17px !important;" matInput value="{{applyPayment.RewardPayment | number:'1.0-3'}}" disabled [autocomplete]="false">
+                                    </div>
+                                </div>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-2 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Previous Customer Credit </mat-label>  
+                            <div class="row mt-0">
+                               <div class="col-md-3 p-0" style="height: 16px;"> 
+                                   <mat-checkbox color="primary" style="margin-left: 10px;" name="applyPayment.ApplyReturn" [(ngModel)]="applyPayment.ApplyReturn" ></mat-checkbox>
+                               </div>
+                               <div class="col-md-9 p-0">  
+                                <input style="font-size: 17px !important;" matInput name="CustomerCredit" disabled [(ngModel)]="applyPayment.CustomerCredit"   #CustomerCreditcontrol [autocomplete]="false">
+                               </div>
+                            </div>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-2 col-6">
+                            <button type="submit" [disabled]="f3.invalid || this.applyPayment.PaymentMode === 0" mat-raised-button color="primary">Apply Payment</button>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <button [disabled]="applyPayment.CustomerCredit === 0"  type="button"  mat-raised-button color="primary">
+                                Credit Note
+                            </button>
+                            <button class="whatsapp ms-4 me-4"><i class="fa-brands fa-whatsapp" ></i></button>
+                            <button class="email"><i class="fa-solid fa-envelope"></i></button>
+                        </div>
+                </div>
+        </form>
+         <div class="row mt-3">
             <div class="col-md-5">
                 <div class="table-responsive " style="border: 1px solid #ff5100;">
                     <table
