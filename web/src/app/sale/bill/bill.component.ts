@@ -21,6 +21,7 @@ import { SupportService } from 'src/app/service/support.service';
 import { trigger, style, animate, transition } from '@angular/animations';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { FitterService } from 'src/app/service/fitter.service';
+import { CalculationService } from 'src/app/service/helpers/calculation.service';
 
 
 @Component({
@@ -61,6 +62,7 @@ export class BillComponent implements OnInit {
     private modalService: NgbModal,
     private sup: SupplierService,
     private fitters: FitterService,
+    public cal: CalculationService,
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.id2 = this.route.snapshot.params['billid'];
@@ -71,7 +73,7 @@ export class BillComponent implements OnInit {
   }
 
   BillItem: any = {
-    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null, Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal : '', PurchasePrice:0
+    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: null, Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal : '', PurchasePrice:0,UpdateProduct: false
   };
 
   Service: any = {
@@ -136,6 +138,7 @@ export class BillComponent implements OnInit {
   rateCardList:any = []
 
   PaymentModesList:any=[]
+  disbaleupdate = false
 
   ngOnInit(): void {
     this.BillMaster.Employee = this.user.ID
@@ -1520,5 +1523,27 @@ export class BillComponent implements OnInit {
     this.sp.hide()
   }
 
+  // product edit 
 
+  showInput(data: any) {
+    data.UpdateProduct = !data.UpdateProduct
+    this.disbaleupdate = true
+  }
+
+  calculateFields1(fieldName: any, mode: any, data: any) {
+    this.billCalculation.calculations(fieldName, mode, data, '')
+    
+  }
+  updataEditProdcut(fieldName: any, mode: any, data: any){
+    this.calculateFields1(fieldName, mode, data)
+    this.calculateGrandTotal();
+
+    const dtm = {
+      BillMaster: this.BillMaster,
+      ...data
+    }
+    console.log(dtm);
+    
+  }
+  
 }
