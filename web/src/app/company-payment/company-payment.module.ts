@@ -24,6 +24,9 @@ import { ExpenseComponent } from './expense/expense.component';
 import { PayrollComponent } from './payroll/payroll.component';
 import { PettyCashComponent } from './petty-cash/petty-cash.component';
 import { PaymentComponent } from './payment/payment.component';
+import { NameFilter} from './../filterDropDown/nameFilter';
+
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 
 @NgModule({
@@ -31,7 +34,8 @@ import { PaymentComponent } from './payment/payment.component';
     ExpenseComponent,
     PayrollComponent,
     PettyCashComponent,
-    PaymentComponent
+    PaymentComponent,
+    NameFilter,
   ],
   imports: [
     CommonModule,

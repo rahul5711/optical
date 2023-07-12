@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, React
 import { NgForm } from '@angular/forms';
 import { environment } from 'src/environments/environment';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, map, startWith } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/helpers/alert.service';
@@ -13,7 +13,7 @@ import { SupplierService } from 'src/app/service/supplier.service';
 import { EmployeeService } from 'src/app/service/employee.service';
 import { FitterService } from 'src/app/service/fitter.service';
 import { CustomerService } from 'src/app/service/customer.service';
-
+import { AsyncPipe} from '@angular/common';
 
 @Component({
   selector: 'app-payment',
@@ -26,6 +26,7 @@ export class PaymentComponent implements OnInit {
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   env = environment;
+  myControl: any;
   
   constructor(
     private router: Router,
@@ -47,7 +48,7 @@ export class PaymentComponent implements OnInit {
     CreatedOn: null , UpdatedBy: null, UpdatedOn: null, pendingPaymentList: {} 
   };
 
-
+  searchValue:any
   PaymentModesList:any = []
   payeeList:any = []
 
@@ -124,6 +125,13 @@ export class PaymentComponent implements OnInit {
     }  
   }
 
-
+  onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
+    if (this.companysetting.DataFormat === '1') {
+      event = event.toUpperCase()
+    } else if (this.companysetting.DataFormat == '2') {
+      event = event.toTitleCase()
+    }
+    return event;
+  }
 
 }
