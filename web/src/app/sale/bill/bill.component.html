@@ -679,7 +679,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0 ">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">Quantity</mat-label>
-                        <input matInput class="cust-input" type="number"  name="Quantityt" [(ngModel)]="BillMaster.Quantity" disabled
+                        <input matInput class="cust-input" type="number"  name="Quantity" [(ngModel)]="BillMaster.Quantity" disabled
                             #Quantitytcontrol [autocomplete]="false">
                         <mat-error>
                             Quantity is required
@@ -689,7 +689,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">Sub Total</mat-label>
-                        <input matInput class="cust-input" type="number"  name="SubTotalt" [(ngModel)]="BillMaster.SubTotal" disabled
+                        <input matInput class="cust-input" type="number"  name="SubTotal" [(ngModel)]="BillMaster.SubTotal" disabled
                             #SubTotaltcontrol [autocomplete]="false">
                         <mat-error>
                             Sub Total is required
@@ -699,8 +699,8 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">D.Amount</mat-label>
-                        <input matInput class="cust-input" type="number"  name="DAmountt" [(ngModel)]="BillMaster.DiscountAmount"
-                            disabled #DAmounttcontrol [autocomplete]="false">
+                        <input matInput class="cust-input" type="number"  name="DiscountAmount" [(ngModel)]="BillMaster.DiscountAmount"
+                            disabled #DiscountAmountcontrol [autocomplete]="false">
                         <mat-error>
                             D.Amount is required
                         </mat-error>
@@ -709,8 +709,8 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">GST Amt</mat-label>
-                        <input matInput class="cust-input" type="number"  name="GSTAmt" [(ngModel)]="BillMaster.GSTAmount" required
-                            #GSTAmtcontrol [autocomplete]="false" disabled>
+                        <input matInput class="cust-input" type="number"  name="GSTAmount" [(ngModel)]="BillMaster.GSTAmount" required
+                            #GSTAmountcontrol [autocomplete]="false" disabled>
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-6 col-sm-6 col-6  mb-0"
@@ -758,7 +758,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Grand Amount</mat-label>
-                        <input matInput name="GrandAmount" type="number" [(ngModel)]="BillMaster.TotalAmount" disabled>
+                        <input matInput name="TotalAmount" type="number" [(ngModel)]="BillMaster.TotalAmount" disabled>
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
@@ -1022,7 +1022,7 @@
                         <div class="col-md-1 mb-0">
                             <mat-form-field class="example-full-width mb-0" >
                                 <mat-label>Balance</mat-label>
-                                <input style="color: rgb(255 0 0 / 75%); font-size: 17px !important;" matInput name="Total Amount" value="{{BillMaster.DueAmount}}" disabled #TOutstandingcontrol [autocomplete]="false">
+                                <input style="color: rgb(255 0 0 / 75%); font-size: 17px !important;" matInput name="Total Amount" value="{{this.totalBalance}}" disabled #TOutstandingcontrol [autocomplete]="false">
                             </mat-form-field>
                         </div>
                         <div class="col-md-1 mb-0">

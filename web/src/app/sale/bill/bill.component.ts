@@ -128,7 +128,7 @@ export class BillComponent implements OnInit {
 
   invoiceList:any = []
   paidList:any = []
-
+  totalBalance = 0
   orderList:any = []
   filtersList:any = []
   supplierList:any = []
@@ -1178,10 +1178,10 @@ export class BillComponent implements OnInit {
     let CustomerID = Number(this.id)
     const subs: Subscription = this.bill.billByCustomer(CustomerID).subscribe({
       next: (res: any) => {
-        console.log(res);
-
           if(res.success ){
              this.invoiceList = res.data
+             this.totalBalance = res.totalDueAmount
+             
           }else{
             this.as.errorToast(res.message)
             Swal.fire({
@@ -1207,8 +1207,6 @@ export class BillComponent implements OnInit {
     let BillMasterID = Number(this.id2)
     const subs: Subscription = this.bill.paymentHistoryByMasterID(CustomerID,BillMasterID).subscribe({
       next: (res: any) => {
-        console.log(res);
-
           if(res.success ){
              this.paidList = res.data
           }else{
@@ -1532,18 +1530,17 @@ export class BillComponent implements OnInit {
 
   calculateFields1(fieldName: any, mode: any, data: any) {
     this.billCalculation.calculations(fieldName, mode, data, '')
-    
+    this.calculateGrandTotal();
   }
   updataEditProdcut(fieldName: any, mode: any, data: any){
     this.calculateFields1(fieldName, mode, data)
     this.calculateGrandTotal();
 
-    const dtm = {
-      BillMaster: this.BillMaster,
-      ...data
-    }
-    console.log(dtm);
-    
+    this.BillMaster.DueAmount =  this.BillMaster.TotalAmount
+    this.data.billMaseterData = this.BillMaster
+    this.data.billDetailData = data
+
+    console.log(this.data);
   }
   
 }
