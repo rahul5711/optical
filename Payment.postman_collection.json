@@ -1,0 +1,206 @@
+{
+	"info": {
+		"_postman_id": "6ae25f86-982a-42ae-9fbb-f61821956c09",
+		"name": "Payment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Commission",
+			"item": [
+				{
+					"name": "getCommissionDetail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODkxODMwMDYsImV4cCI6MTY4OTI2OTQwNiwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.aHB-9G5T1LYuI2DlHR17IzIVBnSR9aWYr7JlK6Ew1hU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"PaymentType\": \"Doctor\",\r\n    \"PayeeName\": 1,\r\n    \"ShopID\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/payment/getCommissionDetail",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"payment",
+								"getCommissionDetail"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "getCommissionDetail-Employee",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "selectedshop",
+										"value": "[\"1\"]",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"PaymentType\": \"Employee\",\r\n    \"PayeeName\": 2,\r\n    \"ShopID\":1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/payment/getCommissionDetail",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"payment",
+										"getCommissionDetail"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "534"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"216-cTCfwyEScidkoIBiRRko3wlpRiA\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 12 Jul 2023 17:37:37 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": [\n        {\n            \"Sel\": 0,\n            \"ID\": 2,\n            \"CommissionAmount\": 20,\n            \"PayeeName\": \"Rahul Gothi\",\n            \"SalesPerson\": \"Rahul Gothi\",\n            \"InvoiceNo\": \"2307R00004\",\n            \"BillDate\": \"2023-07-12\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"BillAmount\": 400,\n            \"CustomerName\": \"Mrs. Seema Mohanka\",\n            \"MobileNo\": \"\"\n        },\n        {\n            \"Sel\": 0,\n            \"ID\": 3,\n            \"CommissionAmount\": 5,\n            \"PayeeName\": \"Rahul Gothi\",\n            \"SalesPerson\": \"Rahul Gothi\",\n            \"InvoiceNo\": \"2307R00005\",\n            \"BillDate\": \"2023-07-12\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"BillAmount\": 100,\n            \"CustomerName\": \"Ms. Vidhi Surana\",\n            \"MobileNo\": \"9049593907\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data save sucessfully\"\n}"
+						},
+						{
+							"name": "getCommissionDetail-Doctor",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "selectedshop",
+										"value": "[\"1\"]",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"PaymentType\": \"Doctor\",\r\n    \"PayeeName\": 1,\r\n    \"ShopID\":1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/payment/getCommissionDetail",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"payment",
+										"getCommissionDetail"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "301"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"12d-UnI0YLmlCf4b/vgIbqKSxnb9THo\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 12 Jul 2023 17:38:13 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": [\n        {\n            \"Sel\": 0,\n            \"ID\": 4,\n            \"CommissionAmount\": 5,\n            \"PayeeName\": \"rahul doctor\",\n            \"SalesPerson\": \"Rahul Gothi\",\n            \"InvoiceNo\": \"2307R00005\",\n            \"BillDate\": \"2023-07-12\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"BillAmount\": 100,\n            \"CustomerName\": \"Ms. Vidhi Surana\",\n            \"MobileNo\": \"9049593907\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data save sucessfully\"\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}
