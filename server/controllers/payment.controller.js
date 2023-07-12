@@ -149,7 +149,7 @@ module.exports = {
 
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
 
-            let qry = `select commissiondetail.*, user.Name as UserName, doctor.Name as DoctorName from commissiondetail left join user as user on user.ID = commissiondetail.UserID and commissiondetail.UserType = 'Employee' left join doctor on doctor.ID = commissiondetail.UserID and commissiondetail.UserType = 'Doctor' where commissiondetail.CompanyID = ${CompanyID} and commissiondetail.ShopID = ${shopid} and commissiondetail.ID = ${ID}`
+            let qry = `select commissiondetail.*,  COALESCE( user.Name, doctor.Name ) AS UserName from commissiondetail left join user as user on user.ID = commissiondetail.UserID and commissiondetail.UserType = 'Employee' left join doctor on doctor.ID = commissiondetail.UserID and commissiondetail.UserType = 'Doctor' where commissiondetail.CompanyID = ${CompanyID} and commissiondetail.ShopID = ${shopid} and commissiondetail.ID = ${ID}`
 
             response.message = "data fetch sucessfully"
             response.data = await connection.query(qry)
@@ -176,7 +176,7 @@ module.exports = {
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select commissiondetail.*, user.Name as UserName, doctor.Name as DoctorName from commissiondetail left join user as user on user.ID = commissiondetail.UserID and commissiondetail.UserType = 'Employee' left join doctor on doctor.ID = commissiondetail.UserID and commissiondetail.UserType = 'Doctor' where commissiondetail.CompanyID = ${CompanyID} and commissiondetail.ShopID = ${shopid} and commissiondetail.ID = ${ID} order by commissiondetail.ID desc`
+            let qry = `select commissiondetail.*, COALESCE( user.Name, doctor.Name ) AS UserName from commissiondetail left join user as user on user.ID = commissiondetail.UserID and commissiondetail.UserType = 'Employee' left join doctor on doctor.ID = commissiondetail.UserID and commissiondetail.UserType = 'Doctor' where commissiondetail.CompanyID = ${CompanyID} and commissiondetail.ShopID = ${shopid} and commissiondetail.ID = ${ID} order by commissiondetail.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
