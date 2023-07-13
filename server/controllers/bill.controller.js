@@ -951,9 +951,15 @@ module.exports = {
             response.data = data
             const totalDueAmount = await connection.query(`select SUM(billmaster.DueAmount) as totalDueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and ShopID = ${shopid} and PaymentStatus = 'Unpaid' order by ID desc`)
 
+            const creditAmount = await connection.query(`select SUM(paymentdetail.Amount) as totalAmount from paymentdetail where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and PaymentType = 'Customer Credit'`)
+
             response.totalDueAmount = 0;
+            response.creditAmount = 0;
             if (totalDueAmount) {
                 response.totalDueAmount = totalDueAmount[0].totalDueAmount
+            }
+            if (creditAmount) {
+                response.creditAmount = creditAmount[0].totalAmount
             }
             response.message = "success";
             // connection.release()
