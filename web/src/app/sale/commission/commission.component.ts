@@ -135,14 +135,10 @@ export class CommissionComponent implements OnInit {
     })
 
     this.data1.Detail = CommissionDetails;
-    console.log(this.data1);
-    
-
     const subs: Subscription = this.pay.saveCommissionDetail(this.data1).subscribe({
       next: (res: any) => {
         if (res.success) {
-          // this.router.navigate(['/po/fitterInvoiceList', res.data])
-          this.router.navigate(['/sale/commissionList', res.data])
+          this.router.navigate(['/sale/commissionList', res.data.ID])
         } else {
           this.as.errorToast(res.message)
         }
@@ -162,10 +158,11 @@ export class CommissionComponent implements OnInit {
        }
     })
 
-    this.data.Quantity = 1;
+    this.data.Quantity = 0;
     this.data.TotalAmount = 0;
    
     selectList.forEach((element: any) => {
+      this.data.Quantity = +this.data.Quantity +  element.Quantity
       this.data.TotalAmount = Number(+this.data.TotalAmount +  element.CommissionAmount
         )
     })

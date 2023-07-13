@@ -59,9 +59,9 @@ module.exports = {
 
             let qry = ``
             if (PaymentType === 'Employee') {
-                qry = `select 0 AS Sel, commissiondetail.ID, commissiondetail.CommissionAmount, user.Name as PayeeName, user1.Name as SalesPerson, billmaster.InvoiceNo, billmaster.BillDate, billmaster.PaymentStatus, billmaster.TotalAmount as BillAmount, customer.Name as CustomerName, customer.MobileNo1 as MobileNo from commissiondetail left join user on user.ID = commissiondetail.UserID left join user as user1 on user1.ID = commissiondetail.CreatedBy left join billmaster on billmaster.ID = commissiondetail.BillMasterID left join customer on customer.ID = billmaster.CustomerID where commissiondetail.UserType = 'Employee' and commissiondetail.UserID = ${PayeeName} and commissiondetail.CompanyID = ${CompanyID} and commissiondetail.ShopID = ${ShopID} and commissiondetail.CommissionMasterID = 0`
+                qry = `select 0 AS Sel, commissiondetail.ID, commissiondetail.CommissionAmount, user.Name as PayeeName, user1.Name as SalesPerson, billmaster.InvoiceNo, billmaster.BillDate, billmaster.PaymentStatus, billmaster.TotalAmount as BillAmount, billmaster.Quantity AS Quantity,  customer.Name as CustomerName, customer.MobileNo1 as MobileNo from commissiondetail left join user on user.ID = commissiondetail.UserID left join user as user1 on user1.ID = commissiondetail.CreatedBy left join billmaster on billmaster.ID = commissiondetail.BillMasterID left join customer on customer.ID = billmaster.CustomerID where commissiondetail.UserType = 'Employee' and commissiondetail.UserID = ${PayeeName} and commissiondetail.CompanyID = ${CompanyID} and commissiondetail.ShopID = ${ShopID} and commissiondetail.CommissionMasterID = 0`
             } else if (PaymentType === 'Doctor') {
-                qry = `select 0 AS Sel, commissiondetail.ID, commissiondetail.CommissionAmount, doctor.Name as PayeeName, user1.Name as SalesPerson, billmaster.InvoiceNo, billmaster.BillDate, billmaster.PaymentStatus, billmaster.TotalAmount as BillAmount, customer.Name as CustomerName, customer.MobileNo1 as MobileNo from commissiondetail left join doctor on doctor.ID = commissiondetail.UserID left join user as user1 on user1.ID = commissiondetail.CreatedBy left join billmaster on billmaster.ID = commissiondetail.BillMasterID left join customer on customer.ID = billmaster.CustomerID where commissiondetail.UserType = 'Doctor' and commissiondetail.UserID = ${PayeeName} and commissiondetail.CompanyID = ${CompanyID} and commissiondetail.ShopID = ${ShopID} and commissiondetail.CommissionMasterID = 0`
+                qry = `select 0 AS Sel, commissiondetail.ID, commissiondetail.CommissionAmount, doctor.Name as PayeeName, user1.Name as SalesPerson, billmaster.InvoiceNo, billmaster.BillDate, billmaster.PaymentStatus, billmaster.Quantity AS Quantity,  billmaster.TotalAmount as BillAmount, customer.Name as CustomerName, customer.MobileNo1 as MobileNo from commissiondetail left join doctor on doctor.ID = commissiondetail.UserID left join user as user1 on user1.ID = commissiondetail.CreatedBy left join billmaster on billmaster.ID = commissiondetail.BillMasterID left join customer on customer.ID = billmaster.CustomerID where commissiondetail.UserType = 'Doctor' and commissiondetail.UserID = ${PayeeName} and commissiondetail.CompanyID = ${CompanyID} and commissiondetail.ShopID = ${ShopID} and commissiondetail.CommissionMasterID = 0`
             }
 
 
@@ -113,7 +113,7 @@ module.exports = {
                 if (!item.Sel || item.Sel == 0) return res.send({ message: "Invalid Query Data" })
             }
 
-            const saveCommMaster = await connection.query(`insert into(UserID, CompanyID, ShopID, UserType,InvoiceNo, Quantity, TotalAmount,CreatedBy, CreatedOn, PurchaseDate, DueAmount)values(${PayeeName}, ${CompanyID},${ShopID},'${PaymentType}', '${InvoiceNo}', ${Quantity}, ${TotalAmount}, ${LoggedOnUser}, now(),${PurchaseDate}, ${TotalAmount})`)
+            const saveCommMaster = await connection.query(`insert into commissionmaster(UserID, CompanyID, ShopID, UserType,InvoiceNo, Quantity, TotalAmount,CreatedBy, CreatedOn, PurchaseDate, DueAmount)values(${PayeeName}, ${CompanyID},${ShopID},'${PaymentType}', '${InvoiceNo}', ${Quantity}, ${TotalAmount}, ${LoggedOnUser}, now(),${PurchaseDate}, ${TotalAmount})`)
 
             console.log(connected("Commission Master Added SuccessFUlly !!!"));
 
@@ -168,7 +168,10 @@ module.exports = {
         const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
+            const shopid = await shopID(req.headers) || 0;
             const Body = req.body;
+
+
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
@@ -176,7 +179,7 @@ module.exports = {
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select commissiondetail.*, COALESCE( user.Name, doctor.Name ) AS UserName from commissiondetail left join user as user on user.ID = commissiondetail.UserID and commissiondetail.UserType = 'Employee' left join doctor on doctor.ID = commissiondetail.UserID and commissiondetail.UserType = 'Doctor' where commissiondetail.CompanyID = ${CompanyID} and commissiondetail.ShopID = ${shopid} and commissiondetail.ID = ${ID} order by commissiondetail.ID desc`
+            let qry = `select commissiondetail.*, COALESCE( user.Name, doctor.Name ) AS UserName, commissionmaster.PaymentStatus AS PaymentStatus, commissionmaster.InvoiceNo AS InvoiceNo, commissionmaster.Quantity AS Quantity, commissionmaster.TotalAmount AS TotalAmount , commissionmaster.PurchaseDate AS PurchaseDate from commissiondetail left join user as user on user.ID = commissiondetail.UserID and commissiondetail.UserType = 'Employee' left join doctor on doctor.ID = commissiondetail.UserID and commissiondetail.UserType = 'Doctor' left join commissionmaster on commissionmaster.ID = commissiondetail.CommissionMasterID where commissiondetail.CompanyID = ${CompanyID} and commissiondetail.ShopID = ${shopid} order by commissiondetail.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 

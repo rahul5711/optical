@@ -48,35 +48,19 @@
 
                           <div *ngIf="this.id != '0' && user.UserGroup === 'CompanyAdmin'" class="row">
                             <div class="col-md-3 col-12 p-0 ms-3">
-                              <h2>Fitter InvoiceList For <span style="color:#232323;">{{this.dataList[0]?.FitterName | titlecase }} </span> </h2>
+                              <h2>Loyalty Invoice For <span style="color:#232323;">{{this.dataList[0]?.UserName | titlecase }} </span> </h2>
                             </div>
-            
-                            <div *ngIf="this.dataList.length != 0" class="col-md-2 col-4 pt-2" style="border: 1px solid #b4b4b4; height: 38px;">
+                            <!-- <div *ngIf="this.dataList.length != 0" class="col-md-2 col-4 pt-2" style="border: 1px solid #b4b4b4; height: 38px;">
                               <span style="font-size:15px;font-weight:bold;">Total Amount : </span>
                               <span style="color:#232323;font-size:15px;font-weight:bold;">{{this.TotalAmountInv}}</span>
-                            </div>
-                            <div *ngIf="this.dataList.length != 0" class="col-md-2 col-4 pt-2" style="border: 1px solid #b4b4b4; height: 38px;">
-                              <span style="font-size:15px;font-weight:bold;"> 
-                                <button title="Payment Hsitory" class="detail_icons bg-btn" (click)="openModal(content)">
-                                <i class="fas fa-info-circle ms-1" data-mdb-toggle="modal"
-                                  data-mdb-target="#exampleModal"> </i>
-                              </button>
-                               Total GSTAmount :  </span>
-                              <span style="color:#232323;font-size:15px;font-weight:bold;">{{this.TotalGSTAmount}}</span>
-                            </div>
-                            <div *ngIf="this.dataList.length != 0" class="col-md-2 col-4 pt-2" style="border: 1px solid #b4b4b4; height: 38px;">
-                              <span style="font-size:15px;font-weight:bold;">Paid Amount : </span>
-                              <span
-                                style="color:#232323;font-size:15px;font-weight:bold;">0</span>
-                            </div>
-                            
+                            </div> -->
                             <div class="col-md-2 col-4 ms-auto"> </div>
                             <div  class="col-md-1 col-1" style="width: 40px; padding: 0;">
                               <!-- <mat-icon class="col-white plus_icon me-1">add</mat-icon> -->
                             </div>
                           </div>
                     </div>
-                    <div class="body mt-2">
+                    <div class="body mt-2">                  
                         <form  #f2="ngForm" >
                           <div class="row">
                               <div class="col-sm-12 p-0" style="overflow: auto; height: 480px;">
@@ -89,7 +73,6 @@
                                             <th>UserType</th>
                                             <th>Doctor/Employee</th>
                                             <th>InvoiceNo</th>
-                                            <th>ReceivedAt</th>
                                             <th>PurchaseDate</th>
                                             <th>PaymentStatus</th>
                                             <th>InvoiceAmount</th>
@@ -104,12 +87,11 @@
                                                 </button>
                                             </td>
                                             <td>{{dataList.length - i}}</td>
-                                            <td>{{v.CustomerName}} {{v.FitterName}}</td>
-                                            <td>{{v.CustomerMob}}</td>
-                                            <td>{{v.ShopName}}<span [style.color]="'blue'" *ngIf="v.AreaName !== 'null'">({{v.AreaName}})</span></td>
-                                            <td>{{v.PurchaseDate }}</td>
+                                            <td>{{v.UserType}} {{v.FitterName}}</td>
+                                            <td>{{v.UserName}}</td>
+                                            <td>{{v.InvoiceNo}}</td>
+                                            <td>{{v.PurchaseDate}}</td>
                                             <td>{{v.PaymentStatus}}</td>
-                                            <td>{{v.GSTAmount}}</td>
                                             <td>{{v.TotalAmount}}</td>
                                         </tr>
                                       </tbody>

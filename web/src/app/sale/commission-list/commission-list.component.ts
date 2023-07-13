@@ -59,7 +59,7 @@ export class CommissionListComponent implements OnInit {
   gstList: any;
 
   UpdateProduct = false
-
+  userType:any
   ngOnInit(): void {
     if(this.id == 0){
       this.getList();
@@ -80,6 +80,7 @@ export class CommissionListComponent implements OnInit {
     const dtm = {
       currentPage: this.currentPage,
       itemsPerPage: this.itemsPerPage,
+      ID : this.userType
     }
 
     const subs: Subscription = this.pay.getCommissionDetailList(dtm).subscribe({
@@ -118,7 +119,7 @@ export class CommissionListComponent implements OnInit {
     this.sp.hide();
   }
 
-  
+
 
   openModal(content: any) {
     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
