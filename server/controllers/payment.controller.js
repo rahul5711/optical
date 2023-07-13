@@ -113,7 +113,7 @@ module.exports = {
                 if (!item.Sel || item.Sel == 0) return res.send({ message: "Invalid Query Data" })
             }
 
-            const saveCommMaster = await connection.query(`insert into commissionmaster(UserID, CompanyID, ShopID, UserType,InvoiceNo, Quantity, TotalAmount,CreatedBy, CreatedOn, PurchaseDate, DueAmount)values(${PayeeName}, ${CompanyID},${ShopID},'${PaymentType}', '${InvoiceNo}', ${Quantity}, ${TotalAmount}, ${LoggedOnUser}, now(),${PurchaseDate}, ${TotalAmount})`)
+            const saveCommMaster = await connection.query(`insert into commissionmaster(UserID, CompanyID, ShopID, UserType,InvoiceNo, Quantity, TotalAmount,CreatedBy, CreatedOn, PurchaseDate, DueAmount)values(${PayeeName}, ${CompanyID},${ShopID},'${PaymentType}', '${InvoiceNo}', ${Quantity}, ${TotalAmount}, ${LoggedOnUser}, now(),'${PurchaseDate}', ${TotalAmount})`)
 
             console.log(connected("Commission Master Added SuccessFUlly !!!"));
 
@@ -149,7 +149,7 @@ module.exports = {
 
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
 
-            let qry = `select commissiondetail.*,  COALESCE( user.Name, doctor.Name ) AS UserName from commissiondetail left join user as user on user.ID = commissiondetail.UserID and commissiondetail.UserType = 'Employee' left join doctor on doctor.ID = commissiondetail.UserID and commissiondetail.UserType = 'Doctor' where commissiondetail.CompanyID = ${CompanyID} and commissiondetail.ShopID = ${shopid} and commissiondetail.ID = ${ID}`
+            let qry = `select commissionmaster.*, COALESCE( user.Name, doctor.Name ) AS UserName from commissionmaster left join user as user on user.ID = commissionmaster.UserID and commissionmaster.UserType = 'Employee' left join doctor on doctor.ID = commissionmaster.UserID and commissionmaster.UserType = 'Doctor' where commissionmaster.CompanyID = ${CompanyID} and commissionmaster.ShopID = ${shopid} and commissionmaster.ID = ${ID}`
 
             response.message = "data fetch sucessfully"
             response.data = await connection.query(qry)
@@ -179,7 +179,7 @@ module.exports = {
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select commissiondetail.*, COALESCE( user.Name, doctor.Name ) AS UserName, commissionmaster.PaymentStatus AS PaymentStatus, commissionmaster.InvoiceNo AS InvoiceNo, commissionmaster.Quantity AS Quantity, commissionmaster.TotalAmount AS TotalAmount , commissionmaster.PurchaseDate AS PurchaseDate from commissiondetail left join user as user on user.ID = commissiondetail.UserID and commissiondetail.UserType = 'Employee' left join doctor on doctor.ID = commissiondetail.UserID and commissiondetail.UserType = 'Doctor' left join commissionmaster on commissionmaster.ID = commissiondetail.CommissionMasterID where commissiondetail.CompanyID = ${CompanyID} and commissiondetail.ShopID = ${shopid} order by commissiondetail.ID desc`
+            let qry = `select commissionmaster.*, COALESCE( user.Name, doctor.Name ) AS UserName from commissionmaster left join user as user on user.ID = commissionmaster.UserID and commissionmaster.UserType = 'Employee' left join doctor on doctor.ID = commissionmaster.UserID and commissionmaster.UserType = 'Doctor' where commissionmaster.CompanyID = ${CompanyID} and commissionmaster.ShopID = ${shopid} order by commissionmaster.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
