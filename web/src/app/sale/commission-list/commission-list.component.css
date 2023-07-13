@@ -1,0 +1,52 @@
+.bg-none{
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    padding: 0;
+    height: 35px;
+  }
+
+  .mat-icon {
+    pointer-events: none;
+  }
+
+
+.bg-btn{
+  background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.detail_icons i{
+  background: #38a042e8;
+  color: #fff;
+  padding: 3px !important;
+  border-radius: 24px !important;
+  font-size: 17px !important;
+  height: 24px !important;
+  width: 24px !important;
+  transition: .5s;
+  cursor: pointer;
+  box-shadow: 2px 2px 6px #9c9795fa;
+}
+
+.inputWidth{
+  width: 60px;
+  text-align: center;
+  color: #000;
+}
+
+.bcolor{
+  border: 1px solid red;
+  width: 60px;
+  text-align: center;
+  color: #000;
+}
+
+.inputselectWidth{
+  width: 75px;
+  text-align: center;
+  height: 24px;
+  font-size: 10px;
+  color: #000;
+}

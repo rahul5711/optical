@@ -6,6 +6,8 @@ import { DoctorListComponent } from './doctor-list/doctor-list.component';
 import { DoctorComponent } from './doctor/doctor.component';
 import { BillListComponent } from './bill-list/bill-list.component';
 import { CommissionComponent } from './commission/commission.component';
+import { CommissionListComponent } from './commission-list/commission-list.component';
+import { CommissionDetailComponent } from './commission-detail/commission-detail.component';
 
 const routes: Routes = [ { path: '',
 children: [
@@ -15,6 +17,8 @@ children: [
   { path: 'doctor/:id', component: DoctorComponent },  
   { path: 'doctorList', component: DoctorListComponent },  
   { path: 'commission', component: CommissionComponent },  
+  { path: 'commissionList/:id', component: CommissionListComponent },  
+  { path: 'commissionInvoice/:id', component: CommissionDetailComponent },  
  ]}
 ];
 

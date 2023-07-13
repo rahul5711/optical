@@ -5,7 +5,7 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
                 <div class="card">
                     <div class="header">
-                        <h2>Commission Details </h2>
+                        <h2>Loyalty Details </h2>
                     </div>
                     <div class="body">
                         <form autocomplete="off" #f="ngForm">
@@ -24,7 +24,7 @@
                                 <div class="col-xl-2 col-md-2 col-sm-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Payee Name</mat-label>
-                                        <mat-select name="PayeeID" [(ngModel)]=" data.CustomerID">
+                                        <mat-select name="PayeeID" [(ngModel)]=" data.PayeeName"  >
                                             <mat-option [value]="s.ID" *ngFor="let s of payeeList">
                                                 {{s.Name}} 
                                                 <span style="float: right;">{{s.MobileNo1}}</span>
@@ -36,8 +36,8 @@
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0 ">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Shop Name</mat-label>
-                                        <mat-select name="Supplier" editable="true" [(ngModel)]="data.ShopID"
-                                            [ngModelOptions]="{standalone: true}" #singleSelect  required>
+                                        <mat-select name="Supplier" editable="true" [(ngModel)]="data.ShopID" (selectionChange)="getCommissionDetail()"
+                                            [ngModelOptions]="{standalone: true}" #singleSelect   required>
                                             <mat-option [value]=0>All</mat-option>
                                             <mat-option *ngFor="let sup of shopList  let i = index;" [value]="sup.ID">
                                                 {{sup.Name}} <span [style.color]="'blue'"
@@ -46,17 +46,24 @@
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Invoice Date</mat-label>
+                                        <input matInput name="InvoiceDate" type="date" [(ngModel)]="data.PurchaseDate"
+                                            [ngModelOptions]="{standalone: true}" required>
+                                    </mat-form-field>
+                                </div>
                                 <div class="col-xl-2 col-md-2 col-sm-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Invoice No.</mat-label>
                                         <input matInput name="InvoiceNo" [(ngModel)]="data.InvoiceNo"
-                                            #NamePaycontrol [autocomplete]="false">
+                                            #NamePaycontrol [autocomplete]="false" required>
                                     </mat-form-field>
                                 </div>
                             </div>
                         </form>
                     <div>
-
+                        <form  #f2="ngForm"  (ngSubmit)="onSubmit()">
                         <div class="body ">
                           <div class="row">
                             <div class="col-sm-12" style="overflow: auto; height: 450px;">
@@ -65,7 +72,7 @@
                                     <thead>
                                         <tr style="white-space: nowrap;">
                                             <th>
-                                                <mat-checkbox class="example-margin" color="primary"></mat-checkbox>
+                                                <mat-checkbox class="example-margin" color="primary"  (click)="multicheck()"></mat-checkbox>
                                             </th>
                                             <th>CustomerName </th>
                                             <th>MobileNo </th>
@@ -78,7 +85,24 @@
                                         </tr>
                                     </thead>
                                     <tbody class="text-center">
-                                       
+                                        <tr class="text-center" *ngFor="let item of dataList ; let i = index;">
+                                            <td>
+                                                <input (click)="validate(item, $event)" type="checkbox" class="example-margin" id="{{item.ID}}"
+                                                [(ngModel)]="item.checked" color="primary" [checked]="item.Sel"
+                                                 name="feature{{item.ID}}"
+                                                value="{{item.Sel}}" style="width: 25px;
+                                                height: 17px; ">
+
+                                            </td>
+                                            <td>{{item.CustomerName}}</td>
+                                            <td>{{item.MobileNo}}</td>
+                                            <td>{{item.InvoiceNo}}</td>
+                                            <td>{{item.BillDate}}</td>
+                                            <td>{{item.BillAmount}}</td>
+                                            <td>{{item.PaymentStatus}}</td>
+                                            <td>{{item.CommissionAmount }}</td>
+                                            <td>{{item.PayeeName}}</td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -102,7 +126,7 @@
                             </div>
                             <div class="col-xl-2 col-lg-2 col-md-5 col-sm-12 mb-0 ms-auto p-0">
                                 <button type="button"   class="mr-3" mat-raised-button
-                                    color="primary">
+                                    color="primary" (click)="calculateGrandTotal()">
                                     Calculate Invoice
                                 </button>
                                 <button type="submit" [disabled]="!f.valid "
@@ -112,7 +136,7 @@
                             </div>
                         </div>
                         </div>
-
+                        </form>
                         </div>
                     </div>
                 </div>

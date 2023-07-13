@@ -29,6 +29,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { BillComponent } from './bill/bill.component';
 import { BillListComponent } from './bill-list/bill-list.component';
 import { CommissionComponent } from './commission/commission.component';
+import { CommissionListComponent } from './commission-list/commission-list.component';
+import { CommissionDetailComponent } from './commission-detail/commission-detail.component';
 
 
 @NgModule({
@@ -40,7 +42,9 @@ import { CommissionComponent } from './commission/commission.component';
     CustomerPowerListComponent,
     BillComponent,
     BillListComponent,
-    CommissionComponent
+    CommissionComponent,
+    CommissionListComponent,
+    CommissionDetailComponent
   ],
   imports: [
     CommonModule,
