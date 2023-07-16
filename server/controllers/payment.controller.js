@@ -25,15 +25,112 @@ module.exports = {
             if (!Body.PayeeName) return res.send({ message: "Invalid Query Data" })
 
             let qry = ``
+            let totalDueAmount = 0
+            let totalCreditAmount = 0
 
             if (PaymentType === 'Supplier') {
 
+                const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Vendor Credit' and CustomerID = ${PayeeName}`);
+
+                if (credit[0].CreditAmount !== null) {
+                    totalCreditAmount = credit[0].CreditAmount
+                }
+
+                const due = await connection.query(`select SUM(purchasemasternew.DueAmount) as due from purchasemasternew where CompanyID = ${CompanyID} and SupplierID = ${PayeeName} and PStatus = 0`)
+
+                if (due[0].due !== null) {
+                    totalDueAmount = due[0].due
+                }
+
+
+                qry = `select supplier.Name as PayeeName, shop.Name as ShopName, shop.AreaName, purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.GSTNo, purchasemasternew.DiscountAmount, purchasemasternew.GSTAmount, purchasemasternew.PaymentStatus, purchasemasternew.TotalAmount, purchasemasternew.DueAmount, ( purchasemasternew.TotalAmount - purchasemasternew.DueAmount) as PaidAmount  from purchasemasternew left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.SupplierID = ${PayeeName} and purchasemasternew.CompanyID = ${CompanyID}`
+
+
+                response.data = await connection.query(qry)
+
+
             } else if (PaymentType === 'Fitter') {
+
+                const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Fitter Credit' and CustomerID = ${PayeeName}`);
+
+                if (credit[0].CreditAmount !== null) {
+                    totalCreditAmount = credit[0].CreditAmount
+                }
+
+                const due = await connection.query(`select SUM(fittermaster.DueAmount) as due from fittermaster where CompanyID = ${CompanyID} and FitterID = ${PayeeName} and PStatus = 1`)
+
+                if (due[0].due !== null) {
+                    totalDueAmount = due[0].due
+                }
+
+                qry = `select fitter.Name as PayeeName, shop.Name as ShopName, shop.AreaName, fittermaster.InvoiceNo, fittermaster.PurchaseDate, fittermaster.GSTNo, 0 as DiscountAmount, fittermaster.GSTAmount, fittermaster.PaymentStatus, fittermaster.TotalAmount, fittermaster.DueAmount, ( fittermaster.TotalAmount - fittermaster.DueAmount) as PaidAmount  from fittermaster left join fitter on fitter.ID = fittermaster.FitterID left join shop on shop.ID = fittermaster.ShopID where fittermaster.FitterID = ${PayeeName} and fittermaster.CompanyID = ${CompanyID} and fittermaster.PStatus = 1`
+
+
+                response.data = await connection.query(qry)
 
             } else if (PaymentType === 'Customer') {
 
+                const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and CustomerID = ${PayeeName}`);
+
+                if (credit[0].CreditAmount !== null) {
+                    totalCreditAmount = credit[0].CreditAmount
+                }
+
+                const due = await connection.query(`select SUM(billmaster.DueAmount) as due from billmaster where CompanyID = ${CompanyID} and CustomerID = ${PayeeName} and Status = 1`)
+
+                if (due[0].due !== null) {
+                    totalDueAmount = due[0].due
+                }
+
+                qry = `select customer.Name as PayeeName, shop.Name as ShopName, shop.AreaName, billmaster.InvoiceNo, billmaster.BillDate, billmaster.GSTNo, billmaster.DiscountAmount as DiscountAmount, billmaster.GSTAmount, billmaster.PaymentStatus, billmaster.TotalAmount, billmaster.DueAmount, ( billmaster.TotalAmount - billmaster.DueAmount) as PaidAmount  from billmaster left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = billmaster.ShopID where billmaster.CustomerID = ${PayeeName} and billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1`
+
+
+                response.data = await connection.query(qry)
+
+            } else if (PaymentType === 'Employee') {
+
+                const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Employee Credit' and CustomerID = ${PayeeName}`);
+
+                if (credit[0].CreditAmount !== null) {
+                    totalCreditAmount = credit[0].CreditAmount
+                }
+
+                const due = await connection.query(`select SUM(commissionmaster.DueAmount) as due from commissionmaster where CompanyID = ${CompanyID} and UserID = ${PayeeName} and Status = 1 and UserType = 'Employee'`)
+
+                if (due[0].due !== null) {
+                    totalDueAmount = due[0].due
+                }
+
+                qry = `select user.Name as PayeeName, shop.Name as ShopName, shop.AreaName, commissionmaster.InvoiceNo, commissionmaster.PurchaseDate, commissionmaster.GSTNo, 0 as DiscountAmount, 0 as GSTAmount, commissionmaster.PaymentStatus, commissionmaster.TotalAmount, commissionmaster.DueAmount, ( commissionmaster.TotalAmount - commissionmaster.DueAmount) as PaidAmount  from commissionmaster left join user on user.ID = commissionmaster.UserID left join shop on shop.ID = commissionmaster.ShopID where commissionmaster.UserID = ${PayeeName} and commissionmaster.CompanyID = ${CompanyID} and commissionmaster.Status = 1 and commissionmaster.UserType = 'Employee'`
+
+
+                response.data = await connection.query(qry)
+
+            } else if (PaymentType === 'Doctor') {
+
+                const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Doctor Credit' and CustomerID = ${PayeeName}`);
+
+                if (credit[0].CreditAmount !== null) {
+                    totalCreditAmount = credit[0].CreditAmount
+                }
+
+                const due = await connection.query(`select SUM(commissionmaster.DueAmount) as due from commissionmaster where CompanyID = ${CompanyID} and UserID = ${PayeeName} and Status = 1 and UserType = 'Doctor'`)
+
+                if (due[0].due !== null) {
+                    totalDueAmount = due[0].due
+                }
+
+                qry = `select doctor.Name as PayeeName, shop.Name as ShopName, shop.AreaName, commissionmaster.InvoiceNo, commissionmaster.PurchaseDate, commissionmaster.GSTNo, 0 as DiscountAmount, 0 as GSTAmount, commissionmaster.PaymentStatus, commissionmaster.TotalAmount, commissionmaster.DueAmount, ( commissionmaster.TotalAmount - commissionmaster.DueAmount) as PaidAmount  from commissionmaster left join doctor on doctor.ID = commissionmaster.UserID left join shop on shop.ID = commissionmaster.ShopID where commissionmaster.UserID = ${PayeeName} and commissionmaster.CompanyID = ${CompanyID} and commissionmaster.Status = 1 and commissionmaster.UserType = 'Doctor'`
+
+
+                response.data = await connection.query(qry)
             }
 
+            response.totalCreditAmount = totalCreditAmount
+            response.totalDueAmount = totalDueAmount
+            response.message = "data fetch sucessfully"
+            // connection.release()
+            return res.send(response)
 
         } catch (err) {
             await connection.query("ROLLBACK");

@@ -201,6 +201,437 @@
 					]
 				}
 			]
+		},
+		{
+			"name": "getInvoicePayment",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"PaymentType\":\"Doctor\",\r\n    \"PayeeName\": 1\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/payment/getInvoicePayment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"payment",
+						"getInvoicePayment"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getInvoicePayment-Supplier",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"PaymentType\":\"Supplier\",\r\n    \"PayeeName\": 1\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/payment/getInvoicePayment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"payment",
+								"getInvoicePayment"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "755"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"2f3-v5VwZJfS/ffOU8ISmcWGKG661lI\""
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 16 Jul 2023 18:43:46 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"PayeeName\": \"rahul supplier\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"PurchaseDate\": \"2023-06-15\",\n            \"GSTNo\": \"\",\n            \"DiscountAmount\": 600,\n            \"GSTAmount\": 972,\n            \"PaymentStatus\": \"Unpaid\",\n            \"TotalAmount\": 6372,\n            \"DueAmount\": 6372,\n            \"PaidAmount\": 0\n        },\n        {\n            \"PayeeName\": \"rahul supplier\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"PurchaseDate\": \"2023-06-15\",\n            \"GSTNo\": \"\",\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 0,\n            \"PaymentStatus\": \"Unpaid\",\n            \"TotalAmount\": 800,\n            \"DueAmount\": 800,\n            \"PaidAmount\": 0\n        },\n        {\n            \"PayeeName\": \"rahul supplier\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"PurchaseDate\": \"2023-06-15\",\n            \"GSTNo\": \"\",\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 0,\n            \"PaymentStatus\": \"Unpaid\",\n            \"TotalAmount\": 800,\n            \"DueAmount\": 800,\n            \"PaidAmount\": 0\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\",\n    \"totalCreditAmount\": 1911,\n    \"totalDueAmount\": 7972\n}"
+				},
+				{
+					"name": "getInvoicePayment-Fitter",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"PaymentType\":\"Fitter\",\r\n    \"PayeeName\": 3\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/payment/getInvoicePayment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"payment",
+								"getInvoicePayment"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "550"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"226-AwJwS/6D3BeworTyOboZEh/j46w\""
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 16 Jul 2023 18:52:22 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"PayeeName\": \"rahul fitter 3\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"PurchaseDate\": \"2023-06-28 00:00:00\",\n            \"GSTNo\": \"\",\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 36,\n            \"PaymentStatus\": \"Unpaid\",\n            \"TotalAmount\": 336,\n            \"DueAmount\": 336,\n            \"PaidAmount\": 0\n        },\n        {\n            \"PayeeName\": \"rahul fitter 3\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"PurchaseDate\": \"2023-06-29 00:00:00\",\n            \"GSTNo\": \"\",\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 0,\n            \"PaymentStatus\": \"Unpaid\",\n            \"TotalAmount\": 200,\n            \"DueAmount\": 200,\n            \"PaidAmount\": 0\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\",\n    \"totalCreditAmount\": 0,\n    \"totalDueAmount\": 536\n}"
+				},
+				{
+					"name": "getInvoicePayment-Customer",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"PaymentType\":\"Customer\",\r\n    \"PayeeName\": 19237\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/payment/getInvoicePayment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"payment",
+								"getInvoicePayment"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "565"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"235-Ym/Cc4Dl2kmch193weSiKBcODEo\""
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 16 Jul 2023 18:59:30 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"PayeeName\": \"saloni\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"InvoiceNo\": \"2306R00001\",\n            \"BillDate\": \"2023-06-15\",\n            \"GSTNo\": \"\",\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 0,\n            \"PaymentStatus\": \"Unpaid\",\n            \"TotalAmount\": 1000,\n            \"DueAmount\": 1000,\n            \"PaidAmount\": 0\n        },\n        {\n            \"PayeeName\": \"saloni\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"InvoiceNo\": \"2306R00010\",\n            \"BillDate\": \"2023-06-18\",\n            \"GSTNo\": \"\",\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 0,\n            \"PaymentStatus\": \"Unpaid\",\n            \"TotalAmount\": 1550,\n            \"DueAmount\": 2150,\n            \"PaidAmount\": -600\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\",\n    \"totalCreditAmount\": 0,\n    \"totalDueAmount\": 3150\n}"
+				},
+				{
+					"name": "getInvoicePayment-Employee",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"PaymentType\":\"Employee\",\r\n    \"PayeeName\": 2\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/payment/getInvoicePayment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"payment",
+								"getInvoicePayment"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "331"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"14b-9+7c6pszSGs0C8WyhBu120LWGMs\""
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 16 Jul 2023 19:06:04 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"PayeeName\": \"Rahul Gothi\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"InvoiceNo\": \"wwe\",\n            \"PurchaseDate\": \"2023-07-13\",\n            \"GSTNo\": null,\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 0,\n            \"PaymentStatus\": \"Unpaid\",\n            \"TotalAmount\": 25,\n            \"DueAmount\": 25,\n            \"PaidAmount\": 0\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\",\n    \"totalCreditAmount\": 0,\n    \"totalDueAmount\": 25\n}"
+				},
+				{
+					"name": "getInvoicePayment-Doctor",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"PaymentType\":\"Doctor\",\r\n    \"PayeeName\": 1\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/payment/getInvoicePayment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"payment",
+								"getInvoicePayment"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "334"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"14e-j4UX+m/kb3IdidZA6TuGUvmwdFU\""
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 16 Jul 2023 19:07:32 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"PayeeName\": \"rahul doctor\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"InvoiceNo\": \"ggggg\",\n            \"PurchaseDate\": \"2023-07-16\",\n            \"GSTNo\": null,\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 0,\n            \"PaymentStatus\": \"Unpaid\",\n            \"TotalAmount\": 10,\n            \"DueAmount\": 10,\n            \"PaidAmount\": 0\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\",\n    \"totalCreditAmount\": 0,\n    \"totalDueAmount\": 10\n}"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODk1MzA0NDIsImV4cCI6MTY4OTYxNjg0MiwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.7x0LUCaS8FbjYkalUEEpQKnb4Wg3nbEq1cq2v8Ma0QQ",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
