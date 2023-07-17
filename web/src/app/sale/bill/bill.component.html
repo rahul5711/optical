@@ -1017,18 +1017,18 @@
       <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-        <form  #f3="ngForm" >
+        <form  #f3="ngForm" (ngSubmit)="onPaymentSubmit()">
                 <div class="row">
                         <div class="col-md-1 mb-0">
                             <mat-form-field class="example-full-width mb-0" >
                                 <mat-label>Balance</mat-label>
-                                <input style="color: rgb(255 0 0 / 75%); font-size: 17px !important;" matInput name="Total Amount" value="{{this.totalBalance}}" disabled #TOutstandingcontrol [autocomplete]="false">
+                                <input style="color: rgb(255 0 0 / 75%); font-size: 17px !important;" matInput name="Total Amount" value="{{ this.applyPayment.PayableAmount}}" disabled #TOutstandingcontrol [autocomplete]="false">
                             </mat-form-field>
                         </div>
                         <div class="col-md-1 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>New Payment</mat-label>
-                                <input  style="font-size: 17px !important;" matInput name="PaymentAmount" [(ngModel)]="applyPayment.PaidAmount" [autocomplete]="false" >
+                                <input type="number" style="font-size: 17px !important;" matInput name="PaymentAmount" [(ngModel)]="applyPayment.PaidAmount" [autocomplete]="false" >
                             </mat-form-field>
                         </div>
                         <div class="col-md-2 mb-0" *ngIf="applyPayment.ApplyReward !== true && applyPayment.ApplyReturn !== true">
@@ -1074,7 +1074,7 @@
                                         <mat-checkbox color="primary" style="margin-left: 10px;" name="applyPayment.ApplyReward" [(ngModel)]="applyPayment.ApplyReward"></mat-checkbox>
                                     </div>
                                     <div class="col-md-10 ">
-                                        <input  style="font-size: 17px !important;" matInput value="{{applyPayment.RewardPayment | number:'1.0-3'}}" disabled [autocomplete]="false">
+                                        <input type="number" style="font-size: 17px !important;" matInput value="{{applyPayment.RewardPayment | number:'1.0-3'}}" disabled [autocomplete]="false">
                                     </div>
                                 </div>
                             </mat-form-field>
@@ -1087,7 +1087,7 @@
                                    <mat-checkbox color="primary" style="margin-left: 10px;" name="applyPayment.ApplyReturn" [(ngModel)]="applyPayment.ApplyReturn" ></mat-checkbox>
                                </div>
                                <div class="col-md-9 p-0">  
-                                <input style="font-size: 17px !important;" matInput name="CustomerCredit" disabled [(ngModel)]="applyPayment.CustomerCredit"   #CustomerCreditcontrol [autocomplete]="false">
+                                <input type="number" style="font-size: 17px !important;" matInput name="CustomerCredit" disabled [(ngModel)]="applyPayment.CustomerCredit"   #CustomerCreditcontrol [autocomplete]="false">
                                </div>
                             </div>
                             </mat-form-field>

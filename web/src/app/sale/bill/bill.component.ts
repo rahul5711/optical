@@ -40,6 +40,7 @@ import { CalculationService } from 'src/app/service/helpers/calculation.service'
 export class BillComponent implements OnInit {
 
   @Input() customerID2: any
+  company = JSON.parse(localStorage.getItem('company') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
@@ -86,8 +87,8 @@ export class BillComponent implements OnInit {
 
   applyPayment:any = {
     ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: null, PaidAmount: 0, 
-    CustomerCredit: 0, PaymentMode: null, CardNo: null, PaymentReferenceNo: null, Comments: null, Status: 1, CreatedBy: null, CreatedOn: null, 
-    UpdatedBy: null, UpdatedOn: null, pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
+    CustomerCredit: 0, PaymentMode: null, CardNo: null, PaymentReferenceNo: null, Comments: 0, Status: 1, 
+    pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
   };
 
   customerPower: any = []
@@ -1180,7 +1181,12 @@ export class BillComponent implements OnInit {
       next: (res: any) => {
           if(res.success ){
              this.invoiceList = res.data
-             this.totalBalance = res.totalDueAmount
+             this.applyPayment.PayableAmount = res.totalDueAmount
+             if(res.creditAmount !== null){
+               this.applyPayment.CustomerCredit = res.creditAmount
+             }else{
+              this.applyPayment.CustomerCredit = 0
+             }
              
           }else{
             this.as.errorToast(res.message)
@@ -1226,6 +1232,40 @@ export class BillComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
     this.sp.hide()
+  }
+
+  onPaymentSubmit(){
+    if(this.applyPayment.PayableAmount < this.applyPayment.PaidAmount ){
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Opps !!',
+        showConfirmButton: true,
+        backdrop : false,
+      })
+      this.applyPayment.PaidAmount = 0
+    }
+    if(this.applyPayment.ApplyReturn === true){
+      if (this.applyPayment.CustomerCredit < this.applyPayment.PaidAmount){
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Opps !!',
+          showConfirmButton: true,
+          backdrop : false,
+        })
+        this.applyPayment.PaidAmount = 0
+      }
+    }
+
+    if(this.applyPayment.PaidAmount !== 0){
+      this.applyPayment.CustomerID = this.BillMaster.CustomerID;
+      this.applyPayment.CompanyID = this.company.ID;
+      this.applyPayment.ShopID = Number(this.selectedShop);
+      this.applyPayment.PaymentDate =  moment().format('YYYY-MM-DD');
+      this.applyPayment.pendingPaymentList = this.invoiceList;
+      console.log(this.applyPayment);
+    }
   }
 
   // order supplier 
@@ -1532,6 +1572,7 @@ export class BillComponent implements OnInit {
     this.billCalculation.calculations(fieldName, mode, data, '')
     this.calculateGrandTotal();
   }
+
   updataEditProdcut(fieldName: any, mode: any, data: any){
     this.calculateFields1(fieldName, mode, data)
     this.calculateGrandTotal();
