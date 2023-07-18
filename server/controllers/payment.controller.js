@@ -352,10 +352,6 @@ module.exports = {
 
                 }
 
-                if (tempAmount !== 0) {
-                    let pDetail = await connection.query(`insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, 0, 0,${tempAmount},0,'Customer Credit', 'Debit', 1, ${LoggedOnUser}, now())`);
-                }
-
             }
 
             response.message = "data update sucessfully"
