@@ -298,4 +298,76 @@ module.exports = {
             await connection.release();
         }
     },
+    customerPayment: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const { CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PaymentDate, PayableAmount } = req.body
+
+            if (!CustomerID || CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
+            if (ApplyReturn === null || ApplyReturn === undefined) return res.send({ message: "Invalid ApplyReturn Data" })
+            if (!CreditType || CreditType === undefined) return res.send({ message: "Invalid CreditType Data" })
+            if (!PaidAmount || PaidAmount === undefined) return res.send({ message: "Invalid PaidAmount Data" })
+            if (!PaymentMode || PaymentMode === undefined) return res.send({ message: "Invalid PaymentMode Data" })
+            if (PaymentReferenceNo === null || PaymentReferenceNo === undefined) return res.send({ message: "Invalid PaymentReferenceNo Data" })
+            if (CardNo === null || CardNo === undefined) return res.send({ message: "Invalid CardNo Data" })
+            if (Comments === null || Comments === undefined) return res.send({ message: "Invalid Comments Data" })
+            if (!CustomerCredit || CustomerCredit === undefined) return res.send({ message: "Invalid CustomerCredit Data" })
+            if (!pendingPaymentList || pendingPaymentList.length === 0) return res.send({ message: "Invalid pendingPaymentList Data" })
+
+            let unpaidList = pendingPaymentList;
+            let customerCredit = CustomerCredit;
+            let tempAmount = PaidAmount;
+
+            if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
+                let pMaster = await connection.query(
+                    `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, now())`
+                );
+
+                let pMasterID = pMaster.insertId;
+                pid = pMaster.insertId;
+
+                for (const item of unpaidList) {
+                    if (tempAmount !== 0) {
+                        if (tempAmount >= item.DueAmount) {
+                            tempAmount = tempAmount - item.DueAmount;
+                            item.Amount = item.DueAmount;
+                            item.DueAmount = 0;
+                            item.PaymentStatus = "Paid";
+                        } else {
+                            item.DueAmount = item.DueAmount - tempAmount;
+                            item.Amount = tempAmount;
+                            item.PaymentStatus = "Unpaid";
+                            tempAmount = 0;
+                        }
+                        let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Customer', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                        let pDetail = await connection.query(qry);
+                        let bMaster = await connection.query(`Update BillMaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                    }
+
+                }
+
+                if (tempAmount !== 0) {
+                    let pDetail = await connection.query(`insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, 0, 0,${tempAmount},0,'Customer Credit', 'Debit', 1, ${LoggedOnUser}, now())`);
+                }
+
+            }
+
+            response.message = "data update sucessfully"
+            // connection.release()
+            res.send(response)
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    }
 }

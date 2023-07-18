@@ -602,6 +602,125 @@
 					"body": "{\n    \"data\": [\n        {\n            \"PayeeName\": \"rahul doctor\",\n            \"ShopName\": \"shop-1\",\n            \"AreaName\": \"one\",\n            \"InvoiceNo\": \"ggggg\",\n            \"PurchaseDate\": \"2023-07-16\",\n            \"GSTNo\": null,\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 0,\n            \"PaymentStatus\": \"Unpaid\",\n            \"TotalAmount\": 10,\n            \"DueAmount\": 10,\n            \"PaidAmount\": 0\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\",\n    \"totalCreditAmount\": 0,\n    \"totalDueAmount\": 10\n}"
 				}
 			]
+		},
+		{
+			"name": "customerPayment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODk2OTk4NTksImV4cCI6MTY4OTc4NjI1OSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.V2XMipcBFuO8QMciyTnH6tskEjsNbLLqNUSeVWhDK8U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": null,\r\n    \"CustomerID\": 19231,\r\n    \"CompanyID\": 1,\r\n    \"ShopID\": 1,\r\n    \"CreditType\": \"Credit\",\r\n    \"PaymentDate\": \"2023-07-18\",\r\n    \"PayableAmount\": 200,\r\n    \"PaidAmount\": 210,\r\n    \"CustomerCredit\": 210,\r\n    \"PaymentMode\": \"cash\",\r\n    \"CardNo\": \"\",\r\n    \"PaymentReferenceNo\": \"\",\r\n    \"Comments\": 0,\r\n    \"Status\": 1,\r\n    \"pendingPaymentList\": [\r\n        {\r\n            \"ID\": 16,\r\n            \"InvoiceNo\": \"2307R00005\",\r\n            \"TotalAmount\": 200,\r\n            \"DueAmount\": 200\r\n        }\r\n    ],\r\n    \"RewardPayment\": 0,\r\n    \"ApplyReward\": false,\r\n    \"ApplyReturn\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/payment/customerPayment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"payment",
+						"customerPayment"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "customerPayment",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": null,\r\n    \"CustomerID\": 19231,\r\n    \"CompanyID\": 1,\r\n    \"ShopID\": 1,\r\n    \"CreditType\": \"Credit\",\r\n    \"PaymentDate\": \"2023-07-18\",\r\n    \"PayableAmount\": 200,\r\n    \"PaidAmount\": 210,\r\n    \"CustomerCredit\": 210,\r\n    \"PaymentMode\": \"cash\",\r\n    \"CardNo\": \"\",\r\n    \"PaymentReferenceNo\": \"\",\r\n    \"Comments\": 0,\r\n    \"Status\": 1,\r\n    \"pendingPaymentList\": [\r\n        {\r\n            \"ID\": 16,\r\n            \"InvoiceNo\": \"2307R00005\",\r\n            \"TotalAmount\": 200,\r\n            \"DueAmount\": 200\r\n        }\r\n    ],\r\n    \"RewardPayment\": 0,\r\n    \"ApplyReward\": false,\r\n    \"ApplyReturn\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/payment/customerPayment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"payment",
+								"customerPayment"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "64"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"40-MGJ0ocsb6PIIuQ77QMJmmBvSGwE\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 18 Jul 2023 17:37:06 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": null,\n    \"success\": true,\n    \"message\": \"data update sucessfully\"\n}"
+				}
+			]
 		}
 	],
 	"auth": {

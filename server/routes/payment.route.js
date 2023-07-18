@@ -11,5 +11,9 @@ router.post('/saveCommissionDetail', verifyAccessTokenAdmin, Controller.saveComm
 router.post('/getCommissionByID', verifyAccessTokenAdmin, Controller.getCommissionByID)
 router.post('/getCommissionDetailList', verifyAccessTokenAdmin, Controller.getCommissionDetailList)
 
+// customer payment
+router.post('/customerPayment', verifyAccessTokenAdmin, Controller.customerPayment)
+
+
 
 module.exports = router
