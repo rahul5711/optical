@@ -88,7 +88,7 @@ export class BillComponent implements OnInit {
   };
 
   applyPayment:any = {
-    ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: null, PaidAmount: 0, 
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0, 
     CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1, 
     pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
   };
@@ -1183,7 +1183,10 @@ export class BillComponent implements OnInit {
       next: (res: any) => {
           if(res.success ){
              this.invoiceList = res.data
-             this.applyPayment.PayableAmount = res.totalDueAmount
+             if (this.invoiceList.length === 0) {
+              this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
+            }
+             this.applyPayment.PayableAmount =  res.totalDueAmount ? res.totalDueAmount: 0;
              if(res.creditAmount !== null){
                this.applyPayment.CustomerCredit = res.creditAmount
              }else{
