@@ -317,7 +317,7 @@ module.exports = {
             if (PaymentReferenceNo === null || PaymentReferenceNo === undefined) return res.send({ message: "Invalid PaymentReferenceNo Data" })
             if (CardNo === null || CardNo === undefined) return res.send({ message: "Invalid CardNo Data" })
             if (Comments === null || Comments === undefined) return res.send({ message: "Invalid Comments Data" })
-            if (!CustomerCredit || CustomerCredit === undefined) return res.send({ message: "Invalid CustomerCredit Data" })
+            if (CustomerCredit || CustomerCredit === undefined) return res.send({ message: "Invalid CustomerCredit Data" })
             if (!pendingPaymentList || pendingPaymentList.length === 0) return res.send({ message: "Invalid pendingPaymentList Data" })
 
             let unpaidList = pendingPaymentList;

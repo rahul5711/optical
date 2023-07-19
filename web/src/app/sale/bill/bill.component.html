@@ -1025,6 +1025,29 @@
                                 <input style="color: rgb(255 0 0 / 75%); font-size: 17px !important;" matInput name="Total Amount" value="{{ this.applyPayment.PayableAmount}}" disabled #TOutstandingcontrol [autocomplete]="false">
                             </mat-form-field>
                         </div>
+                      
+                        <div class="col-md-2 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Previous Customer Credit </mat-label>  
+                            <div class="row mt-0">
+                               <div class="col-md-3 p-0" style="height: 16px;"> 
+                                   <mat-checkbox color="primary" style="margin-left: 10px;" name="applyPayment.ApplyReturn" [(ngModel)]="applyPayment.ApplyReturn" ></mat-checkbox>
+                               </div>
+                               <div class="col-md-9 p-0">  
+                                <input type="number" style="font-size: 17px !important;" matInput name="CustomerCredit" disabled [(ngModel)]="applyPayment.CustomerCredit"   #CustomerCreditcontrol [autocomplete]="false">
+                               </div>
+                            </div>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-2 mb-0" >
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Payment Type</mat-label>
+                                <mat-select name="CreditType" [(ngModel)]="applyPayment.CreditType" required #GSTTypecontrol1>
+                                    <mat-option value="Credit">Credit </mat-option>
+                                    <mat-option value="Debit">Debit </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
                         <div class="col-md-1 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>New Payment</mat-label>
@@ -1048,19 +1071,7 @@
                                 </mat-select>
                             </mat-form-field>
                         </div>
-                        <div class="col-md-2 mb-0">
-                            <mat-form-field class="example-full-width mb-0">
-                                <mat-label>Previous Customer Credit </mat-label>  
-                            <div class="row mt-0">
-                               <div class="col-md-3 p-0" style="height: 16px;"> 
-                                   <mat-checkbox color="primary" style="margin-left: 10px;" name="applyPayment.ApplyReturn" [(ngModel)]="applyPayment.ApplyReturn" ></mat-checkbox>
-                               </div>
-                               <div class="col-md-9 p-0">  
-                                <input type="number" style="font-size: 17px !important;" matInput name="CustomerCredit" disabled [(ngModel)]="applyPayment.CustomerCredit"   #CustomerCreditcontrol [autocomplete]="false">
-                               </div>
-                            </div>
-                            </mat-form-field>
-                        </div>
+
                         <div class="col-md-2 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label> Card No.</mat-label>
@@ -1078,9 +1089,6 @@
                                     Name is required
                                 </mat-error>
                             </mat-form-field>
-                        </div>
-                        <div class="col-md-2 mb-0">
-                            
                         </div>
                         <!-- <div class="col-md-2 mb-0">
                             <mat-form-field class="example-full-width mb-0">
