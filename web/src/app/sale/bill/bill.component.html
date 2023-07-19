@@ -1039,15 +1039,7 @@
                             </div>
                             </mat-form-field>
                         </div>
-                        <div class="col-md-2 mb-0" >
-                            <mat-form-field class="example-full-width mb-0">
-                                <mat-label>Payment Type</mat-label>
-                                <mat-select name="CreditType" [(ngModel)]="applyPayment.CreditType" required #GSTTypecontrol1>
-                                    <mat-option value="Credit">Credit </mat-option>
-                                    <mat-option value="Debit">Debit </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
+                       
                         <div class="col-md-1 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>New Payment</mat-label>
@@ -1071,7 +1063,15 @@
                                 </mat-select>
                             </mat-form-field>
                         </div>
-
+                        <div class="col-md-2 mb-0" >
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Payment Type</mat-label>
+                                <mat-select name="CreditType" [(ngModel)]="applyPayment.CreditType" required #GSTTypecontrol1>
+                                    <mat-option value="Credit">Credit </mat-option>
+                                    <mat-option value="Debit">Debit </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
                         <div class="col-md-2 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label> Card No.</mat-label>
