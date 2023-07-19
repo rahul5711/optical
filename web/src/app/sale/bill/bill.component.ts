@@ -22,6 +22,7 @@ import { trigger, style, animate, transition } from '@angular/animations';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { FitterService } from 'src/app/service/fitter.service';
 import { CalculationService } from 'src/app/service/helpers/calculation.service';
+import { PaymentService } from 'src/app/service/payment.service';
 
 
 @Component({
@@ -64,6 +65,7 @@ export class BillComponent implements OnInit {
     private sup: SupplierService,
     private fitters: FitterService,
     public cal: CalculationService,
+    public pay: PaymentService,
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.id2 = this.route.snapshot.params['billid'];
@@ -87,7 +89,7 @@ export class BillComponent implements OnInit {
 
   applyPayment:any = {
     ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: null, PaidAmount: 0, 
-    CustomerCredit: 0, PaymentMode: null, CardNo: null, PaymentReferenceNo: null, Comments: 0, Status: 1, 
+    CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1, 
     pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
   };
 
@@ -920,7 +922,7 @@ export class BillComponent implements OnInit {
           this.id = res.data.CustomerID;
           if (this.id2 !== 0) {
             this.getBillById(this.id2)
-            this.billByCustomer()
+            this.billByCustomer(this.id)
           }
           this.router.navigate(['/sale/billing', this.id, this.id2]);
           // Swal.fire({
@@ -1155,8 +1157,8 @@ export class BillComponent implements OnInit {
   openModal1(content1: any){
     this.sp.show()
     this.modalService.open(content1, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
-    this.billByCustomer()
-    this.paymentHistoryByMasterID()
+    this.billByCustomer(this.id)
+    this.paymentHistoryByMasterID(this.id, this.id2)
     this.sp.hide()
   }
 
@@ -1174,9 +1176,9 @@ export class BillComponent implements OnInit {
     });
   }
 
-  billByCustomer(){
+  billByCustomer(CustomerID:any){
     this.sp.show()
-    let CustomerID = Number(this.id)
+     CustomerID = Number(this.id)
     const subs: Subscription = this.bill.billByCustomer(CustomerID).subscribe({
       next: (res: any) => {
           if(res.success ){
@@ -1207,10 +1209,10 @@ export class BillComponent implements OnInit {
     this.sp.hide()
   }
 
-  paymentHistoryByMasterID(){
+  paymentHistoryByMasterID(CustomerID:any,BillMasterID:any){
     this.sp.show()
-    let CustomerID = Number(this.id)
-    let BillMasterID = Number(this.id2)
+    CustomerID = Number(this.id)
+    BillMasterID = Number(this.id2)
     const subs: Subscription = this.bill.paymentHistoryByMasterID(CustomerID,BillMasterID).subscribe({
       next: (res: any) => {
           if(res.success ){
@@ -1265,6 +1267,30 @@ export class BillComponent implements OnInit {
       this.applyPayment.PaymentDate =  moment().format('YYYY-MM-DD');
       this.applyPayment.pendingPaymentList = this.invoiceList;
       console.log(this.applyPayment);
+      const subs: Subscription = this.pay.customerPayment(this.applyPayment).subscribe({
+        next: (res: any) => {
+            if(res.success ){
+               this.paymentHistoryByMasterID(this.id,this.id2)
+               this.billByCustomer(this.id)
+               this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = '';
+            }else{
+              this.as.errorToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: 'Opps !!',
+                text: res.message,
+                showConfirmButton: true,
+                backdrop : false,
+              })
+            }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+
+
     }
   }
 

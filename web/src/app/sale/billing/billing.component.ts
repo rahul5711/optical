@@ -794,8 +794,21 @@ export class BillingComponent implements OnInit {
      else if(mode === 'Sno') {
        this.param.Sno = searchKey;
      }
-     let searchParam = JSON.stringify(this.param);
-     console.log(searchParam);
+     let searchParam = this.param;
+
+     const subs: Subscription = this.cs.customerSearch(searchParam).subscribe({
+      next: (res: any) => {
+        if (res) {
+           console.log(res.data);
+           
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
    }
 
 }

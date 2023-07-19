@@ -97,6 +97,12 @@ export class CustomerService {
     .pipe(catchError(this.handleError));
   }
 
+  customerSearch(Body: any): Observable<any> {
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/customerSearch', Body, { params })
+    .pipe(catchError(this.handleError));
+  }
+
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
