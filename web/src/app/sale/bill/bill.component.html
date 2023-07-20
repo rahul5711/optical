@@ -1058,7 +1058,7 @@
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Payment Mode</mat-label>
                                 <mat-select name="PayMode" [(ngModel)]="applyPayment.PaymentMode" required #GSTTypecontrol1>
-                                    <mat-option value="Customer Return" *ngIf="applyPayment.CustomerCredit !== 0 && applyPayment.ApplyReturn === true">Customer Return</mat-option>
+                                    <mat-option value="Customer Credit" *ngIf="applyPayment.CustomerCredit !== 0 && applyPayment.ApplyReturn === true">Customer Return</mat-option>
                                     <mat-option value="Customer Reward" *ngIf="applyPayment.RewardPayment != null &&applyPayment.RewardPayment != 0 && applyPayment.ApplyReward === true">Customer Reward</mat-option>
                                 </mat-select>
                             </mat-form-field>
