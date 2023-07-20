@@ -493,11 +493,11 @@ module.exports = {
 
             // const updatePaymentDetail = await connection.query(`update paymentdetail set Amount = 0 , DueAmount = ${billMaseterData.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
 
-            const savePaymentMaster = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${billMaseterData.CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Credit',now(), 'Payment Initiated', '', '', ${billMaseterData.DueAmount}, ${billMaseterData.TotalAmount - billMaseterData.DueAmount}, '',1,${LoggedOnUser}, now())`)
+            // const savePaymentMaster = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${billMaseterData.CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Credit',now(), 'Payment Initiated', '', '', ${billMaseterData.DueAmount}, ${billMaseterData.TotalAmount - billMaseterData.DueAmount}, '',1,${LoggedOnUser}, now())`)
 
-            const savePaymentDetail = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${billMaseterData.InvoiceNo}',${bMasterID},${billMaseterData.CustomerID},${CompanyID},${billMaseterData.TotalAmount - billMaseterData.DueAmount},${billMaseterData.DueAmount},'Customer','Credit',1,${LoggedOnUser}, now())`)
+            // const savePaymentDetail = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${billMaseterData.InvoiceNo}',${bMasterID},${billMaseterData.CustomerID},${CompanyID},${billMaseterData.TotalAmount - billMaseterData.DueAmount},${billMaseterData.DueAmount},'Customer','Credit',1,${LoggedOnUser}, now())`)
 
-            console.log(connected("Payment Update SuccessFUlly !!!"));
+            // console.log(connected("Payment Update SuccessFUlly !!!"));
 
             response.message = "data update sucessfully"
             response.data = {
@@ -955,17 +955,24 @@ module.exports = {
             response.data = data
             const totalDueAmount = await connection.query(`select SUM(billmaster.DueAmount) as totalDueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and ShopID = ${shopid} and PaymentStatus = 'Unpaid' order by ID desc`)
 
-            const creditAmount = await connection.query(`select SUM(paymentdetail.Amount) as totalAmount from paymentdetail where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and PaymentType = 'Customer Credit'`)
+            const creditCreditAmount = await connection.query(`select SUM(paymentdetail.Amount) as totalAmount from paymentdetail where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and PaymentType = 'Customer Credit' and Credit = 'Credit'`)
+
+            const creditDebitAmount = await connection.query(`select SUM(paymentdetail.Amount) as totalAmount from paymentdetail where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and PaymentType = 'Customer Credit' and Credit = 'Debit'`)
 
             response.totalDueAmount = 0;
-            response.creditAmount = 0;
+            response.creditCreditAmount = 0;
+            response.creditDebitAmount = 0;
 
             if (totalDueAmount[0].totalDueAmount !== null) {
                 response.totalDueAmount = totalDueAmount[0].totalDueAmount
             }
-            if (creditAmount[0].totalAmount !== null) {
-                response.creditAmount = creditAmount[0].totalAmount
+            if (creditCreditAmount[0].totalAmount !== null) {
+                response.creditCreditAmount = creditCreditAmount[0].totalAmount
             }
+            if (creditDebitAmount[0].totalAmount !== null) {
+                response.creditDebitAmount = creditDebitAmount[0].totalAmount
+            }
+            response.creditAmount = response.creditDebitAmount - response.creditCreditAmount
             response.message = "success";
             // connection.release()
             res.send(response)
