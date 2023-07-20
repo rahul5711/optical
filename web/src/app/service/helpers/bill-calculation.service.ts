@@ -221,44 +221,44 @@ export class BillCalculationService {
 
 
   AddDiscalculate(fieldName: any, mode: any, BillMaster: any,) {
-    // switch (mode) {
+    switch (mode) {
 
-    //   case 'discount':
-    //     if (fieldName === 'AddlDiscountPercentage') {
-    //       if (BillMaster.AddlDiscountPercentage > 100) {
-    //         Swal.fire({
-    //           icon: 'warning',
-    //           title: `You can't give more than 100% Discount Percentage`,
-    //           text: ``,
-    //           footer: '',
-    //           backdrop: false,
-    //         });
-    //         BillMaster.AddlDiscountPercentage = 0
-    //       } else {
-    //         BillMaster.AddlDiscount = +BillMaster.TotalAmount * +BillMaster.AddlDiscountPercentage / 100;
-    //         BillMaster.TotalAmount = BillMaster.TotalAmount - BillMaster.AddlDiscount
+      case 'discount':
+        if (fieldName === 'AddlDiscountPercentage') {
+          if (BillMaster.AddlDiscountPercentage > 100) {
+            Swal.fire({
+              icon: 'warning',
+              title: `You can't give more than 100% Discount Percentage`,
+              text: ``,
+              footer: '',
+              backdrop: false,
+            });
+            BillMaster.AddlDiscountPercentage = 0
+          } else {
+            BillMaster.AddlDiscount = +BillMaster.TotalAmount * +BillMaster.AddlDiscountPercentage / 100;
+            BillMaster.TotalAmount = BillMaster.TotalAmount - BillMaster.AddlDiscount
            
-    //       }
-    //     }
-    //     if (fieldName === 'AddlDiscount') {
-    //       if (BillMaster.AddlDiscount > BillMaster.TotalAmount) {
-    //         Swal.fire({
-    //           icon: 'warning',
-    //           title: `You can't give discount amount more than total amount`,
-    //           text: ``,
-    //           footer: '',
-    //           backdrop: false,
-    //         });
-    //         BillMaster.AddlDiscount = 0
-    //       } else {
-    //         BillMaster.AddlDiscountPercentage = 100 * +BillMaster.AddlDiscount / (+BillMaster.TotalAmount);
-    //         BillMaster.TotalAmount = BillMaster.TotalAmount - BillMaster.AddlDiscount
+          }
+        }
+        if (fieldName === 'AddlDiscount') {
+          if (BillMaster.AddlDiscount > BillMaster.TotalAmount) {
+            Swal.fire({
+              icon: 'warning',
+              title: `You can't give discount amount more than total amount`,
+              text: ``,
+              footer: '',
+              backdrop: false,
+            });
+            BillMaster.AddlDiscount = 0
+          } else {
+            BillMaster.AddlDiscountPercentage = 100 * +BillMaster.AddlDiscount / (+BillMaster.TotalAmount);
+            BillMaster.TotalAmount = BillMaster.TotalAmount - BillMaster.AddlDiscount
           
-    //       }
-    //     }
-    //     break;
-    // }
-    // BillMaster.RoundOff = Math.round(BillMaster.TotalAmount).toFixed(2);
+          }
+        }
+        break;
+    }
+    BillMaster.RoundOff = Math.round(BillMaster.TotalAmount).toFixed(2);
   }
 
   private handleError(errorResponse: HttpErrorResponse) {

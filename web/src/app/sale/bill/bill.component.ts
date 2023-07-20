@@ -72,7 +72,7 @@ export class BillComponent implements OnInit {
   }
 
   BillMaster: any = {
-    ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, GSTNo: '', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0.00, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, GSTNo: '', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0.00, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null, 
   }
 
   BillItem: any = {
@@ -142,6 +142,8 @@ export class BillComponent implements OnInit {
 
   PaymentModesList:any=[]
   disbaleupdate = false
+
+  totalpaid  = 0
 
   ngOnInit(): void {
     this.BillMaster.Employee = this.user.ID
@@ -685,6 +687,7 @@ export class BillComponent implements OnInit {
 
   calculateGrandTotal() {
     this.billCalculation.calculateGrandTotal(this.BillMaster, this.billItemList, this.serviceLists)
+
   }
 
   notifyGst() {
@@ -716,7 +719,7 @@ export class BillComponent implements OnInit {
   }
 
   AddDiscalculate(fieldName: any, mode: any) {
-    this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
+    this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)           
   }
 
   addProductItem() {
@@ -1183,16 +1186,11 @@ export class BillComponent implements OnInit {
       next: (res: any) => {
           if(res.success ){
              this.invoiceList = res.data
-             if (this.invoiceList.length === 0) {
-              this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
-            }
+              if (this.invoiceList.length === 0) {
+                 this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
+              }
              this.applyPayment.PayableAmount =  res.totalDueAmount ? res.totalDueAmount: 0;
-             if(res.creditAmount !== null){
-               this.applyPayment.CustomerCredit = res.creditAmount
-             }else{
-              this.applyPayment.CustomerCredit = 0
-             }
-             
+             this.applyPayment.CustomerCredit = res.creditAmount ? res.creditAmount : 0
           }else{
             this.as.errorToast(res.message)
             Swal.fire({
@@ -1214,12 +1212,16 @@ export class BillComponent implements OnInit {
 
   paymentHistoryByMasterID(CustomerID:any,BillMasterID:any){
     this.sp.show()
+    this.totalpaid = 0
     CustomerID = Number(this.id)
     BillMasterID = Number(this.id2)
     const subs: Subscription = this.bill.paymentHistoryByMasterID(CustomerID,BillMasterID).subscribe({
       next: (res: any) => {
           if(res.success ){
              this.paidList = res.data
+             this.paidList.forEach((e: any) => {
+              this.totalpaid =+ this.totalpaid + e.Amount
+             });             
           }else{
             this.as.errorToast(res.message)
             Swal.fire({
@@ -1275,6 +1277,7 @@ export class BillComponent implements OnInit {
             if(res.success ){
                this.paymentHistoryByMasterID(this.id,this.id2)
                this.billByCustomer(this.id)
+               this.getBillById(this.id2)
                this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = '';
             }else{
               this.as.errorToast(res.message)
@@ -1593,24 +1596,33 @@ export class BillComponent implements OnInit {
   // product edit 
 
   showInput(data: any) {
-    data.UpdateProduct = !data.UpdateProduct
-    this.disbaleupdate = true
+    if(this.BillMaster.DueAmount === 0){
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Opps !! <br> Balance ',
+        showConfirmButton: true,
+        backdrop : false,
+      })
+    }else{
+      data.UpdateProduct = !data.UpdateProduct
+      this.disbaleupdate = true
+    }
   }
 
   calculateFields1(fieldName: any, mode: any, data: any) {
-    this.billCalculation.calculations(fieldName, mode, data, '')
-    this.calculateGrandTotal();
+   this.billCalculation.calculations(fieldName, mode, data, '')
   }
 
   updataEditProdcut(fieldName: any, mode: any, data: any){
-    this.calculateFields1(fieldName, mode, data)
-    this.calculateGrandTotal();
-
-    this.BillMaster.DueAmount =  this.BillMaster.TotalAmount
-    this.data.billMaseterData = this.BillMaster
-    this.data.billDetailData = data
-
-    console.log(this.data);
+      this.calculateFields1(fieldName, mode, data)
+      let totalPaid = 0
+      totalPaid = +this.BillMaster.TotalAmount - this.BillMaster.DueAmount
+      this.calculateGrandTotal();
+      this.BillMaster.DueAmount = this.BillMaster.TotalAmount - totalPaid 
+      this.data.billMaseterData = this.BillMaster
+      this.data.billDetailData = data
+      console.log(this.data);
   }
   
 }
