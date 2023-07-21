@@ -951,8 +951,11 @@ export class BillComponent implements OnInit {
 
   update() {
     this.sp.show()
-    this.BillMaster.ShopID = this.loginShopID
-    this.BillMaster.CustomerID = this.customerID2
+    this.BillMaster.ShopID = this.loginShopID;
+    this.BillMaster.CustomerID = this.customerID2;
+    if(this.BillMaster.DueAmount !== 0){
+      this.BillMaster.PaymentStatus = 'Unpaid'
+    }
     this.data.billMaseterData = this.BillMaster;
     let items: any = [];
     this.billItemList.forEach((ele: any) => {
@@ -969,6 +972,7 @@ export class BillComponent implements OnInit {
         if (res.success) {
           this.id2 = res.data.ID;
           this.getCustomerById1();
+          this.getBillById(this.id2)
           Swal.fire({
             position: 'center',
             icon: 'success',
