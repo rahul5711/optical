@@ -181,7 +181,17 @@ export class BillListComponent implements OnInit {
         backdrop: false,
       })
     }else{
-      console.log(this.applyPayment);
+      const subs: Subscription = this.pay.customerPaymentDebit(this.applyPayment).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     }
     
   }
