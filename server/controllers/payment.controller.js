@@ -289,7 +289,7 @@ module.exports = {
             response.data = data
             response.count = count.length
             // connection.release()
-           return res.send(response)
+            return res.send(response)
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -400,6 +400,40 @@ module.exports = {
             await connection.release();
         }
     },
+    customerPaymentDebit: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const { CreditType, CustomerID, ID, PaidAmount, PayableAmount, PaymentMode } = req.body
+
+            if (!CustomerID || CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
+            if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
+            if (!CreditType || CreditType === undefined) return res.send({ message: "Invalid CreditType Data" })
+            if (!PayableAmount || PayableAmount === undefined) return res.send({ message: "Invalid PayableAmount Data" })
+            if (!PaymentMode || PaymentMode === undefined) return res.send({ message: "Invalid PaymentMode Data" })
+            if (!PaidAmount || PaidAmount === undefined) return res.send({ message: "Invalid PaidAmount Data" })
+
+            const [fetchBillMaster] = await connection.query(`select * from billmaster where ID = ${ID}`)
+
+            const DueAmount = fetchBillMaster.DueAmount - PaidAmount
+
+            console.log(DueAmount);
+
+            return
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
     updateCustomerPaymentMode: async (req, res, next) => {
         const connection = await mysql.connection();
         try {
@@ -432,7 +466,7 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = {
-                PaymentMasterID : PaymentMasterID
+                PaymentMasterID: PaymentMasterID
             }
             return res.send(response)
 

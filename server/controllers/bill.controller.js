@@ -898,14 +898,18 @@ module.exports = {
             let DueAmount = 0
             let CreditAmount = 0
             DueAmount = bMaster.DueAmount
-
+            let paymentStatus = 'Unpaid'
             if (DueAmount < 0) {
                 CreditAmount = Math.abs(DueAmount)
                 bMaster.DueAmount = 0
             }
 
+            if (DueAmount === 0) {
+                paymentStatus = 'Paid'
+            }
+
             // update bill naster
-            const updateMaster = await connection.query(`update billmaster set Quantity=${bMaster.Quantity}, SubTotal=${bMaster.SubTotal}, GSTAmount=${bMaster.GSTAmount}, DiscountAmount=${bMaster.DiscountAmount}, TotalAmount=${bMaster.TotalAmount}, DueAmount=${bMaster.DueAmount} where ID=${bMaster.ID}`)
+            const updateMaster = await connection.query(`update billmaster set PaymentStatus = '${paymentStatus}', Quantity=${bMaster.Quantity}, SubTotal=${bMaster.SubTotal}, GSTAmount=${bMaster.GSTAmount}, DiscountAmount=${bMaster.DiscountAmount}, TotalAmount=${bMaster.TotalAmount}, DueAmount=${bMaster.DueAmount} where ID=${bMaster.ID}`)
             console.log(connected("Bill Master Update SuccessFUlly !!!"));
 
 
@@ -959,7 +963,7 @@ module.exports = {
 
             if (!billMaseterData) return res.send({ message: "Invalid Query Data" })
             if (!billDetailData) return res.send({ message: "Invalid Query Data" })
-            if (!billDetailData.length && !service.length) return res.send({ message: "Invalid Query Data" })
+            if (!billDetailData.length) return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.ID === null || billMaseterData.ID === undefined || billMaseterData.ID == 0 || billMaseterData.ID === "") return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.ShopID === null || billMaseterData.ShopID === undefined || billMaseterData.ShopID == 0 || billMaseterData.ShopID === "") return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.InvoiceNo === null || billMaseterData.InvoiceNo === undefined || billMaseterData.InvoiceNo == 0 || billMaseterData.InvoiceNo === "") return res.send({ message: "Invalid Query Data" })
