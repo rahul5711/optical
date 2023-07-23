@@ -175,6 +175,11 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  updateProduct(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/updateProduct', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

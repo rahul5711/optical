@@ -95,6 +95,7 @@ export class BillComponent implements OnInit {
 
   customerPower: any = []
   data:any = { billMaseterData: null, billDetailData: null, service: null };
+  data1:any = { billMaseterData: null, billDetailData: [] };
 
   category = 'Product';
   employeeList: any;
@@ -1624,9 +1625,23 @@ export class BillComponent implements OnInit {
       totalPaid = +this.BillMaster.TotalAmount - this.BillMaster.DueAmount
       this.calculateGrandTotal();
       this.BillMaster.DueAmount = this.BillMaster.TotalAmount - totalPaid 
-      this.data.billMaseterData = this.BillMaster
-      this.data.billDetailData = data
-      console.log(this.data);
+      this.data1.billMaseterData = this.BillMaster
+
+      this.data1.billDetailData.push(data)
+     
+      console.log(this.data1);
+      const subs: Subscription = this.bill.updateProduct(this.data1).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            // this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
   }
   
 }

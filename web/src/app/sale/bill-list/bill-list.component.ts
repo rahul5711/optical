@@ -13,6 +13,8 @@ import { CustomerService } from 'src/app/service/customer.service';
 import { BillService } from 'src/app/service/bill.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SupportService } from 'src/app/service/support.service';
+import { PaymentService } from 'src/app/service/payment.service';
 
 
 
@@ -38,10 +40,15 @@ export class BillListComponent implements OnInit {
   page = 4;
   suBtn = false;
   paymentHistoryList :any = []
+  PaymentModesList :any = []
   UpdateMode = false;
   CustomerTotal:any 
   TotalAmountInv:any 
   DueAmountInv:any 
+
+  applyPayment:any = {
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Debit',  PayableAmount: 0, PaidAmount: 0, 
+  };
 
   constructor(
     private router: Router,
@@ -52,6 +59,9 @@ export class BillListComponent implements OnInit {
     private excelService: ExcelService,
     public bill: BillService,
     private modalService: NgbModal,
+    private supps: SupportService,
+    private pay: PaymentService,
+
   ) { 
     this.id = this.route.snapshot.params['customerid'];
   }
@@ -109,7 +119,11 @@ export class BillListComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.paymentHistoryList = res.data;
-          console.log(this.paymentHistoryList );
+          this.applyPayment.PayableAmount = res.totalPaidAmount
+          this.applyPayment.CustomerID = res.data[0].CustomerID
+          this.applyPayment.ID = res.data[0].BillMasterID
+          ;
+          this.getPaymentModesList()
           this.as.successToast(res.message)
         }else{
           this.as.errorToast(res.message)
@@ -120,6 +134,56 @@ export class BillListComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
     this.sp.hide();
+  }
+
+  getPaymentModesList() {
+    const subs: Subscription = this.supps.getList('PaymentModeType').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.PaymentModesList = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  updateCustomerPaymentMode(data:any) {
+      const subs: Subscription = this.pay.updateCustomerPaymentMode(data).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.UpdateMode = false
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+  }
+
+  openModal12(content: any) {
+    this.sp.show();
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+    this.sp.hide();
+  }
+
+  onPaymentSubmit(){
+    if(this.applyPayment.PayableAmount < this.applyPayment.PaidAmount){
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        backdrop: false,
+      })
+    }else{
+      console.log(this.applyPayment);
+    }
+    
   }
 
   // deleteItem(i:any){
