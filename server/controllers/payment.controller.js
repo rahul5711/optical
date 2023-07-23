@@ -289,7 +289,7 @@ module.exports = {
             response.data = data
             response.count = count.length
             // connection.release()
-            res.send(response)
+           return res.send(response)
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -399,5 +399,50 @@ module.exports = {
         } finally {
             await connection.release();
         }
+    },
+    updateCustomerPaymentMode: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const { PaymentMasterID, PaymentMode } = req.body
+
+            if (!PaymentMasterID || PaymentMasterID === undefined) return res.send({ message: "Invalid PaymentMasterID Data" })
+            if (!PaymentMode || PaymentMode === undefined) return res.send({ message: "Invalid PaymentMode Data" })
+            if (PaymentMode === 'Payment Initiated' || PaymentMode === 'Customer Credit') {
+                return res.send({ message: `We can't add this PaymentMode, Payment Initiated || Customer Credit` })
+            }
+
+            const paymentMaster = await connection.query(`select * from paymentmaster where CompanyID = ${CompanyID} and ID = ${PaymentMasterID}`)
+
+            if (paymentMaster.length === 0) {
+                return res.send({ message: "Invalid PaymentMasterID Data" })
+            }
+
+            if (paymentMaster[0].PaymentMode === 'Payment Initiated' || paymentMaster[0].PaymentMode === 'Customer Credit') {
+                return res.send({ message: `We can't update Payment Mode, Payment Initiated || Customer Credit` })
+            }
+
+            const updatePaymentMode = await connection.query(`update paymentmaster set PaymentMode = '${PaymentMode}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${PaymentMasterID} and CompanyID = ${CompanyID} `)
+
+
+            response.message = "data update sucessfully"
+            response.data = {
+                PaymentMasterID : PaymentMasterID
+            }
+            return res.send(response)
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+
     }
 }

@@ -15,5 +15,9 @@ router.post('/getCommissionDetailList', verifyAccessTokenAdmin, Controller.getCo
 router.post('/customerPayment', verifyAccessTokenAdmin, Controller.customerPayment)
 
 
+// update customer payment mode
+
+router.post('/updateCustomerPaymentMode', verifyAccessTokenAdmin, Controller.updateCustomerPaymentMode)
+
 
 module.exports = router

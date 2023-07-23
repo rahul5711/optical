@@ -84,7 +84,7 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const { Req, PreOrder, ShopMode } = req.body
-            console.log(ShopMode,'ShopMode');
+            console.log(ShopMode, 'ShopMode');
             let barCode = Req.SearchBarCode;
             let qry = "";
             if (PreOrder === "false") {
@@ -174,7 +174,7 @@ module.exports = {
             const existShop = await connection.query(`select * from shop where Status = 1 and ID = ${billMaseterData.ShopID}`)
 
             if (!existShop.length) {
-                return res.send({ message: "You have already delete this shop" }) 
+                return res.send({ message: "You have already delete this shop" })
             }
 
             const invoiceNo = await generateInvoiceNo(CompanyID, shopid, billDetailData, billMaseterData)
@@ -360,7 +360,7 @@ module.exports = {
             const existShop = await connection.query(`select * from shop where Status = 1 and ID = ${shopid}`)
 
             if (!existShop.length) {
-                return res.send({ message: "You have already delete this shop" }) 
+                return res.send({ message: "You have already delete this shop" })
             }
 
             const doesCheckPayment = await connection.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${billMaseterData.InvoiceNo}' and BillMasterID = ${billMaseterData.ID}`)
@@ -648,8 +648,18 @@ module.exports = {
 
             let data = await connection.query(qry);
 
+            let totalPaidAmount = 0
+
+            let [sumPaid] = await connection.query(`select SUM(paymentdetail.Amount) as PaidAmount from paymentdetail where CompanyID = ${CompanyID} and BillMasterID = ${ID} and PaymentType = 'Customer' and Credit = 'Credit'`)
+
+
+            if (sumPaid.PaidAmount !== null) {
+                totalPaidAmount = sumPaid.PaidAmount
+            }
+
             response.message = "data fetch sucessfully"
             response.data = data
+            response.totalPaidAmount = totalPaidAmount
             // connection.release()
             res.send(response)
 
@@ -937,7 +947,47 @@ module.exports = {
             await connection.release();
         }
     },
+    updateProduct: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
 
+            const { billMaseterData, billDetailData } = req.body
+
+            if (!billMaseterData) return res.send({ message: "Invalid Query Data" })
+            if (!billDetailData) return res.send({ message: "Invalid Query Data" })
+            if (!billDetailData.length && !service.length) return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.ID === null || billMaseterData.ID === undefined || billMaseterData.ID == 0 || billMaseterData.ID === "") return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.ShopID === null || billMaseterData.ShopID === undefined || billMaseterData.ShopID == 0 || billMaseterData.ShopID === "") return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.InvoiceNo === null || billMaseterData.InvoiceNo === undefined || billMaseterData.InvoiceNo == 0 || billMaseterData.InvoiceNo === "") return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.CustomerID === null || billMaseterData.CustomerID === undefined) return res.send({ message: "Invalid Query Data" })
+
+            let bMasterID = billMaseterData.ID;
+
+            const bMaster = await connection.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}' , BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now(), LastUpdate = now(), TrayNo = '${billMaseterData.TrayNo}' where ID = ${bMasterID}`)
+
+            console.log(connected("BillMaster Update SuccessFUlly !!!"));
+
+            const billDetail = billDetailData[0];
+
+            const update = await connection.query(`update billdetail set UnitPrice = ${billDetail.UnitPrice}, DiscountPercentage = ${billDetail.DiscountPercentage}, DiscountAmount = ${billDetail.DiscountAmount}, GSTPercentage = ${billDetail.GSTPercentage}, GSTAmount = ${billDetail.GSTAmount}, GSTType = '${billDetail.GSTType}', Remark = '${billDetail.Remark}', UpdatedBy = ${LoggedOnUser} where ID = ${billDetail.ID}`)
+
+            console.log(connected("BillDetail Update SuccessFUlly !!!"));
+            response.message = "success";
+            // connection.release()
+           return res.send(response)
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
     billByCustomer: async (req, res, next) => {
         const connection = await mysql.connection();
         try {
@@ -1606,7 +1656,7 @@ module.exports = {
         }
     },
 
-    AssignSupplierPDF:async (req, res, next) => {
+    AssignSupplierPDF: async (req, res, next) => {
         const connection = await mysql.connection();
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -1619,12 +1669,12 @@ module.exports = {
 
             const shopdetails = await connection.query(`select * from shop where ID = ${shopid}`)
             const companysetting = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
-           
+
             printdata.shopdetails = shopdetails[0]
             printdata.companysetting = companysetting[0]
 
             var fileName = "";
-            printdata.LogoURL = 'http://localhost:3000/'+ printdata.companysetting.LogoURL;
+            printdata.LogoURL = 'http://localhost:3000/' + printdata.companysetting.LogoURL;
             var formatName = "AssignSupplierPDF.ejs";
             var file = formatName + "_" + CompanyID + ".pdf";
             fileName = "uploads/" + file;

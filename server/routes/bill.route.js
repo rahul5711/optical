@@ -18,6 +18,7 @@ router.post('/billHistoryByCustomer', verifyAccessTokenAdmin, Controller.billHis
 router.post('/deleteBill', verifyAccessTokenAdmin, Controller.deleteBill)
 router.post('/updatePower', verifyAccessTokenAdmin, Controller.updatePower)
 router.post('/deleteProduct', verifyAccessTokenAdmin, Controller.deleteProduct)
+router.post('/updateProduct', verifyAccessTokenAdmin, Controller.updateProduct)
 
 // customer bills and their payments
 
