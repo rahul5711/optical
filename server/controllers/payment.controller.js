@@ -420,11 +420,25 @@ module.exports = {
 
             const [fetchBillMaster] = await connection.query(`select * from billmaster where ID = ${ID}`)
 
-            const DueAmount = fetchBillMaster.DueAmount - PaidAmount
+            const DueAmount = fetchBillMaster.DueAmount + PaidAmount
 
-            console.log(DueAmount);
+            const update = await connection.query(`update billmaster set DueAmount = ${DueAmount}, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${ID}`)
 
-            return
+
+            const savePaymentMaster = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Debit',now(), '${PaymentMode}', '', '', ${DueAmount}, ${PayableAmount - PaidAmount}, '',1,${LoggedOnUser}, now())`)
+
+            const savePaymentDetail = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${fetchBillMaster.InvoiceNo}',${fetchBillMaster.ID},${CustomerID},${CompanyID},${PaidAmount},${DueAmount},'Customer','Debit',1,${LoggedOnUser}, now())`)
+
+            console.log(connected("Payment Update SuccessFUlly !!!"));
+
+
+            response.message = "data update sucessfully"
+            response.data = {
+                ID: ID,
+                InvoiceNo: fetchBillMaster.InvoiceNo
+            }
+            // connection.release()
+            return res.send(response)
 
         } catch (err) {
             await connection.query("ROLLBACK");

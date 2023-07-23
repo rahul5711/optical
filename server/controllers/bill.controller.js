@@ -650,12 +650,21 @@ module.exports = {
 
             let totalPaidAmount = 0
 
-            let [sumPaid] = await connection.query(`select SUM(paymentdetail.Amount) as PaidAmount from paymentdetail where CompanyID = ${CompanyID} and BillMasterID = ${ID} and PaymentType = 'Customer' and Credit = 'Credit'`)
+            let totalCred = 0
+            let totalDeb = 0
+
+            let [sumPaidCred] = await connection.query(`select SUM(paymentdetail.Amount) as PaidAmount from paymentdetail where CompanyID = ${CompanyID} and BillMasterID = ${ID} and PaymentType = 'Customer' and Credit = 'Credit'`)
+            let [sumPaidDeb] = await connection.query(`select SUM(paymentdetail.Amount) as PaidAmount from paymentdetail where CompanyID = ${CompanyID} and BillMasterID = ${ID} and PaymentType = 'Customer' and Credit = 'Debit'`)
 
 
-            if (sumPaid.PaidAmount !== null) {
-                totalPaidAmount = sumPaid.PaidAmount
+            if (sumPaidCred.PaidAmount !== null) {
+                totalCred = sumPaidCred.PaidAmount
             }
+            if (sumPaidDeb.PaidAmount !== null) {
+                totalDeb = sumPaidDeb.PaidAmount
+            }
+
+            totalPaidAmount = totalCred - totalDeb
 
             response.message = "data fetch sucessfully"
             response.data = data
