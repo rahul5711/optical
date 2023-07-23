@@ -118,6 +118,13 @@ export class BillListComponent implements OnInit {
     const subs: Subscription = this.bill.paymentHistory( data.ID, data.InvoiceNo).subscribe({
       next: (res: any) => {
         if(res.success){
+          res.data.forEach((ele: any) =>{
+            if(ele.Credit === 'Debit'){
+                 ele.Amount = '-'   + ele.Amount
+            }else(
+              ele.Amount = '+' + ele.Amount
+            )
+          })
           this.paymentHistoryList = res.data;
           this.applyPayment.PayableAmount = res.totalPaidAmount
           this.applyPayment.CustomerID = res.data[0].CustomerID
@@ -184,6 +191,20 @@ export class BillListComponent implements OnInit {
       const subs: Subscription = this.pay.customerPaymentDebit(this.applyPayment).subscribe({
         next: (res: any) => {
           if (res.success) {
+            const subs: Subscription = this.bill.paymentHistory( res.data.ID, res.data.InvoiceNo).subscribe({
+              next: (res: any) => {
+                if(res.success){
+                  this.paymentHistoryList = res.data;
+                  this.applyPayment.PayableAmount = res.totalPaidAmount;
+                  this.as.successToast(res.message)
+                }else{
+                  this.as.errorToast(res.message)
+                }
+              },
+              error: (err: any) => console.log(err.message),
+              complete: () => subs.unsubscribe(),
+            });
+            this.modalService.dismissAll()
             this.as.successToast(res.message)
           } else {
             this.as.errorToast(res.message)

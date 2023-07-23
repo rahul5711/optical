@@ -1223,6 +1223,13 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.bill.paymentHistoryByMasterID(CustomerID,BillMasterID).subscribe({
       next: (res: any) => {
           if(res.success ){
+            res.data.forEach((ele: any) =>{
+              if(ele.Type === 'Debit'){
+                   ele.Amount = '-'   + ele.Amount
+              }else(
+                ele.Amount = '+' + ele.Amount
+              )
+            })
              this.paidList = res.data
              this.paidList.forEach((e: any) => {
               this.totalpaid =+ this.totalpaid + e.Amount
