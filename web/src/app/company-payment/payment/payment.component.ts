@@ -50,7 +50,7 @@ export class PaymentComponent implements OnInit {
 
   data: any = {
     ID: null,  CompanyID: null, ShopID: null, PaymentType: null,PayeeName: null, PayableAmount: 0, CustomerCredit: 0, PaidAmount: 0,
-    PaymentMode: null, CardNo: null, PaymentReferenceNo: null,  CreditType: 'Debit', PaymentDate: null,  Comments: 0, Status: 1, pendingPaymentList: {}, applyCredit:false
+    PaymentMode: null, CardNo: '', PaymentReferenceNo: '',  CreditType: 'Debit', PaymentDate: null,  Comments: 0, Status: 1, pendingPaymentList: {}, applyCredit:false
   };
 
   searchValue:any
@@ -171,10 +171,6 @@ export class PaymentComponent implements OnInit {
     this.sp.hide()
   }
 
-
-
-  
-
   onSubmit(){
     if(this.data.PayableAmount < this.data.PaidAmount ){
       Swal.fire({
@@ -206,7 +202,6 @@ export class PaymentComponent implements OnInit {
       console.log(this.data);
     }
   }
-
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
     if (this.companysetting.DataFormat === '1') {

@@ -178,7 +178,7 @@ export class BillListComponent implements OnInit {
     this.sp.hide();
   }
 
-  onPaymentSubmit(){
+  customerPaymentDebit(){
     if(this.applyPayment.PayableAmount < this.applyPayment.PaidAmount){
       Swal.fire({
         title: 'Are you sure?',
@@ -205,6 +205,7 @@ export class BillListComponent implements OnInit {
               complete: () => subs.unsubscribe(),
             });
             this.modalService.dismissAll()
+            this.applyPayment = []
             this.as.successToast(res.message)
           } else {
             this.as.errorToast(res.message)

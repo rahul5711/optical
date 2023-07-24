@@ -60,3 +60,22 @@
    rotate: 10deg;
    color: rgba(255, 0, 0, 0.24); 
 }
+
+.CreditClass{
+  color: green;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd) td.CreditClass{
+  color: green;
+}
+
+.DebitClass{
+  color: rgb(255, 0, 51);
+}
+
+.table-striped>tbody>tr:nth-of-type(odd) td.DebitClass{
+  color: rgb(255, 0, 51);
+}
+
+
+

@@ -247,7 +247,7 @@
                         <option *ngFor="let p of PaymentModesList  let i = index;">{{p.Name }}</option>
                       </select>
                     </td>
-                    <td class="text-center">{{data.Amount }}</td>
+                    <td class="text-center" [ngClass]="{'CreditClass': data.Credit === 'Credit', 'DebitClass': data.Credit === 'Debit' }">{{data.Amount }}</td>
                     <td class="text-center">{{data.Dueamount}}</td>
                   </tr>
                 </tbody>
@@ -271,7 +271,7 @@
   </div>
   <div class="modal-body p-0">
     <div class="modal-body">
-      <form #f3="ngForm" (ngSubmit)="onPaymentSubmit()">
+      <form #f3="ngForm" (ngSubmit)="customerPaymentDebit()">
         <div class="row">
           <div class="col-md-12 mb-0">
             <mat-form-field class="example-full-width mb-0">
@@ -283,7 +283,7 @@
           </div>
           <div class="col-md-12 mb-0">
             <mat-form-field class="example-full-width mb-0">
-              <mat-label>New Payment</mat-label>
+              <mat-label>Return Payment</mat-label>
               <input type="number" style="font-size: 17px !important;" matInput name="PaymentAmount"
                 [(ngModel)]="applyPayment.PaidAmount" [autocomplete]="false">
             </mat-form-field>

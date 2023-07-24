@@ -422,7 +422,7 @@ module.exports = {
 
             const DueAmount = fetchBillMaster.DueAmount + PaidAmount
 
-            const update = await connection.query(`update billmaster set DueAmount = ${DueAmount}, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${ID}`)
+            const update = await connection.query(`update billmaster set DueAmount = ${DueAmount}, PaymentStatus = 'Unpaid', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${ID}`)
 
 
             const savePaymentMaster = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Debit',now(), '${PaymentMode}', '', '', ${DueAmount}, ${PayableAmount - PaidAmount}, '',1,${LoggedOnUser}, now())`)
