@@ -27,13 +27,20 @@ module.exports = {
             let qry = ``
             let totalDueAmount = 0
             let totalCreditAmount = 0
+            let creditCreditAmount = 0
+            let creditDebitAmount = 0
 
             if (PaymentType === 'Supplier') {
 
-                const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Vendor Credit' and CustomerID = ${PayeeName}`);
+                const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Vendor Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
+
+                const debit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Vendor Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
 
                 if (credit[0].CreditAmount !== null) {
-                    totalCreditAmount = credit[0].CreditAmount
+                    creditCreditAmount = credit[0].CreditAmount
+                }
+                if (debit[0].CreditAmount !== null) {
+                    creditDebitAmount = debit[0].CreditAmount
                 }
 
                 const due = await connection.query(`select SUM(purchasemasternew.DueAmount) as due from purchasemasternew where CompanyID = ${CompanyID} and SupplierID = ${PayeeName} and PStatus = 0`)
@@ -51,10 +58,14 @@ module.exports = {
 
             } else if (PaymentType === 'Fitter') {
 
-                const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Fitter Credit' and CustomerID = ${PayeeName}`);
+                const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Fitter Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
+                const debit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Fitter Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
 
                 if (credit[0].CreditAmount !== null) {
-                    totalCreditAmount = credit[0].CreditAmount
+                    creditCreditAmount = credit[0].CreditAmount
+                }
+                if (debit[0].CreditAmount !== null) {
+                    creditDebitAmount = debit[0].CreditAmount
                 }
 
                 const due = await connection.query(`select SUM(fittermaster.DueAmount) as due from fittermaster where CompanyID = ${CompanyID} and FitterID = ${PayeeName} and PStatus = 1`)
@@ -70,10 +81,14 @@ module.exports = {
 
             } else if (PaymentType === 'Customer') {
 
-                const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and CustomerID = ${PayeeName}`);
+                const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
+                const debit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
 
                 if (credit[0].CreditAmount !== null) {
-                    totalCreditAmount = credit[0].CreditAmount
+                    creditCreditAmount = credit[0].CreditAmount
+                }
+                if (debit[0].CreditAmount !== null) {
+                    creditDebitAmount = debit[0].CreditAmount
                 }
 
                 const due = await connection.query(`select SUM(billmaster.DueAmount) as due from billmaster where CompanyID = ${CompanyID} and CustomerID = ${PayeeName} and Status = 1`)
@@ -89,10 +104,14 @@ module.exports = {
 
             } else if (PaymentType === 'Employee') {
 
-                const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Employee Credit' and CustomerID = ${PayeeName}`);
+                const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Employee Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
+                const debit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Employee Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
 
                 if (credit[0].CreditAmount !== null) {
-                    totalCreditAmount = credit[0].CreditAmount
+                    creditCreditAmount = credit[0].CreditAmount
+                }
+                if (debit[0].CreditAmount !== null) {
+                    creditDebitAmount = debit[0].CreditAmount
                 }
 
                 const due = await connection.query(`select SUM(commissionmaster.DueAmount) as due from commissionmaster where CompanyID = ${CompanyID} and UserID = ${PayeeName} and Status = 1 and UserType = 'Employee'`)
@@ -108,10 +127,14 @@ module.exports = {
 
             } else if (PaymentType === 'Doctor') {
 
-                const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Doctor Credit' and CustomerID = ${PayeeName}`);
+                const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Doctor Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
+                const debit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Doctor Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
 
                 if (credit[0].CreditAmount !== null) {
-                    totalCreditAmount = credit[0].CreditAmount
+                    creditCreditAmount = credit[0].CreditAmount
+                }
+                if (debit[0].CreditAmount !== null) {
+                    creditDebitAmount = debit[0].CreditAmount
                 }
 
                 const due = await connection.query(`select SUM(commissionmaster.DueAmount) as due from commissionmaster where CompanyID = ${CompanyID} and UserID = ${PayeeName} and Status = 1 and UserType = 'Doctor'`)
@@ -125,6 +148,8 @@ module.exports = {
 
                 response.data = await connection.query(qry)
             }
+
+            totalCreditAmount = creditDebitAmount - creditCreditAmount
 
             response.totalCreditAmount = totalCreditAmount
             response.totalDueAmount = totalDueAmount
