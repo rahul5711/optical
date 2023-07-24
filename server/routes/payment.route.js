@@ -5,6 +5,7 @@ const { verifyAccessTokenAdmin } = require('../helpers/jwt_helper');
 
 
 router.post('/getInvoicePayment', verifyAccessTokenAdmin, Controller.getInvoicePayment)
+router.post('/applyPayment', verifyAccessTokenAdmin, Controller.applyPayment)
 
 router.post('/getCommissionDetail', verifyAccessTokenAdmin, Controller.getCommissionDetail)
 router.post('/saveCommissionDetail', verifyAccessTokenAdmin, Controller.saveCommissionDetail)
