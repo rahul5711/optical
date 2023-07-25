@@ -80,7 +80,7 @@ export class BillComponent implements OnInit {
   };
 
   Service: any = {
-    ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1
+    ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, DuaCal : '',
   };
 
   customer: any = {
@@ -688,7 +688,6 @@ export class BillComponent implements OnInit {
 
   calculateGrandTotal() {
     this.billCalculation.calculateGrandTotal(this.BillMaster, this.billItemList, this.serviceLists)
-
   }
 
   notifyGst() {
@@ -763,7 +762,7 @@ export class BillComponent implements OnInit {
   addItem() {
     // additem Services
     if (this.category === 'Services') {
-      if (this.BillMaster.ID !== null) { this.Service.Status = 2; }
+      if (this.BillMaster.ID !== null) { this.Service.Status = 2; this.Service.DuaCal = 'yes'}
 
       if (this.Service.GSTPercentage === 0 || this.Service.GSTAmount === 0) {
         this.Service.GSTType = 'None'
@@ -781,10 +780,11 @@ export class BillComponent implements OnInit {
       }
 
       this.serviceLists.push(this.Service);
-
+      this.calculateGrandTotal()
       this.Service = {
         ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1
       };
+      
     }
 
     // additem Product
@@ -954,6 +954,7 @@ export class BillComponent implements OnInit {
     this.sp.show()
     this.BillMaster.ShopID = this.loginShopID;
     this.BillMaster.CustomerID = this.customerID2;
+
     if(this.BillMaster.DueAmount !== 0){
       this.BillMaster.PaymentStatus = 'Unpaid'
     }
@@ -1223,13 +1224,9 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.bill.paymentHistoryByMasterID(CustomerID,BillMasterID).subscribe({
       next: (res: any) => {
           if(res.success ){
-            res.data.forEach((ele: any) =>{
-              if(ele.Type === 'Debit'){
-                   ele.Amount = '-'   + ele.Amount
-              }else(
-                ele.Amount = '+' + ele.Amount
-              )
-            })
+            res.data.forEach((ele: any) => {
+              ele.Amount = ele.Type === 'Debit' ? '-' + ele.Amount : '+' + ele.Amount;
+            });
              this.paidList = res.data
              this.paidList.forEach((e: any) => {
               this.totalpaid =+ this.totalpaid + e.Amount
@@ -1290,7 +1287,7 @@ export class BillComponent implements OnInit {
                this.paymentHistoryByMasterID(this.id,this.id2)
                this.billByCustomer(this.id)
                this.getBillById(this.id2)
-               this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = '';
+               this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
             }else{
               this.as.errorToast(res.message)
               Swal.fire({

@@ -118,13 +118,9 @@ export class BillListComponent implements OnInit {
     const subs: Subscription = this.bill.paymentHistory( data.ID, data.InvoiceNo).subscribe({
       next: (res: any) => {
         if(res.success){
-          res.data.forEach((ele: any) =>{
-            if(ele.Credit === 'Debit'){
-                 ele.Amount = '-'   + ele.Amount
-            }else(
-              ele.Amount = '+' + ele.Amount
-            )
-          })
+          res.data.forEach((ele: any) => {
+            ele.Amount = ele.Credit === 'Debit' ? '-' + ele.Amount : '+' + ele.Amount;
+          });
           this.paymentHistoryList = res.data;
           this.applyPayment.PayableAmount = res.totalPaidAmount
           this.applyPayment.CustomerID = res.data[0].CustomerID

@@ -49,8 +49,7 @@ export class PaymentComponent implements OnInit {
   ) { }
 
   data: any = {
-    ID: null,  CompanyID: null, ShopID: null, PaymentType: null,PayeeName: null, PayableAmount: 0, CustomerCredit: 0, PaidAmount: 0,
-    PaymentMode: null, CardNo: '', PaymentReferenceNo: '',  CreditType: 'Debit', PaymentDate: null,  Comments: 0, Status: 1, pendingPaymentList: {}, applyCredit:false
+    ID: null,  CompanyID: null, BillMasterID:null, ShopID: null, PaymentType: null,CustomerID: null, PayableAmount: 0, CustomerCredit: 0, PaidAmount: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '',  CreditType: 'Credit', PaymentDate: null,  Comments: 0, Status: 1, pendingPaymentList: {}, ApplyReturn:false
   };
 
   searchValue:any
@@ -79,7 +78,7 @@ export class PaymentComponent implements OnInit {
   }
 
   getPayeeList(){
-    if (this.data.PaymentType === 'Vendor')
+    if (this.data.PaymentType === 'Supplier')
     {
       const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
         next: (res: any) => {
@@ -152,12 +151,15 @@ export class PaymentComponent implements OnInit {
     return Number(Math.round(parseFloat(num + 'e' + x)) + 'e-' + x);
   }
   
-  getInvoicePayment(data:any) {
+  getInvoicePayment(PaymentType:any, PayeeName:any) {
     this.sp.show()
-    const subs: Subscription = this.pay.getInvoicePayment(data).subscribe({
+    PaymentType = this.data.PaymentType
+    PayeeName = this.data.CustomerID
+    const subs: Subscription = this.pay.getInvoicePayment(PaymentType,PayeeName).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.invoiceList = res.data
+          this.data.BillMasterID = this.invoiceList[0].ID
           this.data.PayableAmount = this.convertToDecimal(res.totalDueAmount,2)
           this.data.CustomerCredit = this.convertToDecimal(res.totalCreditAmount,2)
         } else {
@@ -183,6 +185,7 @@ export class PaymentComponent implements OnInit {
       this.data.PaidAmount = 0
     }
     if(this.data.applyCredit == true){
+      
       if (this.data.CustomerCredit < this.data.PaidAmount){
         Swal.fire({
           position: 'center',
@@ -199,7 +202,28 @@ export class PaymentComponent implements OnInit {
       this.data.ShopID = Number(this.selectedShop);
       this.data.PaymentDate =  moment().format('YYYY-MM-DD');
       this.data.pendingPaymentList = this.invoiceList;
-      console.log(this.data);
+      return
+      const subs: Subscription = this.pay.applyPayment(this.data).subscribe({
+        next: (res: any) => {
+            if(res.success ){
+              this.getInvoicePayment(res.data.PaymentType, res.data.PayeeName)
+              this.data.PaidAmount = 0; this.data.PaymentMode = ''; this.data.ApplyReturn = false; 
+            }else{
+              this.as.errorToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: 'Opps !!',
+                text: res.message,
+                showConfirmButton: true,
+                backdrop : false,
+              })
+            }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     }
   }
 

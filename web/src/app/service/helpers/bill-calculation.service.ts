@@ -208,6 +208,15 @@ export class BillCalculationService {
         BillMaster.GSTAmount = +BillMaster.GSTAmount + +element.GSTAmount;
         BillMaster.TotalAmount = +BillMaster.TotalAmount + +element.TotalAmount;
       }
+
+      if(element.DuaCal === 'yes'){
+        element.DuaCal = 'No'
+        BillMaster.DueAmount = +BillMaster.DueAmount +  element.TotalAmount
+     }
+
+     if(element.DuaCal === 'delete'){
+       BillMaster.DueAmount = +BillMaster.DueAmount -  element.TotalAmount
+    }
     });
 
     // RoundOff

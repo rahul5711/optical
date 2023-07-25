@@ -36,8 +36,8 @@ export class PaymentService {
     .pipe(catchError(this.handleError));
   }
 
-  getInvoicePayment(Body: any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getInvoicePayment', Body, httpOptions)
+  getInvoicePayment(PaymentType:any,PayeeName: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getInvoicePayment', {PaymentType:PaymentType, PayeeName:PayeeName}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
@@ -54,6 +54,11 @@ export class PaymentService {
 
   customerPaymentDebit(Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/customerPaymentDebit', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  applyPayment(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/applyPayment', Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
