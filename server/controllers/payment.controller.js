@@ -50,7 +50,7 @@ module.exports = {
                 }
 
 
-                qry = `select supplier.Name as PayeeName, shop.Name as ShopName, shop.AreaName, purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.GSTNo, purchasemasternew.DiscountAmount, purchasemasternew.GSTAmount, purchasemasternew.PaymentStatus, purchasemasternew.TotalAmount, purchasemasternew.DueAmount, ( purchasemasternew.TotalAmount - purchasemasternew.DueAmount) as PaidAmount  from purchasemasternew left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.SupplierID = ${PayeeName} and purchasemasternew.CompanyID = ${CompanyID}`
+                qry = `select supplier.Name as PayeeName, shop.Name as ShopName, shop.AreaName, purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.GSTNo, purchasemasternew.DiscountAmount, purchasemasternew.GSTAmount, purchasemasternew.PaymentStatus, purchasemasternew.TotalAmount, purchasemasternew.DueAmount, ( purchasemasternew.TotalAmount - purchasemasternew.DueAmount) as PaidAmount, purchasemasternew.ID  from purchasemasternew left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.SupplierID = ${PayeeName} and purchasemasternew.CompanyID = ${CompanyID}`
 
 
                 response.data = await connection.query(qry)
@@ -74,7 +74,7 @@ module.exports = {
                     totalDueAmount = due[0].due
                 }
 
-                qry = `select fitter.Name as PayeeName, shop.Name as ShopName, shop.AreaName, fittermaster.InvoiceNo, fittermaster.PurchaseDate, fittermaster.GSTNo, 0 as DiscountAmount, fittermaster.GSTAmount, fittermaster.PaymentStatus, fittermaster.TotalAmount, fittermaster.DueAmount, ( fittermaster.TotalAmount - fittermaster.DueAmount) as PaidAmount  from fittermaster left join fitter on fitter.ID = fittermaster.FitterID left join shop on shop.ID = fittermaster.ShopID where fittermaster.FitterID = ${PayeeName} and fittermaster.CompanyID = ${CompanyID} and fittermaster.PStatus = 1`
+                qry = `select fitter.Name as PayeeName, shop.Name as ShopName, shop.AreaName, fittermaster.InvoiceNo, fittermaster.PurchaseDate, fittermaster.GSTNo, 0 as DiscountAmount, fittermaster.GSTAmount, fittermaster.PaymentStatus, fittermaster.TotalAmount, fittermaster.DueAmount, ( fittermaster.TotalAmount - fittermaster.DueAmount) as PaidAmount, fittermaster.ID  from fittermaster left join fitter on fitter.ID = fittermaster.FitterID left join shop on shop.ID = fittermaster.ShopID where fittermaster.FitterID = ${PayeeName} and fittermaster.CompanyID = ${CompanyID} and fittermaster.PStatus = 1`
 
 
                 response.data = await connection.query(qry)
@@ -97,7 +97,7 @@ module.exports = {
                     totalDueAmount = due[0].due
                 }
 
-                qry = `select customer.Name as PayeeName, shop.Name as ShopName, shop.AreaName, billmaster.InvoiceNo, billmaster.BillDate, billmaster.GSTNo, billmaster.DiscountAmount as DiscountAmount, billmaster.GSTAmount, billmaster.PaymentStatus, billmaster.TotalAmount, billmaster.DueAmount, ( billmaster.TotalAmount - billmaster.DueAmount) as PaidAmount  from billmaster left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = billmaster.ShopID where billmaster.CustomerID = ${PayeeName} and billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1`
+                qry = `select customer.Name as PayeeName, shop.Name as ShopName, shop.AreaName, billmaster.InvoiceNo, billmaster.BillDate as PurchaseDate, billmaster.GSTNo, billmaster.DiscountAmount as DiscountAmount, billmaster.GSTAmount, billmaster.PaymentStatus, billmaster.TotalAmount, billmaster.DueAmount, ( billmaster.TotalAmount - billmaster.DueAmount) as PaidAmount, billmaster.ID from billmaster left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = billmaster.ShopID where billmaster.CustomerID = ${PayeeName} and billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1`
 
 
                 response.data = await connection.query(qry)
@@ -120,7 +120,7 @@ module.exports = {
                     totalDueAmount = due[0].due
                 }
 
-                qry = `select user.Name as PayeeName, shop.Name as ShopName, shop.AreaName, commissionmaster.InvoiceNo, commissionmaster.PurchaseDate, commissionmaster.GSTNo, 0 as DiscountAmount, 0 as GSTAmount, commissionmaster.PaymentStatus, commissionmaster.TotalAmount, commissionmaster.DueAmount, ( commissionmaster.TotalAmount - commissionmaster.DueAmount) as PaidAmount  from commissionmaster left join user on user.ID = commissionmaster.UserID left join shop on shop.ID = commissionmaster.ShopID where commissionmaster.UserID = ${PayeeName} and commissionmaster.CompanyID = ${CompanyID} and commissionmaster.Status = 1 and commissionmaster.UserType = 'Employee'`
+                qry = `select user.Name as PayeeName, shop.Name as ShopName, shop.AreaName, commissionmaster.InvoiceNo, commissionmaster.PurchaseDate, commissionmaster.GSTNo, 0 as DiscountAmount, 0 as GSTAmount, commissionmaster.PaymentStatus, commissionmaster.TotalAmount, commissionmaster.DueAmount, ( commissionmaster.TotalAmount - commissionmaster.DueAmount) as PaidAmount, commissionmaster.ID from commissionmaster left join user on user.ID = commissionmaster.UserID left join shop on shop.ID = commissionmaster.ShopID where commissionmaster.UserID = ${PayeeName} and commissionmaster.CompanyID = ${CompanyID} and commissionmaster.Status = 1 and commissionmaster.UserType = 'Employee'`
 
 
                 response.data = await connection.query(qry)
@@ -143,7 +143,7 @@ module.exports = {
                     totalDueAmount = due[0].due
                 }
 
-                qry = `select doctor.Name as PayeeName, shop.Name as ShopName, shop.AreaName, commissionmaster.InvoiceNo, commissionmaster.PurchaseDate, commissionmaster.GSTNo, 0 as DiscountAmount, 0 as GSTAmount, commissionmaster.PaymentStatus, commissionmaster.TotalAmount, commissionmaster.DueAmount, ( commissionmaster.TotalAmount - commissionmaster.DueAmount) as PaidAmount  from commissionmaster left join doctor on doctor.ID = commissionmaster.UserID left join shop on shop.ID = commissionmaster.ShopID where commissionmaster.UserID = ${PayeeName} and commissionmaster.CompanyID = ${CompanyID} and commissionmaster.Status = 1 and commissionmaster.UserType = 'Doctor'`
+                qry = `select doctor.Name as PayeeName, shop.Name as ShopName, shop.AreaName, commissionmaster.InvoiceNo, commissionmaster.PurchaseDate, commissionmaster.GSTNo, 0 as DiscountAmount, 0 as GSTAmount, commissionmaster.PaymentStatus, commissionmaster.TotalAmount, commissionmaster.DueAmount, ( commissionmaster.TotalAmount - commissionmaster.DueAmount) as PaidAmount, commissionmaster.ID  from commissionmaster left join doctor on doctor.ID = commissionmaster.UserID left join shop on shop.ID = commissionmaster.ShopID where commissionmaster.UserID = ${PayeeName} and commissionmaster.CompanyID = ${CompanyID} and commissionmaster.Status = 1 and commissionmaster.UserType = 'Doctor'`
 
 
                 response.data = await connection.query(qry)
@@ -218,7 +218,7 @@ module.exports = {
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Customer', '${CreditType}', 1, ${LoggedOnUser}, now())`;
                             let pDetail = await connection.query(qry);
-                            let bMaster = await connection.query(`Update BillMaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                            let bMaster = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
                         }
 
                     }
@@ -248,13 +248,259 @@ module.exports = {
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Customer Credit', '${CreditType}', 1, ${LoggedOnUser}, now())`;
                             let pDetail = await connection.query(qry);
-                            let bMaster = await connection.query(`Update BillMaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                            let bMaster = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
                         }
 
                     }
 
                 }
 
+            } else if (PaymentType === 'Supplier') {
+                if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
+                    let pMaster = await connection.query(
+                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Supplier',  '1',${LoggedOnUser}, now())`
+                    );
+
+                    let pMasterID = pMaster.insertId;
+                    pid = pMaster.insertId;
+
+                    for (const item of unpaidList) {
+                        if (tempAmount !== 0) {
+                            if (tempAmount >= item.DueAmount) {
+                                tempAmount = tempAmount - item.DueAmount;
+                                item.Amount = item.DueAmount;
+                                item.DueAmount = 0;
+                                item.PaymentStatus = "Paid";
+                            } else {
+                                item.DueAmount = item.DueAmount - tempAmount;
+                                item.Amount = tempAmount;
+                                item.PaymentStatus = "Unpaid";
+                                tempAmount = 0;
+                            }
+                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Vendor', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                            let pDetail = await connection.query(qry);
+                            let bMaster = await connection.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now() where ID = ${item.ID}`);
+                        }
+
+                    }
+
+                }
+
+                if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
+                    let pMaster = await connection.query(
+                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Supplier',  '1',${LoggedOnUser}, now())`
+                    );
+
+                    let pMasterID = pMaster.insertId;
+                    pid = pMaster.insertId;
+
+                    for (const item of unpaidList) {
+                        if (tempAmount !== 0) {
+                            if (tempAmount >= item.DueAmount) {
+                                tempAmount = tempAmount - item.DueAmount;
+                                item.Amount = item.DueAmount;
+                                item.DueAmount = 0;
+                                item.PaymentStatus = "Paid";
+                            } else {
+                                item.DueAmount = item.DueAmount - tempAmount;
+                                item.Amount = tempAmount;
+                                item.PaymentStatus = "Unpaid";
+                                tempAmount = 0;
+                            }
+                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Vendor Credit', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                            let pDetail = await connection.query(qry);
+                            let bMaster = await connection.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now() where ID = ${item.ID}`);
+                        }
+
+                    }
+
+                }
+
+            } else if (PaymentType === 'Fitter') {
+                if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
+                    let pMaster = await connection.query(
+                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Fitter',  '1',${LoggedOnUser}, now())`
+                    );
+
+                    let pMasterID = pMaster.insertId;
+                    pid = pMaster.insertId;
+
+                    for (const item of unpaidList) {
+                        if (tempAmount !== 0) {
+                            if (tempAmount >= item.DueAmount) {
+                                tempAmount = tempAmount - item.DueAmount;
+                                item.Amount = item.DueAmount;
+                                item.DueAmount = 0;
+                                item.PaymentStatus = "Paid";
+                            } else {
+                                item.DueAmount = item.DueAmount - tempAmount;
+                                item.Amount = tempAmount;
+                                item.PaymentStatus = "Unpaid";
+                                tempAmount = 0;
+                            }
+                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Fitter', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                            let pDetail = await connection.query(qry);
+                            let bMaster = await connection.query(`Update fittermaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now() where ID = ${item.ID}`);
+                        }
+
+                    }
+
+                }
+
+                if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
+                    let pMaster = await connection.query(
+                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Fitter',  '1',${LoggedOnUser}, now())`
+                    );
+
+                    let pMasterID = pMaster.insertId;
+                    pid = pMaster.insertId;
+
+                    for (const item of unpaidList) {
+                        if (tempAmount !== 0) {
+                            if (tempAmount >= item.DueAmount) {
+                                tempAmount = tempAmount - item.DueAmount;
+                                item.Amount = item.DueAmount;
+                                item.DueAmount = 0;
+                                item.PaymentStatus = "Paid";
+                            } else {
+                                item.DueAmount = item.DueAmount - tempAmount;
+                                item.Amount = tempAmount;
+                                item.PaymentStatus = "Unpaid";
+                                tempAmount = 0;
+                            }
+                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Fitter Credit', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                            let pDetail = await connection.query(qry);
+                            let bMaster = await connection.query(`Update fittermaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now() where ID = ${item.ID}`);
+                        }
+
+                    }
+
+                }
+
+            } else if (PaymentType === 'Employee') {
+                if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
+                    let pMaster = await connection.query(
+                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Employee',  '1',${LoggedOnUser}, now())`
+                    );
+
+                    let pMasterID = pMaster.insertId;
+                    pid = pMaster.insertId;
+
+                    for (const item of unpaidList) {
+                        if (tempAmount !== 0) {
+                            if (tempAmount >= item.DueAmount) {
+                                tempAmount = tempAmount - item.DueAmount;
+                                item.Amount = item.DueAmount;
+                                item.DueAmount = 0;
+                                item.PaymentStatus = "Paid";
+                            } else {
+                                item.DueAmount = item.DueAmount - tempAmount;
+                                item.Amount = tempAmount;
+                                item.PaymentStatus = "Unpaid";
+                                tempAmount = 0;
+                            }
+                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Employee', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                            let pDetail = await connection.query(qry);
+                            let bMaster = await connection.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                        }
+
+                    }
+
+                }
+
+                if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
+                    let pMaster = await connection.query(
+                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Employee',  '1',${LoggedOnUser}, now())`
+                    );
+
+                    let pMasterID = pMaster.insertId;
+                    pid = pMaster.insertId;
+
+                    for (const item of unpaidList) {
+                        if (tempAmount !== 0) {
+                            if (tempAmount >= item.DueAmount) {
+                                tempAmount = tempAmount - item.DueAmount;
+                                item.Amount = item.DueAmount;
+                                item.DueAmount = 0;
+                                item.PaymentStatus = "Paid";
+                            } else {
+                                item.DueAmount = item.DueAmount - tempAmount;
+                                item.Amount = tempAmount;
+                                item.PaymentStatus = "Unpaid";
+                                tempAmount = 0;
+                            }
+                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Employee Credit', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                            let pDetail = await connection.query(qry);
+                            let bMaster = await connection.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                        }
+
+                    }
+
+                }
+
+            } else if (PaymentType === 'Doctor') {
+                if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
+                    let pMaster = await connection.query(
+                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Doctor',  '1',${LoggedOnUser}, now())`
+                    );
+
+                    let pMasterID = pMaster.insertId;
+                    pid = pMaster.insertId;
+
+                    for (const item of unpaidList) {
+                        if (tempAmount !== 0) {
+                            if (tempAmount >= item.DueAmount) {
+                                tempAmount = tempAmount - item.DueAmount;
+                                item.Amount = item.DueAmount;
+                                item.DueAmount = 0;
+                                item.PaymentStatus = "Paid";
+                            } else {
+                                item.DueAmount = item.DueAmount - tempAmount;
+                                item.Amount = tempAmount;
+                                item.PaymentStatus = "Unpaid";
+                                tempAmount = 0;
+                            }
+                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Doctor', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                            let pDetail = await connection.query(qry);
+                            let bMaster = await connection.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                        }
+
+                    }
+
+                }
+
+                if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
+                    let pMaster = await connection.query(
+                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Doctor',  '1',${LoggedOnUser}, now())`
+                    );
+
+                    let pMasterID = pMaster.insertId;
+                    pid = pMaster.insertId;
+
+                    for (const item of unpaidList) {
+                        if (tempAmount !== 0) {
+                            if (tempAmount >= item.DueAmount) {
+                                tempAmount = tempAmount - item.DueAmount;
+                                item.Amount = item.DueAmount;
+                                item.DueAmount = 0;
+                                item.PaymentStatus = "Paid";
+                            } else {
+                                item.DueAmount = item.DueAmount - tempAmount;
+                                item.Amount = tempAmount;
+                                item.PaymentStatus = "Unpaid";
+                                tempAmount = 0;
+                            }
+                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Doctor Credit', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                            let pDetail = await connection.query(qry);
+                            let bMaster = await connection.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                        }
+
+                    }
+
+                }
+
+            } else {
+                return res.send({ message: `Invalid PaymentType :- ${PaymentType}` })
             }
 
             response.message = "data update sucessfully"
@@ -484,7 +730,7 @@ module.exports = {
                         }
                         let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'${paymentType}', '${CreditType}', 1, ${LoggedOnUser}, now())`;
                         let pDetail = await connection.query(qry);
-                        let bMaster = await connection.query(`Update BillMaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                        let bMaster = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
                     }
 
                 }
@@ -516,7 +762,7 @@ module.exports = {
                         }
                         let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'${paymentType}', '${CreditType}', 1, ${LoggedOnUser}, now())`;
                         let pDetail = await connection.query(qry);
-                        let bMaster = await connection.query(`Update BillMaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                        let bMaster = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
                     }
 
                 }
