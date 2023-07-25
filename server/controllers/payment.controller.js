@@ -149,7 +149,12 @@ module.exports = {
                 response.data = await connection.query(qry)
             }
 
+
             totalCreditAmount = creditDebitAmount - creditCreditAmount
+
+            if (PaymentType === 'Supplier') {
+                totalCreditAmount = creditCreditAmount - creditDebitAmount
+            }
 
             response.totalCreditAmount = totalCreditAmount
             response.totalDueAmount = totalDueAmount
@@ -598,6 +603,13 @@ module.exports = {
             for (let item of Detail) {
                 const updateDetail = await connection.query(`update commissiondetail set CommissionMasterID = ${saveCommMaster.insertId}, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${item.ID}`)
             }
+
+
+            const savePaymentMaster = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${PayeeName}, ${CompanyID}, ${ShopID}, '${PaymentType}','Debit',now(), 'Payment Initiated', '', '', ${TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
+
+            const savePaymentDetail = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${InvoiceNo}',${saveCommMaster.insertId},${PayeeName},${CompanyID},0,${TotalAmount},'${PaymentType}','Debit',1,${LoggedOnUser}, now())`)
+
+            console.log(connected("Payment Initiate SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
             response.data = {
