@@ -149,12 +149,12 @@ module.exports = {
                 response.data = await connection.query(qry)
             }
 
+            totalCreditAmount = creditCreditAmount - creditDebitAmount
 
-            totalCreditAmount = creditDebitAmount - creditCreditAmount
-
-            if (PaymentType === 'Supplier') {
-                totalCreditAmount = creditCreditAmount - creditDebitAmount
+            if (PaymentType === 'Customer') {
+                totalCreditAmount = creditDebitAmount - creditCreditAmount
             }
+
 
             response.totalCreditAmount = totalCreditAmount
             response.totalDueAmount = totalDueAmount
