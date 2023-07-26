@@ -204,8 +204,9 @@
             <span style="font-size: 15px; color: #000;"> {{this.paymentHistoryList[0]?.BillDate}} </span>
           </div>
           <div class="col-md-3">
-            <span style="font-size: 17px; font-weight: 600; color: #ff5100">PaymentType : </span>
-            <span style="font-size: 15px; color: #000;"> {{this.paymentHistoryList[0]?.PaymentType}} </span>
+            <span style="font-size: 17px; font-weight: 600; color: #ff5100">InvoiceNo : </span>
+            <span style="font-size: 15px; color: #000;"> {{this.paymentHistoryList[0]?.InvoiceNo
+            }} </span>
           </div>
           <div class="col-md-3">
             <span style="font-size: 17px; font-weight: 600;color: #ff5100; ">PaymentStatus : </span>
@@ -234,7 +235,7 @@
                   <tr *ngFor="let data of paymentHistoryList  let i = index;">
                     <td class="ps-3">{{ i + 1 }}</td>
                     <td class="text-center">{{data.PaymentDate}}</td>
-                    <td *ngIf="!UpdateMode" class="text-center">{{data.PaymentMode}}</td>
+                    <td *ngIf="!UpdateMode" class="text-center">{{data.PaymentMode}} </td>
                     <td
                       *ngIf="(UpdateMode && data.PaymentMode === 'Customer Credit' )|| (UpdateMode && data.PaymentMode === 'Payment Initiated')|| (UpdateMode && data.PaymentMode === 'Customer Return')"
                       class="text-center">{{data.PaymentMode}}</td>
@@ -244,7 +245,7 @@
                       <select style="height: 26px;" name="PaymentMode" [(ngModel)]="data.PaymentMode" #name="ngModel"
                         [ngModelOptions]="{standalone: true}" name="data{{i}}"
                         (change)="updateCustomerPaymentMode(data)">
-                        <option *ngFor="let p of PaymentModesList  let i = index;">{{p.Name }}</option>
+                        <option *ngFor="let p of PaymentModesList  let i = index;">{{p.Name }} </option>
                       </select>
                     </td>
                     <td class="text-center" [ngClass]="{'CreditClass': data.Credit === 'Credit', 'DebitClass': data.Credit === 'Debit' }">{{data.Amount }}</td>

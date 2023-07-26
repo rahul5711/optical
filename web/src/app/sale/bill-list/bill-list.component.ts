@@ -118,9 +118,9 @@ export class BillListComponent implements OnInit {
     const subs: Subscription = this.bill.paymentHistory( data.ID, data.InvoiceNo).subscribe({
       next: (res: any) => {
         if(res.success){
-          res.data.forEach((ele: any) => {
-            ele.Amount = ele.Credit === 'Debit' ? '-' + ele.Amount : '+' + ele.Amount;
-          });
+          // res.data.forEach((ele: any) => {
+          //   ele.Amount = ele.Credit === 'Debit' ? '-' + ele.Amount : '+' + ele.Amount;
+          // });
           this.paymentHistoryList = res.data;
           this.applyPayment.PayableAmount = res.totalPaidAmount
           this.applyPayment.CustomerID = res.data[0].CustomerID
@@ -195,6 +195,12 @@ export class BillListComponent implements OnInit {
                   this.as.successToast(res.message)
                 }else{
                   this.as.errorToast(res.message)
+                  Swal.fire({
+                    icon: 'warning',
+                    title: res.message,
+                    showCancelButton: true,
+                    backdrop: false,
+                  })
                 }
               },
               error: (err: any) => console.log(err.message),

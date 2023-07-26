@@ -50,7 +50,7 @@ module.exports = {
                 }
 
 
-                qry = `select supplier.Name as PayeeName, shop.Name as ShopName, shop.AreaName, purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.GSTNo, purchasemasternew.DiscountAmount, purchasemasternew.GSTAmount, purchasemasternew.PaymentStatus, purchasemasternew.TotalAmount, purchasemasternew.DueAmount, ( purchasemasternew.TotalAmount - purchasemasternew.DueAmount) as PaidAmount, purchasemasternew.ID  from purchasemasternew left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.SupplierID = ${PayeeName} and purchasemasternew.CompanyID = ${CompanyID}`
+                qry = `select supplier.Name as PayeeName, shop.Name as ShopName, shop.AreaName, purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.GSTNo, purchasemasternew.DiscountAmount, purchasemasternew.GSTAmount, purchasemasternew.PaymentStatus, purchasemasternew.TotalAmount, purchasemasternew.DueAmount, ( purchasemasternew.TotalAmount - purchasemasternew.DueAmount) as PaidAmount, purchasemasternew.ID  from purchasemasternew left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.SupplierID = ${PayeeName} and purchasemasternew.CompanyID = ${CompanyID} and purchasemasternew.PaymentStatus = 'Unpaid' and purchasemasternew.DueAmount != 0`
 
 
                 response.data = await connection.query(qry)
@@ -74,7 +74,7 @@ module.exports = {
                     totalDueAmount = due[0].due
                 }
 
-                qry = `select fitter.Name as PayeeName, shop.Name as ShopName, shop.AreaName, fittermaster.InvoiceNo, fittermaster.PurchaseDate, fittermaster.GSTNo, 0 as DiscountAmount, fittermaster.GSTAmount, fittermaster.PaymentStatus, fittermaster.TotalAmount, fittermaster.DueAmount, ( fittermaster.TotalAmount - fittermaster.DueAmount) as PaidAmount, fittermaster.ID  from fittermaster left join fitter on fitter.ID = fittermaster.FitterID left join shop on shop.ID = fittermaster.ShopID where fittermaster.FitterID = ${PayeeName} and fittermaster.CompanyID = ${CompanyID} and fittermaster.PStatus = 1`
+                qry = `select fitter.Name as PayeeName, shop.Name as ShopName, shop.AreaName, fittermaster.InvoiceNo, fittermaster.PurchaseDate, fittermaster.GSTNo, 0 as DiscountAmount, fittermaster.GSTAmount, fittermaster.PaymentStatus, fittermaster.TotalAmount, fittermaster.DueAmount, ( fittermaster.TotalAmount - fittermaster.DueAmount) as PaidAmount, fittermaster.ID  from fittermaster left join fitter on fitter.ID = fittermaster.FitterID left join shop on shop.ID = fittermaster.ShopID where fittermaster.FitterID = ${PayeeName} and fittermaster.CompanyID = ${CompanyID} and fittermaster.PStatus = 1 and fittermaster.PaymentStatus = 'Unpaid' and fittermaster.DueAmount != 0`
 
 
                 response.data = await connection.query(qry)
@@ -97,7 +97,7 @@ module.exports = {
                     totalDueAmount = due[0].due
                 }
 
-                qry = `select customer.Name as PayeeName, shop.Name as ShopName, shop.AreaName, billmaster.InvoiceNo, billmaster.BillDate as PurchaseDate, billmaster.GSTNo, billmaster.DiscountAmount as DiscountAmount, billmaster.GSTAmount, billmaster.PaymentStatus, billmaster.TotalAmount, billmaster.DueAmount, ( billmaster.TotalAmount - billmaster.DueAmount) as PaidAmount, billmaster.ID from billmaster left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = billmaster.ShopID where billmaster.CustomerID = ${PayeeName} and billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1`
+                qry = `select customer.Name as PayeeName, shop.Name as ShopName, shop.AreaName, billmaster.InvoiceNo, billmaster.BillDate as PurchaseDate, billmaster.GSTNo, billmaster.DiscountAmount as DiscountAmount, billmaster.GSTAmount, billmaster.PaymentStatus, billmaster.TotalAmount, billmaster.DueAmount, ( billmaster.TotalAmount - billmaster.DueAmount) as PaidAmount, billmaster.ID from billmaster left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = billmaster.ShopID where billmaster.CustomerID = ${PayeeName} and billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 and billmaster.PaymentStatus = 'Unpaid' and billmaster.DueAmount != 0`
 
 
                 response.data = await connection.query(qry)
@@ -120,7 +120,7 @@ module.exports = {
                     totalDueAmount = due[0].due
                 }
 
-                qry = `select user.Name as PayeeName, shop.Name as ShopName, shop.AreaName, commissionmaster.InvoiceNo, commissionmaster.PurchaseDate, commissionmaster.GSTNo, 0 as DiscountAmount, 0 as GSTAmount, commissionmaster.PaymentStatus, commissionmaster.TotalAmount, commissionmaster.DueAmount, ( commissionmaster.TotalAmount - commissionmaster.DueAmount) as PaidAmount, commissionmaster.ID from commissionmaster left join user on user.ID = commissionmaster.UserID left join shop on shop.ID = commissionmaster.ShopID where commissionmaster.UserID = ${PayeeName} and commissionmaster.CompanyID = ${CompanyID} and commissionmaster.Status = 1 and commissionmaster.UserType = 'Employee'`
+                qry = `select user.Name as PayeeName, shop.Name as ShopName, shop.AreaName, commissionmaster.InvoiceNo, commissionmaster.PurchaseDate, commissionmaster.GSTNo, 0 as DiscountAmount, 0 as GSTAmount, commissionmaster.PaymentStatus, commissionmaster.TotalAmount, commissionmaster.DueAmount, ( commissionmaster.TotalAmount - commissionmaster.DueAmount) as PaidAmount, commissionmaster.ID from commissionmaster left join user on user.ID = commissionmaster.UserID left join shop on shop.ID = commissionmaster.ShopID where commissionmaster.UserID = ${PayeeName} and commissionmaster.CompanyID = ${CompanyID} and commissionmaster.Status = 1 and commissionmaster.UserType = 'Employee' and commissionmaster.PaymentStatus = 'Unpaid' and commissionmaster.DueAmount != 0`
 
 
                 response.data = await connection.query(qry)
@@ -143,7 +143,7 @@ module.exports = {
                     totalDueAmount = due[0].due
                 }
 
-                qry = `select doctor.Name as PayeeName, shop.Name as ShopName, shop.AreaName, commissionmaster.InvoiceNo, commissionmaster.PurchaseDate, commissionmaster.GSTNo, 0 as DiscountAmount, 0 as GSTAmount, commissionmaster.PaymentStatus, commissionmaster.TotalAmount, commissionmaster.DueAmount, ( commissionmaster.TotalAmount - commissionmaster.DueAmount) as PaidAmount, commissionmaster.ID  from commissionmaster left join doctor on doctor.ID = commissionmaster.UserID left join shop on shop.ID = commissionmaster.ShopID where commissionmaster.UserID = ${PayeeName} and commissionmaster.CompanyID = ${CompanyID} and commissionmaster.Status = 1 and commissionmaster.UserType = 'Doctor'`
+                qry = `select doctor.Name as PayeeName, shop.Name as ShopName, shop.AreaName, commissionmaster.InvoiceNo, commissionmaster.PurchaseDate, commissionmaster.GSTNo, 0 as DiscountAmount, 0 as GSTAmount, commissionmaster.PaymentStatus, commissionmaster.TotalAmount, commissionmaster.DueAmount, ( commissionmaster.TotalAmount - commissionmaster.DueAmount) as PaidAmount, commissionmaster.ID  from commissionmaster left join doctor on doctor.ID = commissionmaster.UserID left join shop on shop.ID = commissionmaster.ShopID where commissionmaster.UserID = ${PayeeName} and commissionmaster.CompanyID = ${CompanyID} and commissionmaster.Status = 1 and commissionmaster.UserType = 'Doctor' and commissionmaster.PaymentStatus = 'Unpaid' and commissionmaster.DueAmount != 0`
 
 
                 response.data = await connection.query(qry)
@@ -812,6 +812,12 @@ module.exports = {
             if (!PaidAmount || PaidAmount === undefined) return res.send({ message: "Invalid PaidAmount Data" })
 
             const [fetchBillMaster] = await connection.query(`select * from billmaster where ID = ${ID}`)
+
+
+           if(fetchBillMaster.DueAmount <= 0 ) {
+            return res.send({ message: `You can't debit, this amount alread added customer credit amount` })
+           }
+
 
             const DueAmount = fetchBillMaster.DueAmount + PaidAmount
 

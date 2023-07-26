@@ -45,7 +45,7 @@
                                         </div>
                                     </div>
                                     <div class="row mt-0">
-                                        <div class="col-xl-4 col-lg-4 col-md-2 col-sm-12 mb-0">
+                                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Email</mat-label>
                                                 <input matInput name="Email1" [(ngModel)]="data.Email" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
@@ -55,7 +55,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-6 col-lg-6 col-md-4 col-sm-4 mb-0">
+                                        <div class="col-xl-6 col-lg-6 col-md-8 col-sm-4 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Address</mat-label>
                                                 <input matInput name="Address" minlength="2" [(ngModel)]="data.Address"
@@ -65,7 +65,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0"></div>
+                                        <div class="col-xl-2 col-lg-0 col-md-0 col-sm-0 mb-0"></div>
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Country</mat-label>
@@ -108,8 +108,8 @@
                                                 <input matInput name="CINNo" [(ngModel)]="data.CINNo" #CINNocontrol>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0"></div>
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                        <div class="col-xl-2 col-lg-0 col-md-0 col-sm-0 mb-0"></div>
+                                        <div class="col-xl-2 col-lg-2 col-md-4 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Website</mat-label>
                                                 <input matInput name="Website" type="url" [(ngModel)]="data.Website"
@@ -119,7 +119,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div  class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                        <div  class="col-xl-2 col-lg-2 col-md-6 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Remark</mat-label>
                                                 <input matInput name="Remark" [(ngModel)]="data.Remark" #Remarkscontrol [disabled]="user?.UserGroup != 'SuperAdmin' && this.id != 0 ">
@@ -177,7 +177,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0" >
                                                 <mat-label>Effective Date</mat-label>
                                                 <input matInput  name="EffectiveDate" [(ngModel)]="data.EffectiveDate"  required #EffectiveDatecontrol [matDatepicker]="picker1" [disabled]="user?.UserGroup !== 'SuperAdmin'">
@@ -188,7 +188,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0" >
                                                 <mat-label>Cancellation Date</mat-label>
                                                 <input matInput name="CacellationDate" [(ngModel)]="data.CancellationDate"  required #CacellationDatecontrol [matDatepicker]="picker2" [disabled]="user?.UserGroup !== 'SuperAdmin'">
@@ -199,31 +199,31 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                        <div class="col-xl-2 col-lg-0 col-md-0 col-sm-0 mb-0">
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-4 mb-0">
                                             <mat-slide-toggle type="button" name="EmailMsg" color="primary"
                                                 [(ngModel)]="data.EmailMsg" class="example-margin" #EmailMsgcontrol [disabled]="user?.UserGroup !== 'SuperAdmin'">
                                                 SMS
                                             </mat-slide-toggle>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-4 mb-0">
                                             <mat-slide-toggle type="button" name="EmailMsg" color="primary"
                                                 [(ngModel)]="data.EmailMsg" class="example-margin" #EmailMsgcontrol [disabled]="user?.UserGroup !== 'SuperAdmin'" >
                                                 Email
                                             </mat-slide-toggle>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-6" style="padding:0; ">
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-4 p-md-0" >
                                             <mat-slide-toggle type="button" name="WhatsappMsg" color="primary"
                                                 #WhatsappMsgcontrol [(ngModel)]="data.WhatsappMsg"
                                                 class="example-margin" [disabled]="user?.UserGroup !== 'SuperAdmin'">Whatsapp</mat-slide-toggle>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-6 ps-3 ps-md-0" style="padding:0; ">
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-4 ps-2 ps-md-0" style="padding:0; ">
                                             <mat-slide-toggle type="button" name="WholeSale" color="primary"
                                                 #WholeSalecontrol [(ngModel)]="data.WholeSale" class="example-margin" [disabled]="user?.UserGroup !== 'SuperAdmin'">
                                                 WholeSale</mat-slide-toggle>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-6" style="padding:0; ">
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-4 p-md-0">
                                             <mat-slide-toggle type="button" name="RetailPrice" color="primary"
                                                 #RetailPricecontrol [(ngModel)]="data.RetailPrice"
                                                 class="example-margin" [disabled]="user?.UserGroup !== 'SuperAdmin'">Retail</mat-slide-toggle>
@@ -233,11 +233,11 @@
                                 <div class="col-md-2 col-12">
                                     <div class="row">
                                         <div class="col-12 mt-1 " >
-                                            <img class="fit-picture" width="170" height="170" [src]="companyImage">
+                                            <img class="fit-picture" [src]="companyImage">
                                         </div>
                                         <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 " (click)="fileInput.click()" style="cursor: pointer;">
                                             <i class="fa-solid fa-cloud-arrow-up upload_icon" >
-                                                <span style="font-size: 10px;letter-spacing: 2px;"> Company Image </span>
+                                                <span style="font-size: 10px;letter-spacing: 2px;">  Image </span>
                                             </i>
                                             <input  value={this.data.LogoURL} #fileInput id="my-input" name='LogoURL' type="file" (change)="uploadImage($event, 'company')" style="display:none;">
                                         </div>

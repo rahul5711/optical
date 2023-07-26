@@ -49,7 +49,7 @@ export class PaymentComponent implements OnInit {
   ) { }
 
   data: any = {
-    ID: null,  CompanyID: null, BillMasterID:null, ShopID: null, PaymentType: null,CustomerID: null, PayableAmount: 0, CustomerCredit: 0, PaidAmount: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '',  CreditType: 'Credit', PaymentDate: null,  Comments: 0, Status: 1, pendingPaymentList: {}, ApplyReturn:false
+    ID: null,  CompanyID: null, BillMasterID:null, ShopID: null, PaymentType: null,CustomerID: null, PayableAmount: 0, CustomerCredit: 0, PaidAmount: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '',  CreditType: 'Debit', PaymentDate: null,  Comments: 0, Status: 1, pendingPaymentList: {}, ApplyReturn:false
   };
 
   searchValue:any
@@ -77,80 +77,123 @@ export class PaymentComponent implements OnInit {
     });
   }
 
-  getPayeeList(){
-    if (this.data.PaymentType === 'Supplier')
-    {
-      const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.payeeList = res.data;
-          } else {
-            this.as.errorToast(res.message)
-          }
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    } 
-    else if(this.data.PaymentType === 'Employee')
-    { 
-      const subs: Subscription = this.emp.dropdownUserlist('').subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.payeeList = res.data
-          } else {
-            this.as.errorToast(res.message)
-          }
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
+  // getPayeeList(){
+  //   this.data.CreditType = 'Debit'
+  //   if (this.data.PaymentType === 'Supplier')
+  //   {
+  //     const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
+  //       next: (res: any) => {
+  //         if (res.success) {
+  //           this.payeeList = res.data;
+  //         } else {
+  //           this.as.errorToast(res.message)
+  //         }
+  //       },
+  //       error: (err: any) => console.log(err.message),
+  //       complete: () => subs.unsubscribe(),
+  //     });
+  //   } 
+  //   else if(this.data.PaymentType === 'Employee')
+  //   { 
+  //     const subs: Subscription = this.emp.dropdownUserlist('').subscribe({
+  //       next: (res: any) => {
+  //         if (res.success) {
+  //           this.payeeList = res.data
+  //         } else {
+  //           this.as.errorToast(res.message)
+  //         }
+  //       },
+  //       error: (err: any) => console.log(err.message),
+  //       complete: () => subs.unsubscribe(),
+  //     });
+  //   }
+  //   else if(this.data.PaymentType === 'Fitter')
+  //   { 
+  //     const subs: Subscription = this.fitters.dropdownlist().subscribe({
+  //       next: (res: any) => {
+  //         this.payeeList = res.data
+  //       },
+  //       error: (err: any) => console.log(err.message),
+  //       complete: () => subs.unsubscribe(),
+  //     });
+  //   }  
+  //   else if(this.data.PaymentType === 'Customer')
+  //   { 
+  //     const subs: Subscription = this.customer.dropdownlist().subscribe({
+  //       next: (res: any) => {
+  //         if(res.success){
+  //           this.payeeList  = res.data
+  //           this.data.CreditType = 'Credit'
+  //         }else{
+  //           this.as.errorToast(res.message)
+  //         }
+  //       },
+  //       error: (err: any) => console.log(err.message),
+  //       complete: () => subs.unsubscribe(),
+  //     });
+  //   }  
+  //   else if(this.data.PaymentType === 'Doctor')
+  //   { 
+  //     const subs: Subscription = this.doctor.dropdownDoctorlist().subscribe({
+  //       next: (res: any) => {
+  //         if(res.success){
+  //           this.payeeList  = res.data
+  //         }else{
+  //           this.as.errorToast(res.message)
+  //         }
+  //       },
+  //       error: (err: any) => console.log(err.message),
+  //       complete: () => subs.unsubscribe(),
+  //     });
+  //   } 
+  //   this.invoiceList = []
+  // }
+  
+  getPayeeList() {
+    this.data.CreditType = 'Debit';
+    this.invoiceList = [];
+    this.data.CustomerCredit = 0;
+    this.data.PayableAmount = 0;
+    this.data.PaidAmount = 0;
+    this.data.ApplyReturn = false;
+
+    let dropdownObs;
+  
+    switch (this.data.PaymentType) {
+      case 'Supplier':
+        dropdownObs = this.sup.dropdownSupplierlist('');
+        break;
+      case 'Employee':
+        dropdownObs = this.emp.dropdownUserlist('');
+        break;
+      case 'Fitter':
+        dropdownObs = this.fitters.dropdownlist();
+        break;
+      case 'Customer':
+        dropdownObs = this.customer.dropdownlist();
+        this.data.CreditType = 'Credit';
+        break;
+      case 'Doctor':
+        dropdownObs = this.doctor.dropdownDoctorlist();
+        break;
+      default:
+        this.as.errorToast('Invalid Payment Type');
+        return;
     }
-    else if(this.data.PaymentType === 'Fitter')
-    { 
-      const subs: Subscription = this.fitters.dropdownlist().subscribe({
-        next: (res: any) => {
-          this.payeeList = res.data
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    }  
-    else if(this.data.PaymentType === 'Customer')
-    { 
-      const subs: Subscription = this.customer.dropdownlist().subscribe({
-        next: (res: any) => {
-          if(res.success){
-            this.payeeList  = res.data
-          }else{
-            this.as.errorToast(res.message)
-          }
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    }  
-    else if(this.data.PaymentType === 'Doctor')
-    { 
-      const subs: Subscription = this.doctor.dropdownDoctorlist().subscribe({
-        next: (res: any) => {
-          if(res.success){
-            this.payeeList  = res.data
-          }else{
-            this.as.errorToast(res.message)
-          }
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    } 
-    this.invoiceList = []
+  
+    const subs: Subscription = dropdownObs.subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.payeeList = res.data;
+        } else {
+          this.as.errorToast(res.message);
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
-  convertToDecimal(num: any, x: any) {
-    return Number(Math.round(parseFloat(num + 'e' + x)) + 'e-' + x);
-  }
-  
   getInvoicePayment(PaymentType:any, PayeeName:any) {
     this.sp.show()
     PaymentType = this.data.PaymentType
@@ -158,10 +201,11 @@ export class PaymentComponent implements OnInit {
     const subs: Subscription = this.pay.getInvoicePayment(PaymentType,PayeeName).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.invoiceList = res.data
-          this.data.BillMasterID = this.invoiceList[0].ID
-          this.data.PayableAmount = this.convertToDecimal(res.totalDueAmount,2)
-          this.data.CustomerCredit = this.convertToDecimal(res.totalCreditAmount,2)
+          // const filteredData = res.data.filter((el: any) => el.DueAmount !== 0);
+          this.invoiceList = res.data;
+          this.data.BillMasterID = this.invoiceList[0]?.ID
+          this.data.PayableAmount = +res.totalDueAmount.toFixed(2)
+          this.data.CustomerCredit = +res.totalCreditAmount.toFixed(2)
         } else {
           this.as.errorToast(res.message)
         }
@@ -178,19 +222,18 @@ export class PaymentComponent implements OnInit {
       Swal.fire({
         position: 'center',
         icon: 'warning',
-        title: 'Opps !!',
+        title: 'The Paid Amount exceeds the Payable Amount. Please verify the amounts.',
         showConfirmButton: true,
         backdrop : false,
       })
       this.data.PaidAmount = 0
     }
-    if(this.data.applyCredit == true){
-      
+    if(this.data.ApplyReturn == true){
       if (this.data.CustomerCredit < this.data.PaidAmount){
         Swal.fire({
           position: 'center',
           icon: 'warning',
-          title: 'Opps !!',
+          title: 'The Paid Amount exceeds the Customer Credit. Please verify the amounts.',
           showConfirmButton: true,
           backdrop : false,
         })
@@ -202,7 +245,6 @@ export class PaymentComponent implements OnInit {
       this.data.ShopID = Number(this.selectedShop);
       this.data.PaymentDate =  moment().format('YYYY-MM-DD');
       this.data.pendingPaymentList = this.invoiceList;
-      return
       const subs: Subscription = this.pay.applyPayment(this.data).subscribe({
         next: (res: any) => {
             if(res.success ){
@@ -236,4 +278,26 @@ export class PaymentComponent implements OnInit {
     return event;
   }
 
+  ApplyReturn(){
+    switch (this.data.PaymentType) {
+      case 'Supplier':
+        this.data.PaymentMode = 'Vendor Credit';
+        break;
+      case 'Employee':
+        this.data.PaymentMode = 'Employee Credit';
+        break;
+      case 'Fitter':
+        this.data.PaymentMode = 'Fitter Credit';
+        break;
+      case 'Customer':
+        this.data.PaymentMode = 'Customer Credit';
+        break;
+      case 'Doctor':
+        this.data.PaymentMode = 'Doctor Credit';
+        break;
+      default:
+        this.as.errorToast('Invalid Payment Type');
+        return;
+    }
+  }
 }

@@ -51,11 +51,11 @@
                                         <mat-label>Previous Credit</mat-label>
                                         <div class="row mt-0">
                                             <div class="col-md-3 p-0" style="height: 16px;">
-                                                <mat-checkbox color="primary" style="margin-left: 10px;" name="ApplyReturn"
-                                                [(ngModel)]="data.ApplyReturn"></mat-checkbox>
+                                                <mat-checkbox color="primary" class="ms-2" name="ApplyReturn"
+                                                [(ngModel)]="data.ApplyReturn" (click)="ApplyReturn()"></mat-checkbox>
                                             </div>
                                             <div class="col-md-9 p-0" style="height: 16px;">
-                                                <input type="number" matInput name="CustomerCredit" disabled
+                                                <input type="number" class="ms-2" matInput name="CustomerCredit" disabled
                                                 [(ngModel)]="data.CustomerCredit" [autocomplete]="false"
                                                 #CustomerCreditcontrol>
                                             </div>
@@ -72,7 +72,7 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div *ngIf="data.ApplyReturn === false" class="col-xl-1 col-md-2 col-sm-12 mb-0">
+                                <div *ngIf="!data.ApplyReturn" class="col-xl-1 col-md-2 col-sm-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Payment Mode</mat-label>
                                         <mat-select name="PayMode" [(ngModel)]="data.PaymentMode" required
@@ -81,12 +81,12 @@
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
-                                <div *ngIf="data.ApplyReturn === true" class="col-xl-1 col-md-2 col-sm-12 mb-0">
+                                <div *ngIf="data.ApplyReturn" class="col-xl-1 col-md-2 col-sm-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Payment Mode</mat-label>
                                         <mat-select name="PayMode" [(ngModel)]="data.PaymentMode" required
                                             #GSTTypecontrol1>
-                                             <mat-option  value="Customer Credit">Customer Credit</mat-option>
+                                            <mat-option  value="{{data.PaymentMode}}">{{data.PaymentMode}}</mat-option>
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
