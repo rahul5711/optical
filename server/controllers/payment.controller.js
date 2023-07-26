@@ -891,5 +891,43 @@ module.exports = {
             await connection.release();
         }
 
+    },
+    updateCustomerPaymentDate: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const { PaymentMasterID, PaymentDate } = req.body
+
+            if (!PaymentMasterID || PaymentMasterID === undefined) return res.send({ message: "Invalid PaymentMasterID Data" })
+            if (!PaymentDate || PaymentDate === undefined) return res.send({ message: "Invalid PaymentDate Data" })
+
+            const paymentMaster = await connection.query(`select * from paymentmaster where CompanyID = ${CompanyID} and ID = ${PaymentMasterID}`)
+
+            if (paymentMaster.length === 0) {
+                return res.send({ message: "Invalid PaymentMasterID Data" })
+            }
+
+            const updatePaymentDate = await connection.query(`update paymentmaster set PaymentDate = '${PaymentDate}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${PaymentMasterID} and CompanyID = ${CompanyID} `)
+
+
+            response.message = "data update sucessfully"
+            response.data = {
+                PaymentMasterID: PaymentMasterID
+            }
+            return res.send(response)
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+
     }
 }

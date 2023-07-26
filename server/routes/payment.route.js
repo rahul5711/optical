@@ -20,6 +20,7 @@ router.post('/customerPaymentDebit', verifyAccessTokenAdmin, Controller.customer
 // update customer payment mode
 
 router.post('/updateCustomerPaymentMode', verifyAccessTokenAdmin, Controller.updateCustomerPaymentMode)
+router.post('/updateCustomerPaymentDate', verifyAccessTokenAdmin, Controller.updateCustomerPaymentDate)
 
 
 module.exports = router
