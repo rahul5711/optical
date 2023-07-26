@@ -814,9 +814,9 @@ module.exports = {
             const [fetchBillMaster] = await connection.query(`select * from billmaster where ID = ${ID}`)
 
 
-           if(fetchBillMaster.DueAmount <= 0 ) {
-            return res.send({ message: `You can't debit, this amount alread added customer credit amount` })
-           }
+            if (fetchBillMaster.DueAmount <= 0) {
+                return res.send({ message: `You can't debit, this amount alread added customer credit amount` })
+            }
 
 
             const DueAmount = fetchBillMaster.DueAmount + PaidAmount
@@ -929,5 +929,95 @@ module.exports = {
             await connection.release();
         }
 
-    }
+    },
+
+    getCustomerCreditAmount: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+            const Body = req.body;
+
+            const { CustomerID, ID } = req.body
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (!CustomerID) return res.send({ message: "Invalid Query Data" })
+            if (!ID) return res.send({ message: "Invalid Query Data" })
+
+            let totalCreditAmount = 0
+            let creditCreditAmount = 0
+            let creditDebitAmount = 0
+
+            const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Credit' and CustomerID = ${CustomerID} and paymentdetail.BillMasterID = ${ID}`);
+            const debit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Debit' and CustomerID = ${CustomerID} and paymentdetail.BillMasterID = ${ID}`);
+
+            if (credit[0].CreditAmount !== null) {
+                creditCreditAmount = credit[0].CreditAmount
+            }
+            if (debit[0].CreditAmount !== null) {
+                creditDebitAmount = debit[0].CreditAmount
+            }
+
+
+            totalCreditAmount = creditDebitAmount - creditCreditAmount
+
+
+            response.totalCreditAmount = totalCreditAmount
+            response.message = "data fetch sucessfully"
+            // connection.release()
+            return res.send(response)
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
+    customerCreditDebit: async (req, res, next) => {
+        const connection = await mysql.connection();
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const {ID, CustomerID, PaidAmount, PayableAmount, PaymentMode } = req.body
+
+            if (!CustomerID || CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
+            if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
+            if (!PayableAmount || PayableAmount === undefined) return res.send({ message: "Invalid PayableAmount Data" })
+            if (!PaymentMode || PaymentMode === undefined) return res.send({ message: "Invalid PaymentMode Data" })
+            if (!PaidAmount || PaidAmount === undefined) return res.send({ message: "Invalid PaidAmount Data" })
+
+
+            const [fetchBillMaster] = await connection.query(`select * from billmaster where ID = ${ID}`)
+
+            const savePaymentMaster = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Credit',now(), '${PaymentMode}', '', '', ${PayableAmount}, ${PaidAmount}, '',1,${LoggedOnUser}, now())`)
+
+            const savePaymentDetail = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${fetchBillMaster.InvoiceNo}',${ID},${CustomerID},${CompanyID},${PaidAmount},${PayableAmount - PaidAmount},'Customer Credit','Credit',1,${LoggedOnUser}, now())`)
+
+            console.log(connected("Payment Update SuccessFUlly !!!"));
+
+
+            response.message = "data update sucessfully"
+            response.data = {
+                CustomerID: CustomerID,
+                ID: ID
+            }
+            // connection.release()
+            return res.send(response)
+
+        } catch (err) {
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
+        }
+    },
 }

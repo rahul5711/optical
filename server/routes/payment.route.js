@@ -23,4 +23,11 @@ router.post('/updateCustomerPaymentMode', verifyAccessTokenAdmin, Controller.upd
 router.post('/updateCustomerPaymentDate', verifyAccessTokenAdmin, Controller.updateCustomerPaymentDate)
 
 
+// customer credit amount get and debit release their credit amount
+
+
+router.post('/getCustomerCreditAmount', verifyAccessTokenAdmin, Controller.getCustomerCreditAmount)
+router.post('/customerCreditDebit', verifyAccessTokenAdmin, Controller.customerCreditDebit)
+
+
 module.exports = router
