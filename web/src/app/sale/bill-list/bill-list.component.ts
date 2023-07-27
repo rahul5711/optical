@@ -15,6 +15,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SupportService } from 'src/app/service/support.service';
 import { PaymentService } from 'src/app/service/payment.service';
+import * as moment from 'moment';
 
 
 
@@ -26,7 +27,10 @@ import { PaymentService } from 'src/app/service/payment.service';
 export class BillListComponent implements OnInit {
   
   @ViewChild('searching') searching: ElementRef | any;
+  company = JSON.parse(localStorage.getItem('company') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
+  companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   id :any
   env = environment;
 
@@ -46,9 +50,22 @@ export class BillListComponent implements OnInit {
   TotalAmountInv:any 
   DueAmountInv:any 
 
-  applyPayment:any = {
+  applyDebitPayment:any = {
     ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Debit',  PayableAmount: 0, PaidAmount: 0, 
   };
+
+  applyCreditPayment:any = {
+    ID: null, CustomerID: null,  PayableAmount: 0, PaidAmount: 0, PaymentMode:null
+  };
+
+  applyPayment:any = {
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0, 
+    CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1, 
+    pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
+  };
+
+  paidList :any=[]
+  invoiceList :any=[]
 
   constructor(
     private router: Router,
@@ -110,10 +127,16 @@ export class BillListComponent implements OnInit {
 
   showInput(){
     this.UpdateMode = !this.UpdateMode;
+    this.paymentHistoryList.forEach((ep: any) =>{
+      ep.PaymentDate = moment(ep.PaymentDate).format('YYYY-MM-DD')
+    })
   }
 
+  // payment history 
   openModal(content: any,data:any) {
     this.sp.show();
+    this.applyCreditPayment.CustomerID = data.CustomerID
+    this.applyCreditPayment.ID = data.ID
     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
     const subs: Subscription = this.bill.paymentHistory( data.ID, data.InvoiceNo).subscribe({
       next: (res: any) => {
@@ -122,9 +145,9 @@ export class BillListComponent implements OnInit {
           //   ele.Amount = ele.Credit === 'Debit' ? '-' + ele.Amount : '+' + ele.Amount;
           // });
           this.paymentHistoryList = res.data;
-          this.applyPayment.PayableAmount = res.totalPaidAmount
-          this.applyPayment.CustomerID = res.data[0].CustomerID
-          this.applyPayment.ID = res.data[0].BillMasterID
+          this.applyDebitPayment.PayableAmount = res.totalPaidAmount
+          this.applyDebitPayment.CustomerID = res.data[0].CustomerID
+          this.applyDebitPayment.ID = res.data[0].BillMasterID
           ;
           this.getPaymentModesList()
           this.as.successToast(res.message)
@@ -139,6 +162,7 @@ export class BillListComponent implements OnInit {
     this.sp.hide();
   }
 
+// payment mode 
   getPaymentModesList() {
     const subs: Subscription = this.supps.getList('PaymentModeType').subscribe({
       next: (res: any) => {
@@ -168,6 +192,23 @@ export class BillListComponent implements OnInit {
       });
   }
 
+  // payment date update 
+  updateCustomerPaymentDate(data:any) {
+      const subs: Subscription = this.pay.updateCustomerPaymentDate(data).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.UpdateMode = false
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+  }
+
+   // customer payment debit and credit
   openModal12(content: any) {
     this.sp.show();
     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
@@ -175,7 +216,7 @@ export class BillListComponent implements OnInit {
   }
 
   customerPaymentDebit(){
-    if(this.applyPayment.PayableAmount < this.applyPayment.PaidAmount){
+    if(this.applyDebitPayment.PayableAmount < this.applyDebitPayment.PaidAmount){
       Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -184,14 +225,14 @@ export class BillListComponent implements OnInit {
         backdrop: false,
       })
     }else{
-      const subs: Subscription = this.pay.customerPaymentDebit(this.applyPayment).subscribe({
+      const subs: Subscription = this.pay.customerPaymentDebit(this.applyDebitPayment).subscribe({
         next: (res: any) => {
           if (res.success) {
             const subs: Subscription = this.bill.paymentHistory( res.data.ID, res.data.InvoiceNo).subscribe({
               next: (res: any) => {
                 if(res.success){
                   this.paymentHistoryList = res.data;
-                  this.applyPayment.PayableAmount = res.totalPaidAmount;
+                  this.applyDebitPayment.PayableAmount = res.totalPaidAmount;
                   this.as.successToast(res.message)
                 }else{
                   this.as.errorToast(res.message)
@@ -207,7 +248,7 @@ export class BillListComponent implements OnInit {
               complete: () => subs.unsubscribe(),
             });
             this.modalService.dismissAll()
-            this.applyPayment = []
+            this.applyDebitPayment = []
             this.as.successToast(res.message)
           } else {
             this.as.errorToast(res.message)
@@ -220,6 +261,188 @@ export class BillListComponent implements OnInit {
     
   }
 
+  openModal14(content: any,){
+    this.sp.show();
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+    this.getCustomerCreditAmount(this.applyCreditPayment.ID ,this.applyCreditPayment.CustomerID)
+    this.sp.hide();
+  }
+
+  getCustomerCreditAmount(ID:any ,CustomerID:any){
+    this.sp.show();
+    const subs: Subscription = this.pay.getCustomerCreditAmount(ID,CustomerID).subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.getPaymentModesList()
+          this.applyCreditPayment.PayableAmount = res.totalCreditAmount
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    this.sp.hide();
+  }
+
+  customerCreditDebit(){
+    if(this.applyCreditPayment.PayableAmount < this.applyCreditPayment.PaidAmount){
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        backdrop: false,
+      })
+    }else{
+      const subs: Subscription = this.pay.customerCreditDebit(this.applyCreditPayment).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.getCustomerCreditAmount(res.data.ID ,res.data.CustomerID)
+            this.applyCreditPayment.PaidAmount = 0; this.applyCreditPayment.PaymentMode = '';
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+    
+  }
+   // customer payment debit and credit
+
+
+  // customer payment individual invoice wise
+  openModal13(content: any,data:any) {
+    this.sp.show();
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
+    this.getPaymentModesList()
+    this.paymentHistoryByMasterID(data.CustomerID,data.ID)
+    this.billByCustomer(data.CustomerID,data.ID)
+    this.applyPayment.CustomerID = data.CustomerID
+    this.applyPayment.BillMasterID = data.ID
+    this.sp.hide();
+  }
+
+  billByCustomer(CustomerID:any,BillMasterID:any){
+    this.sp.show()
+    const subs: Subscription = this.bill.billByCustomerInvoice(CustomerID,BillMasterID).subscribe({
+      next: (res: any) => {
+          if(res.success ){
+             this.invoiceList = res.data
+              if (this.invoiceList.length === 0) {
+                 this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
+              }
+             this.applyPayment.PayableAmount =  res.totalDueAmount ? res.totalDueAmount: 0;
+             this.applyPayment.CustomerCredit = res.creditAmount ? res.creditAmount : 0
+          }else{
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: 'Opps !!',
+              text: res.message,
+              showConfirmButton: true,
+              backdrop : false,
+            })
+          }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    this.sp.hide()
+  }
+
+  paymentHistoryByMasterID(CustomerID:any,BillMasterID:any){
+    this.sp.show()
+    const subs: Subscription = this.bill.paymentHistoryByMasterID(CustomerID,BillMasterID).subscribe({
+      next: (res: any) => {
+          if(res.success ){
+            res.data.forEach((ele: any) => {
+              ele.Amount = ele.Type === 'Debit' ? '-' + ele.Amount : '+' + ele.Amount;
+            });
+             this.paidList = res.data
+          }else{
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: 'Opps !!',
+              text: res.message,
+              showConfirmButton: true,
+              backdrop : false,
+            })
+          }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    this.sp.hide()
+  }
+
+  onPaymentSubmit(){
+    if(this.applyPayment.PayableAmount < this.applyPayment.PaidAmount ){
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Opps !!',
+        showConfirmButton: true,
+        backdrop : false,
+      })
+      this.applyPayment.PaidAmount = 0
+    }
+    if(this.applyPayment.ApplyReturn === true){
+      if (this.applyPayment.CustomerCredit < this.applyPayment.PaidAmount){
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Opps !!',
+          showConfirmButton: true,
+          backdrop : false,
+        })
+        this.applyPayment.PaidAmount = 0
+      }
+    }
+
+    if(this.applyPayment.PaidAmount !== 0){
+      this.applyPayment.CompanyID = this.company.ID;
+      this.applyPayment.ShopID = Number(this.selectedShop);
+      this.applyPayment.PaymentDate =  moment().format('YYYY-MM-DD');
+      this.applyPayment.pendingPaymentList = this.invoiceList;
+      console.log(this.applyPayment);
+      const subs: Subscription = this.pay.customerPayment(this.applyPayment).subscribe({
+        next: (res: any) => {
+            if(res.success ){
+              this.paymentHistoryByMasterID(this.applyPayment.CustomerID,this.applyPayment.BillMasterID)
+              this.billByCustomer(this.applyPayment.CustomerID,this.applyPayment.BillMasterID)
+              this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
+            }else{
+              this.as.errorToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: 'Opps !!',
+                text: res.message,
+                showConfirmButton: true,
+                backdrop : false,
+              })
+            }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+
+
+    }
+  }
+  // customer payment individual invoice wise
   // deleteItem(i:any){
   //   Swal.fire({
   //     title: 'Are you sure?',
@@ -395,5 +618,5 @@ export class BillListComponent implements OnInit {
     })
     this.sp.hide()
   }
-
+ 
 }

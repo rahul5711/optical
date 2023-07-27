@@ -135,8 +135,8 @@
                               <mat-icon class="delete_icon ms-1">delete_forever</mat-icon>
                             </button>
 
-                            <button title="Payment" class="bg-btn"
-                              [routerLink]="['/sale/billing', Bdata.CustomerID ,Bdata.ID]">
+                            <button title="Payment" class="bg-btn" (click)="openModal13(content1,Bdata)"
+                              >
                               <mat-icon class="edit_icon ms-1">attach_money </mat-icon>
                             </button>
                             <button title="Eye Power" class="bg-btn">
@@ -188,8 +188,12 @@
 <ng-template #content role="document" let-modal>
   <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
     <h2 class="modal-title header pt-2" id="exampleModalLabel">Payment Detail's</h2>
-    <button  *ngIf="this.applyPayment.PayableAmount !== 0" type="button" class="ms-5" mat-raised-button color="primary"
-      (click)="openModal12(content12)">Customer Debit
+    <button  *ngIf="this.paymentHistoryList[0]?.Quantity !== 0  " type="button" class="ms-5" mat-raised-button color="primary"
+      (click)="openModal12(content12)">Customer Debit (ReturnAmt)
+    </button>
+
+    <button  *ngIf="this.applyCreditPayment.PayableAmount !== 0" type="button" class="ms-5" mat-raised-button color="primary"
+      (click)="openModal14(content14)">Customer Credit (ReturnAmt)
     </button>
 
     <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
@@ -234,7 +238,14 @@
                 <tbody>
                   <tr *ngFor="let data of paymentHistoryList  let i = index;">
                     <td class="ps-3">{{ i + 1 }}</td>
-                    <td class="text-center">{{data.PaymentDate}}</td>
+                    <td *ngIf="!UpdateMode" class="text-center">{{data.PaymentDate}}</td>
+                    <td
+                    *ngIf="UpdateMode"
+                    style=" text-align: center;">
+                          <input name="PaymentDate" type="date" [(ngModel)]="data.PaymentDate"  (blur)="updateCustomerPaymentDate(data)" #name="ngModel"
+                          [ngModelOptions]="{standalone: true}" name="data.PaymentDate{{i}}">
+                 
+                  </td>
                     <td *ngIf="!UpdateMode" class="text-center">{{data.PaymentMode}} </td>
                     <td
                       *ngIf="(UpdateMode && data.PaymentMode === 'Customer Credit' )|| (UpdateMode && data.PaymentMode === 'Payment Initiated')|| (UpdateMode && data.PaymentMode === 'Customer Return')"
@@ -264,7 +275,7 @@
   </div>
 </ng-template>
 
-<!-- customer retrun model  -->
+<!-- customer Debit model  -->
 <ng-template #content12 role="document" let-modal>
   <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
     <h2 class="modal-title header pt-2" id="exampleModalLabel">Customer Retrun</h2>
@@ -278,7 +289,7 @@
             <mat-form-field class="example-full-width mb-0">
               <mat-label>Paid Amount</mat-label>
               <input type="number" style="color: rgb(255 0 0 / 75%); font-size: 17px !important;" matInput
-                name="Total Amount" value="{{ this.applyPayment.PayableAmount}}" disabled #TOutstandingcontrol
+                name="Total Amount" value="{{ this.applyDebitPayment.PayableAmount}}" disabled #TOutstandingcontrol
                 [autocomplete]="false">
             </mat-form-field>
           </div>
@@ -286,13 +297,13 @@
             <mat-form-field class="example-full-width mb-0">
               <mat-label>Return Payment</mat-label>
               <input type="number" style="font-size: 17px !important;" matInput name="PaymentAmount"
-                [(ngModel)]="applyPayment.PaidAmount" [autocomplete]="false">
+                [(ngModel)]="applyDebitPayment.PaidAmount" [autocomplete]="false">
             </mat-form-field>
           </div>
           <div class="col-md-12 mb-0">
             <mat-form-field class="example-full-width mb-0">
               <mat-label>Payment Mode</mat-label>
-              <mat-select name="PayMode" [(ngModel)]="applyPayment.PaymentMode" required #GSTTypecontrol1>
+              <mat-select name="PayMode" [(ngModel)]="applyDebitPayment.PaymentMode" required #GSTTypecontrol1>
                 <mat-option [value]="p.Name" *ngFor="let p of PaymentModesList"> {{p.Name}} </mat-option>
               </mat-select>
             </mat-form-field>
@@ -305,3 +316,192 @@
     </div>
   </div>
 </ng-template>
+
+<!-- customer credit model  -->
+<ng-template #content14 role="document" let-modal>
+  <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+    <h2 class="modal-title header pt-2" id="exampleModalLabel">Customer Retrun</h2>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body p-0">
+    <div class="modal-body">
+      <form #f3="ngForm" (ngSubmit)="customerCreditDebit()">
+        <div class="row">
+          <div class="col-md-12 mb-0">
+            <mat-form-field class="example-full-width mb-0">
+              <mat-label>Paid Amount</mat-label>
+              <input type="number" style="color: rgb(255 0 0 / 75%); font-size: 17px !important;" matInput
+                name="Total Amount" value="{{ this.applyCreditPayment.PayableAmount}}" disabled #TOutstandingcontrol
+                [autocomplete]="false">
+            </mat-form-field>
+          </div>
+          <div class="col-md-12 mb-0">
+            <mat-form-field class="example-full-width mb-0">
+              <mat-label>Return Payment</mat-label>
+              <input type="number" style="font-size: 17px !important;" matInput name="PaymentAmount"
+                [(ngModel)]="applyCreditPayment.PaidAmount" [autocomplete]="false">
+            </mat-form-field>
+          </div>
+          <div class="col-md-12 mb-0">
+            <mat-form-field class="example-full-width mb-0">
+              <mat-label>Payment Mode</mat-label>
+              <mat-select name="PayMode" [(ngModel)]="applyCreditPayment.PaymentMode" required #GSTTypecontrol1>
+                <mat-option [value]="p.Name" *ngFor="let p of PaymentModesList"> {{p.Name}} </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-12 col-6">
+            <button type="submit" [disabled]="f3.invalid" mat-raised-button color="primary">Apply Payment</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<!-- payment -->
+ <ng-template #content1 role="document" let-modal>
+  <div class="modal-header"  style="height: 50px; border-bottom: #ff651e 3px solid;">
+    <h3 class="modal-title header pt-2" id="exampleModalLabel" style="font-weight: bolder;">Payment</h3>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+      <form  #f3="ngForm" (ngSubmit)="onPaymentSubmit()">
+              <div class="row">
+                      <div class="col-md-1 mb-0">
+                          <mat-form-field class="example-full-width mb-0" >
+                              <mat-label>Balance</mat-label>
+                              <input type="number" style="color: rgb(255 0 0 / 75%); font-size: 17px !important;" matInput name="Total Amount" value="{{ this.applyPayment.PayableAmount}}" disabled #TOutstandingcontrol [autocomplete]="false">
+                          </mat-form-field>
+                      </div>
+                    
+                      <div class="col-md-2 mb-0">
+                          <mat-form-field class="example-full-width mb-0">
+                              <mat-label>Previous Customer Credit </mat-label>  
+                          <div class="row mt-0">
+                             <div class="col-md-3 p-0" style="height: 16px;"> 
+                                 <mat-checkbox color="primary" style="margin-left: 10px;" name="applyPayment.ApplyReturn" [(ngModel)]="applyPayment.ApplyReturn" ></mat-checkbox>
+                             </div>
+                             <div class="col-md-9 p-0">  
+                              <input type="number" style="font-size: 17px !important;" matInput name="CustomerCredit" disabled [(ngModel)]="applyPayment.CustomerCredit"   #CustomerCreditcontrol [autocomplete]="false">
+                             </div>
+                          </div>
+                          </mat-form-field>
+                      </div>
+                     
+                      <div class="col-md-1 mb-0">
+                          <mat-form-field class="example-full-width mb-0">
+                              <mat-label>New Payment</mat-label>
+                              <input type="number" style="font-size: 17px !important;" matInput name="PaymentAmount" [(ngModel)]="applyPayment.PaidAmount" [autocomplete]="false" >
+                          </mat-form-field>
+                      </div>
+                      <div class="col-md-2 mb-0" *ngIf="applyPayment.ApplyReward !== true && applyPayment.ApplyReturn !== true">
+                          <mat-form-field class="example-full-width mb-0">
+                              <mat-label>Payment Mode</mat-label>
+                              <mat-select name="PayMode" [(ngModel)]="applyPayment.PaymentMode" required #GSTTypecontrol1>
+                                  <mat-option  [value]="p.Name" *ngFor="let p of PaymentModesList"> {{p.Name}} </mat-option>
+                              </mat-select>
+                          </mat-form-field>
+                      </div>
+                      <div class="col-md-2 mb-0" *ngIf="applyPayment.ApplyReward === true || applyPayment.ApplyReturn === true">
+                          <mat-form-field class="example-full-width mb-0">
+                              <mat-label>Payment Mode</mat-label>
+                              <mat-select name="PayMode" [(ngModel)]="applyPayment.PaymentMode" required #GSTTypecontrol1>
+                                  <mat-option value="Customer Credit" *ngIf="applyPayment.CustomerCredit !== 0 && applyPayment.ApplyReturn === true">Customer Credit</mat-option>
+                                  <mat-option value="Customer Reward" *ngIf="applyPayment.RewardPayment != null &&applyPayment.RewardPayment != 0 && applyPayment.ApplyReward === true">Customer Reward</mat-option>
+                              </mat-select>
+                          </mat-form-field>
+                      </div>
+                      <div class="col-md-2 mb-0" >
+                          <mat-form-field class="example-full-width mb-0">
+                              <mat-label>Payment Type</mat-label>
+                              <mat-select name="CreditType" [(ngModel)]="applyPayment.CreditType" required #GSTTypecontrol1>
+                                  <mat-option value="Credit">Credit </mat-option>
+                                  <mat-option value="Debit">Debit </mat-option>
+                              </mat-select>
+                          </mat-form-field>
+                      </div>
+                      <div class="col-md-2 mb-0">
+                          <mat-form-field class="example-full-width mb-0">
+                              <mat-label> Card No.</mat-label>
+                              <input  style="font-size: 17px !important;" matInput name="CardNo" [(ngModel)]="applyPayment.CardNo" #CardNocontrol [autocomplete]="false">
+                              <mat-error>
+                                  Card No. is required
+                              </mat-error>
+                          </mat-form-field>
+                      </div>
+                      <div class="col-md-2 mb-0">
+                          <mat-form-field class="example-full-width mb-0">
+                              <mat-label>Reference</mat-label>
+                              <input  style="font-size: 17px !important;" matInput name="NamePay" [(ngModel)]="applyPayment.PaymentReferenceNo" #NamePaycontrol [autocomplete]="false">
+                              <mat-error>
+                                  Name is required
+                              </mat-error>
+                          </mat-form-field>
+                      </div>
+                      <div class="col-md-2 col-6">
+                          <button type="submit" [disabled]="f3.invalid || this.applyPayment.PaymentMode === 0" mat-raised-button color="primary">Apply Payment</button>
+                      </div>
+                      <div class="col-md-3 col-6">
+                          <button [disabled]="applyPayment.CustomerCredit === 0"  type="button"  mat-raised-button color="primary">
+                              Credit Note
+                          </button>
+                          <button class="whatsapp ms-4 me-4"><i class="fa-brands fa-whatsapp" ></i></button>
+                          <button class="email"><i class="fa-solid fa-envelope"></i></button>
+                      </div>
+              </div>
+      </form>
+       <div class="row mt-3">
+          <div class="col-md-5">
+              <div class="table-responsive " style="border: 1px solid #ff5100;overflow-x: scroll; max-height: 200px;" >
+                  <table
+                      class="table table-striped table-hover table-sm table-bordered"
+                      style="border: 2px solid #fff !important; margin: 0; overflow-y: scroll; max-height: 150px;">
+                      <thead>
+                        <tr>
+                          <th style="background-color: #ff5100; color: #fff !important;">Invoice No</th>
+                          <th>Bill Amount</th>
+                          <th>Due Amount</th>  
+                        </tr>
+                      </thead>
+                      <tbody>
+                          <tr class="text-center" *ngFor="let inv of invoiceList; let i = index;">
+                              <td class="text-left" style="background-color: #ff5100; color: #fff;">{{inv.InvoiceNo}}</td>
+                              <td class="text-left">{{inv.TotalAmount}}</td>
+                              <td class="text-left">{{inv.DueAmount}}</td>
+                             
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+          <div class="col-md-6 ms-auto">
+              <div class="table-responsive " style="border: 1px solid #ff5100;overflow-x: scroll; max-height: 200px;">
+                  <table
+                      class="table table-striped table-hover table-sm table-bordered"
+                      style="border: 2px solid #fff !important; margin: 0; ">
+                      <thead>
+                        <tr>
+                          <th>PaymentDate</th>
+                          <th>PaymentMode</th>
+                          <th>CardNo</th>  
+                          <th>ReferenceNo</th>   
+                          <th style="background-color: #ff5100; color: #fff !important;">PaidAmount</th>  
+                        </tr>
+                      </thead>
+                      <tbody >
+                          <tr style="white-space:nowrap;" class="text-center" *ngFor="let paid of paidList; let i = index;"  >
+                              <td class="text-left">{{paid.PaymentDate | date: 'dd/MM/YYYY'}}</td>
+                              <td class="text-left">{{paid.PaymentMode}}</td>
+                              <td class="text-left">{{paid.CardNo}}</td>
+                              <td class="text-left">{{paid.PaymentReferenceNo}}</td>
+                              <td class="text-left" style="background-color: #ff5100; color: #fff;">{{paid.Amount}}</td>
+                             
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+       </div>
+  </div>
+</ng-template> 

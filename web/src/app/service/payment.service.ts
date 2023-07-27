@@ -52,6 +52,11 @@ export class PaymentService {
     .pipe(catchError(this.handleError));
   }
 
+  updateCustomerPaymentDate(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/updateCustomerPaymentDate', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   customerPaymentDebit(Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/customerPaymentDebit', Body, httpOptions)
     .pipe(catchError(this.handleError));
@@ -59,6 +64,16 @@ export class PaymentService {
 
   applyPayment(Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/applyPayment', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getCustomerCreditAmount(ID:any, CustomerID:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getCustomerCreditAmount', {ID:ID, CustomerID:CustomerID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  customerCreditDebit(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/customerCreditDebit', Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
 

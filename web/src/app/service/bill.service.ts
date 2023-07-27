@@ -115,6 +115,11 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  billByCustomerInvoice(CustomerID:any,BillMasterID:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/billByCustomer',{CustomerID:CustomerID, BillMasterID:BillMasterID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   paymentHistoryByMasterID(CustomerID:any,BillMasterID:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/paymentHistoryByMasterID',{CustomerID:CustomerID,BillMasterID:BillMasterID}, httpOptions)
     .pipe(catchError(this.handleError));
