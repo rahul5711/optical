@@ -8,6 +8,7 @@ router.post('/update', verifyAccessTokenAdmin ,Controller.update)
 router.post('/delete', verifyAccessTokenAdmin ,Controller.delete)
 router.post('/restore', verifyAccessTokenAdmin ,Controller.restore)
 router.post('/getList', verifyAccessTokenAdmin ,Controller.getList)
+router.post('/getRoleById', verifyAccessTokenAdmin ,Controller.getRoleById)
 
 // Regex search
 

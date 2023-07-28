@@ -30,6 +30,16 @@ export class RoleService {
     .pipe(catchError(this.handleError));
   }
 
+  update(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/update',Body)
+    .pipe(catchError(this.handleError));
+  }
+
+  getRoleById(ID:any ): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getRoleById', {ID: ID})
+    .pipe(catchError(this.handleError));
+  }
+
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

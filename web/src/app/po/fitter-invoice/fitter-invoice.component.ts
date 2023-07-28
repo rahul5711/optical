@@ -51,7 +51,7 @@ export class FitterInvoiceComponent implements OnInit {
 
   ngOnInit(): void {
     this.sp.show();
-    this.FitterMaster.PurchaseDate = moment().format('YYYY-MM-DD');
+    // this.FitterMaster.PurchaseDate = moment().format('YYYY-MM-DD');
     this.dropdownfitterlist()
     this.dropdownShoplist()
     this.getGSTList()
