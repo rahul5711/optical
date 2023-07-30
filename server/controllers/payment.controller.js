@@ -814,9 +814,9 @@ module.exports = {
             const [fetchBillMaster] = await connection.query(`select * from billmaster where ID = ${ID}`)
 
 
-            // if (fetchBillMaster.DueAmount <= 0) {
-            //     return res.send({ message: `You can't debit, this amount alread added customer credit amount` })
-            // }
+            if (fetchBillMaster.PayableAmount <= 0) {
+                return res.send({ message: `You can't debit, this amount alread added customer credit amount` })
+            }
 
 
             const DueAmount = fetchBillMaster.DueAmount + PaidAmount

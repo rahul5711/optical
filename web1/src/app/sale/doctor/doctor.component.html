@@ -1,0 +1,222 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"> </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                <div class="card">
+                    <div class="header">
+                        <h2>Doctor Info </h2>
+                    </div>
+                    <div class="body">
+                        <form #f="ngForm" autocomplete="off" (ngSubmit)="onsubmit()">
+                            <div class="row">
+                                <div class="col-sm-10 col-12">
+                                    <div class="row">
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Doctor Name</mat-label>
+                                                <input matInput name="Name" [(ngModel)]="data.Name"
+                                                    (ngModelChange)="data.Name = onChange($event)" minlength="2"
+                                                    required appAutoFoucsDirectives />
+                                                <mat-error>Doctor Name is required</mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>DOB</mat-label>
+                                                <input matInput name="DOB" type="date" [(ngModel)]="data.DOB">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Anniversary</mat-label>
+                                                <input matInput name="Anniversary" type="date"
+                                                    [(ngModel)]="data.Anniversary">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Designation</mat-label>
+                                                <input matInput name="Designation" minlength="2"
+                                                    [(ngModel)]="data.Designation"
+                                                    (ngModelChange)="data.Designation = onChange($event)" />
+                                                <mat-error>Doctor Designation is required</mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Qualification</mat-label>
+                                                <input matInput name="Qualification" [(ngModel)]="data.Qualification"
+                                                    (ngModelChange)="data.Qualification = onChange($event)"
+                                                    minlength="2" />
+                                                <mat-error>Qualification is required</mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Hospital Name</mat-label>
+                                                <input matInput name="HospitalName" [(ngModel)]="data.HospitalName"
+                                                    (ngModelChange)="data.HospitalName = onChange($event)"
+                                                    minlength="3" />
+                                                <mat-error>Hospital Name is required</mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Mobile No1</mat-label>
+                                                <input matInput name="MobileNo1" type="number"
+                                                    [(ngModel)]="data.MobileNo1" required />
+                                                <!-- pattern="^((\\+91-?)|0)?[0-9]{10}$" -->
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Mobile No2</mat-label>
+                                                <input matInput name="MobileNo2" type="number"
+                                                    [(ngModel)]="data.MobileNo2" />
+
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>PhoneNo</mat-label>
+                                                <input matInput name="PhoneNo" [(ngModel)]="data.PhoneNo" />
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Email</mat-label>
+                                                <input matInput name="Email" type="email" [(ngModel)]="data.Email" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+                                                    (ngModelChange)="data.Email = onChange($event)" />
+                                                <mat-error>Invalid EmailId.</mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-3 col-sm-6 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Address</mat-label>
+                                                <input matInput name="Address" [(ngModel)]="data.Address"
+                                                    (ngModelChange)="data.Address = onChange($event)" required
+                                                    minlength="2" />
+                                                <mat-error>Atleast 2 characters required</mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Branch</mat-label>
+                                                <input matInput name="Branch" [(ngModel)]="data.Branch"
+                                                    (ngModelChange)="data.Branch = onChange($event)" />
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Landmark</mat-label>
+                                                <input matInput name="Landmark" [(ngModel)]="data.Landmark"
+                                                    (ngModelChange)="data.Landmark = onChange($event)" />
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Doctor Type</mat-label>
+                                                <input matInput name="DoctorType" [(ngModel)]="data.DoctorType"
+                                                    (ngModelChange)="data.DoctorType = onChange($event)" />
+                                                <mat-error>Doctors type is required</mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Loyalty Type</mat-label>
+                                                <mat-select name="CommissionType" [(ngModel)]="data.CommissionType"
+                                                    required #CommissionTypecontrol>
+                                                    <mat-option [value]=0>No Loyalty</mat-option>
+                                                    <mat-option [value]=1>Per Sale Loyalty</mat-option>
+                                                    <mat-option [value]=2>Per Item Loyalty</mat-option>
+                                                </mat-select>
+                                                <mat-error>
+                                                    Select Loyalty Type
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div *ngIf="data.CommissionType == 1 || data.CommissionType == 2 " class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Loyalty Mode</mat-label>
+                                                <mat-select name="CommissionMode" [(ngModel)]="data.CommissionMode"
+                                                    required #CommissionTypecontrol>
+                                                    <mat-option [value]=0></mat-option>
+                                                    <mat-option [value]=1>Percentage</mat-option>
+                                                    <mat-option *ngIf="data.CommissionType == 1"  [value]=2>Fixed Amount</mat-option>
+                                                </mat-select>
+                                                <mat-error> Select Loyalty Type</mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                       
+                                        <div *ngIf="data.CommissionType == 2 || data.CommissionType == 1" class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Loyalty Value (Brand Wise)</mat-label>
+                                                <input matInput type="number" name="CommissionValue"
+                                                    [(ngModel)]="data.CommissionValue" #CommissionValuecontrol required>
+                                            </mat-form-field>
+                                        </div>
+                                        <div *ngIf="data.CommissionType == 2 " class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Loyalty Value(Non Brand Wise)</mat-label>
+                                                <input matInput type="number" name="CommissionValueNB"
+                                                    [(ngModel)]="data.CommissionValueNB" #CommissionValueNBcontrol required>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-checkbox labelPosition="before" color="primary" name="LoginPermission"
+                                                [(ngModel)]="data.LoginPermission">Login Permission</mat-checkbox>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>LoginName</mat-label>
+                                                <input matInput name="LoginName" required [(ngModel)]="data.LoginName"
+                                                    minlength="3" autocomplete="off" autocomplete="nope" />
+                                                <mat-error>Login Name is required</mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div *ngIf="id == 0" class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Password</mat-label>
+                                                <input matInput name="Password" required [(ngModel)]="data.Password"
+                                                    minlength="3" autocomplete="off" type="password"
+                                                    autocomplete="new-password" />
+                                                <mat-error>Password is required</mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3">
+                                        <button class="me-3" type="button" mat-raised-button color="primary"
+                                            [disabled]="!f.valid" *ngIf="id != 0"
+                                            (click)="updateDoctor()">Update</button>
+                                        <button type="submit" class="me-3" mat-raised-button color="primary"
+                                            [disabled]="!f.valid" *ngIf="id == 0">Save</button>
+                                        <button type="button" mat-raised-button
+                                            [routerLink]="['/sale/doctorList']">Back</button>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2 col-12">
+                                    <div class="row">
+                                        <div class="col-10 mt-md-3 ">
+                                            <img class="fit-picture" width="170" height="170" [src]="userImage">
+                                        </div>
+                                        <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 "
+                                            (click)="fileInput.click()" style="cursor: pointer;">
+                                            <i class="fa-solid fa-cloud-arrow-up upload_icon">
+                                                <span style="font-size: 10px;letter-spacing: 2px;"> Image
+                                                </span>
+                                            </i>
+                                            <input #fileInput id="my-input" name='PhotoURL' type="file"
+                                                 (change)="uploadImage($event, 'company')"
+                                                style="display:none;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

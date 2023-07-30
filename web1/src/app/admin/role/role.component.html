@@ -1,0 +1,113 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row"></div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="header">
+                        <h2>Role Permission</h2>
+                        <ul class="header-dropdown m-r--5"> </ul>
+                    </div>
+                    <div class="body">
+                        <form #f="ngForm" (ngSubmit)="savePermission()">
+                            <div class="row" *ngIf="!showAdd">
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 mb-0" style=" height: 60px;">
+                                    <ng-select bindLabel="Shop" name="Role" placeholder="Select Role" [(ngModel)]="selectedRole.ID"  (change)="setdata()" [required]="true" #Role="ngModel" [closeOnSelect]="true" [searchable]="true">
+                                        <ng-option [value]=""></ng-option>
+                                        <ng-option [value]="role.ID" *ngFor="let role of roleList">{{role.Name | uppercase}} </ng-option>
+                                     </ng-select>
+                                     <span *ngIf="Role.errors && !Role.touched" class="star">*</span>
+                                     <span *ngIf="Role.touched && Role.errors" class="errorss">Select Valid Value</span>
+
+                                </div>
+                                <div *ngIf="!showAdd" class="col-md-8 col-sm-6 mb-0">
+                                    <button type="button" class="btn_icon"  (click)="showAdd = !showAdd; ">
+                                        <mat-icon class="col-white plus_icon">add</mat-icon>
+                                    </button>
+                                    <button type="button" class="btn_icon" [disabled]="selectedRole.ID === ''"
+                                        (click)="deleteRole()">
+                                        <mat-icon class="delete_icon me-2 ms-2">delete_forever</mat-icon>
+                                    </button>
+                                </div>
+                                <div class="col-md-2 col-sm-6 mb-0">
+                                    <button type="submit" class="btn btn-success float-right" [disabled]="!f.valid"> <i class="fas fa-save"></i>&nbsp; Save Permissions</button>
+                                </div>
+                            </div>
+                            <div class="row" *ngIf="showAdd">
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Role Name</mat-label>
+                                        <input matInput name="NewRole" [(ngModel)]="selectedRole.Name" required
+                                            #NewProductTypecontrol>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 mb-0">
+                                    <button type="button" autofocus class="btn_icon"
+                                        (click)="showAdd = !showAdd; saveRole()">
+                                        <mat-icon class="save_icon">save</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="body" style="overflow-x:auto;overflow:auto;height:450px;"
+                                class="table-responsive">
+                                <table class="table" class="table table-striped table-hover table-sm table-bordered"
+                                    style="border: 2px solid #fff !important;">
+                                    <thead class="thead-light">
+                                        <tr >
+                                            <th  style="text-align: left;">Module Name</th>
+                                            <th>ModuleView</th>
+                                            <th>View</th>
+                                            <th>Edit</th>
+                                            <th>Add</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-center">
+                                        <tr *ngFor="let module of displayModule ; let i = index;">
+                                            <td style="text-align: left;">{{ module.ModuleName }}</td>
+                                            <td>
+                                                <mat-slide-toggle (click)="setPermissionValue(i)"  name="{{'MView' + i}}" color="primary" [(ngModel)]="module.MView" [ngModelOptions]="{standalone: true}" class="example-margin"></mat-slide-toggle> {{module.MView}}
+                                            </td>
+                                            <td *ngIf="displayModule[i].MView">
+                                                <mat-slide-toggle name="{{'View' + i}}" color="primary" [(ngModel)]="module.View" class="example-margin" [ngModelOptions]="{standalone: true}"></mat-slide-toggle>
+                                            </td>
+                                            <td *ngIf="!displayModule[i].MView">
+                                                <mat-slide-toggle disabled name="{{'View' + i}}" color="primary" [(ngModel)]="module.View" class="example-margin" [ngModelOptions]="{standalone: true}"></mat-slide-toggle>
+                                            </td>
+
+                                            <td *ngIf="displayModule[i].MView">
+                                                <mat-slide-toggle name="{{'Edit' + i}}" color="primary" [(ngModel)]="module.Edit" class="example-margin" [ngModelOptions]="{standalone: true}">  </mat-slide-toggle>
+                                            </td>
+                                            <td *ngIf="!displayModule[i].MView">
+                                                <mat-slide-toggle disabled name="{{'Edit' + i}}" color="primary" [(ngModel)]="module.Edit" class="example-margin" [ngModelOptions]="{standalone: true}"></mat-slide-toggle>
+                                            </td>
+
+
+                                            <td *ngIf="displayModule[i].MView">
+                                                <mat-slide-toggle name="{{'Add' + i}}" color="primary" [(ngModel)]="module.Add" class="example-margin" [ngModelOptions]="{standalone: true}"></mat-slide-toggle>
+                                            </td>
+
+                                            <td *ngIf="!displayModule[i].MView">
+                                                <mat-slide-toggle disabled name="{{'Add' + i}}" color="primary" [(ngModel)]="module.Add" class="example-margin" [ngModelOptions]="{standalone: true}"></mat-slide-toggle>
+                                            </td>
+
+
+                                            <td *ngIf="displayModule[i].MView">
+                                                <mat-slide-toggle name="{{'Delete' + i}}" color="primary" [(ngModel)]="module.Delete" class="example-margin" [ngModelOptions]="{standalone: true}"></mat-slide-toggle>
+                                            </td>
+                                            <td *ngIf="!displayModule[i].MView">
+                                                <mat-slide-toggle disabled name="{{'Delete' + i}}" color="primary" [(ngModel)]="module.Delete" class="example-margin" [ngModelOptions]="{standalone: true}"></mat-slide-toggle>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

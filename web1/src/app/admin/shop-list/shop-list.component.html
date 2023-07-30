@@ -1,0 +1,350 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                    <div class="card p-0">
+                        <div class="header p-2 py-0 pt-1">
+                            <div class="row">
+                                <div class="col-md-1 col-8 p-0 ms-3">
+                                    <h2>Shop List <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true"
+                                            type="button" (click)="exportAsXLSX()"></i> </h2>
+                                </div>
+                                <div class="col-md-2 col-1 ps-md-0 ps-1">
+                                    <select class=" form-control"
+                                        style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
+                                        [(ngModel)]="itemsPerPage" (change)="getList();">
+                                        <option [ngValue]="10">Show 10 Row</option>
+                                        <option [ngValue]="25">Show 25 Row</option>
+                                        <option [ngValue]="50">Show 50 Row</option>
+                                        <option [ngValue]="100">Show 100 Row</option>
+                                        <option [ngValue]="250">Show 250Row</option>
+                                        <option [ngValue]="500">Show 500 Row</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 col-4 mx-md-auto" style="margin-top:0px;">
+                                    <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false"
+                                        ngbPaginationEllipsis [collectionSize]="collectionSize" #numPages
+                                        [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="getList()"
+                                        [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                                    </ngb-pagination>
+                                </div>
+                                <div class="col-md-2 col-4 ms-auto">
+                                    <div class="input-group">
+                                        <input placeholder="Search" [(ngModel)]="term" #searching mdbInput type="search"
+                                            id="form1" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col-md-1 col-1" style="width: 70px;padding: 0;">
+                                    <button class="bg-none" (click)="openModal(content)">
+                                        <mat-icon class="col-white plus_icon me-1" data-mdb-toggle="modal"
+                                        data-mdb-target="#exampleModal" > add</mat-icon>
+                                    </button>
+                                    <button class="bg-none" (click)="gridview = !gridview">
+                                        <mat-icon class="col-white Grid_icon"
+                                        title="Grid View" style="font-size: 22px;padding: 4px;">grid_on</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Grid View start -->
+                        <div class="row mt-2 p-2" *ngIf="dataList?.length !== 0 && !gridview"
+                            style="overflow:auto;height:530px; ">
+                            <div class="col-md-3" *ngFor="let data of dataList let i = index;">
+                                <div class="course-card" style="height: 28rem;">
+                                    <div class="course-card-body">
+                                        <div class="course-card-top-overflow text-white">
+                                            <img [src]="data.LogoURL" alt="Image" class="mx-auto d-block cardImg" />
+                                        </div>
+                                        <h2 class="text-center m-0">{{data.Name}}</h2>
+                                        <p class="text-center m-0">{{data.MobileNo1}}</p>
+                                        <p class="text-center m-0">{{data.Email}}</p>
+                                        <p class="text-center m-0 cardAddress">{{data.Address }}</p>
+                                        <div class="text-center mb-3">
+                                            <button class="bg-none" (click)="openModalEdit(content,data)">
+                                                <mat-icon class="edit_icon ms-1" >edit</mat-icon>
+                                            </button>
+                                            <button class="bg-none" (click)="deleteItem(i)">
+                                              <mat-icon class="delete_icon ms-1" >delete_forever</mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Grid View end -->
+                        <!-- shop list start -->
+                        <div class="body mt-2 p-2">
+                            <div class="row" *ngIf="gridview">
+                                <div class="col-sm-12" style="overflow: auto; height: 530px;">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover table-sm table-bordered"
+                                            style="border: 2px solid #fff !important;">
+                                            <thead>
+                                                <tr>
+                                                    <th>Action</th>
+                                                    <th>S.No</th>
+                                                    <th>Shop Name</th>
+                                                    <th>Area Name</th>
+                                                    <th>Mobile No1</th>
+                                                    <th>Mobile No2</th>
+                                                    <th>Phone No</th>
+                                                    <th>Email</th>
+                                                    <th>Website</th>
+                                                    <th>GST No</th>
+                                                    <th>CIN No</th>
+                                                    <th>Shop Timing</th>
+                                                    <th>CreatedBy</th>
+                                                    <th>UpdatedBy</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr   class="text-center" *ngFor="let data of dataList let i = index;"
+                                                    style="white-space: nowrap;">
+                                                    <td style="width: 7%;">
+                                                        <button class="bg-none" (click)="openModalEdit(content,data)">
+                                                            <mat-icon class="edit_icon ms-1" data-mdb-toggle="modal"
+                                                            data-mdb-target="#exampleModal">edit</mat-icon>
+                                                        </button>
+                                                        <button class="bg-none" (click)="deleteItem(i)">
+                                                            <mat-icon class="delete_icon ms-1" > delete_forever</mat-icon>
+                                                        </button>
+                                                    </td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{dataList.length - i }}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.Name}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.AreaName}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.MobileNo1 }}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.MobileNo2 !== 'null')? data.MobileNo2:''}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.PhoneNo !== 'null')? data.PhoneNo:''}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.Email !== 'null')? data.Email: ''}} </td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.Website !== 'null')? data.Website:''}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.GSTNo !== 'null')? data.GSTNo: ''}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.CINNo !== 'null')? data.CINNo: ''}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.ShopTiming}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.CreatedPerson}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.UpdatedPerson}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- shop list end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- model popup start -->
+<ng-template #content role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+        <h2 class="modal-title header pt-2" id="exampleModalLabel">Shop Info</h2>
+        <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
+            (click)="modal.dismiss('Cross click');formReset()"></button>
+    </div>
+    <div class="modal-body">
+        <form autocomplete="off" #f="ngForm" (ngSubmit)="onsubmit()">
+            <!-- shop form filed -->
+            <div class="row">
+                <div class="col-md-10 col-11">
+                    <div class="row">
+                        <div class="col-md-3 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Shop Name</mat-label>
+                                <input matInput name="Name" [(ngModel)]="data.Name" required #Namecontrol minlength="2">
+                                <mat-error >
+                                    Shop Name is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-3 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Area Name</mat-label>
+                                <input matInput name="AreaName" [(ngModel)]="data.AreaName" #AreaNamecontrol>
+                                <mat-error>
+                                    Area Name is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-3 mb-0 pt-md-3  ">
+                            <mat-slide-toggle type="ratio" name="Checked" class="example-margin " [(ngModel)]="toggleChecked"
+                                color="primary" (change)="copyData($event.checked)" [disabled]="false"
+                                #CompanyIDcontrol>
+                                Copy Data From Company
+                            </mat-slide-toggle>
+                        </div>
+                        <div class="col-md-3 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Mobile No1</mat-label>
+                                <input matInput name="MobileNo1" type="number" [(ngModel)]="data.MobileNo1" required
+                                    #MobileNo1control>
+                                <mat-error>
+                                    MobileNo1 is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-3 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Mobile No2</mat-label>
+                                <input matInput name="MobileNo2" type="number" [(ngModel)]="data.MobileNo2"
+                                    #MobileNo2control>
+                                <mat-error>
+                                    MobileNo2 is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-3 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Phone No</mat-label>
+                                <input matInput name="PhoneNo" type="number" [(ngModel)]="data.PhoneNo" #PhoneNocontrol>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-6 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Address</mat-label>
+                                <input matInput name="Address" [(ngModel)]="data.Address" minlength="2" required
+                                    #Addresscontrol>
+                                <mat-error>
+                                    Atleast 2 characters is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-3 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Email</mat-label>
+                                <input matInput name="email" type="email" ngModel [email]="true" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+                                    [(ngModel)]="data.Email" #Emailcontrol>
+                                <mat-error>
+                                    Invalid EmailId.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-3 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Website</mat-label>
+                                <input matInput name="Website" [(ngModel)]="data.Website" #Websitecontrol>
+                                <mat-error *ngIf="Websitecontrol.required">
+                                    Website is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-3 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>GST No</mat-label>
+                                <input matInput name="GSTNo" [(ngModel)]="data.GSTNo" #GSTNocontrol>
+                                <mat-error *ngIf="GSTNocontrol.required">
+                                    GST No is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-3 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>CIN No</mat-label>
+                                <input matInput name="CINNo" [(ngModel)]="data.CINNo" #CINNocontrol>
+                                <mat-error>
+                                    CIN is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-3 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Shop Timing</mat-label>
+                                <input matInput name="Timing" [(ngModel)]="data.ShopTiming" required #TimingNocontrol>
+                                <mat-error *ngIf="TimingNocontrol.required">
+                                    Shop Open Timing is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-3 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Barcode ShopName</mat-label>
+                                <input matInput name="BarcodeName" min="0" max="15" [(ngModel)]="data.BarcodeName"
+                                    #BarcodeNamecontrol>
+                                <mat-error >
+                                    BarcodeName is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-11 ">
+                    <div class="row">
+                        <div class="col-12 mt-1 ">
+                            <img class="fit-picture" width="170" height="170" [src]="companyImage">
+                        </div>
+                        <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 " (click)="fileInput.click()"
+                            style="cursor: pointer;">
+                            <i class="fa-solid fa-cloud-arrow-up upload_icon">
+                                <span style="font-size: 10px;letter-spacing: 2px;"> Shop Image </span>
+                            </i>
+                            <input #fileInput id="my-input" name='LogoURL' type="file"
+                                (change)="uploadImage($event, 'company')" style="display:none;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Bill Fromat Options -->
+            <h2 class="header">Bill Format Hide/Show</h2>
+            <div class="row ps-3">
+                <div class="col-md-1 col-sm-6 col-6 p-0">
+                    <mat-slide-toggle type="ratio"  name="HSNCode" color="primary" [(ngModel)]="data.HSNCode" class="example-margin">
+                        HSN</mat-slide-toggle>
+                </div>
+                <div class="col-md-1 col-sm-6 col-6 p-0">
+                    <mat-slide-toggle type="ratio" name="CustGSTNo" color="primary" [(ngModel)]="data.CustGSTNo"
+                        class="example-margin">GST</mat-slide-toggle>
+                </div>
+                <div class="col-md-1 col-sm-6 col-6 p-0">
+                    <mat-slide-toggle type="ratio" name="Rate" color="primary" [(ngModel)]="data.Rate" class="example-margin">Rate
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-md-1 col-sm-6 col-6 p-0">
+                    <mat-slide-toggle type="ratio" name="Discounts" color="primary" [(ngModel)]="data.Discounts"
+                        class="example-margin">Dis </mat-slide-toggle>
+                </div>
+                <div class="col-md-1 col-sm-6 col-6 p-0">
+                    <mat-slide-toggle type="ratio" name="SubTotal" color="primary" [(ngModel)]="data.SubTotal"
+                        class="example-margin">SubTotal </mat-slide-toggle>
+                </div>
+                <div class="col-md-1 col-sm-6 col-6 p-0">
+                    <mat-slide-toggle type="ratio" name="Tax" color="primary" [(ngModel)]="data.Tax" class="example-margin">Tax
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-md-1 col-sm-6 col-6 p-0">
+                    <mat-slide-toggle type="ratio" name="Total" color="primary" [(ngModel)]="data.Total" class="example-margin">Total
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-md-2 col-sm-6 col-6 p-0">
+                    <mat-slide-toggle type="ratio" name="BillShopWise" color="primary" [(ngModel)]="data.BillShopWise" class="example-margin">BillShopWise
+                    </mat-slide-toggle>
+                </div>
+            </div>
+            <!-- Software Bill Options Hide/Show -->
+            <h2 class="header mt-4">Software Bill Hide/Show</h2>
+            <div class="row ps-3">
+                <div class="col-md-1 col-sm-6 col-6 p-0">
+                    <mat-slide-toggle type="ratio" name="Discount" color="primary" class="example-margin" [(ngModel)]="data.Discount"
+                        class="example-margin">Dis</mat-slide-toggle>
+                </div>
+                <div class="col-md-1 col-sm-6 col-6 p-0">
+                    <mat-slide-toggle type="ratio" name="GSTnumber" color="primary" [(ngModel)]="data.GSTnumber"
+                        class="example-margin">GST</mat-slide-toggle>
+                </div>
+            </div>
+            <!-- Save/Cancel -->
+            <div class="row my-4">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
+                    <button type="submit" class="me-3" mat-raised-button color="primary" [disabled]="!f.valid"
+                    *ngIf="suBtn == false">Save</button>
+                    <button class="me-3" type="button" mat-raised-button color="primary"
+                        [disabled]="id == 0 || !f.valid" *ngIf="suBtn == true" (click)="updateShop()">Update</button>
+                    <button type="button" mat-raised-button (click)="f.reset()">Clear</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</ng-template>
+<!-- model popup ent -->

@@ -1,0 +1,31 @@
+.content{
+    background-image: url(../../../assets/images/SHOP.svg);
+    background-size: 100%;
+}
+
+.mat-slide-toggle {
+    display: inline-block;
+    height: 24px;
+    min-width: 100% !important;
+    line-height: 24px;
+    white-space: nowrap;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mat-icon {
+    pointer-events: none;
+  }
+
+.bg-none{
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    padding: 0;
+    height: 35px;
+  }
+
+  .bcolor{
+    text-decoration: line-through;
+    color:rgb(233, 36, 36) !important;
+    transform: 0.5ms !important;
+}

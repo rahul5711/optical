@@ -1,0 +1,122 @@
+.mat-icon {
+    pointer-events: none;
+  }
+
+  i {
+    pointer-events: none;
+  }
+
+.bg-none{
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    padding: 0;
+    height: 35px;
+  }
+.bg-btn{
+  background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.detail_icons i{
+  background: #38a042e8;
+  color: #fff;
+  padding: 4px !important;
+  border-radius: 24px !important;
+  font-size: 22px !important;
+  height: 30px !important;
+  width: 30px !important;
+  transition: .5s;
+  cursor: pointer;
+  box-shadow: 2px 2px 6px #9c9795fa;
+}
+
+.msg{
+    background: #0b5ac9e8;
+    color: #fff;
+    padding: 4px !important;
+    border-radius: 24px !important;
+    font-size: 22px !important;
+    height: 30px !important;
+    width: 30px !important;
+    transition: .5s;
+    cursor: pointer;
+    box-shadow: 2px 2px 6px #9c9795fa;
+}
+
+.old{
+  background-color: rgb(252, 89, 64);
+}
+
+.new{
+  background-color: rgb(220, 220, 220);
+}
+
+.datanotFound{
+  position: absolute;
+   font-size: 14.8em;
+   margin-top: 1.4em;
+   rotate: 10deg;
+   color: rgba(255, 0, 0, 0.24); 
+}
+
+.CreditClass{
+  color: green;
+
+}
+
+.CreditClass::before {
+  content: "+";
+  margin-right: 4px;
+  background: #14a44d;
+  padding: 0px 6px;
+  border-radius: 20px;
+  color: #fff;
+  font-weight: bolder;float: left;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd) td.CreditClass{
+  color: green;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd) td.CreditClass::before{
+  content: "+";
+  margin-right: 4px;
+  background: #14a44d;
+  padding: 0px 6px;
+  border-radius: 20px;
+  color: #fff;
+  font-weight: bolder;float: left;
+}
+
+.DebitClass{
+  color: rgb(255, 0, 51);
+}
+
+.DebitClass::before{
+  content: "-";
+  margin-right: 4px;
+  background: rgb(255, 0, 51);
+  padding: 0px 7px;
+  border-radius: 20px;
+  color: #fff;
+  font-weight: bolder;float: left;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd) td.DebitClass{
+  color: rgb(255, 0, 51);
+}
+
+.table-striped>tbody>tr:nth-of-type(odd) td.DebitClass::before{
+  content: "-";
+  margin-right: 4px;
+  background: rgb(255, 0, 51);
+  padding: 0px 7px;
+  border-radius: 20px;
+  color: #fff;
+  font-weight: bolder;float: left;
+}
+
+
+

@@ -1,0 +1,10 @@
+<section class="content">
+    <div class="container-fluid ">
+        <div class="row p-4 mt-0">
+            <div *ngFor="let stat of cards" class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12 crds">
+                <app-dashcard [title]="stat.title" [icon]="stat.icon" [routersLinks]="stat.routersLinks">
+                </app-dashcard>
+            </div>
+        </div>
+    </div>
+</section>

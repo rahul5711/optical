@@ -1,0 +1,341 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"> </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                <div class="card">
+                    <div class="header">
+                        <h2>Purchase Return </h2>
+                    </div>
+                    <div class="body">
+                        <!-- save Product Return start -->
+                        <form #f="ngForm" autocomplete="off" #f0="ngForm" (ngSubmit)="addItem()">
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0 ">
+                                    <mat-form-field class="example-full-width mb-0">
+                                      <mat-label>Supplier Name</mat-label>
+                                      <mat-select name="Supplier" [(ngModel)]="selectedPurchaseMaster.SupplierID" editable="true"
+                                        #singleSelect required>
+                                        <mat-option *ngFor="let sup of supplierList  let i = index;" [value]="sup.ID">
+                                          {{sup.Name}}
+                                        </mat-option>
+                                      </mat-select>
+                                      <mat-error>
+                                        Select Supplier
+                                      </mat-error>
+                                    </mat-form-field>
+                                  </div>
+                                  <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0 ">
+                                    <mat-form-field class="example-full-width mb-0">
+                                      <mat-label>Shop Name</mat-label>
+                                      <mat-select name="shopID" [(ngModel)]="selectedPurchaseMaster.ShopID" required >
+                                        <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}}
+                                          <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                        </mat-option>
+                                      </mat-select>
+                                    </mat-form-field>
+                                  </div>
+                                  <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>System Debit No.</mat-label>
+                                        <input matInput name="SystemCn " [(ngModel)]="selectedPurchaseMaster.SystemCn"
+                                        required   (ngModelChange)="selectedPurchaseMaster.SystemCn = onChange($event)" autocomplete="off">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Supplier CN No.</mat-label>
+                                        <input matInput name="SupplierCn" [(ngModel)]="selectedPurchaseMaster.SupplierCn"
+                                          disabled  (ngModelChange)="selectedPurchaseMaster.SupplierCn = onChange($event)" autocomplete="off">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-4 col-lg-2 col-md-6 col-sm-12 mb-0">
+                                 
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Search By BarCode</mat-label>
+                                        <input matInput name="SearchBarCode" [(ngModel)]="Req.SearchBarCode"
+                                            (keydown.Tab)="getProductDataByBarCodeNo()" required #SearchBarCodecontrol
+                                            #GSTNocontrol [autocomplete]="false" appAutoFoucsDirectives>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Search By Product</mat-label>
+                                        <mat-select name="FieldType" [(ngModel)]="selectedProduct"
+                                            (selectionChange)="getFieldList()" required #Typecontrol>
+                                            <mat-option *ngFor="let prod of prodList   let i = index;"
+                                                [value]="prod.Name">
+                                                {{prod.Name | uppercase}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            Select Product Type
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-4 col-lg-4 col-md-5 col-sm-12 mb-0"
+                                    *ngIf="( selectedProduct !== '' || selectedProduct !== undefined || selectedProduct !== null )">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Select Barcode</mat-label>
+                                        <mat-select name="FieldType" [(ngModel)]="Req.SearchBarCode"
+                                             required #Typecontrol (selectionChange)="getProductDataByBarCodeNo()">
+                                            <mat-option *ngFor="let bc of barCodeList  let i = index;"
+                                                [value]="bc.Barcode"  >
+                                                {{bc.Barcode}} # {{bc.BarCodeCount}} | {{bc.ProductName | uppercase}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            Select Product Type
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <!-- save product spec start -->
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0"
+                                    *ngFor="let spec of specList ; let i = index;">
+                                    <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
+                                        <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
+                                            <mat-label>{{spec.FieldName}}</mat-label>
+                                            <mat-select name="{{spec.FieldName+'0'}}" [(ngModel)]="spec.SelectedValue"
+                                                (selectionChange)="getFieldSupportData(i);getBarCodeList(i)"
+                                                editable="true" [required]="spec.Required === 1" #singleSelect>
+                                                <mat-option>
+                                                </mat-option>
+                                                <mat-option *ngFor="let val of spec.SptFilterData "
+                                                    [value]="val.TableValue">
+                                                    {{val.TableValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <mat-error>
+                                                {{spec.FieldName}} is Required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div *ngIf="spec.FieldType === 'Text'" class="d-flex">
+                                        <mat-form-field class=" mr-0 mb-0">
+                                            <mat-label>{{spec.FieldName}}</mat-label>
+                                            <input matInput name="{{spec.FieldName+'2'}}"
+                                                [(ngModel)]="spec.SelectedValue"
+                                                (ngModelChange)="spec.SelectedValue = onChange($event)"
+                                                [required]="spec.Required === 1"
+                                                (blur)="getFieldSupportData(i);getBarCodeList(i)">
+                                            <mat-error>
+                                                {{spec.FieldName}} is Required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
+                                        <mat-form-field class=" mr-0 mb-0">
+                                            <mat-label>{{spec.FieldName}}</mat-label>
+                                            <input type="date" matInput name="{{spec.FieldName+'3'}}"
+                                                [(ngModel)]="spec.SelectedValue"
+                                                (ngModelChange)="spec.SelectedValue = onChange($event)" editable="true"
+                                                [required]="spec.Required === 1">
+                                            <mat-error>
+                                                {{spec.FieldName}} is Required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
+                                        <mat-slide-toggle name="{{spec.FieldName+'3'}}" color="primary"
+                                            class="example-margin" #Multiplecontrolx [(ngModel)]="spec.SelectedValue">
+                                            {{spec.FieldName}}</mat-slide-toggle>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- save product spec end -->
+                        
+                            <div class="row">
+                                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Product Name</mat-label>
+                                        <input matInput style="color: rgb(255 0 0) !important;" name="ProdName" [(ngModel)]="xferItem.ProductName" required
+                                            [disabled]=true>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Barcode</mat-label>
+                                        <input matInput style="color: rgb(255 0 0) !important;" name="ProdBarcode" [(ngModel)]="xferItem.Barcode" required
+                                            [disabled]=true>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Available</mat-label>
+                                        <input matInput style="color: rgb(255 0 0) !important;" name="ProdBarcodecount" disabled
+                                            [(ngModel)]="item.BarCodeCount">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1  col-lg-1 col-md-6 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Retrun Quantity</mat-label>
+                                        <input matInput name="Quantity" type=number min="0"
+                                            #XferCountControl="ngModel" [(ngModel)]="xferItem.Quantity"  required>
+                                        <mat-error *ngIf="XferCountControl.invalid && XferCountControl.touched">
+                                            Tranfer Count is Required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Remark</mat-label>
+                                        <input matInput name="Remark" [(ngModel)]="xferItem.Remark"
+                                            (ngModelChange)="xferItem.Remark = onChange($event)" autocomplete="off">
+                                    </mat-form-field>
+                                </div>
+                               
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <button class="mr-3" mat-raised-button color="primary"
+                                         (click)="calculateFields()" type="submit" [disabled]="this.xferItem.Quantity == 0">Add</button>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- save Product Return end -->
+                        <!-- list start -->
+                        <form #f2="ngForm"  (ngSubmit)="onSumbit()">
+                            <!-- Add item List start -->
+                            <div class="row" >
+                                <div class="col-sm-12 p-0" style="overflow-y: auto; height: 340px;box-shadow: 1px 0px 2px 4px rgba(221, 221, 221, 0.338);">
+                                        <table class="table table-striped table-hover table-sm table-bordered"
+                                            style="border: 2px solid #fff !important;">
+                                            <thead>
+                                                <tr style="white-space: nowrap;">
+                                                    <th>Action</th>
+                                                    <th>InvoiceNo</th>
+                                                    <th>Barcode</th>
+                                                    <th>Product</th>
+                                                    <th>PurchasePrice</th>
+                                                    <th>ReturnQuantity</th>
+                                                    <th>Dis%</th>
+                                                    <th>DisAmt</th>
+                                                    <th>SubTotal</th>
+                                                    <th>TAX%</th>
+                                                    <th>TAXAmt</th>
+                                                    <th>TAXType</th>
+                                                    <th>TotalAmt</th>
+                                                    <th>Remark</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let data of itemList ; let i = index;">
+                                                    <td class="text-center">
+                                                        <mat-icon *ngIf="data.Status !== 0" class="delete_icons ms-1" (click)="deleteItem('Product',i)">delete_forever</mat-icon>
+                                                    </td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.InvoiceNo}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.Barcode}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.ProductTypeName}}/{{data.ProductName}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.UnitPrice }}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.Quantity}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.DiscountPercentage}}%</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.DiscountAmount}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.SubTotal}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.GSTPercentage}}%</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.GSTAmount}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.GSTType}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.TotalAmount}}</td>
+                                                    <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }" >{{data.Remark}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                </div>
+                            </div>
+                            <!-- Add item List end -->
+                            <!-- Total calculcation start -->
+                            <div class="row pt-3 ">
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>ReturnQuantity</mat-label>
+                                        <input matInput name="Quantityt" [(ngModel)]="selectedPurchaseMaster.Quantity"
+                                            disabled #Quantitytcontrol [autocomplete]="false">
+                                        <mat-error>
+                                            Quantity is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Sub Total</mat-label>
+                                        <input matInput name="SubTotalt" [(ngModel)]="selectedPurchaseMaster.SubTotal"
+                                            disabled #SubTotaltcontrol [autocomplete]="false">
+                                        <mat-error>
+                                            Sub Total is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>D.Amount</mat-label>
+                                        <input matInput name="DAmountt"
+                                            [(ngModel)]="selectedPurchaseMaster.DiscountAmount" disabled
+                                            #DAmounttcontrol [autocomplete]="false">
+                                        <mat-error>
+                                            D.Amount is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0"  *ngFor="let gst of gst_detail">
+                                    <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>{{gst.GSTType}}</mat-label>
+                                    <input matInput name="igstAmt"  value="{{gst.Amount | number:'1.0-2'}}" disabled>
+                                      <mat-error>
+                                         GST Amt is required
+                                      </mat-error>
+                                </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>TotalTAXAmt</mat-label>
+                                        <input matInput name="GSTAmtt" [(ngModel)]="selectedPurchaseMaster.GSTAmount"
+                                            disabled #GSTAmttcontrol [autocomplete]="false">
+                                        <mat-error>
+                                            GST Amt is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label style="color: rgb(255 0 0);">Total Amount</mat-label>
+                                        <input style="color: rgb(255 0 0) !important;" matInput name="TotalAmountt"
+                                            [(ngModel)]="selectedPurchaseMaster.TotalAmount" disabled
+                                            #TotalAmounttcontrol [autocomplete]="false">
+                                        <mat-error>
+                                            Total Amount is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label style="color: rgb(255 0 0);">RoundOff</mat-label>
+                                        <input style="color: rgb(255 0 0) !important;" matInput name="RoundOff"
+                                            [(ngModel)]="selectedPurchaseMaster.RoundOff
+                                            " disabled
+                                            #RoundOffcontrol [autocomplete]="false">
+                                    </mat-form-field>
+                                </div>
+                                <div *ngIf="id == 0" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-6 mb-0 ml-auto">
+                                    <button type="submit" [disabled]="itemList.length === 0"  mat-raised-button color="primary">Save</button>
+                                </div>
+                                <div *ngIf="selectedPurchaseMaster.ID !== null" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-6 mb-0 mr-3">
+                                    <button type="button"  [disabled]="itemList.length === 0" (click)="updatedPurchaseReturn()"  mat-raised-button
+                                        color="primary">Update</button>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-6 mb-0 ml-auto">
+                                    <button  class="shopPdf" type="button" ><i class="fa-sharp fa-solid fa-file-pdf"></i></button>
+                                    <button class="whatsapp ms-1 me-1"><i class="fa-brands fa-whatsapp" ></i> </button>
+                                    <button class="email"> <i class="fa-solid fa-envelope"></i></button>
+                                </div>
+                            </div>
+                            <!-- Total calculcation end -->
+                        </form>
+                        <!-- list end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
