@@ -622,8 +622,8 @@ module.exports = {
 
             response.result.billDetail = billDetail
             response.result.service = service
-            // connection.release()
             return res.send(response)
+            // connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");

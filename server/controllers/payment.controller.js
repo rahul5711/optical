@@ -159,7 +159,7 @@ module.exports = {
             response.totalCreditAmount = totalCreditAmount
             response.totalDueAmount = totalDueAmount
             response.message = "data fetch sucessfully"
-            res.send(response)
+            return res.send(response)
             connection.release()
 
         } catch (err) {
@@ -513,7 +513,7 @@ module.exports = {
                 PaymentType: PaymentType,
                 PayeeName: CustomerID
             }
-            res.send(response)
+            return res.send(response)
             connection.release()
 
 
@@ -550,7 +550,7 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = await connection.query(qry)
-            res.send(response)
+            return res.send(response)
             connection.release()
 
 
@@ -615,7 +615,7 @@ module.exports = {
             response.data = {
                 ID: saveCommMaster.insertId
             }
-            res.send(response)
+            return res.send(response)
             connection.release()
 
 
@@ -643,7 +643,7 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = await connection.query(qry)
-            res.send(response)
+            return res.send(response)
             connection.release()
 
         } catch (err) {
@@ -681,7 +681,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            res.send(response)
+            return res.send(response)
             connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -782,7 +782,7 @@ module.exports = {
             }
 
             response.message = "data update sucessfully"
-            res.send(response)
+            return res.send(response)
             connection.release()
 
         } catch (err) {
@@ -836,7 +836,7 @@ module.exports = {
                 ID: ID,
                 InvoiceNo: fetchBillMaster.InvoiceNo
             }
-            res.send(response)
+            return res.send(response)
             connection.release()
 
         } catch (err) {
@@ -966,7 +966,7 @@ module.exports = {
 
             response.totalCreditAmount = totalCreditAmount
             response.message = "data fetch sucessfully"
-            res.send(response)
+            return res.send(response)
             connection.release()
 
         } catch (err) {
@@ -1009,7 +1009,7 @@ module.exports = {
                 CustomerID: CustomerID,
                 ID: ID
             }
-            res.send(response)
+            return res.send(response)
             connection.release()
 
         } catch (err) {

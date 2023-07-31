@@ -431,6 +431,7 @@ module.exports = {
           await connection.query(`insert into commissiondetail (CompanyID,ShopID,CommissionMasterID, UserType, UserID,BillMasterID, CommissionMode, CommissionType, CommissionValue, CommissionAmount, Status,CreatedBy,CreatedOn ) values (${CompanyID}, ${billMaseterData.ShopID}, 0,'Doctor', ${billMaseterData.Doctor}, ${bMasterID}, ${commission.Mode},${commission.Type},${commission.Value},${commission.Amount},1,${LoggedOnUser}, now())`)
         }
       }
+      return
     } catch (error) {
       console.log(error);
     }
@@ -613,7 +614,7 @@ module.exports = {
       console.log(connected("Barcode Data Save SuccessFUlly !!!"));
     }
 
-
+    return
 
   }
 

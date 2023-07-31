@@ -37,7 +37,7 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = saveData.insertId;
-            res.send(response)
+            return res.send(response)
             connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -75,7 +75,7 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = []
-            res.send(response)
+            return res.send(response)
             connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -111,7 +111,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            res.send(response)
+            return res.send(response)
             connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -148,7 +148,7 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = await connection.query(`select * from fitter where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
-            res.send(response)
+            return res.send(response)
             connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -171,7 +171,7 @@ module.exports = {
             let data = await connection.query(`select fitter.ID, fitter.Name from fitter where Status = 1 and CompanyID = ${CompanyID}`);
             response.message = "data fetch sucessfully"
             response.data = data
-            res.send(response)
+            return res.send(response)
             connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -194,7 +194,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = await connection.query(`select fitterratecard.FitterID, fitterratecard.LensType, fitterratecard.Rate, fitterassignedshop.ShopID  from fitterratecard left join fitterassignedshop on fitterassignedshop.FitterID = fitterratecard.FitterID where  fitterratecard.Status = 1 and fitterratecard.FitterID = ${Body.FitterID} and fitterratecard.CompanyID = ${CompanyID} and fitterassignedshop.ShopID = ${shopid} and fitterassignedshop.Status = 1 `)
 
-            res.send(response)
+            return res.send(response)
             connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -220,7 +220,7 @@ module.exports = {
             response.RateCard = await connection.query(`select * from fitterratecard where  Status = 1 and FitterID = ${Body.ID} and CompanyID = ${CompanyID} `)
             response.AssignedShop = await connection.query(`SELECT fitterassignedshop.*,  shop.Name AS ShopName, shop.AreaName AS AreaName  FROM fitterassignedshop  LEFT JOIN shop ON shop.ID = fitterassignedshop.ShopID WHERE fitterassignedshop.Status = 1 AND fitterassignedshop.FitterID = ${Body.ID} `)
 
-            res.send(response)
+            return res.send(response)
             connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -255,7 +255,7 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = saveData.insertId;
-            res.send(response)
+            return res.send(response)
             connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -292,7 +292,7 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = await connection.query(`select * from fitterratecard where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
-            res.send(response)
+            return res.send(response)
             connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -326,7 +326,7 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = saveData.insertId;
-            res.send(response)
+            return res.send(response)
             connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -363,7 +363,7 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = await connection.query(`select * from fitterassignedshop where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
-            res.send(response)
+            return res.send(response)
             connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -391,7 +391,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            res.send(response)
+            return res.send(response)
             connection.release()
 
         } catch (err) {
@@ -429,7 +429,7 @@ module.exports = {
             const data = await connection.query(qry)
             response.data = data
             response.message = "success";
-            res.send(response)
+            return res.send(response)
             connection.release()
 
 
@@ -519,7 +519,7 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = purchase.FitterID
-            res.send(response)
+            return res.send(response)
             connection.release()
 
         } catch (err) {
@@ -630,7 +630,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            res.send(response)
+            return res.send(response)
             connection.release()
 
 
@@ -734,7 +734,7 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = data
-            res.send(response)
+            return res.send(response)
             connection.release()
 
 
@@ -768,7 +768,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.FitterMaster = await connection.query(master)
             response.FitterDetail = await connection.query(detail)
-            res.send(response)
+            return res.send(response)
             connection.release()
 
 
@@ -813,7 +813,7 @@ module.exports = {
             const updatePayment = await connection.query(`update paymentmaster set PayableAmount = ${DueAmount}, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where ID = ${fetchPaymentID[0].PaymentMasterID}`)
 
             response.message = "data update sucessfully"
-            res.send(response)
+            return res.send(response)
             connection.release()
 
         } catch (err) {

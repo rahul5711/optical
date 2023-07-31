@@ -28,7 +28,7 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = await connection.query(`select * from product where CompanyID = ${CompanyID} and Status = 1 order by ID desc`)
-            res.send(response)
+            return res.send(response)
             connection.release()
 
         } catch (err) {
@@ -61,7 +61,7 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = saveData
-            res.send(response)
+            return res.send(response)
             connection.release()
 
         } catch (err) {
@@ -94,7 +94,7 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = saveData
-            res.send(response)
+            return res.send(response)
             connection.release()
 
         } catch (err) {
@@ -124,7 +124,7 @@ module.exports = {
 
             response.message = "data restore sucessfully"
             response.data = saveData
-            res.send(response)
+            return res.send(response)
             connection.release()
 
         } catch (err) {
@@ -152,7 +152,7 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = saveData
-            res.send(response)
+            return res.send(response)
             connection.release()
 
         } catch (err) {
@@ -196,7 +196,7 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = saveData
-            res.send(response)
+            return res.send(response)
             connection.release()
 
         } catch (err) {
@@ -227,7 +227,7 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = saveData
-            res.send(response)
+            return res.send(response)
             connection.release()
 
         } catch (err) {
@@ -259,7 +259,7 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = saveData
-            res.send(response)
+            return res.send(response)
             connection.release()
 
         } catch (err) {
@@ -292,7 +292,7 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = Data
-            res.send(response)
+            return res.send(response)
             connection.release()
 
         } catch (err) {
@@ -324,7 +324,7 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = Data
-            res.send(response)
+            return res.send(response)
             connection.release()
 
         } catch (err) {
@@ -357,7 +357,7 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = Data
-            res.send(response)
+            return res.send(response)
             connection.release()
 
         } catch (err) {
