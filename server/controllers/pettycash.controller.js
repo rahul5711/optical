@@ -80,8 +80,8 @@ module.exports = {
             console.log(connected("Data Save SuccessFUlly !!!"));
             response.message = "data save sucessfully"
             response.data = await connection.query(`select * from pettycash where CompanyID = ${CompanyID} and Status = 1 order by ID desc`)
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -123,8 +123,8 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            // connection.release()
             res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -164,8 +164,8 @@ module.exports = {
             console.log("PettyCash Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            // connection.release()
             res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -187,8 +187,8 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = Pettycash
-            // connection.release()
             res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -261,8 +261,8 @@ module.exports = {
             console.log("PettyCash Updated SuccessFUlly !!!");
 
             response.message = "data update sucessfully"
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -296,8 +296,8 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -331,8 +331,8 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");

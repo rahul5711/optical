@@ -38,8 +38,8 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = []
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
 
 
         } catch (err) {
@@ -76,8 +76,9 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            // connection.release()
+
             res.send(response)
+            connection.release()
 
 
         } catch (err) {
@@ -109,8 +110,8 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = []
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
 
 
         } catch (err) {
@@ -146,8 +147,8 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = []
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
 
 
         } catch (err) {
@@ -375,8 +376,8 @@ module.exports = {
 
                 response.message = "data save sucessfully"
                 response.data = savePurchase.insertId
-                // connection.release()
-                return res.send(response)
+                res.send(response)
+                connection.release()
 
             }
 
@@ -599,8 +600,8 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = []
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -727,8 +728,8 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = []
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");

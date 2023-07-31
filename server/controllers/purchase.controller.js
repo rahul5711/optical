@@ -137,8 +137,8 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = savePurchase.insertId
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -288,8 +288,8 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = purchase.ID
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
 
 
         } catch (err) {
@@ -324,8 +324,8 @@ module.exports = {
             response.result.PurchaseMaster[0].gst_detail = gst_detail || []
             response.result.PurchaseDetail = PurchaseDetail
             response.result.Charge = Charge
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -366,8 +366,8 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            // connection.release()
             res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -383,9 +383,9 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
-           const { SupplierID } = req.body
+            const { SupplierID } = req.body
 
-           if (!SupplierID || SupplierID === undefined || SupplierID === null) return res.send({ message: "Invalid Query Data" })
+            if (!SupplierID || SupplierID === undefined || SupplierID === null) return res.send({ message: "Invalid Query Data" })
 
             let qry = `select purchasemasternew.*, supplier.Name as SupplierName,  supplier.GSTNo as GSTNo, users1.Name as CreatedPerson,shop.Name as ShopName, shop.AreaName as AreaName, users.Name as UpdatedPerson from purchasemasternew left join user as users1 on users1.ID = purchasemasternew.CreatedBy left join user as users on users.ID = purchasemasternew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and purchasemasternew.PStatus = 0 and purchasemasternew.CompanyID = ${CompanyID} and purchasemasternew.SupplierID = ${SupplierID}  order by purchasemasternew.ID desc`
 
@@ -398,8 +398,8 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.sumData = sumData
-            // connection.release()
             res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -441,8 +441,8 @@ module.exports = {
             console.log("Purchase Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            // connection.release()
             res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -510,8 +510,8 @@ module.exports = {
             response.result.PurchaseDetail = PurchaseDetail;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data delete sucessfully"
-            // connection.release()
             res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -527,7 +527,7 @@ module.exports = {
             const response = { result: { PurchaseDetail: null, PurchaseMaster: null }, success: true, message: "" }
 
             const Body = req.body;
-            console.log(Body,'body');
+            console.log(Body, 'body');
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -584,8 +584,8 @@ module.exports = {
             response.result.PurchaseDetail = PurchaseDetail;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data update product sucessfully"
-            // connection.release()
             res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -646,8 +646,8 @@ module.exports = {
             response.result.Charge = Charge;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data delete sucessfully"
-            // connection.release()
             res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -657,7 +657,7 @@ module.exports = {
         }
     },
 
-    purchaseDetailPDF:async (req, res, next) => {
+    purchaseDetailPDF: async (req, res, next) => {
         const connection = await mysql.connection();
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -679,10 +679,10 @@ module.exports = {
             printdata.shopdetails = shopdetails[0]
             printdata.supplier = supplier[0]
             printdata.companysetting = companysetting[0]
-               console.log(printdata);
+            console.log(printdata);
 
             var fileName = "";
-            printdata.LogoURL = 'http://localhost:3000/'+ printdata.companysetting.LogoURL;
+            printdata.LogoURL = 'http://localhost:3000/' + printdata.companysetting.LogoURL;
             var formatName = "PurchasePDF.ejs";
             var file = formatName + "_" + CompanyID + ".pdf";
             fileName = "uploads/" + file;
@@ -728,13 +728,13 @@ module.exports = {
 
     },
 
-    PrintBarcode:async (req, res, next) => {
+    PrintBarcode: async (req, res, next) => {
         const connection = await mysql.connection();
         try {
             const bracodeData = req.body
             let modifyBarcode = []
 
-            for( var i = 0; i < bracodeData.Quantity; i++) {
+            for (var i = 0; i < bracodeData.Quantity; i++) {
                 modifyBarcode.push(bracodeData)
             }
 
@@ -754,7 +754,7 @@ module.exports = {
             // var appURL = clientConfig.appURL;
             var fileName = "";
             fileName = "uploads/" + file;
-            let url = appURL +"uploads/" + file;
+            let url = appURL + "uploads/" + file;
             let updateUrl = '';
             TinyURL.shorten(url, function (res) {
                 updateUrl = res;
@@ -823,8 +823,8 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -851,8 +851,8 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = data
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -889,8 +889,8 @@ module.exports = {
             response.data = purchaseData;
             response.message = "Success";
 
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -928,8 +928,8 @@ module.exports = {
             let barCodeData = await connection.query(qry);
             response.data = barCodeData[0];
             response.message = "Success";
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -950,7 +950,7 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
 
             const TransferStatus = "Transfer Initiated";
-            const AcceptanceCode =  Math.floor(100000 + Math.random() * 900000);  //Math.floor(Math.random() * 100000000); 
+            const AcceptanceCode = Math.floor(100000 + Math.random() * 900000);  //Math.floor(Math.random() * 100000000); 
 
             if (ProductName === "" || ProductName === undefined || ProductName === null) return res.send({ message: "Invalid Query Data" })
             if (Barcode === "" || Barcode === undefined || Barcode === null) return res.send({ message: "Invalid Query Data" })
@@ -991,8 +991,8 @@ module.exports = {
             let xferList = await connection.query(qry1);
             response.data = xferList;
             response.message = "Success";
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -1046,8 +1046,8 @@ module.exports = {
             let xferList = await connection.query(qry1);
             response.data = xferList;
             response.message = "Success";
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -1098,8 +1098,8 @@ module.exports = {
             let xferList = await connection.query(qry1);
             response.data = xferList;
             response.message = "Success";
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -1146,8 +1146,8 @@ module.exports = {
             response.count = count.length
             response.success = "Success";
 
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -1187,8 +1187,8 @@ module.exports = {
             response.success = true;
             response.message = 'Success';
 
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -1201,15 +1201,15 @@ module.exports = {
 
     transferProductPDF: async (req, res, next) => {
 
-            var printdata = req.body;
-            printdata.TXdata = printdata;
-            var PassNo = Math.trunc(Math.random() * 10000).toString();
-            printdata.PassNo = PassNo;
-            var fileName = "";
-            var file = "TransferProduct" + "_" + printdata[0].CompanyID  + ".pdf";
-            var formatName = "TransferProduct.ejs";
-            // var appURL = "http://navient.in:50060/";
-            fileName = "uploads/" + file;
+        var printdata = req.body;
+        printdata.TXdata = printdata;
+        var PassNo = Math.trunc(Math.random() * 10000).toString();
+        printdata.PassNo = PassNo;
+        var fileName = "";
+        var file = "TransferProduct" + "_" + printdata[0].CompanyID + ".pdf";
+        var formatName = "TransferProduct.ejs";
+        // var appURL = "http://navient.in:50060/";
+        fileName = "uploads/" + file;
 
         ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
             if (err) {
@@ -1271,8 +1271,8 @@ module.exports = {
             response.data = barcodelist;
             response.message = "success";
 
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -1327,8 +1327,8 @@ module.exports = {
             response.data = barcodelist;
             response.message = "Success";
 
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -1357,8 +1357,8 @@ module.exports = {
             let barcode = await connection.query(qry);
             response.data = [];
             response.message = "success";
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -1389,8 +1389,8 @@ module.exports = {
             let data = await connection.query(qry);
             response.data = data
             response.message = "success";
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -1419,8 +1419,8 @@ module.exports = {
             let data = await connection.query(qry);
             response.data = []
             response.message = "success";
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -1559,8 +1559,8 @@ module.exports = {
             response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice : 0
             response.data = data
             response.message = "success";
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -1668,8 +1668,8 @@ module.exports = {
 
             response.data = data
             response.message = "success";
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -1808,8 +1808,8 @@ module.exports = {
             response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice : 0
             response.data = data
             response.message = "success";
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -1917,8 +1917,8 @@ module.exports = {
 
             response.data = data
             response.message = "success";
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -2043,8 +2043,8 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = savePurchase.insertId
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -2086,8 +2086,8 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            // connection.release()
             res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -2132,7 +2132,7 @@ module.exports = {
             let count = await connection.query(qry);
 
             if (data.length) {
-                for(let item of data) {
+                for (let item of data) {
                     item.PurchaseMasterData = {}
                     const purchasedata = await connection.query(`SELECT purchasemasternew.*, supplier.Name AS SupplierName,  supplier.GSTNo AS GSTNo, users1.Name AS CreatedPerson,shop.Name AS ShopName, shop.AreaName AS AreaName, users.Name AS UpdatedPerson FROM purchasemasternew LEFT JOIN USER AS users1 ON users1.ID = purchasemasternew.CreatedBy LEFT JOIN USER AS users ON users.ID = purchasemasternew.UpdatedBy LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID WHERE purchasemasternew.Status = 1 AND purchasemasternew.PStatus = 1 and purchasemasternew.ID = ${item.PurchaseID} and purchasemasternew.CompanyID = ${CompanyID} ${shopId} `)
                     item.PurchaseMasterData = purchasedata[0]
@@ -2143,8 +2143,8 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            // connection.release()
             res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -2166,7 +2166,7 @@ module.exports = {
                 PurchaseDetail,
             } = req.body;
 
-          // update purchasemaster
+            // update purchasemaster
             const updatePurchaseMaster = await connection.query(`update purchasemasternew set  Quantity = ${PurchaseMaster.Quantity}, SubTotal = ${PurchaseMaster.SubTotal}, DiscountAmount = ${PurchaseMaster.DiscountAmount}, GSTAmount=${PurchaseMaster.GSTAmount}, TotalAmount = ${PurchaseMaster.TotalAmount}, DueAmount = ${PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and ShopID = ${shopid} and ID=${PurchaseMaster.ID}`)
 
             console.log(connected("Purchase Update SuccessFUlly !!!"));
@@ -2181,8 +2181,8 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = []
-            // connection.release()
             res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -2204,7 +2204,7 @@ module.exports = {
                 PurchaseDetail,
             } = req.body;
 
-          // update purchasemaster
+            // update purchasemaster
             const updatePurchaseMaster = await connection.query(`update purchasemasternew set  Quantity = ${PurchaseMaster.Quantity}, SubTotal = ${PurchaseMaster.SubTotal}, DiscountAmount = ${PurchaseMaster.DiscountAmount}, GSTAmount=${PurchaseMaster.GSTAmount}, TotalAmount = ${PurchaseMaster.TotalAmount}, DueAmount = ${PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and ShopID = ${shopid} and ID=${PurchaseMaster.ID}`)
 
             console.log(connected("Purchase Update SuccessFUlly !!!"));
@@ -2216,8 +2216,8 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = []
-            // connection.release()
             res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -2250,8 +2250,8 @@ module.exports = {
             response.result.PurchaseMaster = PurchaseMaster
             response.result.PurchaseMaster[0].gst_detail = gst_detail || []
             response.result.PurchaseDetail = PurchaseDetail
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -2294,8 +2294,8 @@ module.exports = {
             console.log("Purchase Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            // connection.release()
             res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -2350,8 +2350,8 @@ module.exports = {
             response.result.PurchaseDetail = PurchaseDetail;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data delete sucessfully"
-            // connection.release()
             res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -2371,7 +2371,7 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
             const currentStatus = "Pre Order";
             const paymentStatus = "Unpaid"
-            console.log(req.body,'pre');
+            console.log(req.body, 'pre');
             const {
                 PurchaseMaster,
                 PurchaseDetail,
@@ -2478,8 +2478,8 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = purchase.ID
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
 
 
         } catch (err) {
@@ -2516,8 +2516,8 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -2634,8 +2634,8 @@ module.exports = {
             response.calculation[0].gst_details = values;
             response.data = data
             response.message = "success";
-            // connection.release()
             res.send(response)
+            connection.release()
 
 
         } catch (err) {
@@ -2753,8 +2753,8 @@ module.exports = {
             response.calculation[0].gst_details = values;
             response.data = data
             response.message = "success";
-            // connection.release()
             res.send(response)
+            connection.release()
 
 
         } catch (err) {
@@ -2860,8 +2860,8 @@ module.exports = {
             response.calculation[0].gst_details = values;
             response.data = data
             response.message = "success";
-            // connection.release()
             res.send(response)
+            connection.release()
 
 
         } catch (err) {
@@ -2906,8 +2906,8 @@ module.exports = {
             response.data = purchaseData;
             response.message = "Success";
 
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -2949,8 +2949,8 @@ module.exports = {
             let barCodeData = await connection.query(qry);
             response.data = barCodeData[0];
             response.message = "Success";
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -3039,8 +3039,8 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = savePurchaseReturn.insertId
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -3140,8 +3140,8 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = purchase.ID
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
 
 
         } catch (err) {
@@ -3184,8 +3184,8 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            // connection.release()
             res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -3274,8 +3274,8 @@ module.exports = {
             response.result.PurchaseMaster = PurchaseMaster
             response.result.PurchaseMaster[0].gst_detail = values || []
             response.result.PurchaseDetail = PurchaseDetail2
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -3397,8 +3397,8 @@ module.exports = {
             response.result.PurchaseDetail = PurchaseDetail2;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data delete sucessfully"
-            // connection.release()
             res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -3433,8 +3433,8 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            // connection.release()
             res.send(response)
+            connection.release()
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -3481,8 +3481,8 @@ module.exports = {
             console.log("Purchase Return Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            // connection.release()
             res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -3527,8 +3527,8 @@ module.exports = {
             console.log(connected("Vendor Credit SuccessFUlly !!!"));
 
             response.message = "data update sucessfully"
-            // connection.release()
             res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);

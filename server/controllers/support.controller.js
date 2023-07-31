@@ -33,8 +33,8 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = await connection.query(`select * from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = '${Body.TableName}' order by ID desc`)
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -57,8 +57,8 @@ module.exports = {
 
             response.message = "fetch data sucessfully"
             response.data = await connection.query(`select * from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = '${Body.TableName}' order by ID desc`)
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -86,8 +86,8 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = await connection.query(`select * from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = '${Body.TableName}' order by ID desc`)
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -120,8 +120,8 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = await connection.query(`select * from chargermaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -140,8 +140,8 @@ module.exports = {
 
             response.message = "fetch data sucessfully"
             response.data = await connection.query(`select * from chargermaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -170,8 +170,8 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = await connection.query(`select * from chargermaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -205,8 +205,8 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = await connection.query(`select * from servicemaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -225,8 +225,8 @@ module.exports = {
 
             response.message = "fetch data sucessfully"
             response.data = await connection.query(`select * from servicemaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -255,8 +255,8 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = await connection.query(`select * from servicemaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            // connection.release()
-            return res.send(response)
+            res.send(response)
+            connection.release()
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
