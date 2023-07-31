@@ -229,7 +229,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let hero of heroes | filter:searchText">
+          <tr *ngFor="let hero of heroes">
             <td> <a href="" routerLink={{hero.routersLinks}} style=" font-size: 18px; text-decoration: none;color: #000;">{{hero.Name}} </a></td>
           </tr>
         </tbody>
