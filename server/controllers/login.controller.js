@@ -26,7 +26,7 @@ module.exports = {
             const ip = req.headers.ip ? req.headers.ip : '**********';
             if (_.isEmpty(Body)) res.send({ success: false, message: "Invalid Query Data" })
 
-            const User = await connection.query(`select * from User where LoginName = '${Body.LoginName}' and Status = 1`)
+            const User = await connection.query(`select * from user where LoginName = '${Body.LoginName}' and Status = 1`)
 
             if (!User.length) {
                 return res.send({ success: false, message: "LoginName doesnot matched" })

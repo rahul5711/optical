@@ -1069,7 +1069,7 @@ module.exports = {
             if (CustomerID === null || CustomerID === undefined || CustomerID == 0 || CustomerID === "") return res.send({ message: "Invalid Query Data" })
             if (BillMasterID === null || BillMasterID === undefined || BillMasterID == 0 || BillMasterID === "") return res.send({ message: "Invalid Query Data" })
 
-            let data = await connection.query(`select paymentdetail.amount as Amount, PaymentMaster.PaymentDate as PaymentDate, PaymentMaster.PaymentType AS PaymentType,PaymentMaster.PaymentMode as PaymentMode, PaymentMaster.CardNo as CardNo, PaymentMaster.PaymentReferenceNo as PaymentReferenceNo, paymentdetail.Credit as Type from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentmaster.CustomerID = ${CustomerID} and paymentmaster.ShopID = ${shopid} and paymentmaster.PaymentType = 'Customer' and paymentmaster.Status = 1 and paymentdetail.BillMasterID = ${BillMasterID}`)
+            let data = await connection.query(`select paymentdetail.amount as Amount, Paymentmaster.PaymentDate as PaymentDate, Paymentmaster.PaymentType AS PaymentType,Paymentmaster.PaymentMode as PaymentMode, Paymentmaster.CardNo as CardNo, Paymentmaster.PaymentReferenceNo as PaymentReferenceNo, paymentdetail.Credit as Type from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentmaster.CustomerID = ${CustomerID} and paymentmaster.ShopID = ${shopid} and paymentmaster.PaymentType = 'Customer' and paymentmaster.Status = 1 and paymentdetail.BillMasterID = ${BillMasterID}`)
 
             response.data = data
             response.message = "success";
