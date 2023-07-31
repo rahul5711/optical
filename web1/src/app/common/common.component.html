@@ -1,0 +1,243 @@
+<body>
+  <div class="row">
+    <div class="navbar">
+      <!-- responsive navbar toggle button -->
+      <input type="checkbox" id="nav-check">
+      <div class="nav-btn">
+        <label for="nav-check">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+      </div>
+      <!-- Navbar items -->
+      <div class="col-md-10 nav-links">
+        <div class="nav-links">
+          <!-- SuperAdmin nav -->
+
+          <a *ngIf="user?.UserGroup === 'SuperAdmin'" [routerLink]="['/admin/adminDashborad']">Dashborad</a>
+          <!-- super admin Administration -->
+          <div *ngIf="user?.UserGroup === 'SuperAdmin'" class="dropdown">
+            <a class="dropBtn" data-target="#collapseExample">Administration <i class="fa fa-caret-down"
+                aria-hidden="true"></i></a>
+            <div class="drop-content" id="collapseExample">
+              <a  href="javascript:void(0)" [routerLink]="['/admin/company',0]"
+                id="collapseExample">Add Company</a>
+              <a href="javascript:void(0)" [routerLink]="['/admin/companyList']" id="collapseExample">Company List</a>
+              <a href="javascript:void(0)" [routerLink]="['/admin/userList']" id="collapseExample">User List</a>
+              <a href="javascript:void(0)" [routerLink]="['/admin/deactiveList']" id="collapseExample">Deactive List</a>
+              <a href="javascript:void(0)" [routerLink]="['/admin/loginHistory']" id="collapseExample">Login History</a>
+            </div>
+          </div>
+          <!-- super admin end Administration -->
+          <!-- super admin  Product Assign  -->
+          <div *ngIf="user?.UserGroup === 'SuperAdmin'" class="dropdown">
+            <a class="dropBtn" data-target="#collapseExample">Product Assign <i class="fa fa-caret-down"
+                aria-hidden="true"></i></a>
+            <div class="drop-content" id="collapseExample">
+              <a href="javascript:void(0)" [routerLink]="['/admin/productManageAssign']" id="collapseExample">Product
+                Manage</a>
+              <a href="javascript:void(0)" [routerLink]="['/admin/productMasterAssign']" id="collapseExample">Product
+                Add</a>
+              <a href="javascript:void(0)" [routerLink]="['/admin/addTypeAssign']" id="collapseExample">Add Manager</a>
+            </div>
+
+          </div>
+          <!-- super admin end Product Assign  -->
+          <!-- SuperAdmin end nav-->
+
+          <!-- CompanyAdmin start nav-->
+          <a *ngIf="user?.UserGroup !== 'SuperAdmin'" (click)="openModal(content)"><i class="fas fa-search"></i></a>
+          <a *ngIf="user?.UserGroup !== 'SuperAdmin'" [routerLink]="['/admin/CompanyDashborad']">Dashborad</a>
+          <!-- companyadmin  Administration -->
+          <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown">
+            <a class="dropBtn" data-target="#collapseExample">Administration <i class="fa fa-caret-down"
+                aria-hidden="true"></i> </a>
+            <div class="drop-content" id="collapseExample">
+              <a  href="javascript:void(0)" [routerLink]="['/admin/company',user.CompanyID]" id="collapseExample">Company
+                Info</a>
+              <a   href="javascript:void(0)" [routerLink]="['/admin/employeeList']" id="collapseExample">Employee</a>
+              <a href="javascript:void(0)" [routerLink]="['/admin/shopList']" id="collapseExample">Shop</a>
+              <a href="javascript:void(0)" [routerLink]="['/admin/rolePermission']"
+                id="collapseExample">Role-Permission</a>
+              <a href="javascript:void(0)" [routerLink]="['/admin/companySetting']" id="collapseExample">Company
+                Setting</a>
+              <a href="javascript:void(0)" [routerLink]="['/admin/smsSetting']" id="collapseExample">SMS Setting
+                </a>
+              <a href="javascript:void(0)" [routerLink]="['/admin/companyLoginHistory']" id="collapseExample">Login
+                History</a>
+              <a href="#">Recycle-Bin</a>
+            </div>
+          </div>
+          <!-- companyadmin end Administration -->
+          <!-- companyadmin Product -->
+          <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown">
+            <a class="dropBtn" data-target="#collapseExample">Product Master <i class="fa fa-caret-down"
+                aria-hidden="true"></i></a>
+            <div class="drop-content" id="collapseExample">
+              <a href="javascript:void(0)" [routerLink]="['/product/productManage']" id="collapseExample">Product
+                Type</a>
+              <a href="javascript:void(0)" [routerLink]="['/product/productMaster']" id="collapseExample">Product
+                Master</a>
+              <a href="javascript:void(0)" [routerLink]="['/product/addManage']" id="collapseExample">Add Manager</a>
+            </div>
+          </div>
+          <!-- companyadmin end Product -->
+          <!-- companyadmin Purchseing -->
+          <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown">
+            <a class="dropBtn" data-target="#collapseExample">Purchase <i class="fa fa-caret-down"
+                aria-hidden="true"></i></a>
+            <div class="drop-content" id="collapseExample">
+              <a href="javascript:void(0)" [routerLink]="['/inventory/supplier']" id="collapseExample">Supplier</a>
+              <a href="javascript:void(0)" [routerLink]="['/inventory/purchaseList',0]" id="collapseExample">Purchase</a>
+              <a href="javascript:void(0)" [routerLink]="['/inventory/purchase-returnList']" id="collapseExample">Purchase Return</a>
+              <a href="javascript:void(0)" [routerLink]="['/inventory/product-transfer']" id="collapseExample">Product Transfer</a>
+              <a href="javascript:void(0)" [routerLink]="['/inventory/preOrderList']" id="collapseExample">Order (PriceList)</a>
+              <a href="javascript:void(0)" [routerLink]="['/inventory/dummyPreorderList']" id="collapseExample">Search Order (PriceList)</a>
+              <a href="javascript:void(0)" [routerLink]="['/inventory/search-barcode']" id="collapseExample">Stock Adjustment</a>
+              <a href="javascript:void(0)" [routerLink]="['/inventory/inventory-summary']" id="collapseExample">Brand/NonBrand (Assign)</a>
+            </div>
+          </div>
+          <!-- companyadmin end Purchseing -->
+          <!-- companyadmin  Bliing -->
+          <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown">
+            <a class="dropBtn" data-target="#collapseExample">Billing <i class="fa fa-caret-down"
+                aria-hidden="true"></i></a>
+            <div class="drop-content" id="collapseExample">
+              <!-- <a href="javascript:void(0)" [routerLink]="['/sale/billing',0,0]" id="collapseExample">Billing</a> -->
+              <a href="javascript:void(0)" [routerLink]="['/sale/billinglist',0]" id="collapseExample">Bill Search</a>
+              <a href="javascript:void(0)" [routerLink]="['/sale/customerList']" id="collapseExample">Customer Search</a>
+              <a href="javascript:void(0)" [routerLink]="['/sale/doctorList']" id="collapseExample">Doctor</a>
+              <a href="javascript:void(0)" [routerLink]="['/sale/commission']" id="collapseExample">Loyalty</a>
+              <a href="javascript:void(0)" [routerLink]="['/sale/commissionList',0]" id="collapseExample">Loyalty  Invoice</a>
+            </div>
+          </div>
+          <!-- companyadmin end Bliing -->
+          <!-- companyadmin  Lens Order -->
+          <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown">
+            <a class="dropBtn" data-target="#collapseExample">Lens Order <i class="fa fa-caret-down"
+                aria-hidden="true"></i></a>
+            <div class="drop-content" id="collapseExample">
+              <!-- <a href="javascript:void(0)" [routerLink]="['/sale/billing',0,0]" id="collapseExample">Billing</a> -->
+              <a href="javascript:void(0)" [routerLink]="['/po/supplierPo']" id="collapseExample">Supplier Order</a>
+              <a href="javascript:void(0)" [routerLink]="['/po/convertToPurchase']" id="collapseExample">Convert To Purchase</a>
+              <a href="javascript:void(0)" [routerLink]="['/po/supplierPoList']" id="collapseExample">Supplier OrderList</a>
+            </div>
+          </div>
+          <!-- companyadmin end Lens Order -->
+          <!-- companyadmin  Lens Order -->
+          <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown">
+            <a class="dropBtn" data-target="#collapseExample">Fitter Order <i class="fa fa-caret-down"
+                aria-hidden="true"></i></a>
+            <div class="drop-content" id="collapseExample">
+              <a href="javascript:void(0)" [routerLink]="['/inventory/fitterList']" id="collapseExample">Fitter</a>
+              <a href="javascript:void(0)" [routerLink]="['/po/fitterPo']" id="collapseExample">Fitter Order</a>
+              <a href="javascript:void(0)" [routerLink]="['/po/fitterInvoice']" id="collapseExample">Fitter Invoice</a>
+              <a href="javascript:void(0)" [routerLink]="['/po/fitterInvoiceList',0]" id="collapseExample">Fitter Invoice List</a>
+            </div>
+          </div>
+          <!-- companyadmin end Lens Order -->
+          <!-- companyadmin  company payment start -->
+          <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown">
+            <a class="dropBtn" data-target="#collapseExample">Payment <i class="fa fa-caret-down"
+                aria-hidden="true"></i></a>
+            <div class="drop-content" id="collapseExample">
+              <a href="javascript:void(0)" [routerLink]="['/companyPayment/payment']" id="collapseExample">Payment</a>
+              <a href="javascript:void(0)" [routerLink]="['/companyPayment/payroll']" id="collapseExample">Payroll</a>
+              <a href="javascript:void(0)" [routerLink]="['/companyPayment/expense']" id="collapseExample">Expense</a>
+              <a href="javascript:void(0)" [routerLink]="['/companyPayment/pettyCash']" id="collapseExample">PettyCash</a>
+            </div>
+          </div>
+          <!-- companyadmin end company payment -->
+          <!-- companyadmin  report start -->
+          <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown">
+            <a class="dropBtn" data-target="#collapseExample">Report <i class="fa fa-caret-down"
+                aria-hidden="true"></i></a>
+            <div class="drop-content" id="collapseExample">
+              <a href="javascript:void(0)" [routerLink]="['/report/sale']" id="collapseExample">Sale</a>
+              <a href="javascript:void(0)" [routerLink]="['/report/purchase']" id="collapseExample">Purchase</a>
+              <a href="javascript:void(0)" [routerLink]="['/report/inventory']" id="collapseExample">Inventory</a>
+              <a href="javascript:void(0)" [routerLink]="['/report/product-transfer']" id="collapseExample">Product Transfer</a>
+              <a href="javascript:void(0)" [routerLink]="['/report/product-return']" id="collapseExample">Product Return</a>
+              <a href="javascript:void(0)" [routerLink]="['/report/eyetest']" id="collapseExample">Eye Test</a>
+            </div>
+          </div>
+          <!-- companyadmin end report -->
+          <!-- companyadmin  Uploader start -->
+          <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown">
+            <a class="dropBtn" data-target="#collapseExample">Excel Import <i class="fa fa-caret-down"
+                aria-hidden="true"></i></a>
+            <div class="drop-content" id="collapseExample">
+              <a href="javascript:void(0)" [routerLink]="['/uploader/purchase']" id="collapseExample" >Inventory</a>
+              <a href="javascript:void(0)" [routerLink]="['/uploader/customer']" id="collapseExample" >Customer</a>
+            </div>
+          </div>
+          <!-- companyadmin end Uploader -->
+        </div>
+      </div>
+      <!-- CompanyAdmin end nav-->
+      <!-- companyAdmin or employee login btn -->
+      <div class="col-md-2 " *ngIf="selectedShops?.length !== 0">
+        <mat-select name="selectedShops" class="SelectYourShop me-md-0 ms-md-0 me-5 ms-1 "
+          placeholder="Select Your Shop" [(ngModel)]="selectedShops" (selectionChange)="saveSelectedShop()" required
+          #Typecontrol>
+          <mat-option *ngIf="user?.UserGroup === 'CompanyAdmin'" [value]="0">All</mat-option>
+          <mat-option *ngFor="let s of dropShoplist let i = index;" [value]="s.ID">
+            <span style="color: rgb(47, 47, 47); "> {{s.Name || s.ShopName}}
+              <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}}) </span>
+              <i *ngIf="s.Status == 0" class="fas fa-times" style="color: red; font-size: 20px; padding-left: 5px;"> </i>
+            </span>
+          </mat-option>
+        </mat-select>
+        <div>
+          <a *ngIf="user?.UserGroup != 'SuperAdmin'" class="logoutBtn" (click)="logout()" title="LogOut">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </a>
+        </div>
+      </div>
+      <!-- companyAdmin or employee login btn end-->
+      <!-- SuperAdmin login btn -->
+      <a *ngIf="user?.UserGroup == 'SuperAdmin'" class="logoutBtn mt-md-1 mt-0 me-4 ps-md-0 ps-2" (click)="logout()"
+        title="LogOut">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </a>
+      <!-- SuperAdmin login btn end -->
+    </div>
+  </div>
+  <!-- model detail-->
+<ng-template #content role="document" let-modal>
+  <div class="modal-header p-2 row" style="height: 50px;">
+     <div class="col-3">
+       <h2 class="modal-title header pt-2" id="exampleModalLabel">Search</h2>
+     </div>
+     <div class="col-7 mx-auto">
+      <input class="form-control" type="text" name="search" [(ngModel)]="searchText" autocomplete="off" placeholder="search">
+     </div>
+     <div class="col-1 ml-auto">
+      <button type="button" style="font-size: 25px;" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+     </div>
+   
+    
+ 
+  </div>
+  <div class="modal-body p-3">
+    <div class="row">
+      <table style="overflow: auto; height: 250px;">
+        <thead>
+          <tr>
+            <th>Page</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let hero of heroes | filter:searchText">
+            <td> <a href="" routerLink={{hero.routersLinks}} style=" font-size: 18px; text-decoration: none;color: #000;">{{hero.Name}} </a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</ng-template>
+</body>
+
+
+<router-outlet></router-outlet>

@@ -1,0 +1,21 @@
+.totolRow{
+    color: red; 
+    font-weight: 600; 
+    font-size: 15px;
+    text-align: center;
+}
+
+.excel {
+    color: #458f37 !important;
+    font-size: 22px !important;
+    transition: 0.5s !important;
+    height: 0px !important;
+    width: 0px !important;
+    cursor: pointer !important;
+}
+
+.my_class {
+    color: rgb(255, 255, 255) !important;
+    background-color: rgb(242, 32, 32) !important;
+}
+

@@ -1,0 +1,385 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"></div>
+        <div class="row clearfix">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="card " style="padding-left: 15px;">
+                    <div class="header">
+                        <h2>Company Information</h2>
+                    </div>
+                    <div class="body">
+                        <form #f="ngForm" (ngSubmit)="onsubmit()">
+                            <div class="row">
+                                <div class="col-md-10 col-11">
+                                    <div class="row mt-0">
+                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Company Name</mat-label>
+                                                <input matInput  name="CompanyName" [(ngModel)]="data.CompanyName" required>
+                                                <mat-error> Company Name is required </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Mobile No1</mat-label>
+                                                <input matInput name="MobileNo1" type="number"
+                                                    [(ngModel)]="data.MobileNo1" required #MobileNo1control>
+                                                <mat-error>
+                                                    Invalid Mobile no.
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Mobile No2</mat-label>
+                                                <input matInput name="MobileNo2" type="number"
+                                                    [(ngModel)]="data.MobileNo2">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Phone No</mat-label>
+                                                <input matInput name="PhoneNo" type="number" autocomplete="off"
+                                                    [(ngModel)]="data.PhoneNo" #PhoneNocontrol>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-0">
+                                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Email</mat-label>
+                                                <input matInput name="Email1" [(ngModel)]="data.Email" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+                                                    required #Emailcontrol [disabled]=" id != 0">
+                                                <mat-error>
+                                                    Invalid Email Id
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-8 col-sm-4 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Address</mat-label>
+                                                <input matInput name="Address" minlength="2" [(ngModel)]="data.Address"
+                                                    required #Addresscontrol>
+                                                <mat-error>
+                                                    Address atleast 2 characters is required.
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-0 col-md-0 col-sm-0 mb-0"></div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Country</mat-label>
+                                                <input matInput name="Country" [(ngModel)]="data.Country" required
+                                                    #Countrycontrol [disabled]="user?.UserGroup !== 'SuperAdmin'">
+                                                <mat-error>
+                                                    Country is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>State</mat-label>
+                                                <input matInput name="State" [(ngModel)]="data.State" required
+                                                    #Statecontrol [disabled]="user?.UserGroup !== 'SuperAdmin'">
+                                                <mat-error>
+                                                    State is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>City</mat-label>
+                                                <input matInput name="City" [(ngModel)]="data.City" required
+                                                    #Citycontrol [disabled]="user?.UserGroup !== 'SuperAdmin'">
+                                                <mat-error>
+                                                    City is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>GST No</mat-label>
+                                                <input matInput name="GSTNo" [(ngModel)]="data.GSTNo" #GSTNocontrol>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>CIN No</mat-label>
+                                                <input matInput name="CINNo" [(ngModel)]="data.CINNo" #CINNocontrol>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-0 col-md-0 col-sm-0 mb-0"></div>
+                                        <div class="col-xl-2 col-lg-2 col-md-4 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Website</mat-label>
+                                                <input matInput name="Website" type="url" [(ngModel)]="data.Website"
+                                                    #Websitecontrol>
+                                                <mat-error>
+                                                    Website is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div  class="col-xl-2 col-lg-2 col-md-6 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Remark</mat-label>
+                                                <input matInput name="Remark" [(ngModel)]="data.Remark" #Remarkscontrol [disabled]="user?.UserGroup != 'SuperAdmin' && this.id != 0 ">
+                                            </mat-form-field>
+                                        </div>
+                                        <div *ngIf="user?.UserGroup == 'SuperAdmin'" class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>SRemark</mat-label>
+                                                <input matInput name="SRemark" [(ngModel)]="data.SRemark" #SRemarkcontrol >
+                                            </mat-form-field>
+                                        </div>
+                                        <div *ngIf="user?.UserGroup == 'SuperAdmin'" class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>CAmount</mat-label>
+                                                <input matInput name="CAmount" [(ngModel)]="data.CAmount" #CAmountcontrol >
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Plan</mat-label>
+                                                <mat-select name="Plan" [(ngModel)]="data.Plan" required #Plancontrol (selectionChange)="onPlanChange(data.Plan)" [disabled]="user?.UserGroup !== 'SuperAdmin'">
+                                                    <mat-option *ngFor="let plan of plans" [value]="plan.ID" >
+                                                        {{plan.Name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                                <mat-error>
+                                                    Select Valid Plan
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Version</mat-label>
+                                                <mat-select name="Version" [(ngModel)]="data.Version" required
+                                                    #Versioncontrol [disabled]="user?.UserGroup !== 'SuperAdmin'">
+                                                    <mat-option value="Basic">Basic</mat-option>
+                                                    <mat-option value="Upper">Upper</mat-option>
+                                                    <mat-option value="Top">Top</mat-option>
+                                                </mat-select>
+                                                <mat-error>
+                                                    Select Valid Version
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Shops</mat-label>
+                                                <input matInput name="NoOfShops" type="number"
+                                                    [(ngModel)]="data.NoOfShops" required #NoOfShopscontrol
+                                                    [disabled]="user?.UserGroup !== 'SuperAdmin'">
+                                                <mat-error>
+                                                    Shop count is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0" >
+                                                <mat-label>Effective Date</mat-label>
+                                                <input matInput  name="EffectiveDate" [(ngModel)]="data.EffectiveDate"  required #EffectiveDatecontrol [matDatepicker]="picker1" [disabled]="user?.UserGroup !== 'SuperAdmin'">
+                                                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                                <mat-datepicker #picker1></mat-datepicker>
+                                                <mat-error >
+                                                    Shop count is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-sm-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0" >
+                                                <mat-label>Cancellation Date</mat-label>
+                                                <input matInput name="CacellationDate" [(ngModel)]="data.CancellationDate"  required #CacellationDatecontrol [matDatepicker]="picker2" [disabled]="user?.UserGroup !== 'SuperAdmin'">
+                                                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                                <mat-datepicker #picker2></mat-datepicker>
+                                                <mat-error >
+                                                    Plan start date
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-0 col-md-0 col-sm-0 mb-0">
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-4 mb-0">
+                                            <mat-slide-toggle type="button" name="EmailMsg" color="primary"
+                                                [(ngModel)]="data.EmailMsg" class="example-margin" #EmailMsgcontrol [disabled]="user?.UserGroup !== 'SuperAdmin'">
+                                                SMS
+                                            </mat-slide-toggle>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-4 mb-0">
+                                            <mat-slide-toggle type="button" name="EmailMsg" color="primary"
+                                                [(ngModel)]="data.EmailMsg" class="example-margin" #EmailMsgcontrol [disabled]="user?.UserGroup !== 'SuperAdmin'" >
+                                                Email
+                                            </mat-slide-toggle>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-4 p-md-0" >
+                                            <mat-slide-toggle type="button" name="WhatsappMsg" color="primary"
+                                                #WhatsappMsgcontrol [(ngModel)]="data.WhatsappMsg"
+                                                class="example-margin" [disabled]="user?.UserGroup !== 'SuperAdmin'">Whatsapp</mat-slide-toggle>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-4 ps-2 ps-md-0" style="padding:0; ">
+                                            <mat-slide-toggle type="button" name="WholeSale" color="primary"
+                                                #WholeSalecontrol [(ngModel)]="data.WholeSale" class="example-margin" [disabled]="user?.UserGroup !== 'SuperAdmin'">
+                                                WholeSale</mat-slide-toggle>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-4 p-md-0">
+                                            <mat-slide-toggle type="button" name="RetailPrice" color="primary"
+                                                #RetailPricecontrol [(ngModel)]="data.RetailPrice"
+                                                class="example-margin" [disabled]="user?.UserGroup !== 'SuperAdmin'">Retail</mat-slide-toggle>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-12">
+                                    <div class="row">
+                                        <div class="col-12 mt-1 " >
+                                            <img class="fit-picture" [src]="companyImage">
+                                        </div>
+                                        <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 " (click)="fileInput.click()" style="cursor: pointer;">
+                                            <i class="fa-solid fa-cloud-arrow-up upload_icon" >
+                                                <span style="font-size: 10px;letter-spacing: 2px;">  Image </span>
+                                            </i>
+                                            <input  value={this.data.LogoURL} #fileInput id="my-input" name='LogoURL' type="file" (change)="uploadImage($event, 'company')" style="display:none;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Owner Details start -->
+                                <div *ngIf="user?.UserGroup == 'SuperAdmin'" class="row mt-4 mb-0" >
+                                    <h2 style="color: rgb(255, 81, 0)"> Owner Details</h2>
+                                </div>
+                                <div  class="row ">
+                                    <div class="col-md-10 col-12">
+                                        <div *ngIf="user?.UserGroup == 'SuperAdmin'" class="row ">
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0 pt-3">
+                                                <mat-slide-toggle name="Checked" class="example-margin" color="primary"
+                                                    [checked]="toggleChecked" (change)="copyData($event.checked)"
+                                                    [disabled]="false" #CompanyIDcontrol>
+                                                    Copy Data
+                                                </mat-slide-toggle>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Owner Name</mat-label>
+                                                    <input matInput name="Name" [(ngModel)]="data1.Name" required
+                                                        #Namecontrol [autocomplete]="false">
+                                                    <mat-error>
+                                                        Company ID is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>DOB</mat-label>
+                                                    <input matInput name="DOB" type="date" [(ngModel)]="data1.DOB">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Anniversary</mat-label>
+                                                    <input matInput name="Anniversary" type="date"
+                                                        [(ngModel)]="data1.Anniversary">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Mobile No1</mat-label>
+                                                    <input matInput name="MobileNo11" type="number"
+                                                        [(ngModel)]="data1.MobileNo1"
+                                                         required #MobileNo1control1>
+                                                    <mat-error>
+                                                        Invalid Mobile Number.
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="user?.UserGroup == 'SuperAdmin'" class="row">
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Mobile No2</mat-label>
+                                                    <input matInput name="MobileNo2" type="number"
+                                                        [(ngModel)]="data1.MobileNo2">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>PhoneNo</mat-label>
+                                                    <input matInput name="PhoneNo1" type="number"
+                                                        [(ngModel)]="data1.PhoneNo" #PhoneNocontrol1>
+                                                    <mat-error>
+                                                        Invalid Phone Number
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Email</mat-label>
+                                                    <input matInput name="Email"  ngModel email="true"
+                                                    pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"  [(ngModel)]="data1.Email"  [disabled]=" id != 0" required #Emailcontrol1>
+                                                    <mat-error>
+                                                        Invalid Email Id
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Address</mat-label>
+                                                    <input matInput name="Address1" [(ngModel)]="data1.Address" required
+                                                        #Addresscontrol1 minlength="2">
+                                                    <mat-error>
+                                                        Address minimum 2 characters is required.
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="id == 0 ">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>LoginName</mat-label>
+                                                    <input matInput name="LoginName" [(ngModel)]="data1.LoginName"
+                                                        autocomplete="off" required #LoginNamecontrol
+                                                        autocomplete="nope">
+                                                    <mat-error>
+                                                        Login Name is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="id == 0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Password</mat-label>
+                                                    <input matInput name="Password" [(ngModel)]="data1.Password"
+                                                        required #Passwordcontrol type="password"
+                                                        autocomplete="new-password">
+                                                    <mat-error>
+                                                        Password is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3 p-0 mt-2">
+                                                <button class="ms-2" type="submit" mat-raised-button color="primary" [disabled]="!f.valid " *ngIf="id == 0">Save</button>
+                                                <button class="ms-3 " type="button" mat-raised-button color="primary"  [disabled]="id == 0" *ngIf=" id != 0"   (click)="updateCompany()"  >Update</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="user?.UserGroup == 'SuperAdmin'" class="col-md-2 col-12 ps-md-4">
+                                        <div class="row ps-2">
+                                            <div class="col-12 ">
+                                                <img class="fit-picture" width="170" height="170" [src]="userImage">
+                                            </div>
+                                            <div class="col-xl-11 col-lg-11 col-md-11 col-sm-12 mb-0 " (click)="fileInputs.click()" style="cursor: pointer;">
+                                                <i class="fa-solid fa-cloud-arrow-up upload_icon" >
+                                                    <span style="font-size: 10px;letter-spacing: 2px;"> user Image</span> 
+                                                </i>
+                                                <input  #fileInputs  name='PhotoURL' type="file"  (change)="uploadImage($event, '')" accept="/*" style="display:none;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Owner Details end -->
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
