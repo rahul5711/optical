@@ -16,10 +16,10 @@ const morgan = require('morgan')
 const { addRoutes } = require('./helpers/routes')
 const loggerss = require("./helpers/logger");
 var app = express();
-app.use('/assest', express.static( 'assest'));
 global.appRoot = path.resolve(__dirname);
+app.use('/assest', express.static( 'assest'));
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+// app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, '')));
 
