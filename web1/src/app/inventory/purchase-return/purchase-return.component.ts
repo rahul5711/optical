@@ -94,7 +94,6 @@ export class PurchaseReturnComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   dropdownSupplierlist(){
@@ -111,7 +110,6 @@ export class PurchaseReturnComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getGSTList(){
@@ -156,7 +154,6 @@ export class PurchaseReturnComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     })
-    this.sp.hide()
   }
 
   getProductList(){
@@ -173,7 +170,6 @@ export class PurchaseReturnComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getFieldList(){
@@ -191,7 +187,6 @@ export class PurchaseReturnComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getSptTableData() { 
@@ -420,7 +415,6 @@ export class PurchaseReturnComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   updatedPurchaseReturn(){
@@ -466,7 +460,6 @@ export class PurchaseReturnComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   deleteItem(Category:any ,i:any){
@@ -523,7 +516,6 @@ export class PurchaseReturnComponent implements OnInit {
         })
       }
     }
-    this.sp.hide()
   }
 
 }

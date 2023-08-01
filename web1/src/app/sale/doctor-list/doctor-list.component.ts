@@ -73,7 +73,6 @@ export class DoctorListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   deleteItem(i:any){
@@ -110,7 +109,6 @@ export class DoctorListComponent implements OnInit {
         });
       }
     })
-    this.sp.hide()
   }
 
   ngAfterViewInit() {
@@ -165,10 +163,10 @@ export class DoctorListComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
       } else {
+        this.sp.hide();
         this.getList()
       }
     });
-    this.sp.hide();
   }
 
   exportAsXLSX(): void {

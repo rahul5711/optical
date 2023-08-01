@@ -97,7 +97,6 @@ export class CommissionListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getCommissionByID() {
@@ -116,7 +115,6 @@ export class CommissionListComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     })
-    this.sp.hide();
   }
 
 

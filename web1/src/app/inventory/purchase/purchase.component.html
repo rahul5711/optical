@@ -366,7 +366,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Amount</mat-label>
-                                        <input matInput name="Price" [(ngModel)]="charge.Price" required #Amountcontrol
+                                        <input matInput name="Price" type="number" min="0" [(ngModel)]="charge.Price" required #Amountcontrol
                                             (blur)="calculateFields('TAmount', 'chtotal')">
                                         <mat-error>
                                             Amount is required
@@ -376,7 +376,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>GST%</mat-label>
-                                        <input matInput name="GSTPercentage" [(ngModel)]="charge.GSTPercentage" required
+                                        <input matInput  type="number" min="0" name="GSTPercentage" [(ngModel)]="charge.GSTPercentage" required
                                             #GSTcontrol [autocomplete]="false"
                                             (blur)="calculateFields('GSTPercentage', 'chgst')">
                                         <mat-error>
@@ -387,7 +387,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>GST Amt</mat-label>
-                                        <input matInput name="GSTAmt" [(ngModel)]="charge.GSTAmount" required
+                                        <input matInput type="number" min="0" name="GSTAmt" [(ngModel)]="charge.GSTAmount" required
                                             #GSTAmtcontrol [autocomplete]="false"
                                             (blur)="calculateFields('GSTAmount', 'chgst')">
                                     </mat-form-field>
@@ -409,7 +409,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Total Amount</mat-label>
-                                        <input matInput name="TAmount" [(ngModel)]="charge.TotalAmount" required
+                                        <input matInput name="TAmount" type="number" min="0" [(ngModel)]="charge.TotalAmount" required
                                             [disabled]=true #TAmountcontrol [autocomplete]="false">
                                     </mat-form-field>
                                 </div>

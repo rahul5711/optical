@@ -122,7 +122,6 @@ export class BillListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   showInput(){
@@ -159,7 +158,6 @@ export class BillListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
 // payment mode 
@@ -284,7 +282,6 @@ export class BillListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   customerCreditDebit(){
@@ -355,7 +352,6 @@ export class BillListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   paymentHistoryByMasterID(CustomerID:any,BillMasterID:any){
@@ -383,7 +379,6 @@ export class BillListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   onPaymentSubmit(){
@@ -438,8 +433,6 @@ export class BillListComponent implements OnInit {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
-
-
     }
   }
   // customer payment individual invoice wise
@@ -533,7 +526,6 @@ export class BillListComponent implements OnInit {
         this.getList()
       }
     });
-    this.sp.hide();
   }
 
   exportAsXLSX(): void {
@@ -560,7 +552,6 @@ export class BillListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   deleteItem(i:any){
@@ -616,7 +607,6 @@ export class BillListComponent implements OnInit {
         });
       }
     })
-    this.sp.hide()
   }
  
 }

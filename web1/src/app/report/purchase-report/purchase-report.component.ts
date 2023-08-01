@@ -204,7 +204,6 @@ export class PurchaseReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   purchaseFromReset(){
@@ -367,7 +366,6 @@ export class PurchaseReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   exportAsXLSXDetail(): void {
@@ -439,7 +437,6 @@ export class PurchaseReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     })       
-    this.sp.hide()
   }
 
   exportAsXLSXcharge(): void {
@@ -590,7 +587,6 @@ export class PurchaseReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   openModal2(content2: any) {

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2'; 
 import { environment } from 'src/environments/environment';
@@ -83,7 +83,6 @@ export class UserUpdatePasswordComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   openModal(content: any,ID:any) {
@@ -127,7 +126,6 @@ export class UserUpdatePasswordComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       })
     }
-    this.sp.hide()
   }
 
 

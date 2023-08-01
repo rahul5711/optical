@@ -105,7 +105,6 @@ export class InventoryReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   dropdownSupplierlist(){
@@ -122,7 +121,6 @@ export class InventoryReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getProductList(){
@@ -139,7 +137,6 @@ export class InventoryReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getFieldList(){
@@ -289,7 +286,6 @@ export class InventoryReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   exportAsXLSXDetail(): void {
@@ -455,7 +451,6 @@ export class InventoryReportComponent implements OnInit {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
-      this.sp.hide()
     }
   
     openModal2(content2: any) {

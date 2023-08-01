@@ -82,7 +82,6 @@ export class PurchaseListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   deleteItem(i:any){
@@ -125,7 +124,6 @@ export class PurchaseListComponent implements OnInit {
         });
       }
     })
-    this.sp.hide()
   }
 
   ngAfterViewInit() {
@@ -165,7 +163,6 @@ export class PurchaseListComponent implements OnInit {
       this.getList();
      } 
     });
-    this.sp.hide();
   }
 
   exportAsXLSX(): void {
@@ -205,7 +202,6 @@ export class PurchaseListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   purchaseHsitory(){
@@ -227,7 +223,6 @@ export class PurchaseListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
 }

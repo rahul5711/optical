@@ -66,10 +66,10 @@ export class ProductMasterComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
  
   getFieldList(){
+    this.sp.show()
    const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
       next: (res: any) => {
       if(res.success){
@@ -79,6 +79,7 @@ export class ProductMasterComponent implements OnInit {
       }else{
         this.as.errorToast(res.message)
       }
+      this.sp.hide()
      },
      error: (err: any) => console.log(err.message),
      complete: () => subs.unsubscribe(),
@@ -86,6 +87,7 @@ export class ProductMasterComponent implements OnInit {
   }
 
   getSptTableData() { 
+    this.sp.show()
    this.specList.forEach((element: any) => {
     if (element.FieldType === 'DropDown' && element.Ref === '0') {
       const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
@@ -96,6 +98,7 @@ export class ProductMasterComponent implements OnInit {
           }else{
             this.as.errorToast(res.message)
           }
+          this.sp.hide()
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
@@ -105,6 +108,7 @@ export class ProductMasterComponent implements OnInit {
   }
 
   getFieldSupportData(index:any) {
+   this.sp.show()
    this.specList.forEach((element: any) => {
     if (element.Ref === this.specList[index].FieldName.toString() ) {
       const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
@@ -116,6 +120,7 @@ export class ProductMasterComponent implements OnInit {
           }else{
             this.as.successToast(res.message)
           }
+          this.sp.hide()
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
@@ -130,6 +135,7 @@ export class ProductMasterComponent implements OnInit {
   }
 
 saveFieldData(i:any){
+  this.sp.show()
   this.specList[i].DisplayAdd = 0;
   const Ref = this.specList[i].Ref;
   let RefValue = 0;
@@ -149,6 +155,7 @@ saveFieldData(i:any){
           } else {
             this.as.errorToast(res.message)
           }
+          this.sp.hide()
         },
         error: (err: any) => console.log(err.message),
         complete: () => subss.unsubscribe(),
@@ -173,6 +180,7 @@ saveFieldData(i:any){
   }
 
   deleteSpecValue(value:any, selectedValue:any, i:any){
+    this.sp.show()
     value.SptFilterData.forEach((element: any) => {
       if (element.TableValue === selectedValue) {
     const subs: Subscription =   this.ps.deleteSpecValue( element.ID,'specspttable').subscribe({
@@ -198,6 +206,7 @@ saveFieldData(i:any){
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.msg);

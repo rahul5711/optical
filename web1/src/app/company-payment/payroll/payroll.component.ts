@@ -76,7 +76,6 @@ export class PayrollComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   getPaymentModesList(){
@@ -92,7 +91,6 @@ export class PayrollComponent implements OnInit {
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   getList() {
@@ -115,7 +113,6 @@ export class PayrollComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   onsubmit() {
@@ -143,7 +140,6 @@ export class PayrollComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     }); 
-    this.sp.hide();
   } 
 
   deleteItem(i:any){
@@ -181,7 +177,6 @@ export class PayrollComponent implements OnInit {
         });
       }
     })
-    this.sp.hide();
   }
 
   updatePayroll(){
@@ -209,7 +204,6 @@ export class PayrollComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
@@ -300,10 +294,10 @@ export class PayrollComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     } else {
+      this.sp.hide();
       this.getList();
     } 
     });
-    this.sp.hide();
   }
 
   formReset() {

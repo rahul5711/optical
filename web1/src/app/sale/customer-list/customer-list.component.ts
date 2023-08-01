@@ -77,7 +77,6 @@ export class CustomerListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   deleteItem(i:any){
@@ -114,7 +113,6 @@ export class CustomerListComponent implements OnInit {
         });
       }
     })
-    this.sp.hide()
   }
 
   ngAfterViewInit() {
@@ -167,10 +165,11 @@ export class CustomerListComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
       } else {
+        this.sp.hide();
         this.getList()
       }
     });
-    this.sp.hide();
+
   }
 
 

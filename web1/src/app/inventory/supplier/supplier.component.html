@@ -287,7 +287,7 @@
                                 *ngIf="suBtn == true" (click)="supplierUpdate()">Update</button>
                             <button type="submit" class="me-3" mat-raised-button color="primary" [disabled]="!f.valid"
                                 *ngIf="suBtn == false">Save</button>
-                            <button type="button" mat-raised-button [routerLink]="['/inventory/supplier',0]"
+                            <button type="button" mat-raised-button [routerLink]="['/inventory/supplier']"
                                 (click)="Clear()">Clear</button>
                             <button *ngIf="this.suBtn" type="button" class="ms-3 " color="primary" mat-raised-button [routerLink]="['/inventory/purchaseList',data.ID]"
                             (click)="modal.dismiss('Cross click')"  >Purchase Hsitory</button>

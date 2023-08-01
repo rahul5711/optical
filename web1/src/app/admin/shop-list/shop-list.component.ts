@@ -104,7 +104,6 @@ export class ShopListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   deleteItem(i: any) {
@@ -236,6 +235,7 @@ export class ShopListComponent implements OnInit {
   }
 
   onsubmit() {
+    this.sp.show();
     var shopdate = this.data ?? " ";
     const subs: Subscription = this.ss.shopSave(shopdate).subscribe({
       next: (res: any) => {
@@ -253,7 +253,6 @@ export class ShopListComponent implements OnInit {
           })
         } else {
           this.as.errorToast(res.message)
-          if(res.message){
             Swal.fire({
               position: 'center',
               icon: 'warning',
@@ -262,8 +261,8 @@ export class ShopListComponent implements OnInit {
               showConfirmButton: true,
               backdrop : false,
             })
-          }
         }
+         this.sp.hide();
       },
       error: (err: any) => {
         console.log(err.msg);
@@ -308,7 +307,6 @@ export class ShopListComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     })
-    this.sp.hide()
   }
 
   updateShop() {
@@ -337,7 +335,6 @@ export class ShopListComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   ngAfterViewInit() {
@@ -391,8 +388,8 @@ export class ShopListComponent implements OnInit {
       } else {
         this.getList();
       }
+      this.sp.hide()
     });
-    this.sp.hide()
   }
 
   exportAsXLSX(): void {

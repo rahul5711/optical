@@ -96,7 +96,6 @@ export class DoctorComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
     this.modalService.dismissAll()
   } 
 
@@ -123,7 +122,6 @@ export class DoctorComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getDoctorById(){
@@ -144,7 +142,6 @@ export class DoctorComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     })
-    this.sp.hide()
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {

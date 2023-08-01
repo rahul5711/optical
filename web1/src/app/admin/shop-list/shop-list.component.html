@@ -341,7 +341,7 @@
                     *ngIf="suBtn == false">Save</button>
                     <button class="me-3" type="button" mat-raised-button color="primary"
                         [disabled]="id == 0 || !f.valid" *ngIf="suBtn == true" (click)="updateShop()">Update</button>
-                    <button type="button" mat-raised-button (click)="f.reset()">Clear</button>
+                    <button type="button" mat-raised-button (click)="formReset()">Clear</button>
                 </div>
             </div>
         </form>

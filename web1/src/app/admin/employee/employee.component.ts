@@ -151,17 +151,14 @@ export class EmployeeComponent implements OnInit {
     const subs: Subscription =  this.es.updateUser( this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
-          if(res.data !== 0) {
-            this.id = res.data;
             this.router.navigate(['/admin/employee/' , this.id]);
             Swal.fire({
               position: 'center',
               icon: 'success',
-              title: 'Your file has been Save.',
+              title: 'Your file has been Update.',
               showConfirmButton: false,
               timer: 1200
             })
-          }
         } else {
           this.as.errorToast(res.message)
         }
@@ -197,7 +194,6 @@ export class EmployeeComponent implements OnInit {
     const subs: Subscription =  this.ss.saveUserShop(this.UserShop).subscribe({
       next: (res: any) => {
         if (res.success) {
-            this.getUserById()
             Swal.fire({
               position: 'center',
               icon: 'success',
@@ -205,6 +201,7 @@ export class EmployeeComponent implements OnInit {
               showConfirmButton: false,
               timer: 1200
             })
+            this.getUserById()
         } else {
           this.as.errorToast(res.message)
           Swal.fire({
@@ -220,7 +217,6 @@ export class EmployeeComponent implements OnInit {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
-
     });
   }
 

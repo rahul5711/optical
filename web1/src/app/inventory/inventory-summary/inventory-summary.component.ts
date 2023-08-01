@@ -66,7 +66,6 @@ export class InventorySummaryComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.shopList  = res.data
-          this.as.successToast(res.message)
         }else{
           this.as.errorToast(res.message)
         }
@@ -75,7 +74,6 @@ export class InventorySummaryComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   dropdownSupplierlist(){
@@ -84,7 +82,6 @@ export class InventorySummaryComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.supplierList  = res.data
-          this.as.successToast(res.message)
         }else{
           this.as.errorToast(res.message)
         }
@@ -93,7 +90,6 @@ export class InventorySummaryComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getProductList(){
@@ -111,7 +107,6 @@ export class InventorySummaryComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getFieldList(){
@@ -135,7 +130,6 @@ export class InventorySummaryComponent implements OnInit {
        error: (err: any) => console.log(err.message),
        complete: () => subs.unsubscribe(),
      });
-     this.sp.hide()
     }
     else {
       this.specList = [];
@@ -163,7 +157,6 @@ export class InventorySummaryComponent implements OnInit {
        });
      }
     });
-    this.sp.hide()
   }
 
   getFieldSupportData(index:any) {
@@ -185,7 +178,6 @@ export class InventorySummaryComponent implements OnInit {
        });
       }
      });
-     this.sp.hide()
   }
 
   onChange(event: any) {
@@ -248,7 +240,6 @@ export class InventorySummaryComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   showInput(){
@@ -259,11 +250,11 @@ export class InventorySummaryComponent implements OnInit {
     this.sp.show()
     const subs: Subscription =  this.purchaseService.updateInventorySummary(data).subscribe({
       next: (res: any) => {
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   exportAsXLSX(): void {

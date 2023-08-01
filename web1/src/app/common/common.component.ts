@@ -17,7 +17,10 @@ export class CommonComponent implements OnInit {
 
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
-  company:any
+
+  company: any = { 
+    ID : null, CompanyID : null, Name : "", UserGroup : "", DOB : null, Anniversary : null, MobileNo1 : null, MobileNo2 : null,   PhoneNo  : null, Email : null, Address : null, Branch : null, FaxNo : null, Website : null, PhotoURL : null, LoginName : "", Password : "", Status : 1, CreatedBy : null, UpdatedBy : null, CreatedOn : "", UpdatedOn : null, Document : [], CommissionType : 0, CommissionMode : 0, CommissionValue : 0,CommissionValueNB : 0,
+};
   CompanyAdmindisplsy :any
   SuperAdmindis :any
   x: any;
@@ -39,7 +42,7 @@ export class CommonComponent implements OnInit {
   heroes: any = []
 
   ngOnInit(): void { 
-
+    this.sp.show()
     this.user = JSON.parse(localStorage.getItem('user') || '')
     if (this.user.UserGroup !== 'SuperAdmin') {
       this.company = JSON.parse(localStorage.getItem('company') || '') ;
@@ -74,6 +77,8 @@ export class CommonComponent implements OnInit {
         "routersLinks" : `/admin/companySetting`
       },
     ];
+    this.sp.hide()
+
   }
 
   openModal(content: any) {

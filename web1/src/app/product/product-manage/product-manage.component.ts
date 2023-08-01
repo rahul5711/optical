@@ -49,9 +49,7 @@ export class ProductManageComponent implements OnInit {
   showAdds = false
 
   ngOnInit(): void {
-    this.sp.show();
     this.getProductList();
-    this.sp.hide();
   }
 
   saveProduct() {
@@ -83,6 +81,7 @@ export class ProductManageComponent implements OnInit {
           } else {
             this.as.errorToast(res.message)
           }
+          this.sp.hide()
         },
         error: (err: any) => {
           console.log(err.msg);
@@ -90,15 +89,17 @@ export class ProductManageComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     } else {
+      this.sp.hide()
       Swal.fire({
         icon: 'error',
         title: 'Duplicate or Empty Values are not allowed',
         text: '',
-        footer: ''
+        footer: '',
+        backdrop: false
       });
       this.newProduct.Name = "";
     }
-    this.sp.hide()
+
   }
 
   getProductList() {
@@ -116,7 +117,6 @@ export class ProductManageComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getfieldList() {
@@ -130,13 +130,16 @@ export class ProductManageComponent implements OnInit {
     });
 
     if (this.selectedProduct !== null || this.selectedProduct !== '') {
+      this.sp.show()
       this.ps.getSpec(this.selectedProduct).subscribe(data => {
         this.specList = data.data;
+        this.sp.hide()
       });
     }
   }
 
   deleteProductType() {
+    this.sp.show();
     if (this.specList.length === 0) {
       const subs: Subscription = this.ps.deleteProductType(this.selectedProductID, 'product').subscribe({
         next: (res: any) => {
@@ -156,6 +159,7 @@ export class ProductManageComponent implements OnInit {
           } else {
             this.as.errorToast(res.message)
           }
+          this.sp.hide();
         },
         error: (err: any) => {
           console.log(err.msg);
@@ -163,11 +167,13 @@ export class ProductManageComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     } else {
+      this.sp.hide();
       Swal.fire({
         icon: 'error',
         title: 'ERROR',
         text: 'First delete related Feild',
-        footer: ''
+        footer: '',
+        backdrop: false,
       });
     }
   }
@@ -203,7 +209,6 @@ export class ProductManageComponent implements OnInit {
     this.selectedGSTPercentage = 0;
     this.selectedGSTType = '';
     this.modalService.dismissAll()
-    this.sp.hide()
   }
 
   saveSpec() {
@@ -236,9 +241,11 @@ export class ProductManageComponent implements OnInit {
               icon: 'error',
               title: 'Already Exist',
               text: ' this Seq Already Exist ',
-              footer: ''
+              footer: '',
+              backdrop: false
             });
           }
+          this.sp.hide()
         },
         error: (err: any) => {
           console.log(err.msg);
@@ -250,10 +257,11 @@ export class ProductManageComponent implements OnInit {
         icon: 'error',
         title: 'Duplicate or Empty Values are not allowed',
         text: ' Fill all Required Fields ',
-        footer: ''
+        footer: '',
+        backdrop: false
       });
     }
-    this.sp.hide()
+
   }
 
   deleteItem(i: any) {
@@ -279,7 +287,6 @@ export class ProductManageComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   openModal(content: any, sProduct: any, sHSNCode: any, sGSTPercentage: any, sGSTType: any) {

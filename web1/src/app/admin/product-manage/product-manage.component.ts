@@ -4,11 +4,11 @@ import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProductService } from 'src/app/service/product.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-product-manage',
@@ -24,8 +24,8 @@ i: any;
     private route: ActivatedRoute,
     private ps: ProductService,
     public as: AlertService,
+    private modalService: NgbModal,
     private sp: NgxSpinnerService,
-    private modalService: NgbModal
 
 
   ) { this.id = this.route.snapshot.params['id']; }
@@ -50,9 +50,7 @@ i: any;
   showAdds = false
 
   ngOnInit(): void {
-    this.sp.show();
     this.getProductList();
-    this.sp.hide();
   }
 
   saveProduct() {
@@ -84,6 +82,7 @@ i: any;
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide();
       },
       error: (err: any) => {
         console.log(err.msg);
@@ -99,7 +98,7 @@ i: any;
     });
     this.newProduct.Name = "";
     }
-    this.sp.hide();
+
   }
 
   getProductList(){
@@ -138,7 +137,7 @@ i: any;
 
   deleteProductType(){
     this.sp.show()
-      if (this.specList.length === 0 ) {
+
       const subs: Subscription =  this.ps.deleteProductType(this.selectedProductID ,'product').subscribe({
         next: (res: any) => {
           if (res.success) {
@@ -156,25 +155,26 @@ i: any;
             })
           } else {
             this.as.errorToast(res.message)
+            Swal.fire({
+              icon: 'error',
+              title: res.message,
+              text: '',
+              footer: ''
+            });
           }
+          this.sp.hide();
         },
         error: (err: any) => {
           console.log(err.msg);
         },
         complete: () => subs.unsubscribe(),
       });
-    }else {
-      Swal.fire({
-        icon: 'error',
-        title: 'ERROR',
-        text: 'First delete related Feild',
-        footer: ''
-      });
-    }
-    this.sp.hide();
+    
+
   }
 
   updateProductType(){
+    this.sp.show()
     this.newProduct.ID = this.selectedProductID
     const subs: Subscription =  this.ps.updateProduct(this.newProduct).subscribe({
       next: (res: any) => {
@@ -191,6 +191,7 @@ i: any;
         } else {
           this.as.errorToast(res.message)
         }
+       this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.msg);
@@ -244,10 +245,12 @@ i: any;
             footer: ''
           });
         }
+        this.sp.hide();
       },
       error: (err: any) => {
         console.log(err.msg);
       },
+      
       complete: () => subs.unsubscribe(),
 
     });
@@ -259,7 +262,7 @@ i: any;
         footer: ''
       });
      }
-     this.sp.hide();
+ 
   }
 
   deleteItem(i:any){
@@ -285,7 +288,6 @@ i: any;
         },
         complete: () => subs.unsubscribe(),
       });
-      this.sp.hide();
   }
 
   openModal(content: any,sProduct:any,sHSNCode:any,sGSTPercentage:any,sGSTType:any) {

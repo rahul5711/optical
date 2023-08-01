@@ -83,7 +83,8 @@ export class PurchaseComponent implements OnInit {
   BarcodeQuantity = 0;
   BarcodeData: any = {};
 
-  disbaleupdate = false
+  disbaleupdate = false;
+
   ngOnInit(): void {
     this.getProductList();
     this.getdropdownSupplierlist();
@@ -117,7 +118,6 @@ export class PurchaseComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     })
-    this.sp.hide();
   }
 
   getdropdownSupplierlist() {
@@ -134,7 +134,6 @@ export class PurchaseComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   getProductList() {
@@ -142,7 +141,6 @@ export class PurchaseComponent implements OnInit {
     const subs: Subscription = this.ps.getList().subscribe({
       next: (res: any) => {
         if (res.success) {
-          // this.prodList = res.data;
           this.prodList = res.data;
           this.prodList.sort((a: any, b: any) => (a.Name < b.Name) ? -1 : 1)
         } else {
@@ -153,7 +151,6 @@ export class PurchaseComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   getGSTList() {
@@ -178,7 +175,6 @@ export class PurchaseComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   getFieldList() {
@@ -196,7 +192,6 @@ export class PurchaseComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   getSptTableData() {
@@ -337,7 +332,6 @@ export class PurchaseComponent implements OnInit {
     this.calculation.calculateGrandTotal(this.selectedPurchaseMaster, this.itemList, this.chargeList)
   }
 
-
   addItem() {
 
     if (this.category === 'Product') {
@@ -456,7 +450,6 @@ export class PurchaseComponent implements OnInit {
         }
       }
 
-
       this.chargeList.push(this.charge);
       this.charge = {
         ID: null, ChargeType: null, CompanyID: null, Description: '', Amount: 0.00, Price: 0.00, GSTPercentage: 0, GSTAmount: 0.00,
@@ -527,7 +520,6 @@ export class PurchaseComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   deleteItem(Category: any, i: any) {
@@ -584,9 +576,7 @@ export class PurchaseComponent implements OnInit {
           }
         })
       }
-      this.sp.hide();
     }
-
   }
 
   deleteCharge(Category: any, i: any) {
@@ -623,7 +613,6 @@ export class PurchaseComponent implements OnInit {
             error: (err: any) => console.log(err.message),
             complete: () => subs.unsubscribe(),
           });
-          this.sp.hide()
         }
       })
     }
@@ -693,7 +682,6 @@ export class PurchaseComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   showInput(data: any) {
@@ -718,7 +706,6 @@ export class PurchaseComponent implements OnInit {
         if (res.success) {
           // this.showInput(data)
           // this.as.successToast(res.message)
-        
         } else {
           Swal.fire({
             position: 'center',
@@ -729,12 +716,10 @@ export class PurchaseComponent implements OnInit {
           })
             this.showInput(data)
             this.getPurchaseById()
-
         }
         this.disbaleupdate = false
         this.sp.hide();
       },
-
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
@@ -762,7 +747,6 @@ export class PurchaseComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   openModal(content: any, data: any) {
@@ -787,7 +771,6 @@ export class PurchaseComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
 }

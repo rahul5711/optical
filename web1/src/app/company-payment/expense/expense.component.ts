@@ -77,7 +77,6 @@ export class ExpenseComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   getExpenseTypeList() {
@@ -93,7 +92,6 @@ export class ExpenseComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   getPaymentModesList() {
@@ -131,7 +129,6 @@ export class ExpenseComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   onsubmit() {
@@ -159,7 +156,6 @@ export class ExpenseComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   deleteItem(i: any) {
@@ -197,7 +193,6 @@ export class ExpenseComponent implements OnInit {
         });
       }
     })
-    this.sp.hide();
   }
 
   updateExpense() {
@@ -225,7 +220,6 @@ export class ExpenseComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
@@ -320,10 +314,10 @@ export class ExpenseComponent implements OnInit {
           complete: () => subs.unsubscribe(),
         });
       } else {
+        this.sp.hide();
         this.getList();
       }
     });
-    this.sp.hide();
   }
 
   formReset() {

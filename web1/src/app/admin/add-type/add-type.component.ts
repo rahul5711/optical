@@ -51,6 +51,7 @@ export class AddTypeComponent implements OnInit {
   }
 
   getfieldList() {
+    this.sp.show();
     if (this.selectedProduct !== null || this.selectedProduct !== '' ){
     this.showFeild = true;
     const subs: Subscription = this.supps.getList(this.selectedProduct).subscribe({
@@ -76,6 +77,7 @@ export class AddTypeComponent implements OnInit {
   }
 
   saveDepartment(){
+    this.sp.show();
     let count = 0;
     this.depList.forEach((element: { Name: string; }) => {
     if (element.Name.toLowerCase() === this.newDepartment.Name.toLowerCase() ){count = count + 1; }
@@ -94,6 +96,7 @@ export class AddTypeComponent implements OnInit {
         footer: ''
       });
     this.newDepartment.Name = ""; }
+    this.sp.hide();
   }
 
   delSupport(){
@@ -106,6 +109,7 @@ export class AddTypeComponent implements OnInit {
         timer: 2000
       })
     }else{
+    this.sp.show();
     this.depList.forEach((element: { Name: any; ID: any; }) => {
       if(element.Name === this.data1.Category) {
         const subs: Subscription =   this.supps.deleteSupport(this.selectedProduct, element.Name).subscribe({
@@ -121,6 +125,7 @@ export class AddTypeComponent implements OnInit {
           }else {
               this.as.errorToast(res.message)
           }
+          this.sp.hide();
         },
         error: (err: any) => {
           console.log(err.msg);

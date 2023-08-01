@@ -54,8 +54,8 @@ export class AddManageComponent implements OnInit {
   data1: any = { ID : null, CompanyID : null,  Name:'', Category : null, Status : 1, CreatedBy: null, UpdatedBy: null,};
   newDepartment: any  = {ID: null, CompanyID: null, Name: "", TableName:null,   Status: 1};
 
-  selectedRow: any = {ID: null, CompanyID: null, Name: null, Description:null, Cost:0,  Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None"};
-  Service: any = {ID: null, CompanyID: null, Name: null, Description:null, Cost:0,  Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
+  selectedRow: any = {ID: null, CompanyID: null, Name: null, Description:null, Cost:0,  Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: " "};
+  Service: any = {ID: null, CompanyID: null, Name: null, Description:null, Cost:0,  Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: " " };
   
   ngOnInit(): void {
     this.chargelist();
@@ -80,7 +80,6 @@ export class AddManageComponent implements OnInit {
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
   }
 
@@ -91,6 +90,7 @@ export class AddManageComponent implements OnInit {
   }
 
   saveDepartment(){
+    this.sp.show()
     let count = 0;
     this.depList.forEach((element: { Name: string; }) => {
     if (element.Name.toLowerCase() === this.newDepartment.Name.toLowerCase() ){count = count + 1; }
@@ -109,9 +109,11 @@ export class AddManageComponent implements OnInit {
         footer: ''
       });
     this.newDepartment.Name = ""; }
+    this.sp.hide()
   }
 
   delSupport(){
+    this.sp.show()
     if (this.data1.Category === null) {
       Swal.fire({
         position: 'center',
@@ -147,7 +149,6 @@ export class AddManageComponent implements OnInit {
         this.getfieldList();
       }
     });
-    this.sp.hide()
     }
   }
 
@@ -187,7 +188,6 @@ export class AddManageComponent implements OnInit {
         if (fieldName === 'GSTAmount') {
           if (this.selectedRow.GSTAmount === null || this.selectedRow.GSTAmount === '') {
             this.selectedRow.GSTAmount = 0;
-            this.selectedRow.GSTType = 'None'
           } else {
             this.selectedRow.GSTPercentage = 100 * +this.selectedRow.GSTAmount / (+this.selectedRow.Price);
           }
@@ -201,19 +201,15 @@ export class AddManageComponent implements OnInit {
  
   }
 
-
   resetData(){
     this.setValueDisbled = false
-    this.selectedRow = {ID: null, CompanyID: null, Name: null, Cost: 0, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None",};
+    this.selectedRow = {ID: null, CompanyID: null, Name: null, Description:null, Cost: 0, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "",};
   }
-
 
   chargesave(){
     this.sp.show()
- 
     const subs: Subscription =  this.supps.chargesave( this.selectedRow).subscribe({
       next: (res: any) => {
-        // this.dataList = res.result;
         if (res.success) {
           this.resetData();
           this.chargelist();
@@ -240,7 +236,6 @@ export class AddManageComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   chargedelete(i: string | number){
@@ -260,7 +255,7 @@ export class AddManageComponent implements OnInit {
             if(res.success){
               this.dataList.splice(i, 1);
               this.as.successToast(res.message)
-              this.selectedRow = {ID: null, CompanyID: null, Name: null, Description: null, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
+              this.selectedRow = {ID: null, CompanyID: null, Name: null, Description: null, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "" };
               this.chargelist();
               Swal.fire({
                 position: 'center',
@@ -279,7 +274,6 @@ export class AddManageComponent implements OnInit {
         });
       }
     })
-    this.sp.hide();
   }
 
   chargelist(){
@@ -296,7 +290,6 @@ export class AddManageComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   getList(){
@@ -313,7 +306,6 @@ export class AddManageComponent implements OnInit {
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   setValuesService(){
@@ -344,7 +336,7 @@ export class AddManageComponent implements OnInit {
             backdrop: false,
           });
           this.Service.GSTPercentage = 0;
-          this.Service.GSTType = 'None'
+      
         } else {
           this.Service.GSTAmount =+this.Service.Price * +this.Service.GSTPercentage / 100;
         }
@@ -352,7 +344,6 @@ export class AddManageComponent implements OnInit {
       if (fieldName === 'GSTAmount') {
         if (this.Service.GSTAmount === null || this.Service.GSTAmount === '') {
           this.Service.GSTAmount = 0;
-          this.Service.GSTType = 'None'
         } else {
           this.Service.GSTPercentage = 100 * +this.Service.GSTAmount / (+this.Service.Price);
         }
@@ -368,7 +359,7 @@ export class AddManageComponent implements OnInit {
   
   serviceresetData(){
     this.setValueServiceDisbled = false
-    this.Service = {ID: null, CompanyID: null, Name: null, Cost: 0, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
+    this.Service = {ID: null, CompanyID: null, Name: null, Description:null, Cost: 0, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "" };
   }
 
   servicesave(){
@@ -395,6 +386,7 @@ export class AddManageComponent implements OnInit {
           }); 
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.msg);
@@ -420,7 +412,7 @@ export class AddManageComponent implements OnInit {
             if(res.success){
               this.serviceList.splice(i, 1);
               this.as.successToast(res.message)
-              this.Service = {ID: null, CompanyID: null, Name: null, Description: null, Cost:0, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None" };
+              this.Service = {ID: null, CompanyID: null, Name: null, Description: null, Cost:0, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "" };
               this.servicelist();
               Swal.fire({
                 position: 'center',
@@ -439,7 +431,6 @@ export class AddManageComponent implements OnInit {
         });
       }
     })
-    this.sp.hide();
   }
 
   servicelist(){
@@ -456,7 +447,6 @@ export class AddManageComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
 }

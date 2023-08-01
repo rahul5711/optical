@@ -66,10 +66,10 @@ export class ProductMasterComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getFieldList() {
+    this.sp.show();
     const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -84,7 +84,6 @@ export class ProductMasterComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   getSptTableData() {
@@ -106,7 +105,6 @@ export class ProductMasterComponent implements OnInit {
         });
       }
     });
-    this.sp.hide();
   }
 
   getFieldSupportData(index: any) {
@@ -129,7 +127,6 @@ export class ProductMasterComponent implements OnInit {
         });
       }
     });
-    this.sp.hide();
   }
 
   displayAddField(i: any) {
@@ -175,7 +172,6 @@ export class ProductMasterComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
 
@@ -216,7 +212,6 @@ export class ProductMasterComponent implements OnInit {
         });
       }
     })
-    this.sp.hide()
   }
 
 }

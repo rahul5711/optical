@@ -101,7 +101,7 @@
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="showAddCharge">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Product Name</mat-label>
-                                        <input matInput name="NewRole" [(ngModel)]="selectedRow.Name"  required #NewProductTypecontrol>
+                                        <input matInput name="NewRole" [(ngModel)]="selectedRow.Name"   required #NewProductTypecontrol>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
@@ -113,36 +113,41 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>Customer Price</mat-label>
-                                        <input matInput name="Price" [(ngModel)]="selectedRow.Price" required #Pricecontrol  [disabled]="this.setValueDisbled" >
+                                        <input matInput name="Price" type="number" min="0" [(ngModel)]="selectedRow.Price" required #Pricecontrol  [disabled]="this.setValueDisbled" >
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ">
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>GST%</mat-label>
-                                        <input matInput name="GSTPercentage" [(ngModel)]="selectedRow.GSTPercentage" (blur)="calculate('GSTPercentage', 'chgst')" required #GSTPercentagecontrol  [disabled]="this.setValueDisbled" >
+                                        <input matInput name="GSTPercentage" type="number" min="0" [(ngModel)]="selectedRow.GSTPercentage" (blur)="calculate('GSTPercentage', 'chgst')" required #GSTPercentagecontrol  [disabled]="this.setValueDisbled" >
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>GSTAmount</mat-label>
-                                        <input matInput name="GSTAmount" [(ngModel)]="selectedRow.GSTAmount" (blur)="calculate('GSTAmount', 'chgst')" required #GSTAmountcontrol  [disabled]="this.setValueDisbled" >
+                                        <input matInput name="GSTAmount" type="number" min="0" [(ngModel)]="selectedRow.GSTAmount" (blur)="calculate('GSTAmount', 'chgst')" required #GSTAmountcontrol  [disabled]="this.setValueDisbled" >
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 p-0">
+                                <div *ngIf="selectedRow.GSTPercentage === 0" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 p-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>GST Type</mat-label>
-                                        <mat-select name="GSTType" [(ngModel)]="selectedRow.GSTType"  required #GSTTypecontrol1  (blur)="calculate('Total', 'chtotal')" [disabled]="this.setValueDisbled" >
-                                            <mat-option *ngIf="selectedRow.GSTPercentage === 0" value="None">None</mat-option>
-                                            <span *ngIf="selectedRow.GSTPercentage !== 0" >
+                                        <mat-select name="GSTType" [(ngModel)]="selectedRow.GSTType"  [required]="true" #GSTTypecontrol1  (blur)="calculate('Total', 'chtotal')" [disabled]="this.setValueDisbled" >
+                                            <mat-option value="None">None</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div *ngIf="selectedRow.GSTPercentage !== 0" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 p-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>GST Type</mat-label>
+                                        <mat-select name="GSTType" [(ngModel)]="selectedRow.GSTType"  [required]="true" #GSTTypecontrol1  (blur)="calculate('Total', 'chtotal')" [disabled]="this.setValueDisbled" >
                                                 <mat-option [value]="g.Name" *ngFor="let g of gstList">{{g.Name}}</mat-option>
-                                            </span>
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>Total </mat-label>
-                                        <input matInput name="Total" [(ngModel)]="selectedRow.TotalAmount" required #Totalcontrol  disabled>
+                                        <input matInput name="Total" type="number" min="0" [(ngModel)]="selectedRow.TotalAmount" required #Totalcontrol  disabled>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0" *ngIf="!showAddCharge">
@@ -151,7 +156,7 @@
                                    </button>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-2 mb-0" *ngIf="showAddCharge">
-                                    <button type="button" [disabled]="selectedRow.TotalAmount === 0 "  autofocus mat-raised-button color="primary" (click)="showAddCharge = !showAddCharge; chargesave(); ">
+                                    <button type="button" [disabled]="!f1.valid"  autofocus mat-raised-button color="primary" (click)="showAddCharge = !showAddCharge; chargesave(); ">
                                        save
                                     </button>
                                 </div>
@@ -236,42 +241,49 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>Internal Cost</mat-label>
-                                        <input matInput name="Cost" [(ngModel)]="Service.Cost" required #Costcontrol [disabled]="this.setValueServiceDisbled">
+                                        <input matInput name="Cost" type="number" min="0" [(ngModel)]="Service.Cost" required #Costcontrol [disabled]="this.setValueServiceDisbled">
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>Customer Price</mat-label>
-                                        <input matInput name="Price" [(ngModel)]="Service.Price" required #Pricecontrol [disabled]="this.setValueServiceDisbled">
+                                        <input matInput name="Price"  type="number" min="0" [(ngModel)]="Service.Price" required #Pricecontrol [disabled]="this.setValueServiceDisbled">
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ">
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>GST%</mat-label>
-                                        <input matInput name="GSTPercentage" [(ngModel)]="Service.GSTPercentage" (blur)="calculateSevice('GSTPercentage', 'chgst1')" required #GSTPercentagecontrol [disabled]="this.setValueServiceDisbled">
+                                        <input matInput name="GSTPercentage" type="number" min="0" [(ngModel)]="Service.GSTPercentage" (blur)="calculateSevice('GSTPercentage', 'chgst1')" required #GSTPercentagecontrol [disabled]="this.setValueServiceDisbled">
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>GSTAmount</mat-label>
-                                        <input matInput name="GSTAmount" [(ngModel)]="Service.GSTAmount" (blur)="calculateSevice('GSTAmount', 'chgst1')" required #GSTAmountcontrol [disabled]="this.setValueServiceDisbled">
+                                        <input matInput name="GSTAmount" type="number" min="0" [(ngModel)]="Service.GSTAmount" (blur)="calculateSevice('GSTAmount', 'chgst1')" required #GSTAmountcontrol [disabled]="this.setValueServiceDisbled">
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 p-0">
+                                <div *ngIf="Service.GSTPercentage === 0" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 p-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>GST Type</mat-label>
                                         <mat-select name="GSTType" [(ngModel)]="Service.GSTType" (blur)="calculateSevice('Total', 'chtotal1')" required #GSTTypecontrol1 [disabled]="this.setValueServiceDisbled">
-                                            <mat-option *ngIf="selectedRow.GSTPercentage === 0" value="None">None</mat-option>
-                                            <span *ngIf="selectedRow.GSTPercentage !== 0" >
+                                            <mat-option  value="None">None</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div *ngIf="Service.GSTPercentage !== 0" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 p-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>GST Type</mat-label>
+                                        <mat-select name="GSTType" [(ngModel)]="Service.GSTType" (blur)="calculateSevice('Total', 'chtotal1')" required #GSTTypecontrol1 [disabled]="this.setValueServiceDisbled">
                                                 <mat-option [value]="g.Name" *ngFor="let g of gstList">{{g.Name}}</mat-option>
-                                            </span>
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>Total </mat-label>
-                                        <input matInput name="Total" [(ngModel)]="Service.TotalAmount" required #Totalcontrol disabled>
+                                        <input matInput name="Total" type="number" min="0"
+                                        
+                                        [(ngModel)]="Service.TotalAmount" required #Totalcontrol disabled>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0" *ngIf="!showAddService">

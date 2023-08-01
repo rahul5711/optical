@@ -84,7 +84,6 @@ export class PerorderDummyListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getProductList(){
@@ -102,7 +101,6 @@ export class PerorderDummyListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getFieldList(){
@@ -126,7 +124,6 @@ export class PerorderDummyListComponent implements OnInit {
        error: (err: any) => console.log(err.message),
        complete: () => subs.unsubscribe(),
      });
-     this.sp.hide()
     }
     else {
       this.specList = [];
@@ -154,7 +151,6 @@ export class PerorderDummyListComponent implements OnInit {
        });
      }
     });
-    this.sp.hide()
   }
 
   getFieldSupportData(index:any) {
@@ -176,7 +172,6 @@ export class PerorderDummyListComponent implements OnInit {
        });
       }
      });
-     this.sp.hide()
   }
 
   onChange(event: any) {
@@ -241,8 +236,6 @@ export class PerorderDummyListComponent implements OnInit {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
-      this.sp.hide();
-
   }
 
   changePagesize(num: number): void {
@@ -269,7 +262,6 @@ export class PerorderDummyListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   showInput(data: any) {
@@ -336,7 +328,6 @@ export class PerorderDummyListComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   deleteItem(Category: any, i: any, data: any) {
@@ -388,12 +379,9 @@ export class PerorderDummyListComponent implements OnInit {
             error: (err: any) => console.log(err.message),
             complete: () => subs.unsubscribe(),
           });
-          console.log(body);
         }
-        this.sp.hide();
       })
     }
-    this.sp.hide();
   }
 
   exportAsXLSX(): void {

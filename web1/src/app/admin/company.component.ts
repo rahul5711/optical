@@ -68,16 +68,9 @@ data1: any = {
 
 
   ngOnInit() {
-    this.sp.show();
-    if (!(this.dataS.checkPermission("CompanyInfo", "MView"))) {
-      alert("You don't have permission.")
-      this.dataS.goBack()
-    }else{
       if (this.id != 0) {
         this.getCompanyById();
       }
-    }
-    this.sp.hide();
   }
 
   onPlanChange(value:any){
@@ -137,19 +130,18 @@ data1: any = {
             Swal.fire({
               position: 'center',
               icon: 'error',
-              title: 'Already exist',
-              text:'LoginName Already exist from this LoginName ' + this.data.LoginName,
+              title: res.message,
               showConfirmButton: true,
-              backdrop: false
+              backdrop: 'static'
             })
         }
+        this.sp.hide();
       },
       error: (err: any) => {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   getCompanyById(){
@@ -165,13 +157,13 @@ data1: any = {
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide();
       },
       error: (err: any) => {
         console.log(err.message);
       },
       complete: () => subs.unsubscribe(),
     })
-    this.sp.hide();
   }
 
   updateCompany(){
@@ -182,6 +174,13 @@ data1: any = {
         if (res.success) {
            if(this.user.UserGroup === 'SuperAdmin'){
             this.router.navigate(['/admin/companyList']);
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been Update.',
+              showConfirmButton: false,
+              timer: 1200
+            })
            }else{
             Swal.fire({
               position: 'center',
@@ -193,14 +192,21 @@ data1: any = {
            }
         } else {
           this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: res.message,
+            showConfirmButton: true,
+            backdrop: 'static'
+          })
         }
+        this.sp.hide();
       },
       error: (err: any) => {
         console.log(err.msg);
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   uploadImage(e:any, mode:any){

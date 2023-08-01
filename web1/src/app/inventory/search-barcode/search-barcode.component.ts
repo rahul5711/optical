@@ -63,7 +63,6 @@ export class SearchBarcodeComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getFieldList(){
@@ -81,7 +80,6 @@ export class SearchBarcodeComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getSptTableData() { 
@@ -151,7 +149,6 @@ export class SearchBarcodeComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getBarcodeDataByBarcodeNo(mode:any){
@@ -177,7 +174,6 @@ export class SearchBarcodeComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   updateBarcode(data:any){
@@ -200,7 +196,6 @@ export class SearchBarcodeComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   showInput(){
@@ -227,7 +222,6 @@ export class SearchBarcodeComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
 

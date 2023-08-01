@@ -118,7 +118,6 @@ export class SaleReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   dropdownCustomerlist(){
@@ -135,7 +134,6 @@ export class SaleReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   dropdownCustomerGSTNo(){
@@ -152,7 +150,6 @@ export class SaleReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   dropdownUserlist(){
@@ -169,7 +166,6 @@ export class SaleReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getBillMaster(){
@@ -255,7 +251,6 @@ export class SaleReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   openModalSale(content3: any) {
@@ -450,7 +445,6 @@ export class SaleReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   exportAsXLSXDetail(): void {
@@ -512,7 +506,6 @@ export class SaleReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     })       
-    this.sp.hide()
   }
 
   openModalService(content1: any) {

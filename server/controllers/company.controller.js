@@ -32,10 +32,10 @@ module.exports = {
             if (doesExist.length) return res.send({ message: `Company Already exist from this Email ${Body.Email}` })
 
 
-            const doesExistUser = await connection.query(`select * from User where Email = '${Body.User.Email}' and Status = 1`)
+            const doesExistUser = await connection.query(`select * from user where Email = '${Body.User.Email}' and Status = 1`)
             if (doesExistUser.length) return res.send({ message: `User Already exist from this Email ${Body.User.Email}` })
 
-            const doesExistLoginName = await connection.query(`select * from User where LoginName = '${Body.User.LoginName}'`)
+            const doesExistLoginName = await connection.query(`select * from user where LoginName = '${Body.User.LoginName}'`)
             if (doesExistLoginName.length) return res.send({ message: `LoginName Already exist from this LoginName ${Body.User.LoginName}` })
 
             if (_.isEmpty(Body.User.Password)) res.send({ message: "Invalid Query Data" })
@@ -46,7 +46,7 @@ module.exports = {
 
             const pass = await pass_init.hash_password(Body.User.Password)
 
-            const saveUser = await connection.query(`insert into User(CompanyID,Name,UserGroup,DOB,Anniversary,MobileNo1,MobileNo2,PhoneNo,Email,Address,Branch,PhotoURL,Document,LoginName,Password,Status,CreatedBy,UpdatedBy,CreatedOn,UpdatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB) values(${saveCompany.insertId},'${Body.User.Name}','CompanyAdmin','${Body.User.DOB}','${Body.User.Anniversary}','${Body.User.MobileNo1}','${Body.User.MobileNo2}','${Body.User.PhoneNo}','${Body.User.Email}','${Body.User.Address}','${Body.User.Branch}','${Body.User.PhotoURL}','${Body.User.Document}','${Body.User.LoginName}','${pass}',1,0,0,now(),now(),${Body.User.CommissionType},${Body.User.CommissionMode},${Body.User.CommissionValue},${Body.User.CommissionValueNB})`)
+            const saveUser = await connection.query(`insert into user(CompanyID,Name,UserGroup,DOB,Anniversary,MobileNo1,MobileNo2,PhoneNo,Email,Address,Branch,PhotoURL,Document,LoginName,Password,Status,CreatedBy,UpdatedBy,CreatedOn,UpdatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB) values(${saveCompany.insertId},'${Body.User.Name}','CompanyAdmin','${Body.User.DOB}','${Body.User.Anniversary}','${Body.User.MobileNo1}','${Body.User.MobileNo2}','${Body.User.PhoneNo}','${Body.User.Email}','${Body.User.Address}','${Body.User.Branch}','${Body.User.PhotoURL}','${Body.User.Document}','${Body.User.LoginName}','${pass}',1,0,0,now(),now(),${Body.User.CommissionType},${Body.User.CommissionMode},${Body.User.CommissionValue},${Body.User.CommissionValueNB})`)
 
             console.log(connected("CompanyAdmin User Save SuccessFUlly !!!"));
 
@@ -189,7 +189,7 @@ module.exports = {
                     }
                     item.SptTableName = TableName[0].SptTableName
 
-                    let saveData = await connection.query(`insert into SpecSptTable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.SptTableName}','${item.RefID}','${item.TableValue}',1,now(),0)`)
+                    let saveData = await connection.query(`insert into specspttable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.SptTableName}','${item.RefID}','${item.TableValue}',1,now(),0)`)
                 }
 
                 console.log(connected("Spec Data Assign SuccessFully !!!!"));
@@ -230,7 +230,7 @@ module.exports = {
             console.log(connected("Barcode Initiated SuccessFully !!!"));
 
             const Company = await connection.query(`select * from company where ID = ${saveCompany.insertId}`)
-            const User = await connection.query(`select * from User where ID = ${saveUser.insertId}`)
+            const User = await connection.query(`select * from user where ID = ${saveUser.insertId}`)
 
 
             response.message = "data save sucessfully"
@@ -303,10 +303,10 @@ module.exports = {
             if (doesExist.length) return res.send({ message: `Company Already exist from this Email ${Body.Email}` })
 
 
-            const doesExistUser = await connection.query(`select * from User where Email = '${Body.User.Email}' and Status = 1 and ID != ${Body.User.ID}`)
+            const doesExistUser = await connection.query(`select * from user where Email = '${Body.User.Email}' and Status = 1 and ID != ${Body.User.ID}`)
             if (doesExistUser.length) return res.send({ message: `User Already exist from this Email ${Body.User.Email}` })
 
-            const doesExistLoginName = await connection.query(`select * from User where LoginName = '${Body.User.LoginName}' and ID != ${Body.User.ID}`)
+            const doesExistLoginName = await connection.query(`select * from user where LoginName = '${Body.User.LoginName}' and ID != ${Body.User.ID}`)
             if (doesExistLoginName.length) return res.send({ message: `LoginName Already exist from this LoginName ${Body.User.LoginName}` })
 
             const updateCompany = await connection.query(`update company set Name = '${Body.CompanyName}', MobileNo1='${Body.MobileNo1}', MobileNo2='${Body.MobileNo2}', PhoneNo='${Body.PhoneNo}', Address='${Body.Address}', Country='${Body.Country}', State='${Body.State}',City='${Body.City}', Website='${Body.Website}', GSTNo='${Body.GSTNo}', CINNo='${Body.CINNo}', LogoURL='${Body.LogoURL}', Remark='${Body.Remark}', SRemark='${Body.SRemark}', CAmount='${Body.CAmount}',  Plan=${Body.Plan}, Version='${Body.Version}', NoOfShops=${Body.NoOfShops}, EffectiveDate='${Body.EffectiveDate}', CancellationDate='${Body.CancellationDate}',EmailMsg='${Body.EmailMsg}', WhatsappMsg='${Body.WhatsappMsg}', WholeSale='${Body.WholeSale}', RetailPrice='${Body.RetailPrice}', Status=1, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)

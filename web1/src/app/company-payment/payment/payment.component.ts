@@ -214,7 +214,6 @@ export class PaymentComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   onSubmit(){

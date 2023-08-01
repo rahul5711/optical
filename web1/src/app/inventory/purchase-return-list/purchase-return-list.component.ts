@@ -70,7 +70,6 @@ export class PurchaseReturnListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   deleteItem(i:any){
@@ -107,11 +106,11 @@ export class PurchaseReturnListComponent implements OnInit {
               })
               this.as.errorToast(res.message)
             }
+            this.sp.hide()
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
-        this.sp.hide()
       }
     })
   }
@@ -153,7 +152,6 @@ export class PurchaseReturnListComponent implements OnInit {
       this.getList();
      } 
     });
-    this.sp.hide();
   }
 
   exportAsXLSX(): void {
@@ -241,7 +239,6 @@ export class PurchaseReturnListComponent implements OnInit {
          });
       }
     })
-    this.sp.hide();
   }
 
 }

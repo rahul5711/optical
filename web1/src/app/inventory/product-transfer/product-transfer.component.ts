@@ -100,7 +100,6 @@ export class ProductTransferComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getProductList(){
@@ -117,7 +116,6 @@ export class ProductTransferComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getFieldList(){
@@ -135,7 +133,6 @@ export class ProductTransferComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getSptTableData() {
@@ -157,7 +154,6 @@ export class ProductTransferComponent implements OnInit {
        });
      }
     });
-    this.sp.hide()
   }
 
   getFieldSupportData(index:any) {
@@ -179,7 +175,6 @@ export class ProductTransferComponent implements OnInit {
        });
       }
      });
-     this.sp.hide()
      this.xferItem.ProductName = ''
      this.xferItem.Barcode = ''
      this.xferItem.BarCodeCount = ''
@@ -210,7 +205,6 @@ export class ProductTransferComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getProductDataByBarCodeNo(){
@@ -244,7 +238,6 @@ export class ProductTransferComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   getBarCodeList(index:any) {
@@ -267,7 +260,6 @@ export class ProductTransferComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   TransferCountLimit(){
@@ -305,7 +297,6 @@ export class ProductTransferComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   cancelTransfer(i:any){
@@ -343,7 +334,6 @@ export class ProductTransferComponent implements OnInit {
         });
       }
     })
-    this.sp.hide()
   }
 
   acceptTransfer(){
@@ -366,14 +356,14 @@ export class ProductTransferComponent implements OnInit {
             })
             this.xferAccept = [];
             this.getList();
-          }else{
-            this.sp.hide()
           }
+          this.sp.hide()
         },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
       });
     }else {
+      this.sp.hide()
       const message = "Please check with the Sender: " + this.xferList[n].CreatedByUser + " from Shop " + this.xferList[n].FromShop + " for Product: " + this.xferList[n].ProductName;
       Swal.fire({
         icon: 'error',
@@ -384,7 +374,7 @@ export class ProductTransferComponent implements OnInit {
       });
       this.xferAccept = [];
     }
-    this.sp.hide()
+
   }
 
   openModal(content: any,data:any) {
@@ -449,7 +439,7 @@ export class ProductTransferComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
     }
-    this.sp.hide()
+
   }
 
   formReset() {
@@ -483,7 +473,6 @@ export class ProductTransferComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
 }

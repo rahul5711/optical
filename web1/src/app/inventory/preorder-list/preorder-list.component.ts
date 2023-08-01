@@ -65,7 +65,6 @@ export class PreorderListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   deleteItem(i:any){
@@ -107,7 +106,6 @@ export class PreorderListComponent implements OnInit {
         });
       }
     })
-    this.sp.hide()
   }
 
   ngAfterViewInit() {
@@ -143,9 +141,7 @@ export class PreorderListComponent implements OnInit {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
-    } else {
-      this.getList();
-     } 
+    } 
     });
   }
 

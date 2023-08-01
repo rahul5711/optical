@@ -1132,7 +1132,7 @@ module.exports = {
                 shop = ID
             }
 
-            qry = `SELECT transfermaster.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName,shop.AreaName as FromAreaName, User.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN User ON User.ID = transfermaster.CreatedBy LEFT JOIN User AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} and transfermaster.TransferStatus = 'Transfer Initiated' and (transfermaster.TransferFromShop = ${shop} or transfermaster.TransferToShop = ${shop}) Order By transfermaster.ID Desc`;
+            qry = `SELECT transfermaster.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName,shop.AreaName as FromAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} and transfermaster.TransferStatus = 'Transfer Initiated' and (transfermaster.TransferFromShop = ${shop} or transfermaster.TransferToShop = ${shop}) Order By transfermaster.ID Desc`;
 
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
@@ -1266,7 +1266,7 @@ module.exports = {
                 shopMode = `And barcodemasternew.ShopID = '${shopid}'`;
             }
 
-            qry = `SELECT barcodemasternew.* , company.Name AS CompanyName, shop.Name AS ShopName, shop.AreaName AS AreaName, shop.BarcodeName AS BarcodeShopName, purchasedetailnew.ProductName , purchasedetailnew.ProductTypeName, purchasedetailnew.BaseBarCode AS BarCode, purchasedetailnew.UniqueBarcode, purchasedetailnew.UnitPrice, purchasedetailnew.ProductName, purchasedetailnew.Quantity ,purchasemasternew.InvoiceNo,supplier.Name AS SupplierName   FROM barcodemasternew LEFT JOIN company ON company.ID = barcodemasternew.CompanyID LEFT JOIN shop ON Shop.ID = barcodemasternew.ShopID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID WHERE barcodemasternew.CurrentStatus != 'Pre Order' and  purchasedetailnew.Status = 1 and purchasemasternew.PStatus = 0 AND barcodemasternew.CompanyID = ${CompanyID}  ${shopMode} ${mode1}`;
+            qry = `SELECT barcodemasternew.* , company.Name AS CompanyName, shop.Name AS ShopName, shop.AreaName AS AreaName, shop.BarcodeName AS BarcodeShopName, purchasedetailnew.ProductName , purchasedetailnew.ProductTypeName, purchasedetailnew.BaseBarCode AS BarCode, purchasedetailnew.UniqueBarcode, purchasedetailnew.UnitPrice, purchasedetailnew.ProductName, purchasedetailnew.Quantity ,purchasemasternew.InvoiceNo,supplier.Name AS SupplierName   FROM barcodemasternew LEFT JOIN company ON company.ID = barcodemasternew.CompanyID LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID WHERE barcodemasternew.CurrentStatus != 'Pre Order' and  purchasedetailnew.Status = 1 and purchasemasternew.PStatus = 0 AND barcodemasternew.CompanyID = ${CompanyID}  ${shopMode} ${mode1}`;
 
             let barcodelist = await connection.query(qry);
             response.data = barcodelist;
@@ -1314,7 +1314,7 @@ module.exports = {
 
                 for (const b of purchaseData) {
                     let mode1 = `And barcodemasternew.Barcode = '${b.Barcode}'`;
-                    let Barcodes = await connection.query(`SELECT barcodemasternew.* , company.Name AS CompanyName, shop.Name AS ShopName, shop.AreaName AS AreaName, shop.BarcodeName AS BarcodeShopName, purchasedetailnew.ProductName , purchasedetailnew.ProductTypeName, purchasedetailnew.BaseBarCode AS BarCode, purchasedetailnew.UniqueBarcode, purchasedetailnew.UnitPrice, purchasedetailnew.ProductName, purchasedetailnew.Quantity ,purchasemasternew.InvoiceNo,supplier.Name AS SupplierName   FROM barcodemasternew LEFT JOIN company ON company.ID = barcodemasternew.CompanyID LEFT JOIN shop ON Shop.ID = barcodemasternew.ShopID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID WHERE barcodemasternew.CurrentStatus != 'Pre Order' and  purchasedetailnew.Status = 1 AND barcodemasternew.CompanyID = ${CompanyID}  ${shopMode} ${mode1}`)
+                    let Barcodes = await connection.query(`SELECT barcodemasternew.* , company.Name AS CompanyName, shop.Name AS ShopName, shop.AreaName AS AreaName, shop.BarcodeName AS BarcodeShopName, purchasedetailnew.ProductName , purchasedetailnew.ProductTypeName, purchasedetailnew.BaseBarCode AS BarCode, purchasedetailnew.UniqueBarcode, purchasedetailnew.UnitPrice, purchasedetailnew.ProductName, purchasedetailnew.Quantity ,purchasemasternew.InvoiceNo,supplier.Name AS SupplierName   FROM barcodemasternew LEFT JOIN company ON company.ID = barcodemasternew.CompanyID LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID WHERE barcodemasternew.CurrentStatus != 'Pre Order' and  purchasedetailnew.Status = 1 AND barcodemasternew.CompanyID = ${CompanyID}  ${shopMode} ${mode1}`)
 
                     if (Barcodes) {
                         Barcodes.forEach(e => {
@@ -2111,8 +2111,6 @@ module.exports = {
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            console.log(Parem, 'Parem');
-
             if (Parem === '' || Parem === undefined) {
                 Parem = ``
             }
@@ -2135,7 +2133,7 @@ module.exports = {
             if (data.length) {
                 for (let item of data) {
                     item.PurchaseMasterData = {}
-                    const purchasedata = await connection.query(`SELECT purchasemasternew.*, supplier.Name AS SupplierName,  supplier.GSTNo AS GSTNo, users1.Name AS CreatedPerson,shop.Name AS ShopName, shop.AreaName AS AreaName, users.Name AS UpdatedPerson FROM purchasemasternew LEFT JOIN USER AS users1 ON users1.ID = purchasemasternew.CreatedBy LEFT JOIN USER AS users ON users.ID = purchasemasternew.UpdatedBy LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID WHERE purchasemasternew.Status = 1 AND purchasemasternew.PStatus = 1 and purchasemasternew.ID = ${item.PurchaseID} and purchasemasternew.CompanyID = ${CompanyID} ${shopId} `)
+                    const purchasedata = await connection.query(`SELECT purchasemasternew.*, supplier.Name AS SupplierName,  supplier.GSTNo AS GSTNo, users1.Name AS CreatedPerson,shop.Name AS ShopName, shop.AreaName AS AreaName, users.Name AS UpdatedPerson FROM purchasemasternew LEFT JOIN user AS users1 ON users1.ID = purchasemasternew.CreatedBy LEFT JOIN user AS users ON users.ID = purchasemasternew.UpdatedBy LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID WHERE purchasemasternew.Status = 1 AND purchasemasternew.PStatus = 1 and purchasemasternew.ID = ${item.PurchaseID} and purchasemasternew.CompanyID = ${CompanyID} ${shopId} `)
                     item.PurchaseMasterData = purchasedata[0]
                 }
 

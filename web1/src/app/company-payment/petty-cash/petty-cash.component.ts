@@ -74,7 +74,6 @@ export class PettyCashComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   getPettyCashBalance(){
@@ -92,7 +91,6 @@ export class PettyCashComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   getList() {
@@ -115,7 +113,6 @@ export class PettyCashComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   onsubmit() {
@@ -150,7 +147,6 @@ export class PettyCashComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     }); 
-    this.sp.hide();
   } 
 
   deleteItem(i:any){
@@ -188,7 +184,6 @@ export class PettyCashComponent implements OnInit {
         });
       }
     })
-    this.sp.hide();
   }
 
   updatePetty(){
@@ -216,7 +211,6 @@ export class PettyCashComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
@@ -306,10 +300,10 @@ export class PettyCashComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     } else {
+      this.sp.hide();
       this.getList();
     } 
     });
-    this.sp.hide();
   }
 
   formReset() {

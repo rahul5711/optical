@@ -1,8 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
-import { ActivatedRoute, Router } from '@angular/router';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -11,6 +10,7 @@ import { CompanyService } from '../service/company.service';
 import { AlertService } from '../service/helpers/alert.service';
 import { AuthServiceService } from '../service/auth-service.service';
 import { ExcelService } from '../service/helpers/excel.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 
 @Component({
@@ -40,14 +40,13 @@ export class CompanyListComponent implements OnInit {
     private router: Router,
     private token: TokenService,
     private cs: CompanyService,
-    private sp: NgxSpinnerService,
     public as: AlertService,
     private auth: AuthServiceService,
     private excelService: ExcelService,
+    private sp: NgxSpinnerService,
   ) { }
 
   ngOnInit(): void {
-    this.sp.show()
     this.user = JSON.parse(localStorage.getItem('user') || '')
     if (this.user.UserGroup !== 'SuperAdmin') {
       localStorage.clear();
@@ -56,7 +55,6 @@ export class CompanyListComponent implements OnInit {
     } else {
       this.getList();
     }
-    this.sp.hide()
   }
 
   onPageChange(pageNum: number): void {
@@ -89,12 +87,11 @@ export class CompanyListComponent implements OnInit {
         }else{
           this.as.errorToast(res.message)
         }
-        this.sp.hide()
+        this.sp.hide() 
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   deleteItem(i: any) {
@@ -138,7 +135,6 @@ export class CompanyListComponent implements OnInit {
           complete: () => subs.unsubscribe(),
         });
       }
-      this.sp.hide();
     })
   }
 
@@ -178,6 +174,7 @@ export class CompanyListComponent implements OnInit {
             } else {
               console.log('not login compnay');
             }
+            this.sp.hide();
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
@@ -248,7 +245,6 @@ export class CompanyListComponent implements OnInit {
         this.getList();
       }
     });
-    this.sp.hide();
   }
 
   deactive(i: any) {
@@ -287,7 +283,6 @@ export class CompanyListComponent implements OnInit {
         });
       }
     })
-    this.sp.hide()
   }
 
   activecompany(i:any) {
@@ -327,7 +322,6 @@ export class CompanyListComponent implements OnInit {
        
       }
     })
-    this.sp.hide()
   }
 
   exportAsXLSX(): void {

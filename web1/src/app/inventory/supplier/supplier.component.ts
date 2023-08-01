@@ -16,8 +16,6 @@ import { take } from 'rxjs/operators';
 import { SupportService } from 'src/app/service/support.service';
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
-import { SupplierModel } from 'src/app/interface/Supplier';
-import { PurchaseService } from 'src/app/service/purchase.service';
 
 @Component({
   selector: 'app-supplier',
@@ -47,7 +45,8 @@ export class SupplierComponent implements OnInit {
   suBtn = false;
   purchasVariable: any = 0;
   gstList: any;
-  CustomerTotal:any = []
+  CustomerTotal: any = []
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -60,7 +59,6 @@ export class SupplierComponent implements OnInit {
     private compressImage: CompressImageService,
     private excelService: ExcelService,
     private supps: SupportService,
-    private purchaseService: PurchaseService,
   ) {
     this.id = this.route.snapshot.params['id'];
     this.env = environment
@@ -72,12 +70,11 @@ export class SupplierComponent implements OnInit {
     Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
   };
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.route.queryParams.subscribe(params => {
       this.purchasVariable = +params['check'] || 0;
     });
-    this.getList();
-    this.getGSTList();
+    await Promise.all([this.getList(), this.getGSTList()]);
   }
 
   onsubmit() {
@@ -89,19 +86,19 @@ export class SupplierComponent implements OnInit {
           Swal.fire({
             position: 'center',
             icon: 'success',
-            title: 'Your file has been Save.',
+            title: 'Your file has been saved.',
             showConfirmButton: false,
             timer: 1200
-          })
+          });
           this.data = [];
+
           if (this.purchasVariable === 1) {
             this.router.navigate(['/inventory/purchase/0']);
           } else {
             this.getList();
           }
-          this.getList();
         } else {
-          this.as.errorToast(res.message)
+          this.as.errorToast(res.message);
         }
         this.sp.hide()
       },
@@ -112,7 +109,6 @@ export class SupplierComponent implements OnInit {
     });
     this.modalService.dismissAll()
     this.getList();
-    this.sp.hide()
   }
 
   getList() {
@@ -146,11 +142,8 @@ export class SupplierComponent implements OnInit {
   }
 
   uploadImage(e: any, mode: any) {
-
     this.img = e.target.files[0];
-    // console.log(`Image size before compressed: ${this.img.size} bytes.`)
     this.compressImage.compress(this.img).pipe(take(1)).subscribe((compressedImage: any) => {
-      // console.log(`Image size after compressed: ${compressedImage.size} bytes.`)
       this.fu.uploadFileComapny(compressedImage).subscribe((data: any) => {
         if (data.body !== undefined && mode === 'company') {
           this.companyImage = this.env.apiUrl + data.body?.download;
@@ -196,7 +189,6 @@ export class SupplierComponent implements OnInit {
         this.getList();
       }
     })
-    this.sp.hide();
   }
 
   getSupplierById(datas: any) {
@@ -207,7 +199,6 @@ export class SupplierComponent implements OnInit {
 
   Clear() {
     this.suBtn = false;
-    this.id = 0;
     this.data = {
       ID: null, Sno: this.data.Sno, Name: null, MobileNo1: null, MobileNo2: '', PhoneNo: '', Address: null, Email: '', Website: '',
       GSTNo: '', CINNo: '', PhotoURL: '', Remark: '', ContactPerson: '', Fax: '', DOB: '', Anniversary: '',
@@ -240,7 +231,6 @@ export class SupplierComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
@@ -256,15 +246,11 @@ export class SupplierComponent implements OnInit {
     this.companyImage = ''
     this.suBtn = false;
     this.id = 0;
-     
-    if (this.dataList.length === 0) {
-      this.data.Sno = Number(this.data.Sno) + 1;
+
+    if (this.dataList.length === 0 || this.dataList[0]?.Sno === null) {
+      this.data.Sno = 1;
     } else {
-      if (this.dataList[0].Sno != 'null') {
-        this.data.Sno = Number(this.dataList[0].Sno) + 1;
-      } else {
-        this.data.Sno = 1
-      }
+      this.data.Sno = Number(this.dataList[0].Sno) + 1;
     }
 
     this.data = {
@@ -276,28 +262,14 @@ export class SupplierComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    // server-side search
+
     fromEvent(this.searching.nativeElement, 'keyup').pipe(
-      // get value
       map((event: any) => {
         return event.target.value;
       }),
-
-      // if character length greater then 2
-      // filter(res => res.length > 2),
-
-      // Time in milliseconds between key events
       debounceTime(1000),
-
-      // If previous query is different from current
       distinctUntilChanged(),
-      // tap((event: KeyboardEvent) => {
-      //     console.log(event)
-      //     console.log(this.input.nativeElement.value)
-      //   })
-      // subscription for response
     ).subscribe((text: string) => {
-      //  const name = e.target.value;
       let data = {
         searchQuery: text.trim(),
       }
@@ -310,12 +282,12 @@ export class SupplierComponent implements OnInit {
         this.sp.show()
         const subs: Subscription = this.ss.searchByFeild(dtm).subscribe({
           next: (res: any) => {
-            if(res.success){
+            if (res.success) {
               this.collectionSize = 1;
               this.page = 1;
               this.dataList = res.data
               this.as.successToast(res.message)
-            }else{
+            } else {
               this.as.errorToast(res.message)
             }
             this.sp.hide();
@@ -327,23 +299,22 @@ export class SupplierComponent implements OnInit {
         this.getList();
       }
     });
-    this.sp.hide();
   }
 
   exportAsXLSX(): void {
     let data = this.dataList.map((e: any) => {
-      return{
+      return {
         Name: e.Name,
-        MobileNo1 : e.MobileNo1,
-        MobileNo2 : e.MobileNo2,
-        GSTType : e.GSTType,
-        GSTNo : e.GSTNo,
-        PhoneNo : e.PhoneNo,
-        Email : e.Email,
-        Address : e.Address,
-        ContactPerson : e.ContactPerson,
-        CreatedPerson : e.CreatedPerson,
-        UpdatedPerson : e.UpdatedPerson,
+        MobileNo1: e.MobileNo1,
+        MobileNo2: e.MobileNo2,
+        GSTType: e.GSTType,
+        GSTNo: e.GSTNo,
+        PhoneNo: e.PhoneNo,
+        Email: e.Email,
+        Address: e.Address,
+        ContactPerson: e.ContactPerson,
+        CreatedPerson: e.CreatedPerson,
+        UpdatedPerson: e.UpdatedPerson,
       }
     })
     this.excelService.exportAsExcelFile(data, 'supplier_list');
@@ -353,9 +324,9 @@ export class SupplierComponent implements OnInit {
     this.sp.show();
     const subs: Subscription = this.supps.getList('TaxType').subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.gstList = res.data
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -363,10 +334,7 @@ export class SupplierComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
-
-
 
   formReset() {
     this.data = {

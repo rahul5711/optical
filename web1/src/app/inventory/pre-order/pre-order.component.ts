@@ -99,7 +99,6 @@ export class PreOrderComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     })
-    this.sp.hide()
   }
 
   getdropdownSupplierlist(){
@@ -117,7 +116,6 @@ export class PreOrderComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getProductList(){
@@ -125,7 +123,6 @@ export class PreOrderComponent implements OnInit {
     const subs: Subscription =  this.ps.getList().subscribe({
       next: (res: any) => {
         if(res.success){
-        // this.prodList = res.data;
         this.prodList = res.data;
         this.prodList.sort((a:any, b:any) => (a.Name < b.Name)? -1 : 1)
         }else{
@@ -136,7 +133,6 @@ export class PreOrderComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getGSTList(){
@@ -161,7 +157,6 @@ export class PreOrderComponent implements OnInit {
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getFieldList(){
@@ -179,8 +174,6 @@ export class PreOrderComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
-  
   }
 
   getSptTableData() { 
@@ -202,7 +195,6 @@ export class PreOrderComponent implements OnInit {
        });
      }
     });
-    this.sp.hide()
   }
 
   getFieldSupportData(index:any) {
@@ -224,7 +216,6 @@ export class PreOrderComponent implements OnInit {
        });
       }
      });
-     this.sp.hide()
   }
 
   displayAddField(i:any){
@@ -270,7 +261,6 @@ export class PreOrderComponent implements OnInit {
      },
      complete: () => subs.unsubscribe(),
    });
-   this.sp.hide()
   }
 
   getSupplierDetails(event:any){
@@ -405,7 +395,6 @@ export class PreOrderComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   deleteItem(Category:any ,i:any){
@@ -459,12 +448,10 @@ export class PreOrderComponent implements OnInit {
               error: (err: any) => console.log(err.message),
               complete: () => subs.unsubscribe(),
             });
-
           }
         })
       }
     }
-    this.sp.hide()
   }
 
   edititem(mode:any,data:any){
@@ -530,7 +517,6 @@ export class PreOrderComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
 }
