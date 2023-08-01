@@ -28,8 +28,9 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = await connection.query(`select * from product where CompanyID = ${CompanyID} and Status = 1 order by ID desc`)
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -61,8 +62,9 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = saveData
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -94,8 +96,9 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = saveData
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -124,8 +127,9 @@ module.exports = {
 
             response.message = "data restore sucessfully"
             response.data = saveData
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -152,8 +156,9 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = saveData
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -196,8 +201,9 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = saveData
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -227,8 +233,9 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = saveData
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -259,8 +266,9 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = saveData
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -292,8 +300,9 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = Data
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -324,8 +333,9 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = Data
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -357,8 +367,9 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = Data
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");

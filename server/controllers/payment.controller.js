@@ -159,8 +159,9 @@ module.exports = {
             response.totalCreditAmount = totalCreditAmount
             response.totalDueAmount = totalDueAmount
             response.message = "data fetch sucessfully"
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -513,8 +514,9 @@ module.exports = {
                 PaymentType: PaymentType,
                 PayeeName: CustomerID
             }
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
 
 
@@ -550,8 +552,9 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = await connection.query(qry)
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
 
         } catch (err) {
@@ -615,8 +618,9 @@ module.exports = {
             response.data = {
                 ID: saveCommMaster.insertId
             }
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
 
         } catch (err) {
@@ -643,8 +647,9 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = await connection.query(qry)
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -681,8 +686,9 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -782,8 +788,9 @@ module.exports = {
             }
 
             response.message = "data update sucessfully"
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -836,8 +843,9 @@ module.exports = {
                 ID: ID,
                 InvoiceNo: fetchBillMaster.InvoiceNo
             }
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -966,8 +974,9 @@ module.exports = {
 
             response.totalCreditAmount = totalCreditAmount
             response.message = "data fetch sucessfully"
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -1009,8 +1018,9 @@ module.exports = {
                 CustomerID: CustomerID,
                 ID: ID
             }
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");

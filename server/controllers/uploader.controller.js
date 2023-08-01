@@ -38,8 +38,9 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = []
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
 
         } catch (err) {
@@ -77,8 +78,9 @@ module.exports = {
             response.data = data
             response.count = count.length
 
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
 
         } catch (err) {
@@ -110,8 +112,9 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = []
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
 
         } catch (err) {
@@ -147,8 +150,9 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = []
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
 
         } catch (err) {
@@ -600,8 +604,9 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = []
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -728,8 +733,9 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = []
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");

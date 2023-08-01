@@ -11,6 +11,7 @@ let ejs = require("ejs");
 let path = require("path");
 let pdf = require("html-pdf");
 var TinyURL = require('tinyurl');
+const clientConfig = require("../helpers/constants");
 
 module.exports = {
     save: async (req, res, next) => {
@@ -225,8 +226,9 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -261,8 +263,9 @@ module.exports = {
             console.log("Customer Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -297,8 +300,9 @@ module.exports = {
             console.log("Customer Restore SuccessFUlly !!!");
 
             response.message = "data restore sucessfully"
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -324,8 +328,9 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -643,8 +648,9 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = data
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -669,8 +675,9 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = data
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -720,8 +727,9 @@ module.exports = {
             let data = await connection.query(qry);
             response.message = "data fetch sucessfully"
             response.data = data
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -770,8 +778,9 @@ module.exports = {
             let data = await connection.query(qry);
             response.message = "data fetch sucessfully"
             response.data = data
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -804,7 +813,7 @@ module.exports = {
              console.log(shopdetails);
 
             var fileName = "";
-            printdata.LogoURL = 'http://localhost:3000/'+ printdata.companysetting.LogoURL;
+            printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
             var formatName = "customerPowerPDF.ejs";
             var file = formatName + "_" + CompanyID + "-" + customer.ID + ".pdf";
             fileName = "uploads/" + file;
@@ -869,8 +878,9 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = data
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);

@@ -37,8 +37,9 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = saveData.insertId;
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -75,8 +76,9 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = []
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -111,8 +113,9 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -148,8 +151,9 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = await connection.query(`select * from fitter where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -171,8 +175,9 @@ module.exports = {
             let data = await connection.query(`select fitter.ID, fitter.Name from fitter where Status = 1 and CompanyID = ${CompanyID}`);
             response.message = "data fetch sucessfully"
             response.data = data
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -194,8 +199,9 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = await connection.query(`select fitterratecard.FitterID, fitterratecard.LensType, fitterratecard.Rate, fitterassignedshop.ShopID  from fitterratecard left join fitterassignedshop on fitterassignedshop.FitterID = fitterratecard.FitterID where  fitterratecard.Status = 1 and fitterratecard.FitterID = ${Body.FitterID} and fitterratecard.CompanyID = ${CompanyID} and fitterassignedshop.ShopID = ${shopid} and fitterassignedshop.Status = 1 `)
 
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -220,8 +226,9 @@ module.exports = {
             response.RateCard = await connection.query(`select * from fitterratecard where  Status = 1 and FitterID = ${Body.ID} and CompanyID = ${CompanyID} `)
             response.AssignedShop = await connection.query(`SELECT fitterassignedshop.*,  shop.Name AS ShopName, shop.AreaName AS AreaName  FROM fitterassignedshop  LEFT JOIN shop ON shop.ID = fitterassignedshop.ShopID WHERE fitterassignedshop.Status = 1 AND fitterassignedshop.FitterID = ${Body.ID} `)
 
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -255,8 +262,9 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = saveData.insertId;
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -292,8 +300,9 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = await connection.query(`select * from fitterratecard where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -326,8 +335,9 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = saveData.insertId;
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -363,8 +373,9 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = await connection.query(`select * from fitterassignedshop where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
         } catch (err) {
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
@@ -391,8 +402,9 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");
@@ -429,8 +441,9 @@ module.exports = {
             const data = await connection.query(qry)
             response.data = data
             response.message = "success";
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
 
         } catch (err) {
@@ -519,8 +532,9 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = purchase.FitterID
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             console.log(err);
@@ -630,8 +644,9 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
 
         } catch (err) {
@@ -734,8 +749,9 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = data
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
 
         } catch (err) {
@@ -768,8 +784,9 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.FitterMaster = await connection.query(master)
             response.FitterDetail = await connection.query(detail)
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
 
         } catch (err) {
@@ -792,7 +809,7 @@ module.exports = {
 
             if (!PaymentStatus || PaymentStatus !== 'Unpaid') {
                 return res.send({ message: `you have already paid amount` })
- 
+
             }
 
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
@@ -813,8 +830,9 @@ module.exports = {
             const updatePayment = await connection.query(`update paymentmaster set PayableAmount = ${DueAmount}, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where ID = ${fetchPaymentID[0].PaymentMasterID}`)
 
             response.message = "data update sucessfully"
-            return res.send(response)
-            connection.release()
+            await connection.query("COMMIT");
+            return res.send(response);
+
 
         } catch (err) {
             await connection.query("ROLLBACK");
