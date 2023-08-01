@@ -18,7 +18,7 @@ module.exports = {
 
 
     login: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, accessToken: null, refreshToken: null, success: true, message: "", loginCode: 0 }
 
@@ -116,16 +116,12 @@ module.exports = {
             return
             connection.release()
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     companylogin: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
 
             const Body = req.body;
@@ -158,11 +154,7 @@ module.exports = {
             connection.release()
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     }
 

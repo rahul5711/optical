@@ -10,7 +10,7 @@ const pass_init = require('../helpers/generate_password')
 
 module.exports = {
     save: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -68,21 +68,16 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = saveData.insertId;
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
 
     update: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -130,21 +125,17 @@ module.exports = {
 
             console.log("Doctor Updated SuccessFUlly !!!");
             response.message = "data update sucessfully"
-            await connection.query("COMMIT");
+
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     list: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -168,19 +159,14 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            await connection.query("COMMIT");
             return res.send(response);
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     dropdownlist: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -190,20 +176,16 @@ module.exports = {
             let data = await connection.query(`select * from doctor where Status = 1 and CompanyID = ${CompanyID}`);
             response.message = "data fetch sucessfully"
             response.data = data
-            await connection.query("COMMIT");
+
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     delete: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -227,20 +209,16 @@ module.exports = {
             console.log("Doctor Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            await connection.query("COMMIT");
+
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     getDoctorById: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -252,21 +230,15 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = Doctor
-
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     searchByFeild: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -281,16 +253,12 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            await connection.query("COMMIT");
+
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     }
 }

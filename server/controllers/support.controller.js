@@ -12,7 +12,7 @@ module.exports = {
     // support data api
 
     save: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -33,19 +33,14 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = await connection.query(`select * from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = '${Body.TableName}' order by ID desc`)
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     list: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -58,19 +53,14 @@ module.exports = {
 
             response.message = "fetch data sucessfully"
             response.data = await connection.query(`select * from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = '${Body.TableName}' order by ID desc`)
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     delete: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -88,22 +78,17 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = await connection.query(`select * from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = '${Body.TableName}' order by ID desc`)
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     //  charge master api
 
     chargesave: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -123,20 +108,15 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = await connection.query(`select * from chargermaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     chargelist: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -144,21 +124,16 @@ module.exports = {
 
             response.message = "fetch data sucessfully"
             response.data = await connection.query(`select * from chargermaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
 
     chargedelete: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -175,15 +150,10 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = await connection.query(`select * from chargermaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
@@ -191,7 +161,7 @@ module.exports = {
     //  service master api
 
     servicesave: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -211,20 +181,15 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = await connection.query(`select * from servicemaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     servicelist: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -232,21 +197,16 @@ module.exports = {
 
             response.message = "fetch data sucessfully"
             response.data = await connection.query(`select * from servicemaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
 
     servicedelete: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -263,15 +223,10 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = await connection.query(`select * from servicemaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 

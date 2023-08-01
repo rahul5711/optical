@@ -10,7 +10,7 @@ const { shopID, generateInvoiceNo, generateBillSno, generateCommission, generate
 
 module.exports = {
     getInvoicePayment: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -159,20 +159,15 @@ module.exports = {
             response.totalCreditAmount = totalCreditAmount
             response.totalDueAmount = totalDueAmount
             response.message = "data fetch sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     applyPayment: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -514,22 +509,17 @@ module.exports = {
                 PaymentType: PaymentType,
                 PayeeName: CustomerID
             }
-            await connection.query("COMMIT");
             return res.send(response);
 
 
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     getCommissionDetail: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -552,21 +542,16 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = await connection.query(qry)
-            await connection.query("COMMIT");
             return res.send(response);
 
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     saveCommissionDetail: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -618,21 +603,16 @@ module.exports = {
             response.data = {
                 ID: saveCommMaster.insertId
             }
-            await connection.query("COMMIT");
             return res.send(response);
 
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     getCommissionByID: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -647,20 +627,15 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = await connection.query(qry)
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     getCommissionDetailList: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
             const shopid = await shopID(req.headers) || 0;
@@ -686,19 +661,14 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     customerPayment: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -788,20 +758,15 @@ module.exports = {
             }
 
             response.message = "data update sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     customerPaymentDebit: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -843,20 +808,15 @@ module.exports = {
                 ID: ID,
                 InvoiceNo: fetchBillMaster.InvoiceNo
             }
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     updateCustomerPaymentMode: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -892,16 +852,12 @@ module.exports = {
             return res.send(response)
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
 
     },
     updateCustomerPaymentDate: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -930,17 +886,13 @@ module.exports = {
             return res.send(response)
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
 
     },
 
     getCustomerCreditAmount: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -974,20 +926,15 @@ module.exports = {
 
             response.totalCreditAmount = totalCreditAmount
             response.message = "data fetch sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     customerCreditDebit: async (req, res, next) => {
-        const connection = await mysql.connection();
+        const connection = mysql;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -1018,16 +965,11 @@ module.exports = {
                 CustomerID: CustomerID,
                 ID: ID
             }
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 }
