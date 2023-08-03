@@ -65,6 +65,9 @@ export class EmployeeComponent implements OnInit {
 
   onSubmit(){
     this.sp.show();
+    if(this.data.PhotoURL  === '' || this.data.PhotoURL  === null ){
+      this.data.PhotoURL = '/assets/images/logo.png'
+    }
     const subs: Subscription =  this.es.saveUser(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {

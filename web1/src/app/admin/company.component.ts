@@ -31,7 +31,7 @@ export class CompanyComponent implements OnInit {
   id : any;
   imgList: any;
   img: any;
-  env: { production: boolean; apiUrl: string; appUrl: string; };
+  env = environment
   compId: any;
 
   constructor(
@@ -46,7 +46,7 @@ export class CompanyComponent implements OnInit {
 
   ) {
     this.id = this.route.snapshot.params['id'];
-    this.env = environment
+    
   }
 
   plans: any[] = [
@@ -112,6 +112,9 @@ data1: any = {
 
   onsubmit() {
     this.sp.show();
+    if(this.data.LogoURL  === '' || this.data.LogoURL  === null ){
+      this.data.LogoURL = '/assets/images/logo.png'
+    }
     this.data.User = this.data1
     const subs: Subscription =  this.cs.createCompany(this.data).subscribe({
       next: (res: any) => {
@@ -153,6 +156,8 @@ data1: any = {
           this.data = res.data[0]
           this.data1 = res.user[0]
           this.companyImage = this.env.apiUrl + res.data[0].LogoURL;
+          console.log(this.companyImage);
+          
           this.userImage = this.env.apiUrl + res.data[0].PhotoURL;
         } else {
           this.as.errorToast(res.message)
@@ -168,6 +173,10 @@ data1: any = {
 
   updateCompany(){
     this.sp.show();
+    if(this.data.LogoURL  === '' || this.data.LogoURL  === null ){
+      this.data.LogoURL = '/assets/images/logo.png'
+    }
+
     this.data.User = this.data1
     const subs: Subscription =  this.cs.updateCompany(this.data).subscribe({
       next: (res: any) => {
@@ -182,6 +191,7 @@ data1: any = {
               timer: 1200
             })
            }else{
+            this.getCompanyById()
             Swal.fire({
               position: 'center',
               icon: 'success',

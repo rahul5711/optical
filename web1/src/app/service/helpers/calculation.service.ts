@@ -142,6 +142,7 @@ export class CalculationService {
     selectedPurchaseMaster.DiscountAmount = 0;
     selectedPurchaseMaster.GSTAmount = 0;
     selectedPurchaseMaster.TotalAmount = 0;
+    // selectedPurchaseMaster.DueAmount = 0;
    
     itemList.forEach((element: any) => {
       if (element.Status !== 0){
@@ -150,6 +151,7 @@ export class CalculationService {
       selectedPurchaseMaster.DiscountAmount = (+selectedPurchaseMaster.DiscountAmount + +element.DiscountAmount).toFixed(2);
       selectedPurchaseMaster.GSTAmount = (+selectedPurchaseMaster.GSTAmount + +element.GSTAmount).toFixed(2);
       selectedPurchaseMaster.TotalAmount = (+selectedPurchaseMaster.TotalAmount + +element.TotalAmount).toFixed(2);
+      // selectedPurchaseMaster.DueAmount = (+selectedPurchaseMaster.DueAmount + +element.TotalAmount).toFixed(2);
       }
     })
 

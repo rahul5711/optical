@@ -64,7 +64,7 @@ module.exports = {
                 RewardsPointValidity: "",
                 EmailReport: 0,
                 MessageReport: 0,
-                LogoURL: "",
+                LogoURL: '',
                 WatermarkLogoURL: "",
                 LoginTimeStart: "09:00",
                 LoginTimeEnd: "22:30",

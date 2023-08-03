@@ -107,6 +107,9 @@ export class FitterComponent implements OnInit {
 
   onsubmit() {
     this.sp.show();
+    if(this.data.PhotoURL  === '' || this.data.PhotoURL  === null ){
+      this.data.PhotoURL = '/assets/images/logo.png'
+    }
     var fitterdate = this.data ?? " ";
     const subs: Subscription = this.fs.saveFitter(fitterdate).subscribe({
       next: (res: any) => {

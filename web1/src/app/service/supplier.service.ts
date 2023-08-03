@@ -14,12 +14,13 @@ export class SupplierService {
   private url = environment.apiUrl + '/supplier';
 
 
-  supplierSave( Body: any): Observable<SupplierModel> {
+  supplierSave( Body: any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams()
     return this.httpClient.post<SupplierModel>(this.url + '/save', Body, { headers, params })
     .pipe(catchError(this.handleError ));
   }
+  
 
   supplierUpdate( Body: any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');

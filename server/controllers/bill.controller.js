@@ -1615,7 +1615,13 @@ module.exports = {
             printdata.companysetting = companysetting[0]
 
             var fileName = "";
-            printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
+
+            if(!printdata.companysetting.LogoURL){
+                printdata.LogoURL = clientConfig.appURL + '../assest/no-image.png';
+            }else{
+                printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
+            }
+            
             var formatName = "AssignSupplierPDF.ejs";
             var file = formatName + "_" + CompanyID + ".pdf";
             fileName = "uploads/" + file;

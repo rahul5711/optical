@@ -79,9 +79,12 @@ export class SupplierComponent implements OnInit {
 
   onsubmit() {
     this.sp.show()
+    if(this.data.PhotoURL  === '' || this.data.PhotoURL  === null ){
+      this.data.PhotoURL = '/assets/images/logo.png'
+    }
     const subs: Subscription = this.ss.supplierSave(this.data).subscribe({
       next: (res: any) => {
-        if (res.success) {
+        if (res.success == true) {
           this.formReset();
           Swal.fire({
             position: 'center',
@@ -111,6 +114,8 @@ export class SupplierComponent implements OnInit {
     this.getList();
   }
 
+ 
+
   getList() {
     this.sp.show()
     const dtm = {
@@ -119,7 +124,7 @@ export class SupplierComponent implements OnInit {
     }
     const subs: Subscription = this.ss.getList(dtm).subscribe({
       next: (res: any) => {
-        if (res.success) {
+        if (res.success == true) {
           this.collectionSize = res.count;
           this.dataList = res.data;
           this.dataList.forEach((element: { PhotoURL: any; }) => {
@@ -168,7 +173,7 @@ export class SupplierComponent implements OnInit {
         this.sp.show()
         const subs: Subscription = this.ss.deleteData(this.dataList[i].ID).subscribe({
           next: (res: any) => {
-            if (res.success) {
+            if (res.success == true) {
               this.dataList.splice(i, 1);
               this.as.successToast(res.message)
               Swal.fire({
@@ -210,7 +215,7 @@ export class SupplierComponent implements OnInit {
     this.sp.show()
     const subs: Subscription = this.ss.supplierUpdate(this.data).subscribe({
       next: (res: any) => {
-        if (res.success) {
+        if (res.success == true) {
           this.formReset();
           this.modalService.dismissAll();
           this.getList();
@@ -282,7 +287,7 @@ export class SupplierComponent implements OnInit {
         this.sp.show()
         const subs: Subscription = this.ss.searchByFeild(dtm).subscribe({
           next: (res: any) => {
-            if (res.success) {
+            if (res.success == true) {
               this.collectionSize = 1;
               this.page = 1;
               this.dataList = res.data
@@ -324,7 +329,7 @@ export class SupplierComponent implements OnInit {
     this.sp.show();
     const subs: Subscription = this.supps.getList('TaxType').subscribe({
       next: (res: any) => {
-        if (res.success) {
+        if (res.success == true) {
           this.gstList = res.data
         } else {
           this.as.errorToast(res.message)

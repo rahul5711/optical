@@ -236,6 +236,9 @@ export class ShopListComponent implements OnInit {
 
   onsubmit() {
     this.sp.show();
+    if(this.data.LogoURL  === '' || this.data.LogoURL  === null ){
+      this.data.LogoURL = '/assets/images/logo.png'
+    }
     var shopdate = this.data ?? " ";
     const subs: Subscription = this.ss.shopSave(shopdate).subscribe({
       next: (res: any) => {

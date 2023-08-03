@@ -179,9 +179,7 @@ export class BillComponent implements OnInit {
             this.as.errorToast(res.message)
           }
         },
-        error: (err: any) => {
-          console.log(err.message);
-        },
+        error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       })
     }
@@ -203,10 +201,9 @@ export class BillComponent implements OnInit {
           this.as.errorToast(res.message)
         }
       },
-      error: (err: any) => {
-        console.log(err.message);
-      },
+      error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
+ 
     })
   }
 
@@ -223,6 +220,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
+ 
     });
   }
 
@@ -255,6 +253,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
+ 
     });
   }
 
@@ -279,6 +278,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
+ 
     });
     this.sp.hide();
   }
@@ -309,6 +309,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
+ 
     });
   }
 
@@ -324,6 +325,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
+ 
     });
   }
 
@@ -358,6 +360,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
+ 
     });
   }
 
@@ -396,6 +399,7 @@ export class BillComponent implements OnInit {
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
+     
         });
       } else {
         this.sp.hide();
@@ -465,9 +469,7 @@ export class BillComponent implements OnInit {
           this.as.errorToast(res.message)
         }
       },
-      error: (err: any) => {
-        console.log(err.msg);
-      },
+      error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
   }
@@ -552,6 +554,7 @@ export class BillComponent implements OnInit {
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
+   
       });
     } else {
       this.sp.hide();
@@ -584,6 +587,7 @@ export class BillComponent implements OnInit {
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
+     
         });
       } else {
         // stock product name
@@ -599,6 +603,7 @@ export class BillComponent implements OnInit {
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
+     
         });
       }
     } else {
@@ -633,6 +638,7 @@ export class BillComponent implements OnInit {
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
+     
         });
       }
       else {
@@ -649,6 +655,7 @@ export class BillComponent implements OnInit {
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
+     
         });
       }
     } else {
@@ -893,6 +900,7 @@ export class BillComponent implements OnInit {
             },
             error: (err: any) => console.log(err.message),
             complete: () => subs.unsubscribe(),
+       
           });
         }else{
           this.addProductItem();
@@ -946,6 +954,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
+ 
     });
     this.sp.hide()
   }
@@ -990,6 +999,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
+ 
     });
     this.sp.hide()
   }
@@ -1030,6 +1040,7 @@ export class BillComponent implements OnInit {
               },
               error: (err: any) => console.log(err.message),
               complete: () => subs.unsubscribe(),
+         
             });
           }
         })
@@ -1068,6 +1079,7 @@ export class BillComponent implements OnInit {
               },
               error: (err: any) => console.log(err.message),
               complete: () => subs.unsubscribe(),
+         
             });
           }
         })
@@ -1115,6 +1127,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
+ 
     });
     this.sp.hide()
   }
@@ -1182,6 +1195,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
+ 
     });
   }
 
@@ -1212,6 +1226,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
+ 
     });
     this.sp.hide()
   }
@@ -1246,6 +1261,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
+ 
     });
     this.sp.hide()
   }
@@ -1303,6 +1319,7 @@ export class BillComponent implements OnInit {
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
+   
       });
 
 
@@ -1362,7 +1379,7 @@ export class BillComponent implements OnInit {
         this.supplierList  = res.data
       },
       error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
+ 
     });
   }
 
@@ -1391,6 +1408,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
+ 
     });
     }else{
       Swal.fire({
@@ -1429,7 +1447,7 @@ export class BillComponent implements OnInit {
           this.sp.hide()
         },
         error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
+        complete: () => subs.unsubscribe(), 
       });
     this.sp.hide()
   }
@@ -1441,7 +1459,7 @@ export class BillComponent implements OnInit {
         this.fitterList = res.data
       },
       error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
+ 
     });
   }
 
@@ -1478,7 +1496,7 @@ export class BillComponent implements OnInit {
         this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
+      complete: () => subs.unsubscribe(), 
     });
     this.sp.hide();
   }
@@ -1513,7 +1531,7 @@ export class BillComponent implements OnInit {
         this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
+      complete: () => subs.unsubscribe(), 
     });
     this.dropdownSupplierlist()
     this.sp.hide()

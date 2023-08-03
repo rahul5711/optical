@@ -94,6 +94,9 @@ export class CompanySettingComponent implements OnInit {
 
   updatecompanysetting(){
     this.sp.show();
+    if(this.data.LogoURL  === '' || this.data.LogoURL  === null ){
+      this.data.LogoURL = '/assets/images/logo.png'
+    }
     this.data.WelComeNote = JSON.stringify(this.wlcmArray1);
     const subs: Subscription =  this.cs.updatecompanysetting( this.data).subscribe({
       next: (res: any) => {

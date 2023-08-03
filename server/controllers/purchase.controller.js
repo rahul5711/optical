@@ -10,6 +10,7 @@ let path = require("path");
 let pdf = require("html-pdf");
 var TinyURL = require('tinyurl');
 const clientConfig = require("../helpers/constants");
+const { log } = require('console')
 
 module.exports = {
     create: async (req, res, next) => {
@@ -644,10 +645,14 @@ module.exports = {
             printdata.shopdetails = shopdetails[0]
             printdata.supplier = supplier[0]
             printdata.companysetting = companysetting[0]
-            console.log(printdata);
 
             var fileName = "";
-            printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
+            if(!printdata.companysetting.LogoURL){
+                printdata.LogoURL = clientConfig.appURL + '../assest/no-image.png';
+            }else{
+                printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
+            }
+
             var formatName = "PurchasePDF.ejs";
             var file = formatName + "_" + CompanyID + ".pdf";
             fileName = "uploads/" + file;
