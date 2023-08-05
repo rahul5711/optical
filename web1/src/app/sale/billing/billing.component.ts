@@ -448,6 +448,7 @@ export class BillingComponent implements OnInit {
   }
 
   onsubmit() {
+    this.sp.show()
     if (this.Check.SpectacleCheck === true) {
       this.data.tablename = 'spectacle_rx'
       this.data.spectacle_rx = this.spectacle
@@ -461,7 +462,9 @@ export class BillingComponent implements OnInit {
       this.data.tablename = 'other_rx'
       this.data.other_rx = this.other
     }
-
+    if(this.data.PhotoURL  === '' || this.data.PhotoURL  === null ){
+      this.data.PhotoURL = '/assets/images/no-image.png'
+    }
     const subs: Subscription = this.cs.saveCustomer(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -472,17 +475,19 @@ export class BillingComponent implements OnInit {
             this.other.CustomerID = this.id;
             this.router.navigate(['/sale/billing', res.data[0].ID ,0 ]);
             this.getCustomerById();
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your Customer has been Save.',
+              showConfirmButton: false,
+              timer: 1500
+            })
           }
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Your Customer has been Save.',
-            showConfirmButton: false,
-            timer: 1500
-          })
+  
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.msg);
@@ -493,6 +498,7 @@ export class BillingComponent implements OnInit {
   }
 
   getScoList(){
+    this.sp.show()
     const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -507,6 +513,7 @@ export class BillingComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.message);
@@ -524,6 +531,8 @@ export class BillingComponent implements OnInit {
           this.data = res.data[0]
           this.data.Idd = res.data[0].Idd
           this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
+          console.log(this.customerImage);
+          
 
           if (res.spectacle_rx.length !== 0) {
             this.spectacle = res.spectacle_rx[0]
@@ -544,14 +553,12 @@ export class BillingComponent implements OnInit {
           this.as.errorToast(res.message)
         }
         this.sp.hide()
-  
       },
       error: (err: any) => {
         console.log(err.message);
       },
       complete: () => subs.unsubscribe(),
     })
-    this.sp.hide()
   }
 
   uploadImage(e: any, mode: any) {
@@ -646,7 +653,8 @@ export class BillingComponent implements OnInit {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
-      if (result.isConfirmed) {
+      if (result.isConfirmed) {   
+        this.sp.show()
         if (mode === 'spectacle_rx') {
           const subs: Subscription = this.cs.deleteSpec(this.spectacleLists[i].ID, this.spectacleLists[i].CustomerID, 'spectacle_rx').subscribe({
             next: (res: any) => {
@@ -695,6 +703,7 @@ export class BillingComponent implements OnInit {
             complete: () => subs.unsubscribe(),
           });
         }
+        this.sp.hide()
         Swal.fire({
           position: 'center',
           icon: 'success',
@@ -717,6 +726,7 @@ export class BillingComponent implements OnInit {
   }
 
   updateCustomer() {
+    this.sp.show()
     if (this.Check.SpectacleCheck === true) {
       this.data.tablename = 'spectacle_rx'
       this.data.spectacle_rx = this.spectacle
@@ -743,6 +753,7 @@ export class BillingComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+      this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.msg);
@@ -776,11 +787,11 @@ export class BillingComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
   // Billing
 
   customerSearch(searchKey:any, mode:any) {
+    this.sp.show()
     this.param = {Name: '', MobileNo1: '', Address:'', Sno:''};
      if(mode === 'Name') {
        this.param.Name = searchKey;

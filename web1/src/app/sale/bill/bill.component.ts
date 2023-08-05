@@ -156,15 +156,13 @@ export class BillComponent implements OnInit {
     this.getDoctor();
     this.getProductList();
     this.getGSTList();
-    this.getService();
-    this.getCustomerById1()
-    this.getPaymentModesList()
     if (this.id2 != 0) {
-      this.getBillById(this.id2)
+      this.getCustomerById1()
     }
   }
 
   getCustomerById1() {
+    this.sp.show()
     if (this.id != 0) {
       const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
         next: (res: any) => {
@@ -178,6 +176,7 @@ export class BillComponent implements OnInit {
           } else {
             this.as.errorToast(res.message)
           }
+          this.sp.hide()
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
@@ -190,6 +189,7 @@ export class BillComponent implements OnInit {
   }
 
   getBillById(id: any) {
+    this.sp.show()
     const subs: Subscription = this.bill.getBillById(id).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -200,6 +200,7 @@ export class BillComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -217,6 +218,7 @@ export class BillComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -230,10 +232,10 @@ export class BillComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.employeeList = res.data
-          this.sp.hide();
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -284,6 +286,7 @@ export class BillComponent implements OnInit {
   }
 
   getGSTListss() {
+    this.sp.show()
     const subs: Subscription = this.supps.getList('TaxType').subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -306,6 +309,7 @@ export class BillComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -314,6 +318,7 @@ export class BillComponent implements OnInit {
   }
 
   getService() {
+    this.sp.show()
     const subs: Subscription = this.supps.servicelist(this.Service).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -360,7 +365,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
- 
+
     });
   }
 
@@ -368,7 +373,6 @@ export class BillComponent implements OnInit {
     this.sp.show();
     const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
       next: (res: any) => {
-        this.sp.hide();
         if (res.success) {
           this.specList = res.data;
           if (res.data.length) {
@@ -377,6 +381,7 @@ export class BillComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -401,11 +406,8 @@ export class BillComponent implements OnInit {
           complete: () => subs.unsubscribe(),
      
         });
-      } else {
-        this.sp.hide();
-      }
+      } 
     });
-    this.sp.hide();
   }
 
   getFieldSupportData(index: any) {
@@ -566,8 +568,6 @@ export class BillComponent implements OnInit {
         backdrop: false,
       });
     }
-    this.sp.hide();
-
   }
 
   getSearchByString() {
@@ -607,10 +607,8 @@ export class BillComponent implements OnInit {
         });
       }
     } else {
-      this.sp.hide();
       this.BarcodeList = []
     }
-    this.sp.hide();
   }
 
   getBarCodeList(index: any) {
@@ -659,10 +657,8 @@ export class BillComponent implements OnInit {
         });
       }
     } else {
-      this.sp.hide();
       this.BarcodeList = []
     }
-    this.sp.hide();
   }
 
   calculations(fieldName: any, mode: any,) {
@@ -880,7 +876,6 @@ export class BillComponent implements OnInit {
                 if(res.success ){
                   this.BillItem.MeasurementID = JSON.stringify(res.data) ;
                   this.addProductItem();
-                  this.sp.hide()
                 }else{
                   this.as.errorToast(res.message)
                   Swal.fire({
@@ -896,7 +891,7 @@ export class BillComponent implements OnInit {
                 this.BillItem.MeasurementID = []
                 this.addProductItem();
               }
-
+              this.sp.hide()
             },
             error: (err: any) => console.log(err.message),
             complete: () => subs.unsubscribe(),
@@ -927,7 +922,6 @@ export class BillComponent implements OnInit {
     console.log(this.data);
     const subs: Subscription = this.bill.saveBill(this.data).subscribe({
       next: (res: any) => {
-        console.log(res);
         if (res.success) {
           this.BillMaster.ID = res.data.ID;
           this.id2 = res.data.ID;
@@ -945,18 +939,16 @@ export class BillComponent implements OnInit {
           //   timer: 1000
           // })
           this.as.successToast(res.message)
-          this.sp.hide()
           this. openModal1(content1)
         } else {
           this.as.errorToast(res.message)
         }
-
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
  
     });
-    this.sp.hide()
   }
 
   update() {
@@ -1129,7 +1121,6 @@ export class BillComponent implements OnInit {
       complete: () => subs.unsubscribe(),
  
     });
-    this.sp.hide()
   }
 
   customerPowerDropdown(){
@@ -1170,8 +1161,6 @@ export class BillComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
-
   }
 
   // update payment 
@@ -1179,6 +1168,7 @@ export class BillComponent implements OnInit {
   openModal1(content1: any){
     this.sp.show()
     this.modalService.open(content1, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
+    this.getPaymentModesList()
     this.billByCustomer(this.id)
     this.paymentHistoryByMasterID(this.id, this.id2)
     this.sp.hide()
@@ -1228,7 +1218,6 @@ export class BillComponent implements OnInit {
       complete: () => subs.unsubscribe(),
  
     });
-    this.sp.hide()
   }
 
   paymentHistoryByMasterID(CustomerID:any,BillMasterID:any){
@@ -1263,7 +1252,6 @@ export class BillComponent implements OnInit {
       complete: () => subs.unsubscribe(),
  
     });
-    this.sp.hide()
   }
 
   onPaymentSubmit(){
@@ -1321,8 +1309,6 @@ export class BillComponent implements OnInit {
         complete: () => subs.unsubscribe(),
    
       });
-
-
     }
   }
 
@@ -1351,7 +1337,6 @@ export class BillComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
     this.dropdownSupplierlist()
-    this.sp.hide()
   }
 
   validate(v: { Sel: number | null; }, event: any) {
@@ -1408,7 +1393,6 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
- 
     });
     }else{
       Swal.fire({
@@ -1419,7 +1403,6 @@ export class BillComponent implements OnInit {
         backdrop : false,
       })
     }
-    this.sp.hide()
   }
 
   assignSupplierDoc() {
@@ -1449,7 +1432,6 @@ export class BillComponent implements OnInit {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(), 
       });
-    this.sp.hide()
   }
 
   // fitter order
@@ -1498,7 +1480,6 @@ export class BillComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(), 
     });
-    this.sp.hide();
   }
 
   openModal13(content12: any){
@@ -1534,7 +1515,6 @@ export class BillComponent implements OnInit {
       complete: () => subs.unsubscribe(), 
     });
     this.dropdownSupplierlist()
-    this.sp.hide()
   }
 
   assignFitterPo(){
@@ -1587,7 +1567,6 @@ export class BillComponent implements OnInit {
         backdrop : false,
       })
     }
-    this.sp.hide()
   }
 
   assignFitterDoc() {
@@ -1617,7 +1596,6 @@ export class BillComponent implements OnInit {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
-    this.sp.hide()
   }
 
   // product edit 

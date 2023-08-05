@@ -20,6 +20,8 @@ import { DataStorageServiceService } from 'src/app/service/helpers/data-storage-
 })
 export class EmpolyeeListComponent implements OnInit {
   @ViewChild('searching') searching: ElementRef | any;
+
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
   env = environment;
   gridview = true;
   term = "";
@@ -46,12 +48,6 @@ export class EmpolyeeListComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    console.log(this.dataS.checkPermission("EmployeeList", "MView"));
-    
-    // if (!(this.dataS.checkPermission("Employee", "MView"))) {
-    //   alert("you dont have permission")
-    //   this.dataS.goBack()
-    // }
     this.getList();
   }
 

@@ -567,7 +567,6 @@ export class BillListComponent implements OnInit {
       if (result.isConfirmed) {
         this.sp.show()
         if(this.dataList[i].Quantity == 0) {
-
         }else {
           Swal.fire({
             title: 'Alert',

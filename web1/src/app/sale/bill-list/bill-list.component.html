@@ -254,7 +254,7 @@
                       *ngIf="(UpdateMode && data.PaymentMode !== 'Customer Credit' && data.PaymentMode !== 'Payment Initiated' && data.PaymentMode !== 'Customer Return')"
                       style=" text-align: center;">
                       <select style="height: 26px;" name="PaymentMode" [(ngModel)]="data.PaymentMode" #name="ngModel"
-                        [ngModelOptions]="{standalone: true}" name="data{{i}}"
+                        [ngModelOptions]="{standalone: true}" name="data.PaymentMode{{i}}"
                         (change)="updateCustomerPaymentMode(data)">
                         <option *ngFor="let p of PaymentModesList  let i = index;">{{p.Name }} </option>
                       </select>
@@ -288,7 +288,7 @@
           <div class="col-md-12 mb-0">
             <mat-form-field class="example-full-width mb-0">
               <mat-label>Paid Amount</mat-label>
-              <input type="number" style="color: rgb(255 0 0 / 75%); font-size: 17px !important;" matInput
+              <input type="number" min="0" style="color: rgb(255 0 0 / 75%); font-size: 17px !important;" matInput
                 name="Total Amount" value="{{ this.applyDebitPayment.PayableAmount}}" disabled #TOutstandingcontrol
                 [autocomplete]="false">
             </mat-form-field>
@@ -296,7 +296,7 @@
           <div class="col-md-12 mb-0">
             <mat-form-field class="example-full-width mb-0">
               <mat-label>Return Payment</mat-label>
-              <input type="number" style="font-size: 17px !important;" matInput name="PaymentAmount"
+              <input type="number" min="0" style="font-size: 17px !important;" matInput name="PaymentAmount"
                 [(ngModel)]="applyDebitPayment.PaidAmount" [autocomplete]="false">
             </mat-form-field>
           </div>
@@ -330,7 +330,7 @@
           <div class="col-md-12 mb-0">
             <mat-form-field class="example-full-width mb-0">
               <mat-label>Paid Amount</mat-label>
-              <input type="number" style="color: rgb(255 0 0 / 75%); font-size: 17px !important;" matInput
+              <input type="number" min="0" style="color: rgb(255 0 0 / 75%); font-size: 17px !important;" matInput
                 name="Total Amount" value="{{ this.applyCreditPayment.PayableAmount}}" disabled #TOutstandingcontrol
                 [autocomplete]="false">
             </mat-form-field>
@@ -338,7 +338,7 @@
           <div class="col-md-12 mb-0">
             <mat-form-field class="example-full-width mb-0">
               <mat-label>Return Payment</mat-label>
-              <input type="number" style="font-size: 17px !important;" matInput name="PaymentAmount"
+              <input type="number" min="0" style="font-size: 17px !important;" matInput name="PaymentAmount"
                 [(ngModel)]="applyCreditPayment.PaidAmount" [autocomplete]="false">
             </mat-form-field>
           </div>
@@ -371,7 +371,7 @@
                       <div class="col-md-1 mb-0">
                           <mat-form-field class="example-full-width mb-0" >
                               <mat-label>Balance</mat-label>
-                              <input type="number" style="color: rgb(255 0 0 / 75%); font-size: 17px !important;" matInput name="Total Amount" value="{{ this.applyPayment.PayableAmount}}" disabled #TOutstandingcontrol [autocomplete]="false">
+                              <input type="number" min="0" style="color: rgb(255 0 0 / 75%); font-size: 17px !important;" matInput name="Total Amount" value="{{ this.applyPayment.PayableAmount}}" disabled #TOutstandingcontrol [autocomplete]="false">
                           </mat-form-field>
                       </div>
                     
@@ -383,7 +383,7 @@
                                  <mat-checkbox color="primary" style="margin-left: 10px;" name="applyPayment.ApplyReturn" [(ngModel)]="applyPayment.ApplyReturn" ></mat-checkbox>
                              </div>
                              <div class="col-md-9 p-0">  
-                              <input type="number" style="font-size: 17px !important;" matInput name="CustomerCredit" disabled [(ngModel)]="applyPayment.CustomerCredit"   #CustomerCreditcontrol [autocomplete]="false">
+                              <input type="number" min="0" style="font-size: 17px !important;" matInput name="CustomerCredit" disabled [(ngModel)]="applyPayment.CustomerCredit"   #CustomerCreditcontrol [autocomplete]="false">
                              </div>
                           </div>
                           </mat-form-field>
@@ -392,7 +392,7 @@
                       <div class="col-md-1 mb-0">
                           <mat-form-field class="example-full-width mb-0">
                               <mat-label>New Payment</mat-label>
-                              <input type="number" style="font-size: 17px !important;" matInput name="PaymentAmount" [(ngModel)]="applyPayment.PaidAmount" [autocomplete]="false" >
+                              <input type="number" min="0" style="font-size: 17px !important;" matInput name="PaymentAmount" [(ngModel)]="applyPayment.PaidAmount" [autocomplete]="false" >
                           </mat-form-field>
                       </div>
                       <div class="col-md-2 mb-0" *ngIf="applyPayment.ApplyReward !== true && applyPayment.ApplyReturn !== true">

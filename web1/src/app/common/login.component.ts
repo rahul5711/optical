@@ -72,7 +72,6 @@ export class LoginComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   onSubmit(content:any) {

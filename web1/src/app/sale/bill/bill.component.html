@@ -37,8 +37,8 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Entry Type</mat-label>
                         <mat-select name="category" [(ngModel)]="category" required #Typecontrol>
-                            <mat-option value="Product">Product</mat-option>
-                            <mat-option value="Services">Service</mat-option>
+                            <mat-option value="Product" >Product</mat-option>
+                            <mat-option value="Services" >Service</mat-option>
                         </mat-select>
                         <mat-error>
                             Select Entry Type
@@ -291,7 +291,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-2 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Available</mat-label>
-                        <input matInput style="color: rgb(255 0 0);"  name="BarCodeCount"
+                        <input matInput min="0" style="color: rgb(255 0 0);"  name="BarCodeCount"
                             [(ngModel)]="searchList.BarCodeCount" [disabled]=true>
                     </mat-form-field>
                 </div>
@@ -300,7 +300,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Unit Price</mat-label>
-                        <input matInput type="number"  name="UnitPrice" [(ngModel)]="BillItem.UnitPrice" required
+                        <input matInput type="number" min="0"  name="UnitPrice" [(ngModel)]="BillItem.UnitPrice" required
                             (blur)="calculations('UnitPrice', 'subTotal')" #UnitPricecontrol [autocomplete]="false">
                         <mat-error>
                             Unit Price is required
@@ -310,7 +310,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0" *ngIf="this.BillItem.PreOrder === true">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>PurchasePrice</mat-label>
-                        <input matInput type="number"  name="PurchasePrice" [(ngModel)]="BillItem.PurchasePrice" required
+                        <input matInput type="number" min="0" name="PurchasePrice" [(ngModel)]="BillItem.PurchasePrice" required
                             (blur)="calculations('UnitPrice', 'subTotal')" #UnitPricecontrol [autocomplete]="false">
                         <mat-error>
                             PurchasePrice is required
@@ -320,7 +320,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Quantity</mat-label>
-                        <input matInput name="Quantity" min="1" [(ngModel)]="BillItem.Quantity" type="number"
+                        <input matInput name="Quantity" type="number" min="1" [(ngModel)]="BillItem.Quantity" type="number"
                             (blur)="calculations('Quantity', 'subTotal');calculations('GSTPercentage', 'gst');calculations('TotalAmount', 'total')" required #Quantitycontrol
                             [autocomplete]="false">
                         <mat-error>
@@ -331,7 +331,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Discount%</mat-label>
-                        <input matInput type="number"  name="Discount" [(ngModel)]="BillItem.DiscountPercentage"
+                        <input matInput type="number" min="0"  name="Discount" [(ngModel)]="BillItem.DiscountPercentage"
                             (blur)="calculations('DiscountPercentage', 'discount')" [required]=true #Discountcontrol
                             [autocomplete]="false">
                         <mat-error>
@@ -342,7 +342,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Discount amt</mat-label>
-                        <input matInput type="number"  name="DiscountAmt" [(ngModel)]="BillItem.DiscountAmount"
+                        <input matInput type="number" min="0"  name="DiscountAmt" [(ngModel)]="BillItem.DiscountAmount"
                             (blur)="calculations('DiscountAmount', 'discount')" [required]=true #Discountcontrol
                             [autocomplete]="false">
                     </mat-form-field>
@@ -350,7 +350,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Sub Total</mat-label>
-                        <input type="number" matInput name="SubTotal" [(ngModel)]="BillItem.SubTotal"
+                        <input type="number" min="0" matInput name="SubTotal" [(ngModel)]="BillItem.SubTotal"
                             (blur)="calculations('GSTPercentage', 'gst')" [disabled]='true' required #SubTotalcontrol
                             [autocomplete]="false">
                         <mat-error>
@@ -361,7 +361,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>(GST/VAT)%</mat-label>
-                        <input matInput type="number"  name="GST" [(ngModel)]="BillItem.GSTPercentage" required
+                        <input matInput type="number" min="0"  name="GST" [(ngModel)]="BillItem.GSTPercentage" required
                             (blur)="calculations('GSTPercentage', 'gst')" #GSTcontrol [autocomplete]="false">
                         <mat-error>
                             GST is required
@@ -388,7 +388,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Total Amount</mat-label>
-                        <input matInput type="number"  name="TotalAmount" [(ngModel)]="BillItem.TotalAmount" disabled
+                        <input matInput type="number" min="0" name="TotalAmount" [(ngModel)]="BillItem.TotalAmount" disabled
                             required #TotalAmountcontrol>
                     </mat-form-field>
                 </div>
@@ -432,7 +432,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-6 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Amount</mat-label>
-                        <input matInput name="Amount" [(ngModel)]="Service.Price"
+                        <input matInput name="Amount" type="number" min="0" [(ngModel)]="Service.Price"
                             (blur)="calculations('TotalAmount', 'serviceTotal')" required #Amountcontrol>
                         <mat-error>
                             Amount is required
@@ -442,7 +442,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>(GST/VAT)%</mat-label>
-                        <input matInput name="GST" [(ngModel)]="Service.GSTPercentage"
+                        <input matInput name="GST" type="number" min="0" [(ngModel)]="Service.GSTPercentage"
                             (blur)="calculations('GSTPercentageSer', 'serviceGst')" required #GSTcontrol
                             [autocomplete]="false">
                         <mat-error>
@@ -453,7 +453,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-6 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX Amt</mat-label>
-                        <input matInput name="GSTAmt" [(ngModel)]="Service.GSTAmount"
+                        <input matInput name="GSTAmt" type="number" min="0" [(ngModel)]="Service.GSTAmount"
                             (blur)="calculations('GSTAmountSer', 'serviceGst')" required #GSTAmtcontrol
                             [autocomplete]="false">
                     </mat-form-field>
@@ -473,7 +473,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Total Amount</mat-label>
-                        <input matInput name="TAmount" [(ngModel)]="Service.TotalAmount" required #TAmountcontrol
+                        <input matInput name="TAmount" type="number" min="0" [(ngModel)]="Service.TotalAmount" required #TAmountcontrol
                             [autocomplete]="false" disabled>
                     </mat-form-field>
                 </div>
@@ -542,7 +542,7 @@
                                         {{data.UnitPrice}}
                                 </td>
                                 <td *ngIf="data.UpdateProduct" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                    <input type="number" class="inputWidth"  name="UnitPrice{{data.ID}}"
+                                    <input type="number" min="0" class="inputWidth"  name="UnitPrice{{data.ID}}"
                                     [(ngModel)]="data.UnitPrice" (blur)="calculateFields1('UnitPrice', 'subTotal',data)"
                                     required #UnitPricecontrol [autocomplete]="false">
                                 </td>
@@ -556,7 +556,7 @@
                                     </td>
     
                                     <td *ngIf="data.UpdateProduct" >
-                                        <input type="number" class="inputWidth" min="0" type="number"
+                                        <input class="inputWidth" type="number" min="0" 
                                             [(ngModel)]="data.DiscountPercentage" (change)="calculateFields1('DiscountPercentage', 'discount',data)"
                                             #name="ngModel" [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                     </td>
@@ -565,7 +565,7 @@
                                         {{data.DiscountAmount}}</td>
     
                                     <td *ngIf="data.UpdateProduct">
-                                        <input type="number" class="inputWidth"  min="0" type="number"
+                                        <input  class="inputWidth" type="number" min="0" 
                                             [(ngModel)]="data.DiscountAmount"  (change)="calculateFields1('DiscountAmount', 'discount',data)"
                                             #name="ngModel" [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                     </td>  
@@ -579,7 +579,7 @@
                                 </td>
                                 
                                 <td *ngIf="data.UpdateProduct" >
-                                    <input type="number" class="inputWidth" min="0" type="number"
+                                    <input type="number" min="0" class="inputWidth" 
                                         [(ngModel)]="data.GSTPercentage"  #name="ngModel"
                                         (change)="calculateFields1('GSTPercentage', 'gst',data)"
                                         [ngModelOptions]="{standalone: true}" name="data{{i}}">
@@ -679,7 +679,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0 ">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">Quantity</mat-label>
-                        <input matInput class="cust-input" type="number"  name="Quantity" [(ngModel)]="BillMaster.Quantity" disabled
+                        <input matInput class="cust-input" type="number" min="0"  name="Quantity" [(ngModel)]="BillMaster.Quantity" disabled
                             #Quantitytcontrol [autocomplete]="false">
                         <mat-error>
                             Quantity is required
@@ -689,7 +689,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">Sub Total</mat-label>
-                        <input matInput class="cust-input" type="number"  name="SubTotal" [(ngModel)]="BillMaster.SubTotal" disabled
+                        <input matInput class="cust-input" type="number" min="0" name="SubTotal" [(ngModel)]="BillMaster.SubTotal" disabled
                             #SubTotaltcontrol [autocomplete]="false">
                         <mat-error>
                             Sub Total is required
@@ -699,7 +699,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">D.Amount</mat-label>
-                        <input matInput class="cust-input" type="number"  name="DiscountAmount" [(ngModel)]="BillMaster.DiscountAmount"
+                        <input matInput class="cust-input" type="number" min="0" name="DiscountAmount" [(ngModel)]="BillMaster.DiscountAmount"
                             disabled #DiscountAmountcontrol [autocomplete]="false">
                         <mat-error>
                             D.Amount is required
@@ -709,7 +709,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">GST Amt</mat-label>
-                        <input matInput class="cust-input" type="number"  name="GSTAmount" [(ngModel)]="BillMaster.GSTAmount" required
+                        <input matInput class="cust-input" type="number" min="0" name="GSTAmount" [(ngModel)]="BillMaster.GSTAmount" required
                             #GSTAmountcontrol [autocomplete]="false" disabled>
                     </mat-form-field>
                 </div>
@@ -748,7 +748,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Additional Discount</mat-label>
-                        <input matInput name="AddlDiscount" type="number" (blur)="AddDiscalculate('AddlDiscount', 'discount')" [(ngModel)]="BillMaster.AddlDiscount" #AddlDiscounttcontrol
+                        <input matInput name="AddlDiscount" type="number" min="0" (blur)="AddDiscalculate('AddlDiscount', 'discount')" [(ngModel)]="BillMaster.AddlDiscount" #AddlDiscounttcontrol
                             [autocomplete]="false">
                         <mat-error>
                             Additional Discount is required
@@ -758,13 +758,13 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Grand Amount</mat-label>
-                        <input matInput name="TotalAmount" type="number" [(ngModel)]="BillMaster.TotalAmount" disabled>
+                        <input matInput name="TotalAmount" type="number" min="0" [(ngModel)]="BillMaster.TotalAmount" disabled>
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Round Off</mat-label>
-                        <input matInput name="RoundOff" type="number" [(ngModel)]="BillMaster.RoundOff" disabled>
+                        <input matInput name="RoundOff" type="number" min="0" [(ngModel)]="BillMaster.RoundOff" disabled>
                     </mat-form-field>
                 </div>
             </div>
@@ -1022,7 +1022,7 @@
                         <div class="col-md-1 mb-0">
                             <mat-form-field class="example-full-width mb-0" >
                                 <mat-label>Balance</mat-label>
-                                <input type="number" style="color: rgb(255 0 0 / 75%); font-size: 17px !important;" matInput name="Total Amount" value="{{ this.applyPayment.PayableAmount}}" disabled #TOutstandingcontrol [autocomplete]="false">
+                                <input type="number" min="0" style="color: rgb(255 0 0 / 75%); font-size: 17px !important;" matInput name="Total Amount" value="{{ this.applyPayment.PayableAmount}}" disabled #TOutstandingcontrol [autocomplete]="false">
                             </mat-form-field>
                         </div>
                       
@@ -1034,7 +1034,7 @@
                                    <mat-checkbox color="primary" style="margin-left: 10px;" name="applyPayment.ApplyReturn" [(ngModel)]="applyPayment.ApplyReturn" ></mat-checkbox>
                                </div>
                                <div class="col-md-9 p-0">  
-                                <input type="number" style="font-size: 17px !important;" matInput name="CustomerCredit" disabled [(ngModel)]="applyPayment.CustomerCredit"   #CustomerCreditcontrol [autocomplete]="false">
+                                <input type="number" min="0" style="font-size: 17px !important;" matInput name="CustomerCredit" disabled [(ngModel)]="applyPayment.CustomerCredit"   #CustomerCreditcontrol [autocomplete]="false">
                                </div>
                             </div>
                             </mat-form-field>
@@ -1043,7 +1043,7 @@
                         <div class="col-md-1 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>New Payment</mat-label>
-                                <input type="number" style="font-size: 17px !important;" matInput name="PaymentAmount" [(ngModel)]="applyPayment.PaidAmount" [autocomplete]="false" >
+                                <input type="number" min="0" style="font-size: 17px !important;" matInput name="PaymentAmount" [(ngModel)]="applyPayment.PaidAmount" [autocomplete]="false" >
                             </mat-form-field>
                         </div>
                         <div class="col-md-2 mb-0" *ngIf="applyPayment.ApplyReward !== true && applyPayment.ApplyReturn !== true">

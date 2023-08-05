@@ -54,19 +54,19 @@
             <a class="dropBtn" data-target="#collapseExample">Administration <i class="fa fa-caret-down"
                 aria-hidden="true"></i> </a>
             <div class="drop-content" id="collapseExample">
-              <a  href="javascript:void(0)" [routerLink]="['/admin/company',user.CompanyID]" id="collapseExample">Company
+              <a *ngIf="viewFlag.viewCompanyInfo" href="javascript:void(0)" [routerLink]="['/admin/company',user.CompanyID]" id="collapseExample">Company
                 Info</a>
-              <a   href="javascript:void(0)" [routerLink]="['/admin/employeeList']" id="collapseExample">Employee</a>
-              <a href="javascript:void(0)" [routerLink]="['/admin/shopList']" id="collapseExample">Shop</a>
-              <a href="javascript:void(0)" [routerLink]="['/admin/rolePermission']"
+              <a *ngIf="viewFlag.viewEmployeeList"  href="javascript:void(0)" [routerLink]="['/admin/employeeList']" id="collapseExample">Employee</a>
+              <a *ngIf="viewFlag.viewShopList" href="javascript:void(0)" [routerLink]="['/admin/shopList']" id="collapseExample">Shop</a>
+              <a *ngIf="viewFlag.viewRolePermission" href="javascript:void(0)" [routerLink]="['/admin/rolePermission']"
                 id="collapseExample">Role-Permission</a>
-              <a href="javascript:void(0)" [routerLink]="['/admin/companySetting']" id="collapseExample">Company
+              <a *ngIf="viewFlag.viewCompanySetting" href="javascript:void(0)" [routerLink]="['/admin/companySetting']" id="collapseExample">Company
                 Setting</a>
-              <a href="javascript:void(0)" [routerLink]="['/admin/smsSetting']" id="collapseExample">SMS Setting
+              <a *ngIf="viewFlag.viewSmsSetting" href="javascript:void(0)" [routerLink]="['/admin/smsSetting']" id="collapseExample">SMS Setting
                 </a>
-              <a href="javascript:void(0)" [routerLink]="['/admin/companyLoginHistory']" id="collapseExample">Login
+              <a *ngIf="viewFlag.viewLoginHistory" href="javascript:void(0)" [routerLink]="['/admin/companyLoginHistory']" id="collapseExample">Login
                 History</a>
-              <a href="#">Recycle-Bin</a>
+              <a *ngIf="viewFlag.viewRecycleBin" href="#">Recycle-Bin</a>
             </div>
           </div>
           <!-- companyadmin end Administration -->
@@ -75,11 +75,11 @@
             <a class="dropBtn" data-target="#collapseExample">Product Master <i class="fa fa-caret-down"
                 aria-hidden="true"></i></a>
             <div class="drop-content" id="collapseExample">
-              <a href="javascript:void(0)" [routerLink]="['/product/productManage']" id="collapseExample">Product
+              <a *ngIf="viewFlag.viewProductType" href="javascript:void(0)" [routerLink]="['/product/productManage']" id="collapseExample">Product
                 Type</a>
-              <a href="javascript:void(0)" [routerLink]="['/product/productMaster']" id="collapseExample">Product
+              <a *ngIf="viewFlag.viewProductMaster" href="javascript:void(0)" [routerLink]="['/product/productMaster']" id="collapseExample">Product
                 Master</a>
-              <a href="javascript:void(0)" [routerLink]="['/product/addManage']" id="collapseExample">Add Manager</a>
+              <a *ngIf="viewFlag.viewAddManagement" href="javascript:void(0)" [routerLink]="['/product/addManage']" id="collapseExample">Add Manager</a>
             </div>
           </div>
           <!-- companyadmin end Product -->
@@ -88,14 +88,14 @@
             <a class="dropBtn" data-target="#collapseExample">Purchase <i class="fa fa-caret-down"
                 aria-hidden="true"></i></a>
             <div class="drop-content" id="collapseExample">
-              <a href="javascript:void(0)" [routerLink]="['/inventory/supplier']" id="collapseExample">Supplier</a>
-              <a href="javascript:void(0)" [routerLink]="['/inventory/purchaseList',0]" id="collapseExample">Purchase</a>
-              <a href="javascript:void(0)" [routerLink]="['/inventory/purchase-returnList']" id="collapseExample">Purchase Return</a>
-              <a href="javascript:void(0)" [routerLink]="['/inventory/product-transfer']" id="collapseExample">Product Transfer</a>
-              <a href="javascript:void(0)" [routerLink]="['/inventory/preOrderList']" id="collapseExample">Order (PriceList)</a>
-              <a href="javascript:void(0)" [routerLink]="['/inventory/dummyPreorderList']" id="collapseExample">Search Order (PriceList)</a>
-              <a href="javascript:void(0)" [routerLink]="['/inventory/search-barcode']" id="collapseExample">Stock Adjustment</a>
-              <a href="javascript:void(0)" [routerLink]="['/inventory/inventory-summary']" id="collapseExample">Brand/NonBrand (Assign)</a>
+              <a *ngIf="viewFlag.viewSupplierList" href="javascript:void(0)" [routerLink]="['/inventory/supplier']" id="collapseExample">Supplier</a>
+              <a *ngIf="viewFlag.viewPurchaseList" href="javascript:void(0)" [routerLink]="['/inventory/purchaseList',0]" id="collapseExample">Purchase</a>
+              <a *ngIf="viewFlag.viewPurchaseReturnList" href="javascript:void(0)" [routerLink]="['/inventory/purchase-returnList']" id="collapseExample">Purchase Return</a>
+              <a *ngIf="viewFlag.viewProductTransfer" href="javascript:void(0)" [routerLink]="['/inventory/product-transfer']" id="collapseExample">Product Transfer</a>
+              <a *ngIf="viewFlag.viewOrderPriceList" href="javascript:void(0)" [routerLink]="['/inventory/preOrderList']" id="collapseExample">Order (PriceList)</a>
+              <a *ngIf="viewFlag.viewSearchOrderPriceList" href="javascript:void(0)" [routerLink]="['/inventory/dummyPreorderList']" id="collapseExample">Search Order (PriceList)</a>
+              <a *ngIf="viewFlag.viewStockAdjustment" href="javascript:void(0)" [routerLink]="['/inventory/search-barcode']" id="collapseExample">Stock Adjustment</a>
+              <a *ngIf="viewFlag.viewBrandNonBrandAssign" href="javascript:void(0)" [routerLink]="['/inventory/inventory-summary']" id="collapseExample">Brand/NonBrand (Assign)</a>
             </div>
           </div>
           <!-- companyadmin end Purchseing -->
@@ -105,11 +105,11 @@
                 aria-hidden="true"></i></a>
             <div class="drop-content" id="collapseExample">
               <!-- <a href="javascript:void(0)" [routerLink]="['/sale/billing',0,0]" id="collapseExample">Billing</a> -->
-              <a href="javascript:void(0)" [routerLink]="['/sale/billinglist',0]" id="collapseExample">Bill Search</a>
-              <a href="javascript:void(0)" [routerLink]="['/sale/customerList']" id="collapseExample">Customer Search</a>
-              <a href="javascript:void(0)" [routerLink]="['/sale/doctorList']" id="collapseExample">Doctor</a>
-              <a href="javascript:void(0)" [routerLink]="['/sale/commission']" id="collapseExample">Loyalty</a>
-              <a href="javascript:void(0)" [routerLink]="['/sale/commissionList',0]" id="collapseExample">Loyalty  Invoice</a>
+              <a *ngIf="viewFlag.viewBillingSearch" href="javascript:void(0)" [routerLink]="['/sale/billinglist',0]" id="collapseExample">Bill Search</a>
+              <a *ngIf="viewFlag.viewCustomerSearch" href="javascript:void(0)" [routerLink]="['/sale/customerList']" id="collapseExample">Customer Search</a>
+              <a *ngIf="viewFlag.viewDoctorList" href="javascript:void(0)" [routerLink]="['/sale/doctorList']" id="collapseExample">Doctor</a>
+              <a *ngIf="viewFlag.viewLoyalty" href="javascript:void(0)" [routerLink]="['/sale/commission']" id="collapseExample">Loyalty</a>
+              <a *ngIf="viewFlag.viewLoyaltyInvoice" href="javascript:void(0)" [routerLink]="['/sale/commissionList',0]" id="collapseExample">Loyalty  Invoice</a>
             </div>
           </div>
           <!-- companyadmin end Bliing -->
@@ -119,9 +119,9 @@
                 aria-hidden="true"></i></a>
             <div class="drop-content" id="collapseExample">
               <!-- <a href="javascript:void(0)" [routerLink]="['/sale/billing',0,0]" id="collapseExample">Billing</a> -->
-              <a href="javascript:void(0)" [routerLink]="['/po/supplierPo']" id="collapseExample">Supplier Order</a>
-              <a href="javascript:void(0)" [routerLink]="['/po/convertToPurchase']" id="collapseExample">Convert To Purchase</a>
-              <a href="javascript:void(0)" [routerLink]="['/po/supplierPoList']" id="collapseExample">Supplier OrderList</a>
+              <a *ngIf="viewFlag.viewSupplierOrder" href="javascript:void(0)" [routerLink]="['/po/supplierPo']" id="collapseExample">Supplier Order</a>
+              <a *ngIf="viewFlag.viewPurchaseConvert" href="javascript:void(0)" [routerLink]="['/po/convertToPurchase']" id="collapseExample">Convert To Purchase</a>
+              <a *ngIf="viewFlag.viewSupplierOrderList" href="javascript:void(0)" [routerLink]="['/po/supplierPoList']" id="collapseExample">Supplier OrderList</a>
             </div>
           </div>
           <!-- companyadmin end Lens Order -->
@@ -130,10 +130,10 @@
             <a class="dropBtn" data-target="#collapseExample">Fitter Order <i class="fa fa-caret-down"
                 aria-hidden="true"></i></a>
             <div class="drop-content" id="collapseExample">
-              <a href="javascript:void(0)" [routerLink]="['/inventory/fitterList']" id="collapseExample">Fitter</a>
-              <a href="javascript:void(0)" [routerLink]="['/po/fitterPo']" id="collapseExample">Fitter Order</a>
-              <a href="javascript:void(0)" [routerLink]="['/po/fitterInvoice']" id="collapseExample">Fitter Invoice</a>
-              <a href="javascript:void(0)" [routerLink]="['/po/fitterInvoiceList',0]" id="collapseExample">Fitter Invoice List</a>
+              <a *ngIf="viewFlag.viewFitterList" href="javascript:void(0)" [routerLink]="['/inventory/fitterList']" id="collapseExample">Fitter</a>
+              <a *ngIf="viewFlag.viewFitterOrder" href="javascript:void(0)" [routerLink]="['/po/fitterPo']" id="collapseExample">Fitter Order</a>
+              <a *ngIf="viewFlag.viewFitterInvoice" href="javascript:void(0)" [routerLink]="['/po/fitterInvoice']" id="collapseExample">Fitter Invoice</a>
+              <a *ngIf="viewFlag.viewFitterInvoiceList" href="javascript:void(0)" [routerLink]="['/po/fitterInvoiceList',0]" id="collapseExample">Fitter Invoice List</a>
             </div>
           </div>
           <!-- companyadmin end Lens Order -->
@@ -142,10 +142,10 @@
             <a class="dropBtn" data-target="#collapseExample">Payment <i class="fa fa-caret-down"
                 aria-hidden="true"></i></a>
             <div class="drop-content" id="collapseExample">
-              <a href="javascript:void(0)" [routerLink]="['/companyPayment/payment']" id="collapseExample">Payment</a>
-              <a href="javascript:void(0)" [routerLink]="['/companyPayment/payroll']" id="collapseExample">Payroll</a>
-              <a href="javascript:void(0)" [routerLink]="['/companyPayment/expense']" id="collapseExample">Expense</a>
-              <a href="javascript:void(0)" [routerLink]="['/companyPayment/pettyCash']" id="collapseExample">PettyCash</a>
+              <a *ngIf="viewFlag.viewPayment" href="javascript:void(0)" [routerLink]="['/companyPayment/payment']" id="collapseExample">Payment</a>
+              <a *ngIf="viewFlag.viewpayrollList" href="javascript:void(0)" [routerLink]="['/companyPayment/payroll']" id="collapseExample">Payroll</a>
+              <a *ngIf="viewFlag.viewExpenseList" href="javascript:void(0)" [routerLink]="['/companyPayment/expense']" id="collapseExample">Expense</a>
+              <a *ngIf="viewFlag.viewPettyCashReport" href="javascript:void(0)" [routerLink]="['/companyPayment/pettyCash']" id="collapseExample">PettyCash</a>
             </div>
           </div>
           <!-- companyadmin end company payment -->
@@ -154,12 +154,12 @@
             <a class="dropBtn" data-target="#collapseExample">Report <i class="fa fa-caret-down"
                 aria-hidden="true"></i></a>
             <div class="drop-content" id="collapseExample">
-              <a href="javascript:void(0)" [routerLink]="['/report/sale']" id="collapseExample">Sale</a>
-              <a href="javascript:void(0)" [routerLink]="['/report/purchase']" id="collapseExample">Purchase</a>
-              <a href="javascript:void(0)" [routerLink]="['/report/inventory']" id="collapseExample">Inventory</a>
-              <a href="javascript:void(0)" [routerLink]="['/report/product-transfer']" id="collapseExample">Product Transfer</a>
-              <a href="javascript:void(0)" [routerLink]="['/report/product-return']" id="collapseExample">Product Return</a>
-              <a href="javascript:void(0)" [routerLink]="['/report/eyetest']" id="collapseExample">Eye Test</a>
+              <a *ngIf="viewFlag.viewSaleReport" href="javascript:void(0)" [routerLink]="['/report/sale']" id="collapseExample">Sale</a>
+              <a *ngIf="viewFlag.viewPurchaseReport" href="javascript:void(0)" [routerLink]="['/report/purchase']" id="collapseExample">Purchase</a>
+              <a *ngIf="viewFlag.viewInventoryReport" href="javascript:void(0)" [routerLink]="['/report/inventory']" id="collapseExample">Inventory</a>
+              <a *ngIf="viewFlag.viewProductTransferReport" href="javascript:void(0)" [routerLink]="['/report/product-transfer']" id="collapseExample">Product Transfer</a>
+              <a *ngIf="viewFlag.viewProductReturnReport" href="javascript:void(0)" [routerLink]="['/report/product-return']" id="collapseExample">Product Return</a>
+              <a *ngIf="viewFlag.viewEyeTestReport" href="javascript:void(0)" [routerLink]="['/report/eyetest']" id="collapseExample">Eye Test</a>
             </div>
           </div>
           <!-- companyadmin end report -->
@@ -168,8 +168,8 @@
             <a class="dropBtn" data-target="#collapseExample">Excel Import <i class="fa fa-caret-down"
                 aria-hidden="true"></i></a>
             <div class="drop-content" id="collapseExample">
-              <a href="javascript:void(0)" [routerLink]="['/uploader/purchase']" id="collapseExample" >Inventory</a>
-              <a href="javascript:void(0)" [routerLink]="['/uploader/customer']" id="collapseExample" >Customer</a>
+              <a *ngIf="viewFlag.viewInventoryExcelImport" href="javascript:void(0)" [routerLink]="['/uploader/purchase']" id="collapseExample" >Inventory</a>
+              <a *ngIf="viewFlag.viewCustomerExcelImport" href="javascript:void(0)" [routerLink]="['/uploader/customer']" id="collapseExample" >Customer</a>
             </div>
           </div>
           <!-- companyadmin end Uploader -->

@@ -63,7 +63,7 @@ export class RoleComponent implements OnInit {
     {ModuleName: 'OrderPriceList', MView: true, Edit: true, Add: true, View: true, Delete: true},
     {ModuleName: 'SearchOrderPriceList', MView: true, Edit: true, Add: true, View: true, Delete: true},
     {ModuleName: 'StockAdjustment', MView: true, Edit: true, Add: true, View: true, Delete: true},
-    {ModuleName: 'Brand/NonBrand/Assign', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'BrandNonBrandAssign', MView: true, Edit: true, Add: true, View: true, Delete: true},
 
     // Billing Permissions
     {ModuleName: 'CustomerBill', MView: true, Edit: true, Add: true, View: true, Delete: true},
@@ -153,9 +153,6 @@ export class RoleComponent implements OnInit {
         },
         complete: () => subs.unsubscribe(),
       });
-
-
-    this.sp.hide();
   }
 
   deleteRole() {
@@ -194,7 +191,6 @@ export class RoleComponent implements OnInit {
 
       }
     })
-    this.sp.hide();
   }
 
   getRoleList() {
@@ -211,7 +207,6 @@ export class RoleComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   setdata() {
@@ -288,7 +283,6 @@ export class RoleComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
 }
