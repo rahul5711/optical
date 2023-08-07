@@ -51,7 +51,7 @@ export class FitterComponent implements OnInit {
 
   data: any = {
     ID: null, ShopID: null, Name: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', Email: '', Website: '',
-    GSTNo: '', CINNo: '', PhotoURL: '', Remark: '', ContactPerson: '', Fax: '', DOB: '', Anniversary: '',
+    GSTNo: '', CINNo: '', PhotoURL: null, Remark: '', ContactPerson: '', Fax: '', DOB: '', Anniversary: '',
     Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
   };
 
@@ -107,9 +107,6 @@ export class FitterComponent implements OnInit {
 
   onsubmit() {
     this.sp.show();
-    if(this.data.PhotoURL  === '' || this.data.PhotoURL  === null ){
-      this.data.PhotoURL = '/assets/images/logo.png'
-    }
     var fitterdate = this.data ?? " ";
     const subs: Subscription = this.fs.saveFitter(fitterdate).subscribe({
       next: (res: any) => {
@@ -174,7 +171,11 @@ export class FitterComponent implements OnInit {
           this.rateCardList = res.RateCard
           this.assignShopList = res.AssignedShop
           this.data = res.data[0]
-          this.userImage = this.env.apiUrl + res.data[0].PhotoURL;
+          if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
+            this.userImage = this.env.apiUrl + res.data[0].PhotoURL;
+          } else {
+            this.userImage = "/assets/images/userEmpty.png"
+          }
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)

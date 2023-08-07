@@ -99,7 +99,7 @@
                     <mat-form-field class="example-full-width mb-0 ">
                         <mat-label>Balance</mat-label>
                         <div class="d-flex">
-                            <input matInput style="color:red"  name="Balance" [(ngModel)]="BillMaster.DueAmount" disabled>
+                            <input matInput style="color:red" type="number" min="0"  name="Balance" [(ngModel)]="BillMaster.DueAmount" disabled>
                             <span *ngIf="BillMaster.PaymentStatus == 'Paid' && BillMaster.DueAmount == 0" style="border: 1px solid; padding: 0px 2px; color:green; font-weight: 600; font-size: 12px;">Paid</span>
                             <span *ngIf="BillMaster.PaymentStatus == 'Unpaid' || BillMaster.DueAmount != 0"style=" border: 1px solid; padding: 0px 2px; color: red; font-weight: 600; font-size: 12px; ">Unpaid</span>
                         </div>
@@ -291,7 +291,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-2 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Available</mat-label>
-                        <input matInput min="0" style="color: rgb(255 0 0);"  name="BarCodeCount"
+                        <input matInput type="number" min="0" style="color: rgb(255 0 0);"  name="BarCodeCount"
                             [(ngModel)]="searchList.BarCodeCount" [disabled]=true>
                     </mat-form-field>
                 </div>

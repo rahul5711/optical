@@ -44,7 +44,7 @@ export class ShopListComponent implements OnInit {
 
   data: any = {
     ID: null, CompanyID: null, Name: '', AreaName: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '',
-    Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: false, GSTnumber: false, LogoURL: '', HSNCode: false, CustGSTNo: false, Rate: false, Discounts: false, Tax: false, SubTotal: false, Total: false, BillShopWise: false, ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: 'No Terms and Conditions', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
+    Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: false, GSTnumber: false, LogoURL: null, HSNCode: false, CustGSTNo: false, Rate: false, Discounts: false, Tax: false, SubTotal: false, Total: false, BillShopWise: false, ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: 'No Terms and Conditions', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
   };
 
   constructor(

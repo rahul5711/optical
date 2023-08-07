@@ -166,14 +166,14 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Available</mat-label>
-                                        <input matInput style="color: rgb(255 0 0) !important;" name="ProdBarcodecount" disabled
+                                        <input matInput type="number" min="0" style="color: rgb(255 0 0) !important;" name="ProdBarcodecount" disabled
                                             [(ngModel)]="item.BarCodeCount">
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1  col-lg-1 col-md-6 col-sm-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Return Quantity</mat-label>
-                                        <input matInput name="Quantity" type=number min="0"
+                                        <input matInput name="Quantity" type="number" min="0"
                                             #XferCountControl="ngModel" [(ngModel)]="xferItem.Quantity"  required>
                                         <mat-error *ngIf="XferCountControl.invalid && XferCountControl.touched">
                                             Tranfer Count is Required
@@ -249,7 +249,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>ReturnQuantity</mat-label>
-                                        <input matInput name="Quantityt" [(ngModel)]="selectedPurchaseMaster.Quantity"
+                                        <input matInput name="Quantityt" type="number" min="0" [(ngModel)]="selectedPurchaseMaster.Quantity"
                                             disabled #Quantitytcontrol [autocomplete]="false">
                                         <mat-error>
                                             Quantity is required
@@ -259,7 +259,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Sub Total</mat-label>
-                                        <input matInput name="SubTotalt" [(ngModel)]="selectedPurchaseMaster.SubTotal"
+                                        <input matInput name="SubTotalt" type="number" min="0" [(ngModel)]="selectedPurchaseMaster.SubTotal"
                                             disabled #SubTotaltcontrol [autocomplete]="false">
                                         <mat-error>
                                             Sub Total is required
@@ -269,7 +269,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>D.Amount</mat-label>
-                                        <input matInput name="DAmountt"
+                                        <input matInput name="DAmountt" type="number" min="0"
                                             [(ngModel)]="selectedPurchaseMaster.DiscountAmount" disabled
                                             #DAmounttcontrol [autocomplete]="false">
                                         <mat-error>
@@ -280,7 +280,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0"  *ngFor="let gst of gst_detail">
                                     <mat-form-field class="example-full-width mb-0">
                                     <mat-label>{{gst.GSTType}}</mat-label>
-                                    <input matInput name="igstAmt"  value="{{gst.Amount | number:'1.0-2'}}" disabled>
+                                    <input matInput name="igstAmt"   value="{{gst.Amount | number:'1.0-2'}}" disabled>
                                       <mat-error>
                                          GST Amt is required
                                       </mat-error>
@@ -289,7 +289,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>TotalTAXAmt</mat-label>
-                                        <input matInput name="GSTAmtt" [(ngModel)]="selectedPurchaseMaster.GSTAmount"
+                                        <input matInput name="GSTAmtt" type="number" min="0" [(ngModel)]="selectedPurchaseMaster.GSTAmount"
                                             disabled #GSTAmttcontrol [autocomplete]="false">
                                         <mat-error>
                                             GST Amt is required
@@ -300,7 +300,7 @@
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label style="color: rgb(255 0 0);">Total Amount</mat-label>
                                         <input style="color: rgb(255 0 0) !important;" matInput name="TotalAmountt"
-                                            [(ngModel)]="selectedPurchaseMaster.TotalAmount" disabled
+                                        type="number" min="0" [(ngModel)]="selectedPurchaseMaster.TotalAmount" disabled
                                             #TotalAmounttcontrol [autocomplete]="false">
                                         <mat-error>
                                             Total Amount is required
@@ -311,7 +311,7 @@
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label style="color: rgb(255 0 0);">RoundOff</mat-label>
                                         <input style="color: rgb(255 0 0) !important;" matInput name="RoundOff"
-                                            [(ngModel)]="selectedPurchaseMaster.RoundOff
+                                        type="number" min="0"  [(ngModel)]="selectedPurchaseMaster.RoundOff
                                             " disabled
                                             #RoundOffcontrol [autocomplete]="false">
                                     </mat-form-field>

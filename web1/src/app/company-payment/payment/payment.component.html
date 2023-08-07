@@ -39,7 +39,7 @@
                                 <div class="col-xl-1 col-md-1 col-sm-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Total DueAmt</mat-label>
-                                        <input type="number" matInput name="DueAmt" [(ngModel)]="data.PayableAmount" disabled
+                                        <input type="number" min="0" matInput name="DueAmt" [(ngModel)]="data.PayableAmount" disabled
                                             required #DueAmtcontrol>
                                         <mat-error>
                                             Payment required
@@ -55,7 +55,7 @@
                                                 [(ngModel)]="data.ApplyReturn" (click)="ApplyReturn()"></mat-checkbox>
                                             </div>
                                             <div class="col-md-9 p-0" style="height: 16px;">
-                                                <input type="number" class="ms-2" matInput name="CustomerCredit" disabled
+                                                <input type="number" min="0" class="ms-2" matInput name="CustomerCredit" disabled
                                                 [(ngModel)]="data.CustomerCredit" [autocomplete]="false"
                                                 #CustomerCreditcontrol>
                                             </div>
@@ -65,10 +65,10 @@
                                 <div class="col-xl-1 col-md-2 col-sm-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Pay Amount</mat-label>
-                                        <input  type="number" matInput name="PaymentAmt" [(ngModel)]="data.PaidAmount" required
+                                        <input  type="number" min="0" matInput name="PaymentAmt" [(ngModel)]="data.PaidAmount" required
                                             #PaymentAmtcontrol>
                                         <mat-error>
-                                            Payment required
+                                            Invalid Value
                                         </mat-error>
                                     </mat-form-field>
                                 </div>

@@ -15,8 +15,17 @@ export class BillCalculationService {
     return Number(Math.round(parseFloat(num + 'e' + x)) + 'e-' + x);
   }
 
-  calculations(fieldName: any, mode: any, BillItem: any, Service: any) {
+ validateAndSetToZero(BillItem:any, property:any) {
+    if (isNaN(Number(BillItem[property])) || BillItem[property] < 0) {
+      alert("Please fill up a valid non-negative integer value for " + property);
+      BillItem[property] = 0;
+    }
+  }
 
+  calculations(fieldName: any, mode: any, BillItem: any, Service: any) {
+    const propertiesToValidate = ['UnitPrice', 'Quantity', 'DiscountPercentage', 'DiscountAmount', 'GSTPercentage', 'GSTAmount'];
+    propertiesToValidate.forEach(property => this.validateAndSetToZero(BillItem, property));
+  
     switch (mode) {
       case 'subTotal':
         if (BillItem.Quantity === null || BillItem.Quantity === '') {
@@ -162,7 +171,7 @@ export class BillCalculationService {
     BillItem.GSTPercentage = this.convertToDecimal(+BillItem.GSTPercentage, 2);
     BillItem.GSTAmount = this.convertToDecimal(+BillItem.GSTAmount, 2);
     BillItem.TotalAmount = this.convertToDecimal(+BillItem.TotalAmount, 2);
-
+  
   }
 
   // bill Master calculation start

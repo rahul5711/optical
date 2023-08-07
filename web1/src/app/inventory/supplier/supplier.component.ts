@@ -66,7 +66,7 @@ export class SupplierComponent implements OnInit {
 
   data: any = {
     ID: null, Sno: 0, Name: null, MobileNo1: null, MobileNo2: '', PhoneNo: '', Address: null, Email: '', Website: '',
-    GSTNo: '', GSTType: 'None', CINNo: '', PhotoURL: '', Remark: null, ContactPerson: '', Fax: '', DOB: '', Anniversary: '',
+    GSTNo: '', GSTType: 'None', CINNo: '', PhotoURL: null, Remark: null, ContactPerson: '', Fax: '', DOB: '', Anniversary: '',
     Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
   };
 
@@ -79,9 +79,6 @@ export class SupplierComponent implements OnInit {
 
   onsubmit() {
     this.sp.show()
-    if(this.data.PhotoURL  === '' || this.data.PhotoURL  === null ){
-      this.data.PhotoURL = '/assets/images/logo.png'
-    }
     const subs: Subscription = this.ss.supplierSave(this.data).subscribe({
       next: (res: any) => {
         if (res.success == true) {
@@ -206,7 +203,7 @@ export class SupplierComponent implements OnInit {
     this.suBtn = false;
     this.data = {
       ID: null, Sno: this.data.Sno, Name: null, MobileNo1: null, MobileNo2: '', PhoneNo: '', Address: null, Email: '', Website: '',
-      GSTNo: '', CINNo: '', PhotoURL: '', Remark: '', ContactPerson: '', Fax: '', DOB: '', Anniversary: '',
+      GSTNo: '', CINNo: '', PhotoURL: null, Remark: '', ContactPerson: '', Fax: '', DOB: '', Anniversary: '',
       Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
     };
   }
@@ -260,7 +257,7 @@ export class SupplierComponent implements OnInit {
 
     this.data = {
       ID: null, Sno: this.data.Sno, Name: null, MobileNo1: null, MobileNo2: '', PhoneNo: '', Address: null, Email: '', Website: '',
-      GSTNo: '', CINNo: '', PhotoURL: '', Remark: '', ContactPerson: '', Fax: '', DOB: '', Anniversary: '',
+      GSTNo: '', CINNo: '', PhotoURL: null, Remark: '', ContactPerson: '', Fax: '', DOB: '', Anniversary: '',
       Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
     };
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
@@ -344,7 +341,7 @@ export class SupplierComponent implements OnInit {
   formReset() {
     this.data = {
       ID: null, Sno: 0, Name: null, MobileNo1: null, MobileNo2: '', PhoneNo: '', Address: null, Email: '', Website: '',
-      GSTNo: '', GSTType: 'None', CINNo: '', PhotoURL: '', Remark: null, ContactPerson: '', Fax: '', DOB: '', Anniversary: '',
+      GSTNo: '', GSTType: 'None', CINNo: '', PhotoURL: null, Remark: null, ContactPerson: '', Fax: '', DOB: '', Anniversary: '',
       Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
     };
   }

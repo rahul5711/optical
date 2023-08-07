@@ -27,21 +27,21 @@
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Mobile No1</mat-label>
-                                                <input matInput name="MobileNo1" type="number"
+                                                <input matInput name="MobileNo1" type="number" min="0"
                                                     [(ngModel)]="data.MobileNo1" required #MobileNo1control>
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Mobile No2</mat-label>
-                                                <input matInput name="MobileNo2" type="text"
+                                                <input matInput name="MobileNo2" type="number" min="0"
                                                     [(ngModel)]="data.MobileNo2" #MobileNo2control>
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Phone No</mat-label>
-                                                <input matInput name="PhoneNo" type="number" [(ngModel)]="data.PhoneNo"
+                                                <input matInput name="PhoneNo" type="number" min="0" [(ngModel)]="data.PhoneNo"
                                                     #PhoneNocontrol>
                                                 <mat-error>
                                                     Phone No is required
@@ -178,10 +178,10 @@
                                                 <div class="col-lg-4">
                                                     <mat-form-field class="example-full-width mb-0">
                                                         <mat-label>Rate <span style="color: red;">(Only For Half Pair Rate)</span> </mat-label>
-                                                        <input matInput type="number" name="MobileNo2"
-                                                            [(ngModel)]="rateCard.Rate" #MobileNo2control>
+                                                        <input matInput type="number" min="0" name="Rate"
+                                                            [(ngModel)]="rateCard.Rate" #Ratecontrol>
                                                         <mat-error>
-                                                            Invalid Amount
+                                                            Invalid Rate
                                                         </mat-error>
                                                     </mat-form-field>
                                                 </div>

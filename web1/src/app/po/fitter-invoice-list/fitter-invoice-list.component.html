@@ -118,7 +118,7 @@
                                             <td>{{v.CustomerName}} {{v.FitterName}}</td>
                                             <td>{{v.CustomerMob}}</td>
                                             <td>
-                                              <input class="inputWidth"  name="InvoiceNo{{v.ID}}"
+                                              <input class="inputWidth"  name="v.InvoiceNo{{i}}"
                                               [(ngModel)]="v.InvoiceNo"
                                               required #InvoiceNocontrol [autocomplete]="false"
                                               [disabled]="!UpdateProduct" >
@@ -127,19 +127,19 @@
                                             <td>{{v.PurchaseDate }}</td>
                                             <td>{{v.PaymentStatus}}</td>
                                             <td>
-                                              <input class="inputWidth"  name="GSTPercentage{{v.ID}}"
-                                              [(ngModel)]="v.GSTPercentage"
+                                              <input class="inputWidth"  name="v.GSTPercentage{{v.ID}}"
+                                              [(ngModel)]="v.GSTPercentage" type="number" min="0"
                                               required #GSTPercentagecontrol [autocomplete]="false"
                                               [disabled]="!UpdateProduct" (blur)="calculateGrandTotal(v); gstCheck(v)">
                                             </td>
                                             <td>{{v.GSTAmount}}</td>
                                             <td>
-                                              <select *ngIf="v.GSTPercentage == 0" [disabled]="!UpdateProduct" class="inputselectWidth"  name="GSTType{{v.ID}}" [(ngModel)]="v.GSTType"
+                                              <select *ngIf="v.GSTPercentage == 0" [disabled]="!UpdateProduct" class="inputselectWidth"  name="v.GSTType{{v.ID}}" [(ngModel)]="v.GSTType"
                                                     required #GSTTypecontrol1 >
                                                     <option value="None" >None</option>
                                                 </select>
 
-                                              <select *ngIf="v.GSTPercentage != 0" [disabled]="!UpdateProduct" class="inputselectWidth"  name="GSTType{{v.ID}}" [(ngModel)]="v.GSTType"
+                                              <select *ngIf="v.GSTPercentage != 0" [disabled]="!UpdateProduct" class="inputselectWidth"  name="v.GSTType{{v.ID}}" [(ngModel)]="v.GSTType"
                                                     required #GSTTypecontrol1 >
                                                     <option [value]="g.Name" *ngFor="let g of gstList" >
                                                         {{g.Name}}

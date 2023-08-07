@@ -77,8 +77,6 @@
                                                     Name is required
                                                 </mat-error>
                                             </mat-form-field>
-                                             
-                                          
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-4 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
@@ -97,7 +95,10 @@
                                         <div class="col-xl-1 col-lg-1 col-md-1 col-sm-3 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Age</mat-label>
-                                                <input matInput name="Age" [(ngModel)]="data.Age">
+                                                <input matInput name="Age" type="number" min="0" [(ngModel)]="data.Age">
+                                                <mat-error>
+                                                    Invalid Value
+                                                </mat-error>
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-4  mb-0">

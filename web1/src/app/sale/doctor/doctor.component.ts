@@ -131,7 +131,11 @@ export class DoctorComponent implements OnInit {
         if (res.success) {
           this.as.successToast(res.message)
           this.data = res.data[0]
-          this.userImage = this.env.apiUrl + res.data[0].PhotoURL;
+          if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
+            this.userImage = this.env.apiUrl + res.data[0].PhotoURL;
+          } else {
+            this.userImage = "/assets/images/userEmpty.png"
+          }
         } else {
           this.as.errorToast(res.message)
         }

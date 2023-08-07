@@ -168,7 +168,7 @@ export class FitterInvoiceListComponent implements OnInit {
   }
 
 gstCheck(v:any){
-  if(v.GSTPercentage == 0){
+  if(v.GSTPercentage == 0 ){
      v.GSTType = 'None'
   }
 

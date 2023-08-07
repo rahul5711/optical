@@ -111,7 +111,7 @@
                             <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                 <mat-form-field class="example-full-width mb-0">
                                     <mat-label class="red">Quantity</mat-label>
-                                    <input class="red" matInput name="Quantity" [(ngModel)]="data.Quantity"
+                                    <input class="red" type="number" min="0" matInput name="Quantity" [(ngModel)]="data.Quantity"
                                         disabled #Quantitytcontrol [autocomplete]="false">
                                 </mat-form-field>
                             </div>
@@ -120,7 +120,7 @@
                                 <mat-form-field class="example-full-width mb-0">
                                     <mat-label class="red">Total Amount</mat-label>
                                     <input class="red" matInput name="TotalAmountt"
-                                        [(ngModel)]="data.TotalAmount" disabled
+                                        [(ngModel)]="data.TotalAmount" disabled type="number" min="0"
                                         #TotalAmounttcontrol [autocomplete]="false">
                                 </mat-form-field>
                             </div>
@@ -129,7 +129,7 @@
                                     color="primary" (click)="calculateGrandTotal()">
                                     Calculate Invoice
                                 </button>
-                                <button type="submit" [disabled]="!f.valid "
+                                <button type="submit" [disabled]="!f.valid || !f2.valid "
                                     class="ms-3" mat-raised-button color="primary">
                                     Save
                                 </button>

@@ -33,7 +33,7 @@ export class CompanySettingComponent implements OnInit {
 
   data: any = {ID: null, CompanyLanguage: 'English', Locale: 'en-IN', CompanyCurrency: '', CurrencyFormat: null, DateFormat: null,CompanyTagline: '', BillHeader: '', BillFooter: '', RewardsPointValidity: '', EmailReport: null,
      WholeSalePrice: false, Composite: false, RetailRate: false,  Color1: '', FontApi:'', FontsStyle: '', HSNCode: false, Discount: false, GSTNo: false, Rate: false, SubTotal: false, Total: false, CGSTSGST: false,
-     WelComeNote: '' ,BillFormat:null,SenderID: '',MsgAPIKey:'', SmsSetting: '',DataFormat: 0,RewardPercentage:0, RewardExpiryDate: '30',AppliedReward:0, MobileNo:'2', MessageReport: null, LogoURL: '', WatermarkLogoURL: '',
+     WelComeNote: '' ,BillFormat:null,SenderID: '',MsgAPIKey:'', SmsSetting: '',DataFormat: 0,RewardPercentage:0, RewardExpiryDate: '30',AppliedReward:0, MobileNo:'2', MessageReport: null, LogoURL: null, WatermarkLogoURL: null,
      InvoiceFormat: 'option.ejs', LoginTimeStart: '', LoginTimeEnd: '', year: false, month: false, partycode: false, type: false , BarCode:'', FeedbackDate:'', ServiceDate:'',DeliveryDay:'',UpdatedBy:null
   };
 
@@ -63,8 +63,17 @@ export class CompanySettingComponent implements OnInit {
   wlcmArray1: any = [] ;
 
   ngOnInit(): void {
-     this.data = JSON.parse(localStorage.getItem('companysetting') || '');
-     this.wlcmArray1 = JSON.parse(this.companysetting.WelComeNote) || ''
+   this.getCompanySetting()
+   console.log(this.data);
+   
+  }
+
+  getCompanySetting(){
+    this.data = JSON.parse(localStorage.getItem('companysetting') || '');
+    if (this.data.LogoURL === "null" || this.data.LogoURL === "") {
+     this.data.LogoURL = "assets/images/userEmpty.png"
+   } 
+    this.wlcmArray1 = JSON.parse(this.companysetting.WelComeNote) || ''
   }
 
   uploadImage(e:any, mode:any){
@@ -94,9 +103,6 @@ export class CompanySettingComponent implements OnInit {
 
   updatecompanysetting(){
     this.sp.show();
-    if(this.data.LogoURL  === '' || this.data.LogoURL  === null ){
-      this.data.LogoURL = '/assets/images/logo.png'
-    }
     this.data.WelComeNote = JSON.stringify(this.wlcmArray1);
     const subs: Subscription =  this.cs.updatecompanysetting( this.data).subscribe({
       next: (res: any) => {

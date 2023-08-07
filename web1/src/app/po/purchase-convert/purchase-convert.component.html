@@ -148,45 +148,45 @@
                                             <td>{{item.InvoiceDate}}</td>
                                             <td>
                                                 <input  class="inputWidth"  name="UnitPrice{{item.ID}}"
-                                                    [(ngModel)]="item.UnitPrice"
+                                                    [(ngModel)]="item.UnitPrice" type="number" min="0"
                                                     (blur)="calculateFields('UnitPrice', 'subTotal',item)"
                                                     required #UnitPricecontrol [autocomplete]="false"
                                                     [disabled]="item.Sel !== 1">
                                             </td>
                                             <td>
                                                 <input class="inputWidth" name="Quantity{{item.ID}}"
-                                                    [(ngModel)]="item.Quantity"
+                                                    [(ngModel)]="item.Quantity" type="number" min="0"
                                                     (blur)="calculateFields('Quantity', 'subTotal',item)"
                                                     required [disabled]="item.Sel !== 1" #Quantitycontrol
                                                     [autocomplete]="false">
                                             </td>
                                             <td>
                                                 <input class="inputWidth"  name="DiscountPercentage{{item.ID}}"
-                                                    [(ngModel)]="item.DiscountPercentage"
+                                                    [(ngModel)]="item.DiscountPercentage" type="number" min="0"
                                                     (blur)="calculateFields('DiscountPercentage', 'discount',item);"
                                                     [required]=true #DiscountPercentagecontrol
                                                     [disabled]="item.Sel !== 1" [autocomplete]="false">
                                             </td>
                                             <td>
                                                 <input class="inputWidth"  disabled  name="DiscountAmount{{item.ID}}"
-                                                    [(ngModel)]="item.DiscountAmount" required
+                                                    [(ngModel)]="item.DiscountAmount" required type="number" min="0"
                                                     #DiscountAmountcontrol [autocomplete]="false">
                                             </td>
                                             <td>
                                                 <input class="inputWidth"  name="SubTotal{{item.ID}}"
-                                                    [(ngModel)]="item.SubTotal" disabled required
+                                                    [(ngModel)]="item.SubTotal" disabled required type="number" min="0"
                                                     #SubTotalcontrol [autocomplete]="false">
                                             </td>
                                             <td>
                                                 <input class="inputWidth"  name="GSTPercentage{{item.ID}}"
-                                                    [(ngModel)]="item.GSTPercentage"
+                                                    [(ngModel)]="item.GSTPercentage" type="number" min="0"
                                                     (blur)="calculateFields('GSTPercentage', 'gst',item)"
                                                     required #GSTPercentagecontrol [autocomplete]="false"
                                                     [disabled]="item.Sel !== 1">
                                             </td>
                                             <td>
                                                 <input class="inputWidth"  disabled  name="GSTAmount{{item.ID}}"
-                                                    [(ngModel)]="item.GSTAmount" required #GSTAmountcontrol
+                                                    [(ngModel)]="item.GSTAmount" type="number" min="0" required #GSTAmountcontrol
                                                     [autocomplete]="false">
                                             </td>
                                             <td>
@@ -203,16 +203,16 @@
                                             </td>
                                             <td>
                                                 <input class="inputWidth"  name="TotalAmount{{item.ID}}"
-                                                    [(ngModel)]="item.TotalAmount" required disabled
+                                                    [(ngModel)]="item.TotalAmount" type="number" min="0" required disabled
                                                     #TAmountcontrol [autocomplete]="false">
                                             </td>
                                             <td *ngIf="item.WholeSale === 0">
                                                 <input class="inputWidth"  name="RetailPrice{{item.ID}}"
-                                                    [(ngModel)]="item.RetailPrice" required 
+                                                    [(ngModel)]="item.RetailPrice"  type="number" min="0" required 
                                                     #TAmountcontrol [autocomplete]="false"  [disabled]="item.Sel !== 1" >
                                             </td>
                                             <td *ngIf="item.WholeSale === 1">
-                                                <input class="inputWidth"  name="WholeSalePrice{{item.ID}}"
+                                                <input class="inputWidth" type="number" min="0"  name="WholeSalePrice{{item.ID}}"
                                                     [(ngModel)]="item.WholeSalePrice" required 
                                                     #TAmountcontrol [autocomplete]="false"  [disabled]="item.Sel !== 1" >
                                             </td>
@@ -225,21 +225,21 @@
                             <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                 <mat-form-field class="example-full-width mb-0">
                                     <mat-label>Quantity</mat-label>
-                                    <input matInput name="Quantity" [(ngModel)]="PurchaseMaster.Quantity"
+                                    <input matInput name="Quantity" type="number" min="0" [(ngModel)]="PurchaseMaster.Quantity"
                                         disabled #Quantitytcontrol [autocomplete]="false">
                                 </mat-form-field>
                             </div>
                             <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                 <mat-form-field class="example-full-width mb-0">
                                     <mat-label>Sub Total</mat-label>
-                                    <input matInput name="SubTotal" [(ngModel)]="PurchaseMaster.SubTotal"
+                                    <input matInput name="SubTotal" type="number" min="0" [(ngModel)]="PurchaseMaster.SubTotal"
                                         disabled #SubTotaltcontrol [autocomplete]="false">
                                 </mat-form-field>
                             </div>
                             <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                 <mat-form-field class="example-full-width mb-0">
                                     <mat-label>D.Amount</mat-label>
-                                    <input matInput name="DAmount"
+                                    <input matInput name="DAmount" type="number" min="0"
                                         [(ngModel)]="PurchaseMaster.DiscountAmount" disabled
                                         #DAmounttcontrol [autocomplete]="false">
                                 </mat-form-field>
@@ -254,14 +254,14 @@
                             <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                 <mat-form-field class="example-full-width mb-0">
                                     <mat-label>GST Amt</mat-label>
-                                    <input matInput name="GSTAmtt" [(ngModel)]="PurchaseMaster.GSTAmount"
+                                    <input matInput name="GSTAmtt" type="number" min="0" [(ngModel)]="PurchaseMaster.GSTAmount"
                                         disabled #GSTAmttcontrol [autocomplete]="false">
                                 </mat-form-field>
                             </div>
                             <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                 <mat-form-field class="example-full-width mb-0">
                                     <mat-label>Total Amount</mat-label>
-                                    <input matInput name="TotalAmountt"
+                                    <input matInput name="TotalAmountt" type="number" min="0"
                                         [(ngModel)]="PurchaseMaster.TotalAmount" disabled
                                         #TotalAmounttcontrol [autocomplete]="false">
                                 </mat-form-field>
@@ -271,7 +271,7 @@
                                     color="primary">
                                     Calculate Invoice
                                 </button>
-                                <button type="submit" [disabled]="dataList.length === 0 || PurchaseMaster.TotalAmount === 0 || !f.valid "
+                                <button type="submit" [disabled]="dataList.length === 0 || PurchaseMaster.TotalAmount === 0 || !f.valid || !f2.valid"
                                     class="ms-3" mat-raised-button color="primary">
                                     Save PO
                                 </button>

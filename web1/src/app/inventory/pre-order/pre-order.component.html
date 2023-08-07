@@ -188,7 +188,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Purchase Price</mat-label>
-                                        <input matInput name="UnitPrice"  [(ngModel)]="item.UnitPrice" required
+                                        <input matInput name="UnitPrice" type="number" min="0" [(ngModel)]="item.UnitPrice" required
                                             #UnitPricecontrol [autocomplete]="false" (blur)="calculateFields('UnitPrice', 'subTotal')">
                                         <mat-error>
                                             Unit Price is required
@@ -198,7 +198,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Quantity</mat-label>
-                                        <input matInput name="Quantity" [(ngModel)]="item.Quantity" required disabled
+                                        <input matInput name="Quantity" type="number"  min="0"  [(ngModel)]="item.Quantity" required disabled
                                             #Quantitycontrol [autocomplete]="false" (blur)="calculateFields('Quantity', 'subTotal')">
                                         <mat-error>
                                             Quantity is required
@@ -209,9 +209,9 @@
                                     <mat-form-field  >
                                         <mat-label>Discount% / Amt</mat-label>
                                         <div class="d-flex">
-                                        <input matInput name="Discount" [(ngModel)]="item.DiscountPercentage"
+                                        <input matInput name="Discount" type="number" min="0"  [(ngModel)]="item.DiscountPercentage"
                                         required #Discountcontrol (change)="calculateFields('DiscountPercentage', 'discount')"> /
-                                          <input matInput name="DAmount" [(ngModel)]="item.DiscountAmount" required #DAmountcontrol (change)="calculateFields('DiscountAmount', 'discount')">
+                                          <input matInput name="DAmount" type="number" min="0"  [(ngModel)]="item.DiscountAmount" required #DAmountcontrol (change)="calculateFields('DiscountAmount', 'discount')">
                                         </div>
                                         <mat-error>
                                             Discount is required
@@ -221,7 +221,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Sub Total</mat-label>
-                                        <input matInput name="SubTotal" [(ngModel)]="item.SubTotal" [disabled]='true'
+                                        <input matInput name="SubTotal" type="number" min="0"  [(ngModel)]="item.SubTotal" [disabled]='true'
                                             required #SubTotalcontrol [autocomplete]="false">
                                         <mat-error>
                                             Sub Total is required
@@ -233,9 +233,9 @@
                                         <mat-label>(TAX/VAT)% / Amt </mat-label>
                                         <div class="d-flex">
                                            <div class="d-flex">
-                                               <input matInput name="GST" [(ngModel)]="item.GSTPercentage" required #GSTcontrol
+                                               <input matInput name="GST" type="number" min="0"  [(ngModel)]="item.GSTPercentage" required #GSTcontrol
                                                 [autocomplete]="false" (blur)="calculateFields('GSTPercentage', 'gst')"> /
-                                               <input matInput name="GSTAmt" [(ngModel)]="item.GSTAmount" required
+                                               <input matInput name="GSTAmt" type="number" min="0"  [(ngModel)]="item.GSTAmount" required
                                                  #GSTAmtcontrol [autocomplete]="false" (blur)="calculateFields('GSTAmount', 'gst')">
                                             </div>
                                             <mat-checkbox *ngIf="item.GSTPercentage !== 0 && item.GSTPercentage !== '0'" name="gstperLock" color="primary" [(ngModel)]="gstperLock"></mat-checkbox>
@@ -260,7 +260,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ms-2">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Total Amount</mat-label>
-                                        <input matInput name="TotalAmount" [(ngModel)]="item.TotalAmount"
+                                        <input matInput name="TotalAmount" type="number" min="0"  [(ngModel)]="item.TotalAmount"
                                             [disabled]=true required #TotalAmountcontrol [autocomplete]="false">
                                         <mat-error>
                                             Total Amount is required
@@ -270,7 +270,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Retail Rate</mat-label>
-                                        <input matInput name="SaleRate" [(ngModel)]="item.RetailPrice" required
+                                        <input matInput name="SaleRate" type="number" min="0"  [(ngModel)]="item.RetailPrice" required
                                             #SaleRatecontrol [autocomplete]="false">
                                         <mat-error>
                                             Sale Rate is required
@@ -280,7 +280,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Wholesale Rate</mat-label>
-                                        <input matInput name="WSaleRate" [(ngModel)]="item.WholeSalePrice" required
+                                        <input matInput name="WSaleRate"  type="number" min="0"  [(ngModel)]="item.WholeSalePrice" required
                                             #WSaleRatecontrol [autocomplete]="false">
                                         <mat-error>
                                             Sale Rate is required
@@ -383,7 +383,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Quantity</mat-label>
-                                        <input matInput name="Quantityt" [(ngModel)]="selectedPurchaseMaster.Quantity"
+                                        <input matInput name="Quantityt" type="number" min="0" [(ngModel)]="selectedPurchaseMaster.Quantity"
                                             disabled #Quantitytcontrol [autocomplete]="false">
                                         <mat-error>
                                             Quantity is required
@@ -393,7 +393,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Sub Total</mat-label>
-                                        <input matInput name="SubTotalt" [(ngModel)]="selectedPurchaseMaster.SubTotal"
+                                        <input matInput name="SubTotalt" type="number" min="0" [(ngModel)]="selectedPurchaseMaster.SubTotal"
                                             disabled #SubTotaltcontrol [autocomplete]="false">
                                         <mat-error>
                                             Sub Total is required
@@ -403,7 +403,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>D.Amount</mat-label>
-                                        <input matInput name="DAmountt"
+                                        <input matInput name="DAmountt" type="number" min="0"
                                             [(ngModel)]="selectedPurchaseMaster.DiscountAmount" disabled
                                             #DAmounttcontrol [autocomplete]="false">
                                         <mat-error>
@@ -423,7 +423,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>TotalTAXAmt</mat-label>
-                                        <input matInput name="GSTAmtt" [(ngModel)]="selectedPurchaseMaster.GSTAmount"
+                                        <input matInput name="GSTAmtt" type="number" min="0" [(ngModel)]="selectedPurchaseMaster.GSTAmount"
                                             disabled #GSTAmttcontrol [autocomplete]="false">
                                         <mat-error>
                                             GST Amt is required
@@ -433,7 +433,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label style="color: rgb(255 0 0);">Total Amount</mat-label>
-                                        <input style="color: rgb(255 0 0) !important;" matInput name="TotalAmountt"
+                                        <input style="color: rgb(255 0 0) !important;" matInput name="TotalAmountt" type="number" min="0"
                                             [(ngModel)]="selectedPurchaseMaster.TotalAmount" disabled
                                             #TotalAmounttcontrol [autocomplete]="false">
                                         <mat-error>

@@ -16,28 +16,28 @@ export class CalculationService {
  
   // purchase details calculation start
   calculateFields(fieldName:any, mode:any, item:any, charges:any) {
-    if(isNaN(Number(item.UnitPrice)) === true) {
-      alert("please fill up integer value");
+    if(isNaN(Number(item.UnitPrice)) === true || item.UnitPrice < 0) {
+      alert("please fill up integer value || not valid minus value ");
       item.UnitPrice = 0;
     }
-    if(isNaN(Number(item.Quantity)) === true) {
-      alert("please fill up integer value");
+    if(isNaN(Number(item.Quantity)) === true || item.Quantity < 0) {
+      alert("please fill up integer value || not valid minus value");
       item.Quantity = 0;
     } 
-    if(isNaN(Number(item.DiscountPercentage)) === true) {
-      alert("please fill up integer value");
+    if(isNaN(Number(item.DiscountPercentage)) === true || item.DiscountPercentage < 0) {
+      alert("please fill up integer value || not valid minus value");
       item.DiscountPercentage = 0;
     }
-    if(isNaN(Number(item.DiscountAmount)) === true) {
-      alert("please fill up integer value");
+    if(isNaN(Number(item.DiscountAmount)) === true || item.DiscountAmount < 0) {
+      alert("please fill up integer value || not valid minus value");
       item.DiscountAmount = 0;
     }
-    if(isNaN(Number(item.GSTPercentage)) === true) {
-      alert("please fill up integer value");
+    if(isNaN(Number(item.GSTPercentage)) === true || item.GSTPercentage < 0) {
+      alert("please fill up integer value || not valid minus value");
       item.GSTPercentage = 0;
     }
-    if(isNaN(Number(item.GSTAmount)) === true) {
-      alert("please fill up integer value");
+    if(isNaN(Number(item.GSTAmount)) === true || item.GSTAmount < 0) {
+      alert("please fill up integer value || not valid minus value");
       item.GSTAmount = 0;
       item.GSTPercentage = 0;
       item.TotalAmount = 0;

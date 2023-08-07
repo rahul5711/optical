@@ -126,7 +126,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Available</mat-label>
-                                        <input matInput name="ProdBarcodecount" disabled
+                                        <input matInput name="ProdBarcodecount" type="number" min="0" disabled
                                             [(ngModel)]="xferItem.BarCodeCount">
                                     </mat-form-field>
                                 </div>
@@ -135,7 +135,7 @@
                                         [class.has-error]="XferCountControl.invalid && XferCountControl.touched"
                                         [class.has-success]="XferCountControl.valid">
                                         <mat-label>Transfer Count</mat-label>
-                                        <input matInput name="ProdBarcodeXfer" type=number min="0"
+                                        <input matInput name="ProdBarcodeXfer" type="number" min="0"
                                             #XferCountControl="ngModel" [(ngModel)]="xferItem.TransferCount" (change)="TransferCountLimit()" required>
                                         <mat-error *ngIf="XferCountControl.invalid && XferCountControl.touched">
                                             Tranfer Count is Required

@@ -65,9 +65,6 @@ export class EmployeeComponent implements OnInit {
 
   onSubmit(){
     this.sp.show();
-    if(this.data.PhotoURL  === '' || this.data.PhotoURL  === null ){
-      this.data.PhotoURL = '/assets/images/logo.png'
-    }
     const subs: Subscription =  this.es.saveUser(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -136,7 +133,12 @@ export class EmployeeComponent implements OnInit {
         if (res.success) {
           this.as.successToast(res.message)
           this.data = res.data[0]
-          this.userImage = this.env.apiUrl + res.data[0].PhotoURL;
+            if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
+              this.userImage = this.env.apiUrl + res.data[0].PhotoURL;;
+            } else {
+              this.userImage = "/assets/images/userEmpty.png"
+            }
+         
         } else {
           this.as.errorToast(res.message)
         }

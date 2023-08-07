@@ -106,14 +106,14 @@
                                         <div *ngIf="data.CommissionType == 2 || data.CommissionType == 1" class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Loyalty Value (Brand Wise)</mat-label>
-                                                <input matInput type="number" name="CommissionValue"
+                                                <input matInput type="number" min="0" name="CommissionValue"
                                                     [(ngModel)]="data.CommissionValue" #CommissionValuecontrol required>
                                             </mat-form-field>
                                         </div>
                                         <div *ngIf="data.CommissionType == 2 " class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Loyalty Value(Non Brand Wise)</mat-label>
-                                                <input matInput type="number" name="CommissionValueNB"
+                                                <input matInput type="number" min="0" name="CommissionValueNB"
                                                     [(ngModel)]="data.CommissionValueNB" #CommissionValueNBcontrol required>
                                             </mat-form-field>
                                         </div>

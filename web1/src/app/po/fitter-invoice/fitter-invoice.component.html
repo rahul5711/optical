@@ -109,14 +109,14 @@
                               <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                   <mat-form-field class="example-full-width mb-0">
                                       <mat-label class="redColor">Quantity</mat-label>
-                                      <input class="redColor" matInput name="Quantity" [(ngModel)]="FitterMaster.Quantity"
+                                      <input class="redColor" type="number" min="0" matInput name="Quantity" [(ngModel)]="FitterMaster.Quantity"
                                           disabled #Quantitytcontrol [autocomplete]="false">
                                   </mat-form-field>
                               </div>
                               <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                   <mat-form-field class="example-full-width mb-0">
                                       <mat-label class="redColor">SubTotal</mat-label>
-                                      <input class="redColor" matInput name="SubTotal"
+                                      <input class="redColor" matInput name="SubTotal" type="number" min="0"
                                           [(ngModel)]="FitterMaster.SubTotal" disabled
                                           #TotalAmounttcontrol [autocomplete]="false">
                                   </mat-form-field>
@@ -124,7 +124,7 @@
                               <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                 <mat-form-field class="example-full-width mb-0">
                                     <mat-label>GST%</mat-label>
-                                    <input matInput name="GSTPercentage" (change)="calculateGrandTotal()" [(ngModel)]="FitterMaster.GSTPercentage" required
+                                    <input matInput name="GSTPercentage" type="number" min="0" (change)="calculateGrandTotal()" [(ngModel)]="FitterMaster.GSTPercentage" required
                                         #GSTcontrol [autocomplete]="false">
                                     <mat-error>
                                         GST is required
@@ -134,7 +134,7 @@
                             <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                 <mat-form-field class="example-full-width mb-0">
                                     <mat-label class="redColor">GST Amt</mat-label>
-                                    <input class="redColor" matInput name="GSTAmt" [(ngModel)]="FitterMaster.GSTAmount" required
+                                    <input class="redColor" matInput type="number" min="0" name="GSTAmt" [(ngModel)]="FitterMaster.GSTAmount" required
                                         #GSTAmtcontrol [autocomplete]="false" disabled>
                                 </mat-form-field>
                             </div>
@@ -156,7 +156,7 @@
                             <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                 <mat-form-field class="example-full-width mb-0">
                                     <mat-label class="redColor">Total Amount</mat-label>
-                                    <input class="redColor" matInput name="TotalAmountt"
+                                    <input class="redColor" matInput type="number" min="0" name="TotalAmountt"
                                         [(ngModel)]="FitterMaster.TotalAmount" disabled
                                         #TotalAmounttcontrol [autocomplete]="false">
                                 </mat-form-field>
@@ -166,7 +166,7 @@
                                       color="primary" (click)="calculateGrandTotal()">
                                       Calculate Invoice
                                   </button>
-                                  <button type="submit" [disabled]="!f.valid "
+                                  <button type="submit" [disabled]="!f.valid || !f2.valid "
                                       class="ms-3" mat-raised-button color="primary">
                                       Save
                                   </button>

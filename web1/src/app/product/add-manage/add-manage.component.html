@@ -114,18 +114,28 @@
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>Customer Price</mat-label>
                                         <input matInput name="Price" type="number" min="0" [(ngModel)]="selectedRow.Price" required #Pricecontrol  [disabled]="this.setValueDisbled" >
+                                        <mat-error>
+                                            Invalid Value
+                                            </mat-error>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ">
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>GST%</mat-label>
                                         <input matInput name="GSTPercentage" type="number" min="0" [(ngModel)]="selectedRow.GSTPercentage" (blur)="calculate('GSTPercentage', 'chgst')" required #GSTPercentagecontrol  [disabled]="this.setValueDisbled" >
+                                        <mat-error>
+                                            Invalid Value
+                                            </mat-error>
                                     </mat-form-field>
+                                    
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>GSTAmount</mat-label>
                                         <input matInput name="GSTAmount" type="number" min="0" [(ngModel)]="selectedRow.GSTAmount" (blur)="calculate('GSTAmount', 'chgst')" required #GSTAmountcontrol  [disabled]="this.setValueDisbled" >
+                                        <mat-error>
+                                            Invalid Value
+                                            </mat-error>
                                     </mat-form-field>
                                 </div>
                                 <div *ngIf="selectedRow.GSTPercentage === 0" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 p-0">
@@ -148,6 +158,9 @@
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>Total </mat-label>
                                         <input matInput name="Total" type="number" min="0" [(ngModel)]="selectedRow.TotalAmount" required #Totalcontrol  disabled>
+                                        <mat-error>
+                                            Invalid Value
+                                            </mat-error>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0" *ngIf="!showAddCharge">
@@ -242,24 +255,36 @@
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>Internal Cost</mat-label>
                                         <input matInput name="Cost" type="number" min="0" [(ngModel)]="Service.Cost" required #Costcontrol [disabled]="this.setValueServiceDisbled">
+                                        <mat-error>
+                                            Invalid Value
+                                            </mat-error>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>Customer Price</mat-label>
                                         <input matInput name="Price"  type="number" min="0" [(ngModel)]="Service.Price" required #Pricecontrol [disabled]="this.setValueServiceDisbled">
+                                        <mat-error>
+                                            Invalid Value
+                                            </mat-error>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ">
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>GST%</mat-label>
                                         <input matInput name="GSTPercentage" type="number" min="0" [(ngModel)]="Service.GSTPercentage" (blur)="calculateSevice('GSTPercentage', 'chgst1')" required #GSTPercentagecontrol [disabled]="this.setValueServiceDisbled">
+                                        <mat-error>
+                                            Invalid Value
+                                            </mat-error>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>GSTAmount</mat-label>
                                         <input matInput name="GSTAmount" type="number" min="0" [(ngModel)]="Service.GSTAmount" (blur)="calculateSevice('GSTAmount', 'chgst1')" required #GSTAmountcontrol [disabled]="this.setValueServiceDisbled">
+                                        <mat-error>
+                                            Invalid Value
+                                            </mat-error>
                                     </mat-form-field>
                                 </div>
                                 <div *ngIf="Service.GSTPercentage === 0" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 p-0">
@@ -284,6 +309,9 @@
                                         <input matInput name="Total" type="number" min="0"
                                         
                                         [(ngModel)]="Service.TotalAmount" required #Totalcontrol disabled>
+                                        <mat-error>
+                                            Invalid Value
+                                            </mat-error>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0" *ngIf="!showAddService">
