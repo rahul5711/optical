@@ -17,6 +17,7 @@ import { ProductService } from 'src/app/service/product.service';
 })
 
 export class ProductManageComponent implements OnInit {
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
   i: any;
 
   constructor(
@@ -48,7 +49,18 @@ export class ProductManageComponent implements OnInit {
   hideSave = true
   showAdds = false
 
+  editProductType = false
+  addProductType = false
+  deleteProductTypes = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'ProductType') {
+        this.editProductType = element.Edit;
+        this.addProductType = element.Add;
+        this.deleteProductTypes = element.Delete;
+      }
+    });
     this.getProductList();
   }
 

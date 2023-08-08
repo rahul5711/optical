@@ -19,6 +19,8 @@ import { ExcelService } from 'src/app/service/helpers/excel.service';
 export class FitterListComponent implements OnInit {
 
   @ViewChild('searching') searching: ElementRef | any;
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
+
   env = environment;
   gridview = true;
   term:any;
@@ -38,7 +40,18 @@ export class FitterListComponent implements OnInit {
 
   ) { }
 
+  editFitterList = false
+  addFitterList = false
+  deleteFitterList = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'FitterList') {
+        this.editFitterList = element.Edit;
+        this.addFitterList = element.Add;
+        this.deleteFitterList = element.Delete;
+      }
+    });
     this.getList()
   }
   

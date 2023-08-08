@@ -19,6 +19,8 @@ import { ExcelService } from 'src/app/service/helpers/excel.service';
 export class DoctorListComponent implements OnInit {
   
   @ViewChild('searching') searching: ElementRef | any;
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
+
   env = environment;
   gridview = true
   term = "";
@@ -38,7 +40,18 @@ export class DoctorListComponent implements OnInit {
     private excelService: ExcelService,
   ) { }
 
+  editDoctorList = false
+  addDoctorList = false
+  deleteDoctorList = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'DoctorList') {
+        this.editDoctorList = element.Edit;
+        this.addDoctorList = element.Add;
+        this.deleteDoctorList = element.Delete;
+      }
+    });
     this.getList()
   }
   

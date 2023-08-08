@@ -25,12 +25,12 @@ export class FitterComponent implements OnInit {
 
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
   env: { production: boolean; apiUrl: string; appUrl: string; };
 
   id: any;
   userImage: any;
   img: any;
-
 
   constructor(
     private router: Router,
@@ -63,7 +63,18 @@ export class FitterComponent implements OnInit {
   assignShopList: any
   dropShoplist: any
 
+  editFitter = false
+  addFitter = false
+  deleteFitter = false
+
   ngOnInit(): void {
+ this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'Fitter') {
+        this.editFitter = element.Edit;
+        this.addFitter = element.Add;
+        this.deleteFitter = element.Delete;
+      }
+    });
     if (this.id != 0) {
       this.getFitterById();
     }

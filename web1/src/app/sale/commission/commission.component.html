@@ -129,7 +129,7 @@
                                     color="primary" (click)="calculateGrandTotal()">
                                     Calculate Invoice
                                 </button>
-                                <button type="submit" [disabled]="!f.valid || !f2.valid "
+                                <button *ngIf="addLoyalty" type="submit" [disabled]="!f.valid || !f2.valid "
                                     class="ms-3" mat-raised-button color="primary">
                                     Save
                                 </button>

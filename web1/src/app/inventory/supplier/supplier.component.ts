@@ -29,6 +29,7 @@ export class SupplierComponent implements OnInit {
   @ViewChild('searching') searching: ElementRef | any;
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
 
   env = environment;
   gridview = true;
@@ -70,7 +71,18 @@ export class SupplierComponent implements OnInit {
     Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
   };
 
+  editSupplierList = false
+  addSupplierList = false
+  deleteSupplierList = false
+
   async ngOnInit(): Promise<void> {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'SupplierList') {
+        this.editSupplierList = element.Edit;
+        this.addSupplierList = element.Add;
+        this.deleteSupplierList = element.Delete;
+      }
+    });
     this.route.queryParams.subscribe(params => {
       this.purchasVariable = +params['check'] || 0;
     });

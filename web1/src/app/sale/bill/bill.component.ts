@@ -45,6 +45,8 @@ export class BillComponent implements OnInit {
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
+
   env = environment;
   id: any = 0
   id2: any = 0
@@ -146,7 +148,18 @@ export class BillComponent implements OnInit {
 
   totalpaid  = 0
 
+  addCustomerBill = false
+  editCustomerBill = false
+  deleteCustomerBill = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'CustomerBill') {
+        this.editCustomerBill = element.Edit;
+        this.addCustomerBill = element.Add;
+        this.deleteCustomerBill = element.Delete;
+      }
+    });
     this.BillMaster.Employee = this.user.ID
     this.BillMaster.BillDate = moment().format('YYYY-MM-DD');
     this.BillMaster.DeliveryDate = moment(new Date()).add(this.companysetting.DeliveryDay, 'days').format('YYYY-MM-DD');

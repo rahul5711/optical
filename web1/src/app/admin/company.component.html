@@ -180,7 +180,7 @@
                                         <div class="col-xl-2 col-lg-2 col-md-3 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0" >
                                                 <mat-label>Effective Date</mat-label>
-                                                <input matInput type="date" name="EffectiveDate" [(ngModel)]="data.EffectiveDate"  required #EffectiveDatecontrol [matDatepicker]="picker1" [disabled]="user?.UserGroup !== 'SuperAdmin'">
+                                                <input matInput  name="EffectiveDate" [(ngModel)]="data.EffectiveDate"  required #EffectiveDatecontrol [matDatepicker]="picker1" [disabled]="user?.UserGroup !== 'SuperAdmin'">
                                                 <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
                                                 <mat-datepicker #picker1></mat-datepicker>
                                                 <mat-error >
@@ -191,7 +191,7 @@
                                         <div class="col-xl-2 col-lg-2 col-md-3 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0" >
                                                 <mat-label>Cancellation Date</mat-label>
-                                                <input matInput type="date" name="CacellationDate" [(ngModel)]="data.CancellationDate"  required #CacellationDatecontrol [matDatepicker]="picker2" [disabled]="user?.UserGroup !== 'SuperAdmin'">
+                                                <input matInput  name="CacellationDate" [(ngModel)]="data.CancellationDate"  required #CacellationDatecontrol [matDatepicker]="picker2" [disabled]="user?.UserGroup !== 'SuperAdmin'">
                                                 <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                                                 <mat-datepicker #picker2></mat-datepicker>
                                                 <mat-error >

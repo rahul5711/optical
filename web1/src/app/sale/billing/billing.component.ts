@@ -38,6 +38,7 @@ import { trigger, style, animate, transition } from '@angular/animations';
 export class BillingComponent implements OnInit {
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
   env = environment;
 
   id: any = 0;
@@ -412,8 +413,18 @@ export class BillingComponent implements OnInit {
   ];
   // dropdown values in satics 
 
+  editCustomer = false
+  addCustomer = false
+  deleteCustomer = false
 
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'Customer') {
+        this.editCustomer = element.Edit;
+        this.addCustomer = element.Add;
+        this.deleteCustomer = element.Delete;
+      }
+    });
     this.data.VisitDate = moment().format('YYYY-MM-DD');
     if (this.id != 0) {
       this.getCustomerById();

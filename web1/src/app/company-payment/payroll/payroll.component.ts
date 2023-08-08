@@ -25,6 +25,8 @@ export class PayrollComponent implements OnInit {
 
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
+
   @ViewChild('searching') searching: ElementRef | any;
   term:any;
   dataList:any;
@@ -56,8 +58,18 @@ export class PayrollComponent implements OnInit {
   Comments : '',  PaymentMode: '', Status : 1, CreatedBy: '', UpdatedBy:'' , CreatedOn: '', UpdatedOn: '',
   InvoiceNo:'', CashType:'' };
 
+  editpayrollList = false
+  addpayrollList = false
+  deletepayrollList = false
 
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'payrollList') {
+        this.editpayrollList = element.Edit;
+        this.addpayrollList = element.Add;
+        this.deletepayrollList = element.Delete;
+      }
+    });
     this.getList();
     this.dropdownUserlist();
     this.getPaymentModesList();

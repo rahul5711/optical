@@ -21,6 +21,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class CustomerListComponent implements OnInit {
 
   @ViewChild('searching') searching: ElementRef | any;
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
+
   env = environment;
   gridview = true
   term = "";
@@ -42,7 +44,18 @@ export class CustomerListComponent implements OnInit {
     private router: Router,
   ) { }
 
+  editCustomerSearch = false
+  addCustomerSearch = false
+  deleteCustomerSearch = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'CustomerSearch') {
+        this.editCustomerSearch = element.Edit;
+        this.addCustomerSearch = element.Add;
+        this.deleteCustomerSearch = element.Delete;
+      }
+    });
     this.getList()
   }
   

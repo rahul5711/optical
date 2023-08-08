@@ -488,10 +488,10 @@
                                                                     <tr class="text-center" *ngFor="let s of spectacleLists let i = index;"
                                                                         style="white-space: nowrap;">
                                                                         <td style="width: 7%;">
-                                                                            <mat-icon class="edits_icon ms-1"
+                                                                            <mat-icon *ngIf="editCustomer" class="edits_icon ms-1"
                                                                                 (click)="edits(s,'spectacle_rx')">
                                                                                 edit</mat-icon>
-                                                                            <mat-icon class="deletes_icon ms-1"
+                                                                            <mat-icon *ngIf="editCustomer" class="deletes_icon ms-1"
                                                                                 (click)="deleteSpec(i,'spectacle_rx')">delete_forever</mat-icon>
                                                                         </td>
                                                                         <td class="text-left">{{spectacleLists.length -
@@ -854,9 +854,9 @@
                                                                         *ngFor="let cl of contactList let i = index;"
                                                                         style="white-space: nowrap;">
                                                                         <td style="width: 7%;">
-                                                                            <mat-icon class="edits_icon ms-1"
+                                                                            <mat-icon *ngIf="editCustomer" class="edits_icon ms-1"
                                                                                 (click)="edits(cl,'contact')">edit</mat-icon>
-                                                                            <mat-icon class="deletes_icon ms-1"
+                                                                            <mat-icon *ngIf="deleteCustomer" class="deletes_icon ms-1"
                                                                                 (click)="deleteSpec(i,'contact')">delete_forever</mat-icon>
                                                                         </td>
                                                                         <td class="text-left">{{contactList.length - i
@@ -1057,10 +1057,10 @@
                                                                         *ngFor="let other of otherList let i = index;"
                                                                         style="white-space: nowrap;">
                                                                         <td style="width: 7%;">
-                                                                            <mat-icon class="edits_icon ms-1"
+                                                                            <mat-icon *ngIf="editCustomer" class="edits_icon ms-1"
                                                                                 (click)="edits(other,'other')">edit
                                                                             </mat-icon>
-                                                                            <mat-icon class="deletes_icon ms-1"
+                                                                            <mat-icon *ngIf="deleteCustomer" class="deletes_icon ms-1"
                                                                                 (click)="deleteSpec(i,'other')">delete_forever</mat-icon>
                                                                         </td>
                                                                         <td class="text-left">{{otherList.length - i }}

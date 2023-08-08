@@ -48,11 +48,11 @@
                                     </mat-form-field>
                                 </div>
                                 <div *ngIf="!showAdd" class="col-md-6 col-sm-12 mb-0">
-                                   <button type="button" autofocus class="btn_icon" (click)="showAdd = !showAdd;">
+                                   <button *ngIf="addAddManagement" type="button" autofocus class="btn_icon" (click)="showAdd = !showAdd;">
                                     <mat-icon class="col-white plus_icon" >add</mat-icon>
                                    </button>
-                                   <button type="button" autofocus class="btn_icon" *ngIf="showAdd === false"  (click)="delSupport()">
-                                    <mat-icon class="delete_icon me-2 ms-2" 
+                                   <button   type="button" autofocus class="btn_icon" *ngIf="showAdd === false"  (click)="delSupport()">
+                                    <mat-icon *ngIf="deleteAddManagement" class="delete_icon me-2 ms-2" 
                                        >delete_forever</mat-icon>
                                    </button>
 
@@ -164,12 +164,12 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0" *ngIf="!showAddCharge">
-                                   <button type="button" autofocus mat-raised-button color="primary" (click)="showAddCharge = !showAddCharge; resetData();">
+                                   <button  *ngIf="addChargeManagement" type="button" autofocus mat-raised-button color="primary" (click)="showAddCharge = !showAddCharge; resetData();">
                                      Add
                                    </button>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-2 mb-0" *ngIf="showAddCharge">
-                                    <button type="button" [disabled]="!f1.valid"  autofocus mat-raised-button color="primary" (click)="showAddCharge = !showAddCharge; chargesave(); ">
+                                    <button  type="button" [disabled]="!f1.valid"  autofocus mat-raised-button color="primary" (click)="showAddCharge = !showAddCharge; chargesave(); ">
                                        save
                                     </button>
                                 </div>
@@ -209,7 +209,7 @@
                                 <td>{{c.GSTType}}</td>
                                 <td>{{c.TotalAmount}}</td>
                                 <td>
-                                    <mat-icon class="delete_icon" (click)="chargedelete(i)">delete_forever
+                                    <mat-icon *ngIf="deleteChargeManagement" class="delete_icon" (click)="chargedelete(i)">delete_forever
                                     </mat-icon>
                                 </td>
                             </tr>
@@ -315,7 +315,7 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0" *ngIf="!showAddService">
-                                   <button type="button" autofocus mat-raised-button color="primary" (click)="showAddService = !showAddService; serviceresetData();">
+                                   <button *ngIf="addServiceManagement" type="button" autofocus mat-raised-button color="primary" (click)="showAddService = !showAddService; serviceresetData();">
                                      Add
                                    </button>
                                 </div>
@@ -362,7 +362,7 @@
                                 <td>{{c.GSTType}}</td>
                                 <td>{{c.TotalAmount}}</td>
                                 <td>
-                                    <mat-icon class="delete_icon" (click)="servicedelete(i)">delete_forever
+                                    <mat-icon *ngIf="deleteServiceManagement" class="delete_icon" (click)="servicedelete(i)">delete_forever
                                     </mat-icon>
                                 </td>
                             </tr>

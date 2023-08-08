@@ -39,7 +39,7 @@
                                 </div>
                             </div>
                             <div class="col-md-1 col-1" style="width: 40px;padding: 0;">
-                                <button class="bg-none" (click)="openModal(content)">
+                                <button *ngIf="addPettyCashReport" class="bg-none" (click)="openModal(content)">
                                     <mat-icon class="col-white plus_icon me-1" data-mdb-toggle="modal"
                                         data-mdb-target="#exampleModal"> add</mat-icon>
                                 </button>
@@ -71,13 +71,13 @@
                                 <tbody>
                                     <tr *ngFor="let data of dataList  let i = index;">
                                         <td class="text-center" style="width: 7%;">
-                                            <button class="bg-none" (click)="openEditModal(content,data)">
+                                            <button *ngIf="editPettyCashReport" class="bg-none" (click)="openEditModal(content,data)">
                                                 <mat-icon class="edit_icon ms-1" data-mdb-toggle="modal"
                                                     data-mdb-target="#exampleModal">
                                                     edit
                                                 </mat-icon>
                                             </button>
-                                            <button class="bg-none" (click)="deleteItem(i)">
+                                            <button *ngIf="deletePettyCashReport" class="bg-none" (click)="deleteItem(i)">
                                                 <mat-icon class="delete_icon ms-1">delete_forever</mat-icon>
                                             </button>
                                         </td>

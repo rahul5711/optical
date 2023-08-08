@@ -33,8 +33,90 @@ export class LoginComponent implements OnInit {
   dropShoplist: any;
   roleList: any;
   selectedShop: any;
+
   moduleList: any = [
+    // Administration Permission
     {ModuleName: 'CompanyInfo', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'Employee', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'EmployeeList', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'Shop', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'ShopList', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'RolePermission', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'CompanySetting', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'SmsSetting', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'LoginHistory', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'RecycleBin', MView: true, Edit: true, Add: true, View: true, Delete: true},
+
+    // Product Permission
+    {ModuleName: 'ProductType', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'ProductMaster', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'AddManagement', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'ChargeManagement', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'ServiceManagement', MView: true, Edit: true, Add: true, View: true, Delete: true},
+
+    // Purchasing Permission
+    {ModuleName: 'Supplier', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'SupplierList', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'Purchase', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'PurchaseList', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'PurchaseReturn', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'PurchaseReturnList', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'ProductTransfer', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'OrderPrice', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'OrderPriceList', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'SearchOrderPriceList', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'StockAdjustment', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'BrandNonBrandAssign', MView: true, Edit: true, Add: true, View: true, Delete: true},
+
+    // Billing Permissions
+    {ModuleName: 'CustomerBill', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'BillingSearch', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'Customer', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'CustomerSearch', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'Doctor', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'DoctorList', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'Loyalty', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'LoyaltyInvoice', MView: true, Edit: true, Add: true, View: true, Delete: true},
+
+    // Lens order Permissions
+    {ModuleName: 'SupplierOrder', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'PurchaseConvert', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'SupplierOrderList', MView: true, Edit: true, Add: true, View: true, Delete: true},
+
+    // Lens order Permissions
+    {ModuleName: 'Fitter', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'FitterList', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'FitterOrder', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'FitterInvoice', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'FitterInvoiceList', MView: true, Edit: true, Add: true, View: true, Delete: true},
+
+    // Payment Permissions
+    {ModuleName: 'Payment', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'PaymentList', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'Payroll', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'payrollList', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'Expense', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'ExpenseList', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'PettyCashReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+
+     // Report Permissions
+    {ModuleName: 'SaleReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'SaleProductReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'SaleServiceReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'PurchaseReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'PurchaseProductReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'PurchaseChargeReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'PurchaseProductExpiryReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'InventoryReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'ProductSummaryReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'ProductTransferReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'ProductReturnReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'ProductReturnProductTypeReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'EyeTestReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+
+    // Excel Import
+    {ModuleName: 'InventoryExcelImport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'CustomerExcelImport', MView: true, Edit: true, Add: true, View: true, Delete: true},
   ];
 
   constructor(private router: Router,

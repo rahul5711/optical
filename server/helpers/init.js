@@ -23,7 +23,7 @@ const init = async () => {
                 Email: 'relinksys@gmail.com',
                 Address: 'Pune',
                 Branch: 'Pune',
-                PhotoURL: '',
+                PhotoURL: 'null',
                 Document: [],
                 LoginName: 'RVS@248',
                 Password: await pass_init.hash_password('RVS@248'),

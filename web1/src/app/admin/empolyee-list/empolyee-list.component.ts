@@ -7,7 +7,7 @@ import { AlertService } from 'src/app/service/helpers/alert.service';
 import { EmployeeService } from 'src/app/service/employee.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { fromEvent   } from 'rxjs';
+import { fromEvent } from 'rxjs';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { environment } from 'src/environments/environment';
 import { DataStorageServiceService } from 'src/app/service/helpers/data-storage-service.service';
@@ -31,9 +31,9 @@ export class EmpolyeeListComponent implements OnInit {
   pageSize!: number;
   collectionSize = 0
   page = 4;
-  id:any;
-  data = {ID: null, Password :''}
-  ConfirmPassword :any;
+  id: any;
+  data = { ID: null, Password: '' }
+  ConfirmPassword: any;
 
   constructor(
     public as: AlertService,
@@ -45,9 +45,20 @@ export class EmpolyeeListComponent implements OnInit {
     private dataS: DataStorageServiceService
   ) {
     this.id = this.route.snapshot.params['id'];
-   }
+  }
 
+  editEmployeeList = false
+  addEmployeeList = false
+  deleteEmployeeList = false
+  
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'EmployeeList') {
+        this.editEmployeeList = element.Edit;
+        this.addEmployeeList = element.Add;
+        this.deleteEmployeeList = element.Delete;
+      }
+    });
     this.getList();
   }
 
@@ -67,18 +78,18 @@ export class EmpolyeeListComponent implements OnInit {
     }
     const subs: Subscription = this.es.getList(dtm).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.collectionSize = res.count;
           this.dataList = res.data
           this.dataList.forEach((element: { PhotoURL: any; }) => {
-            if(element.PhotoURL !== "null" && element.PhotoURL !== ''){
+            if (element.PhotoURL !== "null" && element.PhotoURL !== '') {
               element.PhotoURL = (this.env.apiUrl + element.PhotoURL);
-            }else{
+            } else {
               element.PhotoURL = "/assets/images/userEmpty.png"
             }
           });
           this.as.successToast(res.message)
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -89,13 +100,13 @@ export class EmpolyeeListComponent implements OnInit {
 
   }
 
-  openModal(content: any,ID:any) {
+  openModal(content: any, ID: any) {
     this.data.ID = ID
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
   }
 
-  UpdatePassword(){
-    if(this.data.Password === this.ConfirmPassword){
+  UpdatePassword() {
+    if (this.data.Password === this.ConfirmPassword) {
       const subs: Subscription = this.es.updatePassword(this.data).subscribe({
         next: (res: any) => {
           if (res.success) {
@@ -116,10 +127,10 @@ export class EmpolyeeListComponent implements OnInit {
         },
         complete: () => subs.unsubscribe(),
       })
-      this.data = {ID: null, Password :''}
+      this.data = { ID: null, Password: '' }
       this.ConfirmPassword = '';
       this.modalService.dismissAll()
-    }else{
+    } else {
       Swal.fire({
         position: 'center',
         icon: 'error',
@@ -135,7 +146,7 @@ export class EmpolyeeListComponent implements OnInit {
 
   }
 
-  deleteItem(i:any){
+  deleteItem(i: any) {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -149,7 +160,7 @@ export class EmpolyeeListComponent implements OnInit {
         this.sp.show()
         const subs: Subscription = this.es.deleteData(this.dataList[i].ID).subscribe({
           next: (res: any) => {
-            if(res.success){
+            if (res.success) {
               this.dataList.splice(i, 1);
               this.as.successToast(res.message)
               Swal.fire({
@@ -159,10 +170,10 @@ export class EmpolyeeListComponent implements OnInit {
                 showConfirmButton: false,
                 timer: 1000
               })
-            }else{
+            } else {
               this.as.errorToast(res.message)
             }
-          this.sp.hide()
+            this.sp.hide()
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
@@ -193,56 +204,56 @@ export class EmpolyeeListComponent implements OnInit {
       //   })
       // subscription for response
     ).subscribe((text: string) => {
-  //  const name = e.target.value;
-    let data = {
-      searchQuery: text.trim(),
-    }
-    if(data.searchQuery !== "") {
-      const dtm = {
-        currentPage: 1,
-        itemsPerPage: 50000,
-        searchQuery: data.searchQuery
+      //  const name = e.target.value;
+      let data = {
+        searchQuery: text.trim(),
       }
-      this.sp.show()
-      const subs: Subscription = this.es.searchByFeild(dtm).subscribe({
-        next: (res: any) => {
-          if(res.success){
-            this.collectionSize = 1;
-            this.page = 1;
-            this.dataList = res.data
-            this.as.successToast(res.message)
-          }else{
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    } else {
-      this.getList();
-    }
+      if (data.searchQuery !== "") {
+        const dtm = {
+          currentPage: 1,
+          itemsPerPage: 50000,
+          searchQuery: data.searchQuery
+        }
+        this.sp.show()
+        const subs: Subscription = this.es.searchByFeild(dtm).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.collectionSize = 1;
+              this.page = 1;
+              this.dataList = res.data
+              this.as.successToast(res.message)
+            } else {
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      } else {
+        this.getList();
+      }
     });
   }
 
   exportAsXLSX(): void {
     let data = this.dataList.map((e: any) => {
-      return{
+      return {
         Name: `${e.Name}`,
-        MobileNo1 : e.MobileNo1,
-        MobileNo2 : e.MobileNo2,
-        PhoneNo : e.PhoneNo,
-        Email : e.Email,
-        DOB : e.DOB,
-        Anniversary : e.Anniversary,
-        LoginName : e.LoginName,
-        UserGroup : e.UserGroup,
-        Address : e.Address,
-        CreatedPerson : e.CreatedPerson,
-        UpdatedPerson : e.UpdatedPerson,
+        MobileNo1: e.MobileNo1,
+        MobileNo2: e.MobileNo2,
+        PhoneNo: e.PhoneNo,
+        Email: e.Email,
+        DOB: e.DOB,
+        Anniversary: e.Anniversary,
+        LoginName: e.LoginName,
+        UserGroup: e.UserGroup,
+        Address: e.Address,
+        CreatedPerson: e.CreatedPerson,
+        UpdatedPerson: e.UpdatedPerson,
       }
     })
     this.excelService.exportAsExcelFile(data, 'empolyee_list');
   }
-  
+
 }

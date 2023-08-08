@@ -25,6 +25,7 @@ export class PurchaseReturnComponent implements OnInit {
   shop = JSON.parse(localStorage.getItem('shop') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
 
   id: any;
   SearchBarCode: any;
@@ -71,7 +72,18 @@ export class PurchaseReturnComponent implements OnInit {
 
   data:any = { PurchaseMaster: null, PurchaseDetail: null };
 
+  editPurchaseReturn = false
+  addPurchaseReturn = false
+  deletePurchaseReturn = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'PurchaseReturn') {
+        this.editPurchaseReturn = element.Edit;
+        this.addPurchaseReturn = element.Add;
+        this.deletePurchaseReturn = element.Delete;
+      }
+    });
     this.getProductList();
     this.dropdownShoplist();
     this.dropdownSupplierlist(); 

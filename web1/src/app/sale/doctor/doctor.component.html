@@ -187,10 +187,10 @@
                                     </div>
                                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3">
                                         <button class="me-3" type="button" mat-raised-button color="primary"
-                                            [disabled]="!f.valid" *ngIf="id != 0"
+                                            [disabled]="!f.valid" *ngIf="id != 0 && addDoctor"
                                             (click)="updateDoctor()">Update</button>
                                         <button type="submit" class="me-3" mat-raised-button color="primary"
-                                            [disabled]="!f.valid" *ngIf="id == 0">Save</button>
+                                            [disabled]="!f.valid" *ngIf="id == 0 && addDoctor">Save</button>
                                         <button type="button" mat-raised-button
                                             [routerLink]="['/sale/doctorList']">Back</button>
                                     </div>

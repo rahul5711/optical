@@ -23,6 +23,7 @@ export class DoctorComponent implements OnInit {
 
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
   env: { production: boolean; apiUrl: string; appUrl: string; };
 
   id: any;
@@ -52,7 +53,18 @@ export class DoctorComponent implements OnInit {
     UpdatedBy: null, CreatedOn: null, UpdatedOn: null, CommissionType: 0, CommissionMode: 0, CommissionValue: 0, CommissionValueNB: 0
   };
 
+  editDoctor = false
+  addDoctor = false
+  deleteDoctor = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'Doctor') {
+        this.editDoctor = element.Edit;
+        this.addDoctor = element.Add;
+        this.deleteDoctor = element.Delete;
+      }
+    });
     if (this.id != 0) {
       this.getDoctorById(); 
     }

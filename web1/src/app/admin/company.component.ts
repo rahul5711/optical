@@ -112,9 +112,6 @@ data1: any = {
 
   onsubmit() {
     this.sp.show();
-    if(this.data.LogoURL  === '' || this.data.LogoURL  === null ){
-      this.data.LogoURL = '/assets/images/logo.png'
-    }
     this.data.User = this.data1
     const subs: Subscription =  this.cs.createCompany(this.data).subscribe({
       next: (res: any) => {
@@ -173,10 +170,6 @@ data1: any = {
 
   updateCompany(){
     this.sp.show();
-    if(this.data.LogoURL  === '' || this.data.LogoURL  === null ){
-      this.data.LogoURL = '/assets/images/logo.png'
-    }
-
     this.data.User = this.data1
     const subs: Subscription =  this.cs.updateCompany(this.data).subscribe({
       next: (res: any) => {

@@ -22,6 +22,7 @@ import { CompressImageService } from 'src/app/service/helpers/compress-image.ser
 })
 export class EmployeeComponent implements OnInit {
   loggedInCompany:any = (localStorage.getItem('LoggedINCompany') || '');
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
   user = (localStorage.getItem('user') || '');
   env: { production: boolean; apiUrl: string; appUrl: string; };
   userImage :any;
@@ -55,7 +56,18 @@ export class EmployeeComponent implements OnInit {
 
   UserShop: any = {ID: null, UserID: null, ShopID: null, RoleID: null, Status: 1};
 
+  editEmployee = false
+  addEmployee = false
+  deleteEmployee = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'Employee') {
+        this.editEmployee = element.Edit;
+        this.addEmployee = element.Add;
+        this.deleteEmployee = element.Delete;
+      }
+    });
     if (this.id != 0) {
       this.getUserById();
     }

@@ -25,6 +25,7 @@ export class PettyCashComponent implements OnInit {
 
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
   @ViewChild('searching') searching: ElementRef | any;
   term:any;
   dataList:any;
@@ -54,8 +55,18 @@ export class PettyCashComponent implements OnInit {
   data: PettycashModel = {  ID: '', CompanyID: '', ShopID: '', EmployeeID: '', InvoiceNo: '', CashType:'', CreditType: '', Amount: 0.00,
   Comments: '', Status: 1, CreatedBy: '', UpdatedBy: '', CreatedOn: '', UpdatedOn: '', };
 
+  editPettyCashReport = false
+  addPettyCashReport = false
+  deletePettyCashReport = false
 
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'PettyCashReport') {
+        this.editPettyCashReport = element.Edit;
+        this.addPettyCashReport = element.Add;
+        this.deletePettyCashReport = element.Delete;
+      }
+    });
     this.dropdownUserlist();
     this.getPettyCashBalance();
     this.getList();

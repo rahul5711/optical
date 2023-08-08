@@ -31,6 +31,8 @@ export class BillListComponent implements OnInit {
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
+
   id :any
   env = environment;
 
@@ -83,7 +85,18 @@ export class BillListComponent implements OnInit {
     this.id = this.route.snapshot.params['customerid'];
   }
 
+  editBillingSearch = false
+  addBillingSearch = false
+  deleteBillingSearch = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'BillingSearch') {
+        this.editBillingSearch = element.Edit;
+        this.addBillingSearch = element.Add;
+        this.deleteBillingSearch = element.Delete;
+      }
+    });
     if(this.id != "0"){
       this.paymentHistory()
     }else{

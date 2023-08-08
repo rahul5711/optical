@@ -35,7 +35,7 @@
                     </div>
                   </div>
                   <div class="col-md-1 col-1" style="width: 40px;padding: 0;">
-                    <button class="bg-none" [routerLink]="['/inventory/purchase-return',0]">
+                    <button *ngIf="addPurchaseReturnList" class="bg-none" [routerLink]="['/inventory/purchase-return',0]">
                       <mat-icon class="col-white plus_icon me-1"> add</mat-icon>
                     </button>
                   </div>
@@ -71,14 +71,14 @@
                           <tr class="text-center" *ngFor="let data of dataList let i = index;"
                           style="white-space: nowrap;">
                           <td style="width: 5%;" >
-                            <button  class="detail_icons bg-btn" (click)="openModal(content,data)" >
+                            <button *ngIf="editPurchaseReturnList" class="detail_icons bg-btn" (click)="openModal(content,data)" >
                               <i class="fas fa-info-circle" data-mdb-toggle="modal" data-mdb-target="#exampleModal"> </i>
                             </button>
-                            <button class="bg-btn" [routerLink]="['/inventory/purchase-return',data.ID]">
+                            <button *ngIf="editPurchaseReturnList" class="bg-btn" [routerLink]="['/inventory/purchase-return',data.ID]">
                               <mat-icon class="edit_icon ms-1">edit
                               </mat-icon>
                             </button>
-                            <button class="bg-btn" (click)="deleteItem(i)">
+                            <button *ngIf="deletePurchaseReturnList" class="bg-btn" (click)="deleteItem(i)">
                               <mat-icon class="delete_icon ms-1">delete_forever</mat-icon>
                             </button>
                           </td>

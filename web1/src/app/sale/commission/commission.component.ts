@@ -23,6 +23,7 @@ export class CommissionComponent implements OnInit {
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
   env = environment;
 
   constructor(
@@ -51,7 +52,18 @@ export class CommissionComponent implements OnInit {
   payeeList:any = []
   dataList:any = []
 
+  editLoyalty = false
+  addLoyalty = false
+  deleteLoyalty = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'Loyalty') {
+        this.editLoyalty = element.Edit;
+        this.addLoyalty = element.Add;
+        this.deleteLoyalty = element.Delete;
+      }
+    });
     this.dropdownShoplist()
   }
 

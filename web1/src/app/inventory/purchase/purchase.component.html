@@ -333,8 +333,8 @@
                                         [(ngModel)]="BrandLock"></mat-checkbox>
 
                                 </div>
-                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ml-auto">
-                                    <button *ngIf="editBtn === false" class="mr-3" type="submit"
+                                <div *ngIf="addPurchase" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ml-auto">
+                                    <button *ngIf="editBtn === false " class="mr-3" type="submit"
                                         [disabled]="!f1.valid || item.Quantity == 0 || this.GstTypeDis"
                                         mat-raised-button color="primary"  (click)="notifyGst();">Add</button>
                                     <!-- <button *ngIf="editBtn === true" class="mr-3" type="submit" [disabled]=" item.Quantity == 0"
@@ -415,7 +415,7 @@
                                 </div>
                                 <div *ngIf="category === 'Charges'"
                                     class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 ml-auto">
-                                    <button class="mr-3"  (click)="calculateFields('TAmount', 'chtotal');notifyGst();" type="submit"
+                                    <button *ngIf="addPurchase" class="mr-3"  (click)="calculateFields('TAmount', 'chtotal');notifyGst();" type="submit"
                                         [disabled]="!f1.valid || this.GstTypeDis" mat-raised-button color="primary" >Add</button>
 
                                 </div>
@@ -465,11 +465,11 @@
                                                     <mat-icon *ngIf="data.Status != 0 && data.ID !== null"
                                                         class="print_icon "
                                                         (click)="openModal(content,data)">print</mat-icon>
-                                                    <mat-icon *ngIf="data.Status !== 0" class="delete_icons ms-1"
+                                                    <mat-icon *ngIf="data.Status !== 0 && deletePurchase" class="delete_icons ms-1"
                                                         (click)="deleteItem('Product',i)">delete_forever</mat-icon>
                                                     <!-- <mat-icon class="edit_icons ms-1" (click)="edititem('Product',data)" *ngIf="data.ID === null">edit </mat-icon> -->
                                                     <mat-icon class="edit_icon1 ms-1" (click)="showInput(data)"
-                                                        *ngIf="data.Status != 0 && data.ID !== null && !data.UpdateProduct">edit
+                                                        *ngIf="editPurchase && data.Status != 0 && data.ID !== null && !data.UpdateProduct">edit
                                                     </mat-icon>
                                                     <mat-icon class="edit_icon1 ms-1"
                                                         (click)="showInput(data) ;updataEditProdcut('','',data)"
@@ -608,7 +608,7 @@
                                             <tr *ngFor="let data of chargeList ; let i = index;">
                                                 <td></td>
                                                 <td class="text-center">
-                                                    <mat-icon *ngIf="data.Status !== 0" class="delete_icons ms-1"
+                                                    <mat-icon *ngIf="data.Status !== 0 && deletePurchase" class="delete_icons ms-1"
                                                         (click)="deleteCharge('Charges',i)">delete_forever</mat-icon>
 
                                                 </td>

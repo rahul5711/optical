@@ -22,6 +22,8 @@ export class PurchaseListComponent implements OnInit {
 
   @ViewChild('searching') searching: ElementRef | any;
   user = JSON.parse(localStorage.getItem('user') || '');
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
+
   env = environment;
   id :any
 
@@ -51,7 +53,18 @@ export class PurchaseListComponent implements OnInit {
     this.id = this.route.snapshot.params['id'];
    }
 
+   editPurchaseList = false
+   addPurchaseList = false
+   deletePurchaseList = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'PurchaseList') {
+        this.editPurchaseList = element.Edit;
+        this.addPurchaseList = element.Add;
+        this.deletePurchaseList = element.Delete;
+      }
+    });
     if(this.id != "0"){
      this.purchaseHsitory()
     }else{

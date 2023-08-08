@@ -665,17 +665,9 @@ module.exports = {
                     res.send(err);
                 } else {
                     let options = {
-                        "height": "11.25in",
-                        "width": "8.5in",
-                        header: {
-                            height: "0mm"
-                        },
-                        footer: {
-                            height: "0mm",
-                            contents: {
-                                last: ``,
-                            },
-                        },
+                        format: 'A4',
+                        orientation: 'portrait',
+                        type: "pdf"
                     };
                     pdf.create(data, options).toFile(fileName, function (err, data) {
                         if (err) {

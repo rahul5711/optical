@@ -5,7 +5,7 @@
 }
 
 body{
-    margin: 10px !important; font-family: 'Roboto', sans-serif;
+    margin: 0px !important; font-family: 'Roboto', sans-serif;
 }
 
 .main{
@@ -25,7 +25,7 @@ body{
 }
 
 .row2{
-    padding-top: 0%; width: 50% !important; float: right !important; font-size: 16px ; height: 100px; 
+    padding-top: 0%; width: 50% !important; float: right !important; font-size: 12px ; height: 100px; 
 }
 
 .row2 .col-1{
@@ -37,23 +37,23 @@ body{
 }
 
 table{
-    width: 100% !important; text-align:center; border: none; margin: 0;padding: 10px; margin-top: 1%;
+    width: 100% !important; text-align:center; border: none; margin: 0;padding: 0px; margin-top: 1%;
 }
 
 table thead tr{
-    height: 25px; white-space: nowrap; background-color: rgb(224, 224, 224); font-size: 13px;
+    height: 25px;  background-color: rgb(224, 224, 224); font-size: 10px;
 }
 
 table thead tr th{
-    padding: 5px !important;
+    padding: 2px !important;
 }
 
 table tbody tr{
-    height: 25px; white-space: nowrap; font-size: 12px;
+    height: 25px;  font-size: 9px;
 }
 
 table tbody tr th{
-    padding: 5px !important;
+    padding: 2px !important;
 }
 
 tr:nth-child(even) {
@@ -61,6 +61,6 @@ tr:nth-child(even) {
 }
 
 table tfoot tr th{
-    border-top: 1px solid;
-    color: red; padding: 5px !important;
+    border-top: 1px solid; color: red; padding: 5px !important; font-size: 10px;
 }
+

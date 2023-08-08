@@ -20,6 +20,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class PurchaseReturnListComponent implements OnInit {
 
   @ViewChild('searching') searching: ElementRef | any;
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
+
   env = environment;
   gridview = true;
   term:any;
@@ -42,7 +44,18 @@ export class PurchaseReturnListComponent implements OnInit {
     private modalService: NgbModal,
   ) { }
 
+  editPurchaseReturnList = false
+  addPurchaseReturnList = false
+  deletePurchaseReturnList = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'PurchaseReturnList') {
+        this.editPurchaseReturnList = element.Edit;
+        this.addPurchaseReturnList = element.Add;
+        this.deletePurchaseReturnList = element.Delete;
+      }
+    });
     this.getList();
   }
   

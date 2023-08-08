@@ -19,6 +19,8 @@ import { PurchaseService } from 'src/app/service/purchase.service';
 export class PreorderListComponent implements OnInit {
 
   @ViewChild('searching') searching: ElementRef | any;
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
+
   env = environment;
   gridview = true;
   term:any;
@@ -37,7 +39,18 @@ export class PreorderListComponent implements OnInit {
     private purchaseService: PurchaseService,
   ) { }
 
+  editOrderPriceList = false
+  addOrderPriceList = false
+  deleteOrderPriceList = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'OrderPriceList') {
+        this.editOrderPriceList = element.Edit;
+        this.addOrderPriceList = element.Add;
+        this.deleteOrderPriceList = element.Delete;
+      }
+    });
     this.getList();
   }
   

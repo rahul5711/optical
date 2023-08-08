@@ -24,6 +24,8 @@ export class PreOrderComponent implements OnInit {
   shop = JSON.parse(localStorage.getItem('shop') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
+
   editBtn = false;
 
   constructor(
@@ -68,7 +70,18 @@ export class PreOrderComponent implements OnInit {
   itemList:any = [];
   gst_detail:any = [];
 
+  editOrderPrice = false
+  addOrderPrice = false
+  deleteOrderPrice = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'OrderPrice') {
+        this.editOrderPrice = element.Edit;
+        this.addOrderPrice = element.Add;
+        this.deleteOrderPrice = element.Delete;
+      }
+    });
     this.getProductList();
     this.getdropdownSupplierlist();
     this.getGSTList();

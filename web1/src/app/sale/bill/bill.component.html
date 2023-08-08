@@ -404,7 +404,7 @@
                         <input matInput name="Warranty" [(ngModel)]="BillItem.Warranty">
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0 mb-3  ms-auto">
+                <div *ngIf="addCustomerBill" class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0 mb-3  ms-auto">
                     <button *ngIf="BillItem.Manual === false && BillItem.PreOrder === false" type="submit" [disabled]="!f1.valid || this.BillItem.Quantity === 0 || this.GstTypeDis || this.BillItem.Barcode === null" mat-raised-button color="primary" (click)="calculations('GSTPercentage', 'gst');notifyGst();">Add</button>
                     <button *ngIf="BillItem.PreOrder" type="submit"  [disabled]="!f1.valid || this.GstTypeDis  || this.BillItem.Quantity === 0"  mat-raised-button color="primary">PreOder</button>
                     <button *ngIf="BillItem.Manual" type="submit" [disabled]="!f1.valid || this.BillItem.Quantity === 0 || this.GstTypeDis "   mat-raised-button color="primary">Manual</button>
@@ -477,7 +477,7 @@
                             [autocomplete]="false" disabled>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-6 col-sm-12 mb-0  mb-3">
+                <div *ngIf="addCustomerBill" class="col-xl-1 col-lg-1 col-md-6 col-sm-12 mb-0  mb-3">
                     <button  type="submit" (click)=" calculations('TotalAmount', 'serviceTotal');notifyGst();" class="mr-3"
                         [disabled]="Service.TotalAmount === 0 || this.GstTypeDis" mat-raised-button color="primary">Add</button>
                 </div>
@@ -519,11 +519,11 @@
                                 <td></td>
                                 <td>{{i+1}}</td>
                                 <td> <button class="bgRemove" *ngIf="data.Status !== 0" >
-                                    <mat-icon class="deletes_icon ms-1" (click)="deleteItem('Product', i)" >delete_forever</mat-icon>
+                                    <mat-icon *ngIf="deleteCustomerBill" class="deletes_icon ms-1" (click)="deleteItem('Product', i)" >delete_forever</mat-icon>
                                     <mat-icon class="edit_icon ms-1" (click)="openModal(content,data)"  >remove_red_eye</mat-icon>
 
-                                    <mat-icon class="edit_icon1 ms-1" (click)="showInput(data)"
-                                    *ngIf="!data.UpdateProduct">edit
+                                    <mat-icon  class="edit_icon1 ms-1" (click)="showInput(data)"
+                                    *ngIf="!data.UpdateProduct && editCustomerBill">edit
                                 </mat-icon>
                                 <mat-icon class="edit_icon1 ms-1"
                                     (click)="showInput(data)"
@@ -634,7 +634,7 @@
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
                                 class="text-center">C{{i+1}}</td>
                                 <td>
-                                    <button class="bgRemove" *ngIf="data.Status !== 0" >
+                                    <button  class="bgRemove" *ngIf="data.Status !== 0 && deleteCustomerBill" >
                                         <mat-icon class="deletes_icon ms-1" (click)="deleteItem('Service', i)">delete_forever</mat-icon>
                                     </button>
                                 </td>

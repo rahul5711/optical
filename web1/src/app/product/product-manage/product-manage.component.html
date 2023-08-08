@@ -54,10 +54,10 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
-                                    <mat-icon class="col-white plus_icon" (click)="showAdd = !showAdd;">add</mat-icon>
-                                    <mat-icon class="delete_icon me-2 ms-2" disabled="selectedProduct === ''"
+                                    <mat-icon *ngIf="addProductType === true" class="col-white plus_icon" (click)="showAdd = !showAdd;" >add</mat-icon>
+                                    <mat-icon *ngIf="deleteProductTypes === true" class="delete_icon me-2 ms-2" disabled="selectedProduct === ''"
                                         (click)="deleteProductType()">delete_forever</mat-icon>
-                                    <mat-icon class="edit_icon"  (click)="openModal(content,selectedProduct,selectedHSNCode,selectedGSTPercentage,selectedGSTType)" >edit
+                                    <mat-icon *ngIf="editProductType === true" class="edit_icon"  (click)="openModal(content,selectedProduct,selectedHSNCode,selectedGSTPercentage,selectedGSTType)" >edit
                                     </mat-icon>
                                 </div>
                             </div>
@@ -205,7 +205,7 @@
                                             <td *ngIf="spec.Required === 1">Yes</td>
                                             <td *ngIf="spec.Required === 0">No</td>
                                             <td>
-                                                <mat-icon class="delete_icon " (click)="deleteItem(i)">delete_forever
+                                                <mat-icon *ngIf="deleteProductTypes === true" class="delete_icon " (click)="deleteItem(i)">delete_forever
                                                 </mat-icon>
                                             </td>
                                         </tr>

@@ -39,7 +39,7 @@
                   </div>
                 </div>
                 <div class="col-md-1 col-1" style="width: 40px;padding: 0;">
-                  <button class="bg-none" [routerLink]="['/inventory/purchase',0]">
+                  <button *ngIf="addPurchaseList" class="bg-none" [routerLink]="['/inventory/purchase',0]">
                     <mat-icon class="col-white plus_icon me-1"> add</mat-icon>
                   </button>
                 </div>
@@ -76,7 +76,7 @@
                   </div> -->
                 </div>
                 <div class="col-md-1 col-1" style="width: 40px;padding: 0;">
-                  <button class="bg-none" [routerLink]="['/inventory/purchase',0]">
+                  <button *ngIf="addPurchaseList"  class="bg-none" [routerLink]="['/inventory/purchase',0]">
                     <mat-icon class="col-white plus_icon me-1"> add</mat-icon>
                   </button>
                 </div>
@@ -114,11 +114,11 @@
                           <button class="detail_icons bg-btn" (click)="openModal(content,data)">
                             <i class="fas fa-info-circle" data-mdb-toggle="modal" data-mdb-target="#exampleModal"> </i>
                           </button>
-                          <button class="bg-btn" [routerLink]="['/inventory/purchase',data.ID]">
-                            <mat-icon class="edit_icon ms-1">edit
+                          <button *ngIf="editPurchaseList"  class="bg-btn" [routerLink]="['/inventory/purchase',data.ID]">
+                            <mat-icon class="edit_icon ms-1" >edit
                             </mat-icon>
                           </button>
-                          <button class="bg-btn" (click)="deleteItem(i)">
+                          <button *ngIf="deletePurchaseList"  class="bg-btn" (click)="deleteItem(i)">
                             <mat-icon class="delete_icon ms-1">delete_forever</mat-icon>
                           </button>
                         </td>

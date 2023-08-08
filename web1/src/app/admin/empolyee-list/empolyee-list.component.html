@@ -35,7 +35,7 @@
                   </div>
                 </div>
                 <div class="col-md-1 col-2 order-3 order-md-1 ms-3 ms-md-0" style="width: 70px;padding: 0;">
-                  <mat-icon class="col-white plus_icon me-1" [routerLink]="['/admin/employee',0]"> add</mat-icon>
+                  <mat-icon class="col-white plus_icon me-1" [routerLink]="['/admin/employee',0]" *ngIf="addEmployeeList"> add</mat-icon>
                   <mat-icon class="col-white Grid_icon" (click)="gridview = !gridview" title="Grid View"
                     style="font-size: 22px;padding: 4px;">grid_on</mat-icon>
                 </div>
@@ -91,11 +91,11 @@
                         <tr class="text-center" *ngFor="let data of dataList let i = index;"
                           style="white-space: nowrap;">
                           <td style="width: 7%; text-align: left" class="detail_icon">
-                            <i class="fas fa-info-circle" data-mdb-toggle="modal" data-mdb-target="#exampleModal"
+                            <i *ngIf="editEmployeeList"class="fas fa-info-circle" data-mdb-toggle="modal" data-mdb-target="#exampleModal"
                               (click)="openModal(content,data.ID)">
                             </i>
-                            <mat-icon class="edit_icon ms-1" [routerLink]="['/admin/employee',data.ID]">edit</mat-icon>
-                              <mat-icon *ngIf="data.UserGroup !== 'CompanyAdmin'" (click)="deleteItem(i)" class="delete_icon ms-1">delete_forever</mat-icon>
+                            <mat-icon *ngIf="editEmployeeList" class="edit_icon ms-1" [routerLink]="['/admin/employee',data.ID]" >edit</mat-icon>
+                              <mat-icon *ngIf="data.UserGroup !== 'CompanyAdmin' && deleteEmployeeList" (click)="deleteItem(i)" class="delete_icon ms-1">delete_forever</mat-icon>
                           </td>
                           <td class="text-left">{{dataList.length - i}}</td>
                           <td class="text-left">{{data.Name}}</td>

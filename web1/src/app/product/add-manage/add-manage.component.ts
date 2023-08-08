@@ -13,7 +13,7 @@ import { SupportService } from 'src/app/service/support.service';
   styleUrls: ['./add-manage.component.css']
 })
 export class AddManageComponent implements OnInit {
-
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
   loggedInCompany:any = (localStorage.getItem('LoggedINCompany'));
   depList: any ;
   showFeild = false;
@@ -57,7 +57,35 @@ export class AddManageComponent implements OnInit {
   selectedRow: any = {ID: null, CompanyID: null, Name: null, Description:null, Cost:0,  Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: " "};
   Service: any = {ID: null, CompanyID: null, Name: null, Description:null, Cost:0,  Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: " " };
   
+  
+  editAddManagement = false
+  addAddManagement = false
+  deleteAddManagement = false
+
+  editChargeManagement = false
+  addChargeManagement = false
+  deleteChargeManagement = false
+
+  editServiceManagement = false
+  addServiceManagement = false
+  deleteServiceManagement = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'AddManagement') {
+        this.editAddManagement = element.Edit;
+        this.addAddManagement = element.Add;
+        this.deleteAddManagement = element.Delete;
+      }else if(element.ModuleName === 'ChargeManagement') {
+        this.editChargeManagement = element.Edit;
+        this.addChargeManagement = element.Add;
+        this.deleteChargeManagement = element.Delete;
+      }else if(element.ModuleName === 'ServiceManagement') {
+        this.editServiceManagement = element.Edit;
+        this.addServiceManagement = element.Add;
+        this.deleteServiceManagement = element.Delete;
+      }
+    });
     this.chargelist();
     this.servicelist();
     this.getList();

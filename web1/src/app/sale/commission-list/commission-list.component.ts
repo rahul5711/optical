@@ -23,6 +23,7 @@ import { PaymentService } from 'src/app/service/payment.service';
 export class CommissionListComponent implements OnInit {
   user = JSON.parse(localStorage.getItem('user') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
   evn = environment
   id :any
 
@@ -60,7 +61,20 @@ export class CommissionListComponent implements OnInit {
 
   UpdateProduct = false
   userType:any
+
+  
+  editLoyaltyInvoice = false
+  addLoyaltyInvoice = false
+  deleteLoyaltyInvoice = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'LoyaltyInvoice') {
+        this.editLoyaltyInvoice = element.Edit;
+        this.addLoyaltyInvoice = element.Add;
+        this.deleteLoyaltyInvoice = element.Delete;
+      }
+    });
     if(this.id == 0){
       this.getList();
     }else{

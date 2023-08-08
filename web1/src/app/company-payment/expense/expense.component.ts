@@ -25,6 +25,8 @@ export class ExpenseComponent implements OnInit {
 
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
+
   @ViewChild('searching') searching: ElementRef | any;
   term: any;
   dataList: any;
@@ -56,7 +58,18 @@ export class ExpenseComponent implements OnInit {
 
   data: ExpenseModel = { ID: 0, CompanyID: 0, ShopID: 0, Name: '', InvoiceNo: '', Category: '', SubCategory: '', Amount: '', PaymentMode: '', CashType: '', PaymentRefereceNo: '', Comments: '', Status: 1, CreatedBy: '', UpdatedBy: '', CreatedOn: '', UpdatedOn: '', };
 
+  editExpenseList = false
+  addExpenseList = false
+  deleteExpenseList = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'ExpenseList') {
+        this.editExpenseList = element.Edit;
+        this.addExpenseList = element.Add;
+        this.deleteExpenseList = element.Delete;
+      }
+    });
     this.getList();
     this.dropdownShoplist();
     this.getPaymentModesList();

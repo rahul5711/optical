@@ -25,6 +25,8 @@ export class PurchaseComponent implements OnInit {
   shop = JSON.parse(localStorage.getItem('shop') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '');
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
+
   editBtn = false;
   addDis: any
   GstTypeDis = false
@@ -84,8 +86,19 @@ export class PurchaseComponent implements OnInit {
   BarcodeData: any = {};
 
   disbaleupdate = false;
+  
+  editPurchase = false
+  addPurchase = false
+  deletePurchase = false
 
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'Purchase') {
+        this.editPurchase = element.Edit;
+        this.addPurchase = element.Add;
+        this.deletePurchase = element.Delete;
+      }
+    });
     this.getProductList();
     this.getdropdownSupplierlist();
     this.getGSTList();

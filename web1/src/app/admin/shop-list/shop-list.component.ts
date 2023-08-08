@@ -27,6 +27,7 @@ export class ShopListComponent implements OnInit {
   env = environment;
   gridview = true;
   term = "";
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
   company = JSON.parse(localStorage.getItem('company') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
   reactiveForm!: FormGroup;
@@ -62,10 +63,20 @@ export class ShopListComponent implements OnInit {
   ) {
     this.id = this.route.snapshot.params['id'];
     this.env = environment
-
   }
 
+  editShopList = false
+  addShopList = false
+  deleteShopList = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'ShopList') {
+        this.editShopList = element.Edit;
+        this.addShopList = element.Add;
+        this.deleteShopList = element.Delete;
+      }
+    });
     this.getList();
   }
 
