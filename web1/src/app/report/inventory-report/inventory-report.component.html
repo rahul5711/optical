@@ -13,20 +13,20 @@
             </div>
             <mat-tab-group>
               <!-- Inventory Report -->
-              <mat-tab label="Inventory">
+              <mat-tab *ngIf="viewInventoryReport" label="Inventory">
                 <div class="body">
                   <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getInventory()">
                     <div class="row">
                       <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>From</mat-label>
-                          <input matInput name="FromDate" type="date" [(ngModel)]="inventory.FromDate" #DOBcontrol />
+                          <input matInput name="FromDate" type="date" [(ngModel)]="inventory.FromDate" #DOBcontrol [disabled]="!editInventoryReport" />
                         </mat-form-field>
                       </div>
                       <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>To</mat-label>
-                          <input matInput type="date" name="ToDate" [(ngModel)]="inventory.ToDate" />
+                          <input matInput type="date" name="ToDate" [(ngModel)]="inventory.ToDate" [disabled]="!editInventoryReport" />
                         </mat-form-field>
                       </div>
                       <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
@@ -263,20 +263,20 @@
                 </div>
               </mat-tab>
               <!-- Product Summary -->
-              <mat-tab label="Product Summary">
+              <mat-tab *ngIf="viewProductSummaryReport" label="Product Summary">
                 <div class="body">
                   <form class="p-3 pb-0" #f1="ngForm">
                     <div class="row">
                       <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>From</mat-label>
-                          <input matInput name="FromDate" type="date" [(ngModel)]="data.FromDate" #DOBcontrol />
+                          <input matInput name="FromDate" type="date" [(ngModel)]="data.FromDate" #DOBcontrol [disabled]="!editProductSummaryReport"/>
                         </mat-form-field>
                       </div>
                       <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>To</mat-label>
-                          <input matInput type="date" name="ToDate" [(ngModel)]="data.ToDate" />
+                          <input matInput type="date" name="ToDate" [(ngModel)]="data.ToDate" [disabled]="!editProductSummaryReport" />
                         </mat-form-field>
                       </div>
                       <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
@@ -364,7 +364,7 @@
                 </div>
               </mat-tab>
               <!-- Purchase Product Expiry -->
-              <mat-tab label="Purchase (Product Expiry)">
+              <mat-tab *ngIf="viewPurchaseProductExpiryReport" label="Purchase (Product Expiry)">
                 <div class="body">
                   <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="purchaseProductExpiry()">
                     <div class="row">
@@ -372,13 +372,13 @@
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>From</mat-label>
                           <input matInput name="FromDate" type="date" [(ngModel)]="ProductExpiry.FromDate"
-                            #DOBcontrol />
+                            #DOBcontrol [disabled]="!editPurchaseProductExpiryReport"/>
                         </mat-form-field>
                       </div>
                       <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>To</mat-label>
-                          <input matInput type="date" name="ToDate" [(ngModel)]="ProductExpiry.ToDate" />
+                          <input matInput type="date" name="ToDate" [(ngModel)]="ProductExpiry.ToDate" [disabled]="!editPurchaseProductExpiryReport"/>
                         </mat-form-field>
                       </div>
                       <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">

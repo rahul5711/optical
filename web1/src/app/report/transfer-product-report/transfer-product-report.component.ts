@@ -16,6 +16,8 @@ import { FormBuilder,FormGroup } from '@angular/forms';
 })
 export class TransferProductReportComponent implements OnInit {
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
+
    form :any | FormGroup;
 
   constructor(
@@ -46,8 +48,20 @@ export class TransferProductReportComponent implements OnInit {
     FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ToShop: 0, FromShop : 0,ProductStatus: 0,  ProductCategory : 0, ProductName:''
   };
 
+  viewProductTransferReport = false
+  editProductTransferReport = false
+  addProductTransferReport = false
+  deleteProductTransferReport = false
   
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'ProductTransferReport') {
+        this.viewProductTransferReport = element.View;
+        this.editProductTransferReport = element.Edit;
+        this.addProductTransferReport = element.Add;
+        this.deleteProductTransferReport = element.Delete;
+      }
+    });
     this.getProductList();
     this. dropdownShoplist();
     // TransferReport Today Data

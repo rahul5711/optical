@@ -13,7 +13,7 @@
                         </div>
                         <mat-tab-group>
                             <!-- Bill  -->
-                            <mat-tab label="Sale">
+                            <mat-tab *ngIf="viewSaleReport" label="Sale">
                                 <div class="body">
                                     <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getBillMaster()">
                                         <div class="row">
@@ -30,14 +30,14 @@
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>From</mat-label>
                                                     <input matInput name="FromDate" type="date"
-                                                        [(ngModel)]="BillMaster.FromDate" #DOBcontrol />
+                                                        [(ngModel)]="BillMaster.FromDate" #DOBcontrol [disabled]="!editSaleReport" />
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>To</mat-label>
                                                     <input matInput type="date" name="ToDate"
-                                                        [(ngModel)]="BillMaster.ToDate" />
+                                                        [(ngModel)]="BillMaster.ToDate" [disabled]="!editSaleReport" />
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
@@ -265,7 +265,7 @@
                                 </div>
                             </mat-tab>
                             <!-- Bill (Detailed) -->
-                            <mat-tab label="Sale (Product Type)">
+                            <mat-tab *ngIf="viewSaleProductReport" label="Sale (Product Type)">
                                 <div class="body">
                                     <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getBillDetails()">
                                         <div class="row">
@@ -282,14 +282,14 @@
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>From</mat-label>
                                                     <input matInput name="FromDate" type="date"
-                                                        [(ngModel)]="Billdetail.FromDate" #DOBcontrol />
+                                                        [(ngModel)]="Billdetail.FromDate" #DOBcontrol  [disabled]="!editSaleProductReport"/>
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>To</mat-label>
                                                     <input matInput type="date" name="ToDate"
-                                                        [(ngModel)]="Billdetail.ToDate" />
+                                                        [(ngModel)]="Billdetail.ToDate" [disabled]="!editSaleProductReport" />
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
@@ -659,7 +659,7 @@
                                 </div>
                             </mat-tab>
                             <!-- Sale Service -->
-                            <mat-tab label="Sale Service">
+                            <mat-tab *ngIf="viewSaleServiceReport" label="Sale Service">
                                 <div class="body">
                                     <form class="p-3 pb-0" #f="ngForm" (ngSubmit)="BillService()">
                                         <div class="row">
@@ -667,14 +667,14 @@
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>From Date</mat-label>
                                                     <input matInput name="FromDate" type="date"
-                                                        [(ngModel)]="service.FromDate" #DOBcontrol />
+                                                        [(ngModel)]="service.FromDate" #DOBcontrol [disabled]="!editSaleServiceReport"/>
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>To Date</mat-label>
                                                     <input matInput name="ToDate" type="date"
-                                                        [(ngModel)]="service.ToDate" />
+                                                        [(ngModel)]="service.ToDate" [disabled]="!editSaleServiceReport"/>
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">

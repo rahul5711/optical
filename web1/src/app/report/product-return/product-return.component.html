@@ -13,7 +13,7 @@
               </div>
               <mat-tab-group>
                 <!-- Purchase Return  -->
-                <mat-tab label="Return">
+                <mat-tab *ngIf="viewProductReturnReport" label="Return">
                   <div class="body">
                     <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getPurchaseReturnMaster()">
                       <div class="row">
@@ -21,13 +21,13 @@
                           <mat-form-field class="example-full-width mb-0">
                             <mat-label>From</mat-label>
                             <input matInput name="FromDate" type="date" [(ngModel)]="ReturnMaster.FromDate"
-                              #DOBcontrol />
+                              #DOBcontrol [disabled]="!editProductReturnReport"/>
                           </mat-form-field>
                         </div>
                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
                           <mat-form-field class="example-full-width mb-0">
                             <mat-label>To</mat-label>
-                            <input matInput type="date" name="ToDate" [(ngModel)]="ReturnMaster.ToDate" />
+                            <input matInput type="date" name="ToDate" [(ngModel)]="ReturnMaster.ToDate" [disabled]="!editProductReturnReport"/>
                           </mat-form-field>
                         </div>
                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
@@ -142,7 +142,7 @@
                   </div>
                 </mat-tab>
                 <!-- Purchase Return (Detailed) -->
-                <mat-tab label="Return (Product Type)">
+                <mat-tab *ngIf="viewProductReturnProductTypeReport" label="Return (Product Type)">
                   <div class="body">
                     <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getReturnDetails()">
                       <div class="row">
@@ -150,13 +150,13 @@
                           <mat-form-field class="example-full-width mb-0">
                             <mat-label>From</mat-label>
                             <input matInput name="FromDate" type="date" [(ngModel)]="ReturnDetail.FromDate"
-                              #DOBcontrol />
+                              #DOBcontrol [disabled]="!editProductReturnProductTypeReport"/>
                           </mat-form-field>
                         </div>
                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
                           <mat-form-field class="example-full-width mb-0">
                             <mat-label>To</mat-label>
-                            <input matInput type="date" name="ToDate" [(ngModel)]="ReturnDetail.ToDate" />
+                            <input matInput type="date" name="ToDate" [(ngModel)]="ReturnDetail.ToDate" [disabled]="!editProductReturnProductTypeReport"/>
                           </mat-form-field>
                         </div>
                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">

@@ -22,6 +22,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class PurchaseReportComponent implements OnInit {
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
 
   supplierList :any;
   shopList :any;
@@ -96,9 +97,51 @@ export class PurchaseReportComponent implements OnInit {
     PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
   };
 
+  viewPurchaseReport = false
+  addPurchaseReport = false
+  editPurchaseReport = false
+  deletePurchaseReport = false
+
+  viewPurchaseProductReport = false
+  addPurchaseProductReport = false
+  editPurchaseProductReport = false
+  deletePurchaseProductReport = false
+
+  viewPurchaseChargeReport = false
+  addPurchaseChargeReport = false
+  editPurchaseChargeReport = false
+  deletePurchaseChargeReport = false
+
+  viewPurchaseProductExpiryReport = false
+  addPurchaseProductExpiryReport = false
+  editPurchaseProductExpiryReport = false
+  deletePurchaseProductExpiryReport = false
 
   ngOnInit(): void {
     this.sp.show()
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'PurchaseReport') {
+        this.viewPurchaseReport = element.View;
+        this.addPurchaseReport = element.Add;
+        this.editPurchaseReport = element.Edit;
+        this.deletePurchaseReport = element.Delete;
+      }else if (element.ModuleName === 'PurchaseProductReport') {
+        this.viewPurchaseProductReport = element.View;
+        this.addPurchaseProductReport = element.Add;
+        this.editPurchaseProductReport = element.Edit;
+        this.deletePurchaseProductReport = element.Delete;
+      }else if (element.ModuleName === 'PurchaseChargeReport') {
+        this.viewPurchaseChargeReport = element.View;
+        this.addPurchaseChargeReport = element.Add;
+        this.editPurchaseChargeReport = element.Edit;
+        this.deletePurchaseChargeReport = element.Delete;
+      }else if (element.ModuleName === 'PurchaseProductExpiryReport') {
+        this.viewPurchaseProductExpiryReport = element.View;
+        this.addPurchaseProductExpiryReport = element.Add;
+        this.editPurchaseProductExpiryReport = element.Edit;
+        this.deletePurchaseProductExpiryReport = element.Delete;
+      }
+    });
     this.dropdownShoplist();
     this.dropdownSupplierlist();
     this.getProductList();

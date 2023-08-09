@@ -142,10 +142,20 @@ export class ProductManageComponent implements OnInit {
     });
 
     if (this.selectedProduct !== null || this.selectedProduct !== '') {
-      this.sp.show()
-      this.ps.getSpec(this.selectedProduct).subscribe(data => {
-        this.specList = data.data;
-        this.sp.hide()
+      const subs: Subscription = this.ps.getSpec(this.selectedProduct).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.specList = res.data;
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+         this.sp.hide()
+        },
+        error: (err: any) => {
+          console.log(err.msg);
+        },
+        complete: () => subs.unsubscribe(),
       });
     }
   }

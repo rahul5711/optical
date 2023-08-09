@@ -25,6 +25,7 @@ import { CustomerService } from 'src/app/service/customer.service';
 })
 export class SaleReportComponent implements OnInit {
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
 
   constructor(
     private router: Router,
@@ -85,7 +86,43 @@ export class SaleReportComponent implements OnInit {
 
   shopLists:any =[]
   serviceType :any =[]
+
+  viewSaleReport = false
+  addSaleReport = false
+  editSaleReport = false
+  deleteSaleReport = false
+
+  viewSaleProductReport = false
+  addSaleProductReport = false
+  editSaleProductReport = false
+  deleteSaleProductReport = false
+
+  viewSaleServiceReport = false
+  addSaleServiceReport = false
+  editSaleServiceReport = false
+  deleteSaleServiceReport = false
+
+
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'SaleReport') {
+        this.viewSaleReport = element.View;
+        this.addSaleReport = element.Add;
+        this.editSaleReport = element.Edit;
+        this.deleteSaleReport = element.Delete;
+      }else if (element.ModuleName === 'SaleProductReport') {
+        this.viewSaleProductReport = element.View;
+        this.addSaleProductReport = element.Add;
+        this.editSaleProductReport = element.Edit;
+        this.deleteSaleProductReport = element.Delete;
+      }else if (element.ModuleName === 'SaleServiceReport') {
+        this.viewSaleServiceReport = element.View;
+        this.addSaleServiceReport = element.Add;
+        this.editSaleServiceReport = element.Edit;
+        this.deleteSaleServiceReport = element.Delete;
+      }
+    });
     // billmaster
     this.dropdownShoplist()
     this.dropdownUserlist()

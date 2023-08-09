@@ -21,6 +21,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 export class InventoryReportComponent implements OnInit {
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
 
   constructor(
     private router: Router,
@@ -74,7 +75,40 @@ export class InventoryReportComponent implements OnInit {
     PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
   };
 
+  viewInventoryReport = false
+  addInventoryReport = false
+  editInventoryReport = false
+  deleteInventoryReport = false
+
+  viewProductSummaryReport = false
+  addProductSummaryReport = false
+  editProductSummaryReport = false
+  deleteProductSummaryReport = false
+
+  viewPurchaseProductExpiryReport = false
+  addPurchaseProductExpiryReport = false
+  editPurchaseProductExpiryReport = false
+  deletePurchaseProductExpiryReport = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'InventoryReport') {
+        this.viewInventoryReport = element.View;
+        this.addInventoryReport = element.Add;
+        this.editInventoryReport = element.Edit;
+        this.deleteInventoryReport = element.Delete;
+      }else if (element.ModuleName === 'ProductSummaryReport') {
+        this.viewProductSummaryReport = element.View;
+        this.addProductSummaryReport = element.Add;
+        this.editProductSummaryReport = element.Edit;
+        this.deleteProductSummaryReport = element.Delete;
+      }else if (element.ModuleName === 'PurchaseProductExpiryReport') {
+        this.viewPurchaseProductExpiryReport = element.View;
+        this.addPurchaseProductExpiryReport = element.Add;
+        this.editPurchaseProductExpiryReport = element.Edit;
+        this.deletePurchaseProductExpiryReport = element.Delete;
+      }
+    });
     this.dropdownShoplist();
     this.dropdownSupplierlist();
     this.getProductList();

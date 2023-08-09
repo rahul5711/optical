@@ -424,7 +424,6 @@ export class BillComponent implements OnInit {
   }
 
   getFieldSupportData(index: any) {
-    this.sp.show();
     this.specList.forEach((element: any) => {
       if (element.Ref === this.specList[index].FieldName.toString()) {
         const subs: Subscription = this.ps.getProductSupportData(this.specList[index].SelectedValue, element.SptTableName).subscribe({
@@ -435,7 +434,6 @@ export class BillComponent implements OnInit {
             } else {
               this.as.errorToast(res.message)
             }
-            this.sp.hide();
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
@@ -625,7 +623,6 @@ export class BillComponent implements OnInit {
   }
 
   getBarCodeList(index: any) {
-    this.sp.show();
     let searchString = "";
 
     this.specList.forEach((element: any, i: any) => {
@@ -645,7 +642,6 @@ export class BillComponent implements OnInit {
             } else {
               this.as.errorToast(res.message)
             }
-            this.sp.hide();
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
@@ -662,7 +658,6 @@ export class BillComponent implements OnInit {
             } else {
               this.as.errorToast(res.message)
             }
-            this.sp.hide();
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),

@@ -21,6 +21,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 export class ProductReturnComponent implements OnInit {
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
 
   supplierList :any;
   shopList :any;
@@ -69,9 +70,31 @@ export class ProductReturnComponent implements OnInit {
     PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
   };
 
+  viewProductReturnReport= false
+  editProductReturnReport= false
+  addProductReturnReport= false
+  deleteProductReturnReport= false
+
+  viewProductReturnProductTypeReport = false
+  editProductReturnProductTypeReport = false
+  addProductReturnProductTypeReport = false
+  deleteProductReturnProductTypeReport = false
 
   ngOnInit(): void {
     this.sp.show()
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'ProductReturnReport') {
+        this.viewProductReturnReport = element.View;
+        this.editProductReturnReport = element.Edit;
+        this.addProductReturnReport = element.Add;
+        this.deleteProductReturnReport = element.Delete;
+      }else if (element.ModuleName === 'ProductReturnProductTypeReport') {
+        this.viewProductReturnProductTypeReport = element.View;
+        this.editProductReturnProductTypeReport = element.Edit;
+        this.addProductReturnProductTypeReport = element.Add;
+        this.deleteProductReturnProductTypeReport = element.Delete;
+      }
+    });
     this.dropdownShoplist();
     this.dropdownSupplierlist();
     this.getProductList();

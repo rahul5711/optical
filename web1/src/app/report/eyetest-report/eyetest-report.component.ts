@@ -12,6 +12,7 @@ import * as XLSX from 'xlsx';
   styleUrls: ['./eyetest-report.component.css']
 })
 export class EyetestReportComponent implements OnInit {
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
 
   constructor(
     private ss: ShopService,
@@ -24,7 +25,20 @@ export class EyetestReportComponent implements OnInit {
     FilterTypes:'CreatedOn', FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0
   };
 
+  viewEyeTestReport = false
+  editEyeTestReport = false
+  addEyeTestReport = false
+  deleteEyeTestReport = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'EyeTestReport') {
+        this.viewEyeTestReport = element.View;
+        this.editEyeTestReport = element.Edit;
+        this.addEyeTestReport = element.Add;
+        this.deleteEyeTestReport = element.Delete;
+      }
+    });
     this. dropdownShoplist();
   }
 
