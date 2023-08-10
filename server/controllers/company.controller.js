@@ -239,6 +239,7 @@ module.exports = {
             return res.send(response)
             // connection.release()
         } catch (err) {
+            console.log(err);
             next(err)
         }
     },

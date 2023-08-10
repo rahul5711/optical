@@ -19,7 +19,7 @@ var app = express();
 global.appRoot = path.resolve(__dirname);
 app.use('/assest', express.static( 'assest'));
 // view engine setup
-// app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.set('view engine', 'pug');
 app.use(express.static(path.join(__dirname, '')));
