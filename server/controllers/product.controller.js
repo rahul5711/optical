@@ -339,7 +339,7 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = Data
-            await connection.query("COMMIT");
+            // await connection.query("COMMIT");
             return res.send(response);
 
 

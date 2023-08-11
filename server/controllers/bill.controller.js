@@ -115,7 +115,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
 
-            await connection.query("COMMIT");
+            // await connection.query("COMMIT");
 
             return res.send(response);
 
@@ -388,16 +388,18 @@ module.exports = {
             console.log(connected("BillMaster Update SuccessFUlly !!!"));
 
             // save service
-            await Promise.all(
-                service.map(async (ele) => {
-                    if (ele.ID === null) {
-                        let result1 = await connection.query(
-                            `insert into billservice ( BillID, ServiceType ,CompanyID,Description, Price, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn ) values (${bMasterID}, '${ele.ServiceType}', ${CompanyID},  '${ele.Description}', ${ele.Price}, ${ele.GSTPercentage}, ${ele.GSTAmount}, '${ele.GSTType}', ${ele.TotalAmount},1,${LoggedOnUser}, now())`
-                        );
-                    }
+            if (service.length) {
+                await Promise.all(
+                    service.map(async (ele) => {
+                        if (ele.ID === null) {
+                            let result1 = await connection.query(
+                                `insert into billservice ( BillID, ServiceType ,CompanyID,Description, Price, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn ) values (${bMasterID}, '${ele.ServiceType}', ${CompanyID},  '${ele.Description}', ${ele.Price}, ${ele.GSTPercentage}, ${ele.GSTAmount}, '${ele.GSTType}', ${ele.TotalAmount},1,${LoggedOnUser}, now())`
+                            );
+                        }
 
-                })
-            );
+                    })
+                );
+            }
 
             console.log(connected("Service Added SuccessFUlly !!!"));
 
@@ -829,7 +831,7 @@ module.exports = {
             response.result.billDetail = billDetail
             response.result.service = service
 
-            await connection.query("COMMIT");
+            // await connection.query("COMMIT");
 
             return res.send(response);
 
