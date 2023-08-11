@@ -26,7 +26,7 @@ import * as moment from 'moment';
 })
 export class BillListComponent implements OnInit {
   
-  @ViewChild('searching') searching: ElementRef | any;
+  @ViewChild('searching') searching: ElementRef | any ;
   company = JSON.parse(localStorage.getItem('company') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
@@ -551,11 +551,10 @@ export class BillListComponent implements OnInit {
     const subs: Subscription = this.bill.billHistoryByCustomer(CustomerID).subscribe({
       next: (res: any) => {
         if(res.success){
-          console.log(res);
           this.dataList = res.data;
-          this.TotalAmountInv = res.sumData.TotalAmount.toFixed(2);
-          this.DueAmountInv = res.sumData.DueAmount.toFixed(2);
-          this.CustomerTotal = (this.TotalAmountInv-this.DueAmountInv).toFixed(2);
+          this.TotalAmountInv = (res.sumData.TotalAmount || 0).toFixed(2);
+          this.DueAmountInv = (res.sumData.DueAmount || 0).toFixed(2);
+          this.CustomerTotal = (parseFloat(this.TotalAmountInv) - parseFloat(this.DueAmountInv)).toFixed(2);
           this.as.successToast(res.message)
         }else{
           this.as.errorToast(res.message)

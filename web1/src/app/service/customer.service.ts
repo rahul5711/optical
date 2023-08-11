@@ -98,8 +98,7 @@ export class CustomerService {
   }
 
   customerSearch(Body: any): Observable<any> {
-    const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/customerSearch', Body, { params })
+    return this.httpClient.post<any>(this.url + '/customerSearch', Body , httpOptions)
     .pipe(catchError(this.handleError));
   }
 

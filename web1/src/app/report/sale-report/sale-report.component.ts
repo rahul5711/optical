@@ -26,6 +26,7 @@ import { CustomerService } from 'src/app/service/customer.service';
 export class SaleReportComponent implements OnInit {
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+  user:any =JSON.parse(localStorage.getItem('user') || '') ;
 
   constructor(
     private router: Router,
@@ -102,7 +103,7 @@ export class SaleReportComponent implements OnInit {
   editSaleServiceReport = false
   deleteSaleServiceReport = false
 
-
+  employeeHide = false
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
@@ -132,7 +133,27 @@ export class SaleReportComponent implements OnInit {
     this.dropdownCustomerGSTNo();
     this.BillMaster.FromDate = moment().format('YYYY-MM-DD');
     this.BillMaster.ToDate = moment().format('YYYY-MM-DD');
+    if(!this.editSaleReport){
+      this.employeeHide = true
+    }else  if(this.BillMaster.FromDate === moment().format('YYYY-MM-DD')) {
+      this.employeeHide = true
+    }
     this.getBillMaster();
+  }
+
+  getChangeDate() {
+    const currentDate = moment().format('YYYY-MM-DD');
+    if (this.user.UserGroup !== "CompanyAdmin") {
+        if (this.BillMaster.FromDate === currentDate) {
+            this.employeeHide = true;
+            this.BillMaster.PaymentStatus = 0;
+            this.BillMaster.ProductStatus = 'All';
+        } else {
+            this.employeeHide = false;
+            this.BillMaster.PaymentStatus = 'Unpaid';
+            this.BillMaster.ProductStatus = '0';
+        }
+    }
   }
 
   // billmaster

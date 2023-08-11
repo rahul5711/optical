@@ -56,7 +56,8 @@ export class BillingComponent implements OnInit {
   otherList: any = []
   toggleChecked = false;
   formValue: any=[];
-
+  searchList:any=[];
+  srcBox = true;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -429,6 +430,7 @@ export class BillingComponent implements OnInit {
     if (this.id != 0) {
       this.getCustomerById();
     }
+    this.srcBox = true;
   }
 
   specCheck(mode: any) {
@@ -814,27 +816,25 @@ export class BillingComponent implements OnInit {
   // Billing
 
   customerSearch(searchKey:any, mode:any) {
-    this.sp.show()
+
+    this.searchList = []; 
     this.param = {Name: '', MobileNo1: '', Address:'', Sno:''};
+    if(searchKey.length >= 3){
+      this.sp.show()
+   
      if(mode === 'Name') {
        this.param.Name = searchKey;
-     } 
-     else if(mode === 'MobileNo1') {
+     } else if(mode === 'MobileNo1') {
        this.param.MobileNo1 = searchKey;
-     }
-     else if(mode === 'Address') {
+     } else if(mode === 'Address') {
        this.param.Address = searchKey;
-     }
-     else if(mode === 'Sno') {
+     } else if(mode === 'Sno') {
        this.param.Sno = searchKey;
      }
-     let searchParam = this.param;
-
-     const subs: Subscription = this.cs.customerSearch(searchParam).subscribe({
+     const subs: Subscription = this.cs.customerSearch(this.param).subscribe({
       next: (res: any) => {
         if (res) {
-           console.log(res.data);
-           
+         this.searchList = res.data
         } else {
           this.as.errorToast(res.message)
         }
@@ -843,6 +843,62 @@ export class BillingComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+  }
    }
+
+  getCustomerSearchId(ID:any) {
+    this.sp.show()
+    this.id = ID;
+    this.router.navigate(['/sale/billing', ID,0 ]);
+    this.ngOnInit();
+    if (this.id !== 0){
+      this.srcBox = true;
+    const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+
+          this.data = res.data[0]
+          this.data.Idd = res.data[0].Idd
+          if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
+            this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
+          } else {
+            this.customerImage = "/assets/images/userEmpty.png"
+          }
+
+          if (res.spectacle_rx.length !== 0) {
+            this.spectacle = res.spectacle_rx[0]
+            if (res.spectacle_rx[0].PhotoURL !== "null" && res.spectacle_rx[0].PhotoURL !== '') {
+              this.spectacleImage = this.env.apiUrl + res.spectacle_rx[0].PhotoURL;
+            } else {
+              this.spectacleImage = "/assets/images/userEmpty.png"
+            }
+          }
+
+          if (this.contactList.length !== 0) {
+            this.clens = res.contact_lens_rx[0]
+            if (res.contact_lens_rx[0].PhotoURL !== "null" && res.contact_lens_rx[0].PhotoURL !== '') {
+              this.clensImage = this.env.apiUrl + res.contact_lens_rx[0].PhotoURL;
+            } else {
+              this.clensImage = "/assets/images/userEmpty.png"
+            }
+          }
+
+          if (this.otherList.length !== 0) {
+            this.other = res.other_rx[0]
+          }
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+        this.srcBox = false;
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
+   }
+  }
 
 }

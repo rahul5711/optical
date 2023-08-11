@@ -1,4 +1,3 @@
-
 <section class="content">
     <div class="container-fluid">
         <div class="block-header"> </div>
@@ -22,7 +21,7 @@
                                 <ul class="nav nav-tabs mb-3" id="ex1" role="tablist"
                                     style="justify-content: space-between;">
 
-                                    <li class="nav-item d-flex" role="presentation" (click)="specCheck('spec')" >
+                                    <li class="nav-item d-flex" role="presentation" (click)="specCheck('spec')">
                                         <mat-checkbox class="example-margin ps-1" color="primary"
                                             [(ngModel)]="Check.SpectacleCheck"
                                             style="position: absolute;z-index: 9; cursor: pointer;"> </mat-checkbox>
@@ -32,12 +31,12 @@
                                     </li>
                                     <li class="nav-item d-flex" role="presentation" (click)="specCheck('con')">
                                         <mat-checkbox class="example-margin ps-1" color="primary"
-                                             [(ngModel)]="Check.ContactCheck"
+                                            [(ngModel)]="Check.ContactCheck"
                                             style="position: absolute; z-index: 9;cursor: pointer;"></mat-checkbox>
                                         <a class="nav-link" id="ex1-tab-2" data-mdb-toggle="tab" href="#ex1-tabs-2"
                                             role="tab" aria-controls="ex1-tabs-2" aria-selected="false">Contact Rx</a>
                                     </li>
-                                    <li class="nav-item d-flex" role="presentation"  (click)="specCheck('other')">
+                                    <li class="nav-item d-flex" role="presentation" (click)="specCheck('other')">
                                         <mat-checkbox class="example-margin ps-1" color="primary"
                                             [(ngModel)]="Check.OtherCheck"
                                             style="position: absolute; z-index: 9;cursor: pointer;"></mat-checkbox>
@@ -59,8 +58,7 @@
                                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-2 col-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Select Position </mat-label>
-                                                <mat-select name="Position" [(ngModel)]="data.Gender" #Gendercontrol
-                                                    >
+                                                <mat-select name="Position" [(ngModel)]="data.Gender" #Gendercontrol>
                                                     <mat-option value="MR">Mr.</mat-option>
                                                     <mat-option value="Miss">Miss.</mat-option>
                                                     <mat-option value="DR">Dr.</mat-option>
@@ -71,19 +69,28 @@
                                         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-10 col-10 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label> Name</mat-label>
-                                                <input matInput name="Name" minlength="3" [(ngModel)]="data.Name"
-                                                (input)="customerSearch(UserNamecontrol.value, 'Name')"  required #UserNamecontrol appAutoFoucsDirectives />
+                                                <input matInput min="3" [(ngModel)]="data.Name" name="Name"
+                                                (input)="customerSearch(UserNamecontrol.value, 'Name')" required
+                                                #UserNamecontrol>
                                                 <mat-error>
                                                     Name is required
                                                 </mat-error>
-                                            </mat-form-field>
+                                            </mat-form-field> <br>
+                                                <div class="row m-0 search mostly-customized-scrollbar" *ngIf="searchList.length !== 0 && srcBox">
+                                                    <div class="col-12" style="cursor: pointer; " *ngFor="let data of searchList" >
+                                                        <div class="row" style="border-bottom: 1px solid #fff ;" (click)="getCustomerSearchId(data.ID)">
+                                                            <div class="col-7 " style="padding: 0 4px;">{{data.Name}}</div>
+                                                            <div class="col-5 p-0">{{data.MobileNo1}}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-4 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Mobile No1</mat-label>
                                                 <input matInput name="MobileNo1" type="number"
-                                                    [(ngModel)]="data.MobileNo1" #MobileNo1control />
-                                            </mat-form-field>
+                                                    [(ngModel)]="data.MobileNo1"  (input)="customerSearch(MobileNo1control.value, 'MobileNo1')" #MobileNo1control />
+                                            </mat-form-field> 
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-4 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
@@ -138,8 +145,9 @@
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-5 col-lg-8 col-md-6 col-sm-12 mb-0 ms-auto">
-                                            <button  class="me-2" mat-raised-button color="primary"
-                                            style="padding: 0px 10px;" [routerLink]="['/sale/billinglist/',data.ID]">Bill History</button>
+                                            <button class="me-2" mat-raised-button color="primary"
+                                                style="padding: 0px 10px;"
+                                                [routerLink]="['/sale/billinglist/',data.ID]">Bill History</button>
 
                                             <button *ngIf="id != 0" (click)="updateCustomer()" [disabled]="!f.valid"
                                                 mat-raised-button color="primary"
@@ -152,8 +160,8 @@
                                                 style="padding: 0px 22px">
                                                 Clear
                                             </button>
-                                            <button class="ms-2" (click)="customerPowerPDF()" mat-raised-button color="primary"
-                                                style="padding: 0px 22px">
+                                            <button class="ms-2" (click)="customerPowerPDF()" mat-raised-button
+                                                color="primary" style="padding: 0px 22px">
                                                 PDF
                                             </button>
                                         </div>
@@ -172,8 +180,8 @@
                                             <div class="tab-pane fade show active p-1 pb-0" id="ex1-tabs-1"
                                                 role="tabpanel" aria-labelledby="ex1-tab-1"
                                                 style="border: 1px solid #0027ff">
-                                                
-                                                
+
+
                                                 <div class="row  powerRow">
                                                     <div class="col-md-1 col-3 m-0 p-0 ps-1">
                                                         <b class="extra m-0" style="padding: 2px; cursor: pointer;"
@@ -222,10 +230,9 @@
                                                         </ng-option>
                                                          </ng-select> -->
 
-                                                        <input  class="inputWidth box" type="text" name="REDPSPH"
+                                                        <input class="inputWidth box" type="text" name="REDPSPH"
                                                             [(ngModel)]="spectacle.REDPSPH" id="REDPSPH"
-                                                            list="dpsphList"  (change)="calculate('Lens', 'RD', 0.00)"
-                                                             >
+                                                            list="dpsphList" (change)="calculate('Lens', 'RD', 0.00)">
                                                         <datalist id="dpsphList">
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH">
                                                                 {{d.Name}}</option>
@@ -436,12 +443,13 @@
                                                         </mat-form-field>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <!-- tbl list spec start -->
                                                 <div class="body">
-                                                <div class="row">
-                                                    <div class="col-sm-12 " style="overflow: auto; height: 150px;">
-                                                            <table class="table table-striped table-hover table-sm table-bordered"
+                                                    <div class="row">
+                                                        <div class="col-sm-12 " style="overflow: auto; height: 150px;">
+                                                            <table
+                                                                class="table table-striped table-hover table-sm table-bordered"
                                                                 style="border: 2px solid #fff !important; margin: 0;">
                                                                 <thead>
                                                                     <tr>
@@ -485,13 +493,16 @@
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    <tr class="text-center" *ngFor="let s of spectacleLists let i = index;"
+                                                                    <tr class="text-center"
+                                                                        *ngFor="let s of spectacleLists let i = index;"
                                                                         style="white-space: nowrap;">
                                                                         <td style="width: 7%;">
-                                                                            <mat-icon *ngIf="editCustomer" class="edits_icon ms-1"
+                                                                            <mat-icon *ngIf="editCustomer"
+                                                                                class="edits_icon ms-1"
                                                                                 (click)="edits(s,'spectacle_rx')">
                                                                                 edit</mat-icon>
-                                                                            <mat-icon *ngIf="editCustomer" class="deletes_icon ms-1"
+                                                                            <mat-icon *ngIf="editCustomer"
+                                                                                class="deletes_icon ms-1"
                                                                                 (click)="deleteSpec(i,'spectacle_rx')">delete_forever</mat-icon>
                                                                         </td>
                                                                         <td class="text-left">{{spectacleLists.length -
@@ -534,10 +545,10 @@
                                                                     </tr>
                                                                 </tbody>
                                                             </table>
-                                                        
+
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
                                                 <!-- tbl list spec end -->
 
                                             </div>
@@ -854,9 +865,11 @@
                                                                         *ngFor="let cl of contactList let i = index;"
                                                                         style="white-space: nowrap;">
                                                                         <td style="width: 7%;">
-                                                                            <mat-icon *ngIf="editCustomer" class="edits_icon ms-1"
+                                                                            <mat-icon *ngIf="editCustomer"
+                                                                                class="edits_icon ms-1"
                                                                                 (click)="edits(cl,'contact')">edit</mat-icon>
-                                                                            <mat-icon *ngIf="deleteCustomer" class="deletes_icon ms-1"
+                                                                            <mat-icon *ngIf="deleteCustomer"
+                                                                                class="deletes_icon ms-1"
                                                                                 (click)="deleteSpec(i,'contact')">delete_forever</mat-icon>
                                                                         </td>
                                                                         <td class="text-left">{{contactList.length - i
@@ -1057,10 +1070,12 @@
                                                                         *ngFor="let other of otherList let i = index;"
                                                                         style="white-space: nowrap;">
                                                                         <td style="width: 7%;">
-                                                                            <mat-icon *ngIf="editCustomer" class="edits_icon ms-1"
+                                                                            <mat-icon *ngIf="editCustomer"
+                                                                                class="edits_icon ms-1"
                                                                                 (click)="edits(other,'other')">edit
                                                                             </mat-icon>
-                                                                            <mat-icon *ngIf="deleteCustomer" class="deletes_icon ms-1"
+                                                                            <mat-icon *ngIf="deleteCustomer"
+                                                                                class="deletes_icon ms-1"
                                                                                 (click)="deleteSpec(i,'other')">delete_forever</mat-icon>
                                                                         </td>
                                                                         <td class="text-left">{{otherList.length - i }}
