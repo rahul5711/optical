@@ -22,9 +22,9 @@ module.exports = {
             if (!Body.Name || Body.Name.trim() === "" || Body.Name === undefined || Body.Name === null) {
                 return res.send({ message: "Invalid Query Data" })
             }
-            if (!Body.MobileNo1 || Body.MobileNo1 === "" || Body.MobileNo1 === undefined || Body.MobileNo1 === null) {
-                return res.send({ message: "Invalid Query Data" })
-            }
+            // if (!Body.MobileNo1 || Body.MobileNo1 === "" || Body.MobileNo1 === undefined || Body.MobileNo1 === null) {
+            //     return res.send({ message: "Invalid Query Data" })
+            // }
 
             doesExist = await connection.query(`select * from supplier where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID}`)
 

@@ -292,6 +292,9 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.ProductName.trim() === "") return res.send({ message: "Invalid Query Data" })
 
+
+            console.log("Body =================================>", Body);
+
             const query = `Select productspec.ID as SpecID, productspec.ProductName , productspec.Required , productspec.CompanyID, productspec.Name as FieldName, productspec.Seq, productspec.Type as FieldType, productspec.Ref, productspec.SptTableName, null as SptTableData, '' as SelectedValue, false as DisplayAdd,  '' as EnteredValue, null as SptFilterData from productspec where productspec.ProductName = '${Body.ProductName}' and CompanyID = '${CompanyID}' and Status = 1  Order By productspec.Seq ASC`
 
             const Data = await connection.query(query)
@@ -324,6 +327,9 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.TableName.trim() === "") return res.send({ message: "Invalid Query Data" })
             // if (Body.Ref.trim() === "") return res.send({ message: "Invalid Query Data" })
+
+
+            console.log("getProductSupportData========================================>", Body);
 
             const query = `select * from specspttable where RefID = '${Body.Ref}' and TableName = '${Body.TableName}' and Status = 1`
 

@@ -703,6 +703,9 @@ module.exports = {
 
             const { CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PaymentDate, PayableAmount } = req.body
 
+
+            console.log("customerPayment================================>", req.body);
+
             if (!CustomerID || CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
             if (ApplyReturn === null || ApplyReturn === undefined) return res.send({ message: "Invalid ApplyReturn Data" })
             if (!CreditType || CreditType === undefined) return res.send({ message: "Invalid CreditType Data" })
@@ -786,6 +789,7 @@ module.exports = {
             return res.send(response);
 
         } catch (err) {
+            console.log("error==========================>", err);
             await connection.query("ROLLBACK");
             console.log("ROLLBACK at querySignUp", err);
             throw err;

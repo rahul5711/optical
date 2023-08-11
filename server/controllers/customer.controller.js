@@ -358,7 +358,7 @@ module.exports = {
             if (_.isEmpty(req.body)) return res.send({ message: "Invalid Query Data" })
             if (!CustomerID) return res.send({ message: "Invalid Query Data" })
 
-            const doesExist = await connection.query(`select * from customer where Status = 1 and CompanyID = '${CompanyID}' and ID = '${CustomerID}'`)
+            const doesExist = await connection.query(`select * from customer where Status = 1 and CompanyID = '${CompanyID}' and ID = ${CustomerID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "customer doesnot exist from this id " })
