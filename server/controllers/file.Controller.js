@@ -109,7 +109,7 @@ module.exports = {
 
     if (fs.existsSync(filepath)) {
       console.log('exist');
-      res.sendFile(filepath)
+     return res.sendFile(filepath)
     }
   },
 

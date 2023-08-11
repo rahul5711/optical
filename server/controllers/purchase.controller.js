@@ -1,5 +1,5 @@
 const createError = require('http-errors')
-const mysql = require('../helpers/db')
+const mysql = require('../newdb')
 const _ = require("lodash")
 const { generateBarcode, generateUniqueBarcode, doesExistProduct, shopID, gstDetail } = require('../helpers/helper_function')
 const { now } = require('lodash')
@@ -14,7 +14,7 @@ const { log } = require('console')
 
 module.exports = {
     create: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -139,15 +139,20 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = savePurchase.insertId
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
     update: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -286,16 +291,21 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = purchase.ID
+            await connection.query("COMMIT");
             return res.send(response);
 
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
     getPurchaseById: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { result: { PurchaseMaster: null, PurchaseDetail: null, Charge: null }, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -318,15 +328,20 @@ module.exports = {
             response.result.PurchaseMaster[0].gst_detail = gst_detail || []
             response.result.PurchaseDetail = PurchaseDetail
             response.result.Charge = Charge
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
     list: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -356,14 +371,19 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
+            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
     purchaseHistoryBySupplier: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, sumData: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -384,15 +404,20 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.sumData = sumData
+            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     delete: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -423,14 +448,19 @@ module.exports = {
             console.log("Purchase Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
+            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
     deleteProduct: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { result: { PurchaseDetail: null, PurchaseMaster: null }, success: true, message: "" }
 
@@ -488,15 +518,20 @@ module.exports = {
             response.result.PurchaseDetail = PurchaseDetail;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data delete sucessfully"
+            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     updateProduct: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { result: { PurchaseDetail: null, PurchaseMaster: null }, success: true, message: "" }
 
@@ -558,14 +593,19 @@ module.exports = {
             response.result.PurchaseDetail = PurchaseDetail;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data update product sucessfully"
+            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
     deleteCharge: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { result: { Charge: null, PurchaseMaster: null }, success: true, message: "" }
 
@@ -616,15 +656,20 @@ module.exports = {
             response.result.Charge = Charge;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data delete sucessfully"
+            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     purchaseDetailPDF: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -647,9 +692,9 @@ module.exports = {
             printdata.companysetting = companysetting[0]
 
             var fileName = "";
-            if(!printdata.companysetting.LogoURL){
+            if (!printdata.companysetting.LogoURL) {
                 printdata.LogoURL = clientConfig.appURL + '../assest/no-image.png';
-            }else{
+            } else {
                 printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
             }
 
@@ -680,13 +725,17 @@ module.exports = {
             });
             return
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
 
     },
 
     PrintBarcode: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const bracodeData = req.body
             let modifyBarcode = []
@@ -746,12 +795,16 @@ module.exports = {
             );
             return
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     searchByFeild: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -775,15 +828,20 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
     paymentHistory: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const { ID, InvoiceNo } = req.body;
@@ -799,16 +857,21 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = data
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     barCodeListBySearchString: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const { searchString, ShopMode, ProductName } = req.body;
@@ -833,16 +896,21 @@ module.exports = {
             response.data = purchaseData;
             response.message = "Success";
 
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     productDataByBarCodeNo: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const { Req, PreOrder, ShopMode } = req.body;
@@ -868,16 +936,21 @@ module.exports = {
             let barCodeData = await connection.query(qry);
             response.data = barCodeData[0];
             response.message = "Success";
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     transferProduct: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const { ProductName, Barcode, BarCodeCount, TransferCount, Remark, ToShopID, TransferFromShop } = req.body;
@@ -927,16 +1000,21 @@ module.exports = {
             let xferList = await connection.query(qry1);
             response.data = xferList;
             response.message = "Success";
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     acceptTransfer: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const { ID, TransferFromShop, TransferToShop, Remark, AcceptanceCode } = req.body;
@@ -978,15 +1056,20 @@ module.exports = {
             let xferList = await connection.query(qry1);
             response.data = xferList;
             response.message = "Success";
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
     cancelTransfer: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const { ID, TransferFromShop, Remark } = req.body;
@@ -1026,16 +1109,21 @@ module.exports = {
             let xferList = await connection.query(qry1);
             response.data = xferList;
             response.message = "Success";
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     getTransferList: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -1070,15 +1158,20 @@ module.exports = {
             response.count = count.length
             response.success = "Success";
 
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
     getproductTransferReport: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
 
             const response = {
@@ -1107,11 +1200,16 @@ module.exports = {
             response.success = true;
             response.message = 'Success';
 
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
@@ -1151,14 +1249,18 @@ module.exports = {
                 }
             });
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     // search
 
     barcodeDataByBarcodeNo: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -1190,16 +1292,21 @@ module.exports = {
             response.data = barcodelist;
             response.message = "success";
 
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     barCodeListBySearchStringSearch: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const { searchString, ShopMode, ProductName } = req.body;
@@ -1242,16 +1349,21 @@ module.exports = {
             response.data = barcodelist;
             response.message = "Success";
 
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     updateBarcode: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const { ID, Barcode, Remark, CurrentStatus } = req.body;
@@ -1268,11 +1380,16 @@ module.exports = {
             let barcode = await connection.query(qry);
             response.data = [];
             response.message = "success";
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
@@ -1280,7 +1397,7 @@ module.exports = {
     // Inventory summary
 
     getInventorySummary: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -1296,16 +1413,21 @@ module.exports = {
             let data = await connection.query(qry);
             response.data = data
             response.message = "success";
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     updateInventorySummary: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -1322,11 +1444,16 @@ module.exports = {
             let data = await connection.query(qry);
             response.data = []
             response.message = "success";
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
@@ -1334,7 +1461,7 @@ module.exports = {
     // Purchase Reports
 
     getPurchasereports: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = {
                 data: null, calculation: [{
@@ -1458,16 +1585,21 @@ module.exports = {
             response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice : 0
             response.data = data
             response.message = "success";
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     getPurchasereportsDetail: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = {
                 data: null, calculation: [{
@@ -1563,11 +1695,16 @@ module.exports = {
 
             response.data = data
             response.message = "success";
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
@@ -1575,7 +1712,7 @@ module.exports = {
     // Purchase return report
 
     getPurchasereturnreports: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = {
                 data: null, calculation: [{
@@ -1699,16 +1836,21 @@ module.exports = {
             response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice : 0
             response.data = data
             response.message = "success";
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     getPurchasereturndetailreports: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = {
                 data: null, calculation: [{
@@ -1804,11 +1946,16 @@ module.exports = {
 
             response.data = data
             response.message = "success";
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
@@ -1816,7 +1963,7 @@ module.exports = {
     // pre order
 
     createPreOrder: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -1926,16 +2073,21 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = savePurchase.insertId
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     listPreOrder: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -1965,14 +2117,19 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
+            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
     listPreOrderDummy: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -2016,14 +2173,19 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
+            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
     deletePreOrderDummy: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -2050,14 +2212,19 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             response.data = []
+            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
     updatePreOrderDummy: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -2081,15 +2248,20 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = []
+            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     getPurchaseByIdPreOrder: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { result: { PurchaseMaster: null, PurchaseDetail: null }, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -2111,16 +2283,21 @@ module.exports = {
             response.result.PurchaseMaster = PurchaseMaster
             response.result.PurchaseMaster[0].gst_detail = gst_detail || []
             response.result.PurchaseDetail = PurchaseDetail
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     deletePreOrder: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -2151,15 +2328,20 @@ module.exports = {
             console.log("Purchase Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
+            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     deleteProductPreOrder: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { result: { PurchaseDetail: null, PurchaseMaster: null }, success: true, message: "" }
 
@@ -2203,15 +2385,20 @@ module.exports = {
             response.result.PurchaseDetail = PurchaseDetail;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data delete sucessfully"
+            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     updatePreOrder: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -2327,17 +2514,22 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = purchase.ID
+            await connection.query("COMMIT");
             return res.send(response);
 
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     searchByFeildPreOrder: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -2361,18 +2553,23 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     // product inventory report
 
     getProductInventoryReport: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
 
             const response = {
@@ -2475,19 +2672,24 @@ module.exports = {
             response.calculation[0].gst_details = values;
             response.data = data
             response.message = "success";
+            await connection.query("COMMIT");
             return res.send(response);
 
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
 
     },
 
     // product expiry report
     getProductExpiryReport: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
 
             const response = {
@@ -2590,12 +2792,17 @@ module.exports = {
             response.calculation[0].gst_details = values;
             response.data = data
             response.message = "success";
+            await connection.query("COMMIT");
             return res.send(response);
 
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
 
     },
@@ -2603,7 +2810,7 @@ module.exports = {
     // purchase charge report
 
     getPurchaseChargeReport: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
 
             const response = {
@@ -2693,12 +2900,17 @@ module.exports = {
             response.calculation[0].gst_details = values;
             response.data = data
             response.message = "success";
+            await connection.query("COMMIT");
             return res.send(response);
 
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
 
     },
@@ -2706,7 +2918,7 @@ module.exports = {
     // purchase return
 
     barCodeListBySearchStringPR: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const { searchString, ShopMode, ProductName, ShopID, SupplierID } = req.body;
@@ -2735,16 +2947,21 @@ module.exports = {
             response.data = purchaseData;
             response.message = "Success";
 
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     productDataByBarCodeNoPR: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const { Req, PreOrder, ShopMode, ShopID, SupplierID } = req.body;
@@ -2774,16 +2991,21 @@ module.exports = {
             let barCodeData = await connection.query(qry);
             response.data = barCodeData[0];
             response.message = "Success";
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     savePurchaseReturn: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -2860,16 +3082,21 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = savePurchaseReturn.insertId
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     updatePurchaseReturn: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -2957,17 +3184,22 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = purchase.ID
+            await connection.query("COMMIT");
             return res.send(response);
 
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     purchasereturnlist: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -2997,15 +3229,20 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
+            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     getPurchaseReturnById: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { result: { PurchaseMaster: null, PurchaseDetail: null }, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -3083,16 +3320,21 @@ module.exports = {
             response.result.PurchaseMaster = PurchaseMaster
             response.result.PurchaseMaster[0].gst_detail = values || []
             response.result.PurchaseDetail = PurchaseDetail2
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     deleteProductPR: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { result: { PurchaseDetail: null, PurchaseMaster: null }, success: true, message: "" }
 
@@ -3202,15 +3444,20 @@ module.exports = {
             response.result.PurchaseDetail = PurchaseDetail2;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data delete sucessfully"
+            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     searchByFeildPR: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -3234,16 +3481,21 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
+            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     deletePR: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -3278,15 +3530,20 @@ module.exports = {
             console.log("Purchase Return Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
+            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     supplierCnPR: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -3320,10 +3577,15 @@ module.exports = {
             console.log(connected("Vendor Credit SuccessFUlly !!!"));
 
             response.message = "data update sucessfully"
+            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 

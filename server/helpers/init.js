@@ -1,4 +1,4 @@
-const getConnection = require('../helpers/db')
+const getConnection = require('../newdb')
 const pass_init = require('./generate_password')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;

@@ -1,5 +1,5 @@
 const createError = require('http-errors')
-const mysql = require('../helpers/db')
+const mysql = require('../newdb')
 const pass_init = require('../helpers/generate_password')
 const {
     signAccessTokenAdmin,
@@ -18,7 +18,7 @@ module.exports = {
 
 
     login: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
             const response = { data: null, accessToken: null, refreshToken: null, success: true, message: "", loginCode: 0 }
 
@@ -46,7 +46,8 @@ module.exports = {
                 response.data = User[0]
                 response.accessToken = accessToken
                 response.refreshToken = refreshToken
-                res.send(response)
+                await connection.query("COMMIT");
+                return res.send(response);
             } else {
                 let comment = "";
                 let loginCode = 0;
@@ -76,7 +77,7 @@ module.exports = {
 
 
                     const shop = await connection.query(`select * from shop where CompanyID = '${User[0].CompanyID}'`)
-
+                    await connection.query("COMMIT");
                     return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], shop: shop, success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
                 } else {
 
@@ -101,27 +102,31 @@ module.exports = {
                         const shop = await connection.query(`select usershop.*, role.Name as RoleName, shop.Name as ShopName, shop.Name as Name, shop.AreaName as AreaName, user.Name as UserName from usershop left join role on role.ID = usershop.RoleID left join shop on shop.ID = usershop.ShopID left join user on user.ID = usershop.UserID where usershop.Status = 1 and usershop.UserID = ${User[0].ID}`)
                         const accessToken = await signAccessTokenAdmin(`'${User[0].ID}'`)
                         const refreshToken = await signRefreshTokenAdmin(`'${User[0].ID}'`)
+                        await connection.query("COMMIT");
                         return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], shop: shop, success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
                     } else {
                         const saveHistory = await connection.query(
                             `Insert into loginhistory (CompanyID, UserName, UserID, LoginTime, IpAddress, Comment) values (${User[0].CompanyID}, '${User[0].Name}', ${User[0].ID}, now(), '${ip}', '${comment}')`
 
                         );
+                        await connection.query("COMMIT");
                         return res.send({ message: comment, success: false, loginCode: loginCode })
                     }
 
                 }
 
             }
-            return
-            connection.release()
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     },
 
     companylogin: async (req, res, next) => {
-        const connection = mysql;
+        const connection = await mysql.connection();
         try {
 
             const Body = req.body;
@@ -149,12 +154,14 @@ module.exports = {
             const refreshToken = await signRefreshTokenAdmin(`'${User[0].ID}'`)
 
             const shop = await connection.query(`select * from shop where Status = 1 and CompanyID = '${User[0].CompanyID}'`)
-
+            await connection.query("COMMIT");
             return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], shop: shop, success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
-            connection.release()
-
         } catch (err) {
-            next(err)
+            await connection.query("ROLLBACK");
+            console.log("ROLLBACK at querySignUp", err);
+            throw err;
+        } finally {
+            await connection.release();
         }
     }
 
