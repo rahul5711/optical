@@ -61,11 +61,13 @@ app.use(function(req, res, next) {
         if (
           currentTime < companysetting[0].LoginTimeEnd
       ) {
+        await connection.release();
         next()
       } else {
         return res.status(999).send({success: false, message: `your session has been expired`})
       }
       } else {
+        await connection.release();
         next()
       }
     })
