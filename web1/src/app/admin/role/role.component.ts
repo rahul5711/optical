@@ -236,7 +236,14 @@ export class RoleComponent implements OnInit {
     }
   }
 
+  addRole(){
+    this.sp.show()
+    this.selectedRole = []
+    this.sp.hide()
+  }
+
   savePermission(){
+    this.sp.show()
     this.selectedRole.Permission = JSON.stringify(this.displayModule);
     console.log(this.selectedRole.Permission);
     const subs: Subscription = this.role.update(this.selectedRole).subscribe({
@@ -246,7 +253,7 @@ export class RoleComponent implements OnInit {
           Swal.fire({
             position: 'center',
             icon: 'success',
-            title: 'Your file has been Save.',
+            title: 'Your file has been Save Permission.',
             showConfirmButton: false,
             timer: 1200
           })

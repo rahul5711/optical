@@ -55,8 +55,8 @@ export class BillingComponent implements OnInit {
   contactList: any = []
   otherList: any = []
   toggleChecked = false;
-  formValue: any=[];
-  searchList:any=[];
+  formValue: any = [];
+  searchList: any = [];
   srcBox = true;
   constructor(
     private router: Router,
@@ -81,7 +81,7 @@ export class BillingComponent implements OnInit {
     ID: '', CompanyID: '', Idd: 0, Name: '', Sno: '', TotalCustomer: '', VisitDate: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: null, DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
   };
 
-  spectacle :any = {
+  spectacle: any = {
     ID: 'null', CustomerID: '', REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
     LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
     R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: null, FileURL: null, Family: 'Self', ExpiryDate: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
@@ -102,7 +102,7 @@ export class BillingComponent implements OnInit {
 
   Check: any = { SpectacleCheck: true, ContactCheck: false, OtherCheck: false, };
 
-  param = {Name: '', MobileNo1: '' , Address:'', Sno:''};
+  param = { Name: '', MobileNo1: '', Address: '', Sno: '' };
   // dropdown values in satics
   dataSPH: any = [
     { Name: '+25.00' },
@@ -484,7 +484,7 @@ export class BillingComponent implements OnInit {
             this.spectacle.CustomerID = this.id;
             this.clens.CustomerID = this.id;
             this.other.CustomerID = this.id;
-            this.router.navigate(['/sale/billing', res.data[0].ID ,0 ]);
+            this.router.navigate(['/sale/billing', res.data[0].ID, 0]);
             this.getCustomerById();
             Swal.fire({
               position: 'center',
@@ -494,7 +494,7 @@ export class BillingComponent implements OnInit {
               timer: 1500
             })
           }
-  
+
         } else {
           this.as.errorToast(res.message)
         }
@@ -508,7 +508,7 @@ export class BillingComponent implements OnInit {
     this.contactList
   }
 
-  getScoList(){
+  getScoList() {
     this.sp.show()
     const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
       next: (res: any) => {
@@ -572,7 +572,7 @@ export class BillingComponent implements OnInit {
           if (this.otherList.length !== 0) {
             this.other = res.other_rx[0]
           }
-           this.getScoList()
+          this.getScoList()
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
@@ -678,12 +678,12 @@ export class BillingComponent implements OnInit {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
-      if (result.isConfirmed) {   
+      if (result.isConfirmed) {
         this.sp.show()
         if (mode === 'spectacle_rx') {
           const subs: Subscription = this.cs.deleteSpec(this.spectacleLists[i].ID, this.spectacleLists[i].CustomerID, 'spectacle_rx').subscribe({
             next: (res: any) => {
-              if(res.success){
+              if (res.success) {
                 this.spectacleLists.splice(i, 1);
                 this.getCustomerById()
                 // if (this.spectacleLists.length === 0) {
@@ -766,8 +766,8 @@ export class BillingComponent implements OnInit {
     }
     const subs: Subscription = this.cs.updateCustomer(this.data).subscribe({
       next: (res: any) => {
-        this.getCustomerById()
         if (res.success) {
+          this.getCustomerById()
           Swal.fire({
             position: 'center',
             icon: 'success',
@@ -778,7 +778,7 @@ export class BillingComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
-      this.sp.hide()
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.msg);
@@ -795,9 +795,8 @@ export class BillingComponent implements OnInit {
     this.calculation.calculate(mode, x, y, this.spectacle, this.clens)
   }
 
-  customerPowerPDF(){
-    this.sp.show()
-    let body = { customer: this.data, spectacle: this.spectacle, contact: this.clens, other: this.other,}
+  customerPowerPDF() {
+    let body = { customer: this.data, spectacle: this.spectacle, contact: this.clens, other: this.other, }
     this.sp.show();
     const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
       next: (res: any) => {
@@ -815,90 +814,94 @@ export class BillingComponent implements OnInit {
   }
   // Billing
 
-  customerSearch(searchKey:any, mode:any) {
+  customerSearch(searchKey: any, mode: any) {
 
-    this.searchList = []; 
-    this.param = {Name: '', MobileNo1: '', Address:'', Sno:''};
-    if(searchKey.length >= 3){
+    this.searchList = [];
+    this.param = { Name: '', MobileNo1: '', Address: '', Sno: '' };
+    if (searchKey.length >= 3) {
       this.sp.show()
-   
-     if(mode === 'Name') {
-       this.param.Name = searchKey;
-     } else if(mode === 'MobileNo1') {
-       this.param.MobileNo1 = searchKey;
-     } else if(mode === 'Address') {
-       this.param.Address = searchKey;
-     } else if(mode === 'Sno') {
-       this.param.Sno = searchKey;
-     }
-     const subs: Subscription = this.cs.customerSearch(this.param).subscribe({
-      next: (res: any) => {
-        if (res) {
-         this.searchList = res.data
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
-   }
 
-  getCustomerSearchId(ID:any) {
+      if (mode === 'Name' || mode === 'MobileNo1') {
+        const pattern = /[0-9\+\-]/
+        let inputChar = searchKey.toString();
+        if (pattern.test(inputChar)) {
+          this.param.MobileNo1 = searchKey;
+        } else {
+          this.param.Name = searchKey;
+        }
+      } else if (mode === 'Address') {
+        this.param.Address = searchKey;
+      } else if (mode === 'Sno') {
+        this.param.Sno = searchKey;
+      }
+      const subs: Subscription = this.cs.customerSearch(this.param).subscribe({
+        next: (res: any) => {
+          if (res) {
+            this.searchList = res.data
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+  }
+
+  getCustomerSearchId(ID: any) {
     this.sp.show()
     this.id = ID;
-    this.router.navigate(['/sale/billing', ID,0 ]);
+    this.router.navigate(['/sale/billing', ID, 0]);
     this.ngOnInit();
-    if (this.id !== 0){
+    if (this.id !== 0) {
       this.srcBox = true;
-    const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
-      next: (res: any) => {
-        if (res.success) {
+      const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
+        next: (res: any) => {
+          if (res.success) {
 
-          this.data = res.data[0]
-          this.data.Idd = res.data[0].Idd
-          if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
-            this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
+            this.data = res.data[0]
+            this.data.Idd = res.data[0].Idd
+            if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
+              this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
+            } else {
+              this.customerImage = "/assets/images/userEmpty.png"
+            }
+
+            if (res.spectacle_rx.length !== 0) {
+              this.spectacle = res.spectacle_rx[0]
+              if (res.spectacle_rx[0].PhotoURL !== "null" && res.spectacle_rx[0].PhotoURL !== '') {
+                this.spectacleImage = this.env.apiUrl + res.spectacle_rx[0].PhotoURL;
+              } else {
+                this.spectacleImage = "/assets/images/userEmpty.png"
+              }
+            }
+
+            if (this.contactList.length !== 0) {
+              this.clens = res.contact_lens_rx[0]
+              if (res.contact_lens_rx[0].PhotoURL !== "null" && res.contact_lens_rx[0].PhotoURL !== '') {
+                this.clensImage = this.env.apiUrl + res.contact_lens_rx[0].PhotoURL;
+              } else {
+                this.clensImage = "/assets/images/userEmpty.png"
+              }
+            }
+
+            if (this.otherList.length !== 0) {
+              this.other = res.other_rx[0]
+            }
+            this.as.successToast(res.message)
           } else {
-            this.customerImage = "/assets/images/userEmpty.png"
+            this.as.errorToast(res.message)
           }
-
-          if (res.spectacle_rx.length !== 0) {
-            this.spectacle = res.spectacle_rx[0]
-            if (res.spectacle_rx[0].PhotoURL !== "null" && res.spectacle_rx[0].PhotoURL !== '') {
-              this.spectacleImage = this.env.apiUrl + res.spectacle_rx[0].PhotoURL;
-            } else {
-              this.spectacleImage = "/assets/images/userEmpty.png"
-            }
-          }
-
-          if (this.contactList.length !== 0) {
-            this.clens = res.contact_lens_rx[0]
-            if (res.contact_lens_rx[0].PhotoURL !== "null" && res.contact_lens_rx[0].PhotoURL !== '') {
-              this.clensImage = this.env.apiUrl + res.contact_lens_rx[0].PhotoURL;
-            } else {
-              this.clensImage = "/assets/images/userEmpty.png"
-            }
-          }
-
-          if (this.otherList.length !== 0) {
-            this.other = res.other_rx[0]
-          }
-          this.as.successToast(res.message)
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide()
-        this.srcBox = false;
-      },
-      error: (err: any) => {
-        console.log(err.message);
-      },
-      complete: () => subs.unsubscribe(),
-    })
-   }
+          this.sp.hide()
+          this.srcBox = false;
+        },
+        error: (err: any) => {
+          console.log(err.message);
+        },
+        complete: () => subs.unsubscribe(),
+      })
+    }
   }
 
 }

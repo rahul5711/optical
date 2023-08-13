@@ -140,7 +140,7 @@ export class ProductManageComponent implements OnInit {
         this.selectedProductID = element.ID;
       }
     });
-
+    this.sp.show()
     if (this.selectedProduct !== null || this.selectedProduct !== '') {
       const subs: Subscription = this.ps.getSpec(this.selectedProduct).subscribe({
         next: (res: any) => {

@@ -23,7 +23,7 @@
 
                                 </div>
                                 <div *ngIf="!showAdd" class="col-md-8 col-sm-6 mb-0">
-                                    <button type="button" class="btn_icon"  (click)="showAdd = !showAdd; ">
+                                    <button type="button" class="btn_icon"  (click)="showAdd = !showAdd; addRole()">
                                         <mat-icon class="col-white plus_icon">add</mat-icon>
                                     </button>
                                     <button type="button" class="btn_icon" [disabled]="selectedRole.ID === ''"
@@ -50,13 +50,13 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="body" style="overflow-x:auto;overflow:auto;height:450px;"
+                            <div  class="body" style="overflow-x:auto;overflow:auto;height:450px;"
                                 class="table-responsive">
                                 <table class="table" class="table table-striped table-hover table-sm table-bordered"
                                     style="border: 2px solid #fff !important;">
                                     <thead class="thead-light">
                                         <tr >
-                                            <th  style="text-align: left;">Module Name</th>
+                                            <th style="text-align: left;">Module Name</th>
                                             <th>ModuleView</th>
                                             <th>View</th>
                                             <th>Edit/Disable</th>

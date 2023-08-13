@@ -157,10 +157,9 @@ export class BillListComponent implements OnInit {
           //   ele.Amount = ele.Credit === 'Debit' ? '-' + ele.Amount : '+' + ele.Amount;
           // });
           this.paymentHistoryList = res.data;
-          this.applyDebitPayment.PayableAmount = res.totalPaidAmount
-          this.applyDebitPayment.CustomerID = res.data[0].CustomerID
-          this.applyDebitPayment.ID = res.data[0].BillMasterID
-          ;
+          this.applyDebitPayment.PayableAmount = res.totalPaidAmount;
+          this.applyDebitPayment.CustomerID = res.data[0].CustomerID;
+          this.applyDebitPayment.ID = res.data[0].BillMasterID;
           this.getPaymentModesList()
           this.as.successToast(res.message)
         }else{
@@ -189,6 +188,7 @@ export class BillListComponent implements OnInit {
   }
 
   updateCustomerPaymentMode(data:any) {
+      this.sp.show()
       const subs: Subscription = this.pay.updateCustomerPaymentMode(data).subscribe({
         next: (res: any) => {
           if (res.success) {
@@ -197,6 +197,7 @@ export class BillListComponent implements OnInit {
           } else {
             this.as.errorToast(res.message)
           }
+         this.sp.hide()
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
@@ -205,6 +206,7 @@ export class BillListComponent implements OnInit {
 
   // payment date update 
   updateCustomerPaymentDate(data:any) {
+      this.sp.show()
       const subs: Subscription = this.pay.updateCustomerPaymentDate(data).subscribe({
         next: (res: any) => {
           if (res.success) {
@@ -213,6 +215,7 @@ export class BillListComponent implements OnInit {
           } else {
             this.as.errorToast(res.message)
           }
+          this.sp.hide()
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
@@ -269,7 +272,6 @@ export class BillListComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     }
-    
   }
 
   openModal14(content: any,){
@@ -395,6 +397,7 @@ export class BillListComponent implements OnInit {
   }
 
   onPaymentSubmit(){
+
     if(this.applyPayment.PayableAmount < this.applyPayment.PaidAmount ){
       Swal.fire({
         position: 'center',
@@ -419,6 +422,7 @@ export class BillListComponent implements OnInit {
     }
 
     if(this.applyPayment.PaidAmount !== 0){
+      this.sp.show()
       this.applyPayment.CompanyID = this.company.ID;
       this.applyPayment.ShopID = Number(this.selectedShop);
       this.applyPayment.PaymentDate =  moment().format('YYYY-MM-DD');
@@ -536,6 +540,7 @@ export class BillListComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
       } else {
+        this.sp.hide()
         this.getList()
       }
     });
@@ -580,6 +585,7 @@ export class BillListComponent implements OnInit {
         this.sp.show()
         if(this.dataList[i].Quantity == 0) {
         }else {
+          this.sp.hide()
           Swal.fire({
             title: 'Alert',
             text: "you can not delete this invoice, please delete product first!",
@@ -589,7 +595,6 @@ export class BillListComponent implements OnInit {
             confirmButtonText: 'OK!'
           })
         }
-        this.sp.hide()
         const subs: Subscription = this.bill.deleteData(this.dataList[i].ID).subscribe({
           next: (res: any) => {
             if(res.success){

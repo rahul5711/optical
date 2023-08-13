@@ -1029,14 +1029,15 @@ export class BillComponent implements OnInit {
             this.data.billMaseterData = this.BillMaster;
             this.data.billDetailData = this.billItemList[i];
             delete this.data.service
+            this.sp.show()
             const subs: Subscription = this.bill.deleteProduct(this.data).subscribe({
               next: (res: any) => {
                 if (res.success) {
                   this.getBillById(res.data[0].BillMasterID)
-                  this.sp.hide()
                 } else {
                   this.as.errorToast(res.message)
                 }
+                this.sp.hide()
               },
               error: (err: any) => console.log(err.message),
               complete: () => subs.unsubscribe(),
@@ -1063,7 +1064,7 @@ export class BillComponent implements OnInit {
           backdrop: false,
         }).then((result) => {
           if (result.isConfirmed) {
-            // this.sp.show();
+            this.sp.show();
             this.serviceLists[i].Status = 0;
             this.data.service = this.serviceLists[i];
             this.data.billMaseterData = this.BillMaster;
@@ -1072,10 +1073,10 @@ export class BillComponent implements OnInit {
               next: (res: any) => {
                 if (res.success) {
                   this.getBillById(res.data[0].BillMasterID)
-                  this.sp.hide()
                 } else {
                   this.as.errorToast(res.message)
                 }
+                this.sp.hide()
               },
               error: (err: any) => console.log(err.message),
               complete: () => subs.unsubscribe(),
@@ -1174,15 +1175,14 @@ export class BillComponent implements OnInit {
   // update payment 
 
   openModal1(content1: any){
-    this.sp.show()
     this.modalService.open(content1, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
     this.getPaymentModesList()
     this.billByCustomer(this.id)
     this.paymentHistoryByMasterID(this.id, this.id2)
-    this.sp.hide()
   }
 
   getPaymentModesList() {
+    this.sp.show()
     const subs: Subscription = this.supps.getList('PaymentModeType').subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -1190,6 +1190,7 @@ export class BillComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -1258,7 +1259,6 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
- 
     });
   }
 
@@ -1285,14 +1285,13 @@ export class BillComponent implements OnInit {
         this.applyPayment.PaidAmount = 0
       }
     }
-
     if(this.applyPayment.PaidAmount !== 0){
+      this.sp.show()
       this.applyPayment.CustomerID = this.BillMaster.CustomerID;
       this.applyPayment.CompanyID = this.company.ID;
       this.applyPayment.ShopID = Number(this.selectedShop);
       this.applyPayment.PaymentDate =  moment().format('YYYY-MM-DD');
       this.applyPayment.pendingPaymentList = this.invoiceList;
-      console.log(this.applyPayment);
       const subs: Subscription = this.pay.customerPayment(this.applyPayment).subscribe({
         next: (res: any) => {
             if(res.success ){
@@ -1566,7 +1565,6 @@ export class BillComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
     }else{
-
       Swal.fire({
         position: 'center',
         icon: 'warning',
@@ -1628,16 +1626,15 @@ export class BillComponent implements OnInit {
   }
 
   updataEditProdcut(fieldName: any, mode: any, data: any){
+      this.sp.show()
       this.calculateFields1(fieldName, mode, data)
       let totalPaid = 0
       totalPaid = +this.BillMaster.TotalAmount - this.BillMaster.DueAmount
       this.calculateGrandTotal();
       this.BillMaster.DueAmount = this.BillMaster.TotalAmount - totalPaid 
       this.data1.billMaseterData = this.BillMaster
-
       this.data1.billDetailData.push(data)
-     
-      console.log(this.data1);
+ 
       const subs: Subscription = this.bill.updateProduct(this.data1).subscribe({
         next: (res: any) => {
           if (res.success) {

@@ -141,7 +141,6 @@ export class AddManageComponent implements OnInit {
   }
 
   delSupport(){
-    this.sp.show()
     if (this.data1.Category === null) {
       Swal.fire({
         position: 'center',
