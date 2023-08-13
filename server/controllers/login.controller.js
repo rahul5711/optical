@@ -12,13 +12,13 @@ const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 var moment = require("moment-timezone");
+const mysql2 = require('../database')
 
 
 module.exports = {
 
 
     login: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, accessToken: null, refreshToken: null, success: true, message: "", loginCode: 0 }
 
@@ -26,7 +26,7 @@ module.exports = {
             const ip = req.headers.ip ? req.headers.ip : '**********';
             if (_.isEmpty(Body)) res.send({ success: false, message: "Invalid Query Data" })
 
-            const User = await connection.query(`select * from user where LoginName = '${Body.LoginName}' and Status = 1`)
+            const [User] = await mysql2.pool.query(`select * from user where LoginName = '${Body.LoginName}' and Status = 1`)
 
             if (!User.length) {
                 return res.send({ success: false, message: "LoginName doesnot matched" })
@@ -46,18 +46,18 @@ module.exports = {
                 response.data = User[0]
                 response.accessToken = accessToken
                 response.refreshToken = refreshToken
-                await connection.query("COMMIT");
+                await mysql2.pool.query("COMMIT");
                 return res.send(response);
             } else {
                 let comment = "";
                 let loginCode = 0;
-                const company = await connection.query(`select * from company where Status = 1 and ID = '${User[0].CompanyID}'`)
+                const [company] = await mysql2.pool.query(`select * from company where Status = 1 and ID = '${User[0].CompanyID}'`)
 
                 if (!company) {
                     return res.send({ success: false, message: "Company De-Activate By Admin, Contact OpticalGuru Team" })
                 }
 
-                const setting = await connection.query(`select * from companysetting where CompanyID = '${User[0].CompanyID}'`);
+                const [setting] = await mysql2.pool.query(`select * from companysetting where CompanyID = '${User[0].CompanyID}'`);
 
                 var expDate = new Date(company[0].CancellationDate);
                 var todate = new Date()
@@ -70,14 +70,13 @@ module.exports = {
                     comment = "login SuccessFully";
                     const accessToken = await signAccessTokenAdmin(`'${User[0].ID}'`)
                     const refreshToken = await signRefreshTokenAdmin(`'${User[0].ID}'`)
-                    const saveHistory = await connection.query(
+                    const [saveHistory] = await mysql2.pool.query(
                         `Insert into loginhistory (CompanyID, UserName, UserID, LoginTime, IpAddress, Comment) values (${User[0].CompanyID}, '${User[0].Name}', ${User[0].ID}, now(), '${ip}', '${comment}')`
 
                     );
 
 
-                    const shop = await connection.query(`select * from shop where CompanyID = '${User[0].CompanyID}'`)
-                    await connection.query("COMMIT");
+                    const [shop] = await mysql2.pool.query(`select * from shop where CompanyID = '${User[0].CompanyID}'`)
                     return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], shop: shop, success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
                 } else {
 
@@ -95,38 +94,31 @@ module.exports = {
                     }
 
                     if (loginCode === 1) {
-                        const saveHistory = await connection.query(
+                        const [saveHistory] = await mysql2.pool.query(
                             `Insert into loginhistory (CompanyID, UserName, UserID, LoginTime, IpAddress, Comment) values (${User[0].CompanyID}, '${User[0].Name}', ${User[0].ID}, now(), '${ip}', '${comment}')`
 
                         );
-                        const shop = await connection.query(`select usershop.*, role.Name as RoleName, shop.Name as ShopName, shop.Name as Name, shop.AreaName as AreaName, user.Name as UserName from usershop left join role on role.ID = usershop.RoleID left join shop on shop.ID = usershop.ShopID left join user on user.ID = usershop.UserID where usershop.Status = 1 and usershop.UserID = ${User[0].ID}`)
+                        const [shop] = await mysql2.pool.query(`select usershop.*, role.Name as RoleName, shop.Name as ShopName, shop.Name as Name, shop.AreaName as AreaName, user.Name as UserName from usershop left join role on role.ID = usershop.RoleID left join shop on shop.ID = usershop.ShopID left join user on user.ID = usershop.UserID where usershop.Status = 1 and usershop.UserID = ${User[0].ID}`)
                         const accessToken = await signAccessTokenAdmin(`'${User[0].ID}'`)
                         const refreshToken = await signRefreshTokenAdmin(`'${User[0].ID}'`)
-                        await connection.query("COMMIT");
                         return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], shop: shop, success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
                     } else {
-                        const saveHistory = await connection.query(
+                        const [saveHistory] = await mysql2.pool.query(
                             `Insert into loginhistory (CompanyID, UserName, UserID, LoginTime, IpAddress, Comment) values (${User[0].CompanyID}, '${User[0].Name}', ${User[0].ID}, now(), '${ip}', '${comment}')`
 
                         );
-                        await connection.query("COMMIT");
                         return res.send({ message: comment, success: false, loginCode: loginCode })
                     }
 
                 }
 
             }
-        } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+        } catch(err) {
+            next(err)
         }
     },
 
     companylogin: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
 
             const Body = req.body;
@@ -134,7 +126,7 @@ module.exports = {
             if (_.isEmpty(Body)) res.send({ success: false, message: "Invalid Query Data" })
             if (!Body.LoginName) res.send({ success: false, message: "Invalid Query Data" })
 
-            const User = await connection.query(`select * from user where LoginName = '${Body.LoginName}' and Status = 1`)
+            const [User] = await mysql2.pool.query(`select * from user where LoginName = '${Body.LoginName}' and Status = 1`)
 
             if (!User.length) {
                 return res.send({ success: false, message: "LoginName doesnot matched" })
@@ -143,9 +135,9 @@ module.exports = {
 
             let comment = "";
             let loginCode = 0;
-            const company = await connection.query(`select * from company where Status = 1 and ID = '${User[0].CompanyID}'`)
+            const [company] = await mysql2.pool.query(`select * from company where Status = 1 and ID = '${User[0].CompanyID}'`)
 
-            const setting = await connection.query(`select * from companysetting where CompanyID = '${User[0].CompanyID}'`);
+            const [setting] = await mysql2.pool.query(`select * from companysetting where CompanyID = '${User[0].CompanyID}'`);
 
 
             loginCode = 1;
@@ -153,15 +145,10 @@ module.exports = {
             const accessToken = await signAccessTokenAdmin(`'${User[0].ID}'`)
             const refreshToken = await signRefreshTokenAdmin(`'${User[0].ID}'`)
 
-            const shop = await connection.query(`select * from shop where Status = 1 and CompanyID = '${User[0].CompanyID}'`)
-            await connection.query("COMMIT");
+            const [shop] = await mysql2.pool.query(`select * from shop where Status = 1 and CompanyID = '${User[0].CompanyID}'`)
             return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], shop: shop, success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
-        } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+        } catch(err) {
+            next(err)
         }
     }
 

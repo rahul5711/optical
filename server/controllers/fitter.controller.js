@@ -6,10 +6,10 @@ const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const { shopID, generateInvoiceNo, generateBillSno, generateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder, gstDetailBill, generateUniqueBarcode } = require('../helpers/helper_function')
+const mysql2 = require('../database')
 
 module.exports = {
     save: async (req, res, next) => {
-        const connection = await mysql.connection();
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -19,7 +19,7 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
-            if (Body.PhotoURL == null ) {
+            if (Body.PhotoURL == null) {
                 Body.PhotoURL = ''
             }
 
@@ -31,31 +31,25 @@ module.exports = {
                 return res.send({ message: "Invalid Query Data" })
             }
 
-            doesExist = await connection.query(`select * from fitter where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID}`)
+            [doesExist] = await mysql2.pool.query(`select * from fitter where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID}`)
 
             if (doesExist.length) {
                 return res.send({ message: `fitter already exist from this number ${Body.MobileNo1}` })
             }
 
-            const saveData = await connection.query(`insert into fitter (CompanyID, ShopID, Name,  MobileNo1,  MobileNo2,  PhoneNo,  Email,  Address,  Website,  PhotoURL,  CINNO, GSTNo,  Fax, ContactPerson, Remark,  DOB,  Anniversary, Status, CreatedBy , CreatedOn ) values (${CompanyID}, ${shopid}, '${Body.Name}',  '${Body.MobileNo1}', '${Body.MobileNo2}', '${Body.PhoneNo}','${Body.Email}', '${Body.Address}', '${Body.Website}','${Body.PhotoURL}','${Body.CINNo}','${Body.GSTNo}','${Body.Fax}','${Body.ContactPerson}','${Body.Remark}','${Body.DOB}', '${Body.Anniversary}', 1 , '${LoggedOnUser}', now())`)
+            const [saveData] = await mysql2.pool.query(`insert into fitter (CompanyID, ShopID, Name,  MobileNo1,  MobileNo2,  PhoneNo,  Email,  Address,  Website,  PhotoURL,  CINNO, GSTNo,  Fax, ContactPerson, Remark,  DOB,  Anniversary, Status, CreatedBy , CreatedOn ) values (${CompanyID}, ${shopid}, '${Body.Name}',  '${Body.MobileNo1}', '${Body.MobileNo2}', '${Body.PhoneNo}','${Body.Email}', '${Body.Address}', '${Body.Website}','${Body.PhotoURL}','${Body.CINNo}','${Body.GSTNo}','${Body.Fax}','${Body.ContactPerson}','${Body.Remark}','${Body.DOB}', '${Body.Anniversary}', 1 , '${LoggedOnUser}', now())`)
 
             console.log(connected("Data Added SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
             response.data = saveData.insertId;
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     update: async (req, res, next) => {
-        const connection = await mysql.connection();
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -74,29 +68,23 @@ module.exports = {
                 return res.send({ message: "Invalid Query Data" })
             }
 
-            const doesExistFitter = await connection.query(`select * from fitter where MobileNo1 = '${Body.MobileNo1}' and Status = 1 and ID != ${Body.ID}`)
+            const [doesExistFitter] = await mysql2.pool.query(`select * from fitter where MobileNo1 = '${Body.MobileNo1}' and Status = 1 and ID != ${Body.ID}`)
             if (doesExistFitter.length) return res.send({ message: `Fitter Already exist from this MobileNo1 ${Body.MobileNo1}` })
 
-            const saveData = await connection.query(`update fitter set Name = '${Body.Name}', MobileNo1='${Body.MobileNo1}', MobileNo2='${Body.MobileNo2}', PhoneNo='${Body.PhoneNo}', Address='${Body.Address}', GSTNo='${Body.GSTNo}', Email='${Body.Email}', Website='${Body.Website}', CINNo='${Body.CINNo}', Fax='${Body.Fax}', PhotoURL='${Body.PhotoURL}', ContactPerson='${Body.ContactPerson}', Remark='${Body.Remark}', DOB='${Body.DOB}', Anniversary='${Body.Anniversary}',Status=1,UpdatedBy=${LoggedOnUser},UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [saveData] = await mysql2.pool.query(`update fitter set Name = '${Body.Name}', MobileNo1='${Body.MobileNo1}', MobileNo2='${Body.MobileNo2}', PhoneNo='${Body.PhoneNo}', Address='${Body.Address}', GSTNo='${Body.GSTNo}', Email='${Body.Email}', Website='${Body.Website}', CINNo='${Body.CINNo}', Fax='${Body.Fax}', PhotoURL='${Body.PhotoURL}', ContactPerson='${Body.ContactPerson}', Remark='${Body.Remark}', DOB='${Body.DOB}', Anniversary='${Body.Anniversary}',Status=1,UpdatedBy=${LoggedOnUser},UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log(connected("Data Updated SuccessFUlly !!!"));
 
             response.message = "data update sucessfully"
             response.data = []
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     list: async (req, res, next) => {
-        const connection = await mysql.connection();
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -115,26 +103,20 @@ module.exports = {
             let finalQuery = qry + skipQuery;
 
 
-            let data = await connection.query(finalQuery);
-            let count = await connection.query(qry);
+            let [data] = await mysql2.pool.query(finalQuery);
+            let [count] = await mysql2.pool.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     delete: async (req, res, next) => {
-        const connection = await mysql.connection();
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -147,33 +129,28 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const doesExist = await connection.query(`select * from fitter where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select * from fitter where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "fitter doesnot exist from this id " })
             }
 
 
-            const deleteFitter = await connection.query(`update fitter set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deleteFitter] = await mysql2.pool.query(`update fitter set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Fitter Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            response.data = await connection.query(`select * from fitter where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
-            await connection.query("COMMIT");
+            const [data] = await mysql2.pool.query(`select * from fitter where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
+            response.data = data
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     dropdownlist: async (req, res, next) => {
-        const connection = await mysql.connection();
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -182,23 +159,17 @@ module.exports = {
             const UserGroup = req.user.UserGroup ? req.user.UserGroup : 'CompanyAdmin';
 
 
-            let data = await connection.query(`select fitter.ID, fitter.Name from fitter where Status = 1 and CompanyID = ${CompanyID}`);
+            let [data] = await mysql2.pool.query(`select fitter.ID, fitter.Name from fitter where Status = 1 and CompanyID = ${CompanyID}`);
             response.message = "data fetch sucessfully"
             response.data = data
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     getRateCard: async (req, res, next) => {
-        const connection = await mysql.connection();
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -208,21 +179,16 @@ module.exports = {
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
             if (!Body.FitterID) res.send({ message: "Invalid Query Data" })
             response.message = "data fetch sucessfully"
-            response.data = await connection.query(`select fitterratecard.FitterID, fitterratecard.LensType, fitterratecard.Rate, fitterassignedshop.ShopID  from fitterratecard left join fitterassignedshop on fitterassignedshop.FitterID = fitterratecard.FitterID where  fitterratecard.Status = 1 and fitterratecard.FitterID = ${Body.FitterID} and fitterratecard.CompanyID = ${CompanyID} and fitterassignedshop.ShopID = ${shopid} and fitterassignedshop.Status = 1 `)
+            const [data] = await mysql2.pool.query(`select fitterratecard.FitterID, fitterratecard.LensType, fitterratecard.Rate, fitterassignedshop.ShopID  from fitterratecard left join fitterassignedshop on fitterassignedshop.FitterID = fitterratecard.FitterID where  fitterratecard.Status = 1 and fitterratecard.FitterID = ${Body.FitterID} and fitterratecard.CompanyID = ${CompanyID} and fitterassignedshop.ShopID = ${shopid} and fitterassignedshop.Status = 1 `)
+            response.data = data
 
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     getFitterById: async (req, res, next) => {
-        const connection = await mysql.connection();
 
         try {
             const response = { data: null, RateCard: [], AssignedShop: [], success: true, message: "" }
@@ -231,27 +197,24 @@ module.exports = {
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
-            const fitter = await connection.query(`select * from fitter where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
+            const [fitter] = await mysql2.pool.query(`select * from fitter where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             response.message = "data fetch sucessfully"
             response.data = fitter
-            response.RateCard = await connection.query(`select * from fitterratecard where  Status = 1 and FitterID = ${Body.ID} and CompanyID = ${CompanyID} `)
-            response.AssignedShop = await connection.query(`SELECT fitterassignedshop.*,  shop.Name AS ShopName, shop.AreaName AS AreaName  FROM fitterassignedshop  LEFT JOIN shop ON shop.ID = fitterassignedshop.ShopID WHERE fitterassignedshop.Status = 1 AND fitterassignedshop.FitterID = ${Body.ID} `)
+            const [RateCard] = await mysql2.pool.query(`select * from fitterratecard where  Status = 1 and FitterID = ${Body.ID} and CompanyID = ${CompanyID} `)
+            response.RateCard = RateCard
 
-            await connection.query("COMMIT");
+            const [AssignedShop] = await mysql2.pool.query(`SELECT fitterassignedshop.*,  shop.Name AS ShopName, shop.AreaName AS AreaName  FROM fitterassignedshop  LEFT JOIN shop ON shop.ID = fitterassignedshop.ShopID WHERE fitterassignedshop.Status = 1 AND fitterassignedshop.FitterID = ${Body.ID} `)
+            response.AssignedShop = AssignedShop
+
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     saveRateCard: async (req, res, next) => {
-        const connection = await mysql.connection();
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -263,32 +226,26 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.LensType) return res.send({ message: "Invalid Query Data" })
 
-            doesExist = await connection.query(`select * from fitterratecard where Status = 1 and CompanyID = ${CompanyID} and FitterID = ${Body.FitterID} and LensType='${Body.LensType}'`);
+            [doesExist] = await mysql2.pool.query(`select * from fitterratecard where Status = 1 and CompanyID = ${CompanyID} and FitterID = ${Body.FitterID} and LensType='${Body.LensType}'`);
 
             if (doesExist.length) {
                 return res.send({ message: `User have already LensType in this shop` });
             }
 
-            const saveData = await connection.query(`insert into fitterratecard (CompanyID, FitterID,  LensType,  Rate,  Status,  CreatedBy, CreatedOn ) values (${CompanyID}, ${Body.FitterID}, '${Body.LensType}', ${Body.Rate},1,${LoggedOnUser}, now())`)
+            const [saveData] = await mysql2.pool.query(`insert into fitterratecard (CompanyID, FitterID,  LensType,  Rate,  Status,  CreatedBy, CreatedOn ) values (${CompanyID}, ${Body.FitterID}, '${Body.LensType}', ${Body.Rate},1,${LoggedOnUser}, now())`)
 
             console.log(connected("Data Added SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
             response.data = saveData.insertId;
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     deleteRateCard: async (req, res, next) => {
-        const connection = await mysql.connection();
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -301,33 +258,28 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const doesExist = await connection.query(`select * from fitterratecard where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select * from fitterratecard where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "fitter doesnot exist from this id " })
             }
 
 
-            const deleteFitter = await connection.query(`update fitterratecard set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deleteFitter] = await mysql2.pool.query(`update fitterratecard set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Fitter Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            response.data = await connection.query(`select * from fitterratecard where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
-            await connection.query("COMMIT");
+            const [data] = await mysql2.pool.query(`select * from fitterratecard where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
+            response.data = data
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     saveFitterAssignedShop: async (req, res, next) => {
-        const connection = await mysql.connection();
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -338,32 +290,26 @@ module.exports = {
 
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.FitterID) return res.send({ message: "Invalid Query Data" })
-            doesExist = await connection.query(`select * from fitterassignedshop where Status = 1 and FitterID=${Body.FitterID} and ShopID=${Body.ShopID}`);
+            [doesExist] = await mysql2.pool.query(`select * from fitterassignedshop where Status = 1 and FitterID=${Body.FitterID} and ShopID=${Body.ShopID}`);
 
             if (doesExist.length) {
                 return res.send({ message: `User have already FitterAssignedShop in this shop` });
             }
 
-            const saveData = await connection.query(`insert into fitterassignedshop (CompanyID,ShopID, FitterID, Status,  CreatedBy, CreatedOn ) values (${CompanyID}, ${Body.ShopID}, ${Body.FitterID},1,${LoggedOnUser}, now())`)
+            const [saveData] = await mysql2.pool.query(`insert into fitterassignedshop (CompanyID,ShopID, FitterID, Status,  CreatedBy, CreatedOn ) values (${CompanyID}, ${Body.ShopID}, ${Body.FitterID},1,${LoggedOnUser}, now())`)
 
             console.log(connected("Data Added SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
             response.data = saveData.insertId;
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     deleteFitterAssignedShop: async (req, res, next) => {
-        const connection = await mysql.connection();
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -376,34 +322,29 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const doesExist = await connection.query(`select * from fitterassignedshop where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select * from fitterassignedshop where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "fitter doesnot exist from this id " })
             }
 
 
-            const deleteFitter = await connection.query(`update fitterassignedshop set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deleteFitter] = await mysql2.pool.query(`update fitterassignedshop set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("FitterAssignedShop Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            response.data = await connection.query(`select * from fitterassignedshop where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
-            await connection.query("COMMIT");
+            const [data] = await mysql2.pool.query(`select * from fitterassignedshop where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
+            response.data = data
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
 
     searchByFeild: async (req, res, next) => {
-        const connection = await mysql.connection();
 
         try {
             const response = { data: null, success: true, message: "", count: 0 }
@@ -414,28 +355,22 @@ module.exports = {
 
             let qry = `select fitter.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from fitter left join user as users1 on users1.ID = fitter.CreatedBy left join user as users on users.ID = fitter.UpdatedBy where fitter.Status = 1 and fitter.CompanyID = '${CompanyID}' and fitter.Name like '%${Body.searchQuery}%' OR fitter.Status = 1 and fitter.CompanyID = '${CompanyID}' and fitter.MobileNo1 like '%${Body.searchQuery}%' `
 
-            let data = await connection.query(qry);
+            let [data] = await mysql2.pool.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     // fitter Invoice
 
     getFitterInvoice: async (req, res, next) => {
-        const connection = await mysql.connection();
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -456,25 +391,16 @@ module.exports = {
 
             console.log(qry);
 
-            const data = await connection.query(qry)
+            const [data] = await mysql2.pool.query(qry)
             response.data = data
             response.message = "success";
-            await connection.query("COMMIT");
             return res.send(response);
 
-
-
         } catch (err) {
-            console.log(err);
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     saveFitterInvoice: async (req, res, next) => {
-        const connection = await mysql.connection();
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -500,7 +426,7 @@ module.exports = {
 
             if (FitterMaster.Quantity == 0 || !FitterMaster?.Quantity || FitterMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
 
-            const doesExistInvoiceNo = await connection.query(`select * from fittermaster where Status = 1 and InvoiceNo = '${FitterMaster.InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${FitterMaster.ShopID}`)
+            const [doesExistInvoiceNo] = await mysql2.pool.query(`select * from fittermaster where Status = 1 and InvoiceNo = '${FitterMaster.InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${FitterMaster.ShopID}`)
 
             if (doesExistInvoiceNo.length) {
                 return res.send({ message: `Purchase Already exist from this InvoiceNo ${FitterMaster.InvoiceNo}` })
@@ -531,41 +457,34 @@ module.exports = {
             }
 
             //  save purchase data
-            const savePurchase = await connection.query(`insert into fittermaster(FitterID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,GSTAmount,GSTPercentage,GSTType,TotalAmount,PStatus,Status,DueAmount,CreatedBy,CreatedOn)values(${purchase.FitterID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${purchase.PaymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.GSTAmount},${purchase.GSTPercentage},'${purchase.GSTType}',${purchase.TotalAmount},1,1,${purchase.DueAmount}, ${LoggedOnUser}, now())`);
+            const [savePurchase] = await mysql2.pool.query(`insert into fittermaster(FitterID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,GSTAmount,GSTPercentage,GSTType,TotalAmount,PStatus,Status,DueAmount,CreatedBy,CreatedOn)values(${purchase.FitterID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${purchase.PaymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.GSTAmount},${purchase.GSTPercentage},'${purchase.GSTType}',${purchase.TotalAmount},1,1,${purchase.DueAmount}, ${LoggedOnUser}, now())`);
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
 
             for (const item of FitterDetail) {
-                const savePurchaseDetail = await connection.query(`insert into fitterdetail(FitterMasterID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,TotalAmount,Status, CustomerInvoice, BarcodeID, LensType, AssignedOn,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.TotalAmount},1,'${item.InvoiceNo}','${item.Barcode}','${item.LensType}','${item.CreatedOn}',${LoggedOnUser},now())`)
+                const [savePurchaseDetail] = await mysql2.pool.query(`insert into fitterdetail(FitterMasterID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,TotalAmount,Status, CustomerInvoice, BarcodeID, LensType, AssignedOn,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.TotalAmount},1,'${item.InvoiceNo}','${item.Barcode}','${item.LensType}','${item.CreatedOn}',${LoggedOnUser},now())`)
 
-                const updateBarcode = await connection.query(`update barcodemasternew set FitterStatus='invoice', UpdatedOn=now() where ID = ${item.ID}`)
+                const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set FitterStatus='invoice', UpdatedOn=now() where ID = ${item.ID}`)
             }
             console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
 
-            const savePaymentMaster = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${purchase.FitterID}, ${CompanyID}, ${purchase.ShopID}, 'Fitter','Debit',now(), 'Payment Initiated', '', '', ${purchase.TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
+            const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${purchase.FitterID}, ${CompanyID}, ${purchase.ShopID}, 'Fitter','Debit',now(), 'Payment Initiated', '', '', ${purchase.TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
 
-            const savePaymentDetail = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${purchase.InvoiceNo}',${savePurchase.insertId},${purchase.FitterID},${CompanyID},0,${purchase.TotalAmount},'Fitter','Debit',1,${LoggedOnUser}, now())`)
+            const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${purchase.InvoiceNo}',${savePurchase.insertId},${purchase.FitterID},${CompanyID},0,${purchase.TotalAmount},'Fitter','Debit',1,${LoggedOnUser}, now())`)
 
             console.log(connected("Payment Initiate SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
             response.data = purchase.FitterID
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            console.log(err);
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     getFitterInvoiceList: async (req, res, next) => {
-        const connection = await mysql.connection();
 
         try {
             const response = {
@@ -597,10 +516,10 @@ module.exports = {
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
             let finalQuery = qry + skipQuery;
 
-            let data = await connection.query(finalQuery);
-            let count = await connection.query(qry);
+            let [data] = await mysql2.pool.query(finalQuery);
+            let [count] = await mysql2.pool.query(qry);
 
-            let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -664,21 +583,15 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            await connection.query("COMMIT");
             return res.send(response);
 
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     getFitterInvoiceListByID: async (req, res, next) => {
-        const connection = await mysql.connection();
 
         try {
             const response = {
@@ -705,9 +618,9 @@ module.exports = {
 
             let finalQuery = qry;
 
-            let data = await connection.query(finalQuery);
+            let [data] = await mysql2.pool.query(finalQuery);
 
-            let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -770,21 +683,15 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = data
-            await connection.query("COMMIT");
             return res.send(response);
 
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     getFitterInvoiceDetailByID: async (req, res, next) => {
-        const connection = await mysql.connection();
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -802,25 +709,21 @@ module.exports = {
             let detail = `select * from fitterdetail where CompanyID = ${CompanyID} and Status=1 and FitterMasterID = ${ID}`
 
 
+            const [FitterMaster] = await mysql2.pool.query(master)
+            const [FitterDetail] = await mysql2.pool.query(detail)
 
             response.message = "data fetch sucessfully"
-            response.FitterMaster = await connection.query(master)
-            response.FitterDetail = await connection.query(detail)
-            await connection.query("COMMIT");
+            response.FitterMaster = FitterMaster
+            response.FitterDetail = FitterDetail
             return res.send(response);
 
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     updateFitterInvoiceNo: async (req, res, next) => {
-        const connection = await mysql.connection();
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -838,31 +741,26 @@ module.exports = {
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
             if (!InvoiceNo || InvoiceNo === undefined) return res.send({ message: "Invalid InvoiceNo Data" })
 
-            const doesExistInvoiceNo = await connection.query(`select * from fittermaster where Status = 1 and InvoiceNo = '${InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${ID} `)
+            const [doesExistInvoiceNo] = await mysql2.pool.query(`select * from fittermaster where Status = 1 and InvoiceNo = '${InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${ID} `)
 
             if (doesExistInvoiceNo.length) {
                 return res.send({ message: `Purchase Already exist from this InvoiceNo ${InvoiceNo}` })
             }
 
-            const updateFitterMaster = await connection.query(`update fittermaster set InvoiceNo='${InvoiceNo}', GSTPercentage = ${GSTPercentage}, GSTAmount=${GSTAmount}, GSTType = '${GSTType}', TotalAmount=${TotalAmount}, DueAmount=${DueAmount}, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where ID = ${ID}`)
+            const [updateFitterMaster] = await mysql2.pool.query(`update fittermaster set InvoiceNo='${InvoiceNo}', GSTPercentage = ${GSTPercentage}, GSTAmount=${GSTAmount}, GSTType = '${GSTType}', TotalAmount=${TotalAmount}, DueAmount=${DueAmount}, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where ID = ${ID}`)
 
-            const updatePaymentDetail = await connection.query(`update paymentdetail set BillID='${InvoiceNo}', DueAmount = ${DueAmount}, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where BillMasterID = ${ID}`)
+            const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set BillID='${InvoiceNo}', DueAmount = ${DueAmount}, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where BillMasterID = ${ID}`)
 
-            const fetchPaymentID = await connection.query(`select * from paymentdetail where  BillMasterID = ${ID}`)
+            const [fetchPaymentID] = await mysql2.pool.query(`select * from paymentdetail where  BillMasterID = ${ID}`)
 
-            const updatePayment = await connection.query(`update paymentmaster set PayableAmount = ${DueAmount}, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where ID = ${fetchPaymentID[0].PaymentMasterID}`)
+            const [updatePayment] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${DueAmount}, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where ID = ${fetchPaymentID[0].PaymentMasterID}`)
 
             response.message = "data update sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     }
 

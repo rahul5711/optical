@@ -6,11 +6,11 @@ const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const pass_init = require('../helpers/generate_password')
+const mysql2 = require('../database')
 
 
 module.exports = {
     save: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -24,7 +24,7 @@ module.exports = {
             }
 
 
-            doesExist = await connection.query(`select * from doctor where Status = 1 and Name = '${Body.Name}' and CompanyID = ${CompanyID}`)
+            [doesExist] = await mysql2.pool.query(`select * from doctor where Status = 1 and Name = '${Body.Name}' and CompanyID = ${CompanyID}`)
 
             if (doesExist.length) {
                 return res.send({ message: `doctor already exist from this name ${Body.Name}` })
@@ -62,27 +62,21 @@ module.exports = {
             }
 
 
-            const saveData = await connection.query(`insert into doctor (CompanyID, Name, UserGroup, Designation,Qualification,HospitalName,MobileNo1, MobileNo2 , PhoneNo,Email,Address ,Branch,Landmark,PhotoURL,DoctorType,DoctorLoyalty,LoyaltyPerPatient,LoginPermission,LoginName,Password, Status,CreatedBy,CreatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB,DOB,Anniversary) values (${CompanyID},'${datum.Name}','Doctor', '${datum.Designation}', '${datum.Qualification}', '${datum.HospitalName}','${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Email}','${datum.Address}','${datum.Branch}','${datum.Landmark}','${Body.PhotoURL}','${datum.DoctorType}','${datum.DoctorLoyalty}','${datum.LoyaltyPerPatient}',1,'${datum.LoginName}','${pass}',1,${LoggedOnUser}, now(),${datum.CommissionType},${datum.CommissionMode},${datum.CommissionValue},${datum.CommissionValueNB},'${datum.DOB}','${datum.Anniversary}')`)
+            const [saveData] = await mysql2.pool.query(`insert into doctor (CompanyID, Name, UserGroup, Designation,Qualification,HospitalName,MobileNo1, MobileNo2 , PhoneNo,Email,Address ,Branch,Landmark,PhotoURL,DoctorType,DoctorLoyalty,LoyaltyPerPatient,LoginPermission,LoginName,Password, Status,CreatedBy,CreatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB,DOB,Anniversary) values (${CompanyID},'${datum.Name}','Doctor', '${datum.Designation}', '${datum.Qualification}', '${datum.HospitalName}','${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Email}','${datum.Address}','${datum.Branch}','${datum.Landmark}','${Body.PhotoURL}','${datum.DoctorType}','${datum.DoctorLoyalty}','${datum.LoyaltyPerPatient}',1,'${datum.LoginName}','${pass}',1,${LoggedOnUser}, now(),${datum.CommissionType},${datum.CommissionMode},${datum.CommissionValue},${datum.CommissionValueNB},'${datum.DOB}','${datum.Anniversary}')`)
 
             console.log(connected("Data Added SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
             response.data = saveData.insertId;
-            await connection.query("COMMIT");
 
             return res.send(response);
-        } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+        } catch(err) {
+            next(err)
         }
     },
 
 
     update: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -92,10 +86,10 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const doesExistDoctor = await connection.query(`select * from doctor where Name = '${Body.Name}' and Status = 1 and ID != ${Body.ID}`)
+            const [doesExistDoctor] = await mysql2.pool.query(`select * from doctor where Name = '${Body.Name}' and Status = 1 and ID != ${Body.ID}`)
             if (doesExistDoctor.length) return res.send({ message: `Doctor Already exist from this Name ${Body.Name}` })
 
-            const doesExistLoginName = await connection.query(`select * from doctor where LoginName = '${Body.LoginName}' and Status = 1 and ID != ${Body.ID}`)
+            const [doesExistLoginName] = await mysql2.pool.query(`select * from doctor where LoginName = '${Body.LoginName}' and Status = 1 and ID != ${Body.ID}`)
             if (doesExistLoginName.length) return res.send({ message: `LoginName Already exist from this LoginName ${Body.LoginName}` })
 
             const datum = {
@@ -126,26 +120,20 @@ module.exports = {
 
             }
 
-            const updateDoctor = await connection.query(`update doctor set Name = '${Body.Name}',Designation = '${datum.Designation}',Qualification = '${datum.Qualification}',HospitalName = '${datum.HospitalName}',MobileNo1 = '${datum.MobileNo1}',MobileNo2 = '${datum.MobileNo2}',PhoneNo = '${datum.PhoneNo}',Email = '${datum.Email}',Address='${datum.Address}',Branch='${datum.Branch}',Landmark='${datum.Landmark}',PhotoURL='${datum.PhotoURL}',DoctorType='${datum.DoctorType}', DoctorLoyalty='${datum.DoctorLoyalty}', LoyaltyPerPatient='${datum.LoyaltyPerPatient}', LoginPermission='${datum.LoginPermission}', LoginName='${datum.LoginName}', Status = 1, UpdatedBy=${LoggedOnUser},UpdatedOn=now(), CommissionType = ${datum.CommissionType},CommissionMode=${datum.CommissionMode},CommissionValue=${datum.CommissionValue},CommissionValueNB=${datum.CommissionValueNB},DOB='${datum.DOB}',Anniversary='${datum.Anniversary}' where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [updateDoctor] = await mysql2.pool.query(`update doctor set Name = '${Body.Name}',Designation = '${datum.Designation}',Qualification = '${datum.Qualification}',HospitalName = '${datum.HospitalName}',MobileNo1 = '${datum.MobileNo1}',MobileNo2 = '${datum.MobileNo2}',PhoneNo = '${datum.PhoneNo}',Email = '${datum.Email}',Address='${datum.Address}',Branch='${datum.Branch}',Landmark='${datum.Landmark}',PhotoURL='${datum.PhotoURL}',DoctorType='${datum.DoctorType}', DoctorLoyalty='${datum.DoctorLoyalty}', LoyaltyPerPatient='${datum.LoyaltyPerPatient}', LoginPermission='${datum.LoginPermission}', LoginName='${datum.LoginName}', Status = 1, UpdatedBy=${LoggedOnUser},UpdatedOn=now(), CommissionType = ${datum.CommissionType},CommissionMode=${datum.CommissionMode},CommissionValue=${datum.CommissionValue},CommissionValueNB=${datum.CommissionValueNB},DOB='${datum.DOB}',Anniversary='${datum.Anniversary}' where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Doctor Updated SuccessFUlly !!!");
             response.message = "data update sucessfully"
 
-            await connection.query("COMMIT");
 
             return res.send(response);
 
-        } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+        } catch(err) {
+            next(err)
         }
     },
 
     list: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -163,50 +151,38 @@ module.exports = {
             let finalQuery = qry + skipQuery;
 
 
-            let data = await connection.query(finalQuery);
-            let count = await connection.query(qry);
+            let [data] = await mysql2.pool.query(finalQuery);
+            let [count] = await mysql2.pool.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            await connection.query("COMMIT");
 
             return res.send(response);
-        } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+        } catch(err) {
+            next(err)
         }
     },
 
     dropdownlist: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const UserID = req.user.ID ? req.user.ID : 0;
             const UserGroup = req.user.UserGroup ? req.user.UserGroup : 'CompanyAdmin';
 
-            let data = await connection.query(`select * from doctor where Status = 1 and CompanyID = ${CompanyID}`);
+            let [data] = await mysql2.pool.query(`select * from doctor where Status = 1 and CompanyID = ${CompanyID}`);
             response.message = "data fetch sucessfully"
             response.data = data
 
-            await connection.query("COMMIT");
 
             return res.send(response);
-        } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+        } catch(err) {
+            next(err)
         }
     },
 
     delete: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -218,33 +194,27 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const doesExist = await connection.query(`select * from doctor where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select * from doctor where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "doctor doesnot exist from this id " })
             }
 
 
-            const deleteDoctor = await connection.query(`update doctor set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deleteDoctor] = await mysql2.pool.query(`update doctor set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Doctor Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
 
-            await connection.query("COMMIT");
 
             return res.send(response);
-        } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+        } catch(err) {
+            next(err)
         }
     },
 
     getDoctorById: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -252,24 +222,18 @@ module.exports = {
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
-            const Doctor = await connection.query(`select * from doctor where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
+            const [Doctor] = await mysql2.pool.query(`select * from doctor where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             response.message = "data fetch sucessfully"
             response.data = Doctor
-            await connection.query("COMMIT");
 
             return res.send(response);
-        } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+        } catch(err) {
+            next(err)
         }
     },
 
     searchByFeild: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -279,22 +243,17 @@ module.exports = {
 
             let qry = `select doctor.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from doctor left join user as users1 on users1.ID = doctor.CreatedBy left join user as users on users.ID = doctor.UpdatedBy where doctor.Status = 1 and doctor.CompanyID = '${CompanyID}' and doctor.Name like '%${Body.searchQuery}%' OR doctor.Status = 1 and doctor.CompanyID = '${CompanyID}' and doctor.MobileNo1 like '%${Body.searchQuery}%' OR doctor.Status = 1 and doctor.CompanyID = '${CompanyID}' and doctor.HospitalName like '%${Body.searchQuery}%'`
 
-            let data = await connection.query(qry);
+            let [data] = await mysql2.pool.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
 
-            await connection.query("COMMIT");
 
             return res.send(response);
 
-        } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+        } catch(err) {
+            next(err)
         }
     }
 }

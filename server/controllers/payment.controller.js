@@ -6,11 +6,11 @@ const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const { shopID, generateInvoiceNo, generateBillSno, generateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder, gstDetailBill, generateUniqueBarcode } = require('../helpers/helper_function')
+const mysql2 = require('../database')
 
 
 module.exports = {
     getInvoicePayment: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -32,9 +32,9 @@ module.exports = {
 
             if (PaymentType === 'Supplier') {
 
-                const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Vendor Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
+                const [credit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Vendor Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
 
-                const debit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Vendor Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
+                const [debit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Vendor Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
 
                 if (credit[0].CreditAmount !== null) {
                     creditCreditAmount = credit[0].CreditAmount
@@ -43,7 +43,7 @@ module.exports = {
                     creditDebitAmount = debit[0].CreditAmount
                 }
 
-                const due = await connection.query(`select SUM(purchasemasternew.DueAmount) as due from purchasemasternew where CompanyID = ${CompanyID} and SupplierID = ${PayeeName} and PStatus = 0`)
+                const [due] = await mysql2.pool.query(`select SUM(purchasemasternew.DueAmount) as due from purchasemasternew where CompanyID = ${CompanyID} and SupplierID = ${PayeeName} and PStatus = 0`)
 
                 if (due[0].due !== null) {
                     totalDueAmount = due[0].due
@@ -53,13 +53,14 @@ module.exports = {
                 qry = `select supplier.Name as PayeeName, shop.Name as ShopName, shop.AreaName, purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.GSTNo, purchasemasternew.DiscountAmount, purchasemasternew.GSTAmount, purchasemasternew.PaymentStatus, purchasemasternew.TotalAmount, purchasemasternew.DueAmount, ( purchasemasternew.TotalAmount - purchasemasternew.DueAmount) as PaidAmount, purchasemasternew.ID  from purchasemasternew left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.SupplierID = ${PayeeName} and purchasemasternew.CompanyID = ${CompanyID} and purchasemasternew.PaymentStatus = 'Unpaid' and purchasemasternew.DueAmount != 0`
 
 
-                response.data = await connection.query(qry)
+                const [data] = await mysql2.pool.query(qry)
+                response.data = data
 
 
             } else if (PaymentType === 'Fitter') {
 
-                const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Fitter Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
-                const debit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Fitter Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
+                const [credit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Fitter Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
+                const [debit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Fitter Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
 
                 if (credit[0].CreditAmount !== null) {
                     creditCreditAmount = credit[0].CreditAmount
@@ -68,7 +69,7 @@ module.exports = {
                     creditDebitAmount = debit[0].CreditAmount
                 }
 
-                const due = await connection.query(`select SUM(fittermaster.DueAmount) as due from fittermaster where CompanyID = ${CompanyID} and FitterID = ${PayeeName} and PStatus = 1`)
+                const [due] = await mysql2.pool.query(`select SUM(fittermaster.DueAmount) as due from fittermaster where CompanyID = ${CompanyID} and FitterID = ${PayeeName} and PStatus = 1`)
 
                 if (due[0].due !== null) {
                     totalDueAmount = due[0].due
@@ -77,12 +78,13 @@ module.exports = {
                 qry = `select fitter.Name as PayeeName, shop.Name as ShopName, shop.AreaName, fittermaster.InvoiceNo, fittermaster.PurchaseDate, fittermaster.GSTNo, 0 as DiscountAmount, fittermaster.GSTAmount, fittermaster.PaymentStatus, fittermaster.TotalAmount, fittermaster.DueAmount, ( fittermaster.TotalAmount - fittermaster.DueAmount) as PaidAmount, fittermaster.ID  from fittermaster left join fitter on fitter.ID = fittermaster.FitterID left join shop on shop.ID = fittermaster.ShopID where fittermaster.FitterID = ${PayeeName} and fittermaster.CompanyID = ${CompanyID} and fittermaster.PStatus = 1 and fittermaster.PaymentStatus = 'Unpaid' and fittermaster.DueAmount != 0`
 
 
-                response.data = await connection.query(qry)
+                const [data] = await mysql2.pool.query(qry)
+                response.data = data
 
             } else if (PaymentType === 'Customer') {
 
-                const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
-                const debit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
+                const [credit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
+                const [debit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
 
                 if (credit[0].CreditAmount !== null) {
                     creditCreditAmount = credit[0].CreditAmount
@@ -91,7 +93,7 @@ module.exports = {
                     creditDebitAmount = debit[0].CreditAmount
                 }
 
-                const due = await connection.query(`select SUM(billmaster.DueAmount) as due from billmaster where CompanyID = ${CompanyID} and CustomerID = ${PayeeName} and Status = 1`)
+                const [due] = await mysql2.pool.query(`select SUM(billmaster.DueAmount) as due from billmaster where CompanyID = ${CompanyID} and CustomerID = ${PayeeName} and Status = 1`)
 
                 if (due[0].due !== null) {
                     totalDueAmount = due[0].due
@@ -99,13 +101,13 @@ module.exports = {
 
                 qry = `select customer.Name as PayeeName, shop.Name as ShopName, shop.AreaName, billmaster.InvoiceNo, billmaster.BillDate as PurchaseDate, billmaster.GSTNo, billmaster.DiscountAmount as DiscountAmount, billmaster.GSTAmount, billmaster.PaymentStatus, billmaster.TotalAmount, billmaster.DueAmount, ( billmaster.TotalAmount - billmaster.DueAmount) as PaidAmount, billmaster.ID from billmaster left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = billmaster.ShopID where billmaster.CustomerID = ${PayeeName} and billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 and billmaster.PaymentStatus = 'Unpaid' and billmaster.DueAmount != 0`
 
-
-                response.data = await connection.query(qry)
+                const [data] = await mysql2.pool.query(qry)
+                response.data = data
 
             } else if (PaymentType === 'Employee') {
 
-                const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Employee Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
-                const debit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Employee Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
+                const [credit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Employee Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
+                const [debit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Employee Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
 
                 if (credit[0].CreditAmount !== null) {
                     creditCreditAmount = credit[0].CreditAmount
@@ -114,7 +116,7 @@ module.exports = {
                     creditDebitAmount = debit[0].CreditAmount
                 }
 
-                const due = await connection.query(`select SUM(commissionmaster.DueAmount) as due from commissionmaster where CompanyID = ${CompanyID} and UserID = ${PayeeName} and Status = 1 and UserType = 'Employee'`)
+                const [due] = await mysql2.pool.query(`select SUM(commissionmaster.DueAmount) as due from commissionmaster where CompanyID = ${CompanyID} and UserID = ${PayeeName} and Status = 1 and UserType = 'Employee'`)
 
                 if (due[0].due !== null) {
                     totalDueAmount = due[0].due
@@ -122,13 +124,14 @@ module.exports = {
 
                 qry = `select user.Name as PayeeName, shop.Name as ShopName, shop.AreaName, commissionmaster.InvoiceNo, commissionmaster.PurchaseDate, commissionmaster.GSTNo, 0 as DiscountAmount, 0 as GSTAmount, commissionmaster.PaymentStatus, commissionmaster.TotalAmount, commissionmaster.DueAmount, ( commissionmaster.TotalAmount - commissionmaster.DueAmount) as PaidAmount, commissionmaster.ID from commissionmaster left join user on user.ID = commissionmaster.UserID left join shop on shop.ID = commissionmaster.ShopID where commissionmaster.UserID = ${PayeeName} and commissionmaster.CompanyID = ${CompanyID} and commissionmaster.Status = 1 and commissionmaster.UserType = 'Employee' and commissionmaster.PaymentStatus = 'Unpaid' and commissionmaster.DueAmount != 0`
 
+                const [data] = await mysql2.pool.query(qry)
 
-                response.data = await connection.query(qry)
+                response.data = data
 
             } else if (PaymentType === 'Doctor') {
 
-                const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Doctor Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
-                const debit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Doctor Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
+                const [credit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Doctor Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
+                const [debit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Doctor Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
 
                 if (credit[0].CreditAmount !== null) {
                     creditCreditAmount = credit[0].CreditAmount
@@ -137,7 +140,7 @@ module.exports = {
                     creditDebitAmount = debit[0].CreditAmount
                 }
 
-                const due = await connection.query(`select SUM(commissionmaster.DueAmount) as due from commissionmaster where CompanyID = ${CompanyID} and UserID = ${PayeeName} and Status = 1 and UserType = 'Doctor'`)
+                const [due] = await mysql2.pool.query(`select SUM(commissionmaster.DueAmount) as due from commissionmaster where CompanyID = ${CompanyID} and UserID = ${PayeeName} and Status = 1 and UserType = 'Doctor'`)
 
                 if (due[0].due !== null) {
                     totalDueAmount = due[0].due
@@ -145,8 +148,9 @@ module.exports = {
 
                 qry = `select doctor.Name as PayeeName, shop.Name as ShopName, shop.AreaName, commissionmaster.InvoiceNo, commissionmaster.PurchaseDate, commissionmaster.GSTNo, 0 as DiscountAmount, 0 as GSTAmount, commissionmaster.PaymentStatus, commissionmaster.TotalAmount, commissionmaster.DueAmount, ( commissionmaster.TotalAmount - commissionmaster.DueAmount) as PaidAmount, commissionmaster.ID  from commissionmaster left join doctor on doctor.ID = commissionmaster.UserID left join shop on shop.ID = commissionmaster.ShopID where commissionmaster.UserID = ${PayeeName} and commissionmaster.CompanyID = ${CompanyID} and commissionmaster.Status = 1 and commissionmaster.UserType = 'Doctor' and commissionmaster.PaymentStatus = 'Unpaid' and commissionmaster.DueAmount != 0`
 
+                const [data] = await mysql2.pool.query(qry)
 
-                response.data = await connection.query(qry)
+                response.data = data
             }
 
             totalCreditAmount = creditCreditAmount - creditDebitAmount
@@ -159,19 +163,13 @@ module.exports = {
             response.totalCreditAmount = totalCreditAmount
             response.totalDueAmount = totalDueAmount
             response.message = "data fetch sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
 
-        } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+        } catch(err) {
+            next(err)
         }
     },
     applyPayment: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -201,7 +199,7 @@ module.exports = {
             if (PaymentType === 'Customer') {
 
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
-                    let pMaster = await connection.query(
+                    let [pMaster] = await mysql2.pool.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, now())`
                     );
 
@@ -222,8 +220,8 @@ module.exports = {
                                 tempAmount = 0;
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Customer', '${CreditType}', 1, ${LoggedOnUser}, now())`;
-                            let pDetail = await connection.query(qry);
-                            let bMaster = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                            let [pDetail] = await mysql2.pool.query(qry);
+                            let [bMaster] = await mysql2.pool.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
                         }
 
                     }
@@ -231,7 +229,7 @@ module.exports = {
                 }
 
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
-                    let pMaster = await connection.query(
+                    let [pMaster] = await mysql2.pool.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, now())`
                     );
 
@@ -252,8 +250,8 @@ module.exports = {
                                 tempAmount = 0;
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Customer Credit', '${CreditType}', 1, ${LoggedOnUser}, now())`;
-                            let pDetail = await connection.query(qry);
-                            let bMaster = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                            let [pDetail] = await mysql2.pool.query(qry);
+                            let [bMaster] = await mysql2.pool.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
                         }
 
                     }
@@ -262,7 +260,7 @@ module.exports = {
 
             } else if (PaymentType === 'Supplier') {
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
-                    let pMaster = await connection.query(
+                    let [pMaster] = await mysql2.pool.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Supplier',  '1',${LoggedOnUser}, now())`
                     );
 
@@ -283,8 +281,8 @@ module.exports = {
                                 tempAmount = 0;
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Vendor', '${CreditType}', 1, ${LoggedOnUser}, now())`;
-                            let pDetail = await connection.query(qry);
-                            let bMaster = await connection.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now() where ID = ${item.ID}`);
+                            let [pDetail] = await mysql2.pool.query(qry);
+                            let [bMaster] = await mysql2.pool.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now() where ID = ${item.ID}`);
                         }
 
                     }
@@ -292,7 +290,7 @@ module.exports = {
                 }
 
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
-                    let pMaster = await connection.query(
+                    let [pMaster] = await mysql2.pool.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Supplier',  '1',${LoggedOnUser}, now())`
                     );
 
@@ -313,8 +311,8 @@ module.exports = {
                                 tempAmount = 0;
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Vendor Credit', '${CreditType}', 1, ${LoggedOnUser}, now())`;
-                            let pDetail = await connection.query(qry);
-                            let bMaster = await connection.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now() where ID = ${item.ID}`);
+                            let [pDetail] = await mysql2.pool.query(qry);
+                            let [bMaster] = await mysql2.pool.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now() where ID = ${item.ID}`);
                         }
 
                     }
@@ -323,7 +321,7 @@ module.exports = {
 
             } else if (PaymentType === 'Fitter') {
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
-                    let pMaster = await connection.query(
+                    let [pMaster] = await mysql2.pool.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Fitter',  '1',${LoggedOnUser}, now())`
                     );
 
@@ -344,8 +342,8 @@ module.exports = {
                                 tempAmount = 0;
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Fitter', '${CreditType}', 1, ${LoggedOnUser}, now())`;
-                            let pDetail = await connection.query(qry);
-                            let bMaster = await connection.query(`Update fittermaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now() where ID = ${item.ID}`);
+                            let [pDetail] = await mysql2.pool.query(qry);
+                            let [bMaster] = await mysql2.pool.query(`Update fittermaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now() where ID = ${item.ID}`);
                         }
 
                     }
@@ -353,7 +351,7 @@ module.exports = {
                 }
 
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
-                    let pMaster = await connection.query(
+                    let [pMaster] = await mysql2.pool.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Fitter',  '1',${LoggedOnUser}, now())`
                     );
 
@@ -374,8 +372,8 @@ module.exports = {
                                 tempAmount = 0;
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Fitter Credit', '${CreditType}', 1, ${LoggedOnUser}, now())`;
-                            let pDetail = await connection.query(qry);
-                            let bMaster = await connection.query(`Update fittermaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now() where ID = ${item.ID}`);
+                            let [pDetail] = await mysql2.pool.query(qry);
+                            let [bMaster] = await mysql2.pool.query(`Update fittermaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now() where ID = ${item.ID}`);
                         }
 
                     }
@@ -384,7 +382,7 @@ module.exports = {
 
             } else if (PaymentType === 'Employee') {
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
-                    let pMaster = await connection.query(
+                    let [pMaster] = await mysql2.pool.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Employee',  '1',${LoggedOnUser}, now())`
                     );
 
@@ -405,8 +403,8 @@ module.exports = {
                                 tempAmount = 0;
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Employee', '${CreditType}', 1, ${LoggedOnUser}, now())`;
-                            let pDetail = await connection.query(qry);
-                            let bMaster = await connection.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                            let [pDetail] = await mysql2.pool.query(qry);
+                            let [bMaster] = await mysql2.pool.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
                         }
 
                     }
@@ -414,7 +412,7 @@ module.exports = {
                 }
 
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
-                    let pMaster = await connection.query(
+                    let [pMaster] = await mysql2.pool.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Employee',  '1',${LoggedOnUser}, now())`
                     );
 
@@ -435,8 +433,8 @@ module.exports = {
                                 tempAmount = 0;
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Employee Credit', '${CreditType}', 1, ${LoggedOnUser}, now())`;
-                            let pDetail = await connection.query(qry);
-                            let bMaster = await connection.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                            let [pDetail] = await mysql2.pool.query(qry);
+                            let [bMaster] = await mysql2.pool.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
                         }
 
                     }
@@ -445,7 +443,7 @@ module.exports = {
 
             } else if (PaymentType === 'Doctor') {
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
-                    let pMaster = await connection.query(
+                    let [pMaster] = await mysql2.pool.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Doctor',  '1',${LoggedOnUser}, now())`
                     );
 
@@ -466,8 +464,8 @@ module.exports = {
                                 tempAmount = 0;
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Doctor', '${CreditType}', 1, ${LoggedOnUser}, now())`;
-                            let pDetail = await connection.query(qry);
-                            let bMaster = await connection.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                            let [pDetail] = await mysql2.pool.query(qry);
+                            let [bMaster] = await mysql2.pool.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
                         }
 
                     }
@@ -475,7 +473,7 @@ module.exports = {
                 }
 
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
-                    let pMaster = await connection.query(
+                    let [pMaster] = await mysql2.pool.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Doctor',  '1',${LoggedOnUser}, now())`
                     );
 
@@ -496,8 +494,8 @@ module.exports = {
                                 tempAmount = 0;
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Doctor Credit', '${CreditType}', 1, ${LoggedOnUser}, now())`;
-                            let pDetail = await connection.query(qry);
-                            let bMaster = await connection.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                            let [pDetail] = await mysql2.pool.query(qry);
+                            let [bMaster] = await mysql2.pool.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
                         }
 
                     }
@@ -513,21 +511,15 @@ module.exports = {
                 PaymentType: PaymentType,
                 PayeeName: CustomerID
             }
-            await connection.query("COMMIT");
             return res.send(response);
 
 
 
-        } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+        } catch(err) {
+            next(err)
         }
     },
     getCommissionDetail: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -549,21 +541,16 @@ module.exports = {
 
 
             response.message = "data fetch sucessfully"
-            response.data = await connection.query(qry)
-            await connection.query("COMMIT");
+            const [data] = await mysql2.pool.query(qry)
+            response.data = data
             return res.send(response);
 
 
-        } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+        } catch(err) {
+            next(err)
         }
     },
     saveCommissionDetail: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -586,7 +573,7 @@ module.exports = {
             if (!PurchaseDate || PurchaseDate === undefined) return res.send({ message: "Invalid PurchaseDate Data" })
             if (!Quantity || Quantity === undefined) return res.send({ message: "Invalid Quantity Data" })
 
-            const doesExistInvoiceNo = await connection.query(`select * from commissionmaster where CompanyID = ${CompanyID} and InvoiceNo = '${InvoiceNo}'`)
+            const [doesExistInvoiceNo] = await mysql2.pool.query(`select * from commissionmaster where CompanyID = ${CompanyID} and InvoiceNo = '${InvoiceNo}'`)
 
             if (doesExistInvoiceNo.length !== 0) {
                 return res.send({ message: `InvoiceNo ${InvoiceNo} is already exist` })
@@ -596,18 +583,18 @@ module.exports = {
                 if (!item.Sel || item.Sel == 0) return res.send({ message: "Invalid Query Data" })
             }
 
-            const saveCommMaster = await connection.query(`insert into commissionmaster(UserID, CompanyID, ShopID, UserType,InvoiceNo, Quantity, TotalAmount,CreatedBy, CreatedOn, PurchaseDate, DueAmount)values(${PayeeName}, ${CompanyID},${ShopID},'${PaymentType}', '${InvoiceNo}', ${Quantity}, ${TotalAmount}, ${LoggedOnUser}, now(),'${PurchaseDate}', ${TotalAmount})`)
+            const [saveCommMaster] = await mysql2.pool.query(`insert into commissionmaster(UserID, CompanyID, ShopID, UserType,InvoiceNo, Quantity, TotalAmount,CreatedBy, CreatedOn, PurchaseDate, DueAmount)values(${PayeeName}, ${CompanyID},${ShopID},'${PaymentType}', '${InvoiceNo}', ${Quantity}, ${TotalAmount}, ${LoggedOnUser}, now(),'${PurchaseDate}', ${TotalAmount})`)
 
             console.log(connected("Commission Master Added SuccessFUlly !!!"));
 
             for (let item of Detail) {
-                const updateDetail = await connection.query(`update commissiondetail set CommissionMasterID = ${saveCommMaster.insertId}, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${item.ID}`)
+                const [updateDetail] = await mysql2.pool.query(`update commissiondetail set CommissionMasterID = ${saveCommMaster.insertId}, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${item.ID}`)
             }
 
 
-            const savePaymentMaster = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${PayeeName}, ${CompanyID}, ${ShopID}, '${PaymentType}','Debit',now(), 'Payment Initiated', '', '', ${TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
+            const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${PayeeName}, ${CompanyID}, ${ShopID}, '${PaymentType}','Debit',now(), 'Payment Initiated', '', '', ${TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
 
-            const savePaymentDetail = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${InvoiceNo}',${saveCommMaster.insertId},${PayeeName},${CompanyID},0,${TotalAmount},'${PaymentType}','Debit',1,${LoggedOnUser}, now())`)
+            const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${InvoiceNo}',${saveCommMaster.insertId},${PayeeName},${CompanyID},0,${TotalAmount},'${PaymentType}','Debit',1,${LoggedOnUser}, now())`)
 
             console.log(connected("Payment Initiate SuccessFUlly !!!"));
 
@@ -615,20 +602,14 @@ module.exports = {
             response.data = {
                 ID: saveCommMaster.insertId
             }
-            await connection.query("COMMIT");
             return res.send(response);
 
 
-        } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+        } catch(err) {
+            next(err)
         }
     },
     getCommissionByID: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -642,20 +623,15 @@ module.exports = {
             let qry = `select commissionmaster.*, COALESCE( user.Name, doctor.Name ) AS UserName from commissionmaster left join user as user on user.ID = commissionmaster.UserID and commissionmaster.UserType = 'Employee' left join doctor on doctor.ID = commissionmaster.UserID and commissionmaster.UserType = 'Doctor' where commissionmaster.CompanyID = ${CompanyID} and commissionmaster.ShopID = ${shopid} and commissionmaster.ID = ${ID}`
 
             response.message = "data fetch sucessfully"
-            response.data = await connection.query(qry)
-            await connection.query("COMMIT");
+            const [data] = await mysql2.pool.query(qry)
+            response.data = data
             return res.send(response);
 
-        } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+        } catch(err) {
+            next(err)
         }
     },
     getCommissionDetailList: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const shopid = await shopID(req.headers) || 0;
@@ -675,24 +651,19 @@ module.exports = {
 
             let finalQuery = qry + skipQuery;
 
-            let data = await connection.query(finalQuery);
-            let count = await connection.query(qry);
+            let [data] = await mysql2.pool.query(finalQuery);
+            let [count] = await mysql2.pool.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            await connection.query("COMMIT");
+            await mysql2.pool.query("COMMIT");
             return res.send(response);
-        } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+        } catch(err) {
+            next(err)
         }
     },
     customerPayment: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -723,7 +694,7 @@ module.exports = {
             let paymentType = 'Customer'
 
             if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
-                let pMaster = await connection.query(
+                let [pMaster] = await mysql2.pool.query(
                     `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, now())`
                 );
 
@@ -744,8 +715,8 @@ module.exports = {
                             tempAmount = 0;
                         }
                         let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'${paymentType}', '${CreditType}', 1, ${LoggedOnUser}, now())`;
-                        let pDetail = await connection.query(qry);
-                        let bMaster = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                        let [pDetail] = await mysql2.pool.query(qry);
+                        let [bMaster] = await mysql2.pool.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
                     }
 
                 }
@@ -755,7 +726,7 @@ module.exports = {
             if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
                 paymentType = 'Customer Credit'
 
-                let pMaster = await connection.query(
+                let [pMaster] = await mysql2.pool.query(
                     `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, now())`
                 );
 
@@ -776,8 +747,8 @@ module.exports = {
                             tempAmount = 0;
                         }
                         let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'${paymentType}', '${CreditType}', 1, ${LoggedOnUser}, now())`;
-                        let pDetail = await connection.query(qry);
-                        let bMaster = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                        let [pDetail] = await mysql2.pool.query(qry);
+                        let [bMaster] = await mysql2.pool.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
                     }
 
                 }
@@ -785,20 +756,13 @@ module.exports = {
             }
 
             response.message = "data update sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            console.log("error==========================>", err);
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     customerPaymentDebit: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -815,22 +779,22 @@ module.exports = {
             if (!PaymentMode || PaymentMode === undefined) return res.send({ message: "Invalid PaymentMode Data" })
             if (!PaidAmount || PaidAmount === undefined) return res.send({ message: "Invalid PaidAmount Data" })
 
-            const [fetchBillMaster] = await connection.query(`select * from billmaster where ID = ${ID}`)
+            const [fetchBillMaster] = await mysql2.pool.query(`select * from billmaster where ID = ${ID}`)
 
 
-            if (fetchBillMaster.PayableAmount <= 0) {
+            if (fetchBillMaster[0].PayableAmount <= 0) {
                 return res.send({ message: `You can't debit, this amount alread added customer credit amount` })
             }
 
 
-            const DueAmount = fetchBillMaster.DueAmount + PaidAmount
+            const DueAmount = fetchBillMaster[0].DueAmount + PaidAmount
 
-            const update = await connection.query(`update billmaster set DueAmount = ${DueAmount}, PaymentStatus = 'Unpaid', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${ID}`)
+            const [update] = await mysql2.pool.query(`update billmaster set DueAmount = ${DueAmount}, PaymentStatus = 'Unpaid', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${ID}`)
 
 
-            const savePaymentMaster = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Debit',now(), '${PaymentMode}', '', '', ${DueAmount}, ${PayableAmount - PaidAmount}, '',1,${LoggedOnUser}, now())`)
+            const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Debit',now(), '${PaymentMode}', '', '', ${DueAmount}, ${PayableAmount - PaidAmount}, '',1,${LoggedOnUser}, now())`)
 
-            const savePaymentDetail = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${fetchBillMaster.InvoiceNo}',${fetchBillMaster.ID},${CustomerID},${CompanyID},${PaidAmount},${DueAmount},'Customer','Debit',1,${LoggedOnUser}, now())`)
+            const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${fetchBillMaster.InvoiceNo}',${fetchBillMaster.ID},${CustomerID},${CompanyID},${PaidAmount},${DueAmount},'Customer','Debit',1,${LoggedOnUser}, now())`)
 
             console.log(connected("Payment Update SuccessFUlly !!!"));
 
@@ -840,19 +804,13 @@ module.exports = {
                 ID: ID,
                 InvoiceNo: fetchBillMaster.InvoiceNo
             }
-            await connection.query("COMMIT");
             return res.send(response);
 
-        } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+        } catch(err) {
+            next(err)
         }
     },
     updateCustomerPaymentMode: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -868,7 +826,7 @@ module.exports = {
                 return res.send({ message: `We can't add this PaymentMode, Payment Initiated || Customer Credit` })
             }
 
-            const paymentMaster = await connection.query(`select * from paymentmaster where CompanyID = ${CompanyID} and ID = ${PaymentMasterID}`)
+            const [paymentMaster] = await mysql2.pool.query(`select * from paymentmaster where CompanyID = ${CompanyID} and ID = ${PaymentMasterID}`)
 
             if (paymentMaster.length === 0) {
                 return res.send({ message: "Invalid PaymentMasterID Data" })
@@ -878,7 +836,7 @@ module.exports = {
                 return res.send({ message: `We can't update Payment Mode, Payment Initiated || Customer Credit` })
             }
 
-            const updatePaymentMode = await connection.query(`update paymentmaster set PaymentMode = '${PaymentMode}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${PaymentMasterID} and CompanyID = ${CompanyID} `)
+            const [updatePaymentMode] = await mysql2.pool.query(`update paymentmaster set PaymentMode = '${PaymentMode}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${PaymentMasterID} and CompanyID = ${CompanyID} `)
 
 
             response.message = "data update sucessfully"
@@ -887,17 +845,12 @@ module.exports = {
             }
             return res.send(response)
 
-        } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+        } catch(err) {
+            next(err)
         }
 
     },
     updateCustomerPaymentDate: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -910,13 +863,13 @@ module.exports = {
             if (!PaymentMasterID || PaymentMasterID === undefined) return res.send({ message: "Invalid PaymentMasterID Data" })
             if (!PaymentDate || PaymentDate === undefined) return res.send({ message: "Invalid PaymentDate Data" })
 
-            const paymentMaster = await connection.query(`select * from paymentmaster where CompanyID = ${CompanyID} and ID = ${PaymentMasterID}`)
+            const [paymentMaster] = await mysql2.pool.query(`select * from paymentmaster where CompanyID = ${CompanyID} and ID = ${PaymentMasterID}`)
 
             if (paymentMaster.length === 0) {
                 return res.send({ message: "Invalid PaymentMasterID Data" })
             }
 
-            const updatePaymentDate = await connection.query(`update paymentmaster set PaymentDate = '${PaymentDate}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${PaymentMasterID} and CompanyID = ${CompanyID} `)
+            const [updatePaymentDate] = await mysql2.pool.query(`update paymentmaster set PaymentDate = '${PaymentDate}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${PaymentMasterID} and CompanyID = ${CompanyID} `)
 
 
             response.message = "data update sucessfully"
@@ -925,18 +878,13 @@ module.exports = {
             }
             return res.send(response)
 
-        } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+        } catch(err) {
+            next(err)
         }
 
     },
 
     getCustomerCreditAmount: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -954,8 +902,8 @@ module.exports = {
             let creditCreditAmount = 0
             let creditDebitAmount = 0
 
-            const credit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Credit' and CustomerID = ${CustomerID} and paymentdetail.BillMasterID = ${ID}`);
-            const debit = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Debit' and CustomerID = ${CustomerID} and paymentdetail.BillMasterID = ${ID}`);
+            const [credit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Credit' and CustomerID = ${CustomerID} and paymentdetail.BillMasterID = ${ID}`);
+            const [debit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Debit' and CustomerID = ${CustomerID} and paymentdetail.BillMasterID = ${ID}`);
 
             if (credit[0].CreditAmount !== null) {
                 creditCreditAmount = credit[0].CreditAmount
@@ -970,19 +918,13 @@ module.exports = {
 
             response.totalCreditAmount = totalCreditAmount
             response.message = "data fetch sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
 
-        } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+        } catch(err) {
+            next(err)
         }
     },
     customerCreditDebit: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -999,11 +941,11 @@ module.exports = {
             if (!PaidAmount || PaidAmount === undefined) return res.send({ message: "Invalid PaidAmount Data" })
 
 
-            const [fetchBillMaster] = await connection.query(`select * from billmaster where ID = ${ID}`)
+            const [fetchBillMaster] = await mysql2.pool.query(`select * from billmaster where ID = ${ID}`)
 
-            const savePaymentMaster = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Credit',now(), '${PaymentMode}', '', '', ${PayableAmount}, ${PaidAmount}, '',1,${LoggedOnUser}, now())`)
+            const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Credit',now(), '${PaymentMode}', '', '', ${PayableAmount}, ${PaidAmount}, '',1,${LoggedOnUser}, now())`)
 
-            const savePaymentDetail = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${fetchBillMaster.InvoiceNo}',${ID},${CustomerID},${CompanyID},${PaidAmount},${PayableAmount - PaidAmount},'Customer Credit','Credit',1,${LoggedOnUser}, now())`)
+            const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${fetchBillMaster[0].InvoiceNo}',${ID},${CustomerID},${CompanyID},${PaidAmount},${PayableAmount - PaidAmount},'Customer Credit','Credit',1,${LoggedOnUser}, now())`)
 
             console.log(connected("Payment Update SuccessFUlly !!!"));
 
@@ -1013,15 +955,10 @@ module.exports = {
                 CustomerID: CustomerID,
                 ID: ID
             }
-            await connection.query("COMMIT");
             return res.send(response);
 
-        } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+        } catch(err) {
+            next(err)
         }
     },
 }
