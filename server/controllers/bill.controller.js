@@ -651,7 +651,6 @@ module.exports = {
                 CustomerID: billMaseterData.CustomerID
             }
 
-            await connection.query("COMMIT");
 
             return res.send(response);
 
@@ -1274,7 +1273,6 @@ module.exports = {
             response.data = data
             response.message = "success";
 
-            await connection.query("COMMIT");
 
             return res.send(response);
 
@@ -1673,7 +1671,6 @@ module.exports = {
             response.data = null
             response.message = "Supplier Assign SuccessFully !!!";
 
-            await connection.query("COMMIT");
 
             return res.send(response);
 
@@ -1742,7 +1739,6 @@ module.exports = {
             response.data = data
             response.count = count.length
 
-            await connection.query("COMMIT");
 
             return res.send(response);
 
@@ -1953,7 +1949,6 @@ module.exports = {
             response.data = data
             response.count = count.length
 
-            await connection.query("COMMIT");
 
             return res.send(response);
 
