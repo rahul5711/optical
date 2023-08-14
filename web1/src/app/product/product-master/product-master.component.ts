@@ -108,7 +108,6 @@ export class ProductMasterComponent implements OnInit {
   }
 
   getFieldSupportData(index:any) {
-   this.sp.show()
    this.specList.forEach((element: any) => {
     if (element.Ref === this.specList[index].FieldName.toString() ) {
       const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
@@ -135,7 +134,7 @@ export class ProductMasterComponent implements OnInit {
   }
 
 saveFieldData(i:any){
-  this.sp.show()
+
   this.specList[i].DisplayAdd = 0;
   const Ref = this.specList[i].Ref;
   let RefValue = 0;
@@ -144,6 +143,7 @@ saveFieldData(i:any){
       if (element.FieldName === Ref){ RefValue = element.SelectedValue; }
     });
   }
+  this.sp.show()
   const subs: Subscription =  this.ps.saveProductSupportData(this.specList[i].SptTableName, RefValue,this.specList[i].SelectedValue).subscribe({
     next: (res: any) => {
       const subss: Subscription =  this.ps.getProductSupportData(RefValue,this.specList[i].SptTableName).subscribe({

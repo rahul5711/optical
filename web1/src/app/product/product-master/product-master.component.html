@@ -13,7 +13,7 @@
                     <div class="body">
                         <form  #f="ngForm" autocomplete="off">
                             <div class="row">
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-2 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Product</mat-label>
                                         <mat-select name="FieldType" [(ngModel)]="selectedProduct" (selectionChange)="getFieldList()"  required
@@ -30,8 +30,8 @@
                                 </div>
                             </div>
                             <div class="row" *ngFor="let spec of specList ; let i = index;">
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 ">
-                                    <div *ngIf="spec.FieldType === 'DropDown'">
+                                
+                                    <div class="col-xl-2 col-lg-2 col-md-4 col-8 " *ngIf="spec.FieldType === 'DropDown'">
                                         <mat-form-field class=" mr-4 mb-0" *ngIf="spec.DisplayAdd === 0">
                                             <mat-label>{{spec.FieldName}}</mat-label>
                                             <mat-select name="{{spec.FieldName}}" [(ngModel)]="spec.SelectedValue" (selectionChange)="getFieldSupportData(i)" editable="true" [required]="spec.Required === 1" #singleSelect>
@@ -50,6 +50,8 @@
                                                 (ngModelChange)="spec.SelectedValue = onChange($event)" required
                                                 #NewProductTypecontrol>
                                         </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-4 col-4 " *ngIf="spec.FieldType === 'DropDown'">
                                         <mat-icon class="col-white plus_icon" *ngIf="spec.DisplayAdd === 0"  (click)="displayAddField(i)">add</mat-icon>
                                         <mat-icon class="delete_icon me-2 ms-2" *ngIf="spec.DisplayAdd === 0" (click)="deleteSpecValue(spec, spec.SelectedValue, i)">delete_forever</mat-icon>
                                         <button mat-mini-fab color="primary" *ngIf="spec.DisplayAdd === 1" (click)="saveFieldData(i)"
@@ -58,7 +60,7 @@
                                         </button>
                                     </div>
                                 </div>
-                            </div>
+                            
                         </form>
                     </div>
                 </div>

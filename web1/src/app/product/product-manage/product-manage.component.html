@@ -35,14 +35,14 @@
                                             [disabled]="disbleProduct">
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>GST Percentage</mat-label>
                                         <input matInput name="GSTPercentage" [(ngModel)]="selectedGSTPercentage"
                                             #GSTPercentagecontrol [disabled]="disbleProduct">
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>GST Type</mat-label>
                                         <mat-select name="GSTType" [(ngModel)]="selectedGSTType"
@@ -53,7 +53,7 @@
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
                                     <mat-icon *ngIf="addProductType === true" class="col-white plus_icon" (click)="showAdd = !showAdd;" >add</mat-icon>
                                     <mat-icon *ngIf="deleteProductTypes === true" class="delete_icon me-2 ms-2" disabled="selectedProduct === ''"
                                         (click)="deleteProductType()">delete_forever</mat-icon>
@@ -77,14 +77,14 @@
                                             #HSNCodecontrol>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>GST Percentage</mat-label>
                                         <input matInput name="NewGSTPercentage" [(ngModel)]="newProduct.GSTPercentage"
                                             #GSTPercentagecontrol>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>GST Type</mat-label>
                                         <mat-select name="NewGSTType" [(ngModel)]="newProduct.GSTType" #GSTTypecontrol>
@@ -106,7 +106,7 @@
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <div class="row mt-3 mt-sm-0 mb-3 mb-sm-0">
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Name</mat-label>
@@ -117,7 +117,7 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Sequence</mat-label>
                                         <input matInput name="Sequence" [(ngModel)]="newSpec.Seq" required #Seqcontrol>
@@ -126,7 +126,7 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Field Type</mat-label>
                                         <mat-select name="Field Type" [(ngModel)]="newSpec.Type" required #Typecontrol>
@@ -140,7 +140,7 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div *ngIf="newSpec.Type !== 'text'" class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                <div *ngIf="newSpec.Type !== 'text'" class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Dependent On</mat-label>
                                         <mat-select name="Field Type" [(ngModel)]="newSpec.Ref" #Refcontrol>
@@ -161,11 +161,11 @@
                                             #HSNCodecontrol [disabled]="true">
                                     </mat-form-field>
                                 </div> -->
-                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 ">
+                                <div class="col-xl-1 col-lg-1 col-md-2 col-6 mb-2">
                                     <mat-slide-toggle name="Multiple" color="primary" [(ngModel)]="newSpec.Required"
                                         class="example-margin" #Multiplecontrol>Required</mat-slide-toggle>
                                 </div>
-                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-2">
                                     <button mat-raised-button color="primary"
                                         [disabled]="selectedProduct === '' && !f.valid"
                                         (click)="saveSpec()">Save</button>

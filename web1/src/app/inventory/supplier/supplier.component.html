@@ -6,14 +6,14 @@
                 <div class="card">
                     <div class="header p-0 py-0 pt-1">
                         <div class="row">
-                            <div class="col-md-1 col-6 p-0 ms-3">
+                            <div class="col-lg-1 col-md-2 col-5 p-0 ms-3">
                                 <h2>Suppliers List </h2>
                             </div>
                             <div class="ps-md-0 ps-0 pt-1" style="width: 40px;">
                                 <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"
                                     (click)="exportAsXLSX()"></i>
                             </div>
-                            <div class="col-md-2 col-1 ps-md-0 ps-1">
+                            <div class="col-md-1 col-3 ps-md-0 ps-1 order-1 order-md-1 ">
                                 <select class=" form-control"
                                     style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
                                     [(ngModel)]="itemsPerPage" (change)="getList();">
@@ -25,20 +25,20 @@
                                     <option [ngValue]="500">Show 500 Row</option>
                                 </select>
                             </div>
-                            <div class="col-md-3 col-4 mx-md-auto" style="margin-top:0px;">
+                            <div class="col-md-3 col-6 mx-md-auto order-2 order-md-1" style="margin-top:0px;">
                                 <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false"
                                     ngbPaginationEllipsis [collectionSize]="collectionSize" #numPages
                                     [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="getList()"
                                     [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
                                 </ngb-pagination>
                             </div>
-                            <div class="col-md-2 col-4 ms-auto">
+                            <div class=" col-md-2 col-5 ms-auto order-0 order-md-1">
                                 <div class="input-group">
                                     <input placeholder="Search" [(ngModel)]="term" #searching mdbInput type="search"
                                         id="form1" class="form-control" />
                                 </div>
                             </div>
-                            <div class="col-md-1 col-1 d-flex" style="width: 70px;padding: 0;">
+                            <div class="col-md-1 col-2 order-3 order-md-1 ms-3 ms-md-0 d-flex" style="width: 70px;padding: 0;">
                                 <button class="bg-none" (click)="openModal(content)">
                                     <mat-icon class="col-white plus_icon me-1" data-mdb-toggle="modal"
                                     data-mdb-target="#exampleModal" *ngIf="addSupplierList"> add</mat-icon>
@@ -51,9 +51,9 @@
                         </div>
                     </div>
                     <!-- Grid View start -->
-                    <div class="row mt-2 p-2" *ngIf="dataList?.length !== 0 && !gridview"
+                    <div class="row mt-5 mt-md-2 p-2" *ngIf="dataList?.length !== 0 && !gridview"
                         style="overflow:auto;height:530px; ">
-                        <div class="col-md-3" *ngFor="let data of dataList let i = index;">
+                        <div class="col-lg-3 col-md-6" *ngFor="let data of dataList let i = index;">
                             <div class="course-card" style="height: 28rem;">
                                 <div class="course-card-body">
                                     <div class="course-card-top-overflow text-white">
@@ -144,7 +144,7 @@
     <div class="modal-body">
         <form #f="ngForm" autocomplete="off" (ngSubmit)="onsubmit();">
             <div class="row">
-                <div class="col-10">
+                <div class="col-xl-10 col-md-9 col-12">
                     <div class="row">
                         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
                             <mat-form-field class="example-full-width mb-0">
@@ -157,7 +157,7 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
-                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Phone No</mat-label>
                                 <input matInput name="PhoneNo" type="number" [(ngModel)]="data.PhoneNo" #PhoneNocontrol>
@@ -166,7 +166,7 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
-                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-6 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Mobile No1</mat-label>
                                 <input matInput name="MobileNo1" type="number" [(ngModel)]="data.MobileNo1" required
@@ -174,7 +174,7 @@
                                 <!-- pattern="^((\\+91-?)|0)?[0-9]{10}$"  -->
                             </mat-form-field>
                         </div>
-                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-6 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Mobile No2</mat-label>
                                 <input matInput name="MobileNo2" type="number" [(ngModel)]="data.MobileNo2"
@@ -212,7 +212,7 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
-                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-6 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>GST/VAT No</mat-label>
                                 <input matInput name="GSTNo" [(ngModel)]="data.GSTNo"
@@ -223,7 +223,7 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
-                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0" >
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-6 mb-0" >
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>TAX Type</mat-label>
                                 <mat-select name="GSTType" [(ngModel)]="data.GSTType" #GSTTypecontrol1 required>
@@ -233,7 +233,7 @@
                                 </mat-select>
                             </mat-form-field>
                         </div>
-                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0 ">
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-6 mb-0 ">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>CIN No</mat-label>
                                 <input matInput name="CINNo" [(ngModel)]="data.CINNo"
@@ -243,7 +243,7 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
-                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-6 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Fax No</mat-label>
                                 <input matInput name="Fax" [(ngModel)]="data.Fax"
@@ -253,13 +253,13 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
-                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-6 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>DOB</mat-label>
                                 <input matInput name="DOB" type="date" [(ngModel)]="data.DOB">
                             </mat-form-field>
                         </div>
-                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-6 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Anniversary</mat-label>
                                 <input matInput name="Anniversary" type="date" [(ngModel)]="data.Anniversary">
@@ -282,7 +282,7 @@
 
                     </div>
                     <div class="row">
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-12 mb-3">
                             <button class="me-3" type="button" mat-raised-button color="primary" [disabled]="!f.valid"
                                 *ngIf="suBtn == true" (click)="supplierUpdate()">Update</button>
                             <button type="submit" class="me-3" mat-raised-button color="primary" [disabled]="!f.valid"
@@ -294,7 +294,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2 col-12">
+                <div class="col-md-2 col-6">
                     <div class="row ">
                         <div class="col-10 mt-md-3 ">
                             <img class="fit-picture" width="170" height="170" [src]="companyImage">

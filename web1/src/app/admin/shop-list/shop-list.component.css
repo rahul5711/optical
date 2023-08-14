@@ -29,3 +29,19 @@
     color:rgb(233, 36, 36) !important;
     transform: 0.5ms !important;
 }
+
+@media (max-width: 768px){
+  .fit-picture{
+    width: 100px;
+    height: 100px;
+  }
+
+  .upload_icon {
+    font-size: 20px;
+    color: #ffffff;
+    background: #ff5100;
+    width: 101px;
+    padding-top: 2px;
+    height: 25px;
+    padding-left: 4px;
+}}

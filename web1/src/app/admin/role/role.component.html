@@ -13,7 +13,7 @@
                     <div class="body">
                         <form #f="ngForm" (ngSubmit)="savePermission()">
                             <div class="row" *ngIf="!showAdd">
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 mb-0" style=" height: 60px;">
+                                <div class="col-xl-2 col-lg-2 col-md-4 col-8 mb-0" style=" height: 60px;">
                                     <ng-select bindLabel="Shop" name="Role" placeholder="Select Role" [(ngModel)]="selectedRole.ID"  (change)="setdata()" [required]="true" #Role="ngModel" [closeOnSelect]="true" [searchable]="true">
                                         <ng-option [value]=""></ng-option>
                                         <ng-option [value]="role.ID" *ngFor="let role of roleList">{{role.Name | uppercase}} </ng-option>
@@ -22,28 +22,28 @@
                                      <span *ngIf="Role.touched && Role.errors" class="errorss">Select Valid Value</span>
 
                                 </div>
-                                <div *ngIf="!showAdd" class="col-md-8 col-sm-6 mb-0">
+                                <div *ngIf="!showAdd" class="col-lg-8 col-md-4 col-4 mb-0">
                                     <button type="button" class="btn_icon"  (click)="showAdd = !showAdd; addRole()">
                                         <mat-icon class="col-white plus_icon">add</mat-icon>
                                     </button>
                                     <button type="button" class="btn_icon" [disabled]="selectedRole.ID === ''"
                                         (click)="deleteRole()">
-                                        <mat-icon class="delete_icon me-2 ms-2">delete_forever</mat-icon>
+                                        <mat-icon class="delete_icon me-sm-2 ms-sm-2">delete_forever</mat-icon>
                                     </button>
                                 </div>
-                                <div class="col-md-2 col-sm-6 mb-0">
+                                <div class="col-lg-2 col-md-4 col-12 mb-3">
                                     <button type="submit" class="btn btn-success float-right" [disabled]="!f.valid"> <i class="fas fa-save"></i>&nbsp; Save Permissions</button>
                                 </div>
                             </div>
-                            <div class="row" *ngIf="showAdd">
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 mb-0">
+                            <div class="row " *ngIf="showAdd">
+                                <div class="col-xl-2 col-lg-2 col-md-4 col-8 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Role Name</mat-label>
                                         <input matInput name="NewRole" [(ngModel)]="selectedRole.Name" required
                                             #NewProductTypecontrol>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 mb-0">
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-4 mb-0">
                                     <button type="button" autofocus class="btn_icon"
                                         (click)="showAdd = !showAdd; saveRole()">
                                         <mat-icon class="save_icon">save</mat-icon>

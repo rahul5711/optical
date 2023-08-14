@@ -793,11 +793,11 @@ module.exports = {
             let [sumPaidDeb] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as PaidAmount from paymentdetail where CompanyID = ${CompanyID} and BillMasterID = ${ID} and PaymentType = 'Customer' and Credit = 'Debit'`)
 
 
-            if (sumPaidCred.PaidAmount !== null) {
-                totalCred = sumPaidCred.PaidAmount
+            if (sumPaidCred[0].PaidAmount !== null) {
+                totalCred = sumPaidCred[0].PaidAmount
             }
-            if (sumPaidDeb.PaidAmount !== null) {
-                totalDeb = sumPaidDeb.PaidAmount
+            if (sumPaidDeb[0].PaidAmount !== null) {
+                totalDeb = sumPaidDeb[0].PaidAmount
             }
 
             totalPaidAmount = totalCred - totalDeb

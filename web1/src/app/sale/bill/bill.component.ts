@@ -994,6 +994,12 @@ export class BillComponent implements OnInit {
           this.sp.hide()
         } else {
           this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: res.message,
+            showConfirmButton: true,
+          })
         }
         console.log(res);
       },
