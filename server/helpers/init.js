@@ -1,12 +1,13 @@
-const getConnection = require('../newdb')
+const getConnection = require('../helpers/db')
 const pass_init = require('./generate_password')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
+const mysql2 = require('../database')
+
 const init = async () => {
     try {
-        const connection = await getConnection.connection();
 
-        const doesExist = await connection.query(`select * from user where UserGroup = 'SuperAdmin' and Status = 1`)
+        const [doesExist] = await mysql2.pool.query(`select * from user where UserGroup = 'SuperAdmin' and Status = 1`)
 
         if (!doesExist.length) {
 
@@ -38,7 +39,7 @@ const init = async () => {
                 CommissionValueNB: 0
             }
 
-            const savedata = await connection.query(`insert into user(ID,CompanyID,Name,UserGroup,DOB,Anniversary,MobileNo1,MobileNo2,PhoneNo,Email,Address,Branch,PhotoURL,Document,LoginName,Password,Status,CreatedBy,UpdatedBy,CreatedOn,UpdatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB) values(${datum.ID},${datum.CompanyID},'${datum.Name}','${datum.UserGroup}','${datum.DOB}','${datum.Anniversary}','${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Email}','${datum.Address}','${datum.Branch}','${datum.PhotoURL}','${datum.Document}','${datum.LoginName}','${datum.Password}',${datum.Status},${datum.CreatedBy},${datum.UpdatedBy},now(),now(),${datum.CommissionType},${datum.CommissionMode},${datum.CommissionValue},${datum.CommissionValueNB})`)
+            const [savedata] = await mysql2.pool.query(`insert into user(ID,CompanyID,Name,UserGroup,DOB,Anniversary,MobileNo1,MobileNo2,PhoneNo,Email,Address,Branch,PhotoURL,Document,LoginName,Password,Status,CreatedBy,UpdatedBy,CreatedOn,UpdatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB) values(${datum.ID},${datum.CompanyID},'${datum.Name}','${datum.UserGroup}','${datum.DOB}','${datum.Anniversary}','${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Email}','${datum.Address}','${datum.Branch}','${datum.PhotoURL}','${datum.Document}','${datum.LoginName}','${datum.Password}',${datum.Status},${datum.CreatedBy},${datum.UpdatedBy},now(),now(),${datum.CommissionType},${datum.CommissionMode},${datum.CommissionValue},${datum.CommissionValueNB})`)
 
 
             console.log(connected("Super Admin Created SuccessFully !!!!"));
@@ -72,7 +73,7 @@ const init = async () => {
                 CommissionValueNB: 0
             }
 
-            // const update_data = await connection.query(``)
+            // const update_data = await mysql2.pool.query(``)
 
 
             console.log(connected("Super Admin Updated SuccessFully !!!!"));
@@ -80,19 +81,17 @@ const init = async () => {
 
         }
 
-        // connection.release()
 
     } catch (error) {
-        throw error
+        next(error)
     }
 }
 
 
 const product = async () => {
     try {
-        const connection = await getConnection.connection();
 
-        const product = await connection.query(`SELECT ${0} as CompanyID ,product.Name, product.HSNCode, product.GSTPercentage,product.GSTType, product.Status, 0 AS CreatedBy, NOW() AS CreatedOn FROM product WHERE STATUS = 1 AND CompanyID = 0`)
+        const [product] = await mysql2.pool.query(`SELECT ${0} as CompanyID ,product.Name, product.HSNCode, product.GSTPercentage,product.GSTType, product.Status, 0 AS CreatedBy, NOW() AS CreatedOn FROM product WHERE STATUS = 1 AND CompanyID = 0`)
         let result = []
         if (product) {
             result = JSON.parse(JSON.stringify(product))
@@ -101,14 +100,14 @@ const product = async () => {
         if (result) {
 
             for (const item of result) {
-                const saveProduct = await connection.query(`insert into product(CompanyID, Name, HSNCode,GSTPercentage,GSTType,Status,CreatedBy,CreatedOn) values(${item.CompanyID}, '${item.Name}', '${item.HSNCode}',${item.GSTPercentage}, '${item.GSTType}', 1, 0, now())`)
+                const [saveProduct] = await mysql2.pool.query(`insert into product(CompanyID, Name, HSNCode,GSTPercentage,GSTType,Status,CreatedBy,CreatedOn) values(${item.CompanyID}, '${item.Name}', '${item.HSNCode}',${item.GSTPercentage}, '${item.GSTType}', 1, 0, now())`)
             }
 
             console.log(connected("Product Assign SuccessFully !!!!"));
 
         }
 
-        const productSpec = await connection.query(`select * from productspec where Status = 1 and CompanyID = 0`)
+        const [productSpec] = await mysql2.pool.query(`select * from productspec where Status = 1 and CompanyID = 0`)
         let result2 = []
         if (productSpec) {
             result2 = JSON.parse(JSON.stringify(productSpec))
@@ -123,9 +122,9 @@ const product = async () => {
                     item.SptTableName = ''
                 }
                 if (item.Type === 'DropDown') {
-                    const saveSpec = await connection.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', 122, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now())`)
+                    const [saveSpec] = await mysql2.pool.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', 122, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now())`)
                 } else if (item.Type !== 'DropDown') {
-                    const saveSpec = await connection.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', 122, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now())`)
+                    const [saveSpec] = await mysql2.pool.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', 122, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now())`)
                 }
             }
 
@@ -134,17 +133,15 @@ const product = async () => {
         }
 
     } catch (error) {
-        throw error
-
+        next(error)
     }
 }
 
 const product_support = async () => {
     try {
-        const connection = await getConnection.connection();
         // spec spt table data to another company
 
-        const support_data = await connection.query(`select * from productspec where Status = 1 and CompanyID = 0 and Type = 'DropDown'`)
+        const [support_data] = await mysql2.pool.query(`select * from productspec where Status = 1 and CompanyID = 0 and Type = 'DropDown'`)
         let support_data_result = []
         if (support_data) {
             support_data_result = JSON.parse(JSON.stringify(support_data))
@@ -156,7 +153,7 @@ const product_support = async () => {
             complete_data = []
             for (const item of support_data_result) {
 
-                let result = await connection.query(`select * from specspttable where Status = 1 and TableName = '${item.SptTableName}'`)
+                let [result] = await mysql2.pool.query(`select * from specspttable where Status = 1 and TableName = '${item.SptTableName}'`)
                 if (result) {
                     result = JSON.parse(JSON.stringify(result))
                     for (const item2 of result) {
@@ -171,15 +168,15 @@ const product_support = async () => {
 
         if (complete_data) {
             for (const item of complete_data) {
-                let TableName = await connection.query(`select * from productspec where Status = 1 and ProductName = '${item.ProductName}' and Type = 'DropDown' and Name = '${item.Name}' and CompanyID = 134`)
+                let [TableName] = await mysql2.pool.query(`select * from productspec where Status = 1 and ProductName = '${item.ProductName}' and Type = 'DropDown' and Name = '${item.Name}' and CompanyID = 134`)
                 if (TableName) {
                     TableName = JSON.parse(JSON.stringify(TableName))
                 }
                 item.SptTableName = TableName[0].SptTableName
                 // item.RefID = TableName[0].Ref
 
-                console.log(item , 'tablename');
-                // let saveData = await connection.query(`insert into SpecSptTable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.TableName}','${item.Ref}','${item.SelectedValue}',1,now(),${LoggedOnUser.ID})`)
+                console.log(item, 'tablename');
+                // let saveData = await mysql2.pool.query(`insert into SpecSptTable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.TableName}','${item.Ref}','${item.SelectedValue}',1,now(),${LoggedOnUser.ID})`)
             }
         }
 

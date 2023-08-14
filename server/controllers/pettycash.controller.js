@@ -5,11 +5,11 @@ const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const _Query = require('../helpers/queryBuilder')
 const { shopID } = require('../helpers/helper_function')
+const mysql2 = require('../database')
 
 
 module.exports = {
     save: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -36,9 +36,9 @@ module.exports = {
             if (datum.ShopID == 0) return res.send({ message: "Invalid Shop" })
 
             if (datum.CashType === 'PettyCash' && datum.CreditType === 'Withdrawal') {
-                const DepositBalance = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Deposit'`)
+                const [DepositBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Deposit'`)
 
-                const WithdrawalBalance = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Withdrawal'`)
+                const [WithdrawalBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Withdrawal'`)
 
                 const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
 
@@ -50,7 +50,7 @@ module.exports = {
             var newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
             let rw = "P";
 
-            let lastInvoiceID = await connection.query(`select * from pettycash where CompanyID = ${CompanyID} and InvoiceNo LIKE '${newInvoiceID}%' order by ID desc`);
+            let [lastInvoiceID] = await mysql2.pool.query(`select * from pettycash where CompanyID = ${CompanyID} and InvoiceNo LIKE '${newInvoiceID}%' order by ID desc`);
 
             if (lastInvoiceID[0]?.InvoiceNo.substring(0, 4) !== newInvoiceID) {
                 newInvoiceID = newInvoiceID + rw + "00001";
@@ -63,7 +63,7 @@ module.exports = {
 
             datum.InvoiceNo = newInvoiceID;
 
-            const saveData = await connection.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo ) values (${CompanyID},${datum.ShopID}, ${datum.EmployeeID}, '${datum.CashType}', '${datum.CreditType}', ${datum.Amount},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${datum.InvoiceNo}')`)
+            const [saveData] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo ) values (${CompanyID},${datum.ShopID}, ${datum.EmployeeID}, '${datum.CashType}', '${datum.CreditType}', ${datum.Amount},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${datum.InvoiceNo}')`)
 
             let CreditType
             if (datum.CreditType === 'Withdrawal') {
@@ -73,26 +73,21 @@ module.exports = {
                 CreditType = 'Credit'
             }
 
-            const paymentMaster = await connection.query(`insert into paymentmaster(CustomerID,CompanyID,ShopID,PaymentType,CreditType,PaymentDate,PaymentMode,CardNo,PaymentReferenceNo,PayableAmount,PaidAmount,Comments,Status,CreatedBy,CreatedOn) values (${saveData.insertId}, ${CompanyID}, ${datum.ShopID},'PettyCash','${CreditType}',now(),'${datum.CashType}','','',${datum.Amount},${datum.Amount},'${datum.Comments}',1, ${LoggedOnUser}, now())`)
+            const [paymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID,CompanyID,ShopID,PaymentType,CreditType,PaymentDate,PaymentMode,CardNo,PaymentReferenceNo,PayableAmount,PaidAmount,Comments,Status,CreatedBy,CreatedOn) values (${saveData.insertId}, ${CompanyID}, ${datum.ShopID},'PettyCash','${CreditType}',now(),'${datum.CashType}','','',${datum.Amount},${datum.Amount},'${datum.Comments}',1, ${LoggedOnUser}, now())`)
 
-            const paymentDetail = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn) values (${paymentMaster.insertId},'${datum.InvoiceNo}',${saveData.insertId},${saveData.insertId},${CompanyID},${datum.Amount},0,'PettyCash','${CreditType}',1,${LoggedOnUser}, now())`)
+            const [paymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn) values (${paymentMaster.insertId},'${datum.InvoiceNo}',${saveData.insertId},${saveData.insertId},${CompanyID},${datum.Amount},0,'PettyCash','${CreditType}',1,${LoggedOnUser}, now())`)
 
             console.log(connected("Data Save SuccessFUlly !!!"));
             response.message = "data save sucessfully"
-            response.data = await connection.query(`select * from pettycash where CompanyID = ${CompanyID} and Status = 1 order by ID desc`)
-            await connection.query("COMMIT");
+            const [data] = await mysql2.pool.query(`select * from pettycash where CompanyID = ${CompanyID} and Status = 1 order by ID desc`)
+            response.data = data
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     list: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -117,24 +112,18 @@ module.exports = {
 
             let finalQuery = qry + skipQuery;
 
-            let data = await connection.query(finalQuery);
-            let count = await connection.query(qry);
+            let [data] = await mysql2.pool.query(finalQuery);
+            let [count] = await mysql2.pool.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            await connection.query("COMMIT");
             return res.send(response);
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     delete: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -146,36 +135,30 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const doesExist = await connection.query(`select * from pettycash where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select * from pettycash where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "pettycash doesnot exist from this id " })
             }
 
-            const payment = await connection.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'PettyCash'`)
+            const [payment] = await mysql2.pool.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'PettyCash'`)
 
 
-            const deletePayroll = await connection.query(`update pettycash set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            const [deletePayroll] = await mysql2.pool.query(`update pettycash set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
-            const deletePaymentMaster = await connection.query(`update paymentmaster set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where CustomerID = ${Body.ID} and CompanyID = ${CompanyID} and PaymentType = 'PettyCash' and ID = ${payment[0].PaymentMasterID}`)
+            const [deletePaymentMaster] = await mysql2.pool.query(`update paymentmaster set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where CustomerID = ${Body.ID} and CompanyID = ${CompanyID} and PaymentType = 'PettyCash' and ID = ${payment[0].PaymentMasterID}`)
 
-            const deletePaymentDetail = await connection.query(`update paymentdetail set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where BillMasterID = ${Body.ID} and CompanyID = ${CompanyID} and PaymentType = 'PettyCash' and BillID = '${doesExist[0].InvoiceNo}'`)
+            const [deletePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where BillMasterID = ${Body.ID} and CompanyID = ${CompanyID} and PaymentType = 'PettyCash' and BillID = '${doesExist[0].InvoiceNo}'`)
 
             console.log("PettyCash Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     getById: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -183,22 +166,16 @@ module.exports = {
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
-            const Pettycash = await connection.query(`select * from pettycash where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
+            const [Pettycash] = await mysql2.pool.query(`select * from pettycash where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             response.message = "data fetch sucessfully"
             response.data = Pettycash
-            await connection.query("COMMIT");
             return res.send(response);
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     update: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -210,7 +187,7 @@ module.exports = {
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
             if (shopid == 0) return res.send({ message: "Invalid Shop" })
 
-            const doesExist = await connection.query(`select * from pettycash where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select * from pettycash where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "pettycash doesnot exist from this id " })
@@ -229,9 +206,9 @@ module.exports = {
             }
 
             if (datum.CashType === 'PettyCash' && datum.CreditType === 'Withdrawal') {
-                const DepositBalance = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Deposit'`)
+                const [DepositBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Deposit'`)
 
-                const WithdrawalBalance = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Withdrawal'`)
+                const [WithdrawalBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Withdrawal'`)
 
                 const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
 
@@ -241,7 +218,7 @@ module.exports = {
             }
 
 
-            const update = await connection.query(`update pettycash set EmployeeID=${datum.EmployeeID}, CashType='${datum.CashType}',CreditType='${datum.CreditType}',Amount='${datum.Amount}',Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [update] = await mysql2.pool.query(`update pettycash set EmployeeID=${datum.EmployeeID}, CashType='${datum.CashType}',CreditType='${datum.CreditType}',Amount='${datum.Amount}',Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             let CreditType = ''
             if (datum.CreditType === 'Withdrawal') {
@@ -251,29 +228,23 @@ module.exports = {
                 CreditType = 'Credit'
             }
 
-            const payment = await connection.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'PettyCash'`)
+            const [payment] = await mysql2.pool.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'PettyCash'`)
 
-            const updatePaymentMaster = await connection.query(`update paymentmaster set PayableAmount=${datum.Amount},PaidAmount=${datum.Amount},
+            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount=${datum.Amount},PaidAmount=${datum.Amount},
             CreditType='${CreditType}', Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where CustomerID=${Body.ID} and PaymentType = 'PettyCash' and CompanyID = ${CompanyID} and ID =${payment[0].PaymentMasterID}`)
 
-            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount=${datum.Amount}, Credit='${CreditType}',UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where BillMasterID =${Body.ID} and PaymentType = 'PettyCash' and CompanyID = ${CompanyID} and BillID = '${doesExist[0].InvoiceNo}'`)
+            const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount=${datum.Amount}, Credit='${CreditType}',UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where BillMasterID =${Body.ID} and PaymentType = 'PettyCash' and CompanyID = ${CompanyID} and BillID = '${doesExist[0].InvoiceNo}'`)
 
             console.log("PettyCash Updated SuccessFUlly !!!");
 
             response.message = "data update sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     searchByFeild: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -292,24 +263,18 @@ module.exports = {
             let qry = `select pettycash.*, users2.Name as EmployeeName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from pettycash left join user as users1 on users1.ID = pettycash.CreatedBy left join user as users on users.ID = pettycash.UpdatedBy left join user as users2 on users2.ID = pettycash.EmployeeID where pettycash.Status = 1 and  pettycash.CompanyID = ${CompanyID} ${shop} and users2.Name like '%${Body.searchQuery}%' OR pettycash.Status = 1 and pettycash.CompanyID = ${CompanyID} ${shop} and pettycash.CashType like '%${Body.searchQuery}%' OR pettycash.Status = 1 and pettycash.CompanyID = ${CompanyID} ${shop} and pettycash.CreditType like '%${Body.searchQuery}%' `
 
 
-            let data = await connection.query(qry);
+            let [data] = await mysql2.pool.query(qry);
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     getPettyCashBalance: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -325,21 +290,16 @@ module.exports = {
             if (Body.CashType !== "PettyCash") return res.send({ message: "Invalid Query Data" })
             if (shopid == 0) return res.send({ message: "Invalid Shop" })
 
-            const DepositBalance = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='${Body.CreditType}'`)
+            const [DepositBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='${Body.CreditType}'`)
 
-            const WithdrawalBalance = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Withdrawal'`)
+            const [WithdrawalBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Withdrawal'`)
 
             response.message = "data fetch sucessfully"
             response.data = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     }
 

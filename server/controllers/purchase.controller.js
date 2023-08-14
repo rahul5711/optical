@@ -11,10 +11,10 @@ let pdf = require("html-pdf");
 var TinyURL = require('tinyurl');
 const clientConfig = require("../helpers/constants");
 const { log } = require('console')
+const mysql2 = require('../database')
 
 module.exports = {
     create: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -45,7 +45,7 @@ module.exports = {
             if (PurchaseMaster.Quantity == 0 || !PurchaseMaster?.Quantity || PurchaseMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
 
 
-            const doesExistInvoiceNo = await connection.query(`select * from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            const [doesExistInvoiceNo] = await mysql2.pool.query(`select * from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
             if (doesExistInvoiceNo.length) {
                 return res.send({ message: `Purchase Already exist from this InvoiceNo ${PurchaseMaster.InvoiceNo}` })
@@ -79,7 +79,7 @@ module.exports = {
             const supplierId = purchase.SupplierID;
 
             //  save purchase data
-            const savePurchase = await connection.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${paymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,0,${purchase.TotalAmount}, ${LoggedOnUser}, now())`);
+            const [savePurchase] = await mysql2.pool.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${paymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,0,${purchase.TotalAmount}, ${LoggedOnUser}, now())`);
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
@@ -98,7 +98,7 @@ module.exports = {
                     baseBarCode = await generateBarcode(CompanyID, 'SB')
                 }
 
-                const savePurchaseDetail = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},now())`)
+                const [savePurchaseDetail] = await mysql2.pool.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},now())`)
 
 
             }
@@ -106,7 +106,7 @@ module.exports = {
 
             //  save barcode
 
-            let detailDataForBarCode = await connection.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId}`)
+            let [detailDataForBarCode] = await mysql2.pool.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId}`)
 
             if (detailDataForBarCode.length) {
                 for (const item of detailDataForBarCode) {
@@ -114,7 +114,7 @@ module.exports = {
                     let count = 0;
                     count = item.Quantity;
                     for (j = 0; j < count; j++) {
-                        const saveBarcode = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, now())`)
+                        const [saveBarcode] = await mysql2.pool.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, now())`)
                     }
                 }
             }
@@ -125,34 +125,28 @@ module.exports = {
 
             if (Charge.length) {
                 for (const c of Charge) {
-                    const saveCharge = await connection.query(`insert into purchasecharge (PurchaseID, ChargeType,CompanyID,Description, Amount, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn ) values (${savePurchase.insertId}, '${c.ChargeType}', ${CompanyID}, '${c.Description}', ${c.Price}, ${c.GSTPercentage}, ${c.GSTAmount}, '${c.GSTType}', ${c.TotalAmount}, 1, ${LoggedOnUser}, now())`)
+                    const [saveCharge] = await mysql2.pool.query(`insert into purchasecharge (PurchaseID, ChargeType,CompanyID,Description, Amount, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn ) values (${savePurchase.insertId}, '${c.ChargeType}', ${CompanyID}, '${c.Description}', ${c.Price}, ${c.GSTPercentage}, ${c.GSTAmount}, '${c.GSTType}', ${c.TotalAmount}, 1, ${LoggedOnUser}, now())`)
                 }
 
                 console.log(connected("Charge Data Save SuccessFUlly !!!"));
             }
 
-            const savePaymentMaster = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${supplierId}, ${CompanyID}, ${shopid}, 'Supplier','Debit',now(), 'Payment Initiated', '', '', ${purchase.TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
+            const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${supplierId}, ${CompanyID}, ${shopid}, 'Supplier','Debit',now(), 'Payment Initiated', '', '', ${purchase.TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
 
-            const savePaymentDetail = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${purchase.InvoiceNo}',${savePurchase.insertId},${supplierId},${CompanyID},0,${purchase.TotalAmount},'Vendor','Debit',1,${LoggedOnUser}, now())`)
+            const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${purchase.InvoiceNo}',${savePurchase.insertId},${supplierId},${CompanyID},0,${purchase.TotalAmount},'Vendor','Debit',1,${LoggedOnUser}, now())`)
 
             console.log(connected("Payment Initiate SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
             response.data = savePurchase.insertId
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     update: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -182,7 +176,7 @@ module.exports = {
             if (PurchaseMaster.Quantity == 0 || !PurchaseMaster?.Quantity || PurchaseMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
 
 
-            const doesExistInvoiceNo = await connection.query(`select * from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${PurchaseMaster.ID}`)
+            const [doesExistInvoiceNo] = await mysql2.pool.query(`select * from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${PurchaseMaster.ID}`)
 
             if (doesExistInvoiceNo.length) {
                 return res.send({ message: `Purchase Already exist from this InvoiceNo ${PurchaseMaster.InvoiceNo}` })
@@ -213,14 +207,14 @@ module.exports = {
 
             const supplierId = purchase.SupplierID;
 
-            const doesCheckPayment = await connection.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${PurchaseMaster.InvoiceNo}' and BillMasterID = ${PurchaseMaster.ID}`)
+            const [doesCheckPayment] = await mysql2.pool.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${PurchaseMaster.InvoiceNo}' and BillMasterID = ${PurchaseMaster.ID}`)
 
             if (doesCheckPayment.length > 1) {
                 return res.send({ message: `You Can't Add Product !!, You have Already Paid Amount of this Invoice` })
             }
 
             // update purchasemaster
-            const updatePurchaseMaster = await connection.query(`update purchasemasternew set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and ShopID = ${shopid} and ID=${purchase.ID}`)
+            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and ShopID = ${shopid} and ID=${purchase.ID}`)
 
             console.log(`update purchasemasternew set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and ShopID = ${shopid} and ID=${purchase.ID}`);
 
@@ -243,10 +237,10 @@ module.exports = {
                         baseBarCode = await generateBarcode(CompanyID, 'SB')
                     }
 
-                    const savePurchaseDetail = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${purchase.ID},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},now())`)
+                    const [savePurchaseDetail] = await mysql2.pool.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${purchase.ID},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},now())`)
 
 
-                    let detailDataForBarCode = await connection.query(
+                    let [detailDataForBarCode] = await mysql2.pool.query(
                         `select * from purchasedetailnew where PurchaseID = '${purchase.ID}' ORDER BY ID DESC LIMIT 1`
                     );
 
@@ -256,7 +250,7 @@ module.exports = {
                             let count = 0;
                             count = item.Quantity;
                             for (j = 0; j < count; j++) {
-                                const saveBarcode = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, now())`)
+                                const [saveBarcode] = await mysql2.pool.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, now())`)
                             }
                         })
                     )
@@ -271,7 +265,7 @@ module.exports = {
             if (Charge.length) {
                 for (const c of Charge) {
                     if (c.ID === null) {
-                        const saveCharge = await connection.query(`insert into purchasecharge (PurchaseID, ChargeType,CompanyID,Description, Amount, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn ) values (${purchase.ID}, '${c.ChargeType}', ${CompanyID}, '${c.Description}', ${c.Price}, ${c.GSTPercentage}, ${c.GSTAmount}, '${c.GSTType}', ${c.TotalAmount}, 1, ${LoggedOnUser}, now())`)
+                        const [saveCharge] = await mysql2.pool.query(`insert into purchasecharge (PurchaseID, ChargeType,CompanyID,Description, Amount, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn ) values (${purchase.ID}, '${c.ChargeType}', ${CompanyID}, '${c.Description}', ${c.Price}, ${c.GSTPercentage}, ${c.GSTAmount}, '${c.GSTType}', ${c.TotalAmount}, 1, ${LoggedOnUser}, now())`)
                     }
 
                 }
@@ -282,30 +276,24 @@ module.exports = {
 
             //  update payment
 
-            const updatePaymentMaster = await connection.query(`update paymentmaster set PayableAmount = ${PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
 
-            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount = 0 , DueAmount = ${PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
+            const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0 , DueAmount = ${PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
 
             console.log(connected("Payment Update SuccessFUlly !!!"));
 
 
             response.message = "data update sucessfully"
             response.data = purchase.ID
-            await connection.query("COMMIT");
             return res.send(response);
 
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     getPurchaseById: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { result: { PurchaseMaster: null, PurchaseDetail: null, Charge: null }, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -315,11 +303,11 @@ module.exports = {
 
             if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
 
-            const PurchaseMaster = await connection.query(`select * from purchasemasternew  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            const [PurchaseMaster] = await mysql2.pool.query(`select * from purchasemasternew  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
-            const PurchaseDetail = await connection.query(`select * from purchasedetailnew where  PurchaseID = ${ID} and CompanyID = ${CompanyID}`)
+            const [PurchaseDetail] = await mysql2.pool.query(`select * from purchasedetailnew where  PurchaseID = ${ID} and CompanyID = ${CompanyID}`)
 
-            const Charge = await connection.query(`select * from purchasecharge where PurchaseID = ${ID} and CompanyID = ${CompanyID}`)
+            const [Charge] = await mysql2.pool.query(`select * from purchasecharge where PurchaseID = ${ID} and CompanyID = ${CompanyID}`)
 
             const gst_detail = await gstDetail(CompanyID, ID) || []
 
@@ -328,20 +316,14 @@ module.exports = {
             response.result.PurchaseMaster[0].gst_detail = gst_detail || []
             response.result.PurchaseDetail = PurchaseDetail
             response.result.Charge = Charge
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     list: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -365,25 +347,19 @@ module.exports = {
 
             let finalQuery = qry + skipQuery;
 
-            let data = await connection.query(finalQuery);
-            let count = await connection.query(qry);
+            let [data] = await mysql2.pool.query(finalQuery);
+            let [count] = await mysql2.pool.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     purchaseHistoryBySupplier: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, sumData: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -395,29 +371,23 @@ module.exports = {
 
             let qry = `select purchasemasternew.*, supplier.Name as SupplierName,  supplier.GSTNo as GSTNo, users1.Name as CreatedPerson,shop.Name as ShopName, shop.AreaName as AreaName, users.Name as UpdatedPerson from purchasemasternew left join user as users1 on users1.ID = purchasemasternew.CreatedBy left join user as users on users.ID = purchasemasternew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and purchasemasternew.PStatus = 0 and purchasemasternew.CompanyID = ${CompanyID} and purchasemasternew.SupplierID = ${SupplierID}  order by purchasemasternew.ID desc`
 
-            let data = await connection.query(qry);
+            let [data] = await mysql2.pool.query(qry);
 
             let SumQry = `select SUM(purchasemasternew.Quantity) as Quantity, SUM(purchasemasternew.SubTotal) as SubTotal, SUM(purchasemasternew.DiscountAmount) as DiscountAmount, SUM(purchasemasternew.GSTAmount) as GSTAmount, SUM(purchasemasternew.TotalAmount) as TotalAmount , SUM(purchasemasternew.DueAmount) as DueAmount from purchasemasternew  where purchasemasternew.Status = 1 and purchasemasternew.PStatus = 0 and purchasemasternew.CompanyID = ${CompanyID} and purchasemasternew.SupplierID = ${SupplierID}  order by purchasemasternew.ID desc`
 
 
-            let sumData = await connection.query(SumQry);
+            let [sumData] = await mysql2.pool.query(SumQry);
             response.message = "data fetch sucessfully"
             response.data = data
             response.sumData = sumData
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     delete: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -429,38 +399,32 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const doesExist = await connection.query(`select * from purchasemasternew where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select * from purchasemasternew where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "purchase doesnot exist from this id " })
             }
 
 
-            const doesExistProduct = await connection.query(`select * from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and PurchaseID = '${Body.ID}'`)
+            const [doesExistProduct] = await mysql2.pool.query(`select * from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and PurchaseID = '${Body.ID}'`)
 
             if (doesExistProduct.length) {
                 return res.send({ message: `First you'll have to delete product` })
             }
 
 
-            const deletePurchase = await connection.query(`update purchasemasternew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deletePurchase] = await mysql2.pool.query(`update purchasemasternew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Purchase Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     deleteProduct: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { result: { PurchaseDetail: null, PurchaseMaster: null }, success: true, message: "" }
 
@@ -476,62 +440,56 @@ module.exports = {
 
             if (Body.PurchaseMaster.ID === null || Body.PurchaseMaster.InvoiceNo.trim() === '' || !Body.PurchaseMaster) return res.send({ message: "Invalid Query Data" })
 
-            const doesExist = await connection.query(`select * from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select * from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "product doesnot exist from this id " })
             }
 
-            const doesCheckPayment = await connection.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${Body.PurchaseMaster.InvoiceNo}' and BillMasterID = ${Body.PurchaseMaster.ID}`)
+            const [doesCheckPayment] = await mysql2.pool.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${Body.PurchaseMaster.InvoiceNo}' and BillMasterID = ${Body.PurchaseMaster.ID}`)
 
             if (doesCheckPayment.length > 1) {
                 return res.send({ message: `You Can't Delete Product !!, You have Already Paid Amount of this Invoice` })
             }
 
 
-            const doesExistProductQty = await connection.query(`select * from barcodemasternew where Status = 1 and CompanyID = '${CompanyID}' and PurchaseDetailID = '${Body.ID}' and CurrentStatus = 'Available'`)
+            const [doesExistProductQty] = await mysql2.pool.query(`select * from barcodemasternew where Status = 1 and CompanyID = '${CompanyID}' and PurchaseDetailID = '${Body.ID}' and CurrentStatus = 'Available'`)
 
             if (doesExist[0].Quantity !== doesExistProductQty.length) {
                 return res.send({ message: `You have product already sold` })
             }
 
-            const deletePurchasedetail = await connection.query(`update purchasedetailnew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deletePurchasedetail] = await mysql2.pool.query(`update purchasedetailnew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Product Delete SuccessFUlly !!!");
 
             // update purchasemaster
-            const updatePurchaseMaster = await connection.query(`update purchasemasternew set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount}, DueAmount = ${Body.PurchaseMaster.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${Body.PurchaseMaster.InvoiceNo}' and ShopID = ${shopid}`)
+            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount}, DueAmount = ${Body.PurchaseMaster.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${Body.PurchaseMaster.InvoiceNo}' and ShopID = ${shopid}`)
 
             //  update payment
 
-            const updatePaymentMaster = await connection.query(`update paymentmaster set PayableAmount = ${Body.PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${Body.PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
 
-            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount = 0 , DueAmount = ${Body.PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
+            const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0 , DueAmount = ${Body.PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
 
-            const fetchPurchaseMaster = await connection.query(`select * from purchasemasternew  where Status = 1 and ID = ${Body.PurchaseMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            const [fetchPurchaseMaster] = await mysql2.pool.query(`select * from purchasemasternew  where Status = 1 and ID = ${Body.PurchaseMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
             const gst_detail = await gstDetail(CompanyID, Body.PurchaseMaster.ID) || []
 
             fetchPurchaseMaster[0].gst_detail = gst_detail
 
-            const PurchaseDetail = await connection.query(`select * from purchasedetailnew where  PurchaseID = ${doesExist[0].PurchaseID} and CompanyID = ${CompanyID}`)
+            const [PurchaseDetail] = await mysql2.pool.query(`select * from purchasedetailnew where  PurchaseID = ${doesExist[0].PurchaseID} and CompanyID = ${CompanyID}`)
             response.result.PurchaseDetail = PurchaseDetail;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data delete sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     updateProduct: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { result: { PurchaseDetail: null, PurchaseMaster: null }, success: true, message: "" }
 
@@ -548,20 +506,20 @@ module.exports = {
 
             if (Body.PurchaseMaster.ID === null || Body.PurchaseMaster.InvoiceNo.trim() === '' || !Body.PurchaseMaster) return res.send({ message: "Invalid Query Data" })
 
-            const doesExist = await connection.query(`select * from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select * from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "product doesnot exist from this id " })
             }
 
-            const doesCheckPayment = await connection.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${Body.PurchaseMaster.InvoiceNo}' and BillMasterID = ${Body.PurchaseMaster.ID}`)
+            const [doesCheckPayment] = await mysql2.pool.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${Body.PurchaseMaster.InvoiceNo}' and BillMasterID = ${Body.PurchaseMaster.ID}`)
 
             if (doesCheckPayment.length > 1) {
                 return res.send({ message: `You Can't Delete Product !!, You have Already Paid Amount of this Invoice` })
             }
 
 
-            const doesExistProductQty = await connection.query(`select * from barcodemasternew where Status = 1 and CompanyID = '${CompanyID}' and PurchaseDetailID = '${Body.ID}' and CurrentStatus = 'Available'`)
+            const [doesExistProductQty] = await mysql2.pool.query(`select * from barcodemasternew where Status = 1 and CompanyID = '${CompanyID}' and PurchaseDetailID = '${Body.ID}' and CurrentStatus = 'Available'`)
 
             if (doesExist[0].Quantity !== doesExistProductQty.length) {
                 return res.send({ message: `You have product already sold` })
@@ -570,42 +528,36 @@ module.exports = {
 
             // PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,, Quantity,,,,, ,,,,,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn
 
-            const updatePurchasedetail = await connection.query(`update purchasedetailnew set UnitPrice=${Body.UnitPrice}, SubTotal=${Body.SubTotal},DiscountPercentage=${Body.DiscountPercentage},DiscountAmount=${Body.DiscountAmount},GSTPercentage=${Body.GSTPercentage},GSTAmount=${Body.GSTAmount},GSTType='${Body.GSTType}',TotalAmount=${Body.TotalAmount},RetailPrice=${Body.RetailPrice},WholeSalePrice=${Body.WholeSalePrice},BrandType='${Body.BrandType}', UniqueBarcode='${Body.UniqueBarcode}', UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [updatePurchasedetail] = await mysql2.pool.query(`update purchasedetailnew set UnitPrice=${Body.UnitPrice}, SubTotal=${Body.SubTotal},DiscountPercentage=${Body.DiscountPercentage},DiscountAmount=${Body.DiscountAmount},GSTPercentage=${Body.GSTPercentage},GSTAmount=${Body.GSTAmount},GSTType='${Body.GSTType}',TotalAmount=${Body.TotalAmount},RetailPrice=${Body.RetailPrice},WholeSalePrice=${Body.WholeSalePrice},BrandType='${Body.BrandType}', UniqueBarcode='${Body.UniqueBarcode}', UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Product Update SuccessFUlly !!!");
 
             // update purchasemaster
-            const updatePurchaseMaster = await connection.query(`update purchasemasternew set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${Body.PurchaseMaster.InvoiceNo}' and ShopID = ${shopid}`)
+            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${Body.PurchaseMaster.InvoiceNo}' and ShopID = ${shopid}`)
 
             //  update payment
 
-            const updatePaymentMaster = await connection.query(`update paymentmaster set PayableAmount = ${Body.PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${Body.PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
 
-            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount = 0 , DueAmount = ${Body.PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
+            const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0 , DueAmount = ${Body.PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
 
-            const fetchPurchaseMaster = await connection.query(`select * from purchasemasternew  where Status = 1 and ID = ${Body.PurchaseMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            const [fetchPurchaseMaster] = await mysql2.pool.query(`select * from purchasemasternew  where Status = 1 and ID = ${Body.PurchaseMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
             const gst_detail = await gstDetail(CompanyID, Body.PurchaseMaster.ID) || []
 
             fetchPurchaseMaster[0].gst_detail = gst_detail
 
-            const PurchaseDetail = await connection.query(`select * from purchasedetailnew where  PurchaseID = ${doesExist[0].PurchaseID} and CompanyID = ${CompanyID}`)
+            const [PurchaseDetail] = await mysql2.pool.query(`select * from purchasedetailnew where  PurchaseID = ${doesExist[0].PurchaseID} and CompanyID = ${CompanyID}`)
             response.result.PurchaseDetail = PurchaseDetail;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data update product sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     deleteCharge: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { result: { Charge: null, PurchaseMaster: null }, success: true, message: "" }
 
@@ -618,7 +570,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const doesExist = await connection.query(`select * from purchasecharge where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select * from purchasecharge where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "charge doesnot exist from this id " })
@@ -626,50 +578,44 @@ module.exports = {
 
             if (Body.PurchaseMaster.ID === null || Body.PurchaseMaster.InvoiceNo.trim() === '' || !Body.PurchaseMaster) return res.send({ message: "Invalid Query Data" })
 
-            const doesCheckPayment = await connection.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${Body.PurchaseMaster.InvoiceNo}' and BillMasterID = ${Body.PurchaseMaster.ID}`)
+            const [doesCheckPayment] = await mysql2.pool.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${Body.PurchaseMaster.InvoiceNo}' and BillMasterID = ${Body.PurchaseMaster.ID}`)
 
             if (doesCheckPayment.length > 1) {
                 return res.send({ message: `You Can't Delete Charge !!, You have Already Paid Amount of this Invoice` })
             }
 
             // update purchasemaster
-            const updatePurchaseMaster = await connection.query(`update purchasemasternew set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${Body.PurchaseMaster.InvoiceNo}' and ShopID = ${shopid}`)
+            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${Body.PurchaseMaster.InvoiceNo}' and ShopID = ${shopid}`)
 
             //  update payment
 
-            const updatePaymentMaster = await connection.query(`update paymentmaster set PayableAmount = ${Body.PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${Body.PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
 
-            const updatePaymentDetail = await connection.query(`update paymentdetail set Amount = 0 , DueAmount = ${Body.PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
+            const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0 , DueAmount = ${Body.PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
 
-            const fetchPurchaseMaster = await connection.query(`select * from purchasemasternew  where Status = 1 and ID = ${Body.PurchaseMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            const [fetchPurchaseMaster] = await mysql2.pool.query(`select * from purchasemasternew  where Status = 1 and ID = ${Body.PurchaseMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
             const gst_detail = await gstDetail(CompanyID, Body.PurchaseMaster.ID) || []
 
             fetchPurchaseMaster[0].gst_detail = gst_detail
 
 
-            const deleteCharge = await connection.query(`update purchasecharge set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deleteCharge] = await mysql2.pool.query(`update purchasecharge set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Charge Delete SuccessFUlly !!!");
 
-            const Charge = await connection.query(`select * from purchasecharge where PurchaseID = ${doesExist[0].PurchaseID} and CompanyID = ${CompanyID}`)
+            const [Charge] = await mysql2.pool.query(`select * from purchasecharge where PurchaseID = ${doesExist[0].PurchaseID} and CompanyID = ${CompanyID}`)
             response.result.Charge = Charge;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data delete sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     purchaseDetailPDF: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -683,9 +629,9 @@ module.exports = {
             printdata.PurchaseDetails = PurchaseDetail
             printdata.PurchaseCharge = PurchaseCharges
 
-            const shopdetails = await connection.query(`select * from shop where ID = ${shopid}`)
-            const companysetting = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
-            const supplier = await connection.query(`select * from supplier where CompanyID = ${CompanyID} and ID = ${PurchaseMasters.SupplierID}`)
+            const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
+            const [companysetting] = await mysql2.pool.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+            const [supplier] = await mysql2.pool.query(`select * from supplier where CompanyID = ${CompanyID} and ID = ${PurchaseMasters.SupplierID}`)
 
             printdata.shopdetails = shopdetails[0]
             printdata.supplier = supplier[0]
@@ -725,17 +671,12 @@ module.exports = {
             });
             return
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
 
     },
 
     PrintBarcode: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const bracodeData = req.body
             let modifyBarcode = []
@@ -748,8 +689,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
-            const shopdetails = await connection.query(`select * from shop where ID = ${shopid}`)
-            const companysetting = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+            const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
+            const [companysetting] = await mysql2.pool.query(`select * from companysetting where CompanyID = ${CompanyID}`)
 
             printdata.shopdetails = shopdetails[0]
             printdata.companysetting = companysetting[0]
@@ -795,16 +736,11 @@ module.exports = {
             );
             return
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     searchByFeild: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -823,25 +759,19 @@ module.exports = {
 
             let qry = `select purchasemasternew.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasemasternew left join user as users1 on users1.ID = purchasemasternew.CreatedBy left join user as users on users.ID = purchasemasternew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and purchasemasternew.PStatus = 0 and purchasemasternew.CompanyID = '${CompanyID}' ${shopId} and purchasemasternew.InvoiceNo like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and purchasemasternew.PStatus = 0 and purchasemasternew.CompanyID = '${CompanyID}' ${shopId}  and supplier.Name like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and purchasemasternew.PStatus = 0 and purchasemasternew.CompanyID = '${CompanyID}' ${shopId}  and supplier.GSTNo like '%${Body.searchQuery}%' `
 
-            let data = await connection.query(qry);
+            let [data] = await mysql2.pool.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     paymentHistory: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const { ID, InvoiceNo } = req.body;
@@ -853,25 +783,19 @@ module.exports = {
 
             let qry = `SELECT paymentdetail.*, purchasemasternew.*, paymentmaster.PaymentType AS PaymentType, paymentmaster.PaymentMode AS PaymentMode, paymentmaster.PaidAmount, paymentdetail.DueAmount AS Dueamount FROM paymentdetail LEFT JOIN purchasemasternew ON purchasemasternew.ID = paymentdetail.BillMasterID LEFT JOIN paymentmaster  ON paymentmaster.ID = paymentdetail.PaymentMasterID WHERE paymentdetail.PaymentType = 'Vendor' AND purchasemasternew.ID = ${ID} AND paymentdetail.BillID = '${InvoiceNo}' and purchasemasternew.CompanyID = ${CompanyID} and purchasemasternew.ShopID = ${shopid}`
 
-            let data = await connection.query(qry);
+            let [data] = await mysql2.pool.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     barCodeListBySearchString: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const { searchString, ShopMode, ProductName } = req.body;
@@ -892,25 +816,19 @@ module.exports = {
 
             const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, purchasedetailnew.ProductName, barcodemasternew.* FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE purchasedetailnew.ProductTypeName = '${ProductName}' ${shopMode} AND purchasedetailnew.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus = "Available"   AND purchasedetailnew.Status = 1  and shop.Status = 1 and purchasemasternew.PStatus = 0  And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
 
-            let purchaseData = await connection.query(qry);
+            let [purchaseData] = await mysql2.pool.query(qry);
             response.data = purchaseData;
             response.message = "Success";
 
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     productDataByBarCodeNo: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const { Req, PreOrder, ShopMode } = req.body;
@@ -933,24 +851,18 @@ module.exports = {
                 qry = `SELECT COUNT(PurchaseDetailID) AS BarCodeCount, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage,purchasedetailnew.GSTAmount, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice, purchasedetailnew.ProductTypeID, barcodemasternew.*  FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.Barcode = '${barCode}' and PurchaseDetail.Status = 1 AND barcodemasternew.CurrentStatus = 'Pre Order'  and purchasedetailnew.CompanyID = '${CompanyID}'`;
             }
 
-            let barCodeData = await connection.query(qry);
+            let [barCodeData] = await mysql2.pool.query(qry);
             response.data = barCodeData[0];
             response.message = "Success";
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     transferProduct: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const { ProductName, Barcode, BarCodeCount, TransferCount, Remark, ToShopID, TransferFromShop } = req.body;
@@ -981,40 +893,34 @@ module.exports = {
 
             let qry = `insert into transfermaster ( CompanyID, ProductName, BarCode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop, AcceptanceCode, DateStarted, TransferStatus, CreatedBy, CreatedOn) values (${CompanyID}, '${ProductName}', '${Barcode}', ${BarCodeCount}, ${TransferCount},  '${Remark}',  ${ToShopID},${TransferFromShop}, '${AcceptanceCode}', now(),  '${TransferStatus}',${LoggedOnUser}, now())`;
 
-            let xferData = await connection.query(qry);
+            let [xferData] = await mysql2.pool.query(qry);
             let xferID = xferData.insertId;
 
-            let selectedRows = await connection.query(
+            let [selectedRows] = await mysql2.pool.query(
                 `SELECT ID FROM barcodemasternew WHERE CurrentStatus = "Available" AND ShopID = ${TransferFromShop} AND Barcode = '${Barcode}' AND PreOrder = '0' and CompanyID ='${CompanyID}' LIMIT ${TransferCount}`
             );
 
             await Promise.all(
                 selectedRows.map(async (ele) => {
-                    await connection.query(
+                    await mysql2.pool.query(
                         `UPDATE barcodemasternew SET TransferID= ${xferID}, CurrentStatus = 'Transfer Pending', TransferStatus = 'Transfer Pending', TransferToShop=${ToShopID}, UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID}`
                     );
                 })
             );
 
             let qry1 = `SELECT transfermaster.*, shop.Name AS FromShop,ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName,shop.AreaName as FromAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} and transfermaster.TransferStatus = 'Transfer Initiated' and (transfermaster.TransferFromShop = ${TransferFromShop} or transfermaster.TransferToShop = ${TransferFromShop}) Order By transfermaster.ID Desc`
-            let xferList = await connection.query(qry1);
+            let [xferList] = await mysql2.pool.query(qry1);
             response.data = xferList;
             response.message = "Success";
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     acceptTransfer: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const { ID, TransferFromShop, TransferToShop, Remark, AcceptanceCode } = req.body;
@@ -1029,7 +935,7 @@ module.exports = {
             if (AcceptanceCode === "" || AcceptanceCode === undefined || AcceptanceCode === null || AcceptanceCode.trim() === "") return res.send({ message: "Invalid Query Data" })
 
 
-            const doesExist = await connection.query(`select * from transfermaster where ID = ${ID} and AcceptanceCode  = '${AcceptanceCode}' and CompanyID = ${CompanyID} and TransferStatus = 'Transfer Initiated'`)
+            const [doesExist] = await mysql2.pool.query(`select * from transfermaster where ID = ${ID} and AcceptanceCode  = '${AcceptanceCode}' and CompanyID = ${CompanyID} and TransferStatus = 'Transfer Initiated'`)
 
             if (!doesExist.length) {
                 return res.send({ success: true, message: `Invalid AcceptanceCode` })
@@ -1037,39 +943,33 @@ module.exports = {
 
             let qry = `Update transfermaster SET DateCompleted = now(),TransferStatus = '${TransferStatus}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now(), Remark = '${Remark}' where ID = ${ID} and AcceptanceCode = '${AcceptanceCode}'`;
 
-            let xferData = await connection.query(qry);
+            let [xferData] = await mysql2.pool.query(qry);
             let xferID = xferData.insertId;
 
-            let selectedRows = await connection.query(
+            let [selectedRows] = await mysql2.pool.query(
                 `SELECT * FROM barcodemasternew WHERE TransferID = ${ID} and CurrentStatus = 'Transfer Pending' and ShopID = ${TransferFromShop} and CompanyID =${CompanyID}`
             );
 
             await Promise.all(
                 selectedRows.map(async (ele) => {
-                    await connection.query(
+                    await mysql2.pool.query(
                         `UPDATE barcodemasternew SET ShopID = ${TransferToShop}, CurrentStatus = 'Available', TransferStatus = 'Available', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID}`
                     );
                 })
             );
 
             let qry1 = `SELECT transfermaster.*, shop.Name AS FromShop,ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName,shop.AreaName as FromAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} and transfermaster.TransferStatus = 'Transfer Initiated' and (transfermaster.TransferFromShop = ${TransferFromShop} or transfermaster.TransferToShop = ${TransferFromShop}) Order By transfermaster.ID Desc`
-            let xferList = await connection.query(qry1);
+            let [xferList] = await mysql2.pool.query(qry1);
             response.data = xferList;
             response.message = "Success";
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     cancelTransfer: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const { ID, TransferFromShop, Remark } = req.body;
@@ -1082,7 +982,7 @@ module.exports = {
             if (TransferFromShop === "" || TransferFromShop === undefined || TransferFromShop === null) return res.send({ message: "Invalid Query Data" })
 
 
-            const doesExist = await connection.query(`select * from transfermaster where ID = ${ID} and CompanyID = ${CompanyID} and TransferStatus = 'Transfer Initiated'`)
+            const [doesExist] = await mysql2.pool.query(`select * from transfermaster where ID = ${ID} and CompanyID = ${CompanyID} and TransferStatus = 'Transfer Initiated'`)
 
             if (!doesExist.length) {
                 return res.send({ success: true, message: `Invalid Query` })
@@ -1090,40 +990,34 @@ module.exports = {
 
             let qry = `Update transfermaster SET DateCompleted = now(),TransferStatus = '${TransferStatus}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now(), Remark = '${Remark}' where ID = ${ID}`;
 
-            let xferData = await connection.query(qry);
+            let [xferData] = await mysql2.pool.query(qry);
             let xferID = xferData.insertId;
 
-            let selectedRows = await connection.query(
+            let [selectedRows] = await mysql2.pool.query(
                 `SELECT * FROM barcodemasternew WHERE TransferID = ${ID} and CurrentStatus = 'Transfer Pending' and ShopID = ${TransferFromShop} and CompanyID =${CompanyID}`
             );
 
             await Promise.all(
                 selectedRows.map(async (ele) => {
-                    await connection.query(
+                    await mysql2.pool.query(
                         `UPDATE barcodemasternew SET TransferID= 0, CurrentStatus = 'Available', TransferStatus = 'Transfer Cancelled', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID}`
                     );
                 })
             );
 
             let qry1 = `SELECT transfermaster.*, shop.Name AS FromShop,ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName,shop.AreaName as FromAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} and transfermaster.TransferStatus = 'Transfer Initiated' and (transfermaster.TransferFromShop = ${TransferFromShop} or transfermaster.TransferToShop = ${TransferFromShop}) Order By transfermaster.ID Desc`
-            let xferList = await connection.query(qry1);
+            let [xferList] = await mysql2.pool.query(qry1);
             response.data = xferList;
             response.message = "Success";
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     getTransferList: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -1151,27 +1045,21 @@ module.exports = {
 
             let finalQuery = qry + skipQuery;
 
-            let data = await connection.query(finalQuery);
-            let count = await connection.query(qry);
+            let [data] = await mysql2.pool.query(finalQuery);
+            let [count] = await mysql2.pool.query(qry);
 
             response.data = data;
             response.count = count.length
             response.success = "Success";
 
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     getproductTransferReport: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
 
             const response = {
@@ -1190,9 +1078,9 @@ module.exports = {
 
             qry = `SELECT transfermaster.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, shop.AreaName AS AreaName, ShopTo.AreaName AS ToAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser FROM transfermaster LEFT JOIN shop ON Shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON User.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID}  ` + Parem + ` Order By transfermaster.ID Desc`;
 
-            let data = await connection.query(qry);
+            let [data] = await mysql2.pool.query(qry);
 
-            let datum = await connection.query(`SELECT SUM(transfermaster.TransferCount) as totalQty FROM transfermaster LEFT JOIN shop ON Shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON User.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID}  ` + Parem + ` Order By transfermaster.ID Desc`)
+            let [datum] = await mysql2.pool.query(`SELECT SUM(transfermaster.TransferCount) as totalQty FROM transfermaster LEFT JOIN shop ON Shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON User.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID}  ` + Parem + ` Order By transfermaster.ID Desc`)
 
             response.calculation[0].totalQty = datum[0].totalQty ? datum[0].totalQty : 0
 
@@ -1200,16 +1088,11 @@ module.exports = {
             response.success = true;
             response.message = 'Success';
 
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
@@ -1249,18 +1132,13 @@ module.exports = {
                 }
             });
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     // search
 
     barcodeDataByBarcodeNo: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -1288,25 +1166,19 @@ module.exports = {
 
             qry = `SELECT barcodemasternew.* , company.Name AS CompanyName, shop.Name AS ShopName, shop.AreaName AS AreaName, shop.BarcodeName AS BarcodeShopName, purchasedetailnew.ProductName , purchasedetailnew.ProductTypeName, purchasedetailnew.BaseBarCode AS BarCode, purchasedetailnew.UniqueBarcode, purchasedetailnew.UnitPrice, purchasedetailnew.ProductName, purchasedetailnew.Quantity ,purchasemasternew.InvoiceNo,supplier.Name AS SupplierName   FROM barcodemasternew LEFT JOIN company ON company.ID = barcodemasternew.CompanyID LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID WHERE barcodemasternew.CurrentStatus != 'Pre Order' and  purchasedetailnew.Status = 1 and purchasemasternew.PStatus = 0 AND barcodemasternew.CompanyID = ${CompanyID}  ${shopMode} ${mode1}`;
 
-            let barcodelist = await connection.query(qry);
+            let [barcodelist] = await mysql2.pool.query(qry);
             response.data = barcodelist;
             response.message = "success";
 
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     barCodeListBySearchStringSearch: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const { searchString, ShopMode, ProductName } = req.body;
@@ -1327,7 +1199,7 @@ module.exports = {
 
             const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, purchasedetailnew.ProductName, barcodemasternew.* FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE purchasedetailnew.ProductTypeName = '${ProductName}' ${shopMode} AND purchasedetailnew.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus = "Available"   AND purchasedetailnew.Status = 1 and shop.Status = 1 And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
 
-            let purchaseData = await connection.query(qry);
+            let [purchaseData] = await mysql2.pool.query(qry);
 
             let barcodelist = []
 
@@ -1335,7 +1207,7 @@ module.exports = {
 
                 for (const b of purchaseData) {
                     let mode1 = `And barcodemasternew.Barcode = '${b.Barcode}'`;
-                    let Barcodes = await connection.query(`SELECT barcodemasternew.* , company.Name AS CompanyName, shop.Name AS ShopName, shop.AreaName AS AreaName, shop.BarcodeName AS BarcodeShopName, purchasedetailnew.ProductName , purchasedetailnew.ProductTypeName, purchasedetailnew.BaseBarCode AS BarCode, purchasedetailnew.UniqueBarcode, purchasedetailnew.UnitPrice, purchasedetailnew.ProductName, purchasedetailnew.Quantity ,purchasemasternew.InvoiceNo,supplier.Name AS SupplierName   FROM barcodemasternew LEFT JOIN company ON company.ID = barcodemasternew.CompanyID LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID WHERE barcodemasternew.CurrentStatus != 'Pre Order' and  purchasedetailnew.Status = 1 AND barcodemasternew.CompanyID = ${CompanyID}  ${shopMode} ${mode1}`)
+                    let [Barcodes] = await mysql2.pool.query(`SELECT barcodemasternew.* , company.Name AS CompanyName, shop.Name AS ShopName, shop.AreaName AS AreaName, shop.BarcodeName AS BarcodeShopName, purchasedetailnew.ProductName , purchasedetailnew.ProductTypeName, purchasedetailnew.BaseBarCode AS BarCode, purchasedetailnew.UniqueBarcode, purchasedetailnew.UnitPrice, purchasedetailnew.ProductName, purchasedetailnew.Quantity ,purchasemasternew.InvoiceNo,supplier.Name AS SupplierName   FROM barcodemasternew LEFT JOIN company ON company.ID = barcodemasternew.CompanyID LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID WHERE barcodemasternew.CurrentStatus != 'Pre Order' and  purchasedetailnew.Status = 1 AND barcodemasternew.CompanyID = ${CompanyID}  ${shopMode} ${mode1}`)
 
                     if (Barcodes) {
                         Barcodes.forEach(e => {
@@ -1349,21 +1221,15 @@ module.exports = {
             response.data = barcodelist;
             response.message = "Success";
 
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     updateBarcode: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const { ID, Barcode, Remark, CurrentStatus } = req.body;
@@ -1377,19 +1243,14 @@ module.exports = {
 
             qry = `Update barcodemasternew set CurrentStatus = '${CurrentStatus}' , Barcode = '${Barcode}' , Remark = '${Remark}' Where ID = ${ID}`;
 
-            let barcode = await connection.query(qry);
+            let [barcode] = await mysql2.pool.query(qry);
             response.data = [];
             response.message = "success";
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
@@ -1397,7 +1258,6 @@ module.exports = {
     // Inventory summary
 
     getInventorySummary: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -1410,24 +1270,18 @@ module.exports = {
 
             qry = `SELECT COUNT(barcodemasternew.ID) AS Count,purchasedetailnew.BrandType, purchasedetailnew.ID as PurchaseDetailID , purchasedetailnew.UnitPrice, purchasedetailnew.Quantity, purchasedetailnew.ID, purchasedetailnew.DiscountAmount, purchasedetailnew.TotalAmount, supplier.Name AS SupplierName, shop.Name AS ShopName, shop.AreaName AS AreaName, purchasedetailnew.ProductName, purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice, purchasedetailnew.SubTotal, purchasedetailnew.DiscountPercentage, purchasedetailnew.GSTPercentage as GSTPercentagex, purchasedetailnew.GSTAmount, purchasedetailnew.GSTType as GSTTypex, purchasedetailnew.WholeSalePrice, purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.PaymentStatus,  barcodemasternew.*, purchasemasternew.SupplierID FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID  LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} AND purchasemasternew.PStatus =0 and purchasedetailnew.Status = 1 ` + Parem + " Group By barcodemasternew.PurchaseDetailID, barcodemasternew.ShopID" + " HAVING barcodemasternew.Status = 1";
 
-            let data = await connection.query(qry);
+            let [data] = await mysql2.pool.query(qry);
             response.data = data
             response.message = "success";
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     updateInventorySummary: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -1441,19 +1295,14 @@ module.exports = {
 
             qry = `update purchasedetailnew set BrandType = ${BrandType}, UpdatedBy=${LoggedOnUser}, CreatedOn=now() where ID = ${PurchaseDetailID} and CompanyID = ${CompanyID}`
 
-            let data = await connection.query(qry);
+            let [data] = await mysql2.pool.query(qry);
             response.data = []
             response.message = "success";
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
@@ -1461,7 +1310,6 @@ module.exports = {
     // Purchase Reports
 
     getPurchasereports: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = {
                 data: null, calculation: [{
@@ -1485,16 +1333,16 @@ module.exports = {
 
 
 
-            let datum = await connection.query(`SELECT SUM(purchasedetailnew.Quantity) as totalQty, SUM(purchasedetailnew.GSTAmount) as totalGstAmount, SUM(purchasedetailnew.TotalAmount) as totalAmount, SUM(purchasedetailnew.DiscountAmount) as totalDiscount, SUM(purchasedetailnew.SubTotal) as totalUnitPrice  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1  AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem)
+            let [datum] = await mysql2.pool.query(`SELECT SUM(purchasedetailnew.Quantity) as totalQty, SUM(purchasedetailnew.GSTAmount) as totalGstAmount, SUM(purchasedetailnew.TotalAmount) as totalAmount, SUM(purchasedetailnew.DiscountAmount) as totalDiscount, SUM(purchasedetailnew.SubTotal) as totalUnitPrice  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1  AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem)
 
-            let data = await connection.query(qry);
+            let [data] = await mysql2.pool.query(qry);
 
 
             qry2 = `SELECT purchasedetailnew.*,purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.PaymentStatus, shop.Name AS ShopName,  shop.AreaName AS AreaName, supplier.Name AS SupplierName,supplier.GSTNo AS SupplierGSTNo,product.HSNCode AS HSNcode  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1 and purchasemasternew.PStatus = 0  AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem;
 
-            let data2 = await connection.query(qry2);
+            let [data2] = await mysql2.pool.query(qry2);
 
-            let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -1585,21 +1433,15 @@ module.exports = {
             response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice : 0
             response.data = data
             response.message = "success";
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     getPurchasereportsDetail: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = {
                 data: null, calculation: [{
@@ -1623,12 +1465,12 @@ module.exports = {
 
 
 
-            let datum = await connection.query(`SELECT SUM(purchasedetailnew.Quantity) as totalQty, SUM(purchasedetailnew.GSTAmount) as totalGstAmount, SUM(purchasedetailnew.TotalAmount) as totalAmount, SUM(purchasedetailnew.DiscountAmount) as totalDiscount, SUM(purchasedetailnew.SubTotal) as totalUnitPrice  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1  AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem)
+            let [datum] = await mysql2.pool.query(`SELECT SUM(purchasedetailnew.Quantity) as totalQty, SUM(purchasedetailnew.GSTAmount) as totalGstAmount, SUM(purchasedetailnew.TotalAmount) as totalAmount, SUM(purchasedetailnew.DiscountAmount) as totalDiscount, SUM(purchasedetailnew.SubTotal) as totalUnitPrice  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1  AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem)
 
-            let data = await connection.query(qry);
+            let [data] = await mysql2.pool.query(qry);
 
 
-            let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -1695,16 +1537,11 @@ module.exports = {
 
             response.data = data
             response.message = "success";
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
@@ -1712,7 +1549,6 @@ module.exports = {
     // Purchase return report
 
     getPurchasereturnreports: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = {
                 data: null, calculation: [{
@@ -1736,16 +1572,16 @@ module.exports = {
 
 
 
-            let datum = await connection.query(`SELECT SUM(purchasereturndetail.Quantity) as totalQty, SUM(purchasereturndetail.GSTAmount) as totalGstAmount, SUM(purchasereturndetail.TotalAmount) as totalAmount, SUM(purchasereturndetail.DiscountAmount) as totalDiscount, SUM(purchasereturndetail.SubTotal) as totalUnitPrice  FROM purchasereturndetail INNER JOIN purchasereturn ON purchasereturn.ID = purchasereturndetail.ReturnID LEFT JOIN shop ON shop.ID = purchasereturn.ShopID LEFT JOIN supplier ON supplier.ID = purchasereturn.SupplierID WHERE purchasereturndetail.Status = 1  AND purchasereturndetail.CompanyID = ${CompanyID}  ` + Parem)
+            let [datum] = await mysql2.pool.query(`SELECT SUM(purchasereturndetail.Quantity) as totalQty, SUM(purchasereturndetail.GSTAmount) as totalGstAmount, SUM(purchasereturndetail.TotalAmount) as totalAmount, SUM(purchasereturndetail.DiscountAmount) as totalDiscount, SUM(purchasereturndetail.SubTotal) as totalUnitPrice  FROM purchasereturndetail INNER JOIN purchasereturn ON purchasereturn.ID = purchasereturndetail.ReturnID LEFT JOIN shop ON shop.ID = purchasereturn.ShopID LEFT JOIN supplier ON supplier.ID = purchasereturn.SupplierID WHERE purchasereturndetail.Status = 1  AND purchasereturndetail.CompanyID = ${CompanyID}  ` + Parem)
 
-            let data = await connection.query(qry);
+            let [data] = await mysql2.pool.query(qry);
 
 
             qry2 = `SELECT purchasereturndetail.*,purchasereturn.SystemCn, purchasereturn.SupplierCn, shop.Name AS ShopName,  shop.AreaName AS AreaName, supplier.Name AS SupplierName,supplier.GSTNo AS SupplierGSTNo,product.HSNCode AS HSNcode  FROM purchasereturndetail INNER JOIN purchasereturn ON purchasereturn.ID = purchasereturndetail.ReturnID LEFT JOIN shop ON shop.ID = purchasereturn.ShopID LEFT JOIN supplier ON supplier.ID = purchasereturn.SupplierID LEFT JOIN product ON product.ID = purchasereturndetail.ProductTypeID WHERE purchasereturndetail.Status = 1  AND purchasereturndetail.CompanyID = ${CompanyID}  ` + Parem;
 
-            let data2 = await connection.query(qry2);
+            let [data2] = await mysql2.pool.query(qry2);
 
-            let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -1836,21 +1672,15 @@ module.exports = {
             response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice : 0
             response.data = data
             response.message = "success";
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     getPurchasereturndetailreports: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = {
                 data: null, calculation: [{
@@ -1874,12 +1704,12 @@ module.exports = {
 
 
 
-            let datum = await connection.query(`SELECT SUM(purchasereturndetail.Quantity) as totalQty, SUM(purchasereturndetail.GSTAmount) as totalGstAmount, SUM(purchasereturndetail.TotalAmount) as totalAmount, SUM(purchasereturndetail.DiscountAmount) as totalDiscount, SUM(purchasereturndetail.SubTotal) as totalUnitPrice  FROM purchasereturndetail INNER JOIN purchasereturn ON purchasereturn.ID = purchasereturndetail.ReturnID LEFT JOIN shop ON shop.ID = purchasereturn.ShopID LEFT JOIN supplier ON supplier.ID = purchasereturn.SupplierID LEFT JOIN product ON product.ID = purchasereturndetail.ProductTypeID WHERE purchasereturndetail.Status = 1  AND purchasereturndetail.CompanyID = ${CompanyID}  ` + Parem)
+            let [datum] = await mysql2.pool.query(`SELECT SUM(purchasereturndetail.Quantity) as totalQty, SUM(purchasereturndetail.GSTAmount) as totalGstAmount, SUM(purchasereturndetail.TotalAmount) as totalAmount, SUM(purchasereturndetail.DiscountAmount) as totalDiscount, SUM(purchasereturndetail.SubTotal) as totalUnitPrice  FROM purchasereturndetail INNER JOIN purchasereturn ON purchasereturn.ID = purchasereturndetail.ReturnID LEFT JOIN shop ON shop.ID = purchasereturn.ShopID LEFT JOIN supplier ON supplier.ID = purchasereturn.SupplierID LEFT JOIN product ON product.ID = purchasereturndetail.ProductTypeID WHERE purchasereturndetail.Status = 1  AND purchasereturndetail.CompanyID = ${CompanyID}  ` + Parem)
 
-            let data = await connection.query(qry);
+            let [data] = await mysql2.pool.query(qry);
 
 
-            let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -1946,16 +1776,11 @@ module.exports = {
 
             response.data = data
             response.message = "success";
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
@@ -1963,7 +1788,6 @@ module.exports = {
     // pre order
 
     createPreOrder: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -1995,7 +1819,7 @@ module.exports = {
 
             if (PurchaseMaster.preOrder === false || PurchaseMaster.preOrder === "false" || !PurchaseMaster?.preOrder || PurchaseMaster?.preOrder === null) return res.send({ message: "Invalid Query Data preOrder" })
 
-            const doesExistInvoiceNo = await connection.query(`select * from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            const [doesExistInvoiceNo] = await mysql2.pool.query(`select * from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
             if (doesExistInvoiceNo.length) {
                 return res.send({ message: `Purchase Already exist from this InvoiceNo ${PurchaseMaster.InvoiceNo}` })
@@ -2029,7 +1853,7 @@ module.exports = {
             const supplierId = purchase.SupplierID;
 
             //  save purchase data
-            const savePurchase = await connection.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${paymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,1,${purchase.TotalAmount}, ${LoggedOnUser}, now())`);
+            const [savePurchase] = await mysql2.pool.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${paymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,1,${purchase.TotalAmount}, ${LoggedOnUser}, now())`);
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
@@ -2048,7 +1872,7 @@ module.exports = {
                     baseBarCode = await generateBarcode(CompanyID, 'PB')
                 }
 
-                const savePurchaseDetail = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},now())`)
+                const [savePurchaseDetail] = await mysql2.pool.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},now())`)
 
 
             }
@@ -2056,7 +1880,7 @@ module.exports = {
 
             //  save barcode
 
-            let detailDataForBarCode = await connection.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId}`)
+            let [detailDataForBarCode] = await mysql2.pool.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId}`)
 
             if (detailDataForBarCode.length) {
                 for (const item of detailDataForBarCode) {
@@ -2064,7 +1888,7 @@ module.exports = {
                     let count = 0;
                     count = 1;
                     for (j = 0; j < count; j++) {
-                        const saveBarcode = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn, PreOrder)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, now(),1)`)
+                        const [saveBarcode] = await mysql2.pool.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn, PreOrder)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, now(),1)`)
                     }
                 }
             }
@@ -2073,21 +1897,15 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = savePurchase.insertId
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     listPreOrder: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -2111,25 +1929,19 @@ module.exports = {
 
             let finalQuery = qry + skipQuery;
 
-            let data = await connection.query(finalQuery);
-            let count = await connection.query(qry);
+            let [data] = await mysql2.pool.query(finalQuery);
+            let [count] = await mysql2.pool.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     listPreOrderDummy: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -2158,13 +1970,13 @@ module.exports = {
 
             let finalQuery = qry + skipQuery;
 
-            let data = await connection.query(finalQuery);
-            let count = await connection.query(qry);
+            let [data] = await mysql2.pool.query(finalQuery);
+            let [count] = await mysql2.pool.query(qry);
 
             if (data.length) {
                 for (let item of data) {
                     item.PurchaseMasterData = {}
-                    const purchasedata = await connection.query(`SELECT purchasemasternew.*, supplier.Name AS SupplierName,  supplier.GSTNo AS GSTNo, users1.Name AS CreatedPerson,shop.Name AS ShopName, shop.AreaName AS AreaName, users.Name AS UpdatedPerson FROM purchasemasternew LEFT JOIN user AS users1 ON users1.ID = purchasemasternew.CreatedBy LEFT JOIN user AS users ON users.ID = purchasemasternew.UpdatedBy LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID WHERE purchasemasternew.Status = 1 AND purchasemasternew.PStatus = 1 and purchasemasternew.ID = ${item.PurchaseID} and purchasemasternew.CompanyID = ${CompanyID} ${shopId} `)
+                    const [purchasedata] = await mysql2.pool.query(`SELECT purchasemasternew.*, supplier.Name AS SupplierName,  supplier.GSTNo AS GSTNo, users1.Name AS CreatedPerson,shop.Name AS ShopName, shop.AreaName AS AreaName, users.Name AS UpdatedPerson FROM purchasemasternew LEFT JOIN user AS users1 ON users1.ID = purchasemasternew.CreatedBy LEFT JOIN user AS users ON users.ID = purchasemasternew.UpdatedBy LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID WHERE purchasemasternew.Status = 1 AND purchasemasternew.PStatus = 1 and purchasemasternew.ID = ${item.PurchaseID} and purchasemasternew.CompanyID = ${CompanyID} ${shopId} `)
                     item.PurchaseMasterData = purchasedata[0]
                 }
 
@@ -2173,19 +1985,13 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     deletePreOrderDummy: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -2198,33 +2004,27 @@ module.exports = {
             } = req.body;
 
             // update purchasemaster
-            const updatePurchaseMaster = await connection.query(`update purchasemasternew set  Quantity = ${PurchaseMaster.Quantity}, SubTotal = ${PurchaseMaster.SubTotal}, DiscountAmount = ${PurchaseMaster.DiscountAmount}, GSTAmount=${PurchaseMaster.GSTAmount}, TotalAmount = ${PurchaseMaster.TotalAmount}, DueAmount = ${PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and ShopID = ${shopid} and ID=${PurchaseMaster.ID}`)
+            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set  Quantity = ${PurchaseMaster.Quantity}, SubTotal = ${PurchaseMaster.SubTotal}, DiscountAmount = ${PurchaseMaster.DiscountAmount}, GSTAmount=${PurchaseMaster.GSTAmount}, TotalAmount = ${PurchaseMaster.TotalAmount}, DueAmount = ${PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and ShopID = ${shopid} and ID=${PurchaseMaster.ID}`)
 
             console.log(connected("Purchase Update SuccessFUlly !!!"));
 
-            const deletePurchasedetail = await connection.query(`update purchasedetailnew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${PurchaseDetail.ID} and CompanyID = ${CompanyID}`)
+            const [deletePurchasedetail] = await mysql2.pool.query(`update purchasedetailnew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${PurchaseDetail.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Product Delete SuccessFUlly !!!");
 
-            const deleteBarcode = await connection.query(`update barcodemasternew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where purchaseDetailID = ${PurchaseDetail.ID} and CompanyID = ${CompanyID}`)
+            const [deleteBarcode] = await mysql2.pool.query(`update barcodemasternew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where purchaseDetailID = ${PurchaseDetail.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Barcode Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
             response.data = []
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     updatePreOrderDummy: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -2237,31 +2037,25 @@ module.exports = {
             } = req.body;
 
             // update purchasemaster
-            const updatePurchaseMaster = await connection.query(`update purchasemasternew set  Quantity = ${PurchaseMaster.Quantity}, SubTotal = ${PurchaseMaster.SubTotal}, DiscountAmount = ${PurchaseMaster.DiscountAmount}, GSTAmount=${PurchaseMaster.GSTAmount}, TotalAmount = ${PurchaseMaster.TotalAmount}, DueAmount = ${PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and ShopID = ${shopid} and ID=${PurchaseMaster.ID}`)
+            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set  Quantity = ${PurchaseMaster.Quantity}, SubTotal = ${PurchaseMaster.SubTotal}, DiscountAmount = ${PurchaseMaster.DiscountAmount}, GSTAmount=${PurchaseMaster.GSTAmount}, TotalAmount = ${PurchaseMaster.TotalAmount}, DueAmount = ${PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and ShopID = ${shopid} and ID=${PurchaseMaster.ID}`)
 
             console.log(connected("Purchase Update SuccessFUlly !!!"));
 
-            const updatePurchasedetail = await connection.query(`update purchasedetailnew set UnitPrice=${PurchaseDetail.UnitPrice}, Quantity=${PurchaseDetail.Quantity}, SubTotal=${PurchaseDetail.SubTotal},DiscountPercentage=${PurchaseDetail.DiscountPercentage},DiscountAmount=${PurchaseDetail.DiscountAmount},GSTPercentage=${PurchaseDetail.GSTPercentage},GSTAmount=${PurchaseDetail.GSTAmount},GSTType='${PurchaseDetail.GSTType}',  TotalAmount = ${PurchaseDetail.TotalAmount}, RetailPrice=${PurchaseDetail.RetailPrice},WholeSalePrice=${PurchaseDetail.WholeSalePrice}, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${PurchaseDetail.ID} and CompanyID = ${CompanyID}`)
+            const [updatePurchasedetail] = await mysql2.pool.query(`update purchasedetailnew set UnitPrice=${PurchaseDetail.UnitPrice}, Quantity=${PurchaseDetail.Quantity}, SubTotal=${PurchaseDetail.SubTotal},DiscountPercentage=${PurchaseDetail.DiscountPercentage},DiscountAmount=${PurchaseDetail.DiscountAmount},GSTPercentage=${PurchaseDetail.GSTPercentage},GSTAmount=${PurchaseDetail.GSTAmount},GSTType='${PurchaseDetail.GSTType}',  TotalAmount = ${PurchaseDetail.TotalAmount}, RetailPrice=${PurchaseDetail.RetailPrice},WholeSalePrice=${PurchaseDetail.WholeSalePrice}, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${PurchaseDetail.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Product Update SuccessFUlly !!!");
 
 
             response.message = "data update sucessfully"
             response.data = []
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     getPurchaseByIdPreOrder: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { result: { PurchaseMaster: null, PurchaseDetail: null }, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -2271,9 +2065,9 @@ module.exports = {
 
             if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
 
-            const PurchaseMaster = await connection.query(`select * from purchasemasternew  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid} and PStatus = 1`)
+            const [PurchaseMaster] = await mysql2.pool.query(`select * from purchasemasternew  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid} and PStatus = 1`)
 
-            const PurchaseDetail = await connection.query(`select * from purchasedetailnew where  PurchaseID = ${ID} and CompanyID = ${CompanyID}`)
+            const [PurchaseDetail] = await mysql2.pool.query(`select * from purchasedetailnew where  PurchaseID = ${ID} and CompanyID = ${CompanyID}`)
 
 
 
@@ -2283,21 +2077,15 @@ module.exports = {
             response.result.PurchaseMaster = PurchaseMaster
             response.result.PurchaseMaster[0].gst_detail = gst_detail || []
             response.result.PurchaseDetail = PurchaseDetail
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     deletePreOrder: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -2309,39 +2097,33 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const doesExist = await connection.query(`select * from purchasemasternew where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select * from purchasemasternew where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "purchase doesnot exist from this id " })
             }
 
 
-            const doesExistProduct = await connection.query(`select * from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and PurchaseID = '${Body.ID}'`)
+            const [doesExistProduct] = await mysql2.pool.query(`select * from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and PurchaseID = '${Body.ID}'`)
 
             if (doesExistProduct.length) {
                 return res.send({ message: `First you'll have to delete product` })
             }
 
 
-            const deletePurchase = await connection.query(`update purchasemasternew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deletePurchase] = await mysql2.pool.query(`update purchasemasternew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Purchase Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     deleteProductPreOrder: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { result: { PurchaseDetail: null, PurchaseMaster: null }, success: true, message: "" }
 
@@ -2357,7 +2139,7 @@ module.exports = {
 
             if (Body.PurchaseMaster.ID === null || Body.PurchaseMaster.InvoiceNo.trim() === '' || !Body.PurchaseMaster) return res.send({ message: "Invalid Query Data" })
 
-            const doesExist = await connection.query(`select * from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select * from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "product doesnot exist from this id " })
@@ -2366,39 +2148,33 @@ module.exports = {
 
 
 
-            const deletePurchasedetail = await connection.query(`update purchasedetailnew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deletePurchasedetail] = await mysql2.pool.query(`update purchasedetailnew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Product Delete SuccessFUlly !!!");
 
             // update purchasemaster
-            const updatePurchaseMaster = await connection.query(`update purchasemasternew set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${Body.PurchaseMaster.InvoiceNo}' and ShopID = ${shopid}`)
+            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${Body.PurchaseMaster.InvoiceNo}' and ShopID = ${shopid}`)
 
 
 
-            const fetchPurchaseMaster = await connection.query(`select * from purchasemasternew  where Status = 1 and ID = ${Body.PurchaseMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            const [fetchPurchaseMaster] = await mysql2.pool.query(`select * from purchasemasternew  where Status = 1 and ID = ${Body.PurchaseMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
             const gst_detail = await gstDetail(CompanyID, Body.PurchaseMaster.ID) || []
 
             fetchPurchaseMaster[0].gst_detail = gst_detail
 
-            const PurchaseDetail = await connection.query(`select * from purchasedetailnew where  PurchaseID = ${doesExist[0].PurchaseID} and CompanyID = ${CompanyID}`)
+            const [PurchaseDetail] = await mysql2.pool.query(`select * from purchasedetailnew where  PurchaseID = ${doesExist[0].PurchaseID} and CompanyID = ${CompanyID}`)
             response.result.PurchaseDetail = PurchaseDetail;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data delete sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     updatePreOrder: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -2431,7 +2207,7 @@ module.exports = {
             if (PurchaseMaster.preOrder === false || PurchaseMaster.preOrder === "false" || !PurchaseMaster?.preOrder || PurchaseMaster?.preOrder === null) return res.send({ message: "Invalid Query Data preOrder" })
 
 
-            const doesExistInvoiceNo = await connection.query(`select * from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${PurchaseMaster.ID}`)
+            const [doesExistInvoiceNo] = await mysql2.pool.query(`select * from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${PurchaseMaster.ID}`)
 
             if (doesExistInvoiceNo.length) {
                 return res.send({ message: `Purchase Already exist from this InvoiceNo ${PurchaseMaster.InvoiceNo}` })
@@ -2465,7 +2241,7 @@ module.exports = {
 
 
             // update purchasemaster
-            const updatePurchaseMaster = await connection.query(`update purchasemasternew set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and ShopID = ${shopid} and ID=${purchase.ID}`)
+            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and ShopID = ${shopid} and ID=${purchase.ID}`)
 
             console.log(`update purchasemasternew set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and ShopID = ${shopid} and ID=${purchase.ID}`);
 
@@ -2488,10 +2264,10 @@ module.exports = {
                         baseBarCode = await generateBarcode(CompanyID, 'PB')
                     }
 
-                    const savePurchaseDetail = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${purchase.ID},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},now())`)
+                    const [savePurchaseDetail] = await mysql2.pool.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${purchase.ID},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},now())`)
 
 
-                    let detailDataForBarCode = await connection.query(
+                    let [detailDataForBarCode] = await mysql2.pool.query(
                         `select * from purchasedetailnew where PurchaseID = '${purchase.ID}' ORDER BY ID DESC LIMIT 1`
                     );
 
@@ -2501,7 +2277,7 @@ module.exports = {
                             let count = 0;
                             count = 1;
                             for (j = 0; j < count; j++) {
-                                const saveBarcode = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn, PreOrder)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, now(), 1)`)
+                                const [saveBarcode] = await mysql2.pool.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn, PreOrder)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, now(), 1)`)
                             }
                         })
                     )
@@ -2514,22 +2290,16 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = purchase.ID
-            await connection.query("COMMIT");
             return res.send(response);
 
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     searchByFeildPreOrder: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -2548,28 +2318,22 @@ module.exports = {
 
             let qry = `select purchasemasternew.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasemasternew left join user as users1 on users1.ID = purchasemasternew.CreatedBy left join user as users on users.ID = purchasemasternew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and purchasemasternew.PStatus = 0 and purchasemasternew.CompanyID = '${CompanyID}' ${shopId} and purchasemasternew.InvoiceNo like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and purchasemasternew.PStatus = 0 and purchasemasternew.CompanyID = '${CompanyID}' ${shopId}  and supplier.Name like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and purchasemasternew.PStatus = 0 and purchasemasternew.CompanyID = '${CompanyID}' ${shopId}  and supplier.GSTNo like '%${Body.searchQuery}%' `
 
-            let data = await connection.query(qry);
+            let [data] = await mysql2.pool.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     // product inventory report
 
     getProductInventoryReport: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
 
             const response = {
@@ -2600,9 +2364,9 @@ module.exports = {
                 Parem +
                 " Group By barcodemasternew.PurchaseDetailID, barcodemasternew.ShopID" + " HAVING barcodemasternew.Status = 1";
 
-            let data = await connection.query(qry);
+            let [data] = await mysql2.pool.query(qry);
 
-            let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -2672,24 +2436,18 @@ module.exports = {
             response.calculation[0].gst_details = values;
             response.data = data
             response.message = "success";
-            await connection.query("COMMIT");
             return res.send(response);
 
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
 
     },
 
     // product expiry report
     getProductExpiryReport: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
 
             const response = {
@@ -2720,9 +2478,9 @@ module.exports = {
                 Parem +
                 " Group By barcodemasternew.PurchaseDetailID, barcodemasternew.ShopID" + " HAVING barcodemasternew.Status = 1";
 
-            let data = await connection.query(qry);
+            let [data] = await mysql2.pool.query(qry);
 
-            let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -2792,17 +2550,12 @@ module.exports = {
             response.calculation[0].gst_details = values;
             response.data = data
             response.message = "success";
-            await connection.query("COMMIT");
             return res.send(response);
 
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
 
     },
@@ -2810,7 +2563,6 @@ module.exports = {
     // purchase charge report
 
     getPurchaseChargeReport: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
 
             const response = {
@@ -2836,9 +2588,9 @@ module.exports = {
 
             qry = `SELECT purchasecharge.*, purchasemasternew.InvoiceNo, purchasemasternew.ShopID,shop.Name AS ShopName,shop.AreaName AS AreaName FROM purchasecharge LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasecharge.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID WHERE purchasecharge.CompanyID = ${CompanyID} AND purchasecharge.Status = 1 ` + Parem;
 
-            let data = await connection.query(qry);
+            let [data] = await mysql2.pool.query(qry);
 
-            let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -2900,17 +2652,12 @@ module.exports = {
             response.calculation[0].gst_details = values;
             response.data = data
             response.message = "success";
-            await connection.query("COMMIT");
             return res.send(response);
 
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
 
     },
@@ -2918,7 +2665,6 @@ module.exports = {
     // purchase return
 
     barCodeListBySearchStringPR: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const { searchString, ShopMode, ProductName, ShopID, SupplierID } = req.body;
@@ -2943,25 +2689,19 @@ module.exports = {
 
             const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, purchasedetailnew.ProductName, purchasedetailnew.ProductTypeName, purchasedetailnew.ProductTypeID, purchasedetailnew.UnitPrice, purchasedetailnew.DiscountPercentage, purchasedetailnew.DiscountAmount,purchasedetailnew.GSTPercentage, purchasedetailnew.GSTAmount, purchasedetailnew.GSTType,barcodemasternew.* FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE purchasedetailnew.ProductTypeName = '${ProductName}' ${shopMode} AND purchasedetailnew.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus = "Available" and purchasemasternew.SupplierID = ${SupplierID} and purchasemasternew.ShopID = ${ShopID}  AND purchasedetailnew.Status = 1  and shop.Status = 1 and purchasemasternew.PStatus = 0  And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
 
-            let purchaseData = await connection.query(qry);
+            let [purchaseData] = await mysql2.pool.query(qry);
             response.data = purchaseData;
             response.message = "Success";
 
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     productDataByBarCodeNoPR: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const { Req, PreOrder, ShopMode, ShopID, SupplierID } = req.body;
@@ -2988,24 +2728,18 @@ module.exports = {
                 qry = `SELECT COUNT(PurchaseDetailID) AS BarCodeCount,purchasedetailnew.UnitPrice, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage,purchasedetailnew.GSTAmount, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice,purchasedetailnew.DiscountAmount, purchasedetailnew.DiscountPercentage, purchasedetailnew.ProductTypeID,purchasemasternew.InvoiceNo, barcodemasternew.*  FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID WHERE barcodemasternew.Barcode = '${barCode}' and PurchaseDetail.Status = 1 AND barcodemasternew.CurrentStatus = 'Pre Order'  and purchasedetailnew.CompanyID = '${CompanyID}'`;
             }
 
-            let barCodeData = await connection.query(qry);
+            let [barCodeData] = await mysql2.pool.query(qry);
             response.data = barCodeData[0];
             response.message = "Success";
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     savePurchaseReturn: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -3031,7 +2765,7 @@ module.exports = {
 
             if (PurchaseMaster.Quantity == 0 || !PurchaseMaster?.Quantity || PurchaseMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
 
-            const doesExistSystemCn = await connection.query(`select * from purchasereturn  where Status = 1 and SystemCn = '${PurchaseMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            const [doesExistSystemCn] = await mysql2.pool.query(`select * from purchasereturn  where Status = 1 and SystemCn = '${PurchaseMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
             if (doesExistSystemCn.length) {
                 return res.send({ message: `PurchaseReturn Already exist from this SystemCn ${PurchaseMaster.SystemCn}` })
@@ -3059,20 +2793,20 @@ module.exports = {
             }
 
             //  save purchasereturn data
-            const savePurchaseReturn = await connection.query(`insert into purchasereturn(SupplierID,CompanyID,ShopID,SystemCn,SupplierCn,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,CreatedBy,CreatedOn)values(${purchasereturn.SupplierID},${purchasereturn.CompanyID},${purchasereturn.ShopID},'${purchasereturn.SystemCn}','${purchasereturn.SupplierCn}',${purchasereturn.Quantity},${purchasereturn.SubTotal},${purchasereturn.DiscountAmount},${purchasereturn.GSTAmount},${purchasereturn.TotalAmount},1,${LoggedOnUser}, now())`);
+            const [savePurchaseReturn] = await mysql2.pool.query(`insert into purchasereturn(SupplierID,CompanyID,ShopID,SystemCn,SupplierCn,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,CreatedBy,CreatedOn)values(${purchasereturn.SupplierID},${purchasereturn.CompanyID},${purchasereturn.ShopID},'${purchasereturn.SystemCn}','${purchasereturn.SupplierCn}',${purchasereturn.Quantity},${purchasereturn.SubTotal},${purchasereturn.DiscountAmount},${purchasereturn.GSTAmount},${purchasereturn.TotalAmount},1,${LoggedOnUser}, now())`);
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
             //  save purchase return detail data
             for (const item of purchaseDetail) {
 
-                const savePurchaseDetail = await connection.query(`insert into purchasereturndetail(ReturnID,CompanyID,PurchaseDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark)values(${savePurchaseReturn.insertId},${CompanyID},${item.PurchaseDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1, ${LoggedOnUser},now(),'${item.Remark}')`)
+                const [savePurchaseDetail] = await mysql2.pool.query(`insert into purchasereturndetail(ReturnID,CompanyID,PurchaseDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark)values(${savePurchaseReturn.insertId},${CompanyID},${item.PurchaseDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1, ${LoggedOnUser},now(),'${item.Remark}')`)
 
 
                 let count = 0;
                 count = item.Quantity;
 
-                let updateBarcode = await connection.query(`update barcodemasternew set CurrentStatus = 'Return To Supplier', BillDetailID = ${savePurchaseDetail.insertId} where Status = 1 and Barcode = '${item.Barcode}' and CurrentStatus = 'Available' limit ${count}`)
+                let [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus = 'Return To Supplier', BillDetailID = ${savePurchaseDetail.insertId} where Status = 1 and Barcode = '${item.Barcode}' and CurrentStatus = 'Available' limit ${count}`)
 
 
                 console.log(`Barcode No ${item.Barcode} update successfully`);
@@ -3082,21 +2816,15 @@ module.exports = {
 
             response.message = "data save sucessfully"
             response.data = savePurchaseReturn.insertId
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     updatePurchaseReturn: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -3123,13 +2851,13 @@ module.exports = {
             if (PurchaseMaster.Quantity == 0 || !PurchaseMaster?.Quantity || PurchaseMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
 
 
-            const doesExistSystemCn = await connection.query(`select * from purchasereturn where Status = 1 and SystemCn = '${PurchaseMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${PurchaseMaster.ID}`)
+            const [doesExistSystemCn] = await mysql2.pool.query(`select * from purchasereturn where Status = 1 and SystemCn = '${PurchaseMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${PurchaseMaster.ID}`)
 
             if (doesExistSystemCn.length) {
                 return res.send({ message: `Purchase Already exist from this SystemCn ${PurchaseMaster.SystemCn}` })
             }
 
-            const doesExistSupplierCn = await connection.query(`select * from purchasereturn where Status = 1 and SystemCn = '${PurchaseMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${PurchaseMaster.ID}`)
+            const [doesExistSupplierCn] = await mysql2.pool.query(`select * from purchasereturn where Status = 1 and SystemCn = '${PurchaseMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${PurchaseMaster.ID}`)
 
 
             if (doesExistSupplierCn[0].SupplierCn !== "") {
@@ -3158,7 +2886,7 @@ module.exports = {
             const supplierId = purchase.SupplierID;
 
             // update purchasemaster
-            const updatePurchaseMaster = await connection.query(`update purchasereturn set Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and ShopID = ${purchase.ShopID} and ID = ${purchase.ID}`)
+            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasereturn set Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and ShopID = ${purchase.ShopID} and ID = ${purchase.ID}`)
 
 
             //  save purchase return detail data
@@ -3166,13 +2894,13 @@ module.exports = {
 
                 if (item.ID === null) {
 
-                    const savePurchaseDetail = await connection.query(`insert into purchasereturndetail(ReturnID,CompanyID,PurchaseDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark)values(${purchase.ID},${CompanyID},${item.PurchaseDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1,${LoggedOnUser},now(),'${item.Remark}')`)
+                    const [savePurchaseDetail] = await mysql2.pool.query(`insert into purchasereturndetail(ReturnID,CompanyID,PurchaseDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark)values(${purchase.ID},${CompanyID},${item.PurchaseDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1,${LoggedOnUser},now(),'${item.Remark}')`)
 
 
                     let count = 0;
                     count = item.Quantity;
 
-                    let updateBarcode = await connection.query(`update barcodemasternew set CurrentStatus = 'Return To Supplier', BillDetailID = ${savePurchaseDetail.insertId} where Status = 1 and Barcode = '${item.Barcode}' and CurrentStatus = 'Available' limit ${count}`)
+                    let [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus = 'Return To Supplier', BillDetailID = ${savePurchaseDetail.insertId} where Status = 1 and Barcode = '${item.Barcode}' and CurrentStatus = 'Available' limit ${count}`)
 
 
                     console.log(`Barcode No ${item.Barcode} update successfully`);
@@ -3184,22 +2912,16 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = purchase.ID
-            await connection.query("COMMIT");
             return res.send(response);
 
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     purchasereturnlist: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -3223,26 +2945,20 @@ module.exports = {
 
             let finalQuery = qry + skipQuery;
 
-            let data = await connection.query(finalQuery);
-            let count = await connection.query(qry);
+            let [data] = await mysql2.pool.query(finalQuery);
+            let [count] = await mysql2.pool.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     getPurchaseReturnById: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { result: { PurchaseMaster: null, PurchaseDetail: null }, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -3252,14 +2968,14 @@ module.exports = {
 
             if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
 
-            const PurchaseMaster = await connection.query(`select * from purchasereturn  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            const [PurchaseMaster] = await mysql2.pool.query(`select * from purchasereturn  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
-            const PurchaseDetail2 = await connection.query(`select purchasereturndetail.*, purchasemasternew.InvoiceNo from purchasereturndetail left join purchasedetailnew on purchasedetailnew.ID = purchasereturndetail.PurchaseDetailID left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID  where  purchasereturndetail.ReturnID = ${ID} and purchasereturndetail.CompanyID = ${CompanyID}`)
+            const [PurchaseDetail2] = await mysql2.pool.query(`select purchasereturndetail.*, purchasemasternew.InvoiceNo from purchasereturndetail left join purchasedetailnew on purchasedetailnew.ID = purchasereturndetail.PurchaseDetailID left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID  where  purchasereturndetail.ReturnID = ${ID} and purchasereturndetail.CompanyID = ${CompanyID}`)
 
-            const PurchaseDetail = await connection.query(`select * from purchasereturndetail where  Status = 1 and ReturnID = ${ID} and CompanyID = ${CompanyID}`)
+            const [PurchaseDetail] = await mysql2.pool.query(`select * from purchasereturndetail where  Status = 1 and ReturnID = ${ID} and CompanyID = ${CompanyID}`)
 
 
-            let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -3320,21 +3036,15 @@ module.exports = {
             response.result.PurchaseMaster = PurchaseMaster
             response.result.PurchaseMaster[0].gst_detail = values || []
             response.result.PurchaseDetail = PurchaseDetail2
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     deleteProductPR: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { result: { PurchaseDetail: null, PurchaseMaster: null }, success: true, message: "" }
 
@@ -3350,14 +3060,14 @@ module.exports = {
 
             if (Body.PurchaseMaster.ID === null || Body.PurchaseMaster.SystemCn.trim() === '' || !Body.PurchaseMaster) return res.send({ message: "Invalid Query Data" })
 
-            const doesExist = await connection.query(`select * from purchasereturndetail where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select * from purchasereturndetail where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "product doesnot exist from this id " })
             }
 
 
-            const doesExistSystemCn = await connection.query(`select * from purchasereturn where Status = 1 and SystemCn = '${Body.PurchaseMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${Body.PurchaseMaster.ID}`)
+            const [doesExistSystemCn] = await mysql2.pool.query(`select * from purchasereturn where Status = 1 and SystemCn = '${Body.PurchaseMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${Body.PurchaseMaster.ID}`)
 
 
             if (doesExistSystemCn[0].SupplierCn !== "") {
@@ -3365,25 +3075,25 @@ module.exports = {
             }
 
 
-            const deletePurchasedetail = await connection.query(`update purchasereturndetail set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deletePurchasedetail] = await mysql2.pool.query(`update purchasereturndetail set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Product Delete SuccessFUlly !!!");
 
             // update purchasemaster
-            const updatePurchaseMaster = await connection.query(`update purchasereturn set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and SystemCn = '${Body.PurchaseMaster.SystemCn}' and ShopID = ${Body.PurchaseMaster.ShopID}`)
+            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasereturn set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and SystemCn = '${Body.PurchaseMaster.SystemCn}' and ShopID = ${Body.PurchaseMaster.ShopID}`)
 
             // update barcode
 
-            const updateBarcode = await connection.query(`update barcodemasternew set CurrentStatus = 'Available' , BillDetailID = 0  where BillDetailID = ${Body.ID}`)
+            const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus = 'Available' , BillDetailID = 0  where BillDetailID = ${Body.ID}`)
 
 
-            const fetchPurchaseMaster = await connection.query(`select * from purchasereturn  where Status = 1 and ID = ${Body.PurchaseMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${Body.PurchaseMaster.ShopID}`)
+            const [fetchPurchaseMaster] = await mysql2.pool.query(`select * from purchasereturn  where Status = 1 and ID = ${Body.PurchaseMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${Body.PurchaseMaster.ShopID}`)
 
-            const PurchaseDetail2 = await connection.query(`select * from purchasereturndetail where ReturnID = ${doesExist[0].ReturnID} and CompanyID = ${CompanyID}`)
+            const [PurchaseDetail2] = await mysql2.pool.query(`select * from purchasereturndetail where ReturnID = ${doesExist[0].ReturnID} and CompanyID = ${CompanyID}`)
 
-            const PurchaseDetail = await connection.query(`select * from purchasereturndetail where Status = 1 and ReturnID = ${doesExist[0].ReturnID} and CompanyID = ${CompanyID}`)
+            const [PurchaseDetail] = await mysql2.pool.query(`select * from purchasereturndetail where Status = 1 and ReturnID = ${doesExist[0].ReturnID} and CompanyID = ${CompanyID}`)
 
-            let gstTypes = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -3444,20 +3154,14 @@ module.exports = {
             response.result.PurchaseDetail = PurchaseDetail2;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data delete sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     searchByFeildPR: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -3476,26 +3180,20 @@ module.exports = {
 
             let qry = `select purchasereturn.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasereturn left join user as users1 on users1.ID = purchasereturn.CreatedBy left join user as users on users.ID = purchasereturn.UpdatedBy left join supplier on supplier.ID = purchasereturn.SupplierID left join shop on shop.ID = purchasereturn.ShopID where purchasereturn.Status = 1 and purchasereturn.CompanyID = '${CompanyID}' ${shopId} and purchasereturn.SystemCn like '%${Body.searchQuery}%' OR purchasereturn.Status = 1 and purchasereturn.CompanyID = '${CompanyID}' ${shopId}  and supplier.Name like '%${Body.searchQuery}%' OR purchasereturn.Status = 1  and purchasereturn.CompanyID = '${CompanyID}' ${shopId}  and supplier.GSTNo like '%${Body.searchQuery}%' `
 
-            let data = await connection.query(qry);
+            let [data] = await mysql2.pool.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            await connection.query("COMMIT");
             return res.send(response);
 
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     deletePR: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -3507,7 +3205,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const doesExist = await connection.query(`select * from purchasereturn where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select * from purchasereturn where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "purchasereturn doesnot exist from this id " })
@@ -3518,32 +3216,26 @@ module.exports = {
             }
 
 
-            const doesExistProduct = await connection.query(`select * from purchasereturndetail where Status = 1 and CompanyID = '${CompanyID}' and ReturnID = '${Body.ID}'`)
+            const [doesExistProduct] = await mysql2.pool.query(`select * from purchasereturndetail where Status = 1 and CompanyID = '${CompanyID}' and ReturnID = '${Body.ID}'`)
 
             if (doesExistProduct.length) {
                 return res.send({ message: `First you'll have to delete product` })
             }
 
 
-            const deletePurchase = await connection.query(`update purchasereturn set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deletePurchase] = await mysql2.pool.query(`update purchasereturn set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Purchase Return Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     supplierCnPR: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -3556,7 +3248,7 @@ module.exports = {
 
             if (ID === null || ID === undefined) return res.send({ message: "Invalid Query Data" })
 
-            const doesExist = await connection.query(`select * from purchasereturn where Status = 1 and CompanyID = '${CompanyID}' and ID = '${ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select * from purchasereturn where Status = 1 and CompanyID = '${CompanyID}' and ID = '${ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "purchasereturn doesnot exist from this id " })
@@ -3565,27 +3257,22 @@ module.exports = {
             let supplierId = doesExist[0].SupplierID
 
 
-            let update = await connection.query(`update purchasereturn set SupplierCn = '${SupplierCn}', CreatedOn=now(), UpdatedBy=${LoggedOnUser} where ID =${ID}`)
+            let [update] = await mysql2.pool.query(`update purchasereturn set SupplierCn = '${SupplierCn}', CreatedOn=now(), UpdatedBy=${LoggedOnUser} where ID =${ID}`)
 
             console.log("Purchase Return Update SuccessFUlly !!!");
 
 
-            const savePaymentMaster = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${supplierId}, ${CompanyID}, ${shopid}, 'Supplier','Credit',now(), 'Vendor Credit', '', '', ${doesExist[0].TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
+            const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${supplierId}, ${CompanyID}, ${shopid}, 'Supplier','Credit',now(), 'Vendor Credit', '', '', ${doesExist[0].TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
 
-            const savePaymentDetail = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${SupplierCn}',${ID},${supplierId},${CompanyID},${doesExist[0].TotalAmount},0,'Vendor Credit','Credit',1,${LoggedOnUser}, now())`)
+            const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${SupplierCn}',${ID},${supplierId},${CompanyID},${doesExist[0].TotalAmount},0,'Vendor Credit','Credit',1,${LoggedOnUser}, now())`)
 
             console.log(connected("Vendor Credit SuccessFUlly !!!"));
 
             response.message = "data update sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 

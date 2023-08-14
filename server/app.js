@@ -7,6 +7,7 @@ require('./helpers/init');
 require('dotenv').config();
 const cors = require('cors')
 const getConnection = require('./newdb')
+const mysql2 = require('./database')
 const JWT = require('jsonwebtoken')
 var moment = require("moment-timezone");
 var logger = require('morgan');
@@ -52,22 +53,19 @@ app.use(function(req, res, next) {
         return next(createError.Unauthorized(message))
       }
 
-      const connection = await getConnection.connection();
-      const user = await connection.query(`select * from user where ID = ${payload.aud}`)
+      const [user] = await mysql2.pool.query(`select * from user where ID = ${payload.aud}`)
      
       if ( user && ( user[0].UserGroup !== 'CompanyAdmin' && user[0].UserGroup !== 'SuperAdmin')) {
-        const companysetting = await connection.query(`select * from companysetting where Status = 1 and CompanyID = ${user[0].CompanyID}`)
+        const [companysetting] = await mysql2.pool.query(`select * from companysetting where Status = 1 and CompanyID = ${user[0].CompanyID}`)
         var currentTime = moment().tz("Asia/Kolkata").format("HH:mm");
         if (
           currentTime < companysetting[0].LoginTimeEnd
       ) {
-        await connection.release();
         next()
       } else {
         return res.status(999).send({success: false, message: `your session has been expired`})
       }
       } else {
-        await connection.release();
         next()
       }
     })

@@ -5,12 +5,12 @@ const bcrypt = require('bcrypt')
 const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
+const mysql2 = require('../database')
 
 
 module.exports = {
 
     save: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -21,33 +21,27 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (_.isEmpty(Body.Name)) return res.send({ message: "Invalid Query Data" })
 
-            const doesCount = await connection.query(`select * from company where Status = 1 and ID = ${CompanyID}`)
+            const [doesCount] = await mysql2.pool.query(`select * from company where Status = 1 and ID = ${CompanyID}`)
 
-            const doesShopCount = await connection.query(`select * from shop where Status = 1 and  CompanyID = ${CompanyID}`)
+            const [doesShopCount] = await mysql2.pool.query(`select * from shop where Status = 1 and  CompanyID = ${CompanyID}`)
 
             if (doesShopCount.length === Number(doesCount[0].NoOfShops)) {
                 return res.send({ message: `You can't create shop !! You have permission of ${Number(doesCount[0].NoOfShops)} shop` })
             }
 
-            const saveData = await connection.query(`insert into shop (CompanyID,Name, AreaName,  Address,  MobileNo1, MobileNo2 , PhoneNo, Email, Website, GSTNo,CINNo, BarcodeName, Discount, GSTnumber, LogoURL, ShopTiming, WelcomeNote, Status,CreatedBy,CreatedOn,HSNCode,CustGSTNo,Rate,Discounts,Tax, SubTotal,Total,BillShopWise,ShopStatus ) values (${CompanyID},'${Body.Name}', '${Body.AreaName}', '${Body.Address}', '${Body.MobileNo1}','${Body.MobileNo1}','${Body.PhoneNo}','${Body.Email}','${Body.Website}','${Body.GSTNo}','${Body.CINNo}','${Body.BarcodeName}','${Body.Discount}','${Body.GSTnumber}','${Body.LogoURL}','${Body.ShopTiming}','${Body.WelcomeNote}',1,${LoggedOnUser}, now(),'${Body.HSNCode}','${Body.CustGSTNo}','${Body.Rate}','${Body.Discounts}','${Body.Tax}','${Body.SubTotal}','${Body.Total}','${Body.BillShopWise}',${Body.ShopStatus})`)
+            const [saveData] = await mysql2.pool.query(`insert into shop (CompanyID,Name, AreaName,  Address,  MobileNo1, MobileNo2 , PhoneNo, Email, Website, GSTNo,CINNo, BarcodeName, Discount, GSTnumber, LogoURL, ShopTiming, WelcomeNote, Status,CreatedBy,CreatedOn,HSNCode,CustGSTNo,Rate,Discounts,Tax, SubTotal,Total,BillShopWise,ShopStatus ) values (${CompanyID},'${Body.Name}', '${Body.AreaName}', '${Body.Address}', '${Body.MobileNo1}','${Body.MobileNo1}','${Body.PhoneNo}','${Body.Email}','${Body.Website}','${Body.GSTNo}','${Body.CINNo}','${Body.BarcodeName}','${Body.Discount}','${Body.GSTnumber}','${Body.LogoURL}','${Body.ShopTiming}','${Body.WelcomeNote}',1,${LoggedOnUser}, now(),'${Body.HSNCode}','${Body.CustGSTNo}','${Body.Rate}','${Body.Discounts}','${Body.Tax}','${Body.SubTotal}','${Body.Total}','${Body.BillShopWise}',${Body.ShopStatus})`)
 
             console.log(connected("Data Added SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
-            // response.data =  await connection.query(`select * from shop where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
-            await connection.query("COMMIT");
+            // response.data =  await mysql2.pool.query(`select * from shop where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
             return res.send(response);
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     list: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -64,24 +58,18 @@ module.exports = {
 
             let finalQuery = qry + skipQuery;
 
-            let data = await connection.query(finalQuery);
-            let count = await connection.query(qry);
+            let [data] = await mysql2.pool.query(finalQuery);
+            let [count] = await mysql2.pool.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            await connection.query("COMMIT");
             return res.send(response);
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     dropdownlist: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -96,21 +84,15 @@ module.exports = {
                 qry = `SELECT * FROM shop LEFT JOIN usershop ON usershop.ShopID = shop.ID WHERE usershop.Status = 1 AND shop.CompanyID = ${CompanyID} AND usershop.UserID = ${UserID} order by shop.ID desc`
             }
 
-            let data = await connection.query(qry);
+            let [data] = await mysql2.pool.query(qry);
             response.message = "data fetch sucessfully"
             response.data = data
-            await connection.query("COMMIT");
             return res.send(response);
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     delete: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -122,30 +104,24 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const doesExist = await connection.query(`select * from shop where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select * from shop where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "shop doesnot exist from this id " })
             }
 
 
-            const deleteShop = await connection.query(`update shop set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deleteShop] = await mysql2.pool.query(`update shop set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Shop Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     restore: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -157,31 +133,25 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const doesExist = await connection.query(`select * from shop where Status = 0 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select * from shop where Status = 0 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "shop doesnot exist from this id " })
             }
 
 
-            const restoreShop = await connection.query(`update shop set Status=1, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [restoreShop] = await mysql2.pool.query(`update shop set Status=1, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Shop Restore SuccessFUlly !!!");
 
             response.message = "data restore sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     getShopById: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -189,7 +159,7 @@ module.exports = {
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
-            const Shop = await connection.query(`select * from shop where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
+            const [Shop] = await mysql2.pool.query(`select * from shop where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (Shop.length) {
                 if (Shop[0].Discount === 'false') {
@@ -246,18 +216,12 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             response.data = Shop
-            await connection.query("COMMIT");
             return res.send(response);
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     update: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -267,24 +231,18 @@ module.exports = {
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
-            const Shop = await connection.query(`update shop set Name = '${Body.Name}', AreaName = '${Body.AreaName}',Address = '${Body.Address}',MobileNo1='${Body.MobileNo1}',MobileNo2='${Body.MobileNo2}',PhoneNo='${Body.PhoneNo}',Email='${Body.Email}',Website='${Body.Website}',GSTNo='${Body.GSTNo}',CINNo='${Body.CINNo}',BarcodeName='${Body.BarcodeName}',Discount='${Body.Discount}',GSTnumber='${Body.GSTnumber}',LogoURL='${Body.LogoURL}',ShopTiming='${Body.ShopTiming}',WelcomeNote='${Body.WelcomeNote}',Status=1,UpdatedOn=now(),UpdatedBy='${LoggedOnUser}',HSNCode='${Body.HSNCode}',CustGSTNo='${Body.CustGSTNo}',Rate='${Body.Rate}',Discounts='${Body.Discounts}',Tax='${Body.Tax}',SubTotal='${Body.SubTotal}',Total='${Body.Total}',BillShopWise='${Body.BillShopWise}',ShopStatus=${Body.ShopStatus} where ID = ${Body.ID} `)
+            const [Shop] = await mysql2.pool.query(`update shop set Name = '${Body.Name}', AreaName = '${Body.AreaName}',Address = '${Body.Address}',MobileNo1='${Body.MobileNo1}',MobileNo2='${Body.MobileNo2}',PhoneNo='${Body.PhoneNo}',Email='${Body.Email}',Website='${Body.Website}',GSTNo='${Body.GSTNo}',CINNo='${Body.CINNo}',BarcodeName='${Body.BarcodeName}',Discount='${Body.Discount}',GSTnumber='${Body.GSTnumber}',LogoURL='${Body.LogoURL}',ShopTiming='${Body.ShopTiming}',WelcomeNote='${Body.WelcomeNote}',Status=1,UpdatedOn=now(),UpdatedBy='${LoggedOnUser}',HSNCode='${Body.HSNCode}',CustGSTNo='${Body.CustGSTNo}',Rate='${Body.Rate}',Discounts='${Body.Discounts}',Tax='${Body.Tax}',SubTotal='${Body.SubTotal}',Total='${Body.Total}',BillShopWise='${Body.BillShopWise}',ShopStatus=${Body.ShopStatus} where ID = ${Body.ID} `)
 
             response.message = "data update sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     //  user shop
 
     saveUserShop: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -297,31 +255,26 @@ module.exports = {
             if (!Body.ShopID) return res.send({ message: "Invalid Query Data" })
             if (!Body.RoleID) return res.send({ message: "Invalid Query Data" })
 
-            doesExist = await connection.query(`select * from usershop where Status = 1 and UserID=${Body.UserID} and ShopID=${Body.ShopID}`);
+            [doesExist] = await mysql2.pool.query(`select * from usershop where Status = 1 and UserID=${Body.UserID} and ShopID=${Body.ShopID}`);
 
             if (doesExist.length) {
                 return res.send({ message: `User have already role in this shop` });
             }
 
 
-            const saveData = await connection.query(`insert into usershop (UserID,ShopID, RoleID,  Status,  CreatedBy, CreatedOn ) values (${Body.UserID},${Body.ShopID}, ${Body.RoleID},1,${LoggedOnUser}, now())`)
+            const [saveData] = await mysql2.pool.query(`insert into usershop (UserID,ShopID, RoleID,  Status,  CreatedBy, CreatedOn ) values (${Body.UserID},${Body.ShopID}, ${Body.RoleID},1,${LoggedOnUser}, now())`)
 
             console.log(connected("Data Added SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
-            response.data = await connection.query(`select usershop.*, role.Name as RoleName, shop.Name as ShopName, shop.AreaName as AreaName, user.Name as UserName from usershop left join role on role.ID = usershop.RoleID left join shop on shop.ID = usershop.ShopID left join user on user.ID = usershop.UserID where usershop.Status = 1 and usershop.UserID = ${Body.UserID} and usershop.ShopID = ${Body.ShopID} and usershop.ID = ${saveData.insertId}`)
-            await connection.query("COMMIT");
+            const [data] = await mysql2.pool.query(`select usershop.*, role.Name as RoleName, shop.Name as ShopName, shop.AreaName as AreaName, user.Name as UserName from usershop left join role on role.ID = usershop.RoleID left join shop on shop.ID = usershop.ShopID left join user on user.ID = usershop.UserID where usershop.Status = 1 and usershop.UserID = ${Body.UserID} and usershop.ShopID = ${Body.ShopID} and usershop.ID = ${saveData.insertId}`)
+            response.data = data
             return res.send(response);
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
     updateUserShop: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -335,32 +288,26 @@ module.exports = {
             if (!Body.RoleID) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            doesExist = await connection.query(`select * from usershop where Status = 1 and UserID=${Body.UserID} and ShopID!=${Body.ShopID} and ID = ${Body.ID}`);
+            [doesExist] = await mysql2.pool.query(`select * from usershop where Status = 1 and UserID=${Body.UserID} and ShopID!=${Body.ShopID} and ID = ${Body.ID}`);
 
             if (doesExist.length) {
                 return res.send({ message: `User have already role in this shop` });
             }
 
-            const updateData = await connection.query(`update usershop set RoleID = ${Body.RoleID}, ShopID = ${Body.ShopID}, UpdatedBy=${LoggedOnUser}, UpdatedOn = now() where ID = ${Body.ID}`)
+            const [updateData] = await mysql2.pool.query(`update usershop set RoleID = ${Body.RoleID}, ShopID = ${Body.ShopID}, UpdatedBy=${LoggedOnUser}, UpdatedOn = now() where ID = ${Body.ID}`)
 
-            // const saveData = await connection.query(`insert into usershop (UserID,ShopID, RoleID,  Status,  CreatedBy, CreatedOn ) values (${Body.UserID},${Body.ShopID}, ${Body.RoleID},1,${LoggedOnUser}, now())`)
+            // const saveData = await mysql2.pool.query(`insert into usershop (UserID,ShopID, RoleID,  Status,  CreatedBy, CreatedOn ) values (${Body.UserID},${Body.ShopID}, ${Body.RoleID},1,${LoggedOnUser}, now())`)
 
             console.log(connected("Data Updated SuccessFUlly !!!"));
 
             response.message = "data update sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     deleteUserShop: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -372,31 +319,25 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const doesExist = await connection.query(`select * from usershop where Status = 1 and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select * from usershop where Status = 1 and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "user shop doesnot exist of this user " })
             }
 
 
-            const deleteShop = await connection.query(`update usershop set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
+            const [deleteShop] = await mysql2.pool.query(`update usershop set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
 
             console.log("User Shop Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            await connection.query("COMMIT");
             return res.send(response);
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     },
 
     searchByFeild: async (req, res, next) => {
-        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -406,20 +347,15 @@ module.exports = {
 
             let qry = `select shop.*, user.Name as CreatedPerson, users.Name as UpdatedPerson from shop left join user on user.ID = shop.CreatedBy left join user as users on users.ID = shop.UpdatedBy where  shop.CompanyID = '${CompanyID}' and shop.Name like '%${Body.searchQuery}%' OR  shop.CompanyID = '${CompanyID}' and shop.MobileNo1 like '%${Body.searchQuery}%' OR  shop.CompanyID = '${CompanyID}' and shop.AreaName like '%${Body.searchQuery}%' `
 
-            let data = await connection.query(qry);
+            let [data] = await mysql2.pool.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
-            await connection.query("COMMIT");
             return res.send(response);
 
         } catch (err) {
-            await connection.query("ROLLBACK");
-            console.log("ROLLBACK at querySignUp", err);
-            throw err;
-        } finally {
-            await connection.release();
+            next(err)
         }
     }
 
