@@ -1465,7 +1465,7 @@ module.exports = {
 
 
 
-            let [datum] = await mysql2.pool.query(`SELECT SUM(purchasedetailnew.Quantity) as totalQty, SUM(purchasedetailnew.GSTAmount) as totalGstAmount, SUM(purchasedetailnew.TotalAmount) as totalAmount, SUM(purchasedetailnew.DiscountAmount) as totalDiscount, SUM(purchasedetailnew.SubTotal) as totalUnitPrice  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1  AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem)
+            let [datum] = await mysql2.pool.query(`SELECT SUM(purchasedetailnew.Quantity) as totalQty, SUM(purchasedetailnew.GSTAmount) as totalGstAmount, SUM(purchasedetailnew.TotalAmount) as totalAmount, SUM(purchasedetailnew.DiscountAmount) as totalDiscount, SUM(purchasedetailnew.SubTotal) as totalUnitPrice  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1 and purchasemasternew.PStatus = 0 AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem)
 
             let [data] = await mysql2.pool.query(qry);
 
