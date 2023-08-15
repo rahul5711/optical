@@ -6,7 +6,7 @@
                     <div class="card p-0">
                         <div class="header p-2 py-0 pt-1">
                             <div class="row" style="border-bottom: 1px solid #00000029;">
-                                <div class="col-md-2 col-8 p-0 ms-3">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-8 p-0 ms-3">
                                     <h2>Search Order PriceList
                                         <button class="bg-btn" (click)="exportAsXLSX()">
                                             <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true"
@@ -14,7 +14,7 @@
                                         </button>
                                     </h2>
                                 </div>
-                                <div class="col-md-2 col-1 ps-md-0 ps-1">
+                                <div class="col-lg-2 col-md-1 col-1 ps-md-0 ps-1">
                                     <select class=" form-control"
                                         style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
                                         [(ngModel)]="itemsPerPage" (change)="getList();">
@@ -26,20 +26,20 @@
                                         <option [ngValue]="500">Show 500 Row</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3 col-4 mx-md-auto " style="margin-top:0px;">
+                                <div class="col-lg-3 col-md-3 col-4 mx-md-auto " style="margin-top:0px;">
                                     <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false"
                                         ngbPaginationEllipsis [collectionSize]="collectionSize" #numPages
                                         [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="getList()"
                                         [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
                                     </ngb-pagination>
                                 </div>
-                                <div class="col-md-2 col-4 ms-auto">
+                                <div class="col-lg-2 col-md-2 col-4 ms-auto">
                                     <div class="input-group">
                                         <input placeholder="Search" [(ngModel)]="term" #searching mdbInput type="search"
                                             id="form1" class="form-control" />
                                     </div>
                                 </div>
-                                <div class="col-md-1 col-1" style="width: 40px;padding: 0;">
+                                <div class="col-lg-1 col-md-1 col-1" style="width: 40px;padding: 0;">
                                     <button class="bg-none" [routerLink]="['/inventory/pre-order',0]">
                                         <mat-icon class="col-white plus_icon me-1"> add</mat-icon>
                                     </button>
@@ -47,11 +47,11 @@
                             </div>
                         </div>
                         <!-- purchase list start -->
-                        <div class="body mt-md-5 mt-5 p-3">
+                        <div class="body mt-md-5 mt-5 p-3 pt-5 pt-sm-0">
                             <!-- form start -->
                             <form #f="ngForm" autocomplete="off" #f0="ngForm" (ngSubmit)="getDummyData()">
                                 <div class="row">
-                                    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-2 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0">
                                             <mat-label>Supplier Name</mat-label>
                                             <mat-select name="Supplier" editable="true" [(ngModel)]="data1.SupplierID" #singleSelect>
@@ -65,7 +65,7 @@
                                             </mat-error>
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-md-1 col-sm-12 mb-0">
+                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-12 mb-0">
                                         <mat-form-field class="example-full-width mb-0">
                                             <mat-label>Barcode</mat-label>
                                             <input matInput name="Barcode" [(ngModel)]="data1.Barcode" (ngModelChange)="data1.Barcode = onChange($event)" #Barcodecontrol>
@@ -74,7 +74,7 @@
                                             </mat-error>
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-md-2 col-sm-12 mb-0">
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
                                         <mat-form-field class="example-full-width mb-0">
                                             <mat-label>Product Name</mat-label>
                                             <input matInput name="stringProductName" [(ngModel)]="data1.stringProductName" (ngModelChange)="data1.stringProductName = onChange($event)" #stringProductNamecontrol>
@@ -83,7 +83,7 @@
                                             </mat-error>
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
                                         <mat-form-field class="example-full-width mb-0">
                                             <mat-label>Select Product</mat-label>
                                             <mat-select name="FieldType" [(ngModel)]="data1.ProductCategory"
@@ -99,7 +99,7 @@
                                             </mat-error>
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0"
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0"
                                         *ngFor="let spec of specList ; let i = index;">
                                         <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
                                             <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
@@ -151,7 +151,7 @@
                                                 {{spec.FieldName}}</mat-slide-toggle>
                                         </div>
                                     </div>
-                                    <div class="col-md-2 col-sm-2 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-2 mb-0 ">
                                         <button type="submit" mat-raised-button color="primary">Search</button>
                                     </div>
                                 </div>
@@ -161,6 +161,7 @@
                         <div class="body mt-md-0 mt-5 p-2">
                             <div class="row">
                                 <div class="col-sm-12" style="overflow: auto; height: 460px;">
+                                    <div class="table-responsive">
                                         <table class="table table-striped table-hover table-sm table-bordered"
                                             style="border: 2px solid #fff !important;">
                                             <thead>
@@ -246,6 +247,7 @@
                                                 </tr>
                                             </tbody>
                                         </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>

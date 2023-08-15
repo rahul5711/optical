@@ -108,9 +108,9 @@ export class ProductMasterComponent implements OnInit {
   }
 
   getFieldSupportData(index: any) {
-    this.sp.show();
     this.specList.forEach((element: any) => {
       if (element.Ref === this.specList[index].FieldName.toString()) {
+    this.sp.show();
         const subs: Subscription = this.ps.getProductSupportData(this.specList[index].SelectedValue, element.SptTableName).subscribe({
           next: (res: any) => {
             if (res.success) {

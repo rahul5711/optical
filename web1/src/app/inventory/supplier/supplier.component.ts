@@ -106,6 +106,7 @@ export class SupplierComponent implements OnInit {
 
           if (this.purchasVariable === 1) {
             this.router.navigate(['/inventory/purchase/0']);
+            this.sp.hide()
           } else {
             this.getList();
           }

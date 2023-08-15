@@ -82,14 +82,15 @@ export class ProductManageComponent implements OnInit {
                   this.specList = data.data;
                 });
               }
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been Save.',
+                showConfirmButton: false,
+                timer: 1200
+              })
             });
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'Your file has been Save.',
-              showConfirmButton: false,
-              timer: 1200
-            })
+           
           } else {
             this.as.errorToast(res.message)
           }
@@ -131,6 +132,11 @@ export class ProductManageComponent implements OnInit {
     });
   }
 
+  addClick(){
+    this.newProduct = { ID: null, CompanyID: null, Name: "", HSNCode: "", GSTPercentage: 0, GSTType: "None" };
+    this.specList = []
+  }
+  
   getfieldList() {
     this.prodList.forEach((element: { Name: any; HSNCode: any; GSTPercentage: any; GSTType: any; ID: any; }) => {
       if (element.Name === this.selectedProduct) {
@@ -162,7 +168,7 @@ export class ProductManageComponent implements OnInit {
 
   deleteProductType() {
     this.sp.show();
-    if (this.specList.length === 0) {
+    if (this.specList.length === 0 && this.selectedProductID !== undefined) {
       const subs: Subscription = this.ps.deleteProductType(this.selectedProductID, 'product').subscribe({
         next: (res: any) => {
           if (res.success) {
@@ -234,7 +240,7 @@ export class ProductManageComponent implements OnInit {
   }
 
   saveSpec() {
-    this.sp.show()
+
     let count = 0;
     this.specList.forEach((element: { Name: string; }) => {
       if (element.Name.toLowerCase() === this.newSpec.Name.toLowerCase()) {
@@ -246,6 +252,7 @@ export class ProductManageComponent implements OnInit {
       this.newSpec.ProductName = this.selectedProduct;
       let specData = this.newSpec;
       this.newSpec = { ID: null, ProductName: '', Name: '', Seq: null, Type: '', Ref: 0, SptTableName: '', Required: false };
+      this.sp.show()
       const subs: Subscription = this.ps.saveSpec(specData).subscribe({
         next: (res: any) => {
           if (res.success || res.message == 'this Seq Already Exist') {
@@ -312,12 +319,21 @@ export class ProductManageComponent implements OnInit {
   }
 
   openModal(content: any, sProduct: any, sHSNCode: any, sGSTPercentage: any, sGSTType: any) {
+    if(sProduct !== ''){
     this.newProduct.Name = sProduct
     this.newProduct.HSNCode = sHSNCode
     this.newProduct.GSTPercentage = sGSTPercentage
     this.newProduct.GSTType = sGSTType
     this.showAdds = true
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
+  }else{
+    Swal.fire({
+      icon: 'error',
+      title: 'Opps!! <br> Value is not found',
+      footer: '',
+      backdrop: false
+    });
   }
+}
 
 }

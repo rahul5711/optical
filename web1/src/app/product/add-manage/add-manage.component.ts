@@ -98,6 +98,7 @@ export class AddManageComponent implements OnInit {
     const subs: Subscription = this.supps.getList(this.selectedProduct).subscribe({
       next: (res: any) => {
         if(res.success){
+          this.showAdd = false
           this.depList = res.data;
           this.as.successToast(res.message)
         }else{
@@ -123,22 +124,41 @@ export class AddManageComponent implements OnInit {
     this.depList.forEach((element: { Name: string; }) => {
     if (element.Name.toLowerCase() === this.newDepartment.Name.toLowerCase() ){count = count + 1; }
     });
+
     if (count === 0 && this.newDepartment.Name !== ''){
       this.newDepartment.TableName = this.selectedProduct;
-      this.supps.saveData(this.newDepartment.TableName, this.newDepartment.Name).subscribe(data => {
-      this.newDepartment.Name = "";
-      this.getfieldList();
-      });
+      const subs: Subscription =   this.supps.saveData(this.newDepartment.TableName, this.newDepartment.Name).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.newDepartment.Name = ''
+            this.getfieldList();
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been save.',
+              showConfirmButton: false,
+              timer: 1200
+            }) 
+          }else {
+              this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => {
+          console.log(err.msg);
+        },
+        complete: () => subs.unsubscribe(),
+        });
+
     }else { 
       Swal.fire({
         icon: 'error',
-        title: 'Duplicate or Empty Values are not allowed',
+        title: 'Duplicate or Empty values are not allowed',
         text: '',
         footer: ''
       });
-    this.newDepartment.Name = ""; }
-    this.sp.hide()
   }
+}
 
   delSupport(){
     if (this.data1.Category === null) {
@@ -156,6 +176,7 @@ export class AddManageComponent implements OnInit {
         const subs: Subscription =   this.supps.deleteSupport(this.selectedProduct, element.Name).subscribe({
         next: (res: any) => {
           if (res.success) {
+            this.getfieldList();
             Swal.fire({
               position: 'center',
               icon: 'success',
@@ -173,7 +194,7 @@ export class AddManageComponent implements OnInit {
         },
         complete: () => subs.unsubscribe(),
         });
-        this.getfieldList();
+
       }
     });
     }

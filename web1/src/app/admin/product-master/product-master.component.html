@@ -30,8 +30,8 @@
                                 </div>
                             </div>
                             <div class="row" *ngFor="let spec of specList ; let i = index;">
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 ">
-                                    <div *ngIf="spec.FieldType === 'DropDown'">
+                                
+                                    <div class="col-xl-2 col-lg-2 col-md-4 col-8 " *ngIf="spec.FieldType === 'DropDown'">
                                         <mat-form-field class=" mr-4 mb-0" *ngIf="spec.DisplayAdd === 0">
                                             <mat-label>{{spec.FieldName}}</mat-label>
                                             <mat-select name="{{spec.FieldName}}" [(ngModel)]="spec.SelectedValue" (selectionChange)="getFieldSupportData(i)" editable="true" [required]="spec.Required" #singleSelect>
@@ -44,7 +44,8 @@
                                                 {{spec.FieldName}} is Required
                                             </mat-error>
                                         </mat-form-field>
-                                        
+                                    </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-4 col-4 " *ngIf="spec.FieldType === 'DropDown'">
                                         <mat-form-field  *ngIf="spec.DisplayAdd === 1" >
                                             <mat-label>Add {{spec.FieldName}}</mat-label>
                                             <input matInput name="{{spec.FieldName}}" [(ngModel)]="spec.SelectedValue"
@@ -60,7 +61,7 @@
                                         </button>
                                     </div>
                                 </div>
-                            </div>
+                            
                         </form>
                     </div>
                 </div>

@@ -206,6 +206,7 @@ user-select: none;
     color: #615be7 !important;
     background: #ffffff;
     font-size: 23px;
+    cursor: pointer
 }
 
 .Grid_icon{
@@ -226,6 +227,7 @@ user-select: none;
     color: #615be7 !important;
     background: #ffffff;
     font-size: 23px;
+    cursor: pointer
 }
 
 .save_icon{
@@ -246,6 +248,7 @@ user-select: none;
     color: #3650b4 !important;
     background: #ffffff;
     font-size: 23px;
+    cursor: pointer
 }
 
 .delete_icon{
@@ -265,6 +268,7 @@ user-select: none;
     color: #ff0000 !important;
     background: #ffffff;
     font-size: 23px;
+    cursor: pointer
 }
 
 .swap_icon{
@@ -284,6 +288,7 @@ user-select: none;
     color: #38a042e8 !important;
     background: #ffffff;
     font-size: 23px;
+    cursor: pointer
 }
 
 .sync_disabled{
@@ -297,12 +302,14 @@ user-select: none;
     cursor: pointer;
     transition: .5s;
     box-shadow: 2px 2px 6px #9c9795fa;
+
 }
 
 .sync_disabled:hover{
     color: #ff5100 !important;
     background: #ffffff;
     font-size: 23px;
+    cursor: pointer
 }
 
 .edit_icon{
@@ -322,6 +329,7 @@ user-select: none;
     color: #393497e8 !important;
     background: #ffffff;
     font-size: 23px;
+    cursor: pointer
 }
 
 .detail_icon i{
@@ -341,6 +349,7 @@ user-select: none;
     color: #38a042e8 !important;
     background: #ffffff;
     font-size: 23px;
+    cursor: pointer
 }
 
 .fa-file-excel-o{
@@ -355,6 +364,7 @@ user-select: none;
 .fa-file-excel-o:hover{
     color: #458f37 !important;
     font-size: 23px;
+    cursor: pointer
 }
 
 .SelectYourShop{
@@ -380,6 +390,7 @@ user-select: none;
 
 .logoutBtn:hover{
     color: rgb(228, 30, 30); 
+    cursor: pointer
 }
 // icon manual desing in css end
 

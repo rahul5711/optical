@@ -8,6 +8,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { RoleService } from 'src/app/service/role.service';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-role',
@@ -29,7 +30,7 @@ export class RoleComponent implements OnInit {
   selectedRole: any = { ID: null, Name: "", CompanyID: this.loggedInCompany, Permission: "[]", Status: 1 };
   roleList: any = []
   showAdd = false;
-  displayModule: any = [];
+  displayModule: any;
 
   moduleList: any = [
     // Administration Permission
@@ -127,7 +128,7 @@ export class RoleComponent implements OnInit {
       const subs: Subscription = this.role.roleSave(this.selectedRole.Name, this.selectedRole.Permission).subscribe({
         next: (res: any) => {
           if (res.success) {
-            this.roleList = res.data;
+            this.getRoleById(res.data[0].ID)
             this.getRoleList();
             Swal.fire({
               position: 'center',
@@ -171,7 +172,9 @@ export class RoleComponent implements OnInit {
         const subs: Subscription = this.role.deleteRole(this.selectedRole.ID).subscribe({
           next: (res: any) => {
             if (res.success) {
+              this.getRoleById(res.data.ID)
               this.getRoleList();
+              this.selectedRole = { ID: null, Name: "", CompanyID: this.loggedInCompany, Permission: "[]", Status: 1 }
               this.as.successToast(res.message)
               Swal.fire({
                 position: 'center',
@@ -210,19 +213,20 @@ export class RoleComponent implements OnInit {
   }
 
   setdata() {
-    if (this.selectedRole.ID === null || this.selectedRole.ID === undefined) {
+    if (this.selectedRole.ID === null && this.selectedRole.ID === undefined) {
       this.selectedRole.Permission = JSON.stringify(this.moduleList);
       this.displayModule = this.moduleList;
     } else {
-      for (let i = 0; i < this.roleList.length; i++) {
-        if (this.roleList[i].ID === this.selectedRole.ID) {
-          this.getRoleById(this.selectedRole.ID)
-          this.selectedRole.Name = this.roleList[i].Name
-          this.displayModule = this.roleList[i].Permission === "" ? this.moduleList : JSON.parse(this.roleList[i].Permission);
-          break; 
-          // No need to continue the loop once the matching role is found.
-        }
+      for (var i = 0; i < this.roleList.length; i++ ) {
+        if (this.roleList[i].ID === this.selectedRole.ID){
+          if (this.roleList[i].Permission === ""){
+            this.roleList[i].Name = this.selectedRole.Name
+        this.displayModule = this.moduleList;
+      } else {
+        this.displayModule = JSON.parse(this.roleList[i].Permission);
       }
+    }
+  }
     }
    
   }
@@ -238,14 +242,14 @@ export class RoleComponent implements OnInit {
 
   addRole(){
     this.sp.show()
-    this.selectedRole = []
+    this.selectedRole = { ID: null, Name: "", CompanyID: this.loggedInCompany, Permission: "[]", Status: 1 }
     this.sp.hide()
   }
 
   savePermission(){
     this.sp.show()
     this.selectedRole.Permission = JSON.stringify(this.displayModule);
-    console.log(this.selectedRole.Permission);
+
     const subs: Subscription = this.role.update(this.selectedRole).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -281,7 +285,7 @@ export class RoleComponent implements OnInit {
     const subs: Subscription = this.role.getRoleById(ID).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.moduleList = res.data[0].Permission
+          this.moduleList =  res.data[0].Permission 
         } else {
           this.as.errorToast(res.message)
         }

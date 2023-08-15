@@ -377,6 +377,7 @@ export class PreOrderComponent implements OnInit {
   }
 
   onSumbit(){
+    if(this.selectedPurchaseMaster.ID === null){
     this.sp.show()
     // this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
     this.data.PurchaseDetail = JSON.stringify(this.itemList);
@@ -408,6 +409,7 @@ export class PreOrderComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
+  }
   }
 
   deleteItem(Category:any ,i:any){

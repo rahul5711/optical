@@ -54,11 +54,20 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
-                                    <mat-icon *ngIf="addProductType === true" class="col-white plus_icon" (click)="showAdd = !showAdd;" >add</mat-icon>
-                                    <mat-icon *ngIf="deleteProductTypes === true" class="delete_icon me-2 ms-2" disabled="selectedProduct === ''"
-                                        (click)="deleteProductType()">delete_forever</mat-icon>
-                                    <mat-icon *ngIf="editProductType === true" class="edit_icon"  (click)="openModal(content,selectedProduct,selectedHSNCode,selectedGSTPercentage,selectedGSTType)" >edit
-                                    </mat-icon>
+                                    <button type="button" class="bg_none"  (click)="showAdd = !showAdd; addClick()">
+                                        <mat-icon *ngIf="addProductType === true" class="col-white plus_icon"
+                                           >add</mat-icon>
+                                    </button>
+                                    <button type="button" class="bg_none" (click)="deleteProductType()">
+                                        <mat-icon *ngIf="deleteProductTypes === true" class="delete_icon me-2 ms-2"
+                                            disabled="selectedProduct === ''"
+                                            >delete_forever</mat-icon>
+                                    </button>
+                                    <button type="button" class="bg_none"  (click)="openModal(content,selectedProduct,selectedHSNCode,selectedGSTPercentage,selectedGSTType)">
+                                        <mat-icon *ngIf="editProductType === true" class="edit_icon"
+                                           >edit
+                                        </mat-icon>
+                                    </button>
                                 </div>
                             </div>
 
@@ -95,7 +104,7 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
-                                    <button *ngIf="hideSave" mat-mini-fab color="primary"
+                                    <button type="button" *ngIf="hideSave" mat-mini-fab color="primary"
                                         (click)="showAdd = !showAdd; saveProduct()">
                                         <mat-icon>save</mat-icon>
                                     </button>
@@ -166,7 +175,7 @@
                                         class="example-margin" #Multiplecontrol>Required</mat-slide-toggle>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-2">
-                                    <button mat-raised-button color="primary"
+                                    <button type="button" mat-raised-button color="primary"
                                         [disabled]="selectedProduct === '' && !f.valid"
                                         (click)="saveSpec()">Save</button>
                                 </div>
@@ -205,8 +214,11 @@
                                             <td *ngIf="spec.Required === 1">Yes</td>
                                             <td *ngIf="spec.Required === 0">No</td>
                                             <td>
-                                                <mat-icon *ngIf="deleteProductTypes === true" class="delete_icon " (click)="deleteItem(i)">delete_forever
+                                                <button  type="button" class="bg_none" *ngIf="deleteProductTypes === true" (click)="deleteItem(i)">
+                                                    <mat-icon  class="delete_icon "
+                                                    >delete_forever
                                                 </mat-icon>
+                                                </button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -222,9 +234,9 @@
 
 <ng-template #content role="document" let-modal>
     <div class="modal-header" style="height: 50px;">
-      <h2 class="modal-title header pt-2" id="exampleModalLabel">Product Update</h2>
-      <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
-        (click)="modal.dismiss('Cross click')"></button>
+        <h2 class="modal-title header pt-2" id="exampleModalLabel">Product Update</h2>
+        <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
+            (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
         <div class="row" *ngIf="showAdds">
@@ -238,8 +250,7 @@
             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                 <mat-form-field class="example-full-width mb-0">
                     <mat-label>HSN Code</mat-label>
-                    <input matInput name="NewHSNCode" [(ngModel)]="newProduct.HSNCode"
-                        #HSNCodecontrol>
+                    <input matInput name="NewHSNCode" [(ngModel)]="newProduct.HSNCode" #HSNCodecontrol>
                 </mat-form-field>
             </div>
             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
@@ -260,8 +271,8 @@
                 </mat-form-field>
             </div>
             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
-              
-                <button class="ms-2"  type="button" mat-raised-button  color="primary"
+
+                <button type="button" class="ms-2" type="button" mat-raised-button color="primary"
                     (click)="showAdds = !showAdds; updateProductType()">
                     update
                 </button>

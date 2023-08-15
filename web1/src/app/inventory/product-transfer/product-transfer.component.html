@@ -11,7 +11,7 @@
                         <!-- save Product Transfer start -->
                         <form #f="ngForm" autocomplete="off" #f0="ngForm">
                             <div class="row">
-                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Search By BarCode</mat-label>
                                         <input matInput name="SearchBarCode" [(ngModel)]="Req.SearchBarCode"
@@ -19,7 +19,7 @@
                                             #GSTNocontrol [autocomplete]="false" appAutoFoucsDirectives>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Search By Product</mat-label>
                                         <mat-select name="FieldType" [(ngModel)]="selectedProduct" 
@@ -34,7 +34,7 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 mb-0"
+                                <div class="col-xl-5 col-lg-5 col-md-6 col-12 mb-0"
                                     *ngIf="( selectedProduct !== '' || selectedProduct !== undefined || selectedProduct !== null )">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Select Barcode</mat-label>
@@ -53,7 +53,7 @@
                             </div>
                             <!-- save product spec start -->
                             <div class="row">
-                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0"
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0"
                                     *ngFor="let spec of specList ; let i = index;">
                                     <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
                                         <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
@@ -109,28 +109,28 @@
                         </form>
                         <form #f1="ngForm" (ngSubmit)="onSubmit();">
                             <div class="row">
-                                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Product Name</mat-label>
                                         <input matInput name="ProdName" [(ngModel)]="xferItem.ProductName" required
                                             [disabled]=true>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Barcode</mat-label>
                                         <input matInput name="ProdBarcode" [(ngModel)]="xferItem.Barcode" required
                                             [disabled]=true>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Available</mat-label>
                                         <input matInput name="ProdBarcodecount" type="number" min="0" disabled
                                             [(ngModel)]="xferItem.BarCodeCount">
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-1  col-lg-1 col-md-6 col-sm-12 mb-0">
+                                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
                                     <mat-form-field class="example-full-width mb-0"
                                         [class.has-error]="XferCountControl.invalid && XferCountControl.touched"
                                         [class.has-success]="XferCountControl.valid">
@@ -142,7 +142,7 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 p-md-0" >
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 p-md-0" >
                                     <mat-form-field class="example-full-width mb-0"
                                         [class.has-error]="ShopControl.invalid && ShopControl.touched"
                                         [class.has-success]="ShopControl.valid">
@@ -159,34 +159,33 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                <div class="col-xl-1 col-lg-1 col-md-6 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Code</mat-label>
                                         <input matInput name="AcceptanceCode" required disabled
                                             [(ngModel)]="xferItem.AcceptanceCode">
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0" style="padding: 0;">
+                                <div class="col-xl-2 col-lg-2 col-md-0 col-0 mb-0" style="padding: 0;">
                                 </div>
-                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Remark</mat-label>
                                         <input matInput name="Remark" [(ngModel)]="xferItem.Remark"
                                             (ngModelChange)="xferItem.Remark = onChange($event)" autocomplete="off">
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-1 col-lg-1 col-md-6 col-sm-6 col-6 mb-0">
-                                    <button class="mr-3" mat-raised-button color="primary"
+                                <div class="col-xl-4 col-lg-4 col-md-4 col-12 mb-0">
+                                    <button class="me-3" mat-raised-button color="primary"
                                         [disabled]="!f1.valid || !this.xferItem.ToShopID || xferItem.TransferCount === 0" >Intiate Transfer</button>
+                                        <button type="button" mat-raised-button color="warn" (click)="formReset()">Reset</button>
                                 </div>
-                                <div class="col-xl-1 col-lg-1 col-md-6 col-sm-6 col-5 mb-0 ms-3">
-                                    <button type="button" class="mr-3" mat-raised-button color="warn" (click)="formReset()">Reset</button>
-                                </div>
+                               
                             </div>
                             <hr style="margin: 0;">
                             <!-- fillter data list -->
                             <div class="row pt-2" style="margin: 0;">
-                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12  p-0">
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-8  p-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Shop Filter</mat-label>
                                         <mat-select name="shopID" #shopID (selectionChange)="FilterData(shopID.value)">
@@ -197,18 +196,18 @@
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-3 mb-md-0">
-                                    <button (click)="PDFtransfer()"  class="mr-1 shopPdf" type="button" ><i class="fa-sharp fa-solid fa-file-pdf"></i></button>
-                                    <button class="whatsapp ms-4 me-4"><i class="fa-brands fa-whatsapp" ></i></button>
+                                <div class="col-xl-2 col-lg-3 col-md-6 col-4 mb-3 mb-md-0 ">
+                                    <button (click)="PDFtransfer()"  class="me-md-1 me-0 shopPdf" type="button" ><i class="fa-sharp fa-solid fa-file-pdf"></i></button>
+                                    <button class="whatsapp ms-1 me-1 ms-md-4 me-md-4"><i class="fa-brands fa-whatsapp" ></i></button>
                                     <button class="email"><i class="fa-solid fa-envelope"></i></button>
                                 </div>
-                                <div class="col-xl-3 col-lg-3 col-md-8 col-sm-8  col-8 mx-md-auto" style="margin-top:0px;">
+                                <div class="col-xl-3 col-lg-3 col-md-10 col-9 mx-md-auto" style="margin-top:0px;">
                                     <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false" ngbPaginationEllipsis
                                       [collectionSize]="collectionSize" #numPages [pageSize]="itemsPerPage" [(page)]="currentPage"
                                       (pageChange)="getList()" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
                                     </ngb-pagination>
                                 </div>
-                                <div class="col-xl-1 col-lg-1 col-md-4 col-sm-4  col-4 ps-md-0 ps-1">
+                                <div class="col-xl-1 col-lg-1 col-md-2 col-3 ps-md-0 ps-1">
                                     <select class=" form-control"
                                       style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
                                       [(ngModel)]="itemsPerPage" (change)="getList();">

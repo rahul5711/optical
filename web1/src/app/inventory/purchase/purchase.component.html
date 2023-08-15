@@ -143,7 +143,7 @@
                                             *ngIf="spec.DisplayAdd === 0 && disableAddButtons"
                                             (click)="displayAddField(i)">
                                             <mat-icon class="col-white plus_icon">add</mat-icon>
-                                        </button >
+                                        </button>
                                         <button style="background: none;border:none" *ngIf="spec.DisplayAdd === 1"
                                             (click)="saveFieldData(i)">
                                             <mat-icon class="col-white plus_icon">save</mat-icon>
@@ -268,8 +268,7 @@
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>TAX Type</mat-label>
                                         <mat-select name="GSTType" [(ngModel)]="item.GSTType" #GSTTypeacontrol
-                                            (selectionChange)="calculateFields('TotalAmount', 'total')"
-                                             required>
+                                            (selectionChange)="calculateFields('TotalAmount', 'total')" required>
                                             <mat-option value="None" *ngIf="item.GSTPercentage  === 0">None
                                             </mat-option>
                                             <span *ngIf="item.GSTPercentage !== 0">
@@ -294,7 +293,8 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0"
+                                    *ngIf="company.RetailPrice === 'true'">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Retail Rate</mat-label>
                                         <input matInput name="SaleRate" min="0" type="number"
@@ -305,7 +305,8 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0"
+                                    *ngIf="company.WholeSale === 'true' && item.WholeSale === true">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Wholesale Rate</mat-label>
                                         <input matInput name="WSaleRate" min="0" type="number"
@@ -336,7 +337,7 @@
                                 <div *ngIf="addPurchase" class="col-xl-1 col-lg-1 col-md-1 col-4 mb-0 ml-auto">
                                     <button *ngIf="editBtn === false " class="mr-3" type="submit"
                                         [disabled]="!f1.valid || item.Quantity == 0 || this.GstTypeDis"
-                                        mat-raised-button color="primary"  (click)="notifyGst();">Add</button>
+                                        mat-raised-button color="primary" (click)="notifyGst();">Add</button>
                                     <!-- <button *ngIf="editBtn === true" class="mr-3" type="submit" [disabled]=" item.Quantity == 0"
                                         mat-raised-button color="primary" (click)="editUpdate()">Update</button> -->
                                 </div>
@@ -366,8 +367,8 @@
                                 <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Amount</mat-label>
-                                        <input matInput name="Price" type="number" min="0" [(ngModel)]="charge.Price" required #Amountcontrol
-                                            (blur)="calculateFields('TAmount', 'chtotal')">
+                                        <input matInput name="Price" type="number" min="0" [(ngModel)]="charge.Price"
+                                            required #Amountcontrol (blur)="calculateFields('TAmount', 'chtotal')">
                                         <mat-error>
                                             Amount is required
                                         </mat-error>
@@ -376,9 +377,9 @@
                                 <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>GST%</mat-label>
-                                        <input matInput  type="number" min="0" name="GSTPercentage" [(ngModel)]="charge.GSTPercentage" required
-                                            #GSTcontrol [autocomplete]="false"
-                                            (blur)="calculateFields('GSTPercentage', 'chgst')">
+                                        <input matInput type="number" min="0" name="GSTPercentage"
+                                            [(ngModel)]="charge.GSTPercentage" required #GSTcontrol
+                                            [autocomplete]="false" (blur)="calculateFields('GSTPercentage', 'chgst')">
                                         <mat-error>
                                             GST is required
                                         </mat-error>
@@ -387,9 +388,9 @@
                                 <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>GST Amt</mat-label>
-                                        <input matInput type="number" min="0" name="GSTAmt" [(ngModel)]="charge.GSTAmount" required
-                                            #GSTAmtcontrol [autocomplete]="false"
-                                            (blur)="calculateFields('GSTAmount', 'chgst')">
+                                        <input matInput type="number" min="0" name="GSTAmt"
+                                            [(ngModel)]="charge.GSTAmount" required #GSTAmtcontrol
+                                            [autocomplete]="false" (blur)="calculateFields('GSTAmount', 'chgst')">
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
@@ -397,8 +398,11 @@
                                         <mat-label>GST Type</mat-label>
                                         <mat-select name="GSTType" [(ngModel)]="charge.GSTType" required
                                             #GSTTypecontrol1 (selectionChange)="calculateFields('TAmount', 'chtotal')">
-                                            <mat-option *ngIf="this.charge.GSTAmount === 0 || this.charge.GSTPercentage === 0" value="None" >None</mat-option>
-                                            <span *ngIf="this.charge.GSTAmount !== 0 || this.charge.GSTPercentage !== 0">
+                                            <mat-option
+                                                *ngIf="this.charge.GSTAmount === 0 || this.charge.GSTPercentage === 0"
+                                                value="None">None</mat-option>
+                                            <span
+                                                *ngIf="this.charge.GSTAmount !== 0 || this.charge.GSTPercentage !== 0">
                                                 <mat-option [value]="g.Name" *ngFor="let g of gstList">{{g.Name}}
                                                 </mat-option>
                                             </span>
@@ -409,14 +413,17 @@
                                 <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Total Amount</mat-label>
-                                        <input matInput name="TAmount" type="number" min="0" [(ngModel)]="charge.TotalAmount" required
-                                            [disabled]=true #TAmountcontrol [autocomplete]="false">
+                                        <input matInput name="TAmount" type="number" min="0"
+                                            [(ngModel)]="charge.TotalAmount" required [disabled]=true #TAmountcontrol
+                                            [autocomplete]="false">
                                     </mat-form-field>
                                 </div>
                                 <div *ngIf="category === 'Charges'"
                                     class="col-xl-1 col-lg-1  col-md-3 col-6 mb-0 ml-auto">
-                                    <button *ngIf="addPurchase" class="mr-3"  (click)="calculateFields('TAmount', 'chtotal');notifyGst();" type="submit"
-                                        [disabled]="!f1.valid || this.GstTypeDis" mat-raised-button color="primary" >Add</button>
+                                    <button *ngIf="addPurchase" class="mr-3"
+                                        (click)="calculateFields('TAmount', 'chtotal');notifyGst();" type="submit"
+                                        [disabled]="!f1.valid || this.GstTypeDis" mat-raised-button
+                                        color="primary">Add</button>
 
                                 </div>
                             </div>
@@ -428,226 +435,253 @@
                             <div class="row mt-3">
                                 <div class="col-sm-12 p-0"
                                     style="overflow-y: auto; height: 340px;box-shadow: 1px 0px 2px 4px rgba(221, 221, 221, 0.338);">
-                                    <table class="table table-striped table-hover table-sm table-bordered"
-                                        style="border: 2px solid #fff !important;">
-                                        <thead>
-                                            <tr style="white-space: nowrap;">
-                                                <th style="z-index: 0 !important;">
-                                                    <mat-checkbox></mat-checkbox>
-                                                </th>
-                                                <th>Action</th>
-                                                <th>BarCode</th>
-                                                <th>Code</th>
-                                                <th>Product</th>
-                                                <th>PurchasePrice</th>
-                                                <th>Quantity</th>
-                                                <th>Dis%</th>
-                                                <th>DisAmt</th>
-                                                <th>SubTotal</th>
-                                                <th>TAX%</th>
-                                                <th>TAXAmt</th>
-                                                <th>TAXType</th>
-                                                <th>TotalAmt</th>
-                                                <th>SalePrice/Unit</th>
-                                                <th>WholeSalePrice/Unit</th>
-                                                <th>Brand</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr *ngFor="let data of itemList ; let i = index;">
-                                                <td class="text-center">
-                                                    <mat-checkbox [(ngModel)]="data.Checked" name="{{i + 'name'}}"
-                                                        [checked]="data.Checked" [ngModelOptions]="{standalone: true}">
-                                                    </mat-checkbox>
-                                                </td>
-                                                <!-- <td style="z-index: -999 !important;" *ngIf="data.Status === 0"></td> -->
-                                                <td class="text-center" style="white-space: nowrap;">
-                                                    <mat-icon *ngIf="data.Status != 0 && data.ID !== null"
-                                                        class="print_icon "
-                                                        (click)="openModal(content,data)">print</mat-icon>
-                                                    <mat-icon *ngIf="data.Status !== 0 && deletePurchase" class="delete_icons ms-1"
-                                                        (click)="deleteItem('Product',i)">delete_forever</mat-icon>
-                                                    <!-- <mat-icon class="edit_icons ms-1" (click)="edititem('Product',data)" *ngIf="data.ID === null">edit </mat-icon> -->
-                                                    <mat-icon class="edit_icon1 ms-1" (click)="showInput(data)"
-                                                        *ngIf="editPurchase && data.Status != 0 && data.ID !== null && !data.UpdateProduct">edit
-                                                    </mat-icon>
-                                                    <mat-icon class="edit_icon1 ms-1"
-                                                        (click)="showInput(data) ;updataEditProdcut('','',data)"
-                                                        *ngIf="data.Status != 0 && data.ID !== null && data.UpdateProduct">save
-                                                    </mat-icon>
-                                                </td>
-                                                <td class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    <span *ngIf="data.BaseBarCode !== ''">{{data.BaseBarCode * 1000}}</span> </td>
-                                                <td class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.UniqueBarcode}}</td>
-                                                <td class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.ProductName}}</td>
-                                                <td *ngIf="!data.UpdateProduct" class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.UnitPrice }}</td>
-                                                <td *ngIf="data.UpdateProduct" style=" width:60px;text-align: center;">
-                                                    <input style=" width:60px;text-align: center;" min="0" type="number"
-                                                        [(ngModel)]="data.UnitPrice"
-                                                        (ngModelChange)="data.UnitPrice = onChange($event)"
-                                                        (change)="updataEditProdcut('UnitPrice', 'subTotal',data)"
-                                                        #name="ngModel" [ngModelOptions]="{standalone: true}"
-                                                        name="data{{i}}">
-                                                </td>
-                                                <td class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.Quantity}}</td>
-                                                <td *ngIf="!data.UpdateProduct" class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.DiscountPercentage}}%</td>
-                                                <td *ngIf="data.UpdateProduct" style=" width:60px;text-align: center;">
-                                                    <input style=" width:60px;text-align: center;" min="0" type="number"
-                                                        [(ngModel)]="data.DiscountPercentage"
-                                                        (ngModelChange)="data.DiscountPercentage = onChange($event)"
-                                                        (change)="updataEditProdcut('DiscountPercentage', 'discount',data)"
-                                                        #name="ngModel" [ngModelOptions]="{standalone: true}"
-                                                        name="data{{i}}">
-                                                </td>
-                                                <td *ngIf="!data.UpdateProduct" class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.DiscountAmount}}</td>
-                                                <td *ngIf="data.UpdateProduct" style=" width:60px;text-align: center;">
-                                                    <input style=" width:60px;text-align: center;" min="0" type="number"
-                                                        [(ngModel)]="data.DiscountAmount"
-                                                        (ngModelChange)="data.DiscountAmount = onChange($event)"
-                                                        (change)="updataEditProdcut('DiscountAmount', 'discount',data)"
-                                                        #name="ngModel" [ngModelOptions]="{standalone: true}"
-                                                        name="data{{i}}">
-                                                </td>
-                                                <td class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.SubTotal }}</td>
-                                                <td *ngIf="!data.UpdateProduct" class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.GSTPercentage}}%</td>
-                                                <td *ngIf="data.UpdateProduct" style=" width:60px;text-align: center;">
-                                                    <input style=" width:60px;text-align: center;" min="0" type="number"
-                                                        [(ngModel)]="data.GSTPercentage"
-                                                        (ngModelChange)="data.GSTPercentage = onChange($event)"
-                                                        #name="ngModel"
-                                                        (change)="updataEditProdcut('GSTPercentage', 'gst',data)"
-                                                        [ngModelOptions]="{standalone: true}" name="data{{i}}">
-                                                </td>
-                                                <td *ngIf="!data.UpdateProduct" class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.GSTAmount}}</td>
-                                                <td *ngIf="data.UpdateProduct" style=" width:60px;text-align: center;">
-                                                    <input style=" width:60px;text-align: center;" min="0" type="number"
-                                                        [(ngModel)]="data.GSTAmount"
-                                                        (ngModelChange)="data.GSTAmount = onChange($event)"
-                                                        #name="ngModel"
-                                                        (change)="updataEditProdcut('GSTAmount', 'gst',data)"
-                                                        [ngModelOptions]="{standalone: true}" name="data{{i}}">
-                                                </td>
-                                                <td *ngIf="!data.UpdateProduct" class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.GSTType}}
-                                                </td>
-                                                <td *ngIf="data.UpdateProduct" style=" width:60px;text-align: center;">
-                                                    <select style="height: 26px; width: 60px;" name="BarndTypeUp"
-                                                        [(ngModel)]="data.GSTType" #name="ngModel"
-                                                        (change)="updataEditProdcut('','',data)"
-                                                        [ngModelOptions]="{standalone: true}" name="data{{i}}">
-                                                        <option value='None' *ngIf="data.GSTPercentage === 0 ">None
-                                                        </option>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover table-sm table-bordered"
+                                            style="border: 2px solid #fff !important;">
+                                            <thead>
+                                                <tr style="white-space: nowrap;">
+                                                    <th style="z-index: 0 !important;">
+                                                        <mat-checkbox></mat-checkbox>
+                                                    </th>
+                                                    <th>Action</th>
+                                                    <th>BarCode</th>
+                                                    <th>Code</th>
+                                                    <th>Product</th>
+                                                    <th>PurchasePrice</th>
+                                                    <th>Quantity</th>
+                                                    <th>Dis%</th>
+                                                    <th>DisAmt</th>
+                                                    <th>SubTotal</th>
+                                                    <th>TAX%</th>
+                                                    <th>TAXAmt</th>
+                                                    <th>TAXType</th>
+                                                    <th>TotalAmt</th>
+                                                    <th *ngIf="company.RetailPrice === 'true'">SalePrice/Unit</th>
+                                                    <th *ngIf="company.WholeSale === 'true'">WholeSalePrice/Unit</th>
+                                                    <th>Brand</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let data of itemList ; let i = index;">
+                                                    <td class="text-center">
+                                                        <mat-checkbox [(ngModel)]="data.Checked" name="{{i + 'name'}}"
+                                                            [checked]="data.Checked"
+                                                            [ngModelOptions]="{standalone: true}">
+                                                        </mat-checkbox>
+                                                    </td>
+                                                    <!-- <td style="z-index: -999 !important;" *ngIf="data.Status === 0"></td> -->
+                                                    <td class="text-center" style="white-space: nowrap;">
+                                                        <button class="bg_none"
+                                                            *ngIf="data.Status != 0 && data.ID !== null"
+                                                            (click)="openModal(content,data)">
+                                                            <mat-icon class="print_icon">print</mat-icon>
+                                                        </button>
 
-                                                        <option [value]="g.Name" *ngFor="let g of gstList"> <span
-                                                                *ngIf="data.GSTPercentage !== 0">{{g.Name}}</span>
-                                                        </option>
+                                                        <button class="bg_none"
+                                                            *ngIf="data.Status !== 0 && deletePurchase"
+                                                            (click)="deleteItem('Product',i)">
+                                                            <mat-icon
+                                                                class="delete_icons ms-1">delete_forever</mat-icon>
+                                                        </button>
+                                                        <!-- <mat-icon class="edit_icons ms-1" (click)="edititem('Product',data)" *ngIf="data.ID === null">edit </mat-icon> -->
+                                                        <button class="bg_none" (click)="showInput(data)"
+                                                            *ngIf="editPurchase && data.Status != 0 && data.ID !== null && !data.UpdateProduct">
+                                                            <mat-icon class="edit_icon1 ms-1">edit</mat-icon>
+                                                        </button>
 
-                                                    </select>
-                                                </td>
-                                                <td class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.TotalAmount}}</td>
-                                                <td *ngIf="!data.UpdateProduct" class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.RetailPrice}}</td>
-                                                <td *ngIf="data.UpdateProduct" style=" width:60px;text-align: center;">
-                                                    <input style=" width:60px;text-align: center;" min="0" type="number"
-                                                        [(ngModel)]="data.RetailPrice"
-                                                        (ngModelChange)="data.RetailPrice = onChange($event)"
-                                                        (change)="updataEditProdcut('','',data)" #name="ngModel"
-                                                        [ngModelOptions]="{standalone: true}" name="data{{i}}">
-                                                </td>
-                                                <td *ngIf="!data.UpdateProduct" class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.WholeSalePrice}}</td>
-                                                <td *ngIf="data.UpdateProduct" style=" width:60px;text-align: center;">
-                                                    <input style=" width:60px;text-align: center;" min="0" type="number"
-                                                        [(ngModel)]="data.WholeSalePrice"
-                                                        (ngModelChange)="data.WholeSalePrice = onChange($event)"
-                                                        (change)="updataEditProdcut('','',data)" #name="ngModel"
-                                                        [ngModelOptions]="{standalone: true}" name="data{{i}}">
-                                                </td>
-                                                <td *ngIf="!data.UpdateProduct" class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    <span *ngIf="data.BrandType == 0">None</span>
-                                                    <span *ngIf="data.BrandType == 1">Brand</span>
-                                                    <span *ngIf="data.BrandType == 2">Non-Brand</span>
-                                                </td>
-                                                <td *ngIf="data.UpdateProduct" style=" text-align: center;">
-                                                    <select style="height: 26px; width: 60px;" name="BarndTypeUp"
-                                                        [(ngModel)]="data.BrandType" #name="ngModel"
-                                                        (change)="updataEditProdcut('','',data)"
-                                                        [ngModelOptions]="{standalone: true}" name="data{{i}}">
-                                                        <option [value]='0'>None</option>
-                                                        <option [value]='1'>Brand</option>
-                                                        <option [value]='2'>Non-Barnd</option>
-                                                    </select>
-                                                </td>
-                                            </tr>
-                                            <!-- chargeList -->
-                                            <tr *ngFor="let data of chargeList ; let i = index;">
-                                                <td></td>
-                                                <td class="text-center">
-                                                    <mat-icon *ngIf="data.Status !== 0 && deletePurchase" class="delete_icons ms-1"
-                                                        (click)="deleteCharge('Charges',i)">delete_forever</mat-icon>
+                                                        <button class="bg_none"
+                                                            (click)="showInput(data) ;updataEditProdcut('','',data)"
+                                                            *ngIf="data.Status != 0 && data.ID !== null && data.UpdateProduct">
+                                                            <mat-icon class="edit_icon1 ms-1">save </mat-icon>
+                                                        </button>
+                                                    </td>
+                                                    <td class="text-center"
+                                                        [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                                        <span *ngIf="data.BaseBarCode !== ''">{{data.BaseBarCode *
+                                                            1000}}</span>
+                                                    </td>
+                                                    <td class="text-center"
+                                                        [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                                        {{data.UniqueBarcode}}</td>
+                                                    <td class="text-center"
+                                                        [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                                        {{data.ProductName}}</td>
+                                                    <td *ngIf="!data.UpdateProduct" class="text-center"
+                                                        [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                                        {{data.UnitPrice }}</td>
+                                                    <td *ngIf="data.UpdateProduct"
+                                                        style=" width:60px;text-align: center;">
+                                                        <input style=" width:60px;text-align: center;" min="0"
+                                                            type="number" [(ngModel)]="data.UnitPrice"
+                                                            (ngModelChange)="data.UnitPrice = onChange($event)"
+                                                            (change)="updataEditProdcut('UnitPrice', 'subTotal',data)"
+                                                            #name="ngModel" [ngModelOptions]="{standalone: true}"
+                                                            name="data{{i}}">
+                                                    </td>
+                                                    <td class="text-center"
+                                                        [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                                        {{data.Quantity}}</td>
+                                                    <td *ngIf="!data.UpdateProduct" class="text-center"
+                                                        [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                                        {{data.DiscountPercentage}}%</td>
+                                                    <td *ngIf="data.UpdateProduct"
+                                                        style=" width:60px;text-align: center;">
+                                                        <input style=" width:60px;text-align: center;" min="0"
+                                                            type="number" [(ngModel)]="data.DiscountPercentage"
+                                                            (ngModelChange)="data.DiscountPercentage = onChange($event)"
+                                                            (change)="updataEditProdcut('DiscountPercentage', 'discount',data)"
+                                                            #name="ngModel" [ngModelOptions]="{standalone: true}"
+                                                            name="data{{i}}">
+                                                    </td>
+                                                    <td *ngIf="!data.UpdateProduct" class="text-center"
+                                                        [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                                        {{data.DiscountAmount}}</td>
+                                                    <td *ngIf="data.UpdateProduct"
+                                                        style=" width:60px;text-align: center;">
+                                                        <input style=" width:60px;text-align: center;" min="0"
+                                                            type="number" [(ngModel)]="data.DiscountAmount"
+                                                            (ngModelChange)="data.DiscountAmount = onChange($event)"
+                                                            (change)="updataEditProdcut('DiscountAmount', 'discount',data)"
+                                                            #name="ngModel" [ngModelOptions]="{standalone: true}"
+                                                            name="data{{i}}">
+                                                    </td>
+                                                    <td class="text-center"
+                                                        [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                                        {{data.SubTotal }}</td>
+                                                    <td *ngIf="!data.UpdateProduct" class="text-center"
+                                                        [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                                        {{data.GSTPercentage}}%</td>
+                                                    <td *ngIf="data.UpdateProduct"
+                                                        style=" width:60px;text-align: center;">
+                                                        <input style=" width:60px;text-align: center;" min="0"
+                                                            type="number" [(ngModel)]="data.GSTPercentage"
+                                                            (ngModelChange)="data.GSTPercentage = onChange($event)"
+                                                            #name="ngModel"
+                                                            (change)="updataEditProdcut('GSTPercentage', 'gst',data)"
+                                                            [ngModelOptions]="{standalone: true}" name="data{{i}}">
+                                                    </td>
+                                                    <td *ngIf="!data.UpdateProduct" class="text-center"
+                                                        [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                                        {{data.GSTAmount}}</td>
+                                                    <td *ngIf="data.UpdateProduct"
+                                                        style=" width:60px;text-align: center;">
+                                                        <input style=" width:60px;text-align: center;" min="0"
+                                                            type="number" [(ngModel)]="data.GSTAmount"
+                                                            (ngModelChange)="data.GSTAmount = onChange($event)"
+                                                            #name="ngModel"
+                                                            (change)="updataEditProdcut('GSTAmount', 'gst',data)"
+                                                            [ngModelOptions]="{standalone: true}" name="data{{i}}">
+                                                    </td>
+                                                    <td *ngIf="!data.UpdateProduct" class="text-center"
+                                                        [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                                        {{data.GSTType}}
+                                                    </td>
+                                                    <td *ngIf="data.UpdateProduct"
+                                                        style=" width:60px;text-align: center;">
+                                                        <select style="height: 26px; width: 60px;" name="BarndTypeUp"
+                                                            [(ngModel)]="data.GSTType" #name="ngModel"
+                                                            (change)="updataEditProdcut('','',data)"
+                                                            [ngModelOptions]="{standalone: true}" name="data{{i}}">
+                                                            <option value='None' *ngIf="data.GSTPercentage === 0 ">None
+                                                            </option>
 
-                                                </td>
-                                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
-                                                    class="text-center">--</td>
-                                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
-                                                    class="text-center">--</td>
-                                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
-                                                    class="text-center">{{data.ChargeType}}/{{data.Description}}</td>
-                                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
-                                                    class="text-center">--</td>
-                                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
-                                                    class="text-center">--</td>
-                                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
-                                                    class="text-center">--</td>
-                                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
-                                                    class="text-center">--</td>
-                                                <td *ngIf="data.ID !== null"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
-                                                    class="text-center">{{data.Amount }} </td>
-                                                <td *ngIf="data.ID === null"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
-                                                    class="text-center">{{data.Price}} </td>
-                                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
-                                                    class="text-center">{{data.GSTAmount}}</td>
-                                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
-                                                    class="text-center">{{data.GSTPercentage}}%</td>
-                                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
-                                                    class="text-center">{{data.GSTType}}</td>
-                                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
-                                                    class="text-center">{{data.TotalAmount}}</td>
-                                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
-                                                    class="text-center">--</td>
-                                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
-                                                    class="text-center">--</td>
-                                            </tr>
-                                            <!-- chargeList -->
-                                        </tbody>
-                                    </table>
+                                                            <option [value]="g.Name" *ngFor="let g of gstList"> <span
+                                                                    *ngIf="data.GSTPercentage !== 0">{{g.Name}}</span>
+                                                            </option>
+
+                                                        </select>
+                                                    </td>
+                                                    <td class="text-center"
+                                                        [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                                        {{data.TotalAmount}}</td>
+                                                    <td *ngIf="!data.UpdateProduct " class="text-center"
+                                                        [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                                        {{data.RetailPrice}}</td>
+                                                    <td *ngIf="data.UpdateProduct "
+                                                        style=" width:60px;text-align: center;">
+                                                        <input style=" width:60px;text-align: center;" min="0"
+                                                            type="number" [(ngModel)]="data.RetailPrice"
+                                                            (ngModelChange)="data.RetailPrice = onChange($event)"
+                                                            (change)="updataEditProdcut('','',data)" #name="ngModel"
+                                                            [ngModelOptions]="{standalone: true}" name="data{{i}}">
+                                                    </td>
+                                                    <td *ngIf="!data.UpdateProduct " class="text-center"
+                                                        [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                                        {{data.WholeSalePrice}}</td>
+                                                    <td *ngIf="data.UpdateProduct "
+                                                        style=" width:60px;text-align: center;">
+                                                        <input style=" width:60px;text-align: center;" min="0"
+                                                            type="number" [(ngModel)]="data.WholeSalePrice"
+                                                            (ngModelChange)="data.WholeSalePrice = onChange($event)"
+                                                            (change)="updataEditProdcut('','',data)" #name="ngModel"
+                                                            [ngModelOptions]="{standalone: true}" name="data{{i}}">
+                                                    </td>
+                                                    <td *ngIf="!data.UpdateProduct" class="text-center"
+                                                        [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                                        <span *ngIf="data.BrandType == 0">None</span>
+                                                        <span *ngIf="data.BrandType == 1">Brand</span>
+                                                        <span *ngIf="data.BrandType == 2">Non-Brand</span>
+                                                    </td>
+                                                    <td *ngIf="data.UpdateProduct" style=" text-align: center;">
+                                                        <select style="height: 26px; width: 60px;" name="BarndTypeUp"
+                                                            [(ngModel)]="data.BrandType" #name="ngModel"
+                                                            (change)="updataEditProdcut('','',data)"
+                                                            [ngModelOptions]="{standalone: true}" name="data{{i}}">
+                                                            <option [value]='0'>None</option>
+                                                            <option [value]='1'>Brand</option>
+                                                            <option [value]='2'>Non-Barnd</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <!-- chargeList -->
+                                                <tr *ngFor="let data of chargeList ; let i = index;">
+                                                    <td></td>
+                                                    <td class="text-center">
+                                                        <button class="bg_none"
+                                                            *ngIf="data.Status !== 0 && deletePurchase"
+                                                            (click)="deleteCharge('Charges',i)">
+                                                            <mat-icon
+                                                                class="delete_icons ms-1">delete_forever</mat-icon>
+                                                        </button>
+                                                    </td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                                        class="text-center">--</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                                        class="text-center">--</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                                        class="text-center">{{data.ChargeType}}/{{data.Description}}
+                                                    </td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                                        class="text-center">--</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                                        class="text-center">--</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                                        class="text-center">--</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                                        class="text-center">--</td>
+                                                    <td *ngIf="data.ID !== null"
+                                                        [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                                        class="text-center">{{data.Amount }} </td>
+                                                    <td *ngIf="data.ID === null"
+                                                        [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                                        class="text-center">{{data.Price}} </td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                                        class="text-center">{{data.GSTAmount}}</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                                        class="text-center">{{data.GSTPercentage}}%</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                                        class="text-center">{{data.GSTType}}</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                                        class="text-center">{{data.TotalAmount}}</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                                        class="text-center">--</td>
+                                                    <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                                        class="text-center">--</td>
+                                                </tr>
+                                                <!-- chargeList -->
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                             <!-- Add item List end -->
@@ -734,8 +768,9 @@
                                 </div>
                                 <div *ngIf="selectedPurchaseMaster.ID !== null"
                                     class="col-xl-1 col-lg-1 col-md-2 col-sm-12 col-4  mb-0 mr-2">
-                                    <button type="button" [disabled]="itemList.length === 0 || this.disbaleupdate === true" (click)="updatedPurchase()"
-                                        mat-raised-button color="primary">Update</button>
+                                    <button type="button"
+                                        [disabled]="itemList.length === 0 || this.disbaleupdate === true"
+                                        (click)="updatedPurchase()" mat-raised-button color="primary">Update</button>
                                 </div>
                             </div>
                             <!-- Total calculcation end -->
