@@ -38,7 +38,7 @@ export class DashboradComponent implements OnInit {
     {
       "icon" : "assets/images/transfer.png",
       "title": "Prod_Transfer",
-      "routersLinks" : "/sale/billing/0"
+      "routersLinks" : "/inventory/product-transfer"
     },
     {
       "icon" : "assets/images/sms-removebg-preview.png",

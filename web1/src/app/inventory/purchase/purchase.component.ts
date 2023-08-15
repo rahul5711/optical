@@ -191,7 +191,6 @@ export class PurchaseComponent implements OnInit {
   }
 
   getFieldList() {
-    this.sp.show();
     const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -200,7 +199,6 @@ export class PurchaseComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
-        this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),

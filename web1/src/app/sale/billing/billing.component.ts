@@ -819,8 +819,6 @@ export class BillingComponent implements OnInit {
     this.searchList = [];
     this.param = { Name: '', MobileNo1: '', Address: '', Sno: '' };
     if (searchKey.length >= 3) {
-      this.sp.show()
-
       if (mode === 'Name' || mode === 'MobileNo1') {
         const pattern = /[0-9\+\-]/
         let inputChar = searchKey.toString();
@@ -841,7 +839,6 @@ export class BillingComponent implements OnInit {
           } else {
             this.as.errorToast(res.message)
           }
-          this.sp.hide();
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
