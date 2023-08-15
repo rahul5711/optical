@@ -479,7 +479,7 @@ module.exports = {
                     console.log(connected("Customer Spec Update SuccessFUlly !!!"));
                 }
 
-                const [spectacle_rx] = await mysql2.pool.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${ID} and Status = 1 order by ID desc`)
+                const [spectacle_rx2] = await mysql2.pool.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${ID} and Status = 1 order by ID desc`)
                 response.spectacle_rx = spectacle_rx
 
             }
@@ -549,7 +549,7 @@ module.exports = {
 
                 }
 
-                const [contact_lens_rx] = await mysql2.pool.query(`select * from contact_lens_rx where CompanyID = ${CompanyID} and CustomerID = ${ID} and Status = 1 order by ID desc`);
+                const [contact_lens_rx2] = await mysql2.pool.query(`select * from contact_lens_rx where CompanyID = ${CompanyID} and CustomerID = ${ID} and Status = 1 order by ID desc`);
                 response.contact_lens_rx = contact_lens_rx
             }
 
@@ -590,7 +590,7 @@ module.exports = {
 
                 }
 
-                const [other_rx] = await mysql2.pool.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${ID} and Status = 1 order by ID desc`)
+                const [other_rx2] = await mysql2.pool.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${ID} and Status = 1 order by ID desc`)
                 response.other_rx = other_rx
             }
 
