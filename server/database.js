@@ -1,6 +1,6 @@
 const mysql = require("mysql2");
 
-// for local
+// for local ji
 
 // const pool = mysql.createPool({
 //     host: 'localhost',
@@ -20,7 +20,7 @@ const mysql = require("mysql2");
 
 
 // for himanshu ji
-// uri: `mysql://OTPG2:Rahul@9752885711@184.174.37.138/relinksys_optical`,
+
 const pool = mysql.createPool({
     host: '184.174.37.138',
     user: 'OTPG2',

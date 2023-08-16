@@ -819,14 +819,16 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             console.log(req.body);
-            const { searchString } = req.body
+            const { Name, MobileNo1, Address, Sno } = req.body
 
-            let qry = `select customer.ID as ID, customer.Idd, customer.Name as Name, customer.MobileNo1, customer.MobileNo2  from customer where customer.Status = 1 and customer.Name like '%${searchString}%' OR customer.MobileNo1 like'%${searchString}%' OR customer.MobileNo2 like '%${searchString}%' OR customer.Idd like '%${searchString}%' and customer.CompanyID = '${CompanyID}'  order by customer.ID desc`
+            let qry = `select customer.ID as ID, customer.Idd, customer.Name as Name, customer.MobileNo1, customer.MobileNo2  from customer where customer.Status = 1 and customer.Name like '%${Name}%' OR customer.MobileNo1 like'%${MobileNo1}%' OR customer.MobileNo2 like '%${Address}%' OR customer.Idd like '%${Sno}%' and customer.CompanyID = '${CompanyID}'  order by customer.ID desc`
 
 
             let finalQuery = qry;
 
+            console.log(finalQuery);
             let [data] = await mysql2.pool.query(finalQuery);
+            console.log(data);
 
             response.message = "data fetch sucessfully"
             response.data = data
