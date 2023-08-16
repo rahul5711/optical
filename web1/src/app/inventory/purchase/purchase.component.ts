@@ -226,7 +226,7 @@ export class PurchaseComponent implements OnInit {
 
   getFieldSupportData(index: any) {
     this.specList.forEach((element: any) => {
-      if (element.Ref === this.specList[index].FieldName.toString()) {
+      if (element.Ref === this.specList[index].FieldName) {
         const subs: Subscription = this.ps.getProductSupportData(this.specList[index].SelectedValue, element.SptTableName).subscribe({
           next: (res: any) => {
             if (res.success) {

@@ -255,10 +255,9 @@ module.exports = {
             if (!Body.ShopID) return res.send({ message: "Invalid Query Data" })
             if (!Body.RoleID) return res.send({ message: "Invalid Query Data" })
 
-            [doesExist] = await mysql2.pool.query(`select * from usershop where Status = 1 and UserID=${Body.UserID} and ShopID=${Body.ShopID}`);
-
+            const [doesExist] = await mysql2.pool.query(`select * from usershop where Status = 1 and UserID=${Body.UserID} and ShopID=${Body.ShopID}`);
             if (doesExist.length) {
-                return res.send({ message: `User have already role in this shop` });
+                return res.send({ message: `User already has a role in this shop` });
             }
 
 
@@ -288,7 +287,7 @@ module.exports = {
             if (!Body.RoleID) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            [doesExist] = await mysql2.pool.query(`select * from usershop where Status = 1 and UserID=${Body.UserID} and ShopID!=${Body.ShopID} and ID = ${Body.ID}`);
+            const [doesExist] = await mysql2.pool.query(`select * from usershop where Status = 1 and UserID=${Body.UserID} and ShopID!=${Body.ShopID} and ID = ${Body.ID}`);
 
             if (doesExist.length) {
                 return res.send({ message: `User have already role in this shop` });

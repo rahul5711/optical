@@ -174,8 +174,6 @@ export class ProductMasterComponent implements OnInit {
     });
   }
 
-
-
   deleteSpecValue(value: any, selectedValue: any, i: any) {
     this.sp.show()
     value.SptFilterData.forEach((element: any) => {

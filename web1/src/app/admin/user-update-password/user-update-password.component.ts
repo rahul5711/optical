@@ -32,7 +32,7 @@ export class UserUpdatePasswordComponent implements OnInit {
   data = {ID: null, Password :''}
   id: any;
   permissions: any;
- 
+  loginName:any
   constructor(
     private cs: CompanyService,
     private sp: NgxSpinnerService,
@@ -85,8 +85,9 @@ export class UserUpdatePasswordComponent implements OnInit {
     });
   }
 
-  openModal(content: any,ID:any) {
-    this.data.ID = ID
+  openModal(content: any,data:any) {
+    this.loginName = data.LoginName
+    this.data.ID = data.ID
     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'sm'});
   }
 

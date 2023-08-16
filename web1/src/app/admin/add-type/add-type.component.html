@@ -13,7 +13,7 @@
                     <div class="body">
                         <form #f="ngForm" autocomplete="off">
                             <div class="row">
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                <div class="col-xl-2 col-lg-3 col-md-6 col-sm-2 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Product</mat-label>
                                         <mat-select name="FieldType" [(ngModel)]="selectedProduct"
@@ -31,7 +31,7 @@
                                 </div>
                             </div>
                             <div class="row" *ngIf="showFeild">
-                                <div *ngIf="!showAdd" class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                <div *ngIf="!showAdd" class="col-xl-2 col-lg-3 col-md-6 col-8 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Category</mat-label>
                                         <mat-select name="Field Type" [(ngModel)]="data1.Category" required
@@ -46,26 +46,26 @@
                                         </mat-error> -->
                                     </mat-form-field>
                                 </div>
-                                <div *ngIf="!showAdd" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                <div *ngIf="!showAdd" class="col-xl-1 col-lg-1 col-md-1 col-2 mb-0">
                                     <button mat-mini-fab color="primary" (click)="showAdd = !showAdd"
                                         aria-label="Example icon button with a bookmark icon">
                                         <mat-icon>add</mat-icon>
                                     </button>
                                 </div>
-                                <div *ngIf="!showAdd" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                <div *ngIf="!showAdd" class="col-xl-1 col-lg-1 col-md-1 col-2 mb-0">
                                     <button class="ml-2" mat-mini-fab color="warn" *ngIf="showAdd === false"
                                         (click)="delSupport()" aria-label="Example icon button with a bookmark icon">
                                         <mat-icon>delete</mat-icon>
                                     </button>
                                 </div>
-                                <div *ngIf="showAdd" class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                <div *ngIf="showAdd" class="col-xl-2 col-lg-3 col-md-6 col-8 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Add Type</mat-label>
                                         <input matInput name="NewDepartment" [(ngModel)]="newDepartment.Name" required
                                             #NewDepartmentTypecontrol>
                                     </mat-form-field>
                                 </div>
-                                <div *ngIf="showAdd" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                                <div *ngIf="showAdd" class="col-xl-1 col-lg-1 col-md-1 col-4 mb-0">
                                     <button mat-mini-fab color="primary" (click)="showAdd = !showAdd; saveDepartment()"
                                         aria-label="Example icon button with a bookmark icon">
                                         <mat-icon>save</mat-icon>

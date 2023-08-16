@@ -48,9 +48,27 @@ i: any;
   disbleProduct = true
   hideSave = true
   showAdds = false
+  GstTypeDis = false
 
   ngOnInit(): void {
     this.getProductList();
+  }
+
+  gstType() {
+    if (this.newProduct.GSTPercentage !== 0 ) {
+      if (this.newProduct.GSTType === 'None') {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Please Select GSTType',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        this.GstTypeDis = true
+      }else{
+       this.GstTypeDis = false
+      }
+    }
   }
 
   saveProduct() {
@@ -59,7 +77,6 @@ i: any;
     this.prodList.forEach((element: { Name: string; }) => {
       if (element.Name.toLowerCase() === this.newProduct.Name.toLowerCase().trim()){count = count + 1; }
     });
-
     if (count === 0 && this.newProduct.Name !== ''){
     const subs: Subscription =  this.ps.productSave( this.newProduct).subscribe({
       next: (res: any) => {
@@ -90,6 +107,7 @@ i: any;
       complete: () => subs.unsubscribe(),
     });
     }else {
+      this.sp.hide();
     Swal.fire({
       icon: 'error',
       title: 'Duplicate or Empty Values are not allowed',

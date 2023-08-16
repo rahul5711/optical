@@ -207,7 +207,7 @@ export class EmployeeComponent implements OnInit {
 
   saveUserShop(){
     this.sp.show()
-    this.UserShop.UserID = this.id
+    this.UserShop.UserID = Number(this.id)
     const subs: Subscription =  this.ss.saveUserShop(this.UserShop).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -253,7 +253,6 @@ export class EmployeeComponent implements OnInit {
             })
         } else {
           this.as.errorToast(res.message)
-          this.getUserById();
           Swal.fire({
             position: 'center',
             icon: 'error',

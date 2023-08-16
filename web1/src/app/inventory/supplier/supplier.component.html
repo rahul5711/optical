@@ -103,8 +103,8 @@
                                 <tbody class="text-center">
                                     <tr *ngFor="let data of dataList  let i = index;">
                                         <td style="width: 7%;">
-                                            <button *ngIf="editSupplierList" class="bg-none" (click)="openModal(content)" (click)="getSupplierById(data)" [routerLink]="['/inventory/supplier']">
-                                              <mat-icon class="edit_icon ms-1" data-mdb-toggle="modal" data-mdb-target="#exampleModal" > edit</mat-icon>
+                                            <button *ngIf="editSupplierList" class="bg-none" (click)="openModal(content)" data-mdb-toggle="modal" data-mdb-target="#exampleModal" (click)="getSupplierById(data)">
+                                              <mat-icon class="edit_icon ms-1"> edit</mat-icon>
                                             </button>
                                             <button *ngIf="deleteSupplierList" class="bg-none" (click)="deleteItem(i)">
                                               <mat-icon class="delete_icon ms-1" >delete_forever</mat-icon>
