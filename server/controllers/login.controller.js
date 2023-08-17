@@ -66,6 +66,7 @@ module.exports = {
                 // }
 
                 if (User[0].UserGroup === "CompanyAdmin") {
+                    console.log("CompanyAdmin==========================>",User);
                     loginCode = 1;
                     comment = "login SuccessFully";
                     const accessToken = await signAccessTokenAdmin(`'${User[0].ID}'`)
