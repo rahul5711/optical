@@ -6,7 +6,7 @@
           <div class="card p-0">
             <div class="header p-2 py-0 pt-1">
               <div class="row">
-                <div class="col-md-2 col-8 p-0 ms-3">
+                <div class="col-md-4 col-8 p-0 ms-3">
                   <h2>Inventory Report </h2>
                 </div>
               </div>
@@ -17,19 +17,19 @@
                 <div class="body">
                   <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getInventory()">
                     <div class="row">
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>From</mat-label>
                           <input matInput name="FromDate" type="date" [(ngModel)]="inventory.FromDate" #DOBcontrol [disabled]="!editInventoryReport" />
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>To</mat-label>
                           <input matInput type="date" name="ToDate" [(ngModel)]="inventory.ToDate" [disabled]="!editInventoryReport" />
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>Supplier Name</mat-label>
                           <mat-select name="Supplier" [(ngModel)]="inventory.SupplierID" editable="true" #singleSelect>
@@ -44,7 +44,7 @@
                           </mat-error>
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>Shop Name</mat-label>
                           <mat-select name="shopID" [(ngModel)]="inventory.ShopID" multiple>
@@ -55,7 +55,7 @@
                           </mat-select>
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>Barcode</mat-label>
                           <input matInput name="Barcode" [(ngModel)]="inventory.Barcode" #Barcodecontrol>
@@ -64,7 +64,7 @@
                           </mat-error>
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>Current Status</mat-label>
                           <mat-select name="Status" [(ngModel)]="inventory.CurrentStatus" #singleSelect>
@@ -81,7 +81,7 @@
                           </mat-error>
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>GST Type</mat-label>
                           <mat-select name="GSTType" [(ngModel)]="inventory.GSTType" #singleSelect>
@@ -91,7 +91,7 @@
                           </mat-select>
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>GSTPercentage</mat-label>
                           <mat-select name="GSTPercentage" [(ngModel)]="inventory.GSTPercentage">
@@ -101,7 +101,7 @@
                           </mat-select>
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>Select Product</mat-label>
                           <mat-select name="FieldType" [(ngModel)]="inventory.ProductCategory"
@@ -117,7 +117,7 @@
                         </mat-form-field>
                       </div>
                       <!-- spec start -->
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0"
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0"
                         *ngFor="let spec of specList ; let i = index;">
                         <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
                           <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
@@ -163,14 +163,14 @@
                         </div>
                       </div>
                       <!--  spec end -->
-                      <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0 ">
-                        <button class="me-3" type="submit" mat-raised-button color="primary">
+                      <div class="col-xl-2 col-lg-4 col-md-6 col-12 mb-0 ">
+                        <button class="me-2" type="submit" mat-raised-button color="primary">
                           Search
                         </button>
                         <button type="button" mat-raised-button color="warn" (click)="inventorysFromReset()">
                           Reset
                         </button>
-                        <button  class=" ms-3" mat-raised-button color="primary"  printTitle="inventory Report {{this.selectsShop}}"  printSectionId="inventorysPDF" ngxPrint styleSheetFile="../../../assets/pdf.css">
+                        <button  class=" ms-2" mat-raised-button color="primary"  printTitle="inventory Report {{this.selectsShop}}"  printSectionId="inventorysPDF" ngxPrint styleSheetFile="../../../assets/pdf.css">
                           <i  class="far fa-file-pdf "
                           style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
                       </button>
@@ -267,19 +267,19 @@
                 <div class="body">
                   <form class="p-3 pb-0" #f1="ngForm">
                     <div class="row">
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>From</mat-label>
                           <input matInput name="FromDate" type="date" [(ngModel)]="data.FromDate" #DOBcontrol [disabled]="!editProductSummaryReport"/>
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>To</mat-label>
                           <input matInput type="date" name="ToDate" [(ngModel)]="data.ToDate" [disabled]="!editProductSummaryReport" />
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>Supplier Name</mat-label>
                           <mat-select name="Supplier" [(ngModel)]="data.SupplierID" editable="true" #singleSelect>
@@ -294,7 +294,7 @@
                           </mat-error>
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>Shop Name</mat-label>
                           <mat-select name="ShopID" [(ngModel)]="data.ShopID" multiple>
@@ -305,7 +305,7 @@
                           </mat-select>
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
                         <button class="me-3" mat-raised-button color="primary">Search</button>
                         <button type="button" mat-raised-button color="warn">Reset</button>
                       </div>
@@ -368,20 +368,20 @@
                 <div class="body">
                   <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="purchaseProductExpiry()">
                     <div class="row">
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>From</mat-label>
                           <input matInput name="FromDate" type="date" [(ngModel)]="ProductExpiry.FromDate"
                             #DOBcontrol [disabled]="!editPurchaseProductExpiryReport"/>
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>To</mat-label>
                           <input matInput type="date" name="ToDate" [(ngModel)]="ProductExpiry.ToDate" [disabled]="!editPurchaseProductExpiryReport"/>
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>Supplier Name</mat-label>
                           <mat-select name="Supplier" [(ngModel)]="ProductExpiry.SupplierID" editable="true"
@@ -397,7 +397,7 @@
                           </mat-error>
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>Shop Name</mat-label>
                           <mat-select name="shopID" [(ngModel)]="ProductExpiry.ShopID" multiple>
@@ -408,7 +408,7 @@
                           </mat-select>
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>Select Product</mat-label>
                           <mat-select name="FieldType" [(ngModel)]="ProductExpiry.ProductCategory"
@@ -424,7 +424,7 @@
                         </mat-form-field>
                       </div>
                       <!-- spec start -->
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0"
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0"
                         *ngFor="let spec of specList1 ; let i = index;">
                         <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
                           <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
@@ -470,7 +470,7 @@
                         </div>
                       </div>
                       <!--  spec end -->
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>GST Type</mat-label>
                           <mat-select name="GSTType" [(ngModel)]="ProductExpiry.GSTType" #singleSelect>
@@ -480,7 +480,7 @@
                           </mat-select>
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>GSTPercentage</mat-label>
                           <mat-select name="GSTPercentage" [(ngModel)]="ProductExpiry.GSTPercentage">
@@ -490,11 +490,11 @@
                           </mat-select>
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0 ">
-                        <button class="me-3" type="submit" mat-raised-button color="primary"> Search </button>
+                      <div class="col-xl-2 col-lg-4 col-md-6 col-12 mb-0 ">
+                        <button class="me-2" type="submit" mat-raised-button color="primary"> Search </button>
                         <button type="button" mat-raised-button color="warn" (click)="productExpiryFromReset()"> Reset
                         </button>
-                        <button  class=" ms-3" mat-raised-button color="primary"  printTitle="Prodcut Expiry Report {{this.selectsShop}}" styleSheetFile="../../../assets/pdf.css" printSectionId="ProdcutExpiry" ngxPrint >
+                        <button  class=" ms-2" mat-raised-button color="primary"  printTitle="Prodcut Expiry Report {{this.selectsShop}}" styleSheetFile="../../../assets/pdf.css" printSectionId="ProdcutExpiry" ngxPrint >
                           <i  class="far fa-file-pdf "
                           style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
                       </button>

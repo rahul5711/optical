@@ -6,7 +6,7 @@
             <div class="card p-0">
               <div class="header p-2 py-0 pt-1">
                 <div class="row">
-                  <div class="col-md-2 col-8 p-0 ms-3">
+                  <div class="col-md-4 col-8 p-0 ms-3">
                     <h2>Product Return Report </h2>
                   </div>
                 </div>
@@ -17,20 +17,20 @@
                   <div class="body">
                     <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getPurchaseReturnMaster()">
                       <div class="row">
-                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                        <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                           <mat-form-field class="example-full-width mb-0">
                             <mat-label>From</mat-label>
                             <input matInput name="FromDate" type="date" [(ngModel)]="ReturnMaster.FromDate"
                               #DOBcontrol [disabled]="!editProductReturnReport"/>
                           </mat-form-field>
                         </div>
-                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                        <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                           <mat-form-field class="example-full-width mb-0">
                             <mat-label>To</mat-label>
                             <input matInput type="date" name="ToDate" [(ngModel)]="ReturnMaster.ToDate" [disabled]="!editProductReturnReport"/>
                           </mat-form-field>
                         </div>
-                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                        <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
                           <mat-form-field class="example-full-width mb-0">
                             <mat-label>Supplier Name</mat-label>
                             <mat-select name="Supplier" [(ngModel)]="ReturnMaster.SupplierID" editable="true"
@@ -46,7 +46,7 @@
                             </mat-error>
                           </mat-form-field>
                         </div>
-                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                        <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
                           <mat-form-field class="example-full-width mb-0">
                             <mat-label>Shop Name</mat-label>
                             <mat-select name="shopID" [(ngModel)]="ReturnMaster.ShopID" multiple>
@@ -57,8 +57,7 @@
                             </mat-select>
                           </mat-form-field>
                         </div>
-
-                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0 ">
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-0 ">
                           <button type="submit" mat-raised-button color="primary">
                             Search
                           </button>
@@ -146,20 +145,20 @@
                   <div class="body">
                     <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getReturnDetails()">
                       <div class="row">
-                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                        <div class="col-xl-2 col-lg-2 col-md-2 col-6">
                           <mat-form-field class="example-full-width mb-0">
                             <mat-label>From</mat-label>
                             <input matInput name="FromDate" type="date" [(ngModel)]="ReturnDetail.FromDate"
                               #DOBcontrol [disabled]="!editProductReturnProductTypeReport"/>
                           </mat-form-field>
                         </div>
-                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                        <div class="col-xl-2 col-lg-2 col-md-2 col-6">
                           <mat-form-field class="example-full-width mb-0">
                             <mat-label>To</mat-label>
                             <input matInput type="date" name="ToDate" [(ngModel)]="ReturnDetail.ToDate" [disabled]="!editProductReturnProductTypeReport"/>
                           </mat-form-field>
                         </div>
-                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                        <div class="col-xl-2 col-lg-2 col-md-4 col-6">
                           <mat-form-field class="example-full-width mb-0">
                             <mat-label>Supplier Name</mat-label>
                             <mat-select name="Supplier" [(ngModel)]="ReturnDetail.SupplierID" editable="true"
@@ -175,7 +174,7 @@
                             </mat-error>
                           </mat-form-field>
                         </div>
-                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                        <div class="col-xl-2 col-lg-2 col-md-4 col-6">
                           <mat-form-field class="example-full-width mb-0">
                             <mat-label>Shop Name</mat-label>
                             <mat-select name="shopID" [(ngModel)]="ReturnDetail.ShopID" multiple>
@@ -186,7 +185,7 @@
                             </mat-select>
                           </mat-form-field>
                         </div>
-                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                        <div class="col-xl-2 col-lg-2 col-md-4 col-6">
                           <mat-form-field class="example-full-width mb-0">
                             <mat-label>Select Product</mat-label>
                             <mat-select name="FieldType" [(ngModel)]="ReturnDetail.ProductCategory"
@@ -202,7 +201,7 @@
                           </mat-form-field>
                         </div>
                         <!-- spec start -->
-                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0"
+                        <div class="col-xl-2 col-lg-2 col-md-4 col-6"
                           *ngFor="let spec of specList ; let i = index;">
                           <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
                             <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
@@ -248,11 +247,11 @@
                           </div>
                         </div>
                         <!--  spec end -->
-                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                        <div class="col-xl-2 col-lg-4 col-md-6 col-12 ">
                           <button  type="submit" mat-raised-button color="primary">
                           Search
                           </button>
-                          <button type="button" class="me-2 ms-2" mat-raised-button color="warn" (click)="RetureDetailsFromReset()">
+                          <button type="button" class="me-1 ms-1" mat-raised-button color="warn" (click)="RetureDetailsFromReset()">
                              Reset
                           </button>
                           <button mat-raised-button color="primary"  printTitle="Product return (ProductType) Report {{this.selectsShop}}"  printSectionId="ProductTypesPDF"  ngxPrint styleSheetFile="../../../assets/pdf.css">

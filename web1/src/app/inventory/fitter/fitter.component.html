@@ -11,9 +11,9 @@
                         <!-- save fitter start -->
                         <form #f="ngForm" autocomplete="off" (ngSubmit)="onsubmit()">
                             <div class="row">
-                                <div class="col-10">
+                                <div class="col-xl-10 col-lg-9 col-md-8 col-12">
                                     <div class="row">
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                        <div class="col-xl-2 col-lg-2 col-md-6 col-12 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Fitter/Company Name</mat-label>
                                                 <input matInput name="Name" [(ngModel)]="data.Name"
@@ -24,21 +24,21 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Mobile No1</mat-label>
                                                 <input matInput name="MobileNo1" type="number" min="0"
                                                     [(ngModel)]="data.MobileNo1" required #MobileNo1control>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Mobile No2</mat-label>
                                                 <input matInput name="MobileNo2" type="number" min="0"
                                                     [(ngModel)]="data.MobileNo2" #MobileNo2control>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Phone No</mat-label>
                                                 <input matInput name="PhoneNo" type="number" min="0" [(ngModel)]="data.PhoneNo"
@@ -48,7 +48,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-4 col-lg-4 col-md-2 col-sm-12 mb-0">
+                                        <div class="col-xl-4 col-lg-4 col-md-9 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Email</mat-label>
                                                 <input matInput name="Email"
@@ -60,7 +60,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 mb-0">
+                                        <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Address</mat-label>
                                                 <input matInput name="Address" minlength="2" [(ngModel)]="data.Address"
@@ -71,7 +71,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Website</mat-label>
                                                 <input matInput name="Website" [(ngModel)]="data.Website"
@@ -81,7 +81,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>GST No</mat-label>
                                                 <input matInput name="GSTNo" [(ngModel)]="data.GSTNo"
@@ -91,7 +91,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0 mr-3">
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 mr-3">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>CIN No</mat-label>
                                                 <input matInput name="CINNo" [(ngModel)]="data.CINNo"
@@ -101,7 +101,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Fax No</mat-label>
                                                 <input matInput name="Fax" [(ngModel)]="data.Fax"
@@ -111,13 +111,13 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>DOB</mat-label>
                                                 <input matInput name="DOB" type="date" [(ngModel)]="data.DOB">
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Anniversary</mat-label>
                                                 <input matInput name="Anniversary" type="date"
@@ -140,7 +140,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class=" col-md-2 col-12 ps-md-5">
+                                <div class="col-md-2 col-12 ps-md-5">
                                     <div class="row">
                                         <div class="col-10 mt-md-3 ">
                                             <img class="fit-picture" width="170" height="170" [src]="userImage">
@@ -166,8 +166,8 @@
                                 <div class="row">
                                     <div class="col-12">
                                         <form class="m-0" #assignForm="ngForm" (ngSubmit)="saveRateCard()">
-                                            <div class="row">
-                                                <div class="col-lg-6">
+                                            <div class="row mt-4 mt-md-0 ">
+                                                <div class="col-lg-6 col-5">
                                                     <ng-select bindLabel="LensType" name="LensType" placeholder="Select LensType" [(ngModel)]="rateCard.LensType" [required]="true" #LensType="ngModel" [closeOnSelect]="true" [searchable]="true">
                                                         <ng-option [value]="l.Name" *ngFor="let l of LensTypeList">{{l.Name}}
                                                         </ng-option>
@@ -175,7 +175,7 @@
                                                      <span *ngIf="LensType.errors && !LensType.touched" class="star" style="left: 105px;">*</span>
                                                      <span *ngIf="LensType.touched && LensType.errors" class="errorss"> LensType is required</span>
                                                 </div>
-                                                <div class="col-lg-4">
+                                                <div class="col-lg-4 col-md-6 col-5">
                                                     <mat-form-field class="example-full-width mb-0">
                                                         <mat-label>Rate <span style="color: red;">(Only For Half Pair Rate)</span> </mat-label>
                                                         <input matInput type="number" min="0" name="Rate"
@@ -185,14 +185,14 @@
                                                         </mat-error>
                                                     </mat-form-field>
                                                 </div>
-                                                <div class="col-lg-2">
-                                                    <button *ngIf="addFitter" type="submit" class="me-3" mat-raised-button color="primary"
+                                                <div class="col-lg-2 col-md-6 col-2 p-0">
+                                                    <button *ngIf="addFitter" type="submit" class="me-md-3 me-1 " mat-raised-button color="primary"
                                                         [disabled]="!assignForm.valid">Save</button>
                                                 </div>
                                             </div>
                                         </form>
                                     </div>
-                                    <div class="col-lg-12 mt-3"
+                                    <div class="col-lg-12 mt-md-3 mt-0"
                                         style="overflow-y: scroll; height:270px; max-height: 270px; background-color: rgb(255, 255, 255);">
                                         <table class="table table-striped table-hover table-sm table-bordered"
                                             style="border: 2px solid #fff !important;">
@@ -228,7 +228,7 @@
                                         <form class="m-0" #assignShopForm="ngForm"
                                             (ngSubmit)="saveFitterAssignedShop()">
                                             <div class="row">
-                                                <div class="col-lg-6">
+                                                <div class="col-lg-6 col-9">
                                                     <ng-select bindLabel="Shop" name="ShopID" placeholder="Select Shop" [(ngModel)]="assignShop.ShopID" [required]="true" #ShopID="ngModel" [closeOnSelect]="true" [searchable]="true">
                                                         <ng-option [value]="s.ID" *ngFor="let s of dropShoplist">{{s.Name}}
                                                              <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'"> ({{s.AreaName}})</span>
@@ -237,14 +237,14 @@
                                                      <span *ngIf="ShopID.errors && !ShopID.touched" class="star">*</span>
                                                      <span *ngIf="ShopID.touched && ShopID.errors" class="errorss"> Shop is required</span>
                                                 </div>
-                                                <div class="col-lg-6">
+                                                <div class="col-lg-6 col-3">
                                                     <button *ngIf="addFitter" class="mr-3" mat-raised-button color="primary"
                                                         [disabled]="!assignShopForm.valid">Save </button>
                                                 </div>
                                             </div>
                                         </form>
                                     </div>
-                                    <div class="col-lg-12 mt-3"
+                                    <div class="col-lg-12 mt-md-3 mt-0"
                                         style="overflow-y: scroll; height:270px; max-height: 270px; background-color: rgb(255, 255, 255);">
                                         <table class="table table-striped table-hover table-sm table-bordered"
                                             style="border: 2px solid #fff !important;">

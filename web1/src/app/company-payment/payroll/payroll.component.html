@@ -1,4 +1,3 @@
-
 <section class="content">
     <div class="container-fluid">
         <div class="block-header"></div>
@@ -7,14 +6,14 @@
                 <div class="card">
                     <div class="header p-0 py-0 pt-1">
                         <div class="row">
-                            <div class="col-md-1 col-6 p-0 ms-3">
-                                <h2>Payroll List </h2>
+                            <div class="col-xl-1 col-lg-2 col-md-3 col-8 p-0 ms-2">
+                                <h2>Payroll List
+                                    <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"
+                                        (click)="exportAsXLSX()"></i>
+                                </h2>
                             </div>
-                            <div class="ps-md-0 ps-0 pt-1" style="width: 40px;">
-                                <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"
-                                    (click)="exportAsXLSX()"></i>
-                            </div>
-                            <div class="col-md-2 col-1 ps-md-0 ps-1">
+
+                            <div class="col-md-1 col-1 ps-md-0 ps-1">
                                 <select class=" form-control"
                                     style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
                                     [(ngModel)]="itemsPerPage" (change)="getList();">
@@ -41,8 +40,8 @@
                             </div>
                             <div class="col-md-1 col-1" style="width: 40px;padding: 0;">
                                 <button class="bg-none" (click)="openModal(content)">
-                                    <mat-icon *ngIf="addpayrollList" class="col-white plus_icon me-1" data-mdb-toggle="modal"
-                                        data-mdb-target="#exampleModal"> add</mat-icon>
+                                    <mat-icon *ngIf="addpayrollList" class="col-white plus_icon me-1"
+                                        data-mdb-toggle="modal" data-mdb-target="#exampleModal"> add</mat-icon>
                                 </button>
                             </div>
                         </div>
@@ -73,7 +72,8 @@
                                 <tbody>
                                     <tr *ngFor="let data of dataList  let i = index;">
                                         <td class="text-center" style="width: 7%;">
-                                            <button *ngIf="editpayrollList" class="bg-none" (click)="openEditModal(content,data)">
+                                            <button *ngIf="editpayrollList" class="bg-none"
+                                                (click)="openEditModal(content,data)">
                                                 <mat-icon class="edit_icon ms-1" data-mdb-toggle="modal"
                                                     data-mdb-target="#exampleModal">
                                                     edit
@@ -91,7 +91,7 @@
                                         <td class="text-center">{{data.LeaveDays }}</td>
                                         <td class="text-center">{{data.Salary }}</td>
                                         <td class="text-center">{{data.PaymentMode}}
-                                            <span *ngIf="this.data.CashType != ''">-[{{data.CashType}}]</span> 
+                                            <span *ngIf="this.data.CashType != ''">-[{{data.CashType}}]</span>
                                         </td>
                                         <td class="text-center">{{data.Comments}}</td>
                                         <td class="text-center">{{data.CreatedPerson}} </td>
@@ -175,14 +175,16 @@
                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>LeaveDays</mat-label>
-                                <input matInput name="LeaveDays" type="number" min="0" [(ngModel)]="data.LeaveDays" required />
+                                <input matInput name="LeaveDays" type="number" min="0" [(ngModel)]="data.LeaveDays"
+                                    required />
                                 <mat-error>Invalid Value</mat-error>
                             </mat-form-field>
                         </div>
                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Salary</mat-label>
-                                <input matInput name="Salary" type="number" min="0" [(ngModel)]="data.Salary" required />
+                                <input matInput name="Salary" type="number" min="0" [(ngModel)]="data.Salary"
+                                    required />
                                 <mat-error>Invalid Value</mat-error>
                             </mat-form-field>
                         </div>
@@ -191,38 +193,40 @@
                                 <mat-label>Payment Mode</mat-label>
                                 <mat-select name="PaymentMode" [(ngModel)]="data.PaymentMode" required>
                                     <mat-option value=""></mat-option>
-                                    <mat-option [value]="p.Name" *ngFor="let p of PaymentModesList"> {{p.Name}} </mat-option>
+                                    <mat-option [value]="p.Name" *ngFor="let p of PaymentModesList"> {{p.Name}}
+                                    </mat-option>
                                 </mat-select>
                                 <mat-error>Payment Mode is required</mat-error>
                             </mat-form-field>
                         </div>
                         <div *ngIf="data.PaymentMode === 'CASH' || data.PaymentMode === 'cash'"
-                        class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0 ">
-                        <mat-form-field class="example-full-width mb-0">
-                            <mat-label>Cash Type</mat-label>
-                            <mat-select name="Duration" [(ngModel)]="data.CashType" required>
-                                <mat-option value="CashCounter">Cash Counter</mat-option>
-                                <mat-option value="PettyCash">Petty Cash</mat-option>
-                            </mat-select>
-                            <mat-error>
-                                CashType is required
-                            </mat-error>
-                        </mat-form-field>
-                    </div>
+                            class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0 ">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Cash Type</mat-label>
+                                <mat-select name="Duration" [(ngModel)]="data.CashType" required>
+                                    <mat-option value="CashCounter">Cash Counter</mat-option>
+                                    <mat-option value="PettyCash">Petty Cash</mat-option>
+                                </mat-select>
+                                <mat-error>
+                                    CashType is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Comments</mat-label>
-                                <input matInput name="Comments" type="text" [(ngModel)]="data.Comments" (ngModelChange)="data.Comments = onChange($event)" />
+                                <input matInput name="Comments" type="text" [(ngModel)]="data.Comments"
+                                    (ngModelChange)="data.Comments = onChange($event)" />
                             </mat-form-field>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
-                            <button *ngIf="suBtn === false" (click)="onsubmit()" class="me-3" mat-raised-button color="primary"
-                            [disabled]=!f.valid>Save</button>
-                        <button *ngIf="suBtn === true" (click)="updatePayroll()" class="me-3" mat-raised-button
-                            color="primary" [disabled]=!f.valid>Update</button>
-                        <button type="button" mat-raised-button> Cancel</button>
+                            <button *ngIf="suBtn === false" (click)="onsubmit()" class="me-3" mat-raised-button
+                                color="primary" [disabled]=!f.valid>Save</button>
+                            <button *ngIf="suBtn === true" (click)="updatePayroll()" class="me-3" mat-raised-button
+                                color="primary" [disabled]=!f.valid>Update</button>
+                            <button type="button" mat-raised-button> Cancel</button>
                         </div>
                     </div>
                 </div>

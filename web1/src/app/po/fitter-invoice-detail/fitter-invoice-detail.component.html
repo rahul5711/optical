@@ -7,10 +7,12 @@
                     <div class="header">
                         <div class="row">
                             <div class="col-lg-2 col-6">
-                                <h2>Fitter Detail <button class="pdf">
+                                <h2>Fitter Detail
+                                    <button class="pdf">
                                         <i class="far fa-file-pdf "
                                             style="color: #ffffff;font-size: 20px;cursor: pointer;"> </i>
-                                    </button></h2>
+                                    </button>
+                                </h2>
                             </div>
                         </div>
                     </div>
@@ -18,20 +20,21 @@
                         <!-- save invoice start -->
                         <form #f1="ngForm" autocomplete="off">
                             <div class="row">
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0 ">
+                                <div class="col-xl-2 col-lg-4 col-md-3 col-12 mb-0 ">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Fitter Name</mat-label>
-                                            <input matInput name="Fitter" disabled [(ngModel)]="FitterMaster.CustomerName" #FitterNamecontrol>
+                                        <input matInput name="Fitter" disabled [(ngModel)]="FitterMaster.CustomerName"
+                                            #FitterNamecontrol>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-md-1 col-sm-12 mb-0">
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Invoice Number</mat-label>
                                         <input matInput name="InvoiceNo" [(ngModel)]="FitterMaster.InvoiceNo"
                                             #InvoiceNocontrol required disabled>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-1 col-lg-2 col-md-2 col-sm-12 mb-0">
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Invoice Date</mat-label>
                                         <input matInput name="InvoiceDate" type="date"
@@ -39,38 +42,39 @@
                                             [ngModelOptions]="{standalone: true}" disabled required>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-md-1 col-sm-12 mb-0">
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Payment Status</mat-label>
                                         <input matInput name="PaymentStatus" [(ngModel)]="FitterMaster.PaymentStatus"
                                             #InvoiceNocontrol required disabled>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-md-1 col-sm-12 mb-0">
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Total Quantity</mat-label>
                                         <input matInput name="Quantity" [(ngModel)]="FitterMaster.Quantity"
                                             #InvoiceNocontrol required disabled>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-md-1 col-sm-12 mb-0">
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Invoice Amount </mat-label>
                                         <input matInput name="TotalAmount" [(ngModel)]="FitterMaster.TotalAmount"
                                             #InvoiceNocontrol required disabled>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-md-1 col-sm-12 mb-0">
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Due Amount</mat-label>
                                         <input matInput name="DueAmount" [(ngModel)]="FitterMaster.DueAmount"
                                             #InvoiceNocontrol required disabled>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0 ">
+                                <div class="col-xl-2 col-lg-4 col-md-3 col-12 mb-0 ">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Shop Name</mat-label>
-                                        <input matInput name="ShopName" disabled [(ngModel)]="FitterMaster.ShopName" #ShopNamecontrol>
+                                        <input matInput name="ShopName" disabled [(ngModel)]="FitterMaster.ShopName"
+                                            #ShopNamecontrol>
                                     </mat-form-field>
                                 </div>
                             </div>

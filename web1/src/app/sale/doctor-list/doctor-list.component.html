@@ -6,14 +6,11 @@
           <div class="card p-0">
             <div class="header p-2 py-0 pt-1">
               <div class="row">
-                <div class="col-md-1 col-12 p-0 ms-3">
-                  <h2>Doctor's List </h2>
+                <div class="col-xl-1 col-lg-2 col-md-2 col-6 p-0 ms-md-3 ms-2">
+                  <h2>DoctorList<i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"
+                    (click)="exportAsXLSX()"></i></h2>
                 </div>
-                <div class="ps-md-0 ps-1 pt-1" style="width: 40px;">
-                  <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"
-                    (click)="exportAsXLSX()"></i>
-                </div>
-                <div class="col-md-2 col-1 ps-md-0 ps-1">
+                <div class="col-md-1 col-3 ps-md-0 ps-1 order-1 order-md-1">
                   <select class=" form-control"
                     style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
                     [(ngModel)]="itemsPerPage" (change)="getList();">
@@ -25,19 +22,19 @@
                     <option [ngValue]="500">Show 500 Row</option>
                   </select>
                 </div>
-                <div class="col-md-3 col-4 mx-md-auto" style="margin-top:0px;">
+                <div class="col-md-3 col-6 mx-md-auto order-2 order-md-1" style="margin-top:0px;">
                   <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false" ngbPaginationEllipsis
                     [collectionSize]="collectionSize" #numPages [pageSize]="itemsPerPage" [(page)]="currentPage"
                     (pageChange)="getList()" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
                   </ngb-pagination>
                 </div>
-                <div class="col-md-2 col-4 ms-auto">
+                <div class="col-md-2 col-5 ms-auto order-0 order-md-1">
                   <div class="input-group">
                     <input placeholder="Search" [(ngModel)]="term" #searching mdbInput type="search" id="form1"
                       class="form-control" />
                   </div>
                 </div>
-                <div class="col-md-1 col-1" style="width: 70px; padding: 0;">
+                <div class="col-md-1 col-2 order-3 order-md-1 ms-3 ms-md-0" style="width: 70px; padding: 0;">
                   <mat-icon *ngIf="addDoctorList" class="col-white plus_icon me-1" [routerLink]="['/sale/doctor',0]"> add</mat-icon>
                   <mat-icon class="col-white Grid_icon" (click)="gridview = !gridview" title="Grid View">grid_on
                   </mat-icon>
@@ -45,8 +42,8 @@
               </div>
             </div>
             <!-- Grid View start -->
-            <div class="row mt-2 p-2" *ngIf="dataList?.length !== 0 && !gridview" style="overflow:auto;height:530px; ">
-              <div class="col-md-3" *ngFor="let data of dataList let i = index;">
+            <div class="row mt-5 mt-md-2 p-2" *ngIf="dataList?.length !== 0 && !gridview" style="overflow:auto;height:530px; ">
+              <div class="col-lg-3 col-md-6" *ngFor="let data of dataList let i = index;">
                 <div class="course-card" style="height: 28rem;">
                   <div class="course-card-body">
                     <div class="course-card-top-overflow text-white">
@@ -66,7 +63,7 @@
             </div>
             <!-- Grid View end -->
             <!-- doctor list start -->
-            <div class="body mt-2 p-2">
+            <div class="body mt-5 mt-md-2  p-2">
               <div class="row" *ngIf="gridview">
                 <div class="col-sm-12" style="overflow: auto; height: 530px;">
                   <div class="table-responsive">

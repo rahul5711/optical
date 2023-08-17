@@ -65,6 +65,15 @@
     height: 170px;
   }
 
+  .bg_none {
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+
   @media (max-width: 768px){
     .fit-picture{
       width: 100px;

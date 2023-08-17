@@ -53,6 +53,9 @@ export class ProductManageComponent implements OnInit {
   addProductType = false
   deleteProductTypes = false
 
+  GstTypeDis = false
+
+
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'ProductType') {
@@ -62,6 +65,41 @@ export class ProductManageComponent implements OnInit {
       }
     });
     this.getProductList();
+  }
+
+  gstType() {
+    if (this.newProduct.GSTPercentage !== 0 ) {
+      if (this.newProduct.GSTType === 'None') {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Please Select GSTType',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        this.GstTypeDis = true
+      }else{
+       this.GstTypeDis = false
+      }
+    }
+
+  else if (this.newProduct.GSTType !== 'None') {
+      if (this.newProduct.GSTPercentage === 0) {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Please Select GSTType',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        this.GstTypeDis = true
+      }else{
+       this.GstTypeDis = false
+      }
+    }
+    else{
+      this.GstTypeDis = false
+    }
   }
 
   saveProduct() {
@@ -214,7 +252,6 @@ export class ProductManageComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.getProductList();
-          this.specList = []
           Swal.fire({
             position: 'center',
             icon: 'success',
@@ -222,6 +259,12 @@ export class ProductManageComponent implements OnInit {
             showConfirmButton: false,
             timer: 1200
           })
+          this.specList = []
+          this.selectedProduct = '';
+          this.selectedHSNCode = '';
+          this.selectedGSTPercentage = 0;
+          this.selectedGSTType = '';
+          this.modalService.dismissAll()
         } else {
           this.as.errorToast(res.message)
         }
@@ -232,11 +275,6 @@ export class ProductManageComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.selectedProduct = '';
-    this.selectedHSNCode = '';
-    this.selectedGSTPercentage = 0;
-    this.selectedGSTType = '';
-    this.modalService.dismissAll()
   }
 
   saveSpec() {

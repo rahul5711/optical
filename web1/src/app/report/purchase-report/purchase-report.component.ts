@@ -32,6 +32,7 @@ export class PurchaseReportComponent implements OnInit {
   totalDiscount: any;
   totalUnitPrice: any;
   totalAmount: any;
+  roundOffAmount: any;
   totalGstAmount: any;
   gstMaster: any;
 
@@ -212,6 +213,9 @@ export class PurchaseReportComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.as.successToast(res.message)
+          // res.data.forEach((el: any) =>{
+            
+          // })
           this.PurchaseMasterList = res.data;
  
           this.PurchaseMasterList.forEach((e: any) => {
@@ -236,6 +240,7 @@ export class PurchaseReportComponent implements OnInit {
           this.totalQty = res.calculation[0].totalQty;
           this.totalDiscount = res.calculation[0].totalDiscount.toFixed(2);
           this.totalUnitPrice = res.calculation[0].totalUnitPrice.toFixed(2);
+          this.roundOffAmount = Math.round( res.calculation[0].totalUnitPrice);
           this.totalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
           this.totalAmount = res.calculation[0].totalAmount.toFixed(2);
           this.gstMaster = res.calculation[0].gst_details

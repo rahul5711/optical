@@ -69,6 +69,24 @@ i: any;
        this.GstTypeDis = false
       }
     }
+
+  else if (this.newProduct.GSTType !== 'None') {
+      if (this.newProduct.GSTPercentage === 0) {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Please Select GSTType',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        this.GstTypeDis = true
+      }else{
+       this.GstTypeDis = false
+      }
+    }
+    else{
+      this.GstTypeDis = false
+    }
   }
 
   saveProduct() {
@@ -80,6 +98,7 @@ i: any;
     if (count === 0 && this.newProduct.Name !== ''){
     const subs: Subscription =  this.ps.productSave( this.newProduct).subscribe({
       next: (res: any) => {
+        if (res.success) {
         this.ps.getList().subscribe(data => {
         this.prodList = data.data;
           if (this.selectedProduct !== null || this.selectedProduct !== '' ){
@@ -87,8 +106,6 @@ i: any;
              this.specList = data.data;
             });
           }
-        });
-        if (res.success) {
           Swal.fire({
             position: 'center',
             icon: 'success',
@@ -96,6 +113,7 @@ i: any;
             showConfirmButton: false,
             timer: 1200
           })
+        });
         } else {
           this.as.errorToast(res.message)
         }
@@ -199,6 +217,12 @@ i: any;
         if (res.success) {
           this.getProductList();
           this.specList = []
+          this.selectedProduct = '';
+          this.selectedHSNCode = '';
+          this.selectedGSTPercentage = 0;
+          this.selectedGSTType = '';
+          this.specList = [];
+         this.modalService.dismissAll()
           Swal.fire({
             position: 'center',
             icon: 'success',
@@ -217,16 +241,7 @@ i: any;
       complete: () => subs.unsubscribe(),
 
     });
-     this.selectedProduct = '';
-     this.selectedHSNCode = '';
-     this.selectedGSTPercentage = 0;
-     this.selectedGSTType = '';
-     this.specList = [];
-     this.router.navigate(['/admin/productManageAssign'])
-     .then(() => {
-       window.location.reload();
-     });
-    this.modalService.dismissAll()
+
 
   }
 
@@ -250,7 +265,7 @@ i: any;
           Swal.fire({
             position: 'center',
             icon: 'success',
-            title: 'Your record has been update Product.',
+            title: 'Your file has been update.',
             showConfirmButton: false,
             timer: 1200
           })

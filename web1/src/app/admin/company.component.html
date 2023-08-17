@@ -182,7 +182,7 @@
                                                 <mat-label>Effective Date</mat-label>
                                                 <input matInput  name="EffectiveDate" [(ngModel)]="data.EffectiveDate"  required #EffectiveDatecontrol [matDatepicker]="picker1" [disabled]="user?.UserGroup !== 'SuperAdmin'">
                                                 <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                                                <mat-datepicker #picker1></mat-datepicker>
+                                                <mat-datepicker #picker1 ></mat-datepicker>
                                                 <mat-error >
                                                     Shop count is required
                                                 </mat-error>

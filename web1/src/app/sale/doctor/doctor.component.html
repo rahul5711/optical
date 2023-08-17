@@ -10,9 +10,9 @@
                     <div class="body">
                         <form #f="ngForm" autocomplete="off" (ngSubmit)="onsubmit()">
                             <div class="row">
-                                <div class="col-sm-10 col-12">
+                                <div class="col-xl-10  col-lg-9  col-md-9 col-12">
                                     <div class="row">
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-12 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Doctor Name</mat-label>
                                                 <input matInput name="Name" [(ngModel)]="data.Name"
@@ -21,20 +21,20 @@
                                                 <mat-error>Doctor Name is required</mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>DOB</mat-label>
                                                 <input matInput name="DOB" type="date" [(ngModel)]="data.DOB">
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Anniversary</mat-label>
                                                 <input matInput name="Anniversary" type="date"
                                                     [(ngModel)]="data.Anniversary">
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div class="col-xl-3 col-lg-3 col-md-3 6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Designation</mat-label>
                                                 <input matInput name="Designation" minlength="2"
@@ -43,7 +43,7 @@
                                                 <mat-error>Doctor Designation is required</mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div class="col-xl-3 col-lg-3 col-md-3 6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Qualification</mat-label>
                                                 <input matInput name="Qualification" [(ngModel)]="data.Qualification"
@@ -52,7 +52,7 @@
                                                 <mat-error>Qualification is required</mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-12 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Hospital Name</mat-label>
                                                 <input matInput name="HospitalName" [(ngModel)]="data.HospitalName"
@@ -61,7 +61,7 @@
                                                 <mat-error>Hospital Name is required</mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Mobile No1</mat-label>
                                                 <input matInput name="MobileNo1" type="number"
@@ -69,7 +69,7 @@
                                                 <!-- pattern="^((\\+91-?)|0)?[0-9]{10}$" -->
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Mobile No2</mat-label>
                                                 <input matInput name="MobileNo2" type="number"
@@ -77,13 +77,13 @@
 
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>PhoneNo</mat-label>
                                                 <input matInput  type="number" name="PhoneNo" [(ngModel)]="data.PhoneNo" />
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Email</mat-label>
                                                 <input matInput name="Email" type="email" [(ngModel)]="data.Email" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
@@ -91,7 +91,7 @@
                                                 <mat-error>Invalid EmailId.</mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-6 col-lg-6 col-md-3 col-sm-6 mb-0">
+                                        <div class="col-xl-6 col-lg-6 col-md-3 col-12 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Address</mat-label>
                                                 <input matInput name="Address" [(ngModel)]="data.Address"
@@ -100,21 +100,21 @@
                                                 <mat-error>Atleast 2 characters required</mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Branch</mat-label>
                                                 <input matInput name="Branch" [(ngModel)]="data.Branch"
                                                     (ngModelChange)="data.Branch = onChange($event)" />
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Landmark</mat-label>
                                                 <input matInput name="Landmark" [(ngModel)]="data.Landmark"
                                                     (ngModelChange)="data.Landmark = onChange($event)" />
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Doctor Type</mat-label>
                                                 <input matInput name="DoctorType" [(ngModel)]="data.DoctorType"
@@ -122,7 +122,7 @@
                                                 <mat-error>Doctors type is required</mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Loyalty Type</mat-label>
                                                 <mat-select name="CommissionType" [(ngModel)]="data.CommissionType"
@@ -136,7 +136,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div *ngIf="data.CommissionType == 1 || data.CommissionType == 2 " class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div *ngIf="data.CommissionType == 1 || data.CommissionType == 2 " class="col-xl-3 col-lg-3 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Loyalty Mode</mat-label>
                                                 <mat-select name="CommissionMode" [(ngModel)]="data.CommissionMode"
@@ -149,25 +149,25 @@
                                             </mat-form-field>
                                         </div>
                                        
-                                        <div *ngIf="data.CommissionType == 2 || data.CommissionType == 1" class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div *ngIf="data.CommissionType == 2 || data.CommissionType == 1" class="col-xl-3 col-lg-3 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Loyalty Value (Brand Wise)</mat-label>
                                                 <input matInput type="number" min="0" name="CommissionValue"
                                                     [(ngModel)]="data.CommissionValue" #CommissionValuecontrol required>
                                             </mat-form-field>
                                         </div>
-                                        <div *ngIf="data.CommissionType == 2 " class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div *ngIf="data.CommissionType == 2 " class="col-xl-3 col-lg-3 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Loyalty Value(Non Brand Wise)</mat-label>
                                                 <input matInput type="number" min="0" name="CommissionValueNB"
                                                     [(ngModel)]="data.CommissionValueNB" #CommissionValueNBcontrol required>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-6 mb-0">
                                             <mat-checkbox labelPosition="before" color="primary" name="LoginPermission"
                                                 [(ngModel)]="data.LoginPermission">Login Permission</mat-checkbox>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-12 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>LoginName</mat-label>
                                                 <input matInput name="LoginName" required [(ngModel)]="data.LoginName"
@@ -175,7 +175,7 @@
                                                 <mat-error>Login Name is required</mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div *ngIf="id == 0" class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div *ngIf="id == 0" class="col-xl-3 col-lg-3 col-md-3 col-12 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Password</mat-label>
                                                 <input matInput name="Password" required [(ngModel)]="data.Password"
@@ -185,7 +185,7 @@
                                             </mat-form-field>
                                         </div>
                                     </div>
-                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3">
+                                    <div class="col-xl-12 col-lg-12 col-md-12 col-12 mb-3">
                                         <button class="me-3" type="button" mat-raised-button color="primary"
                                             [disabled]="!f.valid" *ngIf="id != 0 && addDoctor"
                                             (click)="updateDoctor()">Update</button>

@@ -6,7 +6,7 @@
           <div class="card p-0">
             <div class="header p-2 py-0 pt-1">
               <div class="row">
-                <div class="col-md-1 col-8 p-0 ms-3">
+                <div class="col-lg-1 col-md-2 col-8 p-0 ms-3">
                   <h2>Fitter List <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"
                       (click)="exportAsXLSX()"></i></h2>
                 </div>
@@ -42,8 +42,8 @@
               </div>
             </div>
             <!-- Grid View start -->
-            <div class="row mt-2 p-2" *ngIf="dataList?.length !== 0 && !gridview" style="overflow:auto;height:530px; ">
-              <div class="col-md-3" *ngFor="let data of dataList let i = index;">
+            <div class="row mt-5 mt-md-0 p-2" *ngIf="dataList?.length !== 0 && !gridview" style="overflow:auto;height:530px; ">
+              <div class="col-xl-3 col-lg-4 col-md-6" *ngFor="let data of dataList let i = index;">
                 <div class="course-card" style="height: 28rem;">
                   <div class="course-card-body">
                     <div class="course-card-top-overflow text-white">
@@ -63,7 +63,7 @@
             </div>
             <!-- Grid View end -->
             <!-- fitter list start -->
-            <div class="body mt-md-2 mt-5 p-2">
+            <div class="body mt-md-2 mt-5 pt-3 pt-lg-0 p-2">
               <div class="row" *ngIf="gridview">
                 <div class="col-sm-12" style="overflow: auto; height: 530px;">
                   <div class="table-responsive">

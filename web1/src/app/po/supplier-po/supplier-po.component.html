@@ -10,21 +10,21 @@
                     <div class="body">
                         <form #f="ngForm" autocomplete="off">
                             <div class="row">
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
+                                <div class="col-xl-1 col-lg-1 col-md-2 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>From Date</mat-label>
                                         <input matInput name="FromDate" type="date" [(ngModel)]="data.FromDate"
                                             [ngModelOptions]="{standalone: true}">
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
+                                <div class="col-xl-1 col-lg-1 col-md-2 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>To Date</mat-label>
                                         <input matInput name="ToDate" type="date" [(ngModel)]="data.ToDate"
                                             [ngModelOptions]="{standalone: true}">
                                     </mat-form-field>
                                 </div>
-                                <div class="col-md-2" *ngIf="this.orderComplete == true">
+                                <div class="col-xl-2 col-lg-2 col-md-4 col-12" *ngIf="this.orderComplete == true">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Select Supplier</mat-label>
                                         <mat-select name="supplier" [(ngModel)]="supplierID"
@@ -36,7 +36,7 @@
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0 ">
+                                <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0 ">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Shop Name</mat-label>
                                         <mat-select name="Supplier" editable="true" [(ngModel)]="data.ShopID"
@@ -49,7 +49,7 @@
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-md-2 col-sm-12 mb-0">
+                                <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Product Name</mat-label>
                                         <input matInput name="stringProductName" [(ngModel)]="data.stringProductName"
@@ -59,11 +59,11 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-xl-4 col-lg-4 col-md-6 col-12">
                                     <button (click)="Search(mode)" type="button" mat-raised-button color="primary">
                                         Search
                                     </button>
-                                    <button (click)="Reset()" class="ms-2" type="button" mat-raised-button color="warn">
+                                    <button (click)="Reset()" class="ms-2 " type="button" mat-raised-button color="warn">
                                         Reset
                                     </button>
                                     <button *ngIf="this.orderComplete === true" class="ms-2" (click)="AssignSupplierPDF()" type="button" mat-raised-button color="warn">
@@ -76,7 +76,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-4 col-8 ">
+                        <div class="col-xl-4 col-lg-4  col-md-6 col-12 mt-2 mt-lg-0 ">
                             <button class="hover" type="button"
                             [ngClass]="{'bcolor1': this.orderSupplier == true }" (click)="Unassigned()" class="ms-0" type="button" mat-raised-button color="primary">
                                 ORDER PENDING 
@@ -87,13 +87,13 @@
                          
                         </div>
                        
-                        <div *ngIf="this.orderComplete == true" class="col-md-4 col-4 mx-md-auto" style="margin-top:0px;">
+                        <div *ngIf="this.orderComplete == true" class="col-xl-4 col-lg-4 col-md-4 col-9 mx-auto pt-2" style="margin-top:0px;">
                           <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false" ngbPaginationEllipsis
                             [collectionSize]="collectionSize" #numPages [pageSize]="itemsPerPage" [(page)]="currentPage"
                             (pageChange)="getList()" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
                           </ngb-pagination>
                         </div>
-                        <div *ngIf="this.orderComplete == true"class="col-md-1 col-1 ps-md-0 ps-1">
+                        <div *ngIf="this.orderComplete == true"class="col-xl-1 col-lg-1 col-md-2 col-3 ps-md-0 ps-1 pt-2">
                             <select class=" form-control"
                               style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
                               [(ngModel)]="itemsPerPage" (change)="getList();">
@@ -173,7 +173,7 @@
                                         Order (Supplier)
                                     </button>
                             </div>
-                            <div class="col-md-3 mx-auto p-3" *ngIf="this.orderComplete">      
+                            <div class="col-lg-3 col-md-6 mx-auto p-3" *ngIf="this.orderComplete">      
                                     <button [disabled]="this.orderSupplierbtn"  class="hover" (click)="assignSupplierPoCancel('Cancel')"  class="ms-3" type="button" mat-raised-button color="primary">
                                         ORDER CANCEL 
                                     </button>

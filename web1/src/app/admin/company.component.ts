@@ -12,7 +12,7 @@ import * as moment from 'moment';
 import { CompanyModel} from '../interface/Company';
 import { AlertService } from '../service/helpers/alert.service';
 import { DataStorageServiceService } from '../service/helpers/data-storage-service.service';
-
+import { DateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-company',
@@ -41,12 +41,12 @@ export class CompanyComponent implements OnInit {
     private fu: FileUploadService,
     public as: AlertService,
     private sp: NgxSpinnerService,
-    private dataS: DataStorageServiceService
-
+    private dataS: DataStorageServiceService,
+    private dateAdapter: DateAdapter<Date>
 
   ) {
     this.id = this.route.snapshot.params['id'];
-    
+    this.dateAdapter.setLocale('en-GB'); //dd/MM/yyyy
   }
 
   plans: any[] = [

@@ -58,7 +58,7 @@
                                         <button class="bg_none" [disabled]="spec.SelectedValue === ''" *ngIf="spec.DisplayAdd === 0" (click)="deleteSpecValue(spec, spec.SelectedValue, i)">
                                             <mat-icon class="delete_icon me-2 ms-2" >delete_forever</mat-icon>
                                         </button>
-                                        <button mat-mini-fab color="primary" *ngIf="spec.DisplayAdd === 1" (click)="saveFieldData(i)"
+                                        <button mat-mini-fab color="primary" [disabled]="spec.SelectedValue === ''" *ngIf="spec.DisplayAdd === 1" (click)="saveFieldData(i)"
                                             aria-label="Example icon button with a bookmark icon">
                                             <mat-icon>save</mat-icon>
                                         </button>

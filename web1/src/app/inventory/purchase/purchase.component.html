@@ -144,7 +144,7 @@
                                             (click)="displayAddField(i)">
                                             <mat-icon class="col-white plus_icon">add</mat-icon>
                                         </button>
-                                        <button style="background: none;border:none" *ngIf="spec.DisplayAdd === 1"
+                                        <button [disabled]="spec.SelectedValue === ''" style="background: none;border:none" *ngIf="spec.DisplayAdd === 1"
                                             (click)="saveFieldData(i)">
                                             <mat-icon class="col-white plus_icon">save</mat-icon>
                                         </button>

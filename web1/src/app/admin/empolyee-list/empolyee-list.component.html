@@ -8,7 +8,7 @@
               <div class="row">
                 <div class="col-lg-1 col-md-2 col-6 p-0 ms-md-3 ms-2">
                   <h2>Employee <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"
-                    (click)="exportAsXLSX()"></i></h2>
+                      (click)="exportAsXLSX()"></i></h2>
                 </div>
                 <div class="col-md-1 col-3 ps-md-0 ps-1 order-1 order-md-1">
                   <select class=" form-control"
@@ -35,14 +35,16 @@
                   </div>
                 </div>
                 <div class="col-md-1 col-2 order-3 order-md-1 ms-3 ms-md-0" style="width: 70px;padding: 0;">
-                  <mat-icon class="col-white plus_icon me-1" [routerLink]="['/admin/employee',0]" *ngIf="addEmployeeList"> add</mat-icon>
+                  <mat-icon class="col-white plus_icon me-1" [routerLink]="['/admin/employee',0]"
+                    *ngIf="addEmployeeList"> add</mat-icon>
                   <mat-icon class="col-white Grid_icon" (click)="gridview = !gridview" title="Grid View"
                     style="font-size: 22px;padding: 4px;">grid_on</mat-icon>
                 </div>
               </div>
             </div>
             <!-- Grid View start -->
-            <div class="row mt-5 mt-md-2 p-2" *ngIf="dataList?.length !== 0 && !gridview" style="overflow:auto;height:530px; ">
+            <div class="row mt-5 mt-md-2 p-2" *ngIf="dataList?.length !== 0 && !gridview"
+              style="overflow:auto;height:530px; ">
               <div class="col-lg-3 col-md-6" *ngFor="let data of dataList let i = index;">
                 <div class="course-card" style="height: 28rem;">
                   <div class="course-card-body">
@@ -91,11 +93,13 @@
                         <tr class="text-center" *ngFor="let data of dataList let i = index;"
                           style="white-space: nowrap;">
                           <td style="width: 7%; text-align: left" class="detail_icon">
-                            <i *ngIf="editEmployeeList"class="fas fa-info-circle" data-mdb-toggle="modal" data-mdb-target="#exampleModal"
-                              (click)="openModal(content,data.ID)">
+                            <i *ngIf="editEmployeeList" class="fas fa-info-circle" data-mdb-toggle="modal"
+                              data-mdb-target="#exampleModal" (click)="openModal(content,data.ID)">
                             </i>
-                            <mat-icon *ngIf="editEmployeeList" class="edit_icon ms-1" [routerLink]="['/admin/employee',data.ID]" >edit</mat-icon>
-                              <mat-icon *ngIf="data.UserGroup !== 'CompanyAdmin' && deleteEmployeeList" (click)="deleteItem(i)" class="delete_icon ms-1">delete_forever</mat-icon>
+                            <mat-icon *ngIf="editEmployeeList" class="edit_icon ms-1"
+                              [routerLink]="['/admin/employee',data.ID]">edit</mat-icon>
+                            <mat-icon *ngIf="data.UserGroup !== 'CompanyAdmin' && deleteEmployeeList"
+                              (click)="deleteItem(i)" class="delete_icon ms-1">delete_forever</mat-icon>
                           </td>
                           <td class="text-left">{{dataList.length - i}}</td>
                           <td class="text-left">{{data.Name}}</td>

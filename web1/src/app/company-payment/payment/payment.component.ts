@@ -58,9 +58,7 @@ export class PaymentComponent implements OnInit {
   invoiceList:any = []
 
   ngOnInit(): void {
-    this.sp.show()
     this.getPaymentModesList() 
-    this.sp.hide()
   }
 
   getPaymentModesList() {
@@ -150,6 +148,7 @@ export class PaymentComponent implements OnInit {
   // }
   
   getPayeeList() {
+    this.sp.show()
     this.data.CreditType = 'Debit';
     this.invoiceList = [];
     this.data.CustomerCredit = 0;
@@ -188,6 +187,7 @@ export class PaymentComponent implements OnInit {
         } else {
           this.as.errorToast(res.message);
         }
+      this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -239,6 +239,7 @@ export class PaymentComponent implements OnInit {
         this.data.PaidAmount = 0
       }
     }
+    this.sp.show()
     if(this.data.PaidAmount !== 0){
       this.data.CompanyID = this.company.ID;
       this.data.ShopID = Number(this.selectedShop);

@@ -161,12 +161,12 @@ export class AddManageComponent implements OnInit {
 }
 
   delSupport(){
-    if (this.data1.Category === null) {
+    if (this.data1.Category === null || this.data1.Category === '') {
       Swal.fire({
         position: 'center',
         icon: 'warning',
         title: 'Please Select Value.',
-        showConfirmButton: false,
+        showConfirmButton: true,
         timer: 2000
       }) 
     }else{

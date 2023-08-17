@@ -51,9 +51,8 @@
                                         aria-label="Example icon button with a bookmark icon">
                                         <mat-icon>add</mat-icon>
                                     </button>
-                                </div>
-                                <div *ngIf="!showAdd" class="col-xl-1 col-lg-1 col-md-1 col-2 mb-0">
-                                    <button class="ml-2" mat-mini-fab color="warn" *ngIf="showAdd === false"
+                               
+                                    <button class="ms-2" [disabled]="data1.Category === null" mat-mini-fab color="warn" *ngIf="showAdd === false"
                                         (click)="delSupport()" aria-label="Example icon button with a bookmark icon">
                                         <mat-icon>delete</mat-icon>
                                     </button>
@@ -66,7 +65,7 @@
                                     </mat-form-field>
                                 </div>
                                 <div *ngIf="showAdd" class="col-xl-1 col-lg-1 col-md-1 col-4 mb-0">
-                                    <button mat-mini-fab color="primary" (click)="showAdd = !showAdd; saveDepartment()"
+                                    <button [disabled]="newDepartment.Name === ''" mat-mini-fab color="primary" (click)="showAdd = !showAdd; saveDepartment()"
                                         aria-label="Example icon button with a bookmark icon">
                                         <mat-icon>save</mat-icon>
                                     </button>

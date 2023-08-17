@@ -6,7 +6,7 @@
                 <div class="card">
                     <div class="header p-0 py-0 pt-1">
                         <div class="row">
-                            <div class="col-md-1 col-6 p-0 ms-3">
+                            <div class="col-lg-1 col-md-2 col-6 p-0 ms-3">
                                 <h2>PettyCashList</h2>
                             </div>
                             <div class="ps-md-0 ps-0 pt-1" style="width: 40px;">
@@ -115,7 +115,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="row">
-                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Employee</mat-label>
                                 <mat-select name="EmployeeID" [(ngModel)]="data.EmployeeID" appAutoFoucsDirectives required >
@@ -124,7 +124,7 @@
                                 <mat-error>Employee Name is required</mat-error>
                             </mat-form-field>
                         </div>
-                        <div  class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                        <div  class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Cash Type</mat-label>
                                 <mat-select name="Duration" [(ngModel)]="data.CashType" required>
@@ -137,7 +137,7 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
-                        <div  class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                        <div  class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Credit Type</mat-label>
                                 <mat-select name="CreditType" [(ngModel)]="data.CreditType" required >
@@ -149,29 +149,28 @@
                                 <mat-error>Credit Type is required</mat-error>
                             </mat-form-field>
                         </div>
-                        <div *ngIf="this.data.CreditType === 'Withdrawal'" class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                        <div *ngIf="this.data.CreditType === 'Withdrawal'" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>PettyCashBalance</mat-label>
                                 <input matInput  name="PettyCashBalance" value="{{this.PettyCashBalance}}" [disabled]="true" />
                                 <mat-error>Amount is required</mat-error>
                             </mat-form-field>
                         </div>
-                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Amount</mat-label>
                                 <input matInput name="Amount" type="number" min="0" [(ngModel)]="data.Amount" required />
                                 <mat-error>Amount is required</mat-error>
                             </mat-form-field>
                         </div>
-                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0">
+                        <div class="col-xl-3 col-lg-3 col-md-3 col-6 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Comments</mat-label>
                                 <input matInput name="Comments" type="text" [(ngModel)]="data.Comments" (ngModelChange)="data.Comments = onChange($event)" />
                             </mat-form-field>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
+                    
+                        <div class="col-xl-3 col-lg-3 col-md-3 col-6 mb-0">
                             <button type="submit" *ngIf="suBtn === false" (click)="onsubmit()" class="me-3" mat-raised-button color="primary"
                             [disabled]=!f.valid>Save</button>
                         <button type="button" *ngIf="suBtn === true" (click)="updatePetty()" class="me-3" mat-raised-button

@@ -132,12 +132,12 @@
                                                 (ngModelChange)="spec.SelectedValue = onChange($event)" required
                                                 #NewProductTypecontrol>
                                         </mat-form-field>
-                                        <button style="background: none;border:none"
+                                        <button  style="background: none;border:none"
                                             *ngIf="spec.DisplayAdd === 0 && disableAddButtons"
                                             (click)="displayAddField(i)">
                                             <mat-icon class="col-white plus_icon">add</mat-icon>
                                         </button>
-                                        <button mat-mini-fab color="primary" *ngIf="spec.DisplayAdd === 1"
+                                        <button [disabled]="spec.SelectedValue === ''" mat-mini-fab color="primary" *ngIf="spec.DisplayAdd === 1"
                                             (click)="saveFieldData(i)"
                                             aria-label="Example icon button with a bookmark icon">
                                             <mat-icon>save</mat-icon>

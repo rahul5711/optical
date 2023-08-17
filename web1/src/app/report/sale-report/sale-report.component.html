@@ -17,7 +17,7 @@
                                 <div class="body">
                                     <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getBillMaster()">
                                         <div class="row">
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Filter Types</mat-label>
                                                     <mat-select name="FilterTypes" [(ngModel)]="BillMaster.FilterTypes">
@@ -26,21 +26,22 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>From</mat-label>
                                                     <input matInput name="FromDate" type="date"
-                                                     (change)="getChangeDate()"   [(ngModel)]="BillMaster.FromDate" #DOBcontrol [disabled]="!editSaleReport" />
+                                                        (change)="getChangeDate()" [(ngModel)]="BillMaster.FromDate"
+                                                        #DOBcontrol [disabled]="!editSaleReport" />
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>To</mat-label>
                                                     <input matInput type="date" name="ToDate"
                                                         [(ngModel)]="BillMaster.ToDate" [disabled]="!editSaleReport" />
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Shop Name</mat-label>
                                                     <mat-select name="shopID" [(ngModel)]="BillMaster.ShopID" multiple>
@@ -53,7 +54,7 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Employee Name</mat-label>
                                                     <mat-select name="Employee" [(ngModel)]="BillMaster.EmployeeID"
@@ -67,7 +68,7 @@
                                                     <mat-error>Name is required</mat-error>
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Customer</mat-label>
                                                     <mat-select name="CustomerID" [(ngModel)]="BillMaster.CustomerID">
@@ -79,7 +80,7 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Customer GSTNo</mat-label>
                                                     <mat-select name="CustomerGSTNo"
@@ -92,29 +93,33 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Payment Status</mat-label>
                                                     <mat-select name="PaymentStatus"
                                                         [(ngModel)]="BillMaster.PaymentStatus">
-                                                        <mat-option [value]="0" *ngIf="this.employeeHide">All</mat-option>
-                                                        <mat-option value="Paid" *ngIf="this.employeeHide">Paid</mat-option>
+                                                        <mat-option [value]="0"
+                                                            *ngIf="this.employeeHide">All</mat-option>
+                                                        <mat-option value="Paid"
+                                                            *ngIf="this.employeeHide">Paid</mat-option>
                                                         <mat-option value="Unpaid">Unpaid</mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-md-2">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Product Status</mat-label>
                                                     <mat-select name="ProductStatus"
                                                         [(ngModel)]="BillMaster.ProductStatus">
-                                                        <mat-option value="All" *ngIf="this.employeeHide">All</mat-option>
+                                                        <mat-option value="All"
+                                                            *ngIf="this.employeeHide">All</mat-option>
                                                         <mat-option value="0">Pending</mat-option>
-                                                        <mat-option value="1" *ngIf="this.employeeHide">Deliverd</mat-option>
+                                                        <mat-option value="1"
+                                                            *ngIf="this.employeeHide">Deliverd</mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
                                                 <button type="submit" mat-raised-button color="primary">
                                                     Search
                                                 </button>
@@ -122,13 +127,13 @@
                                                     (click)="billMasterFromReset()">
                                                     Reset
                                                 </button>
-                                                <button mat-raised-button color="primary"
+                                                <!-- <button mat-raised-button color="primary"
                                                     printTitle="sale Report {{this.shopLists}}"
                                                     printSectionId="PurchasePDF" ngxPrint
                                                     styleSheetFile="../../../assets/pdf.css">
                                                     <i class="far fa-file-pdf "
                                                         style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
-                                                </button>
+                                                </button> -->
                                             </div>
                                         </div>
                                     </form>
@@ -168,9 +173,14 @@
                                                                 aria-hidden="true" type="button"
                                                                 (click)="exportAsXLSXMaster()">
                                                             </i>
-                                                            <i class="far fa-file-pdf ms-4"
-                                                                style="color: #2433be;font-size: 22px;cursor: pointer;">
-                                                            </i>
+                                                           
+                                                            <button class="bg_none ms-4"
+                                                            printTitle="sale Report {{this.shopLists}}"
+                                                            printSectionId="PurchasePDF" ngxPrint
+                                                            styleSheetFile="../../../assets/pdf.css">
+                                                            <i class="far fa-file-pdf "
+                                                                style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
+                                                        </button>
                                                         </td>
                                                         <td></td>
                                                         <td></td>
@@ -212,7 +222,7 @@
                                                             d.CustomerName }} </td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.MobileNo1 }} </td>
-                                                      
+
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.PaymentStatus }} </td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
@@ -225,14 +235,14 @@
                                                             {{d.GSTType}} </td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.GSTAmount}} </td>
-                                                      
+
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"
                                                             *ngIf="d.gst_detailssss[0][1].type === 'cGST-sGST'">
                                                             {{d.gst_detailssss[0][1].amt }}</td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"
                                                             *ngIf="d.gst_detailssss[0][1].type === 'cGST-sGST'">
                                                             {{d.gst_detailssss[0][1].amt }}</td>
-                                                            <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"
+                                                        <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"
                                                             *ngIf="d.gst_detailssss[0][0].type === 'iGST'">
                                                             {{d.gst_detailssss[0][0].amt }}</td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
@@ -253,10 +263,10 @@
                                                             {{d.DeliveryDate}} </td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             {{d.GSTNo}} </td>
-                                                            <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
-                                                                d.ShopName }} <span [style.color]="'blue'"
-                                                                    *ngIf="d.AreaName !== 'null'">({{d.AreaName}})</span>
-                                                            </td>
+                                                        <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
+                                                            d.ShopName }} <span [style.color]="'blue'"
+                                                                *ngIf="d.AreaName !== 'null'">({{d.AreaName}})</span>
+                                                        </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -269,7 +279,7 @@
                                 <div class="body">
                                     <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getBillDetails()">
                                         <div class="row">
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Filter Types</mat-label>
                                                     <mat-select name="FilterTypes" [(ngModel)]="Billdetail.FilterTypes">
@@ -278,21 +288,23 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>From</mat-label>
                                                     <input matInput name="FromDate" type="date"
-                                                        [(ngModel)]="Billdetail.FromDate" #DOBcontrol  [disabled]="!editSaleProductReport"/>
+                                                        [(ngModel)]="Billdetail.FromDate" #DOBcontrol
+                                                        [disabled]="!editSaleProductReport" />
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>To</mat-label>
                                                     <input matInput type="date" name="ToDate"
-                                                        [(ngModel)]="Billdetail.ToDate" [disabled]="!editSaleProductReport" />
+                                                        [(ngModel)]="Billdetail.ToDate"
+                                                        [disabled]="!editSaleProductReport" />
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Shop Name</mat-label>
                                                     <mat-select name="shopID" [(ngModel)]="Billdetail.ShopID" multiple>
@@ -305,7 +317,7 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Customer</mat-label>
                                                     <mat-select name="customerID" [(ngModel)]="Billdetail.CustomerID">
@@ -317,7 +329,7 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Customer GSTNo</mat-label>
                                                     <mat-select name="CustomerGSTNo"
@@ -330,7 +342,7 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Payment Status</mat-label>
                                                     <mat-select name="PaymentStatus"
@@ -341,7 +353,7 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-md-2">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Product Status</mat-label>
                                                     <mat-select name="ProductStatus"
@@ -352,7 +364,7 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Select Product</mat-label>
                                                     <mat-select name="FieldType"
@@ -370,7 +382,7 @@
                                                 </mat-form-field>
                                             </div>
                                             <!-- spec start -->
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0"
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0"
                                                 *ngFor="let spec of specList ; let i = index;">
                                                 <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
                                                     <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
@@ -435,7 +447,7 @@
                                                 </mat-form-field>
                                             </div>
                                             <!--  spec end -->
-                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>GST Type</mat-label>
                                                     <mat-select name="GSTType" [(ngModel)]="Billdetail.GSTType"
@@ -447,7 +459,7 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>GSTPercentage</mat-label>
                                                     <mat-select name="GSTPercentage"
@@ -458,8 +470,7 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-
-                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Status</mat-label>
                                                     <mat-select name="Status" [(ngModel)]="Billdetail.Status">
@@ -470,7 +481,7 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0 ">
+                                            <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-0 ">
                                                 <button class="me-3" type="submit" mat-raised-button color="primary">
                                                     Search
                                                 </button>
@@ -614,7 +625,8 @@
                                                         <td style="display: none;"
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
                                                             <span *ngIf="t.GSTType === 'CGST-SGST'">
-                                                                {{t.GSTPercentage/2}} </span></td>
+                                                                {{t.GSTPercentage/2}} </span>
+                                                        </td>
                                                         <td style="display: none;"
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}"><span
                                                                 *ngIf="t.GSTType === 'CGST-SGST'"> {{t.GSTAmount/2}}
@@ -663,21 +675,23 @@
                                 <div class="body">
                                     <form class="p-3 pb-0" #f="ngForm" (ngSubmit)="BillService()">
                                         <div class="row">
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>From Date</mat-label>
                                                     <input matInput name="FromDate" type="date"
-                                                        [(ngModel)]="service.FromDate" #DOBcontrol [disabled]="!editSaleServiceReport"/>
+                                                        [(ngModel)]="service.FromDate" #DOBcontrol
+                                                        [disabled]="!editSaleServiceReport" />
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>To Date</mat-label>
                                                     <input matInput name="ToDate" type="date"
-                                                        [(ngModel)]="service.ToDate" [disabled]="!editSaleServiceReport"/>
+                                                        [(ngModel)]="service.ToDate"
+                                                        [disabled]="!editSaleServiceReport" />
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Shop Name</mat-label>
                                                     <mat-select name="shopID" [(ngModel)]="service.ShopID" multiple>
@@ -690,11 +704,11 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0">
-                                                <button class="me-3" mat-raised-button color="primary">Search</button>
+                                            <div class="col-xl-4 col-lg-4 col-md-4 col-12 mb-0">
+                                                <button class="me-1" mat-raised-button color="primary">Search</button>
                                                 <button class="mr-0" type="button" mat-raised-button color="warn"
                                                     (click)="BillServiceFromReset()">Reset</button>
-                                                <button class=" ms-3" mat-raised-button color="primary"
+                                                <button class=" ms-1" mat-raised-button color="primary"
                                                     printTitle='Bill Service {{this.shopLists}}' [useExistingCss]="true"
                                                     printSectionId="Purchasecharge" ngxPrint>
                                                     <i class="far fa-file-pdf "

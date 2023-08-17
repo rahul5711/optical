@@ -7,8 +7,8 @@
                         <div class="header p-2 py-0 pt-1">
                             <div class="row">
                                 <div class="col-xl-1 col-lg-2 col-md-3 col-8 p-0 ms-3">
-                                    <h2>Company List  <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"
-                                        (click)="exportAsXLSX()"></i></h2>
+                                    <h2>Company List <i class="fa fa-file-excel-o" title="ExportAsXLSX"
+                                            aria-hidden="true" type="button" (click)="exportAsXLSX()"></i></h2>
                                 </div>
                                 <div class="col-md-1 col-3 ps-md-0 ps-1">
                                     <select class=" form-control"
@@ -81,84 +81,85 @@
                         <!-- company list start -->
                         <div class="body mt-md-1 mt-5 p-2">
                             <div class="row" *ngIf="gridview">
-                              <div class="col-sm-12" style="overflow: auto; height: 530px;">
-                                <div class="table-responsive">
-                                    <table style="width:100%;" id="exportsss"
-                                        class="table table-striped table-hover table-sm table-bordered"
-                                        style="border: 2px solid #fff !important;">
-                                        <thead class="thead-light" style="width:100%;">
-                                            <tr>
-                                                <th>Details</th>
-                                                <th class="text-left">S.No</th>
-                                                <th class="text-left"> Name</th>
-                                                <th class="text-left">OwnerName</th>
-                                                <th class="text-left">Address</th>
-                                                <th class="text-left">City</th>
-                                                <th class="text-left">Mobile</th>
-                                                <th class="text-left">Email</th>
-                                                <th class="text-left">EffectiveDate</th>
-                                                <th class="text-left">Shops</th>
-                                                <!-- <th class="text-left">Plan</th> -->
-                                                <th class="text-left">Version</th>
-                                                <th class="text-left">CacellationDate</th>
-                                                <th class="text-left">Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr class="text-center" *ngFor="let data of dataList  ; let i = index;">
-                                                <td [ngClass]="{'disabled':data.Status == 0}"
-                                                    style="white-space: nowrap;">
-                                                    <mat-icon *ngIf="data.Status === 1" class="sync_disabled me-1"
-                                                        title="Deactive" (click)="deactive(i)">sync_disabled</mat-icon>
+                                <div class="col-sm-12" style="overflow: auto; height: 530px;">
+                                    <div class="table-responsive">
+                                        <table style="width:100%;" id="exportsss"
+                                            class="table table-striped table-hover table-sm table-bordered"
+                                            style="border: 2px solid #fff !important;">
+                                            <thead class="thead-light" style="width:100%;">
+                                                <tr>
+                                                    <th>Details</th>
+                                                    <th class="text-left">S.No</th>
+                                                    <th class="text-left"> Name</th>
+                                                    <th class="text-left">OwnerName</th>
+                                                    <th class="text-left">Address</th>
+                                                    <th class="text-left">City</th>
+                                                    <th class="text-left">Mobile</th>
+                                                    <th class="text-left">Email</th>
+                                                    <th class="text-left">EffectiveDate</th>
+                                                    <th class="text-left">Shops</th>
+                                                    <!-- <th class="text-left">Plan</th> -->
+                                                    <th class="text-left">Version</th>
+                                                    <th class="text-left">CacellationDate</th>
+                                                    <th class="text-left">Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="text-center" *ngFor="let data of dataList  ; let i = index;">
+                                                    <td [ngClass]="{'disabled':data.Status == 0}"
+                                                        style="white-space: nowrap;">
+                                                        <mat-icon *ngIf="data.Status === 1" class="sync_disabled me-1"
+                                                            title="Deactive"
+                                                            (click)="deactive(i)">sync_disabled</mat-icon>
 
-                                                    <mat-icon *ngIf="data.Status === 0" class="swap_icon me-1"
-                                                        title="Active" (click)="activecompany(i)">sync</mat-icon>
+                                                        <mat-icon *ngIf="data.Status === 0" class="swap_icon me-1"
+                                                            title="Active" (click)="activecompany(i)">sync</mat-icon>
 
-                                                    <mat-icon class="swap_icon me-1" title="companylogin"
-                                                        (click)="companylogin(i)"
-                                                        style="background: rgb(66, 171, 192);">swap_vert</mat-icon>
-                                                    <i class="fas fa-info-circle" title="Edit"
-                                                        style="color: rgb(23, 23, 194); font-size: 30px; cursor: pointer;box-shadow: 2px 2px 6px #9c9795fa; border-radius: 20px;"
-                                                        [routerLink]="['/admin/company',data.ID]">
-                                                    </i>
-                                                    <mat-icon class="delete_icon ms-1" title="Delete"
-                                                        (click)="deleteItem(i)">delete_forever</mat-icon>
+                                                        <mat-icon class="swap_icon me-1" title="companylogin"
+                                                            (click)="companylogin(i)"
+                                                            style="background: rgb(66, 171, 192);">swap_vert</mat-icon>
+                                                        <i class="fas fa-info-circle" title="Edit"
+                                                            style="color: rgb(23, 23, 194); font-size: 30px; cursor: pointer;box-shadow: 2px 2px 6px #9c9795fa; border-radius: 20px;"
+                                                            [routerLink]="['/admin/company',data.ID]">
+                                                        </i>
+                                                        <mat-icon class="delete_icon ms-1" title="Delete"
+                                                            (click)="deleteItem(i)">delete_forever</mat-icon>
 
-                                                </td>
-                                                <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">{{
-                                                    dataList.length - i }}</td>
-                                                <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
-                                                    {{data.Name}}</td>
-                                                <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
-                                                    {{data.OwnerName }}</td>
-                                                <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
-                                                    {{data.Address }}</td>
-                                                <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
-                                                    {{data.City }}</td>
-                                                <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
-                                                    {{data.MobileNo1 }}</td>
-                                                <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
-                                                    {{data.Email}}</td>
-                                                <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
-                                                    {{data.EffectiveDate | date:'d-MM-YYYY , h:mm a'}}</td>
-                                                <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
-                                                    {{data.NoOfShops }}</td>
-                                                <!-- <td class="text-left">{{data.Plan}}</td> -->
-                                                <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
-                                                    {{data.Version}}</td>
-                                                <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
-                                                    {{data.CancellationDate | date:'d-MM-YYYY , h:mm a'}}</td>
-                                                <td class="text-left" [ngClass]="{'disabled':data.Status == 0}"> <span
-                                                        *ngIf="data.Status === 0">Deactive </span>
-                                                    <span *ngIf="data.Status === 1">Active </span>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                                    </td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">{{
+                                                        dataList.length - i }}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.Name}}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.OwnerName }}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.Address }}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.City }}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.MobileNo1 }}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.Email}}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.EffectiveDate | date:'d-MM-YYYY , h:mm a'}}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.NoOfShops }}</td>
+                                                    <!-- <td class="text-left">{{data.Plan}}</td> -->
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.Version}}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.CancellationDate | date:'d-MM-YYYY , h:mm a'}}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        <span *ngIf="data.Status === 0">Deactive </span>
+                                                        <span *ngIf="data.Status === 1">Active </span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                     </div>
                         <!-- company list end -->
                     </div>
                 </div>

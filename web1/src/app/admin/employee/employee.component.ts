@@ -31,7 +31,7 @@ export class EmployeeComponent implements OnInit {
   roleList:any
   dropShoplist: any;
   userList: any;
-  saveUpdateHide:any
+  saveUpdateHide = false
   v = "^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
   constructor(
     private router: Router,
@@ -218,6 +218,7 @@ export class EmployeeComponent implements OnInit {
               showConfirmButton: false,
               timer: 1200
             })
+            this.UserShop = {ID: null, UserID: null, ShopID: null, RoleID: null, Status: 1};
             this.getUserById()
         } else {
           this.as.errorToast(res.message)
@@ -243,6 +244,7 @@ export class EmployeeComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
             this.getUserById();
+            this.UserShop = []
             this.saveUpdateHide = false;
             Swal.fire({
               position: 'center',
@@ -323,7 +325,7 @@ export class EmployeeComponent implements OnInit {
   }
 
   editUserShop(data: any) {
-   this.UserShop = data;
+   this.UserShop = {ID: data.ID, UserID: data.UserID, ShopID: data.ShopID, RoleID: data.RoleID, Status: 1};
    this.saveUpdateHide = true
   }
 

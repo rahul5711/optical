@@ -51,7 +51,7 @@
                                    <button *ngIf="addAddManagement" type="button" autofocus class="btn_icon" (click)="showAdd = !showAdd;">
                                     <mat-icon class="col-white plus_icon" >add</mat-icon>
                                    </button>
-                                   <button   type="button" autofocus class="btn_icon" *ngIf="showAdd === false"  (click)="delSupport()">
+                                   <button  [disabled]="data1.Category === null" type="button" autofocus class="btn_icon" *ngIf="showAdd === false"  (click)="delSupport()">
                                     <mat-icon *ngIf="deleteAddManagement" class="delete_icon me-2 " 
                                        >delete_forever</mat-icon>
                                    </button>
@@ -65,7 +65,7 @@
                                     </mat-form-field>
                                 </div>
                                 <div *ngIf="showAdd" class="col-md-6 col-sm-12 mb-0">
-                                    <button type="button" mat-mini-fab color="primary" (click)="showAdd = !showAdd; saveDepartment()"
+                                    <button type="button" [disabled]="newDepartment.Name === ''" mat-mini-fab color="primary" (click)="showAdd = !showAdd; saveDepartment()"
                                         aria-label="Example icon button with a bookmark icon">
                                         <mat-icon>save</mat-icon>
                                     </button>
@@ -83,7 +83,7 @@
                         <ul class="header-dropdown m-r--5"> </ul>
                     </div>
                     <div class="body">
-                        <form  #f1="ngForm" autocomplete="off">
+                        <form  #f1="ngForm" autocomplete="off" (ngSubmit)="chargesave();">
                             <div class="row">
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="  !showAddCharge">
                                     <mat-form-field class="example-full-width mb-0">
@@ -169,7 +169,7 @@
                                    </button>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0" *ngIf="showAddCharge">
-                                    <button  type="button" [disabled]="!f1.valid"  autofocus mat-raised-button color="primary" (click)="showAddCharge = !showAddCharge; chargesave(); ">
+                                    <button  type="button" [disabled]="!f1.valid"  autofocus mat-raised-button color="primary" (click)="showAddCharge = !showAddCharge; ">
                                        save
                                     </button>
                                 </div>
@@ -226,7 +226,7 @@
                         <ul class="header-dropdown m-r--5"> </ul>
                     </div>
                     <div class="body">
-                        <form  #f2="ngForm" autocomplete="off">
+                        <form  #f2="ngForm" autocomplete="off" (ngSubmit)="servicesave();">
                             <div class="row">
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="  !showAddService">
                                     <mat-form-field class="example-full-width mb-0">
@@ -322,7 +322,7 @@
                                    </button>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0" *ngIf="showAddService">
-                                    <button type="button" [disabled]="!f2.valid " autofocus mat-raised-button color="primary" (click)="showAddService = !showAddService; servicesave(); ">
+                                    <button type="button" [disabled]="!f2.valid " autofocus mat-raised-button color="primary" (click)="showAddService = !showAddService;  ">
                                         save
                                     </button>
                                 </div>
