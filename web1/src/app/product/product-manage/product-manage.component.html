@@ -114,7 +114,7 @@
                                    
                                     <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                         <button *ngIf="hideSave" mat-mini-fab color="primary"
-                                            (click)="showAdd = !showAdd;  saveProduct();" [disabled]="!f2.valid || GstTypeDis">
+                                            (click)="showAdd = !showAdd;  saveProduct();" [disabled]="GstTypeDis">
                                             <mat-icon>save</mat-icon>
                                         </button>
                                     </div>

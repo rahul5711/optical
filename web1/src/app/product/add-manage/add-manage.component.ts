@@ -151,6 +151,7 @@ export class AddManageComponent implements OnInit {
         });
 
     }else { 
+      this.sp.hide()
       Swal.fire({
         icon: 'error',
         title: 'Duplicate or Empty values are not allowed',

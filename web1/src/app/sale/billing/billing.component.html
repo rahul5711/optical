@@ -119,16 +119,17 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Address</mat-label>
                                                 <input matInput name="Address" minlength="2" [(ngModel)]="data.Address"
-                                                    #Addresscontrol />
+                                                (input)="customerSearch(Addresscontrol.value, 'Address')"  #Addresscontrol />
                                                 <mat-error>
                                                     Atleast 2 characters required
                                                 </mat-error>
                                             </mat-form-field>
+                                        
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>SR/MRD No. </mat-label>
-                                                <input matInput name="Sno" [(ngModel)]="data.Sno" #Snocontrol />
+                                                <input matInput name="Sno" [(ngModel)]="data.Sno"  (input)="customerSearch(Snocontrol.value, 'Sno')" #Snocontrol />
                                                 <mat-error>
                                                     SR/MRD No. is required
                                                 </mat-error>
@@ -1449,7 +1450,7 @@
                     </div>
                 </div>
                 <!-- bill info -->
-                <div *ngIf="this.id != 0 ">
+                <div *ngIf="this.id != 0">
                     <app-bill @fade [customerID2]="this.id"></app-bill>
                 </div>
             </div>

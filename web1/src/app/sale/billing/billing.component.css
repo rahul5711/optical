@@ -34,6 +34,20 @@
     top: 64px;
 }
 
+.search1 {
+    overflow-y: scroll;
+    flex: 0 0 auto;
+    width: 28%;
+    max-height: 125px;
+    background-color: #2e3457;
+    color: #fff;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    z-index: 99999;
+    top: 150px;
+}
+
 @import "~@ng-select/ng-select/themes/default.theme.css";
 
 @import "~@ng-select/ng-select/themes/material.theme.css";

@@ -58,6 +58,7 @@ export class BillingComponent implements OnInit {
   formValue: any = [];
   searchList: any = [];
   srcBox = true;
+  customerSearchBillPageHide = true;
   constructor(
     private router: Router,
     private route: ActivatedRoute,

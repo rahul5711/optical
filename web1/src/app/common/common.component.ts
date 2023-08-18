@@ -152,4 +152,17 @@ export class CommonComponent implements OnInit {
     });
   }
 
+  refresh(mode:any){
+    if(mode === 'purchaseList'){
+      this.router.navigate(['/inventory/purchaseList',0])
+      // this.router.navigate(['/inventory/purchaseList',0]).then(() => {
+      //   window.location.reload();
+      // });
+    }else if(mode === 'billinglist'){
+      this.router.navigate(['/sale/billinglist',0]).then(() => {
+        window.location.reload();
+      });
+    }
+
+  }
 }

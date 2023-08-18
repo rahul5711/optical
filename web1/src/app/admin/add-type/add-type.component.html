@@ -65,7 +65,7 @@
                                     </mat-form-field>
                                 </div>
                                 <div *ngIf="showAdd" class="col-xl-1 col-lg-1 col-md-1 col-4 mb-0">
-                                    <button [disabled]="newDepartment.Name === ''" mat-mini-fab color="primary" (click)="showAdd = !showAdd; saveDepartment()"
+                                    <button  mat-mini-fab color="primary" (click)="showAdd = !showAdd; saveDepartment()"
                                         aria-label="Example icon button with a bookmark icon">
                                         <mat-icon>save</mat-icon>
                                     </button>

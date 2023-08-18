@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { ProductService } from 'src/app/service/product.service';
-import { Subscription } from 'rxjs';
+import { Subscription, takeUntil } from 'rxjs';
 import Swal from 'sweetalert2';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { SupportService } from 'src/app/service/support.service';
@@ -90,7 +90,7 @@ export class PurchaseComponent implements OnInit {
   editPurchase = false
   addPurchase = false
   deletePurchase = false
-
+  supplierGSTType = '';
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'Purchase') {
@@ -249,52 +249,64 @@ export class PurchaseComponent implements OnInit {
   }
 
   saveFieldData(i: any) {
+
     this.specList[i].DisplayAdd = 0;
-    const Ref = this.specList[i].Ref;
-    let RefValue = 0;
-    if (Ref !== 0) {
-      this.specList.forEach((element: any, j: any) => {
-        if (element.FieldName === Ref) { RefValue = element.SelectedValue; }
+    let count = 0;
+    this.specList[i].SptTableData.forEach((element: { TableValue: string; }) => {
+      if (element.TableValue.toLowerCase() === this.specList[i].SelectedValue.toLowerCase()) { count = count + 1; }
+    });
+    if (count !== 0 || this.specList[i].SelectedValue === '') {
+      //  alert ("Duplicate or Empty Values are not allowed");
+      Swal.fire({
+        icon: 'error',
+        title: 'Duplicate or Empty values are not allowed',
+        footer: ''
+      });
+    } else {
+      const Ref = this.specList[i].Ref;
+      let RefValue = 0;
+      if (Ref !== 0) {
+        this.specList.forEach((element: any, j: any) => {
+          if (element.FieldName === Ref) { RefValue = element.SelectedValue; }
+        });
+      }
+      this.sp.show()
+      const subs: Subscription = this.ps.saveProductSupportData(this.specList[i].SptTableName, RefValue, this.specList[i].SelectedValue).subscribe({
+        next: (res: any) => {
+          const subss: Subscription = this.ps.getProductSupportData(RefValue, this.specList[i].SptTableName).subscribe({
+            next: (res: any) => {
+              if (res.success) {
+                this.specList[i].SptTableData = res.data;
+                this.specList[i].SptFilterData = res.data;
+                this.as.successToast(res.message)
+              } else {
+                this.as.errorToast(res.message)
+              }
+              this.sp.hide()
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subss.unsubscribe(),
+          });
+          if (res.success) { }
+          else { this.as.errorToast(res.message) }
+        },
+        error: (err: any) => {
+          console.log(err.msg);
+        },
+        complete: () => subs.unsubscribe(),
       });
     }
-    const subs: Subscription = this.ps.saveProductSupportData(this.specList[i].SptTableName, RefValue, this.specList[i].SelectedValue).subscribe({
-      next: (res: any) => {
-        const subss: Subscription = this.ps.getProductSupportData(RefValue, this.specList[i].SptTableName).subscribe({
-          next: (res: any) => {
-            if (res.success) {
-              this.specList[i].SptTableData = res.data;
-              this.specList[i].SptFilterData = res.data;
-            } else {
-              this.as.errorToast(res.message)
-            }
-          },
-          error: (err: any) => console.log(err.message),
-          complete: () => subss.unsubscribe(),
-        });
-        if (res.success) {
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Your file has been Save.',
-            showConfirmButton: false,
-            timer: 1200
-          })
-        } else {
-          this.as.errorToast(res.message)
-        }
-      },
-      error: (err: any) => {
-        console.log(err.msg);
-      },
-      complete: () => subs.unsubscribe(),
-    });
   }
 
   getSupplierDetails(event: any) {
+    this.supplierGSTType = '';
     const index = this.supplierList.findIndex((element: any) => element.ID === event.value);
     this.selectedPurchaseMaster.SupplierID = this.supplierList[index].ID;
     this.selectedPurchaseMaster.SupplierName = this.supplierList[index].Name;
     this.item.GSTType = this.supplierList[index].GSTType;
+    if(this.item.GSTType !== 'None'){
+      this.supplierGSTType = this.item.GSTType
+    }
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
@@ -523,6 +535,13 @@ export class PurchaseComponent implements OnInit {
           })
         } else {
           this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message ,
+            showConfirmButton: true,
+            backdrop: false,
+          })
         }
         this.sp.hide();
       },
@@ -685,6 +704,13 @@ export class PurchaseComponent implements OnInit {
           })
         } else {
           this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message ,
+            showConfirmButton: true,
+            backdrop: false,
+          })
         }
         this.sp.hide()
       },
@@ -706,34 +732,49 @@ export class PurchaseComponent implements OnInit {
 
   updataEditProdcut(fieldName: any, mode: any, data: any) {
     this.sp.show();
-    this.calculateFields1(fieldName, mode, data)
-    this.calculateGrandTotal();
-    const dtm = {
-      PurchaseMaster: this.selectedPurchaseMaster,
-      ...data
+    if(data.GSTType === 'None'){
+      if(data.GSTPercentage != 0){
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Without GSTType the selected value will not be saved ',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+      }
+      data.UpdateProduct = true
     }
-    const subs: Subscription = this.purchaseService.updateProduct(dtm).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          // this.showInput(data)
-          // this.as.successToast(res.message)
-        } else {
-          Swal.fire({
-            position: 'center',
-            icon: 'error',
-            title: res.message + ', you can not change anything',
-            showConfirmButton: true,
-            backdrop: false,
-          })
-            this.showInput(data)
-            this.getPurchaseById()
-        }
-        this.disbaleupdate = false
-        this.sp.hide();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+   else{
+      this.calculateFields1(fieldName, mode, data)
+      this.calculateGrandTotal();
+      const dtm = {
+        PurchaseMaster: this.selectedPurchaseMaster,
+        ...data
+      }
+      const subs: Subscription = this.purchaseService.updateProduct(dtm).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            // this.showInput(data)
+            // this.as.successToast(res.message)
+          } else {
+            Swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: res.message + ', you can not change anything',
+              showConfirmButton: true,
+              backdrop: false,
+            })
+              this.showInput(data)
+              this.getPurchaseById()
+          }
+          this.disbaleupdate = false
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+     }
+     this.sp.hide();
   }
 
   PurchaseDetailPDF() {

@@ -144,7 +144,7 @@
                                             (click)="displayAddField(i)">
                                             <mat-icon class="col-white plus_icon">add</mat-icon>
                                         </button>
-                                        <button [disabled]="spec.SelectedValue === ''" style="background: none;border:none" *ngIf="spec.DisplayAdd === 1"
+                                        <button style="background: none;border:none" *ngIf="spec.DisplayAdd === 1"
                                             (click)="saveFieldData(i)">
                                             <mat-icon class="col-white plus_icon">save</mat-icon>
                                         </button>
@@ -265,17 +265,24 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 d-flex">
-                                    <mat-form-field class="example-full-width mb-0">
+                                    <mat-form-field *ngIf="item.GSTPercentage !== 0" class="example-full-width mb-0">
                                         <mat-label>TAX Type</mat-label>
                                         <mat-select name="GSTType" [(ngModel)]="item.GSTType" #GSTTypeacontrol
                                             (selectionChange)="calculateFields('TotalAmount', 'total')" required>
-                                            <mat-option value="None" *ngIf="item.GSTPercentage  === 0">None
-                                            </mat-option>
-                                            <span *ngIf="item.GSTPercentage !== 0">
+                                            <span >
                                                 <mat-option [value]="g.Name" *ngFor="let g of gstList">
                                                     {{g.Name}}
                                                 </mat-option>
                                             </span>
+                                        </mat-select>
+                                    </mat-form-field>
+
+                                    <mat-form-field *ngIf="item.GSTPercentage  === 0" class="example-full-width mb-0">
+                                        <mat-label>TAX Type</mat-label>
+                                        <mat-select name="GSTType" [(ngModel)]="item.GSTType" #GSTTypeacontrol
+                                            (selectionChange)="calculateFields('TotalAmount', 'total')" required>
+                                            <mat-option value="None" >None</mat-option>
+                                            <mat-option value="{{this.supplierGSTType}}" *ngIf="this.supplierGSTType !== ''">{{this.supplierGSTType}}</mat-option>
                                         </mat-select>
                                     </mat-form-field>
                                     <mat-checkbox style="padding-top: 14px;"
@@ -471,25 +478,25 @@
                                                     </td>
                                                     <!-- <td style="z-index: -999 !important;" *ngIf="data.Status === 0"></td> -->
                                                     <td class="text-center" style="white-space: nowrap;">
-                                                        <button class="bg_none"
+                                                        <button type="button" class="bg_none"
                                                             *ngIf="data.Status != 0 && data.ID !== null"
                                                             (click)="openModal(content,data)">
                                                             <mat-icon class="print_icon">print</mat-icon>
                                                         </button>
 
-                                                        <button class="bg_none"
+                                                        <button class="bg_none" type="button"
                                                             *ngIf="data.Status !== 0 && deletePurchase"
                                                             (click)="deleteItem('Product',i)">
                                                             <mat-icon
                                                                 class="delete_icons ms-1">delete_forever</mat-icon>
                                                         </button>
                                                         <!-- <mat-icon class="edit_icons ms-1" (click)="edititem('Product',data)" *ngIf="data.ID === null">edit </mat-icon> -->
-                                                        <button class="bg_none" (click)="showInput(data)"
+                                                        <button class="bg_none" type="button" (click)="showInput(data)"
                                                             *ngIf="editPurchase && data.Status != 0 && data.ID !== null && !data.UpdateProduct">
                                                             <mat-icon class="edit_icon1 ms-1">edit</mat-icon>
                                                         </button>
 
-                                                        <button class="bg_none"
+                                                        <button class="bg_none" type="button"
                                                             (click)="showInput(data) ;updataEditProdcut('','',data)"
                                                             *ngIf="data.Status != 0 && data.ID !== null && data.UpdateProduct">
                                                             <mat-icon class="edit_icon1 ms-1">save </mat-icon>
@@ -578,17 +585,17 @@
                                                     </td>
                                                     <td *ngIf="data.UpdateProduct"
                                                         style=" width:60px;text-align: center;">
-                                                        <select style="height: 26px; width: 60px;" name="BarndTypeUp"
+                                                        <select *ngIf="data.GSTPercentage === 0 "  style="height: 26px; width: 60px;" name="BarndTypeUp"
                                                             [(ngModel)]="data.GSTType" #name="ngModel"
                                                             (change)="updataEditProdcut('','',data)"
                                                             [ngModelOptions]="{standalone: true}" name="data{{i}}">
-                                                            <option value='None' *ngIf="data.GSTPercentage === 0 ">None
-                                                            </option>
-
-                                                            <option [value]="g.Name" *ngFor="let g of gstList"> <span
-                                                                    *ngIf="data.GSTPercentage !== 0">{{g.Name}}</span>
-                                                            </option>
-
+                                                            <option value='None'>None</option>
+                                                        </select>
+                                                        <select *ngIf="data.GSTPercentage !== 0 " style="height: 26px; width: 60px;" name="BarndTypeUp"
+                                                            [(ngModel)]="data.GSTType" #name="ngModel"
+                                                            (change)="updataEditProdcut('','',data)"
+                                                            [ngModelOptions]="{standalone: true}" name="data{{i}}">
+                                                            <option [value]="g.Name" *ngFor="let g of gstList"> {{g.Name}} </option>
                                                         </select>
                                                     </td>
                                                     <td class="text-center"
@@ -762,7 +769,7 @@
                                         color="primary">PrintBarcode</button>
                                 </div>
                                 <div *ngIf="id == 0" class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0 ml-auto">
-                                    <button type="submit" [disabled]="itemList.length == 0 || id != 0" mat-raised-button
+                                    <button  [disabled]="itemList.length == 0 || id != 0" mat-raised-button
                                         color="primary">Save
                                     </button>
                                 </div>

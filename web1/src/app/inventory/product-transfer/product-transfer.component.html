@@ -16,14 +16,14 @@
                                         <mat-label>Search By BarCode</mat-label>
                                         <input matInput name="SearchBarCode" [(ngModel)]="Req.SearchBarCode"
                                             (keydown.Tab)="getProductDataByBarCodeNo()" required #SearchBarCodecontrol
-                                            #GSTNocontrol [autocomplete]="false" appAutoFoucsDirectives>
+                                            [autocomplete]="false" appAutoFoucsDirectives>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Search By Product</mat-label>
-                                        <mat-select name="FieldType" [(ngModel)]="selectedProduct" 
-                                            (selectionChange)="getFieldList()" required #Typecontrol>
+                                        <mat-select name="selectedProduct" [(ngModel)]="selectedProduct" 
+                                            (selectionChange)="getFieldList()" required #selectedProductcontrol>
                                             <mat-option *ngFor="let prod of prodList   let i = index;"
                                                 [value]="prod.Name">
                                                 {{prod.Name | uppercase}}
@@ -38,8 +38,8 @@
                                     *ngIf="( selectedProduct !== '' || selectedProduct !== undefined || selectedProduct !== null )">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Select Barcode</mat-label>
-                                        <mat-select name="FieldType" [(ngModel)]="Req.SearchBarCode"
-                                             required #Typecontrol (selectionChange)="getProductDataByBarCodeNo()">
+                                        <mat-select name="SearchBarCode" [(ngModel)]="Req.SearchBarCode"
+                                              (selectionChange)="getProductDataByBarCodeNo()" #SearchBarCodecontrol  required>
                                             <mat-option *ngFor="let bc of barCodeList  let i = index;"
                                                 [value]="bc.Barcode"  >
                                                 {{bc.Barcode}} # {{bc.BarCodeCount}} | {{bc.ProductName | uppercase}}
@@ -112,49 +112,45 @@
                                 <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Product Name</mat-label>
-                                        <input matInput name="ProdName" [(ngModel)]="xferItem.ProductName" required
+                                        <input matInput name="ProductName" [(ngModel)]="xferItem.ProductName" required
                                             [disabled]=true>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Barcode</mat-label>
-                                        <input matInput name="ProdBarcode" [(ngModel)]="xferItem.Barcode" required
+                                        <input matInput name="Barcode" [(ngModel)]="xferItem.Barcode" required
                                             [disabled]=true>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Available</mat-label>
-                                        <input matInput name="ProdBarcodecount" type="number" min="0" disabled
-                                            [(ngModel)]="xferItem.BarCodeCount">
+                                        <input matInput name="BarCodeCount"  [(ngModel)]="xferItem.BarCodeCount" type="number" min="0" disabled
+                                           >
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
-                                    <mat-form-field class="example-full-width mb-0"
-                                        [class.has-error]="XferCountControl.invalid && XferCountControl.touched"
-                                        [class.has-success]="XferCountControl.valid">
+                                    <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Transfer Count</mat-label>
-                                        <input matInput name="ProdBarcodeXfer" type="number" min="0"
-                                            #XferCountControl="ngModel" [(ngModel)]="xferItem.TransferCount" (change)="TransferCountLimit()" required>
-                                        <mat-error *ngIf="XferCountControl.invalid && XferCountControl.touched">
+                                        <input matInput name="TransferCount" [(ngModel)]="xferItem.TransferCount" type="number" min="0"
+                                              (change)="TransferCountLimit()" #TransferCountControl  required>
+                                        <mat-error >
                                             Tranfer Count is Required
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 p-md-0" >
-                                    <mat-form-field class="example-full-width mb-0"
-                                        [class.has-error]="ShopControl.invalid && ShopControl.touched"
-                                        [class.has-success]="ShopControl.valid">
+                                    <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Transfer To Shop</mat-label>
-                                        <mat-select name="ShopID" [(ngModel)]="xferItem.ToShopID" required
-                                            #ShopControl="ngModel">
+                                        <mat-select name="ToShopID" [(ngModel)]="xferItem.ToShopID" required
+                                            #ToShopIDControl>
                                             <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}} <span
                                                     [style.color]="'blue'"
                                                     *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
                                             </mat-option>
                                         </mat-select>
-                                        <mat-error *ngIf="ShopControl.invalid && ShopControl.touched">
+                                        <mat-error>
                                             Shop is required
                                         </mat-error>
                                     </mat-form-field>
@@ -188,7 +184,7 @@
                                 <div class="col-xl-2 col-lg-2 col-md-6 col-8  p-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Shop Filter</mat-label>
-                                        <mat-select name="shopID" #shopID (selectionChange)="FilterData(shopID.value)">
+                                        <mat-select name="shopID"  (selectionChange)="FilterData(shopID.value)" #shopID>
                                             <mat-option value="0">All</mat-option>
                                             <mat-option [value]="s.ID" *ngFor="let s of shopLists"> {{s.Name}} <span
                                                     [style.color]="'blue'"

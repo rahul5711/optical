@@ -244,7 +244,7 @@ export class EmployeeComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
             this.getUserById();
-            this.UserShop = []
+            this.UserShop = {ID: null, UserID: null, ShopID: null, RoleID: null, Status: 1};
             this.saveUpdateHide = false;
             Swal.fire({
               position: 'center',

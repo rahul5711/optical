@@ -20,7 +20,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class PurchaseListComponent implements OnInit {
 
-  @ViewChild('searching') searching: ElementRef | any;
+  @ViewChild('searching') searching: ElementRef | any ;
   user = JSON.parse(localStorage.getItem('user') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
 
@@ -140,7 +140,9 @@ export class PurchaseListComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    fromEvent(this.searching.nativeElement, 'keyup').pipe(
+    if (this.searching) {
+    const nativeElem = this.searching.nativeElement
+    fromEvent(nativeElem, 'keyup').pipe(
       map((event: any) => {
         return event.target.value;
       }),
@@ -176,6 +178,7 @@ export class PurchaseListComponent implements OnInit {
       this.getList();
      } 
     });
+  }
   }
 
   exportAsXLSX(): void {
@@ -224,8 +227,8 @@ export class PurchaseListComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.dataList = res.data;
-          this.DueAmountIvn = res.sumData[0].DueAmount.toFixed(2);
-          this.TotalAmountInv = res.sumData[0].TotalAmount.toFixed(2);
+          this.DueAmountIvn = (res.sumData.DueAmount || 0).toFixed(2);
+          this.TotalAmountInv = (res.sumData.TotalAmount || 0).toFixed(2);
           this.CustomerTotal = (this.TotalAmountInv - this.DueAmountIvn).toFixed(2) ;
           this.as.successToast(res.message)
         }else{

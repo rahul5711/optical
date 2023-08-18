@@ -135,43 +135,53 @@ export class ProductMasterComponent implements OnInit {
   }
 
   saveFieldData(i: any) {
+
     this.specList[i].DisplayAdd = 0;
-    const Ref = this.specList[i]?.Ref;
-    let RefValue = 0;
-    if (Ref !== 0) {
-      this.specList.forEach((element: any, j: any) => {
-        if (element.FieldName === Ref) { RefValue = element.SelectedValue; }
+    let count = 0;
+    this.specList[i].SptTableData.forEach((element: { TableValue: string; }) => {
+      if (element.TableValue.toLowerCase() === this.specList[i].SelectedValue.toLowerCase()) { count = count + 1; }
+    });
+    if (count !== 0 || this.specList[i].SelectedValue === '') {
+      //  alert ("Duplicate or Empty Values are not allowed");
+      Swal.fire({
+        icon: 'error',
+        title: 'Duplicate or Empty values are not allowed',
+        footer: ''
+      });
+    } else {
+      const Ref = this.specList[i].Ref;
+      let RefValue = 0;
+      if (Ref !== 0) {
+        this.specList.forEach((element: any, j: any) => {
+          if (element.FieldName === Ref) { RefValue = element.SelectedValue; }
+        });
+      }
+      this.sp.show()
+      const subs: Subscription = this.ps.saveProductSupportData(this.specList[i].SptTableName, RefValue, this.specList[i].SelectedValue).subscribe({
+        next: (res: any) => {
+          const subss: Subscription = this.ps.getProductSupportData(RefValue, this.specList[i].SptTableName).subscribe({
+            next: (res: any) => {
+              if (res.success) {
+                this.specList[i].SptTableData = res.data;
+                this.specList[i].SptFilterData = res.data;
+                this.as.successToast(res.message)
+              } else {
+                this.as.errorToast(res.message)
+              }
+              this.sp.hide()
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subss.unsubscribe(),
+          });
+          if (res.success) { }
+          else { this.as.errorToast(res.message) }
+        },
+        error: (err: any) => {
+          console.log(err.msg);
+        },
+        complete: () => subs.unsubscribe(),
       });
     }
-    const subs: Subscription = this.ps.saveProductSupportData(this.specList[i].SptTableName, RefValue, this.specList[i].SelectedValue).subscribe({
-      next: (res: any) => {
-        const subss: Subscription = this.ps.getProductSupportData(RefValue, this.specList[i].SptTableName).subscribe({
-          next: (res: any) => {
-            if (res.success) {
-              this.specList[i].SptTableData = res.data;
-              this.specList[i].SptFilterData = res.data;
-              this.as.successToast(res.message)
-              Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'Your file has been Save.',
-                showConfirmButton: false,
-                timer: 1200
-              })
-            } else {
-              this.as.errorToast(res.message)
-            }
-            this.sp.hide()
-          },
-          error: (err: any) => console.log(err.message),
-          complete: () => subss.unsubscribe(),
-        });
-      },
-      error: (err: any) => {
-        console.log(err.msg);
-      },
-      complete: () => subs.unsubscribe(),
-    });
   }
 
   deleteSpecValue(value: any, selectedValue: any, i: any) {

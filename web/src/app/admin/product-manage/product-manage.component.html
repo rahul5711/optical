@@ -49,7 +49,7 @@
                                             [disabled]="disbleProduct" #GSTTypecontrol>
                                             <mat-option value="None">None</mat-option>
                                             <mat-option value="IGST">IGST</mat-option>
-                                            <mat-option value="CGST-IGST">CGST-IGST</mat-option>
+                                            <mat-option value="CGST-SGST">CGST-SGST</mat-option>
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
@@ -90,7 +90,7 @@
                                         <mat-select name="NewGSTType" [(ngModel)]="newProduct.GSTType" #GSTTypecontrol>
                                             <mat-option value="None">None</mat-option>
                                             <mat-option value="IGST">IGST</mat-option>
-                                            <mat-option value="CGST-IGST">CGST-SGST</mat-option>
+                                            <mat-option value="CGST-SGST">CGST-SGST</mat-option>
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
@@ -254,7 +254,7 @@
                     <mat-select name="NewGSTType" [(ngModel)]="newProduct.GSTType" #GSTTypecontrol>
                         <mat-option value="None">None</mat-option>
                         <mat-option value="IGST">IGST</mat-option>
-                        <mat-option value="CGST-IGST">CGST-IGST</mat-option>
+                        <mat-option value="CGST-SGST">CGST-SGST</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
