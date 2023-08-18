@@ -821,11 +821,9 @@ module.exports = {
             console.log(req.body);
             const { Name, MobileNo1, Address, Sno } = req.body
 
-<<<<<<< HEAD
+
             let qry = `select customer.ID as ID, customer.Idd, customer.Name as Name, customer.MobileNo1 as MobileNo1, customer.MobileNo2 as MobileNo2  , customer.Sno as Sno , customer.Address as Address from customer where customer.Status = 1 and customer.Name like '%${Name}%' and customer.MobileNo1 like'%${MobileNo1}%' and customer.Address like '%${Address}%' and customer.Sno like '%${Sno}%' and customer.CompanyID = '${CompanyID}'  order by customer.ID desc`
-=======
-            let qry = `select customer.ID as ID, customer.Idd, customer.Name as Name, customer.MobileNo1, customer.MobileNo2  from customer where customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.Name like '%${Name}%' OR customer.MobileNo1 like'%${Name}%' OR customer.MobileNo2 like '%${Name}%' OR customer.Idd like '%${Name}%' order by customer.ID desc`
->>>>>>> f9efbf9fd33c57616e4f45113d342a87acaeae78
+
 
 
             let finalQuery = qry;
