@@ -495,7 +495,6 @@ module.exports = {
             const response = { result: { PurchaseDetail: null, PurchaseMaster: null }, success: true, message: "" }
 
             const Body = req.body;
-            console.log(Body, 'body');
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -527,9 +526,11 @@ module.exports = {
             }
 
 
-            // PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,, Quantity,,,,, ,,,,,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn
 
-            const [updatePurchasedetail] = await mysql2.pool.query(`update purchasedetailnew set UnitPrice=${Body.UnitPrice}, SubTotal=${Body.SubTotal},DiscountPercentage=${Body.DiscountPercentage},DiscountAmount=${Body.DiscountAmount},GSTPercentage=${Body.GSTPercentage},GSTAmount=${Body.GSTAmount},GSTType='${Body.GSTType}',TotalAmount=${Body.TotalAmount},RetailPrice=${Body.RetailPrice},WholeSalePrice=${Body.WholeSalePrice},BrandType='${Body.BrandType}', UniqueBarcode='${Body.UniqueBarcode}', UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const uniqueBarcode = await generateUniqueBarcode(CompanyID, Body.PurchaseMaster.SupplierID, Body)
+
+
+            const [updatePurchasedetail] = await mysql2.pool.query(`update purchasedetailnew set UnitPrice=${Body.UnitPrice}, SubTotal=${Body.SubTotal},DiscountPercentage=${Body.DiscountPercentage},DiscountAmount=${Body.DiscountAmount},GSTPercentage=${Body.GSTPercentage},GSTAmount=${Body.GSTAmount},GSTType='${Body.GSTType}',TotalAmount=${Body.TotalAmount},RetailPrice=${Body.RetailPrice},WholeSalePrice=${Body.WholeSalePrice},BrandType='${Body.BrandType}', UniqueBarcode='${uniqueBarcode}', UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Product Update SuccessFUlly !!!");
 

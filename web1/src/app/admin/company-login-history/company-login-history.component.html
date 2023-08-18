@@ -44,6 +44,7 @@
                                         <tr>
                                             <th class="text-left">S.No</th>
                                             <th class="text-left"> UserName</th>
+                                            <th class="text-left"> UserGroup</th>
                                             <th class="text-left">CompanyName</th>
                                             <th class="text-left">IpAddress</th>
                                             <th class="text-left">LoginTime</th>
@@ -54,6 +55,7 @@
                                         <tr class="text-center" *ngFor="let data of dataList  ; let i = index;">
                                             <td class="text-left">{{dataList.length - i }}</td>
                                             <td class="text-left">{{data.UserName}}</td>
+                                            <td class="text-left">{{data.UserGroup}}</td>
                                             <td class="text-left">{{data.CompanyName}}</td>
                                             <td class="text-left">{{data.IpAddress}}</td>
                                             <td class="text-left">{{data.LoginTime}}</td>
