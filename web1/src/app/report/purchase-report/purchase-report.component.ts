@@ -23,6 +23,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class PurchaseReportComponent implements OnInit {
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+  companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
 
   supplierList :any;
   shopList :any;

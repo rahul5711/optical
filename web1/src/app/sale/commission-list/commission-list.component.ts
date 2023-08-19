@@ -24,6 +24,8 @@ export class CommissionListComponent implements OnInit {
   user = JSON.parse(localStorage.getItem('user') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+  companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
+
   evn = environment
   id :any
 

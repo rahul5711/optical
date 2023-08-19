@@ -83,7 +83,7 @@
                         <ul class="header-dropdown m-r--5"> </ul>
                     </div>
                     <div class="body">
-                        <form  #f1="ngForm" autocomplete="off" (ngSubmit)="chargesave();">
+                        <form  #f1="ngForm" autocomplete="off" >
                             <div class="row">
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="  !showAddCharge">
                                     <mat-form-field class="example-full-width mb-0">
@@ -169,7 +169,7 @@
                                    </button>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0" *ngIf="showAddCharge">
-                                    <button  type="button" [disabled]="!f1.valid"  autofocus mat-raised-button color="primary" (click)="showAddCharge = !showAddCharge; ">
+                                    <button  type="submit" [disabled]="!f1.valid"  autofocus mat-raised-button color="primary" (click)="showAddCharge = !showAddCharge; chargesave();" >
                                        save
                                     </button>
                                 </div>
@@ -203,11 +203,11 @@
                                 <td>{{ i + 1 }}</td>
                                 <td>{{c.Name | uppercase}}</td>
                                 <td>{{c.Description}}</td>
-                                <td>{{c.Price}}</td>
+                                <td>{{c.Price | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                 <td>{{c.GSTPercentage}}</td>
-                                <td>{{c.GSTAmount}}</td>
+                                <td>{{c.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                 <td>{{c.GSTType}}</td>
-                                <td>{{c.TotalAmount}}</td>
+                                <td>{{c.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                 <td>
                                     <button type="button" class="bg_none" *ngIf="deleteChargeManagement"  (click)="chargedelete(i)">
                                         <mat-icon class="delete_icon" >delete_forever
@@ -226,7 +226,7 @@
                         <ul class="header-dropdown m-r--5"> </ul>
                     </div>
                     <div class="body">
-                        <form  #f2="ngForm" autocomplete="off" (ngSubmit)="servicesave();">
+                        <form  #f2="ngForm" autocomplete="off" >
                             <div class="row">
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="  !showAddService">
                                     <mat-form-field class="example-full-width mb-0">
@@ -322,7 +322,7 @@
                                    </button>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0" *ngIf="showAddService">
-                                    <button type="button" [disabled]="!f2.valid " autofocus mat-raised-button color="primary" (click)="showAddService = !showAddService;  ">
+                                    <button type="submit" [disabled]="!f2.valid " autofocus mat-raised-button color="primary" (click)="showAddService = !showAddService;  servicesave();">
                                         save
                                     </button>
                                 </div>
@@ -357,12 +357,12 @@
                                 <td>{{ i + 1 }}</td>
                                 <td>{{c.Name | uppercase}}</td>
                                 <td>{{c.Description}}</td>
-                                <td>{{c.Cost}}</td>
-                                <td>{{c.Price}}</td>
+                                <td>{{c.Cost | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                <td>{{c.Price | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                 <td>{{c.GSTPercentage}}</td>
-                                <td>{{c.GSTAmount}}</td>
+                                <td>{{c.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                 <td>{{c.GSTType}}</td>
-                                <td>{{c.TotalAmount}}</td>
+                                <td>{{c.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                 <td>
                                     <button type="button" class="bg_none" *ngIf="deleteServiceManagement"  (click)="servicedelete(i)">
                                         <mat-icon  class="delete_icon">delete_forever</mat-icon>

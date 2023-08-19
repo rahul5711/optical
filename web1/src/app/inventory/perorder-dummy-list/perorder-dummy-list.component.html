@@ -209,7 +209,7 @@
                                                     <td>{{data.Quantity}}</td>
                                                     <td>{{data.BaseBarCode}}</td>
                                                     <td *ngIf="!data.UpdateProduct" class="text-center">
-                                                        {{data.UnitPrice }}</td>
+                                                        {{data.UnitPrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat }}</td>
                                                     <td *ngIf="data.UpdateProduct"
                                                         style=" width:60px;text-align: center;">
                                                         <input style=" width:60px;text-align: center;" min="0"
@@ -221,7 +221,7 @@
                                                     <td>{{data.GSTPercentage}}%</td>
                                                     <td>{{data.GSTType}}</td>
                                                     <td *ngIf="!data.UpdateProduct" class="text-center">
-                                                        {{data.RetailPrice }}</td>
+                                                        {{data.RetailPrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat }}</td>
                                                     <td *ngIf="data.UpdateProduct"
                                                         style=" width:60px;text-align: center;">
                                                         <input style=" width:60px;text-align: center;" min="0"
@@ -230,7 +230,7 @@
                                                             [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                                     </td>
                                                     <td *ngIf="!data.UpdateProduct" class="text-center">
-                                                        {{data.WholeSalePrice }}</td>
+                                                        {{data.WholeSalePrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                     <td *ngIf="data.UpdateProduct"
                                                         style=" width:60px;text-align: center;">
                                                         <input style=" width:60px;text-align: center;" min="0"

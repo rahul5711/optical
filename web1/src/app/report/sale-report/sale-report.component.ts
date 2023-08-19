@@ -27,6 +27,7 @@ export class SaleReportComponent implements OnInit {
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
+  companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
 
   constructor(
     private router: Router,

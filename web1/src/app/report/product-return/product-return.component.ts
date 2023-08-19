@@ -22,6 +22,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class ProductReturnComponent implements OnInit {
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+  companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
 
   supplierList :any;
   shopList :any;

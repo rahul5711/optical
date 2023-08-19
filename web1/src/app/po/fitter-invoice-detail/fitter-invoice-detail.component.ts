@@ -20,6 +20,8 @@ export class FitterInvoiceDetailComponent implements OnInit {
   evn = environment
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   company = JSON.parse(localStorage.getItem('company') || '');
+  companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
+
   id:any;
 
   constructor(

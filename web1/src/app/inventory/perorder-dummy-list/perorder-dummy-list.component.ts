@@ -20,7 +20,7 @@ import { SupplierService } from 'src/app/service/supplier.service';
 })
 export class PerorderDummyListComponent implements OnInit {
   @ViewChild('searching') searching: ElementRef | any;
-  companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
 
   env = environment;
   gridview = true;
@@ -175,9 +175,9 @@ export class PerorderDummyListComponent implements OnInit {
   }
 
   onChange(event: any) {
-    if (this.companysetting.DataFormat === '1') {
+    if (this.companySetting.DataFormat === '1') {
       event = event.toUpperCase()
-    } else if (this.companysetting.DataFormat == '2') {
+    } else if (this.companySetting.DataFormat == '2') {
       event = event.toTitleCase()
     }
     return event;

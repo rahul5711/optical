@@ -156,13 +156,13 @@
                           <td>{{Bdata.DeliveryDate}}</td>
                           <td>{{Bdata.PaymentStatus}}</td>
                           <td>{{Bdata.Quantity}}</td>
-                          <td>{{Bdata.TotalAmount}}</td>
-                          <td>{{Bdata.AddlDiscount}}</td>
+                          <td>{{Bdata.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                          <td>{{Bdata.AddlDiscount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                           <td>{{(Bdata.TotalAmount - Bdata.AddlDiscount) -
-                            Bdata.DueAmount}}</td>
-                          <td>{{Bdata.DueAmount}}</td>
-                          <td>{{Bdata.DiscountAmount}}</td>
-                          <td>{{Bdata.GSTAmount}}</td>
+                            Bdata.DueAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                          <td>{{Bdata.DueAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                          <td>{{Bdata.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                          <td>{{Bdata.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                           <td>{{Bdata.TrayNo}}</td>
                           <td>{{Bdata.ShopName}}<span [style.color]="'blue'"
                               *ngIf="Bdata.AreaName !== 'null'">({{Bdata.AreaName}})</span>
@@ -220,7 +220,7 @@
           </div>
           <div class="col-md-3">
             <span style="font-size: 17px; font-weight: 600;color: #ff5100; ">TotalAmount : </span>
-            <span style="font-size: 15px; color: #000;"> {{this.paymentHistoryList[0]?.TotalAmount}} </span>
+            <span style="font-size: 15px; color: #000;"> {{this.paymentHistoryList[0]?.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}} </span>
           </div>
         </div>
         <div class="row mt-4">
@@ -262,8 +262,8 @@
                     </td>
                     <td class="text-center"
                       [ngClass]="{'CreditClass': data.Credit === 'Credit', 'DebitClass': data.Credit === 'Debit' }">
-                      {{data.Amount }}</td>
-                    <td class="text-center">{{data.Dueamount}}</td>
+                      {{data.Amount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                    <td class="text-center">{{data.Dueamount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                   </tr>
                 </tbody>
               </table>
@@ -481,8 +481,8 @@
             <tbody>
               <tr class="text-center" *ngFor="let inv of invoiceList; let i = index;">
                 <td class="text-left" style="background-color: #ff5100; color: #fff;">{{inv.InvoiceNo}}</td>
-                <td class="text-left">{{inv.TotalAmount}}</td>
-                <td class="text-left">{{inv.DueAmount}}</td>
+                <td class="text-left">{{inv.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                <td class="text-left">{{inv.DueAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
 
               </tr>
             </tbody>
@@ -508,7 +508,7 @@
                 <td class="text-left">{{paid.PaymentMode}}</td>
                 <td class="text-left">{{paid.CardNo}}</td>
                 <td class="text-left">{{paid.PaymentReferenceNo}}</td>
-                <td class="text-left" style="background-color: #ff5100; color: #fff;">{{paid.Amount}}</td>
+                <td class="text-left" style="background-color: #ff5100; color: #fff;">{{paid.Amount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
 
               </tr>
             </tbody>

@@ -14,7 +14,8 @@ import { SupportService } from 'src/app/service/support.service';
 })
 export class AddManageComponent implements OnInit {
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
-  loggedInCompany:any = (localStorage.getItem('LoggedINCompany'));
+  loggedInCompany:any = (localStorage.getItem('company'));
+  companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
   depList: any ;
   showFeild = false;
   showAdd = false;
@@ -71,6 +72,8 @@ export class AddManageComponent implements OnInit {
   deleteServiceManagement = false
 
   ngOnInit(): void {
+    console.log(this.companySetting);
+    
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'AddManagement') {
         this.editAddManagement = element.Edit;

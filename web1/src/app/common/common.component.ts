@@ -7,6 +7,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ShopService } from '../service/shop.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DataStorageServiceService } from '../service/helpers/data-storage-service.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-common',
@@ -14,6 +15,7 @@ import { DataStorageServiceService } from '../service/helpers/data-storage-servi
   styleUrls: ['./common.component.css']
 })
 export class CommonComponent implements OnInit {
+  env = environment;
 
   user: any = JSON.parse(localStorage.getItem('user') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
@@ -154,10 +156,9 @@ export class CommonComponent implements OnInit {
 
   refresh(mode:any){
     if(mode === 'purchaseList'){
-      this.router.navigate(['/inventory/purchaseList',0])
-      // this.router.navigate(['/inventory/purchaseList',0]).then(() => {
-      //   window.location.reload();
-      // });
+      this.router.navigate(['/inventory/purchaseList',0]).then(() => {
+        window.history.go();
+      });
     }else if(mode === 'billinglist'){
       this.router.navigate(['/sale/billinglist',0]).then(() => {
         window.location.reload();

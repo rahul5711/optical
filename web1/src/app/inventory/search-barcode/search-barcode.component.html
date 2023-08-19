@@ -187,8 +187,8 @@
                                                     </td>
                                                     <td>{{data.InvoiceNo}}</td>
                                                     <td>{{data.SupplierName}}</td>
-                                                    <td>{{data.RetailPrice}}</td>
-                                                    <td>{{data.WholeSalePrice}}</td>
+                                                    <td>{{data.RetailPrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                                    <td>{{data.WholeSalePrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                     <td>{{data.GSTType}}</td>
                                                 </tr>
                                             </tbody>

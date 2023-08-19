@@ -24,7 +24,7 @@ export class InventorySummaryComponent implements OnInit {
   user = JSON.parse(localStorage.getItem('user') || '');
   company = JSON.parse(localStorage.getItem('company') || '');
   shop = JSON.parse(localStorage.getItem('shop') || '');
-  companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
 
   id: any;
@@ -181,9 +181,9 @@ export class InventorySummaryComponent implements OnInit {
   }
 
   onChange(event: any) {
-    if (this.companysetting.DataFormat === '1') {
+    if (this.companySetting.DataFormat === '1') {
       event = event.toUpperCase()
-    } else if (this.companysetting.DataFormat == '2') {
+    } else if (this.companySetting.DataFormat == '2') {
       event = event.toTitleCase()
     }
     return event;

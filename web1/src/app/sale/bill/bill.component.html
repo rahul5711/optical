@@ -539,7 +539,7 @@
                                     {{data.ProductTypeName}}/{{data.ProductName}}</td>
 
                                 <td *ngIf="!data.UpdateProduct" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                        {{data.UnitPrice}}
+                                        {{data.UnitPrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
                                 </td>
                                 <td *ngIf="data.UpdateProduct" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     <input type="number" min="0" class="inputWidth"  name="UnitPrice{{data.ID}}"
@@ -562,7 +562,7 @@
                                     </td>
 
                                     <td *ngIf="!data.UpdateProduct" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                        {{data.DiscountAmount}}</td>
+                                        {{data.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
     
                                     <td *ngIf="data.UpdateProduct">
                                         <input  class="inputWidth" type="number" min="0" 
@@ -571,7 +571,7 @@
                                     </td>  
 
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                    {{data.SubTotal}}</td>
+                                    {{data.SubTotal | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                               
 
                                 <td *ngIf="!data.UpdateProduct" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
@@ -585,7 +585,7 @@
                                         [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                 </td>
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                    {{data.GSTAmount}}</td>
+                                    {{data.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                 <td *ngIf="!data.UpdateProduct" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     {{data.GSTType}}</td>
 
@@ -602,7 +602,7 @@
                                     </td>
 
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                    {{data.TotalAmount}}</td>
+                                    {{data.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
 
                                 <td *ngIf="!data.UpdateProduct" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     {{(data.Remark !== 'undefined')? data.Remark: '-'}}</td>
@@ -649,9 +649,9 @@
                                 <td></td>
                                 <td></td>
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
-                                    class="text-center">{{data.Price}}</td>
+                                    class="text-center">{{data.Price | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
-                                    class="text-center">{{data.GSTAmount}}</td>
+                                    class="text-center">{{data.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
                                     class="text-center">{{data.GSTPercentage}}%</td>
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
@@ -661,7 +661,7 @@
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
                                     class="text-center"></td>
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
-                                    class="text-center">{{data.TotalAmount}}</td>
+                                    class="text-center">{{data.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
                                     class="text-center"></td>
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
@@ -1132,8 +1132,8 @@
                         <tbody>
                             <tr class="text-center" *ngFor="let inv of invoiceList; let i = index;">
                                 <td class="text-left" style="background-color: #ff5100; color: #fff;">{{inv.InvoiceNo}}</td>
-                                <td class="text-left">{{inv.TotalAmount}}</td>
-                                <td class="text-left">{{inv.DueAmount}}</td>
+                                <td class="text-left">{{inv.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                <td class="text-left">{{inv.DueAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                
                             </tr>
                         </tbody>
@@ -1160,7 +1160,7 @@
                                 <td class="text-left">{{paid.PaymentMode}}</td>
                                 <td class="text-left">{{paid.CardNo}}</td>
                                 <td class="text-left">{{paid.PaymentReferenceNo}}</td>
-                                <td class="text-left" style="background-color: #ff5100; color: #fff;">{{paid.Amount}}</td>
+                                <td class="text-left" style="background-color: #ff5100; color: #fff;">{{paid.Amount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                
                             </tr>
                         </tbody>

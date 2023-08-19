@@ -29,7 +29,7 @@ export class BillListComponent implements OnInit {
   @ViewChild('searching') searching: ElementRef | any ;
   company = JSON.parse(localStorage.getItem('company') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
-  companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
 

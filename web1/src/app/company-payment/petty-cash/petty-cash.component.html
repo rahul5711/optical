@@ -86,7 +86,7 @@
                                         <td  class="text-center">{{data.EmployeeName }}</td>
                                         <td  class="text-center">{{data.CashType}}</td>
                                         <td  class="text-center">{{data.CreditType}}</td>
-                                        <td  class="text-center">{{data.Amount}}</td>
+                                        <td  class="text-center">{{data.Amount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                         <td  class="text-center">{{data.Comments}}</td>
                                         <td  class="text-center">{{data.CreatedOn }}</td>
                                         <td  class="text-center">{{data.CreatedPerson}}</td>

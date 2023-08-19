@@ -88,10 +88,10 @@
                           <td>{{data.SupplierCn}}</td>
                           <td>{{data.CreatedOn}}</td>
                           <td>{{data.Quantity}}</td>
-                          <td>{{data.DiscountAmount}}</td>
-                          <td>{{data.SubTotal}}</td>
-                          <td>{{data.GSTAmount}}</td>
-                          <td>{{data.TotalAmount}}</td>
+                          <td>{{data.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                          <td>{{data.SubTotal | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                          <td>{{data.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                          <td>{{data.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                           <td>{{(data.GSTNo !== 'null')? data.GSTNo: ''}}</td>
                           <td>{{data.ShopName}}<span [style.color]="'blue'"
                             *ngIf="data.AreaName !== 'null'">({{data.AreaName}})</span></td>

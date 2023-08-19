@@ -23,6 +23,7 @@ export class PurchaseListComponent implements OnInit {
   @ViewChild('searching') searching: ElementRef | any ;
   user = JSON.parse(localStorage.getItem('user') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+  companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
 
   env = environment;
   id :any

@@ -24,6 +24,8 @@ export class FitterInvoiceListComponent implements OnInit {
 
   user = JSON.parse(localStorage.getItem('user') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
+  companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
+
   evn = environment
   id :any
   

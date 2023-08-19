@@ -22,6 +22,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class InventoryReportComponent implements OnInit {
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+  companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
 
   constructor(
     private router: Router,

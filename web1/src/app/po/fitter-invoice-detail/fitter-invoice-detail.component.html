@@ -103,9 +103,9 @@
                                                     <td>{{item.ProductName}}</td>
                                                     <td>{{item.LensType}}</td>
                                                     <td>{{item.AssignedOn | date:'dd-MM-y'}}</td>
-                                                    <td>{{item.UnitPrice}}</td>
+                                                    <td>{{item.UnitPrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                     <td>{{item.Quantity}}</td>
-                                                    <td>{{item.TotalAmount}}</td>
+                                                    <td>{{item.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                 </tr>
                                             </tbody>
                                         </table>

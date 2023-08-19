@@ -21,6 +21,7 @@ export class PurchaseReturnListComponent implements OnInit {
 
   @ViewChild('searching') searching: ElementRef | any;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+  companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
 
   env = environment;
   gridview = true;

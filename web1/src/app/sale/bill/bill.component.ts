@@ -43,7 +43,7 @@ export class BillComponent implements OnInit {
   @Input() customerID2: any
   company = JSON.parse(localStorage.getItem('company') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
-  companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
 
@@ -162,13 +162,14 @@ export class BillComponent implements OnInit {
     });
     this.BillMaster.Employee = this.user.ID
     this.BillMaster.BillDate = moment().format('YYYY-MM-DD');
-    this.BillMaster.DeliveryDate = moment(new Date()).add(this.companysetting.DeliveryDay, 'days').format('YYYY-MM-DD');
+    this.BillMaster.DeliveryDate = moment(new Date()).add(this.companySetting.DeliveryDay, 'days').format('YYYY-MM-DD');
     this.loginShopID = Number(this.selectedShop[0])
     this.getTrayNo();
     this.getEmployee();
     this.getDoctor();
     this.getProductList();
     this.getGSTList();
+    this.getService();
     if (this.id2 != 0) {
       this.getCustomerById1()
     }
@@ -484,9 +485,9 @@ export class BillComponent implements OnInit {
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
-    if (this.companysetting.DataFormat === '1') {
+    if (this.companySetting.DataFormat === '1') {
       event = event.toUpperCase()
-    } else if (this.companysetting.DataFormat == '2') {
+    } else if (this.companySetting.DataFormat == '2') {
       event = event.toTitleCase()
     }
     return event;

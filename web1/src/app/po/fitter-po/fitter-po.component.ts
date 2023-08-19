@@ -22,6 +22,7 @@ import { SupportService } from 'src/app/service/support.service';
   styleUrls: ['./fitter-po.component.css']
 })
 export class FitterPoComponent implements OnInit {
+  companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
 
   constructor(
     private route: ActivatedRoute,

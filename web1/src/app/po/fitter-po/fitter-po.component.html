@@ -162,7 +162,7 @@
                                             <td>{{v.Quantity}}</td>
                                             <td>{{(v.Option !== 'undefined' && v.Option !== 'null')? v.Option: ''}}</td>
                                             <td *ngIf="!this.orderFitter">{{v.FitterName}}</td>
-                                            <td *ngIf="!this.orderFitter">{{v.FitterCost}}</td>
+                                            <td *ngIf="!this.orderFitter">{{v.FitterCost | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                             <td> {{(v.FitterStatus !== 'initiate')? v.FitterStatus: ''}}</td>
                                             <td>
                                                 <select (change)="check(v)" [disabled]="v.FitterStatus !== 'initiate'"  [ngClass]="{'borderLens': v.ProductTypeName === 'LENS'}" class="inputselectWidth"

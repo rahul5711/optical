@@ -93,7 +93,7 @@
                                         </td>
                                         <td class="text-center">{{data.Name }}</td>
                                         <td class="text-center">{{data.Category }}</td>
-                                        <td class="text-center">{{data.Amount}}</td>
+                                        <td class="text-center">{{data.Amount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                         <td class="text-center">{{data.PaymentMode}}<span
                                                 *ngIf="this.data.CashType != ''">-[{{data.CashType}}]</span> </td>
                                         <td class="text-center">{{data.PaymentRefereceNo}}</td>

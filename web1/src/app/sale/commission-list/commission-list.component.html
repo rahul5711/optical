@@ -93,7 +93,7 @@
                                             <td>{{v.InvoiceNo}}</td>
                                             <td>{{v.PurchaseDate}}</td>
                                             <td>{{v.PaymentStatus}}</td>
-                                            <td>{{v.TotalAmount}}</td>
+                                            <td>{{v.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                         </tr>
                                       </tbody>
                                   </table>
@@ -128,13 +128,13 @@
               <tbody>
                   <tr class="text-center" *ngFor="let gst of gst_details let i = index;">
                       <td>{{gst.GSTType}}</td>
-                      <td>{{gst.Amount}}</td>
+                      <td>{{gst.Amount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                   </tr>
               </tbody>
               <tfoot class="text-center">
                   <tr>
                       <th style="color: red; font-weight: 600;">Total Amt</th>
-                      <th style="color: red; font-weight: 600;">{{this.TotalGSTAmount}}</th>
+                      <th style="color: red; font-weight: 600;">{{this.TotalGSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</th>
                   </tr>
               </tfoot>
           </table>

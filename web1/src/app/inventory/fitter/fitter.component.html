@@ -212,7 +212,7 @@
                                                     </td>
                                                     <td>{{rateCardList.length - i}}</td>
                                                     <td> {{s.LensType}} </td>
-                                                    <td> {{s.Rate}} </td>
+                                                    <td> {{s.Rate | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}} </td>
                                                 </tr>
                                             </tbody>
                                         </table>

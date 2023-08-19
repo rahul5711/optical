@@ -400,7 +400,7 @@
                                                     {{data.ProductName}}</td>
                                                 <td class="text-center"
                                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.UnitPrice }}</td>
+                                                    {{data.UnitPrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                 <td class="text-center"
                                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                                     {{data.Quantity}}</td>
@@ -409,28 +409,28 @@
                                                     {{data.DiscountPercentage}}%</td>
                                                 <td class="text-center"
                                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.DiscountAmount}}</td>
+                                                    {{data.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                 <td class="text-center"
                                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.SubTotal}}</td>
+                                                    {{data.SubTotal | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                 <td class="text-center"
                                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                                     {{data.GSTPercentage}}%</td>
                                                 <td class="text-center"
                                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.GSTAmount}}</td>
+                                                    {{data.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                 <td class="text-center"
                                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                                     {{data.GSTType}}</td>
                                                 <td class="text-center"
                                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.TotalAmount}}</td>
+                                                    {{data.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                 <td class="text-center"
                                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.RetailPrice}}</td>
+                                                    {{data.RetailPrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                 <td class="text-center"
                                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.WholeSalePrice}}</td>
+                                                    {{data.WholeSalePrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                 <td class="text-center"
                                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                                     <span *ngIf="data.BrandType == 0">None</span>

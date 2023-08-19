@@ -24,7 +24,7 @@ import { ExcelService } from 'src/app/service/helpers/excel.service';
 export class ExpenseComponent implements OnInit {
 
   user = JSON.parse(localStorage.getItem('user') || '');
-  companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
 
   @ViewChild('searching') searching: ElementRef | any;
@@ -236,9 +236,9 @@ export class ExpenseComponent implements OnInit {
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
-    if (this.companysetting?.DataFormat === '1') {
+    if (this.companySetting?.DataFormat === '1') {
       event = event.toUpperCase()
-    } else if (this.companysetting?.DataFormat == '2') {
+    } else if (this.companySetting?.DataFormat == '2') {
       event = event.toTitleCase()
     }
     return event;

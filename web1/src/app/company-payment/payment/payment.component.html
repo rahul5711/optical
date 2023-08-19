@@ -148,12 +148,12 @@
                                                         AreaName}})</span></td>
                                                 <td>{{data.PurchaseDate}}</td>
                                                 <td>{{data.GSTNo}}</td>
-                                                <td>{{data.DiscountAmount}}</td>
-                                                <td>{{data.GSTAmount}}</td>
+                                                <td>{{data.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                                <td>{{data.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                 <td>{{data.PaymentStatus}}</td>
-                                                <td>{{data.TotalAmount}}</td>
-                                                <td>{{data.DueAmount}}</td>
-                                                <td>{{data.PaidAmount}}</td>
+                                                <td>{{data.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                                <td>{{data.DueAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                                <td>{{data.PaidAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                             </tr>
                                         </tbody>
                                     </table>

@@ -89,7 +89,7 @@
                                         <td class="text-center">{{data.Month }} </td>
                                         <td class="text-center">{{data.Year }}</td>
                                         <td class="text-center">{{data.LeaveDays }}</td>
-                                        <td class="text-center">{{data.Salary }}</td>
+                                        <td class="text-center">{{data.Salary | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                         <td class="text-center">{{data.PaymentMode}}
                                             <span *ngIf="this.data.CashType != ''">-[{{data.CashType}}]</span>
                                         </td>

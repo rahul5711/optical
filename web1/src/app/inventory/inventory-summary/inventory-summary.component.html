@@ -219,7 +219,7 @@
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.Barcode}}</td>
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.SupplierName}}
                                                     </td>
-                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.UnitPrice}}
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.UnitPrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
                                                     </td>
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">
                                                         {{s.DiscountPercentage}}%</td>
@@ -227,10 +227,10 @@
                                                         {{s.GSTPercentagex}}%</td>
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.GSTTypex}}
                                                     </td>
-                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.RetailPrice}}
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.RetailPrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
                                                     </td>
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">
-                                                        {{s.WholeSalePrice}}</td>
+                                                        {{s.WholeSalePrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                 </tr>
                                             </tbody>
                                         </table>

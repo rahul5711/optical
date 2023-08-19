@@ -99,9 +99,9 @@
                                             <td>{{item.MobileNo}}</td>
                                             <td>{{item.InvoiceNo}}</td>
                                             <td>{{item.BillDate}}</td>
-                                            <td>{{item.BillAmount}}</td>
+                                            <td>{{item.BillAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                             <td>{{item.PaymentStatus}}</td>
-                                            <td>{{item.CommissionAmount }}</td>
+                                            <td>{{item.CommissionAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                             <td>{{item.PayeeName}}</td>
                                         </tr>
                                     </tbody>

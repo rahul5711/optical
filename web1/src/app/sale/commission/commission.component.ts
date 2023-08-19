@@ -21,7 +21,7 @@ import { PaymentService } from 'src/app/service/payment.service';
 })
 export class CommissionComponent implements OnInit {
   user = JSON.parse(localStorage.getItem('user') || '');
-  companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   env = environment;
