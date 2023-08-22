@@ -5,7 +5,9 @@ import { Observable,throwError, of} from 'rxjs';
 import { environment } from '../../environments/environment';
 import { TokenService } from './token.service';
 
-
+const httpOptions: any = {
+  headers: new HttpHeaders({'Content-Type': 'application/json'})
+};
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +23,14 @@ export class AuthServiceService {
 
 
     login(data:any) {
-      return this.http.post(`${environment.apiUrl}/login`, data);
+      const ip = document.getElementById('ip')!.innerHTML;
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'ip': ip // Add the IP address as a header
+        })
+      };
+      return this.http.post(`${environment.apiUrl}/login`, data, httpOptions);
     }
 
 
