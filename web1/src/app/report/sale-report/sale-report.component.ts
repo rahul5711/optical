@@ -571,7 +571,6 @@ export class SaleReportComponent implements OnInit {
     this.modalService.open(content1, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
   }
 
-
   exportAsXLSXcharge(): void {
     let element = document.getElementById('billServiceExcel');
     const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);

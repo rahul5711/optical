@@ -82,6 +82,7 @@ export class BillCalculationService {
                 backdrop: false,
               });
               BillItem.GSTPercentage = 0;
+              BillItem.GSTType = 'None'
             } else {
               BillItem.GSTAmount = (+BillItem.Quantity * +BillItem.UnitPrice - +BillItem.DiscountAmount) - ((+BillItem.Quantity * +BillItem.UnitPrice - +BillItem.DiscountAmount) / (1 + +BillItem.GSTPercentage / 100));
             }

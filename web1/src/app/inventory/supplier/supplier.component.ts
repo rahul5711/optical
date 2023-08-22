@@ -193,15 +193,21 @@ export class SupplierComponent implements OnInit {
                 showConfirmButton: false,
                 timer: 1000
               })
+              this.getList();
             } else {
               this.as.errorToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: res.message,
+                showConfirmButton: true,
+              })
             }
             this.sp.hide();
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
-        this.getList();
       }
     })
   }

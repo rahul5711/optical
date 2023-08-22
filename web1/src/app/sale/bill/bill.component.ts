@@ -494,6 +494,7 @@ export class BillComponent implements OnInit {
   }
 
   getSearchByBarcodeNo() {
+    if(this.Req.SearchBarCode !== ''){
     this.sp.show();
     if (this.BillItem.Manual == false) {
       if (this.BillItem.PreOrder) {
@@ -505,8 +506,6 @@ export class BillComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.searchList = res.data[0];
-            console.log(this.searchList);
-
             if (this.searchList === undefined || this.searchList.Barcode === null || this.searchList.length === 0) {
               Swal.fire({
                 icon: 'warning',
@@ -515,7 +514,7 @@ export class BillComponent implements OnInit {
                 footer: '',
                 backdrop: false,
               });
-              this.Req = {}
+              this.sp.hide();
             }
 
             this.selectedProduct = this.searchList.ProductTypeName;
@@ -576,6 +575,7 @@ export class BillComponent implements OnInit {
         backdrop: false,
       });
     }
+    }
   }
 
   getSearchByString() {
@@ -615,6 +615,7 @@ export class BillComponent implements OnInit {
         });
       }
     } else {
+      this.sp.hide();
       this.BarcodeList = []
     }
   }
@@ -685,11 +686,9 @@ export class BillComponent implements OnInit {
         this.BillItem.Quantity = 1;
       }
       this.billCalculation.calculations(fieldName, mode, this.BillItem, this.Service)
-      this.getGSTList();
       // Lens option
     } else {
       this.billCalculation.calculations(fieldName, mode, this.BillItem, this.Service)
-      this.getGSTList();
     }
     this.GstTypeDis = false
   }
@@ -734,7 +733,6 @@ export class BillComponent implements OnInit {
     if (this.BillMaster.ID !== null) {
       this.BillItem.Status = 2;
       this.BillItem.DuaCal = 'yes';
-
     }
 
     if (!this.BillItem.PreOrder && !this.BillItem.Manual && this.BillItem.Quantity > this.searchList.BarCodeCount) {
@@ -957,7 +955,7 @@ export class BillComponent implements OnInit {
   }
 
   update() {
-    this.sp.show()
+
     this.BillMaster.ShopID = this.loginShopID;
     this.BillMaster.CustomerID = this.customerID2;
 
@@ -975,6 +973,7 @@ export class BillComponent implements OnInit {
     this.data.billDetailData = items;
     this.data.service = this.serviceLists;
     console.log(this.data);
+    this.sp.show()
     const subs: Subscription = this.bill.updateBill(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -988,7 +987,7 @@ export class BillComponent implements OnInit {
             showConfirmButton: false,
             timer: 1000
           })
-          this.sp.hide()
+
         } else {
           this.as.errorToast(res.message)
           Swal.fire({
@@ -998,13 +997,11 @@ export class BillComponent implements OnInit {
             showConfirmButton: true,
           })
         }
-        console.log(res);
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
- 
     });
-    this.sp.hide()
   }
 
   deleteItem(category: any, i: any) {
@@ -1625,10 +1622,35 @@ export class BillComponent implements OnInit {
   }
 
   calculateFields1(fieldName: any, mode: any, data: any) {
+  
    this.billCalculation.calculations(fieldName, mode, data, '')
   }
 
   updataEditProdcut(fieldName: any, mode: any, data: any){
+    if(data.GSTType === 'None'){
+      if(data.GSTPercentage != 0){
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Without GSTType the selected value will not be saved ',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        data.UpdateProduct = true
+      }
+    } 
+   if(data.GSTPercentage === 0){
+      if(data.GSTType != 'None'){
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Without GSTType the selected value will not be saved ',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        data.UpdateProduct = true
+      }
+    }
       this.sp.show()
       this.calculateFields1(fieldName, mode, data)
       let totalPaid = 0

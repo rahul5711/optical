@@ -10,3 +10,13 @@
     padding: 0;
     height: 35px;
   }
+
+button:disabled .edit_icon {
+    background-color: #bdbdbd;
+    color: #878787;
+}
+
+button:disabled .delete_icon {
+    background-color: #bdbdbd;
+    color: #878787;
+}

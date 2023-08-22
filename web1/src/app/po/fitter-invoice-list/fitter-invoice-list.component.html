@@ -109,7 +109,7 @@
                                                     <mat-icon class="edit_icon ms-1">edit
                                                     </mat-icon>
                                                 </button>
-                                                <button *ngIf="UpdateProduct"  class="bg-btn" (click)="updateInvoice(v)">
+                                                <button *ngIf="UpdateProduct && v.PaymentStatus === 'Unpaid'"  class="bg-btn" (click)="updateInvoice(v)">
                                                     <mat-icon class="edit_icon ms-1">save
                                                     </mat-icon>
                                                 </button>
@@ -121,7 +121,7 @@
                                               <input class="inputWidth"  name="v.InvoiceNo{{i}}"
                                               [(ngModel)]="v.InvoiceNo"
                                               required #InvoiceNocontrol [autocomplete]="false"
-                                              [disabled]="!UpdateProduct" >
+                                              [disabled]="!UpdateProduct " >
                                             </td>
                                             <td>{{v.ShopName}}<span [style.color]="'blue'" *ngIf="v.AreaName !== 'null'">({{v.AreaName}})</span></td>
                                             <td>{{v.PurchaseDate }}</td>

@@ -56,6 +56,7 @@ export class DoctorComponent implements OnInit {
   editDoctor = false
   addDoctor = false
   deleteDoctor = false
+  purchasVariable: any = 0;
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
@@ -68,6 +69,10 @@ export class DoctorComponent implements OnInit {
     if (this.id != 0) {
       this.getDoctorById(); 
     }
+    this.route.queryParams.subscribe(params => {
+      this.purchasVariable = +params['check'] || this.id;
+    });
+   
   }
 
   uploadImage(e:any, mode:any){
@@ -90,7 +95,6 @@ export class DoctorComponent implements OnInit {
     const subs: Subscription =  this.ds.saveDoctor( this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.router.navigate(['/sale/doctorList']); 
           Swal.fire({
             position: 'center',
             icon: 'success',
@@ -98,6 +102,14 @@ export class DoctorComponent implements OnInit {
             showConfirmButton: false,
             timer: 1200
           }) 
+          if (this.purchasVariable !== 0) {
+            this.purchasVariable
+            this.router.navigate(['sale/billing/',this.purchasVariable,0]);
+            this.sp.hide()
+          } else{
+            this.router.navigate(['/sale/doctorList']); 
+
+          }
         } else {
           this.as.errorToast(res.message)
         }

@@ -20,6 +20,8 @@ import { EmployeeService } from 'src/app/service/employee.service';
 import { BillService } from 'src/app/service/bill.service';
 import { ProductService } from 'src/app/service/product.service';
 import { trigger, style, animate, transition } from '@angular/animations';
+import { DoctorService } from 'src/app/service/doctor.service';
+
 
 @Component({
   selector: 'app-billing',
@@ -73,6 +75,7 @@ export class BillingComponent implements OnInit {
     public calculation: CustomerPowerCalculationService,
     public bill: BillService,
     private ps: ProductService,
+    private dc: DoctorService,
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.id2 = this.route.snapshot.params['billid'];
@@ -88,7 +91,7 @@ export class BillingComponent implements OnInit {
     R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: null, FileURL: null, Family: 'Self', ExpiryDate: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
   };
 
-  clens: ContactModel = {
+  clens: any = {
     ID: 'null', CustomerID: '', REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
     LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
     R_Addition: '', L_Addition: '', R_KR: '', L_KR: '', R_HVID: '', L_HVID: '', R_CS: '', L_CS: '', R_BC: '', L_BC: '',
@@ -97,7 +100,7 @@ export class BillingComponent implements OnInit {
     CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
   };
 
-  other: OtherModel = {
+  other: any = {
     ID: 'null', CustomerID: '', BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
   };
 
@@ -414,11 +417,11 @@ export class BillingComponent implements OnInit {
 
   ];
   // dropdown values in satics 
-
+  showDoctorAdd = false;
   editCustomer = false
   addCustomer = false
   deleteCustomer = false
-
+  numberList:any=[]
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'Customer') {
@@ -431,7 +434,24 @@ export class BillingComponent implements OnInit {
     if (this.id != 0) {
       this.getCustomerById();
     }
+    this.doctorList()
     this.srcBox = true;
+  }
+
+  doctorList() {
+    this.sp.show();
+    const subs: Subscription = this.dc.dropdownDoctorlist().subscribe({
+      next: (res: any) => {
+        if (res.success) {
+           this.docList = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   specCheck(mode: any) {
@@ -495,7 +515,16 @@ export class BillingComponent implements OnInit {
               timer: 1500
             })
           }
-
+          // this.numberList.forEach((e: any)=>{
+          //   if(e.MobileNo1 === res.data[0].MobileNo1){
+          //     Swal.fire({
+          //       position: 'center',
+          //       icon: 'warning',
+          //       title: 'Has been duplicat moblie number',
+          //       showConfirmButton: true,
+          //     })
+          //   }
+          // })
         } else {
           this.as.errorToast(res.message)
         }
@@ -506,7 +535,6 @@ export class BillingComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.contactList
   }
 
   getScoList() {
@@ -561,7 +589,7 @@ export class BillingComponent implements OnInit {
             }
           }
 
-          if (this.contactList.length !== 0) {
+          if (res.contact_lens_rx.length !== 0) {
             this.clens = res.contact_lens_rx[0]
             if (res.contact_lens_rx[0].PhotoURL !== "null" && res.contact_lens_rx[0].PhotoURL !== '') {
               this.clensImage = this.env.apiUrl + res.contact_lens_rx[0].PhotoURL;
@@ -570,7 +598,7 @@ export class BillingComponent implements OnInit {
             }
           }
 
-          if (this.otherList.length !== 0) {
+          if (res.other_rx.length !== 0) {
             this.other = res.other_rx[0]
           }
           this.getScoList()
@@ -815,6 +843,11 @@ export class BillingComponent implements OnInit {
   }
   // Billing
 
+  closeSearchList(){
+    this.srcBox = false;
+    this.searchList = []
+  }
+
   customerSearch(searchKey: any, mode: any) {
 
     this.searchList = [];
@@ -837,6 +870,7 @@ export class BillingComponent implements OnInit {
         next: (res: any) => {
           if (res) {
             this.searchList = res.data
+            this.srcBox = true
           } else {
             this.as.errorToast(res.message)
           }
@@ -875,7 +909,7 @@ export class BillingComponent implements OnInit {
               }
             }
 
-            if (this.contactList.length !== 0) {
+            if (res.contact_lens_rx.length !== 0) {
               this.clens = res.contact_lens_rx[0]
               if (res.contact_lens_rx[0].PhotoURL !== "null" && res.contact_lens_rx[0].PhotoURL !== '') {
                 this.clensImage = this.env.apiUrl + res.contact_lens_rx[0].PhotoURL;
@@ -884,7 +918,7 @@ export class BillingComponent implements OnInit {
               }
             }
 
-            if (this.otherList.length !== 0) {
+            if (res.other_rx.length !== 0) {
               this.other = res.other_rx[0]
             }
             this.as.successToast(res.message)
@@ -901,5 +935,20 @@ export class BillingComponent implements OnInit {
       })
     }
   }
+
+  // customerNumber(parama:any){
+  //   this.param = parama
+  //   const subs: Subscription = this.cs.customerSearch(this.param).subscribe({
+  //     next: (res: any) => {
+  //       if (res) {
+  //         this.numberList = res.data
+  //       } else {
+  //         this.as.errorToast(res.message)
+  //       }
+  //     },
+  //     error: (err: any) => console.log(err.message),
+  //     complete: () => subs.unsubscribe(),
+  //   });
+  // }
 
 }

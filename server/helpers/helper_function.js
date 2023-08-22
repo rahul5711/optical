@@ -441,8 +441,9 @@ module.exports = {
     const currentStatus = "Pre Order";
     const paymentStatus = "Unpaid"
     const [supplierData] = await mysql2.pool.query(`select * from supplier where CompanyID = ${CompanyID} and Name = 'PreOrder Supplier'`)
-
-    const [purchaseMasterData] = await mysql2.pool.query(`select * from purchasemasternew where CompanyID = ${CompanyID} and ShopID = ${ShopID} and purchasemasternew.SupplierID = ${supplierData[0].ID} order by purchasemasternew.ID desc`)
+console.log(supplierData,'===============supplierData');
+const [purchaseMasterData] = await mysql2.pool.query(`select * from purchasemasternew where CompanyID = ${CompanyID} and ShopID = ${ShopID} and purchasemasternew.SupplierID = ${supplierData[0].ID} order by purchasemasternew.ID desc`)
+console.log(purchaseMasterData,'===============purchaseMasterData');
 
     if (purchaseMasterData[0]?.Quantity === undefined || purchaseMasterData[0]?.Quantity <= 50) {
       console.log("Quantity less than 50");

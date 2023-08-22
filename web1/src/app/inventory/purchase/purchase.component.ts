@@ -727,6 +727,30 @@ export class PurchaseComponent implements OnInit {
   }
 
   calculateFields1(fieldName: any, mode: any, data: any) {
+    if(data.GSTType === 'None'){
+      if(data.GSTPercentage != 0){
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Without GSTType the selected value will not be saved ',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        data.UpdateProduct = true
+      }
+    } 
+    if(data.GSTPercentage === 0){
+      if(data.GSTType != 'None'){
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Without GSTType the selected value will not be saved ',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        data.UpdateProduct = true
+      }
+    }
     this.calculation.calculateFields(fieldName, mode, data, '')
   }
 

@@ -125,15 +125,15 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>BarCode</mat-label>
                         <input matInput name="SearchBarCode" [(ngModel)]="Req.SearchBarCode"
-                            (keydown.Tab)="getSearchByBarcodeNo()" required #SearchBarCodecontrol #GSTNocontrol
-                            [autocomplete]="false" appAutoFoucsDirectives>
+                            (keydown.Tab)="getSearchByBarcodeNo()" required #SearchBarCodecontrol 
+                            autocomplete="off" appAutoFoucsDirectives>
                     </mat-form-field>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Search By Product Name</mat-label>
-                        <input matInput name="searchString" [(ngModel)]="Req.searchString" #SearchProductNamecontrol
-                            #GSTNocontrol [autocomplete]="false" (change)="getSearchByString()">
+                        <input matInput name="searchString" [(ngModel)]="Req.searchString" #SearchStringNamecontrol
+                            autocomplete="off" (change)="getSearchByString()">
                     </mat-form-field>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
@@ -518,7 +518,7 @@
                             <tr class="text-center" *ngFor="let data of billItemList ; let i = index;">
                                 <td></td>
                                 <td>{{i+1}}</td>
-                                <td> <button class="bgRemove" *ngIf="data.Status !== 0" >
+                                <td style="white-space: nowrap;"> <button class="bgRemove" *ngIf="data.Status !== 0" >
                                     <mat-icon *ngIf="deleteCustomerBill" class="deletes_icon ms-1" (click)="deleteItem('Product', i)" >delete_forever</mat-icon>
                                     <mat-icon class="edit_icon ms-1" (click)="openModal(content,data)"  >remove_red_eye</mat-icon>
 
@@ -590,14 +590,17 @@
                                     {{data.GSTType}}</td>
 
                                     <td *ngIf="data.UpdateProduct" >
-                                        <select class="inputselectWidth" name="GSTType"
+                                        <select *ngIf="data.GSTPercentage == 0 " class="inputselectWidth" name="GSTType"
                                             [(ngModel)]="data.GSTType" #name="ngModel"
                                             (change)="updataEditProdcut('','',data)"
                                             [ngModelOptions]="{standalone: true}" name="data{{i}}">
-                                            <option value='None' *ngIf="data.GSTPercentage === 0 ">None</option>
-                                            <option [value]="g.Name" *ngFor="let g of gstList">
-                                                 <span *ngIf="data.GSTPercentage !== 0">{{g.Name}}</span>
-                                            </option>
+                                            <option value='None'>None</option>
+                                        </select>
+                                        <select *ngIf="data.GSTPercentage !== 0 " class="inputselectWidth" name="GSTType"
+                                            [(ngModel)]="data.GSTType" #name="ngModel"
+                                            (change)="updataEditProdcut('','',data)"
+                                            [ngModelOptions]="{standalone: true}" name="data{{i}}">
+                                            <option [value]="g.Name" *ngFor="let g of gstList"> {{g.Name}}</option>
                                         </select>
                                     </td>
 
