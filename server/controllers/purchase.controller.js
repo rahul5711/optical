@@ -2255,7 +2255,7 @@ module.exports = {
 
             for (const item of purchaseDetail) {
                 if (item.ID === null) {
-                    const doesProduct = 0
+                    const doesProduct = await doesExistProduct(CompanyID, item)
 
                     // generate unique barcode
                     item.UniqueBarcode = await generateUniqueBarcode(CompanyID, supplierId, item)
