@@ -2004,7 +2004,7 @@ module.exports = {
 
             for (let item of Body) {
                 if (!item.ID || item.ID === null || item.ID === undefined) return res.send({ message: "Invalid Query Data1" })
-                if (item.FitterID === null || item.FitterID === undefined) return res.send({ message: "Invalid Query Data2" })
+                if (item.FitterID === null || item.FitterID === undefined || item.FitterID == 0) return res.send({ message: "Invalid Query Data2" })
                 if (!item.Sel || item.Sel == 0) return res.send({ message: "Invalid Query Data3" })
                 if (!item.Sel || item.Sel == 0) return res.send({ message: "Invalid Query Data3" })
             }
