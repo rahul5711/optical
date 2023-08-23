@@ -21,6 +21,7 @@ import { BillService } from 'src/app/service/bill.service';
 import { ProductService } from 'src/app/service/product.service';
 import { trigger, style, animate, transition } from '@angular/animations';
 import { DoctorService } from 'src/app/service/doctor.service';
+import { SupportService } from 'src/app/service/support.service';
 
 
 @Component({
@@ -76,6 +77,7 @@ export class BillingComponent implements OnInit {
     public bill: BillService,
     private ps: ProductService,
     private dc: DoctorService,
+    private supps: SupportService,
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.id2 = this.route.snapshot.params['billid'];
@@ -422,6 +424,8 @@ export class BillingComponent implements OnInit {
   addCustomer = false
   deleteCustomer = false
   numberList:any=[]
+  otherLists:any=[]
+
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'Customer') {
@@ -479,6 +483,40 @@ export class BillingComponent implements OnInit {
 
   openModal(content: any) {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+    this.otherSuppList()
+    this.ReferenceSuppList()
+  }
+
+  otherSuppList() {
+    this.sp.show();
+    const subs: Subscription = this.supps.getList('Other').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.otherLists = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  ReferenceSuppList() {
+    this.sp.show();
+    const subs: Subscription = this.supps.getList('ReferenceBy').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.ReferenceList = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   onsubmit() {
@@ -649,14 +687,14 @@ export class BillingComponent implements OnInit {
     this.spectacle = {
       ID: '', CustomerID: '', REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
       LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
-      R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: null, FileURL: null, Family: 'Self', ExpiryDate: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
+      R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: '', DistanceWork: false, UploadBy: 'Upload', PhotoURL: null, FileURL: null, Family: 'Self', ExpiryDate: '', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
     };
 
     this.clens = {
       ID: ' ', CustomerID: '', REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
       LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
       R_Addition: '', L_Addition: '', R_KR: '', L_KR: '', R_HVID: '', L_HVID: '', R_CS: '', L_CS: '', R_BC: '', L_BC: '',
-      R_Diameter: '', L_Diameter: '', BR: '', Material: '', Modality: '', RefferedByDoc: 'Self', Other: '', ConstantUse: false,
+      R_Diameter: '', L_Diameter: '', BR: '', Material: '', Modality: '', RefferedByDoc: '', Other: '', ConstantUse: false,
       NearWork: false, DistanceWork: false, Multifocal: false, PhotoURL: null, FileURL: null, Family: 'Self', Status: 1, CreatedBy: 0,
       CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
     };

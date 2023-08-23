@@ -70,7 +70,7 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label> Name</mat-label>
                                                 <input matInput min="3" [(ngModel)]="data.Name" name="Name"
-                                                (input)="customerSearch(UserNamecontrol.value, 'Name')" (blur)="closeSearchList()" required
+                                                (input)="customerSearch(UserNamecontrol.value, 'Name');closeSearchList()"  required
                                                 #UserNamecontrol>
                                                 <mat-error>
                                                     Name is required
@@ -89,7 +89,7 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Mobile No1</mat-label>
                                                 <input matInput name="MobileNo1" type="number"
-                                                    [(ngModel)]="data.MobileNo1"  (input)="customerSearch(MobileNo1control.value, 'MobileNo1')" (blur)="closeSearchList()" #MobileNo1control />
+                                                    [(ngModel)]="data.MobileNo1"  (input)="customerSearch(MobileNo1control.value, 'MobileNo1');closeSearchList()" #MobileNo1control />
                                             </mat-form-field> 
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-4 mb-0">
@@ -119,7 +119,7 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Address</mat-label>
                                                 <input matInput name="Address" minlength="2" [(ngModel)]="data.Address"
-                                                (input)="customerSearch(Addresscontrol.value, 'Address')" (blur)="closeSearchList()"  #Addresscontrol />
+                                                (input)="customerSearch(Addresscontrol.value, 'Address');closeSearchList()"  #Addresscontrol />
                                                 <mat-error>
                                                     Atleast 2 characters required
                                                 </mat-error>
@@ -129,7 +129,7 @@
                                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>SR/MRD No. </mat-label>
-                                                <input matInput name="Sno" [(ngModel)]="data.Sno"  (input)="customerSearch(Snocontrol.value, 'Sno')" (blur)="closeSearchList()" #Snocontrol />
+                                                <input matInput name="Sno" [(ngModel)]="data.Sno"  (input)="customerSearch(Snocontrol.value, 'Sno');closeSearchList()" #Snocontrol />
                                                 <mat-error>
                                                     SR/MRD No. is required
                                                 </mat-error>
@@ -382,7 +382,7 @@
                                                         <div *ngIf="!showDoctorAdd" class="col-md-2 col-4 col-12 mb-0">
                                                             <mat-form-field class="example-full-width mb-0">
                                                                 <mat-label>Rx By Doc</mat-label>
-                                                                <mat-select name="Field Type" [(ngModel)]="spectacle.RefferedByDoc"  #Typecontrol>
+                                                                <mat-select name="RefferedByDocSep" [(ngModel)]="spectacle.RefferedByDoc"  #RefferedByDocSepcontrol>
                                                                     <mat-option *ngFor="let doc of docList let i = index;" [value]="doc.Name">
                                                                         {{doc.Name}}
                                                                     </mat-option>
@@ -748,7 +748,7 @@
                                                     <div *ngIf="!showDoctorAdd" class="col-md-2 col-4 col-12 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Rx By Doc</mat-label>
-                                                            <mat-select name="Field Type" [(ngModel)]="clens.RefferedByDoc"  #Typecontrol>
+                                                            <mat-select name="RefferedByDocClens" [(ngModel)]="clens.RefferedByDoc"  #RefferedByDocClenscontrol>
                                                                 <mat-option *ngFor="let doc of docList let i = index;" [value]="doc.Name">
                                                                     {{doc.Name}}
                                                                 </mat-option>
@@ -799,13 +799,13 @@
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>DiaMe_L</mat-label>
                                                             <input matInput name="CRefractiveIndex"
-                                                                [(ngModel)]="clens.R_Diameter" />
+                                                                [(ngModel)]="clens.L_Diameter" />
                                                         </mat-form-field>
                                                     </div>
                                                     <div class="col-2 p-0 pe-3">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Modality</mat-label>
-                                                            <input matInput name="CRefractiveIndex"
+                                                            <input matInput name="Modality"
                                                                 [(ngModel)]="clens.Modality" />
                                                         </mat-form-field>
                                                     </div>
@@ -1014,7 +1014,7 @@
                                                     <div *ngIf="!showDoctorAdd" class="col-md-2 col-4 col-12 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Rx By Doc</mat-label>
-                                                            <mat-select name="Field Type" [(ngModel)]="other.RefferedByDoc"  #Typecontrol>
+                                                            <mat-select name="RefferedByDocOther" [(ngModel)]="other.RefferedByDoc"  #RefferedByDocOthercontrol>
                                                                 <mat-option *ngFor="let doc of docList let i = index;" [value]="doc.Name">
                                                                     {{doc.Name}}
                                                                 </mat-option>
@@ -1203,7 +1203,7 @@
                                                         <mat-label> Other </mat-label>
                                                         <mat-select name="Other" [(ngModel)]="data.Other" #Othercontrol>
                                                             <mat-option></mat-option>
-                                                            <mat-option [value]="o.Name" *ngFor="let o of OtherList">
+                                                            <mat-option [value]="o.Name" *ngFor="let o of otherLists">
                                                                 {{o.Name}} </mat-option>
                                                         </mat-select>
                                                     </mat-form-field>
