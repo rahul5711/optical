@@ -2347,6 +2347,9 @@ module.exports = {
                     "totalAmount": 0,
                     "totalDiscount": 0,
                     "totalUnitPrice": 0,
+                    "totalSubTotal": 0,
+                    "totalRetailPrice": 0,
+                    "totalWholeSalePrice": 0,
                     "gst_details": []
                 }]
             }
@@ -2410,6 +2413,10 @@ module.exports = {
                     response.calculation[0].totalAmount += item.TotalAmount
                     response.calculation[0].totalDiscount += item.DiscountAmount
                     response.calculation[0].totalUnitPrice += item.UnitPrice
+                    response.calculation[0].totalSubTotal += item.SubTotal
+                    response.calculation[0].totalWholeSalePrice += item.WholeSalePrice
+                    response.calculation[0].totalRetailPrice += item.RetailPrice
+
 
                     if (values) {
                         values.forEach(e => {

@@ -24,7 +24,7 @@ module.exports = {
             }
 
 
-            [doesExist] = await mysql2.pool.query(`select * from doctor where Status = 1 and Name = '${Body.Name}' and CompanyID = ${CompanyID}`)
+           const [doesExist] = await mysql2.pool.query(`select * from doctor where Status = 1 and Name = '${Body.Name}' and CompanyID = ${CompanyID}`)
 
             if (doesExist.length) {
                 return res.send({ message: `doctor already exist from this name ${Body.Name}` })

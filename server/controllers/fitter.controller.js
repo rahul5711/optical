@@ -27,14 +27,14 @@ module.exports = {
             if (!Body.Name || Body.Name.trim() === "" || Body.Name === undefined || Body.Name === null) {
                 return res.send({ message: "Invalid Query Data" })
             }
-            if (!Body.MobileNo1 || Body.MobileNo1 === "" || Body.MobileNo1 === undefined || Body.MobileNo1 === null) {
-                return res.send({ message: "Invalid Query Data" })
-            }
+            // if (!Body.MobileNo1 || Body.MobileNo1 === "" || Body.MobileNo1 === undefined || Body.MobileNo1 === null) {
+            //     return res.send({ message: "Invalid Query Data" })
+            // }
 
-            [doesExist] = await mysql2.pool.query(`select * from fitter where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID}`)
+          const [doesExist] = await mysql2.pool.query(`select * from fitter where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID}`)
 
             if (doesExist.length) {
-                return res.send({ message: `fitter already exist from this number ${Body.MobileNo1}` })
+                return res.send({ message: `mobile number already exist ` })
             }
 
             const [saveData] = await mysql2.pool.query(`insert into fitter (CompanyID, ShopID, Name,  MobileNo1,  MobileNo2,  PhoneNo,  Email,  Address,  Website,  PhotoURL,  CINNO, GSTNo,  Fax, ContactPerson, Remark,  DOB,  Anniversary, Status, CreatedBy , CreatedOn ) values (${CompanyID}, ${shopid}, '${Body.Name}',  '${Body.MobileNo1}', '${Body.MobileNo2}', '${Body.PhoneNo}','${Body.Email}', '${Body.Address}', '${Body.Website}','${Body.PhotoURL}','${Body.CINNo}','${Body.GSTNo}','${Body.Fax}','${Body.ContactPerson}','${Body.Remark}','${Body.DOB}', '${Body.Anniversary}', 1 , '${LoggedOnUser}', now())`)
@@ -290,7 +290,7 @@ module.exports = {
 
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.FitterID) return res.send({ message: "Invalid Query Data" })
-            [doesExist] = await mysql2.pool.query(`select * from fitterassignedshop where Status = 1 and FitterID=${Body.FitterID} and ShopID=${Body.ShopID}`);
+           const [doesExist] = await mysql2.pool.query(`select * from fitterassignedshop where Status = 1 and FitterID=${Body.FitterID} and ShopID=${Body.ShopID}`);
 
             if (doesExist.length) {
                 return res.send({ message: `User have already FitterAssignedShop in this shop` });

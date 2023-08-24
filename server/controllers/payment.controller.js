@@ -530,13 +530,19 @@ module.exports = {
 
             if (!PaymentType || PaymentType === undefined) return res.send({ message: "Invalid PaymentType Data" })
             if (!PayeeName || PayeeName === undefined) return res.send({ message: "Invalid PayeeName Data" })
-            if (!ShopID || ShopID === undefined) return res.send({ message: "Invalid ShopID Data" })
+            // if (!ShopID || ShopID === undefined) return res.send({ message: "Invalid ShopID Data" })
+
+            let param = ``
+
+            if (ShopID !== 0) {
+                param = ` and commissiondetail.ShopID = ${ShopID}`
+            }
 
             let qry = ``
             if (PaymentType === 'Employee') {
-                qry = `select 0 AS Sel, commissiondetail.ID, commissiondetail.CommissionAmount, user.Name as PayeeName, user1.Name as SalesPerson, billmaster.InvoiceNo, billmaster.BillDate, billmaster.PaymentStatus, billmaster.TotalAmount as BillAmount, billmaster.Quantity AS Quantity,  customer.Name as CustomerName, customer.MobileNo1 as MobileNo from commissiondetail left join user on user.ID = commissiondetail.UserID left join user as user1 on user1.ID = commissiondetail.CreatedBy left join billmaster on billmaster.ID = commissiondetail.BillMasterID left join customer on customer.ID = billmaster.CustomerID where commissiondetail.UserType = 'Employee' and commissiondetail.UserID = ${PayeeName} and commissiondetail.CompanyID = ${CompanyID} and commissiondetail.ShopID = ${ShopID} and commissiondetail.CommissionMasterID = 0`
+                qry = `select 0 AS Sel, commissiondetail.ID, commissiondetail.CommissionAmount, user.Name as PayeeName, user1.Name as SalesPerson, billmaster.InvoiceNo, billmaster.BillDate, billmaster.PaymentStatus, billmaster.TotalAmount as BillAmount, billmaster.Quantity AS Quantity,  customer.Name as CustomerName, customer.MobileNo1 as MobileNo from commissiondetail left join user on user.ID = commissiondetail.UserID left join user as user1 on user1.ID = commissiondetail.CreatedBy left join billmaster on billmaster.ID = commissiondetail.BillMasterID left join customer on customer.ID = billmaster.CustomerID where commissiondetail.UserType = 'Employee' and commissiondetail.UserID = ${PayeeName} and commissiondetail.CompanyID = ${CompanyID} ${param} and commissiondetail.CommissionMasterID = 0`
             } else if (PaymentType === 'Doctor') {
-                qry = `select 0 AS Sel, commissiondetail.ID, commissiondetail.CommissionAmount, doctor.Name as PayeeName, user1.Name as SalesPerson, billmaster.InvoiceNo, billmaster.BillDate, billmaster.PaymentStatus, billmaster.Quantity AS Quantity,  billmaster.TotalAmount as BillAmount, customer.Name as CustomerName, customer.MobileNo1 as MobileNo from commissiondetail left join doctor on doctor.ID = commissiondetail.UserID left join user as user1 on user1.ID = commissiondetail.CreatedBy left join billmaster on billmaster.ID = commissiondetail.BillMasterID left join customer on customer.ID = billmaster.CustomerID where commissiondetail.UserType = 'Doctor' and commissiondetail.UserID = ${PayeeName} and commissiondetail.CompanyID = ${CompanyID} and commissiondetail.ShopID = ${ShopID} and commissiondetail.CommissionMasterID = 0`
+                qry = `select 0 AS Sel, commissiondetail.ID, commissiondetail.CommissionAmount, doctor.Name as PayeeName, user1.Name as SalesPerson, billmaster.InvoiceNo, billmaster.BillDate, billmaster.PaymentStatus, billmaster.Quantity AS Quantity,  billmaster.TotalAmount as BillAmount, customer.Name as CustomerName, customer.MobileNo1 as MobileNo from commissiondetail left join doctor on doctor.ID = commissiondetail.UserID left join user as user1 on user1.ID = commissiondetail.CreatedBy left join billmaster on billmaster.ID = commissiondetail.BillMasterID left join customer on customer.ID = billmaster.CustomerID where commissiondetail.UserType = 'Doctor' and commissiondetail.UserID = ${PayeeName} and commissiondetail.CompanyID = ${CompanyID} ${param} and commissiondetail.CommissionMasterID = 0`
             }
 
 
@@ -660,6 +666,7 @@ module.exports = {
             await mysql2.pool.query("COMMIT");
             return res.send(response);
         } catch(err) {
+            console.log(err);
             next(err)
         }
     },
