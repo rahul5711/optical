@@ -513,6 +513,7 @@ export class PurchaseComponent implements OnInit {
   onSumbit() {
     this.sp.show();
     this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
+    this.selectedPurchaseMaster.PurchaseDate = moment().format('YYYY-MM-DD,h:mm:ss a');
     this.data.PurchaseMaster = this.selectedPurchaseMaster;
     this.data.PurchaseDetail = JSON.stringify(this.itemList);
     this.data.Charge = this.chargeList;

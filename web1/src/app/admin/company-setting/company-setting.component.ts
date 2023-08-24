@@ -47,16 +47,8 @@ export class CompanySettingComponent implements OnInit {
   dataList: any;
 
   dataFormat: any = [
-       {ID: 'llll', Name: 'Wed, Feb 10, 2021 7:03 PM'},
-       {ID: 'LLLL', Name: 'Wednesday, February 10, 2021 7:02 PM'},
-       {ID: 'lll', Name: 'Feb 10, 2021 7:00 PM'},
-       {ID: 'LLL', Name: 'February 10, 2021 7:00 PM'},
-       {ID: 'LL', Name: 'February 10, 2021'},
-       {ID: 'll', Name: 'Feb 10, 2021'},
-       {ID: 'L', Name: '02/10/2021'},
-       {ID: 'l', Name: '2/10/2021'},
-       {ID: 'DD/MM/YYYY', Name: '10/02/2021'},
-       {ID: 'DD-MM-YYYY', Name: '10-02-2021'}
+       {ID: 'DD-MM-YYYY', Name: '10-02-2021'},
+       {ID: 'DD-MM-YYYY, h:mm:ss a', Name: '01-12-2000,11:39 PM/AM'},
   ];
 
   wlcmArray: any = [];

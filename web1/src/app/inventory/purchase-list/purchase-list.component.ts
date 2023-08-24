@@ -12,6 +12,8 @@ import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MomentInput } from 'moment';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-purchase-list',
@@ -87,6 +89,11 @@ export class PurchaseListComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.collectionSize = res.count;
+          res.data.forEach((el: any) => {
+            el.PurchaseDate = moment(el.PurchaseDate).format(`${this.companySetting.DateFormat}`);
+            console.log(el.PurchaseDate);
+            
+          })
           this.dataList = res.data;
         }else{
           this.as.errorToast(res.message)
@@ -241,5 +248,7 @@ export class PurchaseListComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+
 
 }
