@@ -259,7 +259,7 @@
                     class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Option</mat-label>
-                        <mat-select name="Category" [(ngModel)]="BillItem.Option" (selectionChange)="calculations('Quantity', 'subTotal')" required #Typecontrol>
+                        <mat-select name="Option" [(ngModel)]="BillItem.Option" (selectionChange)="calculations('Quantity', 'subTotal')" required >
                             <mat-option value="Full Glass">Full Lens</mat-option>
                             <mat-option value="Half Glass Left">Half Lens Left</mat-option>
                             <mat-option value="Half Glass Right">Half Lens Right</mat-option>
@@ -1043,7 +1043,7 @@
                             </mat-form-field>
                         </div>
                        
-                        <div class="col-md-1 mb-0">
+                        <div class="col-md-2 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>New Payment</mat-label>
                                 <input type="number" min="0" style="font-size: 17px !important;" matInput name="PaymentAmount" [(ngModel)]="applyPayment.PaidAmount" [autocomplete]="false" >
@@ -1066,15 +1066,15 @@
                                 </mat-select>
                             </mat-form-field>
                         </div>
-                        <div class="col-md-2 mb-0" >
+                        <!-- <div class="col-md-2 mb-0" >
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Payment Type</mat-label>
                                 <mat-select name="CreditType" [(ngModel)]="applyPayment.CreditType" required #GSTTypecontrol1>
                                     <mat-option value="Credit">Credit </mat-option>
-                                    <!-- <mat-option value="Debit">Debit </mat-option> -->
+                                    <mat-option value="Debit">Debit </mat-option>
                                 </mat-select>
                             </mat-form-field>
-                        </div>
+                        </div> -->
                         <div class="col-md-2 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label> Card No.</mat-label>
@@ -1084,7 +1084,7 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
-                        <div class="col-md-2 mb-0">
+                        <div class="col-md-3 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Reference</mat-label>
                                 <input  style="font-size: 17px !important;" matInput name="NamePay" [(ngModel)]="applyPayment.PaymentReferenceNo" #NamePaycontrol [autocomplete]="false">

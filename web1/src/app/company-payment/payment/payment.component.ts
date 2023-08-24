@@ -239,8 +239,9 @@ export class PaymentComponent implements OnInit {
         this.data.PaidAmount = 0
       }
     }
-    this.sp.show()
+  
     if(this.data.PaidAmount !== 0){
+      this.sp.show()
       this.data.CompanyID = this.company.ID;
       this.data.ShopID = Number(this.selectedShop);
       this.data.PaymentDate =  moment().format('YYYY-MM-DD');

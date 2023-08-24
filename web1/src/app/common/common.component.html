@@ -109,7 +109,7 @@
               <a *ngIf="viewFlag.viewCustomerSearch" href="javascript:void(0)" [routerLink]="['/sale/customerList']" id="collapseExample">Customer Search</a>
               <a *ngIf="viewFlag.viewDoctorList" href="javascript:void(0)" [routerLink]="['/sale/doctorList']" id="collapseExample">Doctor</a>
               <a *ngIf="viewFlag.viewLoyalty" href="javascript:void(0)" [routerLink]="['/sale/commission']" id="collapseExample">Loyalty</a>
-              <a *ngIf="viewFlag.viewLoyaltyInvoice" href="javascript:void(0)" [routerLink]="['/sale/commissionList',0]" id="collapseExample">Loyalty  Invoice</a>
+              <a *ngIf="viewFlag.viewLoyaltyInvoice" href="javascript:void(0)" (click)="refresh('commissionList')" [routerLink]="['/sale/commissionList',0]" id="collapseExample">Loyalty  Invoice</a>
             </div>
           </div>
           <!-- companyadmin end Bliing -->

@@ -208,6 +208,8 @@ export class BillComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.BillMaster = res.result.billMaster[0]
+          this.BillMaster.BillDate = moment(res.result.billMaster[0].BillDate).format('YYYY-MM-DD') 
+          this.BillMaster.DeliveryDate =  moment(res.result.billMaster[0].DeliveryDate).format('YYYY-MM-DD') 
           this.gst_detail = this.BillMaster.gst_detail
           this.billItemList = res.result.billDetail
           this.serviceLists = res.result.service

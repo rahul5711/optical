@@ -881,10 +881,10 @@ export class BillingComponent implements OnInit {
   }
   // Billing
 
-  closeSearchList(){
-    this.srcBox = false;
-    this.searchList = []
-  }
+  // closeSearchList(){
+  //   this.srcBox = false;
+  //   this.searchList = []
+  // }
 
   customerSearch(searchKey: any, mode: any) {
 

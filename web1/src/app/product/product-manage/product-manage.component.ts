@@ -109,7 +109,7 @@ export class ProductManageComponent implements OnInit {
       if (element.Name.toLowerCase() === this.newProduct.Name.toLowerCase().trim()) { count = count + 1; }
     });
 
-    if (count === 0 && this.newProduct.Name !== '') {
+    if (this.newProduct.Name !== '') {
       const subs: Subscription = this.ps.productSave(this.newProduct).subscribe({
         next: (res: any) => {
           if (res.success) {
@@ -131,6 +131,12 @@ export class ProductManageComponent implements OnInit {
            
           } else {
             this.as.errorToast(res.message)
+            Swal.fire({
+              icon: 'error',
+              title: res.message,
+              showConfirmButton: true,
+              backdrop: false
+            });
           }
           this.sp.hide()
         },
@@ -143,9 +149,7 @@ export class ProductManageComponent implements OnInit {
       this.sp.hide()
       Swal.fire({
         icon: 'error',
-        title: 'Duplicate or Empty Values are not allowed',
-        text: '',
-        footer: '',
+        title: ' Empty Values are not allowed',
         backdrop: false
       });
       this.newProduct.Name = "";

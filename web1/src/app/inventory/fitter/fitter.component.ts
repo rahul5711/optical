@@ -68,7 +68,7 @@ export class FitterComponent implements OnInit {
   deleteFitter = false
 
   ngOnInit(): void {
- this.permission.forEach((element: any) => {
+    this.permission.forEach((element: any) => {
       if (element.ModuleName === 'Fitter') {
         this.editFitter = element.Edit;
         this.addFitter = element.Add;
@@ -292,7 +292,7 @@ export class FitterComponent implements OnInit {
 
   saveFitterAssignedShop() {
     this.sp.show();
-    this.assignShop.FitterID = this.id;
+    this.assignShop.FitterID = Number(this.id);
     const subs: Subscription = this.fs.saveFitterAssignedShop(this.assignShop).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -307,6 +307,12 @@ export class FitterComponent implements OnInit {
           this.getFitterById()
         } else {
           this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showConfirmButton: true,
+          })
         }
         this.sp.hide();
       },
@@ -352,7 +358,7 @@ export class FitterComponent implements OnInit {
         });
       }
     })
-   this.sp.hide();
+    this.sp.hide();
   }
 
 }

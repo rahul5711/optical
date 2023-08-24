@@ -163,6 +163,10 @@ export class CommonComponent implements OnInit {
       this.router.navigate(['/sale/billinglist',0]).then(() => {
         window.location.reload();
       });
+    }else if(mode === 'commissionList'){
+      this.router.navigate(['/sale/commissionList',0]).then(() => {
+        window.location.reload();
+      });
     }
 
   }

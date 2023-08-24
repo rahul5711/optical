@@ -56,7 +56,7 @@ export class DoctorComponent implements OnInit {
   editDoctor = false
   addDoctor = false
   deleteDoctor = false
-  purchasVariable: any = 0;
+  purchasVariable:any = 0;
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
@@ -102,7 +102,7 @@ export class DoctorComponent implements OnInit {
             showConfirmButton: false,
             timer: 1200
           }) 
-          if (this.purchasVariable !== 0) {
+          if (this.purchasVariable != 0) {
             this.purchasVariable
             this.router.navigate(['sale/billing/',this.purchasVariable,0]);
             this.sp.hide()
