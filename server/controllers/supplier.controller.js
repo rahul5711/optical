@@ -26,7 +26,7 @@ module.exports = {
             //     return res.send({ message: "Invalid Query Data" })
             // }
 
-            [doesExist] = await mysql2.pool.query(`select * from supplier where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID}`)
+           const [doesExist] = await mysql2.pool.query(`select * from supplier where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID}`)
 
             if (doesExist.length) {
                 return res.send({ message: `supplier already exist from this number ${Body.MobileNo1}` })
