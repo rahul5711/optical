@@ -120,7 +120,6 @@ export class PurchaseReportComponent implements OnInit {
   deletePurchaseProductExpiryReport = false
 
   ngOnInit(): void {
-    this.sp.show()
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'PurchaseReport') {
         this.viewPurchaseReport = element.View;
@@ -164,7 +163,6 @@ export class PurchaseReportComponent implements OnInit {
     this.ProductExpiry.FromDate = moment().format('YYYY-MM-DD');
     this.ProductExpiry.ToDate = moment().format('YYYY-MM-DD');
     this.purchaseProductExpiry();
-    this.sp.hide()
   }
 
   dropdownShoplist(){
@@ -190,7 +188,7 @@ export class PurchaseReportComponent implements OnInit {
   }
 
   getPurchaseMaster(){
-
+    this.sp.show()
     let Parem = '';
 
     if (this.PurchaseMaster.FromDate !== '' && this.PurchaseMaster.FromDate !== null){

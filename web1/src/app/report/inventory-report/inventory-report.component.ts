@@ -48,8 +48,11 @@ export class InventoryReportComponent implements OnInit {
   DetailtotalQty: any;
   DetailtotalDiscount: any;
   DetailtotalUnitPrice: any;
+  DetailtotalSubTotal: any;
   DetailtotalAmount: any;
   DetailtotalGstAmount: any;
+  DetailtotalRetailPrice: any;
+  DetailtotalWholeSalePricet: any;
   gstdetails:any
 
   ProductExpiryList:any
@@ -310,8 +313,11 @@ export class InventoryReportComponent implements OnInit {
           this.DetailtotalQty = res.calculation[0].totalQty;
           this.DetailtotalDiscount = res.calculation[0].totalDiscount.toFixed(2);
           this.DetailtotalUnitPrice = res.calculation[0].totalUnitPrice.toFixed(2);
+          this.DetailtotalSubTotal = res.calculation[0].totalSubTotal.toFixed(2);
           this.DetailtotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
           this.DetailtotalAmount = res.calculation[0].totalAmount.toFixed(2);
+          this.DetailtotalRetailPrice = res.calculation[0].totalRetailPrice.toFixed(2);
+          this.DetailtotalWholeSalePricet = res.calculation[0].totalWholeSalePrice.toFixed(2);
           this.gstdetails = res.calculation[0].gst_details
         }else{
           this.as.errorToast(res.message)
