@@ -226,7 +226,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.LensType) return res.send({ message: "Invalid Query Data" })
 
-            [doesExist] = await mysql2.pool.query(`select * from fitterratecard where Status = 1 and CompanyID = ${CompanyID} and FitterID = ${Body.FitterID} and LensType='${Body.LensType}'`);
+            const [doesExist] = await mysql2.pool.query(`select * from fitterratecard where Status = 1 and CompanyID = ${CompanyID} and FitterID = ${Body.FitterID} and LensType='${Body.LensType}'`);
 
             if (doesExist.length) {
                 return res.send({ message: `User have already LensType in this shop` });
