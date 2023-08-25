@@ -664,4 +664,7 @@ export class PurchaseReportComponent implements OnInit {
     this.gstExpirys = '' ;
   }
 
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
 }

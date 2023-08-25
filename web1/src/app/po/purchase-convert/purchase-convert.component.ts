@@ -16,6 +16,7 @@ import { CalculationService } from 'src/app/service/helpers/calculation.service'
 import { SupportService } from 'src/app/service/support.service';
 
 
+
 @Component({
   selector: 'app-purchase-convert',
   templateUrl: './purchase-convert.component.html',
@@ -25,6 +26,7 @@ export class PurchaseConvertComponent implements OnInit {
   evn = environment
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   company = JSON.parse(localStorage.getItem('company') || '');
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
 
   constructor(
     private route: ActivatedRoute,
@@ -272,5 +274,9 @@ export class PurchaseConvertComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     }
+  }
+
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
   }
 }

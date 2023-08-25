@@ -9,6 +9,7 @@ import { fromEvent   } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { PurchaseService } from 'src/app/service/purchase.service';
+import * as moment from 'moment';
 
 
 @Component({
@@ -70,6 +71,9 @@ export class PreorderListComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.collectionSize = res.count;
+          res.data.forEach((el: any) => {
+            el.PurchaseDate = moment(el.PurchaseDate).format(`${this.companySetting.DateFormat}`);
+          })
           this.dataList = res.data;
           this.as.successToast(res.message)
         }else{

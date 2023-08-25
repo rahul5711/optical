@@ -17,6 +17,7 @@ import { FormBuilder,FormGroup } from '@angular/forms';
 export class TransferProductReportComponent implements OnInit {
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
 
    form :any | FormGroup;
 
@@ -261,4 +262,7 @@ export class TransferProductReportComponent implements OnInit {
     const doc = document.getElementsByClassName('.ng-dropdown-panel')
 }
 
+dateFormat(date:any){
+  return moment(date).format(`${this.companySetting.DateFormat}`);
+}
 }

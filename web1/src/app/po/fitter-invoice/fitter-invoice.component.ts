@@ -208,4 +208,8 @@ export class FitterInvoiceComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
 }

@@ -11,6 +11,7 @@ import { environment } from 'src/environments/environment';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-purchase-return-list',
@@ -74,6 +75,9 @@ export class PurchaseReturnListComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.collectionSize = res.count;
+          res.data.forEach((el: any) => {
+            el.CreatedOn = moment(el.CreatedOn).format(`${this.companySetting.DateFormat}`);
+          })
           this.dataList = res.data;
           this.as.successToast(res.message)
         }else{

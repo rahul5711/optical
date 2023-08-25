@@ -10,6 +10,7 @@ import { PurchaseService } from 'src/app/service/purchase.service';
 import { ShopService } from 'src/app/service/shop.service';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
+import * as moment from 'moment';
 
 
 @Component({
@@ -231,6 +232,9 @@ export class InventorySummaryComponent implements OnInit {
       next: (res: any) => {
         if(res.message){
           this.as.successToast(res.message)
+          res.data.forEach((el: any) => {
+            el.PurchaseDate = moment(el.PurchaseDate).format(`${this.companySetting.DateFormat}`);
+          })
           this.SummaryList = res.data;
         }else{
           this.as.errorToast(res.message)

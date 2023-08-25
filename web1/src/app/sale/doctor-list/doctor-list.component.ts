@@ -10,6 +10,7 @@ import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators'
 import { fromEvent   } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-doctor-list',
@@ -20,6 +21,7 @@ export class DoctorListComponent implements OnInit {
   
   @ViewChild('searching') searching: ElementRef | any;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
 
   env = environment;
   gridview = true
@@ -69,6 +71,10 @@ export class DoctorListComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.collectionSize = res.count;
+          res.data.forEach((el: any) => {
+            el.DOB = moment(el.DOB).format(`${this.companySetting.DateFormat}`);
+            el.Anniversary = moment(el.Anniversary).format(`${this.companySetting.DateFormat}`);
+          })
           this.dataList = res.data;
           this.dataList.forEach((element: { PhotoURL: any; }) => {
             if(element.PhotoURL !== "null" && element.PhotoURL !== ''){

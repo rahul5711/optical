@@ -237,7 +237,7 @@
                           <tr *ngFor="let s of inventoryList; let i = index" text="left">
                             <td>{{ i+1 }} </td>
                             <td>{{s.InvoiceNo}}</td>
-                            <td>{{s.PurchaseDate}}</td>
+                            <td>{{dateFormat(s.PurchaseDate)}}</td>
                             <td>{{s.ShopName}}<span [style.color]="'blue'"
                                 *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></td>
                             <td>{{s.SupplierName}}</td>
@@ -246,15 +246,15 @@
                             <td>{{s.CurrentStatus}}</td>
                             <td>{{s.Barcode}}</td>
                             <td>{{s.Count}}</td>
-                            <td>{{s.UnitPrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                            <td>{{s.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                            <td>{{s.SubTotal | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                            <td>{{s.UnitPrice }}</td>
+                            <td>{{s.DiscountAmount }}</td>
+                            <td>{{s.SubTotal }}</td>
                             <td>{{s.GSTType}}</td>
                             <td>{{s.GSTPercentage}}%</td>
-                            <td>{{s.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                            <td>{{s.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                            <td>{{s.RetailPrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                            <td>{{s.WholeSalePrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                            <td>{{s.GSTAmount }}</td>
+                            <td>{{s.TotalAmount }}</td>
+                            <td>{{s.RetailPrice }}</td>
+                            <td>{{s.WholeSalePrice }}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -561,24 +561,24 @@
                           <tr *ngFor="let s of ProductExpiryList; let i = index">
                             <td [ngClass]="{'my_class': s.Color === true}">{{ i+1 }}</td>
                             <td [ngClass]="{'my_class': s.Color === true}">{{s.InvoiceNo}}</td>
-                            <td [ngClass]="{'my_class': s.Color === true}">{{s.PurchaseDate}}</td>
+                            <td [ngClass]="{'my_class': s.Color === true}">{{dateFormat(s.PurchaseDate)}}</td>
                             <td [ngClass]="{'my_class': s.Color === true}">{{s.ProductTypeName}}</td>
                             <td [ngClass]="{'my_class': s.Color === true}">{{s.ProductName}}</td>
                             <td [ngClass]="{'my_class': s.Color === true}">{{s.ShopName}}<span [style.color]="'blue'"
                                 *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></td>
                             <td [ngClass]="{'my_class': s.Color === true}">{{s.SupplierName}}</td>
                             <td [ngClass]="{'my_class': s.Color === true}">{{s.Quantity}}</td>
-                            <td [ngClass]="{'my_class': s.Color === true}">{{s.UnitPrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                            <td [ngClass]="{'my_class': s.Color === true}">{{s.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                            <td [ngClass]="{'my_class': s.Color === true}">{{s.SubTotal | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                            <td [ngClass]="{'my_class': s.Color === true}">{{s.UnitPrice }}</td>
+                            <td [ngClass]="{'my_class': s.Color === true}">{{s.DiscountAmount }}</td>
+                            <td [ngClass]="{'my_class': s.Color === true}">{{s.SubTotal }}</td>
                             <td [ngClass]="{'my_class': s.Color === true}">{{s.GSTPercentage}}%</td>
-                            <td [ngClass]="{'my_class': s.Color === true}">{{s.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                            <td [ngClass]="{'my_class': s.Color === true}">{{s.GSTAmount }}</td>
                             <td [ngClass]="{'my_class': s.Color === true}">{{s.GSTType}}</td>
-                            <td [ngClass]="{'my_class': s.Color === true}">{{s.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                            <td [ngClass]="{'my_class': s.Color === true}">{{s.TotalAmount }}</td>
                             <td [ngClass]="{'my_class': s.Color === true}">{{s.PaymentStatus}}</td>
-                            <td [ngClass]="{'my_class': s.Color === true}">{{s.RetailPrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                            <td [ngClass]="{'my_class': s.Color === true}">{{s.WholeSalePrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                            <td [ngClass]="{'my_class': s.Color === true}">{{s.ProductExpDate}}</td>
+                            <td [ngClass]="{'my_class': s.Color === true}">{{s.RetailPrice }}</td>
+                            <td [ngClass]="{'my_class': s.Color === true}">{{s.WholeSalePrice }}</td>
+                            <td [ngClass]="{'my_class': s.Color === true}">{{dateFormat(s.ProductExpDate)}}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -611,13 +611,13 @@
         <tbody>
           <tr class="text-center" *ngFor="let gst of gstdetails let i = index;">
             <td>{{gst.GSTType}}</td>
-            <td>{{gst.Amount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+            <td>{{gst.Amount }}</td>
           </tr>
         </tbody>
         <tfoot class="text-center">
           <tr>
             <th style="color: red; font-weight: 600;">Total Amt</th>
-            <th style="color: red; font-weight: 600;">{{this.DetailtotalGstAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</th>
+            <th style="color: red; font-weight: 600;">{{this.DetailtotalGstAmount }}</th>
           </tr>
         </tfoot>
       </table>
@@ -643,13 +643,13 @@
         <tbody>
           <tr class="text-center" *ngFor="let gst of gstExpirys let i = index;">
             <td>{{gst.GSTType}}</td>
-            <td>{{gst.Amount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+            <td>{{gst.Amount }}</td>
           </tr>
         </tbody>
         <tfoot class="text-center">
           <tr>
             <th style="color: red; font-weight: 600;">Total Amt</th>
-            <th style="color: red; font-weight: 600;">{{this.ExpirytotalGstAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</th>
+            <th style="color: red; font-weight: 600;">{{this.ExpirytotalGstAmount }}</th>
           </tr>
         </tfoot>
       </table>

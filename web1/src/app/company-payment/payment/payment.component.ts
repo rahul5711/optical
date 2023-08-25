@@ -301,4 +301,8 @@ export class PaymentComponent implements OnInit {
         return;
     }
   }
+
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
 }

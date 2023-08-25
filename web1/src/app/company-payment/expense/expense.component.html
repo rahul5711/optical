@@ -85,7 +85,7 @@
                                             </button>
                                         </td>
                                         <td class="text-center">{{ dataList.length - i }}</td>
-                                        <td class="text-center">{{data.ExpenseDate }}</td>
+                                        <td class="text-center">{{dateFormat(data.ExpenseDate)}}</td>
                                         <td class="text-center">{{data.InvoiceNo}}</td>
                                         <td class="text-center">{{data.ShopName }}
                                             <span [style.color]="'blue'" *ngIf="data.AreaName !== 'null'">({{data.

@@ -13,6 +13,7 @@ import { EmployeeService } from 'src/app/service/employee.service';
 import { DoctorService } from 'src/app/service/doctor.service';
 import { ShopService } from 'src/app/service/shop.service';
 import { PaymentService } from 'src/app/service/payment.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-commission',
@@ -108,6 +109,9 @@ export class CommissionComponent implements OnInit {
   getCommissionDetail(){
     const subs: Subscription = this.pay.getCommissionDetail(this.data).subscribe({
       next: (res: any) => {
+        res.data.forEach((el: any) => {
+          el.BillDate = moment(el.BillDate).format(`${this.companySetting.DateFormat}`);
+        })
         this.dataList  = res.data
       },
       error: (err: any) => console.log(err.message),

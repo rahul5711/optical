@@ -143,12 +143,12 @@
                                                     </td>
                                                     <td>{{ dataList.length - i }}</td>
                                                     <td>{{item.SupplierDocNo}}</td>
-                                                    <td>{{item.InvoiceDate}}</td>
+                                                    <td>{{dateFormat(item.InvoiceDate)}}</td>
                                                     <td>{{item.InvoiceNo}}</td>
                                                     <td>{{item.CustomerName}}</td>
                                                     <td>{{item.MobileNo1}}</td>
                                                     <td>{{item.ProductName}}</td>
-                                                    <td>{{item.InvoiceDate}}</td>
+                                                    <td>{{dateFormat(item.InvoiceDate)}}</td>
                                                     <td>
                                                         <input class="inputWidth" name="UnitPrice{{item.ID}}"
                                                             [(ngModel)]="item.UnitPrice" type="number" min="0"

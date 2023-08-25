@@ -13,6 +13,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { SupportService } from 'src/app/service/support.service';
 import Swal from 'sweetalert2';
+import * as moment from 'moment';
 
 
 @Component({
@@ -225,4 +226,7 @@ gstCheck(v:any){
     this.excelService.exportAsExcelFile(data, 'fitter_Invocielist');
   }
 
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
 }

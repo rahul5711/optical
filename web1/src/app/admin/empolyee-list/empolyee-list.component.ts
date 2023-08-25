@@ -11,6 +11,7 @@ import { fromEvent } from 'rxjs';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { environment } from 'src/environments/environment';
 import { DataStorageServiceService } from 'src/app/service/helpers/data-storage-service.service';
+import * as moment from 'moment';
 
 
 @Component({
@@ -20,7 +21,7 @@ import { DataStorageServiceService } from 'src/app/service/helpers/data-storage-
 })
 export class EmpolyeeListComponent implements OnInit {
   @ViewChild('searching') searching: ElementRef | any;
-
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   env = environment;
   gridview = true;
@@ -80,6 +81,10 @@ export class EmpolyeeListComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.collectionSize = res.count;
+          res.data.forEach((el: any) => {
+            el.DOB = moment(el.DOB).format(`${this.companySetting.DateFormat}`);
+            el.Anniversary = moment(el.Anniversary).format(`${this.companySetting.DateFormat}`);
+          })
           this.dataList = res.data
           this.dataList.forEach((element: { PhotoURL: any; }) => {
             if (element.PhotoURL !== "null" && element.PhotoURL !== '') {

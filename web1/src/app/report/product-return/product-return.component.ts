@@ -405,4 +405,7 @@ export class ProductReturnComponent implements OnInit {
     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
   }
 
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
 }

@@ -118,6 +118,9 @@ export class BillListComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.collectionSize = res.count;
+          res.data.forEach((el: any) => {
+            el.BillDate = moment(el.BillDate).format(`${this.companySetting.DateFormat}`);
+          })
           this.dataList = res.data;
           this.dataList.forEach((element: { PhotoURL: any; }) => {
             if(element.PhotoURL !== "null" && element.PhotoURL !== ''){

@@ -15,6 +15,7 @@ import { ShopService } from 'src/app/service/shop.service';
 import { SupportService } from 'src/app/service/support.service';
 import { ExpenseModel } from 'src/app/interface/Expense';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-expense',
@@ -335,6 +336,10 @@ export class ExpenseComponent implements OnInit {
 
   formReset() {
     this.data = { ID: 0, CompanyID: 0, ShopID: '', Name: '', InvoiceNo: '', Category: '', SubCategory: '', Amount: '', PaymentMode: '', CashType: '', PaymentRefereceNo: '', Comments: '', Status: 1, CreatedBy: '', UpdatedBy: '', CreatedOn: '', UpdatedOn: '', };
+  }
+
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
   }
 
 }

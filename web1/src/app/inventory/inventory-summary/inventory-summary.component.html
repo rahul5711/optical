@@ -208,8 +208,7 @@
                                                             <option [value]='2'>Non-Barnd</option>
                                                         </select>
                                                     </td>
-                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.PurchaseDate |
-                                                        date: 'dd/MM/yyyy'}}</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.PurchaseDate}}</td>
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.Count}}</td>
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">
                                                         {{s.ShopName}}<span [style.color]="'blue'"

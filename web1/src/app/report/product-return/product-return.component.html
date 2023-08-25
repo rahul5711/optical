@@ -331,19 +331,19 @@
                               <td>{{s.HSNcode}}</td>
                               <td>{{s.ProductName}}</td>
                               <td>{{s.Quantity}}</td>
-                              <td>{{s.UnitPrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                              <td>{{s.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                              <td>{{s.SubTotal | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                              <td>{{s.UnitPrice }}</td>
+                              <td>{{s.DiscountAmount }}</td>
+                              <td>{{s.SubTotal }}</td>
                               <td>{{s.GSTType}}</td>
                               <td>{{s.GSTPercentage}}%</td>
-                              <td>{{s.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                              <td>{{s.GSTAmount }}</td>
                               <td style="display: none;" ><span *ngIf="s.GSTType === 'CGST-SGST'">{{s.GSTPercentage/2}}</span></td>
                               <td style="display: none;" ><span *ngIf="s.GSTType === 'CGST-SGST'">{{s.GSTAmount/2}} </span></td>
                               <td style="display: none;" ><span *ngIf="s.GSTType === 'CGST-SGST'">{{s.GSTPercentage/2}}</span></td>
                               <td style="display: none;" ><span *ngIf="s.GSTType === 'CGST-SGST'">{{s.GSTAmount/2}}</span></td>
                               <td style="display: none;" ><span *ngIf="s.GSTType === 'IGST'">{{s.GSTPercentage}}</span></td>
                               <td style="display: none;" ><span *ngIf="s.GSTType === 'IGST'">{{s.GSTAmount}}</span></td>
-                              <td>{{s.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                              <td>{{s.TotalAmount }}</td>
                               <td>{{s.Barcode}}</td>
                               <td>{{s.ShopName}}<span [style.color]="'blue'"
                                   *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></td>
@@ -381,13 +381,13 @@
               <tbody>
                 <tr class="text-center" *ngFor="let gst of gstMaster let i = index;">
                   <td>{{gst.GSTType}}</td>
-                  <td>{{gst.Amount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                  <td>{{gst.Amount }}</td>
                 </tr>
               </tbody>
               <tfoot class="text-center">
                 <tr > 
                   <th style="color: red; font-weight: 600;">Total Amt</th>
-                  <th style="color: red; font-weight: 600;">{{this.totalGstAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</th>
+                  <th style="color: red; font-weight: 600;">{{this.totalGstAmount }}</th>
                 </tr>
               </tfoot>
             </table>
@@ -414,13 +414,13 @@
               <tbody>
                 <tr class="text-center" *ngFor="let gst of gstdetails let i = index;">
                   <td>{{gst.GSTType}}</td>
-                  <td>{{gst.Amount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                  <td>{{gst.Amount }}</td>
                 </tr>
               </tbody>
               <tfoot class="text-center">
                 <tr > 
                   <th style="color: red; font-weight: 600;">Total Amt</th>
-                  <th style="color: red; font-weight: 600;">{{this.DetailtotalGstAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</th>
+                  <th style="color: red; font-weight: 600;">{{this.DetailtotalGstAmount }}</th>
                 </tr>
               </tfoot>
             </table>

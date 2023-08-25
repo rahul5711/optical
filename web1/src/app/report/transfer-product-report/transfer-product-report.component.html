@@ -214,7 +214,7 @@
                                                 <td>{{data.ToShop}}<span [style.color]="'blue'"
                                                         *ngIf="data.ToAreaName !== 'null'">({{data.ToAreaName}})</span>
                                                 </td>
-                                                <td>{{data.DateStarted}}</td>
+                                                <td>{{dateFormat(data.DateStarted)}}</td>
                                                 <td [ngClass]="{'TransferInitiated': data.TransferStatus === 'Transfer Initiated', 'TransferCompleted': data.TransferStatus === 'Transfer Completed' }">{{data.TransferStatus}}</td>
                                                 <td>{{data.CreatedByUser}}</td>
                                             </tr>

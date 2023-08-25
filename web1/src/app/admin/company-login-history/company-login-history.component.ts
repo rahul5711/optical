@@ -8,6 +8,7 @@ import { EmployeeService } from 'src/app/service/employee.service';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
 import { AlertService } from 'src/app/service/helpers/alert.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-company-login-history',
@@ -19,6 +20,8 @@ export class CompanyLoginHistoryComponent implements OnInit {
   @ViewChild('searching') searching: ElementRef | any;
   term = "";
   loggedInUser:any = localStorage.getItem('LoggedINUser');
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
+
   evn = environment;
   stringUrl: string | undefined;
   dataList: any;
@@ -56,6 +59,9 @@ export class CompanyLoginHistoryComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.collectionSize = res.count;
+          res.data.forEach((el: any) => {
+            el.LoginTime = moment(el.LoginTime).format(`${this.companySetting.DateFormat} h:mm a`);
+          })
           this.dataList = res.data
           this.as.successToast(res.message)
         }else{

@@ -146,7 +146,7 @@
                                                 <td>{{data.ShopName}} <span [style.color]="'blue'"
                                                         *ngIf="data.AreaName !== 'null'">({{data.
                                                         AreaName}})</span></td>
-                                                <td>{{data.PurchaseDate}}</td>
+                                                <td>{{dateFormat(data.PurchaseDate)}}</td>
                                                 <td>{{data.GSTNo}}</td>
                                                 <td>{{data.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                 <td>{{data.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>

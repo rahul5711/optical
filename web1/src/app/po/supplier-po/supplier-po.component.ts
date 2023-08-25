@@ -22,7 +22,8 @@ import { ShopService } from 'src/app/service/shop.service';
   styleUrls: ['./supplier-po.component.css']
 })
 export class SupplierPoComponent implements OnInit {
-  
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
+
   env = environment;
   constructor(
     private route: ActivatedRoute,
@@ -398,6 +399,10 @@ export class SupplierPoComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     this.sp.hide()
+  }
+
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
   }
 
   AssignSupplierPDF(){

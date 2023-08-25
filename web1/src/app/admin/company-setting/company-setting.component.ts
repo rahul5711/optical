@@ -48,7 +48,7 @@ export class CompanySettingComponent implements OnInit {
 
   dataFormat: any = [
        {ID: 'DD-MM-YYYY', Name: '10-02-2021'},
-       {ID: 'DD-MM-YYYY, h:mm:ss a', Name: '01-12-2000,11:39 PM/AM'},
+       {ID: 'DD-MM-YYYY h:mm a', Name: '01-12-2000,11:39 PM/AM'},
   ];
 
   wlcmArray: any = [];

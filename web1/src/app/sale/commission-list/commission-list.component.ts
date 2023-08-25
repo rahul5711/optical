@@ -14,6 +14,7 @@ import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { SupportService } from 'src/app/service/support.service';
 import Swal from 'sweetalert2';
 import { PaymentService } from 'src/app/service/payment.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-commission-list',
@@ -103,6 +104,9 @@ export class CommissionListComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.collectionSize = res.count;
+          res.data.forEach((el: any) => {
+            el.PurchaseDate = moment(el.PurchaseDate).format(`${this.companySetting.DateFormat}`);
+          })
           this.dataList = res.data;
           this.as.successToast(res.message)
         } else {

@@ -124,7 +124,7 @@
                                               [disabled]="!UpdateProduct || v.PaymentStatus !== 'Unpaid'" >
                                             </td>
                                             <td>{{v.ShopName}}<span [style.color]="'blue'" *ngIf="v.AreaName !== 'null'">({{v.AreaName}})</span></td>
-                                            <td>{{v.PurchaseDate }}</td>
+                                            <td>{{dateFormat(v.PurchaseDate)}}</td>
                                             <td>{{v.PaymentStatus}}</td>
                                             <td>
                                               <input class="inputWidth"  name="v.GSTPercentage{{v.ID}}"

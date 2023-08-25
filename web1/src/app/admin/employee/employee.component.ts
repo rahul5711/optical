@@ -13,6 +13,7 @@ import { RoleService } from 'src/app/service/role.service';
 import { ShopService } from 'src/app/service/shop.service';
 import { take } from 'rxjs/operators';
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
+import * as moment from 'moment';
 
 
 @Component({
@@ -77,6 +78,7 @@ export class EmployeeComponent implements OnInit {
 
   onSubmit(){
     this.sp.show();
+  
     const subs: Subscription =  this.es.saveUser(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -165,7 +167,7 @@ export class EmployeeComponent implements OnInit {
 
   updateUser(){
     this.sp.show()
-    const subs: Subscription =  this.es.updateUser( this.data).subscribe({
+    const subs: Subscription =  this.es.updateUser(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
             this.router.navigate(['/admin/employee/' , this.id]);

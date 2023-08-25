@@ -10,6 +10,7 @@ import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators'
 import { fromEvent   } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-fitter-list',
@@ -20,6 +21,7 @@ export class FitterListComponent implements OnInit {
 
   @ViewChild('searching') searching: ElementRef | any;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
 
   env = environment;
   gridview = true;
@@ -197,6 +199,10 @@ export class FitterListComponent implements OnInit {
       }
     })
     this.excelService.exportAsExcelFile(data, 'fitter_list');
+  }
+
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
   }
 
 }

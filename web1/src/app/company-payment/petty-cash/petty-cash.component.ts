@@ -15,6 +15,7 @@ import { SupportService } from 'src/app/service/support.service';
 import { PettycashModel} from 'src/app/interface/pettycash';
 import { PettycashService } from 'src/app/service/pettycash.service';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-petty-cash',
@@ -320,6 +321,10 @@ export class PettyCashComponent implements OnInit {
   formReset() {
     this.data = { ID: '', CompanyID: '', ShopID: '', EmployeeID: '', InvoiceNo: '', CashType:'', CreditType: '', Amount: 0.00,
     Comments: '', Status: 1, CreatedBy: '', UpdatedBy: '', CreatedOn: '', UpdatedOn: '',  }
+  }
+
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
   }
 
 }

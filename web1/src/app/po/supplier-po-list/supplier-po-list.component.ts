@@ -24,6 +24,7 @@ export class SupplierPoListComponent implements OnInit {
 
   evn = environment
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
 
   constructor(
     private route: ActivatedRoute,
@@ -157,6 +158,10 @@ export class SupplierPoListComponent implements OnInit {
     this.data = {
       FromDate:'',ToDate:'', SupplierID: 0, ShopID: 0, 
     };
+  }
+
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
   }
 
 }

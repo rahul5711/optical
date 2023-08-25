@@ -588,4 +588,8 @@ export class SaleReportComponent implements OnInit {
     this.ServicetotalGstAmount = ''
     this.gstService = ''
   }
+
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
 }

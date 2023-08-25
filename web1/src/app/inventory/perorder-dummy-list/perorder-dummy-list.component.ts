@@ -12,6 +12,7 @@ import { PurchaseService } from 'src/app/service/purchase.service';
 import { CalculationService } from 'src/app/service/helpers/calculation.service';
 import { ProductService } from 'src/app/service/product.service';
 import { SupplierService } from 'src/app/service/supplier.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-perorder-dummy-list',
@@ -252,6 +253,9 @@ export class PerorderDummyListComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.collectionSize = res.count;
+          res.data.forEach((el: any) => {
+            el.CreatedOn = moment(el.CreatedOn).format(`${this.companySetting.DateFormat}`);
+          })
           this.dataList = res.data;
           this.as.successToast(res.message)
         } else {

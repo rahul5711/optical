@@ -106,7 +106,7 @@ export class PurchaseComponent implements OnInit {
     if (this.id != 0) {
       this.getPurchaseById();
     } else {
-      this.selectedPurchaseMaster.PurchaseDate = moment().format('YYYY-MM-DD');
+      this.selectedPurchaseMaster.PurchaseDate = moment(new Date()).format('YYYY-MM-DD');
     }
   }
 
@@ -116,6 +116,7 @@ export class PurchaseComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.selectedPurchaseMaster = res.result.PurchaseMaster[0]
+          res.result.PurchaseMaster[0].PurchaseDate = moment().format('YYYY-MM-DD')
           this.itemList = res.result.PurchaseDetail
           this.chargeList = res.result.Charge
           this.gst_detail = this.selectedPurchaseMaster.gst_detail
@@ -513,7 +514,6 @@ export class PurchaseComponent implements OnInit {
   onSumbit() {
     this.sp.show();
     this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
-    this.selectedPurchaseMaster.PurchaseDate = moment().format('YYYY-MM-DD,h:mm:ss a');
     this.data.PurchaseMaster = this.selectedPurchaseMaster;
     this.data.PurchaseDetail = JSON.stringify(this.itemList);
     this.data.Charge = this.chargeList;

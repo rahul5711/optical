@@ -69,7 +69,7 @@
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Invoice Date</mat-label>
                                         <input matInput name="InvoiceDate" type="date"
-                                            [(ngModel)]="selectedPurchaseMaster.PurchaseDate" required
+                                            [(ngModel)]="selectedPurchaseMaster.PurchaseDate" 
                                             #InvoiceDatecontrol
                                             [disabled]="user.UserGroup === 'Employee' && selectedPurchaseMaster.ID !== null">
                                         <mat-error>

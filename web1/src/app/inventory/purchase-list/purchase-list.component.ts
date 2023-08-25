@@ -91,8 +91,6 @@ export class PurchaseListComponent implements OnInit {
           this.collectionSize = res.count;
           res.data.forEach((el: any) => {
             el.PurchaseDate = moment(el.PurchaseDate).format(`${this.companySetting.DateFormat}`);
-            console.log(el.PurchaseDate);
-            
           })
           this.dataList = res.data;
         }else{
