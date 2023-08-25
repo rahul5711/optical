@@ -156,17 +156,20 @@ export class CommonComponent implements OnInit {
 
   refresh(mode:any){
     if(mode === 'purchaseList'){
-      this.router.navigate(['/inventory/purchaseList',0]).then(() => {
-        window.history.go();
-      });
+      this.router.navigate(['/inventory/purchaseList',0])
+      // .then(() => {
+      //   window.history.go();
+      // });
     }else if(mode === 'billinglist'){
-      this.router.navigate(['/sale/billinglist',0]).then(() => {
-        window.location.reload();
-      });
+      this.router.navigate(['/sale/billinglist',0])
+      // .then(() => {
+      //   window.location.reload();
+      // });
     }else if(mode === 'commissionList'){
-      this.router.navigate(['/sale/commissionList',0]).then(() => {
-        window.location.reload();
-      });
+      this.router.navigate(['/sale/commissionList',0])
+      // .then(() => {
+      //   window.location.reload();
+      // });
     }
 
   }
