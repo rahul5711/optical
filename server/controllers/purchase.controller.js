@@ -1,5 +1,4 @@
 const createError = require('http-errors')
-const mysql = require('../newdb')
 const _ = require("lodash")
 const { generateBarcode, generateUniqueBarcode, doesExistProduct, shopID, gstDetail } = require('../helpers/helper_function')
 const { now } = require('lodash')

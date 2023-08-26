@@ -1,9 +1,7 @@
 const createError = require('http-errors')
-const mysql = require('../newdb')
 const _ = require("lodash")
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
-const _Query = require('../helpers/queryBuilder')
 const { shopID } = require('../helpers/helper_function')
 const mysql2 = require('../database')
 

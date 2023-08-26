@@ -1,9 +1,6 @@
 const createError = require('http-errors')
-const mysql = require('../newdb')
-const pass_init = require('../helpers/generate_password')
 const { Idd, generateVisitNo, shopID } = require('../helpers/helper_function')
 const _ = require("lodash")
-const bcrypt = require('bcrypt')
 const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;

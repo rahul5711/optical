@@ -1,5 +1,4 @@
 const createError = require('http-errors')
-const mysql = require('../newdb')
 const pass_init = require('../helpers/generate_password')
 const {
     signAccessTokenAdmin,

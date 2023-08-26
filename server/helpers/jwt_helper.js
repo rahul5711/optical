@@ -2,7 +2,6 @@ const JWT = require('jsonwebtoken')
 const createError = require('http-errors')
 require('dotenv').config();
 const client = require('./init_redis')
-const getConnection = require('../helpers/db')
 const mysql2 = require('../database')
 
 
