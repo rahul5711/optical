@@ -25,7 +25,11 @@
                                         <mat-label>Search By Product</mat-label>
                                         <mat-select name="FieldType" [(ngModel)]="selectedProduct"
                                             (selectionChange)="getFieldList()" required #Typecontrol>
-                                            <mat-option *ngFor="let prod of prodList   let i = index;"
+                                            <mat-option>
+                                                <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option *ngFor="let prod of prodList | proditemfilter: searchValue    let i = index;"
                                                 [value]="prod.Name">
                                                 {{prod.Name | uppercase}}
                                             </mat-option>
@@ -68,8 +72,12 @@
                                                 (selectionChange)="getFieldSupportData(i);getBarCodeList(i)"
                                                 editable="true" [required]="spec.Required === 1" #singleSelect>
                                                 <mat-option>
+                                                    <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                    </ngx-mat-select-search>
                                                 </mat-option>
-                                                <mat-option *ngFor="let val of spec.SptFilterData "
+                                                <mat-option>
+                                                </mat-option>
+                                                <mat-option *ngFor="let val of spec.SptFilterData | proditemfilterPurchase: searchValue  "
                                                     [value]="val.TableValue">
                                                     {{val.TableValue}}
                                                 </mat-option>

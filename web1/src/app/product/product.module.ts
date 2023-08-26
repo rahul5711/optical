@@ -24,12 +24,17 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { AddManageComponent } from './add-manage/add-manage.component';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { ProductTypeNameFilter} from './../filterDropDown/nameFilter';
+import { ProductMasterItemFilter} from './../filterDropDown/nameFilter';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 @NgModule({
   declarations: [
     ProductManageComponent,
     ProductMasterComponent,
-    AddManageComponent
+    AddManageComponent,
+    ProductTypeNameFilter,
+    ProductMasterItemFilter
   ],
   imports: [
     CommonModule,
@@ -54,7 +59,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
     MatCheckboxModule,
     MatTabsModule,
     NgbModule,
-    NgSelectModule
+    NgSelectModule,
+    NgxMatSelectSearchModule
   ]
 })
 export class ProductModule { }

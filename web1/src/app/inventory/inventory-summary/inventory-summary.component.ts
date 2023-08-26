@@ -38,7 +38,7 @@ export class InventorySummaryComponent implements OnInit {
   supplierList:any;
   UpdateBarndType = false;
   BarndTypeUp:any = 0;
-
+  searchValue:any
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -126,7 +126,6 @@ export class InventorySummaryComponent implements OnInit {
           }else{
             this.as.errorToast(res.message)
           }
-          this.sp.hide()
        },
        error: (err: any) => console.log(err.message),
        complete: () => subs.unsubscribe(),
@@ -140,7 +139,6 @@ export class InventorySummaryComponent implements OnInit {
   }
 
   getSptTableData() { 
-    this.sp.show()
     this.specList.forEach((element: any) => {
      if (element.FieldType === 'DropDown' && element.Ref === '0') {
        const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
@@ -151,7 +149,6 @@ export class InventorySummaryComponent implements OnInit {
           }else{
             this.as.errorToast(res.message)
           }
-          this.sp.hide()
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
@@ -161,7 +158,6 @@ export class InventorySummaryComponent implements OnInit {
   }
 
   getFieldSupportData(index:any) {
-    this.sp.show()
     this.specList.forEach((element: any) => {
      if (element.Ref === this.specList[index].FieldName.toString() ) {
        const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
@@ -172,7 +168,6 @@ export class InventorySummaryComponent implements OnInit {
           }else{
             this.as.errorToast(res.message)
           }
-          this.sp.hide()
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),

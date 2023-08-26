@@ -18,6 +18,8 @@ import { ProductService } from 'src/app/service/product.service';
 
 export class ProductManageComponent implements OnInit {
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
+
   i: any;
 
   constructor(
@@ -44,7 +46,7 @@ export class ProductManageComponent implements OnInit {
   fieldType: any[] = [{ ID: 1, Name: "DropDown" }, { ID: 2, Name: "Text" }, { ID: 3, Name: "boolean" }, { ID: 4, Name: "Date" }];
 
   selectedProductID: any;
-  searchValue: any;
+  searchValue: any = '';
   disbleProduct = true
   hideSave = true
   showAdds = false
@@ -377,5 +379,15 @@ export class ProductManageComponent implements OnInit {
     });
   }
 }
+
+onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
+  if (this.companySetting.DataFormat === '1') {
+    event = event.toUpperCase()
+  } else if (this.companySetting.DataFormat == '2') {
+    event = event.toTitleCase()
+  }
+  return event;
+}
+
 
 }

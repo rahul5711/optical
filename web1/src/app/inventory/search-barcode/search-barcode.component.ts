@@ -33,7 +33,7 @@ export class SearchBarcodeComponent implements OnInit {
   searchList: any;
   ShopMode = 'false';
   UpdateBarcode = false;
-
+  searchValue:any
   constructor(
     private router: Router,
     private route: ActivatedRoute,

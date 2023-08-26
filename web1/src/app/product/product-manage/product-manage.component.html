@@ -18,7 +18,11 @@
                                         <mat-label>Product</mat-label>
                                         <mat-select name="selectedProduct" [(ngModel)]="selectedProduct" required
                                             (selectionChange)="getfieldList()" #Typecontrol appAutoFoucsDirectives>
-                                            <mat-option *ngFor="let prod of prodList  let i = index; "
+                                            <mat-option>
+                                                <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option *ngFor="let prod of prodList | prodtypenamefilter: searchValue   let i = index; "
                                                 [value]="prod.Name">
                                                 {{prod.Name }}
                                             </mat-option>
