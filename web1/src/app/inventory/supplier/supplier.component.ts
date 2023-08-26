@@ -110,8 +110,14 @@ export class SupplierComponent implements OnInit {
           } else {
             this.getList();
           }
+          this.modalService.dismissAll()
         } else {
           this.as.errorToast(res.message);
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+          });
         }
         this.sp.hide()
       },
@@ -120,8 +126,6 @@ export class SupplierComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.modalService.dismissAll()
-    this.getList();
   }
 
  

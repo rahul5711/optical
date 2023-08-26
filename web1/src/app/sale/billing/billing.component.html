@@ -37,11 +37,14 @@
                                             role="tab" aria-controls="ex1-tabs-2" aria-selected="false">Contact Rx</a>
                                     </li>
                                     <li class="nav-item d-flex" role="presentation" (click)="specCheck('other')">
+                                        
                                         <mat-checkbox class="example-margin ps-1" color="primary"
                                             [(ngModel)]="Check.OtherCheck"
                                             style="position: absolute; z-index: 9;cursor: pointer;"></mat-checkbox>
+                                            
                                         <a class="nav-link" id="ex1-tab-3" data-mdb-toggle="tab" href="#ex1-tabs-3"
                                             role="tab" aria-controls="ex1-tabs-3" aria-selected="false">Other Rx</a>
+                                            
                                     </li>
 
                                 </ul>
@@ -383,7 +386,11 @@
                                                             <mat-form-field class="example-full-width mb-0">
                                                                 <mat-label>Rx By Doc</mat-label>
                                                                 <mat-select name="RefferedByDocSep" [(ngModel)]="spectacle.RefferedByDoc"  #RefferedByDocSepcontrol>
-                                                                    <mat-option *ngFor="let doc of docList let i = index;" [value]="doc.Name">
+                                                                    <mat-option>
+                                                                        <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                                        </ngx-mat-select-search>
+                                                                    </mat-option>
+                                                                    <mat-option *ngFor="let doc of docList  | nameFilterS: searchValue let i = index;" [value]="doc.Name">
                                                                         {{doc.Name}}
                                                                     </mat-option>
                                                                 </mat-select>
@@ -393,7 +400,7 @@
                                                             </mat-form-field>
                                                         </div>
                                                         <div *ngIf="!showDoctorAdd" class="col-md-1 col-4 b-0">
-                                                            <button mat-mini-fab color="primary" [routerLink]="['/sale/doctor',0]" [queryParams]="{ check: this.id}"  aria-label="Example icon button with a bookmark icon">
+                                                            <button mat-mini-fab color="primary" [routerLink]="['/sale/doctor',0]" [queryParams]="{ check: 1}"  aria-label="Example icon button with a bookmark icon">
                                                             <mat-icon>add</mat-icon>
                                                         </button>
                                                         </div>
@@ -510,7 +517,7 @@
                                                                         </td>
                                                                         <td class="text-left">{{spectacleLists.length -
                                                                             i }}</td>
-                                                                        <td>{{s.CreatedOn | date:'medium'}}</td>
+                                                                        <td>{{dateFormat(s.CreatedOn)}}</td>
                                                                         <td>{{s.Family}}</td>
                                                                         <td>{{s.RefferedByDoc}}</td>
                                                                         <td>{{s.REDPSPH}}</td>
@@ -749,7 +756,11 @@
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Rx By Doc</mat-label>
                                                             <mat-select name="RefferedByDocClens" [(ngModel)]="clens.RefferedByDoc"  #RefferedByDocClenscontrol>
-                                                                <mat-option *ngFor="let doc of docList let i = index;" [value]="doc.Name">
+                                                                <mat-option>
+                                                                    <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                                    </ngx-mat-select-search>
+                                                                </mat-option>
+                                                                <mat-option *ngFor="let doc of docList | nameFilterS: searchValue let i = index;" [value]="doc.Name">
                                                                     {{doc.Name}}
                                                                 </mat-option>
                                                             </mat-select>
@@ -759,7 +770,7 @@
                                                         </mat-form-field>
                                                     </div>
                                                     <div *ngIf="!showDoctorAdd" class="col-md-1 col-4 b-0">
-                                                        <button mat-mini-fab color="primary" [routerLink]="['/sale/doctor',0]" [queryParams]="{ check: this.id}"  aria-label="Example icon button with a bookmark icon">
+                                                        <button mat-mini-fab color="primary" [routerLink]="['/sale/doctor',0]" [queryParams]="{ check: 1}"  aria-label="Example icon button with a bookmark icon">
                                                             <mat-icon>add</mat-icon>
                                                     </button>
                                                     </div>
@@ -880,7 +891,7 @@
                                                                         </td>
                                                                         <td class="text-left">{{contactList.length - i
                                                                             }}</td>
-                                                                        <td>{{cl.CreatedOn }}</td>
+                                                                        <td>{{dateFormat(cl.CreatedOn)}}</td>
                                                                         <td>{{cl.Family}}</td>
                                                                         <td>{{cl.RefferedByDoc}}</td>
                                                                         <td>{{cl.REDPSPH}}</td>
@@ -937,13 +948,18 @@
                                             <div class="tab-pane fade p-1 pb-0" id="ex1-tabs-3" role="tabpanel"
                                                 aria-labelledby="ex1-tab-3" style="border: 1px solid #0027ff">
                                                 <div class="row">
-                                                    <div class="col-md-2">
+                                                    <div class="col-md-2 pt-3 P-0">
+                                                        <b class="extra m-0 "
+                                                            style="padding: 2px;cursor: pointer;"
+                                                            (click)="NewVisit('other')">N_Visit</b>
+                                                    </div>
+                                                    <div class="col-md-1">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>VN_R</mat-label>
                                                             <input matInput name="R_VN" [(ngModel)]="other.R_VN" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-md-2">
+                                                    <div class="col-md-1">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>VN_L</mat-label>
                                                             <input matInput name="L_VN" [(ngModel)]="other.L_VN" />
@@ -1015,7 +1031,11 @@
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Rx By Doc</mat-label>
                                                             <mat-select name="RefferedByDocOther" [(ngModel)]="other.RefferedByDoc"  #RefferedByDocOthercontrol>
-                                                                <mat-option *ngFor="let doc of docList let i = index;" [value]="doc.Name">
+                                                                <mat-option>
+                                                                    <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                                    </ngx-mat-select-search>
+                                                                </mat-option>
+                                                                <mat-option *ngFor="let doc of docList | nameFilterS: searchValue let i = index;" [value]="doc.Name">
                                                                     {{doc.Name}}
                                                                 </mat-option>
                                                             </mat-select>
@@ -1025,7 +1045,7 @@
                                                         </mat-form-field>
                                                     </div>
                                                     <div *ngIf="!showDoctorAdd" class="col-md-1 col-4 b-0">
-                                                        <button mat-mini-fab color="primary" [routerLink]="['/sale/doctor',0]" [queryParams]="{ check: this.id}"  aria-label="Example icon button with a bookmark icon">
+                                                        <button mat-mini-fab color="primary" [routerLink]="['/sale/doctor',0]" [queryParams]="{ check: 1}"  aria-label="Example icon button with a bookmark icon">
                                                             <mat-icon>add</mat-icon>
                                                     </button>
                                                     </div>
@@ -1088,7 +1108,7 @@
                                                                         </td>
                                                                         <td class="text-left">{{otherList.length - i }}
                                                                         </td>
-                                                                        <td>{{other.CreatedOn }}</td>
+                                                                        <td>{{dateFormat(other.CreatedOn)}}</td>
                                                                         <td>{{other.Family}}</td>
                                                                         <td>{{other.RefferedByDoc}}</td>
                                                                         <td>{{other.BP}}</td>
@@ -1181,9 +1201,12 @@
                                                         <mat-label>Reference Type </mat-label>
                                                         <mat-select name="ReferenceType"
                                                             [(ngModel)]="data.ReferenceType" #ReferenceTypecontrol>
-                                                            <mat-option></mat-option>
+                                                            <mat-option>
+                                                                <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                                </ngx-mat-select-search>
+                                                            </mat-option>
                                                             <mat-option [value]="r.Name"
-                                                                *ngFor="let r of ReferenceList"> {{r.Name}}
+                                                                *ngFor="let r of ReferenceList | nameFilterS: searchValue"> {{r.Name}}
                                                             </mat-option>
                                                         </mat-select>
                                                     </mat-form-field>
@@ -1202,8 +1225,11 @@
                                                     <mat-form-field class="example-full-width mb-0">
                                                         <mat-label> Other </mat-label>
                                                         <mat-select name="Other" [(ngModel)]="data.Other" #Othercontrol>
-                                                            <mat-option></mat-option>
-                                                            <mat-option [value]="o.Name" *ngFor="let o of otherLists">
+                                                            <mat-option>
+                                                                <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                                </ngx-mat-select-search>
+                                                            </mat-option>
+                                                            <mat-option [value]="o.Name" *ngFor="let o of otherLists | nameFilterS: searchValue">
                                                                 {{o.Name}} </mat-option>
                                                         </mat-select>
                                                     </mat-form-field>

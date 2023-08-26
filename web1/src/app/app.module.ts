@@ -36,6 +36,7 @@ import { Page404Component } from './common/page404.component';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { NgxPrintModule } from 'ngx-print';
 // import { NgxPaginationModule } from 'ngx-pagination';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 
 @NgModule({
@@ -49,7 +50,6 @@ import { NgxPrintModule } from 'ngx-print';
   imports: [
     CommonModule,
     MatSnackBarModule,
-    MatSelectModule,
     BrowserModule,
     AppRoutingModule,
     AdminModule,
@@ -82,7 +82,8 @@ import { NgxPrintModule } from 'ngx-print';
     NgxSpinnerModule,
     BrowserAnimationsModule,
     Ng2SearchPipeModule,
-    NgxPrintModule
+    NgxPrintModule,
+    NgxMatSelectSearchModule
   ],
   exports: [    // optional in your case
         NgxSpinnerModule

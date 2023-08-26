@@ -39,8 +39,12 @@
                                             [(ngModel)]="selectedPurchaseMaster.SupplierID" required #singleSelect
                                             [disabled]="selectedPurchaseMaster.ID !== null"
                                             (selectionChange)="getSupplierDetails($event)">
+                                            <mat-option>
+                                                <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
                                             <mat-option [value]="sup.ID"
-                                                *ngFor="let sup of supplierList let i = index;">
+                                                *ngFor="let sup of supplierList | proditemfilter: searchValue  let i = index;">
                                                 {{sup.Name}}
                                             </mat-option>
                                         </mat-select>
@@ -94,9 +98,13 @@
                                         <mat-label>Product</mat-label>
                                         <mat-select name="FieldType" [(ngModel)]="selectedProduct"
                                             (selectionChange)="getFieldList()" required #Typecontrol>
-                                            <mat-option *ngFor="let prod of prodList   let i = index;"
-                                                [value]="prod.Name">
-                                                {{prod.Name | uppercase}}
+                                            <!-- <ngx-mat-select-search></ngx-mat-select-search> -->
+                                            <mat-option>
+                                                <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option *ngFor="let prod of prodList  | proditemfilter: searchValue  let i = index;" [value]="prod.Name">
+                                                {{prod.Name}}
                                             </mat-option>
                                         </mat-select>
                                         <mat-error>
@@ -119,8 +127,10 @@
                                                 (selectionChange)="getFieldSupportData(i)" editable="true"
                                                 [required]="spec.Required === 1" #singleSelect>
                                                 <mat-option>
+                                                    <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                    </ngx-mat-select-search>
                                                 </mat-option>
-                                                <mat-option *ngFor="let val of spec.SptFilterData "
+                                                <mat-option *ngFor="let val of spec.SptFilterData | proditemfilterPurchase: searchValue"
                                                     [value]="val.TableValue">
                                                     {{val.TableValue}}
                                                 </mat-option>

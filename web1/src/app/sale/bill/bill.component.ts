@@ -50,7 +50,7 @@ export class BillComponent implements OnInit {
   env = environment;
   id: any = 0
   id2: any = 0
-
+  searchValue:any =''
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -138,6 +138,7 @@ export class BillComponent implements OnInit {
   orderList:any = []
   filtersList:any = []
   supplierList:any = []
+  supplierID : any
 
   fitterList:any = []
   lensList:any = []
@@ -1325,27 +1326,31 @@ export class BillComponent implements OnInit {
   openModal12(content12: any){
     this.sp.show()
     this.modalService.open(content12, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
-    const subs: Subscription = this.bill.getSupplierPo(this.id2,'' ).subscribe({
-      next: (res: any) => {
-          if(res.success ){
-             this.orderList = res.data
-          }else{
-            this.as.errorToast(res.message)
-            Swal.fire({
-              position: 'center',
-              icon: 'warning',
-              title: 'Opps !!',
-              text: res.message,
-              showConfirmButton: true,
-              backdrop : false,
-            })
-          }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+    this.getSupplierPo()
     this.dropdownSupplierlist()
+  }
+
+  getSupplierPo(){
+  const subs: Subscription = this.bill.getSupplierPo(this.id2,'' ).subscribe({
+    next: (res: any) => {
+        if(res.success ){
+           this.orderList = res.data
+        }else{
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Opps !!',
+            text: res.message,
+            showConfirmButton: true,
+            backdrop : false,
+          })
+        }
+      this.sp.hide()
+    },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+  });
   }
 
   validate(v: { Sel: number | null; }, event: any) {
@@ -1382,21 +1387,27 @@ export class BillComponent implements OnInit {
     this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
     if (this.filtersList.length > 0) {
     this.filtersList.forEach((element: any) => {
-      element.BillID = this.data.ID
-      element.SupplierID = this.data.SupplierID;
+      element.SupplierID = Number(this.supplierID) ;
     });
 
     let Body = this.filtersList
     const subs: Subscription =  this.bill.assignSupplierPo(Body).subscribe({
       next: (res: any) => {
         if(res.success){
-          this.assignSupplierDoc()
-          this.data.SupplierID = ''
+          this.getSupplierPo()
+          this.supplierID = ''
           this.modalService.dismissAll()
           // this.getList()
           this.as.successToast(res.message)
         }else{
           this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showConfirmButton: true,
+            backdrop : false,
+          })
         }
         this.sp.hide()
       },
@@ -1404,6 +1415,7 @@ export class BillComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
     }else{
+      this.sp.hide()
       Swal.fire({
         position: 'center',
         icon: 'warning',
@@ -1494,8 +1506,13 @@ export class BillComponent implements OnInit {
   openModal13(content12: any){
     this.dropdownfitterlist()
     this.getLensTypeList()
-    this.sp.show()
+    this.getFitterPo()
     this.modalService.open(content12, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
+
+  }
+
+  getFitterPo(){
+    this.sp.show()
     const subs: Subscription = this.bill.getFitterPo(this.id2,'' ).subscribe({
       next: (res: any) => {
           if(res.success ){
@@ -1523,7 +1540,6 @@ export class BillComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(), 
     });
-    this.dropdownSupplierlist()
   }
 
   assignFitterPo(){
@@ -1532,8 +1548,7 @@ export class BillComponent implements OnInit {
     this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
     if (this.filtersList.length > 0 ) {
     this.filtersList.forEach((element: any) => {
-      element.BillID = this.data.ID
-      element.FitterID = this.data.FitterID;
+      element.FitterID = Number(this.data.FitterID);
       element.FitterStatus = "assign fitter"
       element.Remark = element.Remark ? element.Remark : ''
 
@@ -1553,7 +1568,7 @@ export class BillComponent implements OnInit {
     const subs: Subscription =  this.bill.assignFitterPo(Body).subscribe({
       next: (res: any) => {
         if(res.success){
-          this.assignFitterDoc()
+          this.getFitterPo()
           this.data.FitterID = ''
           this.modalService.dismissAll()
           // this.getList()
@@ -1567,6 +1582,7 @@ export class BillComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
     }else{
+      this.sp.hide()
       Swal.fire({
         position: 'center',
         icon: 'warning',
@@ -1676,4 +1692,7 @@ export class BillComponent implements OnInit {
       });
   }
   
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
 }

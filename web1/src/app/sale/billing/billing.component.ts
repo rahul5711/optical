@@ -40,7 +40,7 @@ import { SupportService } from 'src/app/service/support.service';
 
 export class BillingComponent implements OnInit {
   user = JSON.parse(localStorage.getItem('user') || '');
-  companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   env = environment;
 
@@ -62,6 +62,7 @@ export class BillingComponent implements OnInit {
   searchList: any = [];
   srcBox = true;
   customerSearchBillPageHide = true;
+  searchValue:any =''
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -730,8 +731,10 @@ export class BillingComponent implements OnInit {
       };
     }
 
+    if (mode === 'other') {
     this.other = {
       ID: 'null', CustomerID: this.id, BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
+     }
     };
   }
 
@@ -989,4 +992,16 @@ export class BillingComponent implements OnInit {
   //   });
   // }
 
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
+
+  onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
+    if (this.companySetting.DataFormat === '1') {
+      event = event.toUpperCase()
+    } else if (this.companySetting.DataFormat == '2') {
+      event = event.toTitleCase()
+    }
+    return event;
+  }
 }

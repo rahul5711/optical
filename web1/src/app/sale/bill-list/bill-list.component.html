@@ -151,9 +151,9 @@
                           <td>{{Bdata.CustomerName}}</td>
                           <td>{{Bdata.CustomerMob}}</td>
                           <td>{{Bdata.InvoiceNo}}</td>
-                          <td>{{Bdata.BillDate}}</td>
+                          <td>{{dateFormat(Bdata.BillDate)}}</td>
                           <td>{{Bdata.ProductStatus }}</td>
-                          <td>{{Bdata.DeliveryDate}}</td>
+                          <td>{{dateFormat(Bdata.DeliveryDate)}}</td>
                           <td>{{Bdata.PaymentStatus}}</td>
                           <td>{{Bdata.Quantity}}</td>
                           <td>{{Bdata.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
@@ -190,11 +190,11 @@
 <ng-template #content role="document" let-modal>
   <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
     <h2 class="modal-title header pt-2" id="exampleModalLabel">Payment Detail's</h2>
-    <button *ngIf="this.paymentHistoryList[0]?.Quantity !== 0  " type="button" class="ms-5" mat-raised-button
+    <button *ngIf="this.paymentHistoryList[0]?.PaymentMode == 'Payment Initiated'" type="button" class="ms-5" mat-raised-button
       color="primary" (click)="openModal12(content12)">Customer Debit (ReturnAmt)
     </button>
 
-    <button *ngIf="this.applyCreditPayment.PayableAmount !== 0" type="button" class="ms-5" mat-raised-button
+    <button *ngIf="this.applyCreditPayment.PayableAmount != 0" type="button" class="ms-5" mat-raised-button
       color="primary" (click)="openModal14(content14)">Customer Credit (ReturnAmt)
     </button>
 
@@ -207,7 +207,7 @@
 
           <div class="col-md-3">
             <span style="font-size: 17px; font-weight: 600; color: #ff5100">BIll Date : </span>
-            <span style="font-size: 15px; color: #000;"> {{this.paymentHistoryList[0]?.BillDate}} </span>
+            <span style="font-size: 15px; color: #000;"> {{dateFormat(this.paymentHistoryList[0]?.BillDate)}} </span>
           </div>
           <div class="col-md-3">
             <span style="font-size: 17px; font-weight: 600; color: #ff5100">InvoiceNo : </span>
@@ -240,7 +240,7 @@
                 <tbody>
                   <tr *ngFor="let data of paymentHistoryList  let i = index;">
                     <td class="ps-3">{{ i + 1 }}</td>
-                    <td *ngIf="!UpdateMode" class="text-center">{{data.PaymentDate}}</td>
+                    <td *ngIf="!UpdateMode" class="text-center">{{dateFormat(data.PaymentDate)}}</td>
                     <td *ngIf="UpdateMode" style=" text-align: center;">
                       <input name="PaymentDate" type="date" [(ngModel)]="data.PaymentDate"
                         (blur)="updateCustomerPaymentDate(data)" #name="ngModel" [ngModelOptions]="{standalone: true}"
@@ -504,7 +504,7 @@
             </thead>
             <tbody>
               <tr style="white-space:nowrap;" class="text-center" *ngFor="let paid of paidList; let i = index;">
-                <td class="text-left">{{paid.PaymentDate | date: 'dd/MM/YYYY'}}</td>
+                <td class="text-left">{{dateFormat(paid.PaymentDate)}}</td>
                 <td class="text-left">{{paid.PaymentMode}}</td>
                 <td class="text-left">{{paid.CardNo}}</td>
                 <td class="text-left">{{paid.PaymentReferenceNo}}</td>

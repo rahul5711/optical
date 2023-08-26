@@ -141,8 +141,12 @@
                         <mat-label>Select By Product</mat-label>
                         <mat-select name="FieldType" [(ngModel)]="selectedProduct" (selectionChange)="getFieldList()"
                             required #Typecontrol>
+                            <mat-option>
+                                <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                </ngx-mat-select-search>
+                            </mat-option>
                             <mat-option value="NULL"></mat-option>
-                            <mat-option *ngFor="let prod of prodList   let i = index;" [value]="prod.Name">
+                            <mat-option *ngFor="let prod of prodList | nameFilterS: searchValue  let i = index;" [value]="prod.Name">
                                 {{prod.Name | uppercase}}
                             </mat-option>
                         </mat-select>
@@ -181,8 +185,12 @@
                             <mat-select name="{{spec.FieldName+'0'}}" [(ngModel)]="spec.SelectedValue"
                                 (selectionChange)="getFieldSupportData(i);getBarCodeList(i)" editable="true"
                                 [required]="spec.Required === 1" #singleSelect>
+                                <mat-option>
+                                    <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                    </ngx-mat-select-search>
+                                </mat-option>
                                 <mat-option value=""> </mat-option>
-                                <mat-option *ngFor="let val of spec.SptFilterData " [value]="val.TableValue">
+                                <mat-option *ngFor="let val of spec.SptFilterData | proditemfilterbill: searchValue " [value]="val.TableValue">
                                     {{val.TableValue}}
                                 </mat-option>
                             </mat-select>
@@ -859,7 +867,7 @@
                         <tbody>
                             <tr class="text-center" *ngFor="let s of PowerByRow; let i = index;">
                                 <td class="text-left">{{i+1}}</td>
-                                <td>{{s.CreatedOn}}</td>
+                                <td>{{dateFormat(s.CreatedOn)}}</td>
                                 <td>{{s.Family}}</td>
                                 <td>{{s.RefferedByDoc}}</td>
                                 <td>{{s.REDPSPH}}</td>
@@ -907,7 +915,7 @@
                     <mat-select name="PowerSelect"  [(ngModel)]="PowerSelect" (selectionChange)="customerPowerDropdown()">
                     <mat-option [value]=""> </mat-option>
                         <mat-option *ngFor="let p of customerVisiList   let i = index;" [value]="p.VisitNo">
-                            VisitNo  {{p.VisitNo}} | {{p.CreatedOn | date: 'dd/MM/YYYY' }} 
+                            VisitNo  {{p.VisitNo}} | {{dateFormat(p.CreatedOn)}} 
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -963,7 +971,7 @@
                         <tbody>
                             <tr class="text-center" *ngFor="let s of customerPowerLists; let i = index;">
                                 <td class="text-left">{{i+1}}</td>
-                                <td>{{s.CreatedOn}}</td>
+                                <td>{{dateFormat(s.CreatedOn)}}</td>
                                 <td>{{s.Family}}</td>
                                 <td>{{s.RefferedByDoc}}</td>
                                 <td>{{s.REDPSPH}}</td>
@@ -1159,7 +1167,7 @@
                         </thead>
                         <tbody >
                             <tr style="white-space:nowrap;" class="text-center" *ngFor="let paid of paidList; let i = index;"  >
-                                <td class="text-left">{{paid.PaymentDate | date: 'dd/MM/YYYY'}}</td>
+                                <td class="text-left">{{dateFormat(paid.PaymentDate)}}</td>
                                 <td class="text-left">{{paid.PaymentMode}}</td>
                                 <td class="text-left">{{paid.CardNo}}</td>
                                 <td class="text-left">{{paid.PaymentReferenceNo}}</td>
@@ -1181,26 +1189,27 @@
       <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
+        <form #fs="ngForm" >
         <div class="row mt-2">
             <div class="col-md-3">
                 <mat-form-field class="example-full-width mb-0">
                     <mat-label>Select Supplier</mat-label>
-                    <mat-select name="supplier" [(ngModel)]="data.SupplierID" [ngModelOptions]="{standalone: true}">
+                    <mat-select name="supplierID" [(ngModel)]="supplierID" >
                         <!-- <mat-option value="All">All</mat-option> -->
-                        <mat-option *ngFor="let s of supplierList  let i = index;" value="{{s.ID}}">
+                        <mat-option *ngFor="let s of supplierList  let i = index;" [value]="s.ID">
                             {{s.Name}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
             <div class="col-md-4">
-                <button  class="ms-2" type="button" mat-raised-button color="primary" (click)="assignSupplierPo()">
+                <button  class="ms-2" type="button"  mat-raised-button color="primary" (click)="assignSupplierPo()">
                     Assign
                 </button>
             </div>
         </div>
         <div class="row mt-4">
-            <div class="col-sm-12 ">
+            <div class="col-sm-12 " style="overflow: auto; height: 300px;">
               <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm table-bordered"
                   style="border: 2px solid #fff !important;">
@@ -1234,8 +1243,8 @@
                         <td>{{v.MRDNo}}</td>
                         <td>{{v.CustomerName}}</td>
                         <td>{{v.MobileNo1}}</td>
-                        <td>{{v.InvoiceDate}}</td>
-                        <td>{{v.DeliveryDate }}</td>
+                        <td>{{dateFormat(v.InvoiceDate)}}</td>
+                        <td>{{dateFormat(v.DeliveryDate)}}</td>
                         <td>{{v.InvoiceNo}}</td>
                         <td>{{v.ProductName}}</td>
                         <td>{{v.Quantity}}</td>
@@ -1249,6 +1258,7 @@
               </div>
             </div>
           </div>
+        </form>
     </div>
   </ng-template>
 
@@ -1278,7 +1288,7 @@
             </div>
         </div>
         <div class="row mt-4">
-            <div class="col-sm-12 ">
+            <div class="col-sm-12 " style="overflow: auto; height: 300px;">
               <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm table-bordered"
                   style="border: 2px solid #fff !important;">

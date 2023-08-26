@@ -89,9 +89,6 @@ export class PurchaseListComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.collectionSize = res.count;
-          res.data.forEach((el: any) => {
-            el.PurchaseDate = moment(el.PurchaseDate).format(`${this.companySetting.DateFormat}`);
-          })
           this.dataList = res.data;
         }else{
           this.as.errorToast(res.message)
@@ -247,6 +244,8 @@ export class PurchaseListComponent implements OnInit {
     });
   }
 
-
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
 
 }

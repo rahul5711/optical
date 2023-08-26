@@ -164,7 +164,7 @@
                         </form>
 
                         <!-- empolyess shop permision -->
-                        <div class="row" style="margin: 0;">
+                        <div *ngIf="this.id != 0" class="row" style="margin: 0;">
                             <div class="col-md-5 col-12 ps-0">
                                 <form #assignForm="ngForm" (ngSubmit)="saveUserShop();">
                                     <div class="row">

@@ -125,8 +125,8 @@
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0 ">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Shop Name</mat-label>
-                        <mat-select name="ShopID" [(ngModel)]="data.ShopID" required>
-                            <mat-option [value]="sup.ID" *ngFor="let sup of dropShoplist">
+                        <mat-select name="ShopID" [(ngModel)]="data.ShopID" required [disabled]="user.UserGroup !== 'CompanyAdmin'">
+                            <mat-option [value]="sup.ID" *ngFor="let sup of dropShoplist" style="color: #000;">
                                 {{sup.Name}}
                                 <span [style.color]="'blue'" *ngIf="sup.AreaName !== 'null'">({{sup.AreaName}})</span>
                             </mat-option>

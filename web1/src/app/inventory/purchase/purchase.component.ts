@@ -30,6 +30,7 @@ export class PurchaseComponent implements OnInit {
   editBtn = false;
   addDis: any
   GstTypeDis = false
+  searchValue: any = '';
 
   constructor(
     private router: Router,

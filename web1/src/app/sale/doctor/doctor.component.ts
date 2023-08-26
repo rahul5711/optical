@@ -70,7 +70,7 @@ export class DoctorComponent implements OnInit {
       this.getDoctorById(); 
     }
     this.route.queryParams.subscribe(params => {
-      this.purchasVariable = +params['check'] || this.id;
+      this.purchasVariable = +params['check'] || 0;
     });
    
   }
@@ -102,9 +102,8 @@ export class DoctorComponent implements OnInit {
             showConfirmButton: false,
             timer: 1200
           }) 
-          if (this.purchasVariable != 0) {
-            this.purchasVariable
-            this.router.navigate(['sale/billing/',this.purchasVariable,0]);
+          if (this.purchasVariable == 1) {
+            this.router.navigate(['sale/billing/',0,0]);
             this.sp.hide()
           } else{
             this.router.navigate(['/sale/doctorList']); 

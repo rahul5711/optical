@@ -118,9 +118,6 @@ export class BillListComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.collectionSize = res.count;
-          res.data.forEach((el: any) => {
-            el.BillDate = moment(el.BillDate).format(`${this.companySetting.DateFormat}`);
-          })
           this.dataList = res.data;
           this.dataList.forEach((element: { PhotoURL: any; }) => {
             if(element.PhotoURL !== "null" && element.PhotoURL !== ''){
@@ -437,6 +434,7 @@ export class BillListComponent implements OnInit {
               this.paymentHistoryByMasterID(this.applyPayment.CustomerID,this.applyPayment.BillMasterID)
               this.billByCustomer(this.applyPayment.CustomerID,this.applyPayment.BillMasterID)
               this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
+              this.getList()
             }else{
               this.as.errorToast(res.message)
               Swal.fire({
@@ -628,4 +626,8 @@ export class BillListComponent implements OnInit {
     })
   }
  
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
+  
 }

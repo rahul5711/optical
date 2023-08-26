@@ -76,10 +76,6 @@ export class CustomerListComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.collectionSize = res.count;
-          res.data.forEach((el: any) => {
-            el.DOB = moment(el.DOB).format(`${this.companySetting.DateFormat}`);
-            el.Anniversary = moment(el.Anniversary).format(`${this.companySetting.DateFormat}`);
-          })
           this.dataList = res.data;
           this.dataList.forEach((element: { PhotoURL: any; }) => {
             if(element.PhotoURL !== "null" && element.PhotoURL !== ''){
@@ -192,8 +188,11 @@ export class CustomerListComponent implements OnInit {
 
   }
 
-
   exportAsXLSX(): void {
     this.excelService.exportAsExcelFile(this.dataList, 'customer_list');
+  }
+
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
   }
 }

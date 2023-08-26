@@ -81,10 +81,6 @@ export class EmpolyeeListComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.collectionSize = res.count;
-          res.data.forEach((el: any) => {
-            el.DOB = moment(el.DOB).format(`${this.companySetting.DateFormat}`);
-            el.Anniversary = moment(el.Anniversary).format(`${this.companySetting.DateFormat}`);
-          })
           this.dataList = res.data
           this.dataList.forEach((element: { PhotoURL: any; }) => {
             if (element.PhotoURL !== "null" && element.PhotoURL !== '') {
@@ -261,4 +257,7 @@ export class EmpolyeeListComponent implements OnInit {
     this.excelService.exportAsExcelFile(data, 'empolyee_list');
   }
 
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
 }

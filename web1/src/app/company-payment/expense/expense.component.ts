@@ -27,6 +27,7 @@ export class ExpenseComponent implements OnInit {
   user = JSON.parse(localStorage.getItem('user') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+  selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
 
   @ViewChild('searching') searching: ElementRef | any;
   term: any;
@@ -72,9 +73,6 @@ export class ExpenseComponent implements OnInit {
       }
     });
     this.getList();
-    this.dropdownShoplist();
-    this.getPaymentModesList();
-    this.getExpenseTypeList();
   }
 
   dropdownShoplist() {
@@ -83,6 +81,9 @@ export class ExpenseComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.dropShoplist = res.data
+          let shopId = []
+          shopId = res.data.filter((s:any) => s.ID === Number(this.selectedShop[0]));
+          this.data.ShopID = shopId[0].ID
         } else {
           this.as.errorToast(res.message)
         }
@@ -253,6 +254,9 @@ export class ExpenseComponent implements OnInit {
   }
 
   openModal(content: any) {
+    this.dropdownShoplist();
+    this.getPaymentModesList();
+    this.getExpenseTypeList();
     this.formReset();
     this.suBtn = false;
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });

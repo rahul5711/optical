@@ -75,9 +75,6 @@ export class PurchaseReturnListComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.collectionSize = res.count;
-          res.data.forEach((el: any) => {
-            el.CreatedOn = moment(el.CreatedOn).format(`${this.companySetting.DateFormat}`);
-          })
           this.dataList = res.data;
           this.as.successToast(res.message)
         }else{
@@ -259,4 +256,7 @@ export class PurchaseReturnListComponent implements OnInit {
     })
   }
 
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
 }

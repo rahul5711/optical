@@ -219,6 +219,19 @@ export class PurchaseConvertComponent implements OnInit {
   }
 
   calculateFields(fieldName: any, mode: any, item:any) {
+    if(item.GSTType === 'None'){
+      if(item.GSTPercentage != 0){
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Without GSTType the selected value will not be saved ',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        item.UpdateProduct = true
+      }
+    } 
+   
     this.calculation.calculateFields(fieldName, mode, item, '')
   }
 

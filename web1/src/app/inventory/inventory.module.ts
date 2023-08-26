@@ -34,6 +34,9 @@ import { PreorderListComponent } from './preorder-list/preorder-list.component';
 import { PurchaseReturnComponent } from './purchase-return/purchase-return.component';
 import { PurchaseReturnListComponent } from './purchase-return-list/purchase-return-list.component';
 import { PerorderDummyListComponent } from './perorder-dummy-list/perorder-dummy-list.component';
+import { ProductNameFilter} from './../filterDropDown/nameFilter';
+import { ProductItemFilterPurchase} from './../filterDropDown/nameFilter';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 
 @NgModule({
@@ -50,7 +53,9 @@ import { PerorderDummyListComponent } from './perorder-dummy-list/perorder-dummy
     PreorderListComponent,
     PurchaseReturnComponent,
     PurchaseReturnListComponent,
-    PerorderDummyListComponent
+    PerorderDummyListComponent,
+    ProductNameFilter,
+    ProductItemFilterPurchase
   ],
   imports: [
     CommonModule,
@@ -75,7 +80,8 @@ import { PerorderDummyListComponent } from './perorder-dummy-list/perorder-dummy
     MatCheckboxModule,
     MatTabsModule,
     NgbModule,
-    NgSelectModule
+    NgSelectModule,
+    NgxMatSelectSearchModule
   ]
 })
 export class InventoryModule { }

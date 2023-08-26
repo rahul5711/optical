@@ -31,7 +31,9 @@ import { BillListComponent } from './bill-list/bill-list.component';
 import { CommissionComponent } from './commission/commission.component';
 import { CommissionListComponent } from './commission-list/commission-list.component';
 import { CommissionDetailComponent } from './commission-detail/commission-detail.component';
-
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { NameFilterS} from './../filterDropDown/nameFilter';
+import { ProductItemFilterBill} from './../filterDropDown/nameFilter';
 
 @NgModule({
   declarations: [
@@ -44,7 +46,9 @@ import { CommissionDetailComponent } from './commission-detail/commission-detail
     BillListComponent,
     CommissionComponent,
     CommissionListComponent,
-    CommissionDetailComponent
+    CommissionDetailComponent,
+    NameFilterS,
+    ProductItemFilterBill
   ],
   imports: [
     CommonModule,
@@ -69,7 +73,8 @@ import { CommissionDetailComponent } from './commission-detail/commission-detail
     MatCheckboxModule,
     MatTabsModule,
     NgbModule,
-    NgSelectModule
+    NgSelectModule,
+    NgxMatSelectSearchModule
   ]
 })
 export class SaleModule { }

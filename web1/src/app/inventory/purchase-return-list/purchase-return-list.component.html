@@ -86,7 +86,7 @@
                           <td>{{data.SupplierName}}</td>
                           <td>{{data.SystemCn}}</td>
                           <td>{{data.SupplierCn}}</td>
-                          <td>{{data.CreatedOn}}</td>
+                          <td>{{dateFormat(data.CreatedOn)}}</td>
                           <td>{{data.Quantity}}</td>
                           <td>{{data.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                           <td>{{data.SubTotal | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>

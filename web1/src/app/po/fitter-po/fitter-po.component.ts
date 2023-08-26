@@ -216,7 +216,7 @@ export class FitterPoComponent implements OnInit {
   assignFitterPo(mode: any) {
     let missingType = '';
     this.sp.show()
-    this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
+    this.filtersList = this.orderList.filter((d: any) => d.Sel === 1);
 
     if (this.filtersList.length > 0) {
       switch (mode) {

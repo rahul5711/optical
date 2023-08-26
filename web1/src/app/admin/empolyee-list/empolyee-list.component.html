@@ -107,8 +107,8 @@
                           <td class="text-left">{{(data.MobileNo2 !== 'null')? data.MobileNo2: ''}}</td>
                           <td class="text-left">{{(data.PhoneNo !== 'null')? data.PhoneNo: ''}}</td>
                           <td class="text-left">{{(data.Email !== 'null')? data.Email: ''}}</td>
-                          <td class="text-left">{{data.DOB}}</td>
-                          <td class="text-left">{{data.Anniversary}}</td>
+                          <td class="text-left">{{dateFormat(data.DOB)}}</td>
+                          <td class="text-left">{{dateFormat(data.Anniversary)}}</td>
                           <td class="text-left">{{data.LoginName}}</td>
                           <td class="text-left">{{data.UserGroup}}</td>
                           <td class="text-left">{{data.Address}}</td>
