@@ -18,7 +18,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.EmployeeID === null || Body.EmployeeID === undefined || !Body.EmployeeID) return res.send({ message: "Invalid Query Data" })
 
-            [doesExist] = await mysql2.pool.query(`select * from payroll where Status = 1 and EmployeeID=${Body.EmployeeID} and Month='${Body.Month}' and Year='${Body.Year}' and CompanyID=${CompanyID}`)
+           const [doesExist] = await mysql2.pool.query(`select * from payroll where Status = 1 and EmployeeID=${Body.EmployeeID} and Month='${Body.Month}' and Year='${Body.Year}' and CompanyID=${CompanyID}`)
 
             if (doesExist.length) return res.send({ message: `payroll Already exist from this EmployeeID ${Body.EmployeeID} and Month ${Body.Month} and Year ${Body.Year}` })
 
