@@ -12,7 +12,7 @@ const mysql = require("mysql2");
 // for paliwal ji
 
 const pool = mysql.createPool({
-    host: '198.38.93.60',
+    host: 'localhost',
     user: 'relinksys_optica',
     password: 'RELinksys@_$123',
     database: 'relinksys_optical'
