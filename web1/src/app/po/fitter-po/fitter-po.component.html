@@ -160,7 +160,7 @@
                                             <td>{{v.InvoiceNo}}</td>
                                             <td>{{v.ProductName}}</td>
                                             <td>{{v.Quantity}}</td>
-                                            <td>{{(v.Option !== 'undefined' && v.Option !== 'null')? v.Option: ''}}</td>
+                                            <td>{{(v.Optionsss !== 'undefined' && v.Optionsss !== 'null')? v.Optionsss: ''}}</td>
                                             <td *ngIf="!this.orderFitter">{{v.FitterName}}</td>
                                             <td *ngIf="!this.orderFitter">{{v.FitterCost | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                             <td> {{(v.FitterStatus !== 'initiate')? v.FitterStatus: ''}}</td>
