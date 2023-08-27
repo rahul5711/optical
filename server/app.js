@@ -81,6 +81,8 @@ app.use(express.urlencoded({ limit: '100mb', extended: true }))
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', express.static(path.join(__dirname, 'public', 'web')))
+app.use('/web', express.static(path.join(__dirname, 'public', 'web')))
+app.use('/web/*', express.static(path.join(__dirname, 'public', 'web')))
 // app.use('/', require('./routes/index'));
 // app.use('/company', require('./routes/company.route'));
 // app.use('/login', require('./routes/login.route'));
