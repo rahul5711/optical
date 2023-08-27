@@ -8,6 +8,7 @@ router.post('/getInvoicePayment', verifyAccessTokenAdmin, Controller.getInvoiceP
 router.post('/applyPayment', verifyAccessTokenAdmin, Controller.applyPayment)
 
 router.post('/getCommissionDetail', verifyAccessTokenAdmin, Controller.getCommissionDetail)
+router.post('/getCommissionDetailByID', verifyAccessTokenAdmin, Controller.getCommissionDetailByID)
 router.post('/saveCommissionDetail', verifyAccessTokenAdmin, Controller.saveCommissionDetail)
 router.post('/getCommissionByID', verifyAccessTokenAdmin, Controller.getCommissionByID)
 router.post('/getCommissionDetailList', verifyAccessTokenAdmin, Controller.getCommissionDetailList)
