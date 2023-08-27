@@ -366,7 +366,7 @@ module.exports = {
             const [fetchBill] = await mysql2.pool.query(`select * from billmaster where CompanyID = ${CompanyID} and ID = ${bMasterID} and Status = 1 `)
 
             if (billDetailData.length && fetchBill[0].BillType === 0) {
-              return res.send({success: false, message: "You can not add product in this invoice, because it is service invoice only"})
+                return res.send({ success: false, message: "You can not add product in this invoice, because it is service invoice only" })
             }
 
             if (billMaseterData.TotalAmount == 0) {
@@ -1146,21 +1146,21 @@ module.exports = {
             const [update] = await mysql2.pool.query(`update billdetail set UnitPrice = ${billDetail.UnitPrice}, DiscountPercentage = ${billDetail.DiscountPercentage}, DiscountAmount = ${billDetail.DiscountAmount}, GSTPercentage = ${billDetail.GSTPercentage}, GSTAmount = ${billDetail.GSTAmount}, GSTType = '${billDetail.GSTType}', SubTotal = ${billDetail.SubTotal}, TotalAmount = ${billDetail.TotalAmount}, Remark = '${billDetail.Remark}', UpdatedBy = ${LoggedOnUser} where ID = ${billDetail.ID}`)
 
 
-             //  update payment
+            //  update payment
 
-             const [doesCheckPayment] = await mysql2.pool.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${billMaseterData.InvoiceNo}' and BillMasterID = ${billMaseterData.ID}`)
+            const [doesCheckPayment] = await mysql2.pool.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${billMaseterData.InvoiceNo}' and BillMasterID = ${billMaseterData.ID}`)
 
-             const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${billMaseterData.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${billMaseterData.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
 
-             const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0, DueAmount = ${billMaseterData.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
+            const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0, DueAmount = ${billMaseterData.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
 
 
-             // delete comission
-             const [delComm] = await mysql2.pool.query(`delete from commissiondetail where BillMasterID = ${billMaseterData.ID}`)
-             console.log(connected("Delete Comission and Again Initiated!!!"));
-             // save employee commission
+            // delete comission
+            const [delComm] = await mysql2.pool.query(`delete from commissiondetail where BillMasterID = ${billMaseterData.ID}`)
+            console.log(connected("Delete Comission and Again Initiated!!!"));
+            // save employee commission
 
-             if (billMaseterData.Employee !== 0 && billMaseterData.Employee !== undefined && billMaseterData.Employee !== null) {
+            if (billMaseterData.Employee !== 0 && billMaseterData.Employee !== undefined && billMaseterData.Employee !== null) {
                 const saveEmpCommission = await generateCommission(CompanyID, 'Employee', billMaseterData.Employee, billMaseterData.ID, billMaseterData, LoggedOnUser)
             }
 
@@ -1723,16 +1723,21 @@ module.exports = {
 
             const { Body } = req.body;
 
-            for (let item of Body) {
+            for (const item of Body) {
                 if (!item.ID || item.ID === null || item.ID === undefined) return res.send({ message: "Invalid Query Data" })
                 if (!item.SupplierID || item.SupplierID === null || item.SupplierID === undefined) return res.send({ message: "Invalid Query Data" })
                 if (!item.Sel || item.Sel == 0) return res.send({ message: "Invalid Query Data" })
             }
 
+            await Promise.all(
+                Body.map(async (item) => {
+                    const [update] = await mysql2.pool.query(`update barcodemasternew set SupplierID = ${item.SupplierID}, UpdatedOn=now() where ID = ${item.ID}`);
+                })
+            )
 
-            for (let item of Body) {
-                const [update] = await mysql2.pool.query(`update barcodemasternew set SupplierID = ${item.SupplierID}, UpdatedOn=now() where ID = ${item.ID}`);
-            }
+            // for (let item of Body) {
+            //     const [update] = await mysql2.pool.query(`update barcodemasternew set SupplierID = ${item.SupplierID}, UpdatedOn=now() where ID = ${item.ID}`);
+            // }
 
             response.data = null
             response.message = "Supplier Assign SuccessFully !!!";
@@ -1753,17 +1758,23 @@ module.exports = {
 
             const { Body } = req.body;
 
-            for (let item of Body) {
+            for (const item of Body) {
                 if (!item.ID || item.ID === null || item.ID === undefined) return res.send({ message: "Invalid Query Data" })
                 if (!item.SupplierID || item.SupplierID === null || item.SupplierID === undefined) return res.send({ message: "Invalid Query Data" })
                 if (!item.Sel || item.Sel == 0) return res.send({ message: "Invalid Query Data" })
                 if (!item.SupplierDocNo || item.SupplierDocNo === null || item.SupplierDocNo === "" || item.SupplierDocNo === undefined) return res.send({ message: "Invalid Query Data" })
             }
 
+            await Promise.all(
+                Body.map(async (item) => {
+                    const [update] = await mysql2.pool.query(`update barcodemasternew set SupplierDocNo = '${item.SupplierDocNo}', UpdatedOn=now() where ID = ${item.ID}`);
+                })
+            )
 
-            for (let item of Body) {
-                const [update] = await mysql2.pool.query(`update barcodemasternew set SupplierDocNo = '${item.SupplierDocNo}', UpdatedOn=now() where ID = ${item.ID}`);
-            }
+
+            // for (let item of Body) {
+            //     const [update] = await mysql2.pool.query(`update barcodemasternew set SupplierDocNo = '${item.SupplierDocNo}', UpdatedOn=now() where ID = ${item.ID}`);
+            // }
 
             response.data = null
             response.message = "Supplier Doc Assign SuccessFully !!!";
@@ -2067,17 +2078,23 @@ module.exports = {
 
             const { Body } = req.body;
 
-            for (let item of Body) {
+            for (const item of Body) {
                 if (!item.ID || item.ID === null || item.ID === undefined) return res.send({ message: "Invalid Query Data1" })
                 if (item.FitterID === null || item.FitterID === undefined || item.FitterID == 0) return res.send({ message: "Invalid Query Data2" })
                 if (!item.Sel || item.Sel == 0) return res.send({ message: "Invalid Query Data3" })
                 if (!item.Sel || item.Sel == 0) return res.send({ message: "Invalid Query Data3" })
             }
 
+            await Promise.all(
+                Body.map(async (item) => {
+                    const [update] = await mysql2.pool.query(`update barcodemasternew set FitterID = ${item.FitterID}, LensType = '${item.LensType}',FitterCost = ${item.FitterCost}, FitterStatus = '${item.FitterStatus}', Remark = '${item.Remark}', UpdatedOn=now() where ID = ${item.ID}`);
+                })
+            )
 
-            for (let item of Body) {
-                const [update] = await mysql2.pool.query(`update barcodemasternew set FitterID = ${item.FitterID}, LensType = '${item.LensType}',FitterCost = ${item.FitterCost}, FitterStatus = '${item.FitterStatus}', Remark = '${item.Remark}', UpdatedOn=now() where ID = ${item.ID}`);
-            }
+
+            // for (let item of Body) {
+            //     const [update] = await mysql2.pool.query(`update barcodemasternew set FitterID = ${item.FitterID}, LensType = '${item.LensType}',FitterCost = ${item.FitterCost}, FitterStatus = '${item.FitterStatus}', Remark = '${item.Remark}', UpdatedOn=now() where ID = ${item.ID}`);
+            // }
 
             response.data = null
             response.message = "Fitter Assign SuccessFully !!!";
@@ -2097,15 +2114,20 @@ module.exports = {
 
             const { Body } = req.body;
 
-            for (let item of Body) {
+            for (const item of Body) {
                 if (!item.ID || item.ID === null || item.ID === undefined) return res.send({ message: "Invalid Query Data1" })
                 if (!item.Sel || item.Sel == 0) return res.send({ message: "Invalid Query Data2" })
             }
 
 
-            for (let item of Body) {
-                const [update] = await mysql2.pool.query(`update barcodemasternew set Remark = '${item.Remark}', FitterDocNo = '${item.FitterDocNo}', UpdatedOn=now() where ID = ${item.ID}`);
-            }
+            await Promise.all(
+                Body.map(async (item) => {
+                    const [update] = await mysql2.pool.query(`update barcodemasternew set Remark = '${item.Remark}', FitterDocNo = '${item.FitterDocNo}', UpdatedOn=now() where ID = ${item.ID}`);
+                })
+            )
+            // for (let item of Body) {
+            //     const [update] = await mysql2.pool.query(`update barcodemasternew set Remark = '${item.Remark}', FitterDocNo = '${item.FitterDocNo}', UpdatedOn=now() where ID = ${item.ID}`);
+            // }
 
             response.data = null
             response.message = "Fitter Doc Assign SuccessFully !!!";

@@ -69,6 +69,7 @@ module.exports = {
 
             return res.send(response);
         } catch(err) {
+            console.log(err);
             next(err)
         }
     },

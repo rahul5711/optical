@@ -5,7 +5,7 @@ const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const mysql2 = require('../database')
 
-function discountAmount (item) {
+function discountAmount(item) {
   let discountAmount = 0
   discountAmount = (item.UnitPrice * 1) * item.DiscountPercentage / 100;
   return discountAmount
@@ -388,8 +388,8 @@ module.exports = {
   },
   generateCommission: async (CompanyID, UserType, UserID, bMasterID, billMaseterData, LoggedOnUser) => {
     try {
-      let commission = { Type: 0, Mode: 0, Value: 0, Amount: 0 }
-      let commission1 = { Type: 0, Mode: 0, Value: 0, Amount: 0 }
+      let commission = { Type: 0, Mode: 0, Value: 0, Amount: 0, BrandedCommissionAmount: 0, NonBrandedCommissionAmount: 0 }
+      let commission1 = { Type: 0, Mode: 0, Value: 0, Amount: 0, BrandedCommissionAmount: 0, NonBrandedCommissionAmount: 0 }
 
       if (UserType === 'Employee') {
         let [userData] = await mysql2.pool.query(`select * from user where user.ID = ${UserID}`);
@@ -418,11 +418,13 @@ module.exports = {
             commission1.Amount = userResultB[0].SubTotalVal * +userData[0].CommissionValue / 100 + userResultNB[0].SubTotalVal * +userData[0].CommissionValueNB / 100;
             commission1.Mode = userData[0].CommissionMode;
             commission1.Value = userData[0].CommissionValue;
+            commission1.BrandedCommissionAmount = userResultB[0].SubTotalVal * +userData[0].CommissionValue / 100;
+            commission1.NonBrandedCommissionAmount = userResultNB[0].SubTotalVal * +userData[0].CommissionValueNB / 100;
           }
         }
 
         if (commission1.Type !== 0 && commission1.Amount !== 0) {
-          const [save] = await mysql2.pool.query(`insert into commissiondetail (CompanyID,ShopID,CommissionMasterID, UserType, UserID,BillMasterID, CommissionMode, CommissionType, CommissionValue, CommissionAmount, Status,CreatedBy,CreatedOn ) values (${CompanyID}, ${billMaseterData.ShopID}, 0,'Employee', ${userData[0].ID}, ${bMasterID}, ${commission1.Mode},${commission1.Type},${commission1.Value},${commission1.Amount}, 1, '${LoggedOnUser}', now())`)
+          const [save] = await mysql2.pool.query(`insert into commissiondetail (CompanyID,ShopID,CommissionMasterID, UserType, UserID,BillMasterID, CommissionMode, CommissionType, CommissionValue, CommissionAmount, BrandedCommissionAmount, NonBrandedCommissionAmount, Status,CreatedBy,CreatedOn ) values (${CompanyID}, ${billMaseterData.ShopID}, 0,'Employee', ${userData[0].ID}, ${bMasterID}, ${commission1.Mode},${commission1.Type},${commission1.Value},${commission1.Amount},${commission1.BrandedCommissionAmount},${commission1.NonBrandedCommissionAmount}, 1, '${LoggedOnUser}', now())`)
           console.log(save);
         }
       } else if (UserType === 'Doctor') {
@@ -452,11 +454,13 @@ module.exports = {
             commission.Amount = doctorResultB[0].SubTotalVal * +doctorData[0].CommissionValue / 100 + doctorResultNB[0].SubTotalVal * +doctorData[0].CommissionValueNB / 100;
             commission.Mode = doctorData[0].CommissionMode;
             commission.Value = doctorData[0].CommissionValue;
+            commission.BrandedCommissionAmount = doctorResultB[0].SubTotalVal * +doctorData[0].CommissionValue / 100;
+            commission.NonBrandedCommissionAmount = doctorResultNB[0].SubTotalVal * +doctorData[0].CommissionValueNB / 100;
           }
         }
 
         if (commission.Type !== 0 && commission.Amount !== 0) {
-          await mysql2.pool.query(`insert into commissiondetail (CompanyID,ShopID,CommissionMasterID, UserType, UserID,BillMasterID, CommissionMode, CommissionType, CommissionValue, CommissionAmount, Status,CreatedBy,CreatedOn ) values (${CompanyID}, ${billMaseterData.ShopID}, 0,'Doctor', ${billMaseterData.Doctor}, ${bMasterID}, ${commission.Mode},${commission.Type},${commission.Value},${commission.Amount},1,${LoggedOnUser}, now())`)
+          await mysql2.pool.query(`insert into commissiondetail (CompanyID,ShopID,CommissionMasterID, UserType, UserID,BillMasterID, CommissionMode, CommissionType, CommissionValue, CommissionAmount,BrandedCommissionAmount,NonBrandedCommissionAmount, Status,CreatedBy,CreatedOn ) values (${CompanyID}, ${billMaseterData.ShopID}, 0,'Doctor', ${billMaseterData.Doctor}, ${bMasterID}, ${commission.Mode},${commission.Type},${commission.Value},${commission.Amount},${commission.BrandedCommissionAmount},${commission.NonBrandedCommissionAmount},1,${LoggedOnUser}, now())`)
         }
       }
       return
@@ -470,19 +474,19 @@ module.exports = {
   generatePreOrderProduct: async (CompanyID, ShopID, Item, LoggedOnUser) => {
     // delete Item.MeasurementID
 
-     // calcultaion
+    // calcultaion
 
-     Item.DiscountAmount = discountAmount(Item)
-     Item.SubTotal = Item.UnitPrice * 1 - Item.DiscountAmount
-     Item.GSTAmount = gstAmount(Item.SubTotal, Item.GSTPercentage)
-     Item.TotalAmount = Item.SubTotal + Item.GSTAmount
+    Item.DiscountAmount = discountAmount(Item)
+    Item.SubTotal = Item.UnitPrice * 1 - Item.DiscountAmount
+    Item.GSTAmount = gstAmount(Item.SubTotal, Item.GSTPercentage)
+    Item.TotalAmount = Item.SubTotal + Item.GSTAmount
 
     const currentStatus = "Pre Order";
     const paymentStatus = "Unpaid"
     const [supplierData] = await mysql2.pool.query(`select * from supplier where CompanyID = ${CompanyID} and Name = 'PreOrder Supplier'`)
-console.log(supplierData,'===============supplierData');
-const [purchaseMasterData] = await mysql2.pool.query(`select * from purchasemasternew where CompanyID = ${CompanyID} and ShopID = ${ShopID} and purchasemasternew.SupplierID = ${supplierData[0].ID} order by purchasemasternew.ID desc`)
-console.log(purchaseMasterData,'===============purchaseMasterData');
+    console.log(supplierData, '===============supplierData');
+    const [purchaseMasterData] = await mysql2.pool.query(`select * from purchasemasternew where CompanyID = ${CompanyID} and ShopID = ${ShopID} and purchasemasternew.SupplierID = ${supplierData[0].ID} order by purchasemasternew.ID desc`)
+    console.log(purchaseMasterData, '===============purchaseMasterData');
 
     if (purchaseMasterData[0]?.Quantity === undefined || purchaseMasterData[0]?.Quantity <= 50) {
       console.log("Quantity less than 50");
