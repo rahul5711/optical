@@ -76,6 +76,11 @@ export class PaymentService {
     return this.httpClient.post<any>(this.url + '/customerCreditDebit', Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
+  
+  getCommissionDetailByID(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getCommissionDetailByID', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

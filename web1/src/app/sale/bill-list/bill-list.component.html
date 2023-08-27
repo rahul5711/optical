@@ -114,6 +114,7 @@
                           <th>TrayNo</th>
                           <th>Shop</th>
                           <th>Cust_SRNo</th>
+                          <th>SalePerson</th>
                           <th>CreatedBy</th>
                           <th>UpdatedBy</th>
                         </tr>
@@ -158,8 +159,7 @@
                           <td>{{Bdata.Quantity}}</td>
                           <td>{{Bdata.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                           <td>{{Bdata.AddlDiscount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                          <td>{{(Bdata.TotalAmount - Bdata.AddlDiscount) -
-                            Bdata.DueAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                          <td>{{Bdata.TotalAmount - Bdata.DueAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                           <td>{{Bdata.DueAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                           <td>{{Bdata.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                           <td>{{Bdata.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
@@ -168,6 +168,7 @@
                               *ngIf="Bdata.AreaName !== 'null'">({{Bdata.AreaName}})</span>
                           </td>
                           <td>{{Bdata.Sno}}</td>
+                          <td>{{Bdata.SalePerson}}</td>
                           <td>{{Bdata.CreatedByUser}}</td>
                           <td>{{Bdata.UpdatedByUser}}</td>
 

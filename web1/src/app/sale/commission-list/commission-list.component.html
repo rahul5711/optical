@@ -80,13 +80,12 @@
                                       </thead>
                                       <tbody class="text-center">
                                         <tr *ngFor="let v of dataList ; let i = index;" >
-                                          <td>#</td>
-                                            <!-- <td>
-                                                <button   class="bg-btn" [routerLink]="['/po/fitterInvoiceDetail',v.ID]">
+                                            <td>
+                                                <button   class="bg-btn" [routerLink]="['/sale/commissionInvoice',v.ID, v.UserType,v.UserID,v.ShopID]">
                                                     <mat-icon class="edit_icon ms-1">edit
                                                     </mat-icon>
                                                 </button>
-                                            </td> -->
+                                            </td>
                                             <td>{{dataList.length - i}}</td>
                                             <td>{{v.UserType}} {{v.FitterName}}</td>
                                             <td>{{v.UserName}}</td>

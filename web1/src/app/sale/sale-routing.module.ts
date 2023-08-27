@@ -18,7 +18,7 @@ children: [
   { path: 'doctorList', component: DoctorListComponent },  
   { path: 'commission', component: CommissionComponent },  
   { path: 'commissionList/:id', component: CommissionListComponent },  
-  { path: 'commissionInvoice/:id', component: CommissionDetailComponent },  
+  { path: 'commissionInvoice/:id/:Type/:UserID/:ShopID', component: CommissionDetailComponent },  
  ]}
 ];
 

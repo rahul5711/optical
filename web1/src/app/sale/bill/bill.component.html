@@ -177,6 +177,7 @@
                 </div>
             </div>
             <!-- save product spec start -->
+            <form #fp="ngForm" >
             <div class="row" *ngIf="category !== 'Services'">
                 <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0" *ngFor="let spec of specList ; let i = index;">
                     <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
@@ -278,6 +279,7 @@
                     </mat-form-field>
                 </div>
             </div>
+          </form>
             <!-- save product spec end -->
         </form>
 
@@ -414,7 +416,7 @@
                 </div>
                 <div *ngIf="addCustomerBill" class="col-xl-1 col-lg-1 col-md-1 col-sm-12 mb-0 mb-3  ms-auto">
                     <button *ngIf="BillItem.Manual === false &&  BillItem.PreOrder === false" type="submit" [disabled]="!f1.valid || this.BillItem.Quantity === 0 || this.GstTypeDis || this.BillItem.Barcode === null" mat-raised-button color="primary" (click)="calculations('GSTPercentage', 'gst');notifyGst();">Add</button>
-                    <button *ngIf=" BillItem.PreOrder === true" type="submit"  [disabled]="!f1.valid || this.GstTypeDis  || this.BillItem.Option == null"  mat-raised-button color="primary">PreOder</button>
+                    <button *ngIf=" BillItem.PreOrder === true" type="submit"  [disabled]="!f1.valid || this.GstTypeDis || !fp.valid"  mat-raised-button color="primary">PreOder</button>
                     <button *ngIf="BillItem.Manual" type="submit" [disabled]="!f1.valid || this.BillItem.Quantity === 0 || this.GstTypeDis "   mat-raised-button color="primary">Manual</button>
                 </div>
             </div>

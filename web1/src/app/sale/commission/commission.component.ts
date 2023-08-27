@@ -179,8 +179,7 @@ export class CommissionComponent implements OnInit {
     this.data.TotalAmount = 0;
     selectList.forEach((element: any) => {
       this.data.Quantity = +this.data.Quantity +  element.Quantity
-      this.data.TotalAmount = Number(+this.data.TotalAmount +  element.CommissionAmount
-        )
+      this.data.TotalAmount = (Number(this.data.TotalAmount) + element.CommissionAmount).toFixed(2);
     })
   }
 
