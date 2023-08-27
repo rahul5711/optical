@@ -583,7 +583,8 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             const [data] = await mysql2.pool.query(qry)
-            response.data = data
+            response.data.detail = data
+            response.data.master = await mysql2.pool.query(`select * from commissionmaster where ID = ${ID}`)
             return res.send(response);
 
 
