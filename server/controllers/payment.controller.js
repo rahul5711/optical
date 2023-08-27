@@ -556,7 +556,7 @@ module.exports = {
     },
     getCommissionDetailByID: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "" }
+            const response = { data: null, success: true, message: "", master: null, detail:null }
 
             const { PaymentType, PayeeName, ShopID, ID } = req.body
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -583,8 +583,9 @@ module.exports = {
 
             response.message = "data fetch sucessfully"
             const [data] = await mysql2.pool.query(qry)
-            response.data.detail = data
-            response.data.master = await mysql2.pool.query(`select * from commissionmaster where ID = ${ID}`)
+            const [masterDatum] = await mysql2.pool.query(`select commissionmaster.*, COALESCE( user.Name, doctor.Name ) AS UserName,shop.Name as ShopName, shop.AreaName as AreaName, commissiondetail.BillMasterID from commissionmaster left join commissiondetail on commissiondetail.CommissionMasterID = commissionmaster.ID left join shop on shop.ID = commissionmaster.ShopID left join user as user on user.ID = commissionmaster.UserID and commissionmaster.UserType = 'Employee' left join doctor on doctor.ID = commissionmaster.UserID and commissionmaster.UserType = 'Doctor' where commissionmaster.CompanyID = ${CompanyID} and commissionmaster.ShopID = ${ShopID} and commissionmaster.ID = ${ID} order by commissionmaster.ID desc`)
+            response.detail = data
+            response.master = masterDatum[0]
             return res.send(response);
 
 
