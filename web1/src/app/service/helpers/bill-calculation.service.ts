@@ -144,6 +144,7 @@ export class BillCalculationService {
         if (fieldName === 'GSTAmountSer') {
           if (Service.GSTAmount === null || Service.GSTAmount === '') {
             Service.GSTAmount = 0;
+            Service.GSTType = 'None'
           } else {
             Service.GSTPercentage = 100 * +Service.GSTAmount / (+Service.Price);
           }

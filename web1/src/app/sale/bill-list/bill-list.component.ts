@@ -434,7 +434,12 @@ export class BillListComponent implements OnInit {
               this.paymentHistoryByMasterID(this.applyPayment.CustomerID,this.applyPayment.BillMasterID)
               this.billByCustomer(this.applyPayment.CustomerID,this.applyPayment.BillMasterID)
               this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
-              this.getList()
+              if(this.id != 0){
+                this.paymentHistory()
+              }else{
+                this.getList()
+              }
+
             }else{
               this.as.errorToast(res.message)
               Swal.fire({

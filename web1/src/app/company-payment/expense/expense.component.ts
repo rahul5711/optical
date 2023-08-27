@@ -163,6 +163,11 @@ export class ExpenseComponent implements OnInit {
           })
         } else {
           this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+          })
         }
         this.sp.hide();
       },
