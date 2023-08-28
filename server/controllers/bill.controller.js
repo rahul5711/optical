@@ -347,7 +347,7 @@ module.exports = {
 
             if (!billMaseterData) return res.send({ message: "Invalid Query Data" })
             if (!billDetailData) return res.send({ message: "Invalid Query Data" })
-            if (!billDetailData.length && !service.length) return res.send({ message: "Invalid Query Data" })
+            // if (!billDetailData.length && !service.length) return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.ID === null || billMaseterData.ID === undefined || billMaseterData.ID == 0 || billMaseterData.ID === "") return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.ShopID === null || billMaseterData.ShopID === undefined || billMaseterData.ShopID == 0 || billMaseterData.ShopID === "") return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.InvoiceNo === null || billMaseterData.InvoiceNo === undefined || billMaseterData.InvoiceNo == 0 || billMaseterData.InvoiceNo === "") return res.send({ message: "Invalid Query Data" })
@@ -498,9 +498,14 @@ module.exports = {
 
             //  update payment
 
-            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${billMaseterData.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+            if (billDetailData.length || service.length) {
 
-            const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0 , DueAmount = ${billMaseterData.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
+                const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${billMaseterData.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+
+                const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0 , DueAmount = ${billMaseterData.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
+            }
+
+
 
             // const savePaymentMaster = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${billMaseterData.CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Credit',now(), 'Payment Initiated', '', '', ${billMaseterData.DueAmount}, ${billMaseterData.TotalAmount - billMaseterData.DueAmount}, '',1,${LoggedOnUser}, now())`)
 
@@ -518,6 +523,36 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        }
+    },
+    changeEmployee: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const { BillMasterID, UserID } = req.body
+
+            if (!BillMasterID) return res.send({ message: "Invalid BillMasterID Data" })
+            if (!UserID) return res.send({ message: "Invalid UserID Data" })
+
+            const [fetch] = await mysql2.pool.query(`select * from commissiondetail where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Employee'`)
+
+            if (!fetch.length) {
+              return res.send({success: false, message: "Invalid BillMasterID"})
+            }
+
+            if (fetch[0].CommissionMasterID !== 0) {
+                return res.send({success: false, message: "You Have Already Create Invoice, You Can Not Change Employee"})
+            }
+
+            const [update] = await mysql2.pool.query(`update commissiondetail set UserID = ${UserID}, UpdatedOn = now(), UpdatedBy = ${LoggedOnUser} where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Employee'`)
+
+            response.message = "data update sucessfully"
+            return res.send(response);
+
+        } catch (error) {
+            next(error)
         }
     },
     updateBill: async (req, res, next) => {
@@ -789,7 +824,7 @@ module.exports = {
 
             const [billMaster] = await mysql2.pool.query(`select * from  billmaster where CompanyID =  ${CompanyID} and ID = ${ID} and Status = 1 Order By ID Desc`)
 
-            const [billDetail] = await mysql2.pool.query(`select * from  billdetail where CompanyID =  ${CompanyID} and BillID = ${ID} Order By ID Desc`)
+            const [billDetail] = await mysql2.pool.query(`select billdetail.*, 0 as Sel from  billdetail where CompanyID =  ${CompanyID} and BillID = ${ID} Order By ID Desc`)
 
             const [service] = await mysql2.pool.query(`SELECT billservice.*, servicemaster.Name AS ServiceType  FROM  billservice  LEFT JOIN servicemaster ON servicemaster.ID = billservice.ServiceType WHERE billservice.CompanyID =  ${CompanyID} and BillID = ${ID} Order By ID Desc`)
 

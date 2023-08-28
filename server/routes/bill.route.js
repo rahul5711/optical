@@ -11,6 +11,7 @@ router.post('/searchByString', verifyAccessTokenAdmin, Controller.searchByString
 router.post('/saveBill', verifyAccessTokenAdmin, Controller.saveBill)
 // router.post('/updateBill', verifyAccessTokenAdmin, Controller.updateBill)
 router.post('/updateBillCustomer', verifyAccessTokenAdmin, Controller.updateBillCustomer)
+router.post('/changeEmployee', verifyAccessTokenAdmin, Controller.changeEmployee)
 router.post('/list', verifyAccessTokenAdmin, Controller.list)
 router.post('/searchByFeild', verifyAccessTokenAdmin, Controller.searchByFeild)
 router.post('/getBillById', verifyAccessTokenAdmin, Controller.getBillById)
