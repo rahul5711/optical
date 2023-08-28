@@ -177,7 +177,7 @@
       </div>
       <!-- CompanyAdmin end nav-->
       <!-- companyAdmin or employee login btn -->
-      <div class="col-md-2 " *ngIf="selectedShops?.length !== 0">
+      <div class="col-md-2 col-8 d-sm-block d-none" *ngIf="selectedShops?.length !== 0">
         <mat-select name="selectedShops" class="SelectYourShop me-md-0 ms-md-0 me-5 ms-1 "
           placeholder="Select Your Shop" [(ngModel)]="selectedShops" (selectionChange)="saveSelectedShop()" required
           #Typecontrol>
@@ -189,15 +189,33 @@
             </span>
           </mat-option>
         </mat-select>
-        <div>
+        <div style="z-index: 999;">
           <a *ngIf="user?.UserGroup != 'SuperAdmin'" class="logoutBtn" (click)="logout()" title="LogOut">
             <i class="fa-solid fa-right-from-bracket"></i>
           </a>
         </div>
       </div>
+      <div class="col-md-2 col-10 d-sm-none d-block order-1" *ngIf="selectedShops?.length !== 0">
+        <mat-select name="selectedShops" class="SelectYourShop me-md-0 ms-md-0 me-5 ms-1 "
+          placeholder="Select Your Shop" [(ngModel)]="selectedShops" (selectionChange)="saveSelectedShop()" required
+          #Typecontrol>
+          <mat-option *ngIf="user?.UserGroup === 'CompanyAdmin'" [value]="0">All</mat-option>
+          <mat-option *ngFor="let s of dropShoplist let i = index;" [value]="s.ID">
+            <span style="color: rgb(47, 47, 47); "> {{s.Name || s.ShopName}}
+              <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}}) </span>
+              <i *ngIf="s.Status == 0" class="fas fa-times" style="color: red; font-size: 20px; padding-left: 5px;"> </i>
+            </span>
+          </mat-option>
+        </mat-select>
+      </div>
+      <div class="col-md-2 col-1 order-0 d-sm-none d-block mt-5 mt-sm-0" >
+        <a *ngIf="user?.UserGroup != 'SuperAdmin'" class="logoutBtn" (click)="logout()" title="LogOut">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </a>
+      </div>
       <!-- companyAdmin or employee login btn end-->
       <!-- SuperAdmin login btn -->
-      <a *ngIf="user?.UserGroup == 'SuperAdmin'" class="logoutBtn mt-md-1 mt-0 me-4 ps-md-0 ps-2" (click)="logout()"
+      <a  *ngIf="user?.UserGroup == 'SuperAdmin'" class="logoutBtn mt-md-1 mt-0 me-4 ps-md-0 ps-2 " (click)="logout()"
         title="LogOut">
         <i class="fa-solid fa-right-from-bracket"></i>
       </a>

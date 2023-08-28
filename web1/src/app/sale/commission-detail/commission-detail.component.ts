@@ -68,6 +68,7 @@ export class CommissionDetailComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.data = res.master
+          this.data.ShopName = res.master.ShopName + ' (' + res.master.AreaName + ')'
           this.data.InvoiceDate = moment(res.master.PurchaseDate).format('YYYY-MM-DD');
           this.dataList = res.detail
         } else {

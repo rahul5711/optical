@@ -27,7 +27,8 @@ export class PreOrderComponent implements OnInit {
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
 
   editBtn = false;
-
+  searchValue:any;
+  
   constructor(
     private router: Router,
     private route: ActivatedRoute,

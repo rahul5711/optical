@@ -26,7 +26,7 @@ export class CommissionComponent implements OnInit {
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   env = environment;
-
+  searchValue:any
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -183,4 +183,12 @@ export class CommissionComponent implements OnInit {
     })
   }
 
+  onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
+    if (this.companySetting.DataFormat === '1') {
+      event = event.toUpperCase()
+    } else if (this.companySetting.DataFormat == '2') {
+      event = event.toTitleCase()
+    }
+    return event;
+  }
 }

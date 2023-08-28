@@ -58,6 +58,51 @@
 }
 
 
+
+ 
+/* Dropdown menu CSS code */
+.dropdown{
+  position: relative;
+  display: inline-block;
+}
+
+.drop-content, .drop-content2 {
+  display: none;
+  position: absolute;
+  background-color: #ffffff;
+  min-width: 145px;
+  font-size: 12px !important;
+  top: 34px;
+  z-index: 1;
+  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.4);
+}
+/* on hover show dropdown */
+.dropdown:hover .drop-content, .dropdown2:hover .drop-content2 {
+  display: block;
+}
+/* drondown links */
+.drop-content a {
+  padding: 12px 10px;
+  border-bottom: 1px solid rgb(197, 197, 250);
+  display: block;
+  transition: all 0.5s ease !important;
+  color: rgb(20, 4, 73) !important;
+}
+.dropBtn .drop-content a:hover {
+  background-color: rgb(230, 230, 230);
+}
+.dropdown:hover .dropBtn, .dropdown2:hover .dropBtn2 {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.dropdown2 .drop-content2 {
+  position: absolute;
+  left: 120px;
+  top: 126px;
+}
+.dropBtn2 i {
+  margin-left: 15px;
+}
+
 @media (max-width:700px) {
   .navbar .nav-btn{
     display: inline-block;
@@ -130,47 +175,4 @@
     color: rgb(9, 14, 90);
   }  
  
-}
- 
-/* Dropdown menu CSS code */
-.dropdown{
-  position: relative;
-  display: inline-block;
-}
-
-.drop-content, .drop-content2 {
-  display: none;
-  position: absolute;
-  background-color: #ffffff;
-  min-width: 145px;
-  font-size: 12px !important;
-  top: 34px;
-  z-index: 1;
-  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.4);
-}
-/* on hover show dropdown */
-.dropdown:hover .drop-content, .dropdown2:hover .drop-content2 {
-  display: block;
-}
-/* drondown links */
-.drop-content a {
-  padding: 12px 10px;
-  border-bottom: 1px solid rgb(197, 197, 250);
-  display: block;
-  transition: all 0.5s ease !important;
-  color: rgb(20, 4, 73) !important;
-}
-.dropBtn .drop-content a:hover {
-  background-color: rgb(230, 230, 230);
-}
-.dropdown:hover .dropBtn, .dropdown2:hover .dropBtn2 {
-  background-color: rgba(0, 0, 0, 0.3);
-}
-.dropdown2 .drop-content2 {
-  position: absolute;
-  left: 120px;
-  top: 126px;
-}
-.dropBtn2 i {
-  margin-left: 15px;
 }

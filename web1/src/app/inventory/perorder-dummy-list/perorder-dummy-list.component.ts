@@ -26,7 +26,7 @@ export class PerorderDummyListComponent implements OnInit {
   env = environment;
   gridview = true;
   term: any;
-
+  searchValue:any;
   supplierList: any;
   selectedProduct: any;
   prodList:any;

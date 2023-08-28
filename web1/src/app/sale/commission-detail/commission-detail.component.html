@@ -72,13 +72,13 @@
                                             #InvoiceNocontrol required disabled>
                                     </mat-form-field>
                                 </div>
-                                <!-- <div class="col-xl-2 col-lg-4 col-md-3 col-12 mb-0 ">
+                                <div class="col-xl-2 col-lg-4 col-md-3 col-12 mb-0 ">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Shop Name</mat-label>
                                         <input matInput name="ShopName" disabled [(ngModel)]="data.ShopName"
                                             #ShopNamecontrol>
                                     </mat-form-field>
-                                </div> -->
+                                </div>
                             </div>
                         </form>
                         <!-- save invoice end -->
@@ -95,6 +95,8 @@
                                                     <th>InvoiceNo</th>
                                                     <th>BillDate</th>
                                                     <th>PaymentStatus</th>
+                                                    <th>BrandedCommissionAmount</th>
+                                                    <th>NonBrandedCommissionAmount</th>
                                                     <th>Quantity</th>
                                                     <th>BillAmount</th>
                                                 </tr>
@@ -106,6 +108,8 @@
                                                     <td>{{item.InvoiceNo}}</td>
                                                     <td>{{item.BillDate | date:'dd-MM-y'}}</td>
                                                     <td>{{item.PaymentStatus}}</td>
+                                                    <td>{{item.BrandedCommissionAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                                    <td>{{item.NonBrandedCommissionAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                     <td>{{item.Quantity}}</td>
                                                     <td>{{item.BillAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                 </tr>

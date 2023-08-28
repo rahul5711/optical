@@ -28,6 +28,8 @@ import { FitterPoComponent } from './fitter-po/fitter-po.component';
 import { FitterInvoiceComponent } from './fitter-invoice/fitter-invoice.component';
 import { FitterInvoiceListComponent } from './fitter-invoice-list/fitter-invoice-list.component';
 import { FitterInvoiceDetailComponent } from './fitter-invoice-detail/fitter-invoice-detail.component';
+import { PoNameFilter} from './../filterDropDown/nameFilter';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 @NgModule({
   declarations: [
@@ -37,7 +39,8 @@ import { FitterInvoiceDetailComponent } from './fitter-invoice-detail/fitter-inv
     FitterPoComponent,
     FitterInvoiceComponent,
     FitterInvoiceListComponent,
-    FitterInvoiceDetailComponent
+    FitterInvoiceDetailComponent,
+    PoNameFilter
   ],
   imports: [
     CommonModule,
@@ -63,7 +66,8 @@ import { FitterInvoiceDetailComponent } from './fitter-invoice-detail/fitter-inv
     MatCheckboxModule,
     MatTabsModule,
     NgbModule,
-    NgSelectModule
+    NgSelectModule,
+    NgxMatSelectSearchModule
   ]
 })
 export class PoModule { }

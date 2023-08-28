@@ -25,7 +25,8 @@ import { PayrollComponent } from './payroll/payroll.component';
 import { PettyCashComponent } from './petty-cash/petty-cash.component';
 import { PaymentComponent } from './payment/payment.component';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
-
+import { PaymentNameFilter} from './../filterDropDown/nameFilter';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     PayrollComponent,
     PettyCashComponent,
     PaymentComponent, 
+    PaymentNameFilter
   ],
   imports: [
     CommonModule,
@@ -57,6 +59,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     MatCheckboxModule,
     MatTabsModule,
     NgbModule,
+    NgxMatSelectSearchModule
   ]
 })
 export class CompanyPaymentModule { }

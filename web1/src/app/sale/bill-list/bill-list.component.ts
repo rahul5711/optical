@@ -1,12 +1,12 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { fromEvent   } from 'rxjs';
+import { fromEvent } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { CustomerService } from 'src/app/service/customer.service';
@@ -25,49 +25,49 @@ import * as moment from 'moment';
   styleUrls: ['./bill-list.component.css']
 })
 export class BillListComponent implements OnInit {
-  
-  @ViewChild('searching') searching: ElementRef | any ;
+
+  @ViewChild('searching') searching: ElementRef | any;
   company = JSON.parse(localStorage.getItem('company') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
 
-  id :any
+  id: any
   env = environment;
 
   gridview = true
   term = "";
-  dataList: any =[];
+  dataList: any = [];
   currentPage = 1;
   itemsPerPage = 10;
   pageSize!: number;
   collectionSize = 0
   page = 4;
   suBtn = false;
-  paymentHistoryList :any = []
-  PaymentModesList :any = []
+  paymentHistoryList: any = []
+  PaymentModesList: any = []
   UpdateMode = false;
-  CustomerTotal:any 
-  TotalAmountInv:any 
-  DueAmountInv:any 
+  CustomerTotal: any
+  TotalAmountInv: any
+  DueAmountInv: any
 
-  applyDebitPayment:any = {
-    ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Debit',  PayableAmount: 0, PaidAmount: 0, 
+  applyDebitPayment: any = {
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Debit', PayableAmount: 0, PaidAmount: 0,
   };
 
-  applyCreditPayment:any = {
-    ID: null, CustomerID: null,  PayableAmount: 0, PaidAmount: 0, PaymentMode:null
+  applyCreditPayment: any = {
+    ID: null, CustomerID: null, PayableAmount: 0, PaidAmount: 0, PaymentMode: null
   };
 
-  applyPayment:any = {
-    ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0, 
-    CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1, 
+  applyPayment: any = {
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
+    CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
     pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
   };
 
-  paidList :any=[]
-  invoiceList :any=[]
+  paidList: any = []
+  invoiceList: any = []
 
   constructor(
     private router: Router,
@@ -81,7 +81,7 @@ export class BillListComponent implements OnInit {
     private supps: SupportService,
     private pay: PaymentService,
 
-  ) { 
+  ) {
     this.id = this.route.snapshot.params['customerid'];
   }
 
@@ -97,13 +97,13 @@ export class BillListComponent implements OnInit {
         this.deleteBillingSearch = element.Delete;
       }
     });
-    if(this.id != "0"){
+    if (this.id != "0") {
       this.paymentHistory()
-    }else{
+    } else {
       this.getList()
     }
   }
-  
+
   changePagesize(num: number): void {
     this.itemsPerPage = this.pageSize + num;
   }
@@ -116,18 +116,18 @@ export class BillListComponent implements OnInit {
     }
     const subs: Subscription = this.bill.getList(dtm).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.collectionSize = res.count;
           this.dataList = res.data;
           this.dataList.forEach((element: { PhotoURL: any; }) => {
-            if(element.PhotoURL !== "null" && element.PhotoURL !== ''){
+            if (element.PhotoURL !== "null" && element.PhotoURL !== '') {
               element.PhotoURL = (this.env.apiUrl + element.PhotoURL);
-            }else{
+            } else {
               element.PhotoURL = "/assets/images/userEmpty.png"
             }
           });
           this.as.successToast(res.message)
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -137,22 +137,22 @@ export class BillListComponent implements OnInit {
     });
   }
 
-  showInput(){
+  showInput() {
     this.UpdateMode = !this.UpdateMode;
-    this.paymentHistoryList.forEach((ep: any) =>{
+    this.paymentHistoryList.forEach((ep: any) => {
       ep.PaymentDate = moment(ep.PaymentDate).format('YYYY-MM-DD')
     })
   }
 
   // payment history 
-  openModal(content: any,data:any) {
+  openModal(content: any, data: any) {
     this.sp.show();
     this.applyCreditPayment.CustomerID = data.CustomerID
     this.applyCreditPayment.ID = data.ID
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
-    const subs: Subscription = this.bill.paymentHistory( data.ID, data.InvoiceNo).subscribe({
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+    const subs: Subscription = this.bill.paymentHistory(data.ID, data.InvoiceNo).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           // res.data.forEach((ele: any) => {
           //   ele.Amount = ele.Credit === 'Debit' ? '-' + ele.Amount : '+' + ele.Amount;
           // });
@@ -162,7 +162,7 @@ export class BillListComponent implements OnInit {
           this.applyDebitPayment.ID = res.data[0].BillMasterID;
           this.getPaymentModesList()
           this.as.successToast(res.message)
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -172,7 +172,7 @@ export class BillListComponent implements OnInit {
     });
   }
 
-// payment mode 
+  // payment mode 
   getPaymentModesList() {
     const subs: Subscription = this.supps.getList('PaymentModeType').subscribe({
       next: (res: any) => {
@@ -187,50 +187,50 @@ export class BillListComponent implements OnInit {
     });
   }
 
-  updateCustomerPaymentMode(data:any) {
-      this.sp.show()
-      const subs: Subscription = this.pay.updateCustomerPaymentMode(data).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.UpdateMode = false
-            this.as.successToast(res.message)
-          } else {
-            this.as.errorToast(res.message)
-          }
-         this.sp.hide()
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
+  updateCustomerPaymentMode(data: any) {
+    this.sp.show()
+    const subs: Subscription = this.pay.updateCustomerPaymentMode(data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.UpdateMode = false
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   // payment date update 
-  updateCustomerPaymentDate(data:any) {
-      this.sp.show()
-      const subs: Subscription = this.pay.updateCustomerPaymentDate(data).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.UpdateMode = false
-            this.as.successToast(res.message)
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide()
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
+  updateCustomerPaymentDate(data: any) {
+    this.sp.show()
+    const subs: Subscription = this.pay.updateCustomerPaymentDate(data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.UpdateMode = false
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
-   // customer payment debit and credit
+  // customer payment debit and credit
   openModal12(content: any) {
     this.sp.show();
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
     this.sp.hide();
   }
 
-  customerPaymentDebit(){
-    if(this.applyDebitPayment.PayableAmount < this.applyDebitPayment.PaidAmount){
+  customerPaymentDebit() {
+    if (this.applyDebitPayment.PayableAmount < this.applyDebitPayment.PaidAmount) {
       Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -238,17 +238,17 @@ export class BillListComponent implements OnInit {
         showCancelButton: true,
         backdrop: false,
       })
-    }else{
+    } else {
       const subs: Subscription = this.pay.customerPaymentDebit(this.applyDebitPayment).subscribe({
         next: (res: any) => {
           if (res.success) {
-            const subs: Subscription = this.bill.paymentHistory( res.data.ID, res.data.InvoiceNo).subscribe({
+            const subs: Subscription = this.bill.paymentHistory(res.data.ID, res.data.InvoiceNo).subscribe({
               next: (res: any) => {
-                if(res.success){
+                if (res.success) {
                   this.paymentHistoryList = res.data;
                   this.applyDebitPayment.PayableAmount = res.totalPaidAmount;
                   this.as.successToast(res.message)
-                }else{
+                } else {
                   this.as.errorToast(res.message)
                   Swal.fire({
                     icon: 'warning',
@@ -274,22 +274,22 @@ export class BillListComponent implements OnInit {
     }
   }
 
-  openModal14(content: any,){
+  openModal14(content: any,) {
     this.sp.show();
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
-    this.getCustomerCreditAmount(this.applyCreditPayment.ID ,this.applyCreditPayment.CustomerID)
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
+    this.getCustomerCreditAmount(this.applyCreditPayment.ID, this.applyCreditPayment.CustomerID)
     this.sp.hide();
   }
 
-  getCustomerCreditAmount(ID:any ,CustomerID:any){
+  getCustomerCreditAmount(ID: any, CustomerID: any) {
     this.sp.show();
-    const subs: Subscription = this.pay.getCustomerCreditAmount(ID,CustomerID).subscribe({
+    const subs: Subscription = this.pay.getCustomerCreditAmount(ID, CustomerID).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.getPaymentModesList()
           this.applyCreditPayment.PayableAmount = res.totalCreditAmount
           this.as.successToast(res.message)
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -299,8 +299,8 @@ export class BillListComponent implements OnInit {
     });
   }
 
-  customerCreditDebit(){
-    if(this.applyCreditPayment.PayableAmount < this.applyCreditPayment.PaidAmount){
+  customerCreditDebit() {
+    if (this.applyCreditPayment.PayableAmount < this.applyCreditPayment.PaidAmount) {
       Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -308,11 +308,11 @@ export class BillListComponent implements OnInit {
         showCancelButton: true,
         backdrop: false,
       })
-    }else{
+    } else {
       const subs: Subscription = this.pay.customerCreditDebit(this.applyCreditPayment).subscribe({
         next: (res: any) => {
           if (res.success) {
-            this.getCustomerCreditAmount(res.data.ID ,res.data.CustomerID)
+            this.getCustomerCreditAmount(res.data.ID, res.data.CustomerID)
             this.applyCreditPayment.PaidAmount = 0; this.applyCreditPayment.PaymentMode = '';
             this.as.successToast(res.message)
           } else {
@@ -323,45 +323,45 @@ export class BillListComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     }
-    
+
   }
-   // customer payment debit and credit
+  // customer payment debit and credit
 
 
   // customer payment individual invoice wise
-  openModal13(content: any,data:any) {
+  openModal13(content: any, data: any) {
     this.sp.show();
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.getPaymentModesList()
-    this.paymentHistoryByMasterID(data.CustomerID,data.ID)
-    this.billByCustomer(data.CustomerID,data.ID)
+    this.paymentHistoryByMasterID(data.CustomerID, data.ID)
+    this.billByCustomer(data.CustomerID, data.ID)
     this.applyPayment.CustomerID = data.CustomerID
     this.applyPayment.BillMasterID = data.ID
     this.sp.hide();
   }
 
-  billByCustomer(CustomerID:any,BillMasterID:any){
+  billByCustomer(CustomerID: any, BillMasterID: any) {
     this.sp.show()
-    const subs: Subscription = this.bill.billByCustomerInvoice(CustomerID,BillMasterID).subscribe({
+    const subs: Subscription = this.bill.billByCustomerInvoice(CustomerID, BillMasterID).subscribe({
       next: (res: any) => {
-          if(res.success ){
-             this.invoiceList = res.data
-              if (this.invoiceList.length === 0) {
-                 this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
-              }
-             this.applyPayment.PayableAmount =  res.totalDueAmount ? res.totalDueAmount: 0;
-             this.applyPayment.CustomerCredit = res.creditAmount ? res.creditAmount : 0
-          }else{
-            this.as.errorToast(res.message)
-            Swal.fire({
-              position: 'center',
-              icon: 'warning',
-              title: 'Opps !!',
-              text: res.message,
-              showConfirmButton: true,
-              backdrop : false,
-            })
+        if (res.success) {
+          this.invoiceList = res.data
+          if (this.invoiceList.length === 0) {
+            this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
           }
+          this.applyPayment.PayableAmount = res.totalDueAmount ? res.totalDueAmount : 0;
+          this.applyPayment.CustomerCredit = res.creditAmount ? res.creditAmount : 0
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Opps !!',
+            text: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
+        }
         this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
@@ -369,26 +369,26 @@ export class BillListComponent implements OnInit {
     });
   }
 
-  paymentHistoryByMasterID(CustomerID:any,BillMasterID:any){
+  paymentHistoryByMasterID(CustomerID: any, BillMasterID: any) {
     this.sp.show()
-    const subs: Subscription = this.bill.paymentHistoryByMasterID(CustomerID,BillMasterID).subscribe({
+    const subs: Subscription = this.bill.paymentHistoryByMasterID(CustomerID, BillMasterID).subscribe({
       next: (res: any) => {
-          if(res.success ){
-            res.data.forEach((ele: any) => {
-              ele.Amount = ele.Type === 'Debit' ? '-' + ele.Amount : '+' + ele.Amount;
-            });
-             this.paidList = res.data
-          }else{
-            this.as.errorToast(res.message)
-            Swal.fire({
-              position: 'center',
-              icon: 'warning',
-              title: 'Opps !!',
-              text: res.message,
-              showConfirmButton: true,
-              backdrop : false,
-            })
-          }
+        if (res.success) {
+          res.data.forEach((ele: any) => {
+            ele.Amount = ele.Type === 'Debit' ? '-' + ele.Amount : '+' + ele.Amount;
+          });
+          this.paidList = res.data
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Opps !!',
+            text: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
+        }
         this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
@@ -396,61 +396,61 @@ export class BillListComponent implements OnInit {
     });
   }
 
-  onPaymentSubmit(){
+  onPaymentSubmit() {
 
-    if(this.applyPayment.PayableAmount < this.applyPayment.PaidAmount ){
+    if (this.applyPayment.PayableAmount < this.applyPayment.PaidAmount) {
       Swal.fire({
         position: 'center',
         icon: 'warning',
         title: 'Opps !!',
         showConfirmButton: true,
-        backdrop : false,
+        backdrop: false,
       })
       this.applyPayment.PaidAmount = 0
     }
-    if(this.applyPayment.ApplyReturn === true){
-      if (this.applyPayment.CustomerCredit < this.applyPayment.PaidAmount){
+    if (this.applyPayment.ApplyReturn === true) {
+      if (this.applyPayment.CustomerCredit < this.applyPayment.PaidAmount) {
         Swal.fire({
           position: 'center',
           icon: 'warning',
           title: 'Opps !!',
           showConfirmButton: true,
-          backdrop : false,
+          backdrop: false,
         })
         this.applyPayment.PaidAmount = 0
       }
     }
 
-    if(this.applyPayment.PaidAmount !== 0){
+    if (this.applyPayment.PaidAmount !== 0) {
       this.sp.show()
       this.applyPayment.CompanyID = this.company.ID;
       this.applyPayment.ShopID = Number(this.selectedShop);
-      this.applyPayment.PaymentDate =  moment().format('YYYY-MM-DD');
+      this.applyPayment.PaymentDate = moment().format('YYYY-MM-DD');
       this.applyPayment.pendingPaymentList = this.invoiceList;
       console.log(this.applyPayment);
       const subs: Subscription = this.pay.customerPayment(this.applyPayment).subscribe({
         next: (res: any) => {
-            if(res.success ){
-              this.paymentHistoryByMasterID(this.applyPayment.CustomerID,this.applyPayment.BillMasterID)
-              this.billByCustomer(this.applyPayment.CustomerID,this.applyPayment.BillMasterID)
-              this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
-              if(this.id != 0){
-                this.paymentHistory()
-              }else{
-                this.getList()
-              }
-
-            }else{
-              this.as.errorToast(res.message)
-              Swal.fire({
-                position: 'center',
-                icon: 'warning',
-                title: 'Opps !!',
-                text: res.message,
-                showConfirmButton: true,
-                backdrop : false,
-              })
+          if (res.success) {
+            this.paymentHistoryByMasterID(this.applyPayment.CustomerID, this.applyPayment.BillMasterID)
+            this.billByCustomer(this.applyPayment.CustomerID, this.applyPayment.BillMasterID)
+            this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
+            if (this.id != 0) {
+              this.paymentHistory()
+            } else {
+              this.getList()
             }
+
+          } else {
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: 'Opps !!',
+              text: res.message,
+              showConfirmButton: true,
+              backdrop: false,
+            })
+          }
           this.sp.hide()
         },
         error: (err: any) => console.log(err.message),
@@ -498,58 +498,48 @@ export class BillListComponent implements OnInit {
 
   ngAfterViewInit() {
     // server-side search
-    fromEvent(this.searching.nativeElement, 'keyup').pipe(
-      // get value
-      map((event: any) => {
-        return event.target.value;
-      }),
+    if (this.searching) {
+      const nativeElem = this.searching.nativeElement
+      fromEvent(nativeElem, 'keyup').pipe(
+        map((event: any) => {
+          return event.target.value;
+        }),
+        debounceTime(1000),
+        distinctUntilChanged(),
+      ).subscribe((text: string) => {
+        //  const name = e.target.value;
+        let data = {
+          searchQuery: text.trim(),
+        }
 
-      // if character length greater then 2
-      // filter(res => res.length > 2),
-
-      // Time in milliseconds between key events
-      debounceTime(1000),
-
-      // If previous query is different from current
-      distinctUntilChanged(),
-      // tap((event: KeyboardEvent) => {
-      //     console.log(event)
-      //     console.log(this.input.nativeElement.value)
-      //   })
-      // subscription for response
-    ).subscribe((text: string) => {
-  //  const name = e.target.value;
-    let data = {
-      searchQuery: text.trim(),
-    }
-       
-    if(data.searchQuery !== "") {
-      const dtm = {
-        currentPage: 1,
-        itemsPerPage: 50000,
-        searchQuery: data.searchQuery 
-      }
-      this.sp.show()
-      const subs: Subscription = this.bill.searchByFeild(dtm).subscribe({
-        next: (res: any) => {
-          if(res.success){
-            this.collectionSize = 1;
-            this.page = 1;
-            this.dataList = res.data;
-            this.as.successToast(res.message)
-          }else{
-            this.as.errorToast(res.message)
+        if (data.searchQuery !== "") {
+          const dtm = {
+            currentPage: 1,
+            itemsPerPage: 50000,
+            searchQuery: data.searchQuery
           }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
+          this.sp.show()
+          const subs: Subscription = this.bill.searchByFeild(dtm).subscribe({
+            next: (res: any) => {
+              if (res.success) {
+                this.collectionSize = 1;
+                this.page = 1;
+                this.dataList = res.data;
+                this.as.successToast(res.message)
+              } else {
+                this.as.errorToast(res.message)
+              }
+              this.sp.hide();
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subs.unsubscribe(),
+          });
+        } else {
+          this.sp.hide()
+          this.getList()
+        }
       });
-      } else {
-        this.sp.hide()
-        this.getList()
-      }
-    });
+    }
   }
 
   exportAsXLSX(): void {
@@ -561,13 +551,13 @@ export class BillListComponent implements OnInit {
     let CustomerID = Number(this.id)
     const subs: Subscription = this.bill.billHistoryByCustomer(CustomerID).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.dataList = res.data;
           this.TotalAmountInv = (res.sumData.TotalAmount || 0).toFixed(2);
           this.DueAmountInv = (res.sumData.DueAmount || 0).toFixed(2);
           this.CustomerTotal = (parseFloat(this.TotalAmountInv) - parseFloat(this.DueAmountInv)).toFixed(2);
           this.as.successToast(res.message)
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -577,7 +567,7 @@ export class BillListComponent implements OnInit {
     });
   }
 
-  deleteItem(i:any){
+  deleteItem(i: any) {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -589,8 +579,8 @@ export class BillListComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.sp.show()
-        if(this.dataList[i].Quantity == 0) {
-        }else {
+        if (this.dataList[i].Quantity == 0) {
+        } else {
           this.sp.hide()
           Swal.fire({
             title: 'Alert',
@@ -603,7 +593,7 @@ export class BillListComponent implements OnInit {
         }
         const subs: Subscription = this.bill.deleteData(this.dataList[i].ID).subscribe({
           next: (res: any) => {
-            if(res.success){
+            if (res.success) {
               this.dataList.splice(i, 1);
               this.as.successToast(res.message)
               Swal.fire({
@@ -613,7 +603,7 @@ export class BillListComponent implements OnInit {
                 showConfirmButton: false,
                 timer: 1000
               })
-            }else{
+            } else {
               this.as.errorToast(res.message)
               Swal.fire({
                 position: 'center',
@@ -630,9 +620,9 @@ export class BillListComponent implements OnInit {
       }
     })
   }
- 
-  dateFormat(date:any){
+
+  dateFormat(date: any) {
     return moment(date).format(`${this.companySetting.DateFormat}`);
   }
-  
+
 }

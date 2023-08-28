@@ -25,6 +25,7 @@ export class SupplierPoComponent implements OnInit {
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
 
   env = environment;
+  searchValue:any
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -425,5 +426,14 @@ export class SupplierPoComponent implements OnInit {
          });
          this.sp.hide();
       }
+  }
+
+  onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
+    if (this.companySetting.DataFormat === '1') {
+      event = event.toUpperCase()
+    } else if (this.companySetting.DataFormat == '2') {
+      event = event.toTitleCase()
+    }
+    return event;
   }
 }

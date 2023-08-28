@@ -88,3 +88,32 @@ export class ProductMasterItemFilter implements PipeTransform {
         return items.filter(item => item.TableValue.toLowerCase().includes(filter.toLowerCase()));
     }
 }
+
+
+// payment Page use this fillter
+@Pipe({
+    name: 'paymentnamefilter',
+    pure: false
+})
+export class PaymentNameFilter implements PipeTransform {
+    transform(items: any[], filter: any): any {
+        if (!items || !filter) {
+            return items;
+        }
+        return items.filter(item => item.Name.toLowerCase().includes(filter.toLowerCase()));
+    }
+}
+
+// po Page use this fillter
+@Pipe({
+    name: 'ponamefilter',
+    pure: false
+})
+export class PoNameFilter implements PipeTransform {
+    transform(items: any[], filter: any): any {
+        if (!items || !filter) {
+            return items;
+        }
+        return items.filter(item => item.Name.toLowerCase().includes(filter.toLowerCase()));
+    }
+}

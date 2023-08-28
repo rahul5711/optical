@@ -25,6 +25,7 @@ export class SupplierPoListComponent implements OnInit {
   evn = environment
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  searchValue:any;
 
   constructor(
     private route: ActivatedRoute,
@@ -162,6 +163,15 @@ export class SupplierPoListComponent implements OnInit {
 
   dateFormat(date:any){
     return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
+
+  onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
+    if (this.companySetting.DataFormat === '1') {
+      event = event.toUpperCase()
+    } else if (this.companySetting.DataFormat == '2') {
+      event = event.toTitleCase()
+    }
+    return event;
   }
 
 }
