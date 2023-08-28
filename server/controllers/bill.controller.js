@@ -539,14 +539,52 @@ module.exports = {
             const [fetch] = await mysql2.pool.query(`select * from commissiondetail where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Employee'`)
 
             if (!fetch.length) {
-              return res.send({success: false, message: "Invalid BillMasterID"})
+                return res.send({ success: false, message: "Invalid BillMasterID" })
             }
 
             if (fetch[0].CommissionMasterID !== 0) {
-                return res.send({success: false, message: "You Have Already Create Invoice, You Can Not Change Employee"})
+                return res.send({ success: false, message: "You Have Already Create Invoice, You Can Not Change Employee" })
             }
 
             const [update] = await mysql2.pool.query(`update commissiondetail set UserID = ${UserID}, UpdatedOn = now(), UpdatedBy = ${LoggedOnUser} where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Employee'`)
+
+            response.message = "data update sucessfully"
+            return res.send(response);
+
+        } catch (error) {
+            next(error)
+        }
+    },
+    changeProductStatus: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const { BillMasterID, billDetailData } = req.body
+
+            if (!BillMasterID) return res.send({ message: "Invalid BillMasterID Data" })
+            if (!billDetailData.length) return res.send({ message: "Invalid Data" })
+
+            const [fetch] = await mysql2.pool.query(`select * from billdetail where ID = ${BillMasterID} and CompanyID = ${CompanyID} and Status = 1`)
+
+            if (!fetch.length) {
+                return res.send({ success: false, message: "Invalid BillMasterID" })
+            }
+
+            let productStatus = 'Deliverd'
+
+            if (billDetailData.length) {
+                for (const item of billDetailData) {
+                    if (item.ProductStatus === 0) {
+                        productStatus = 'Pending'
+                    }
+
+                    const [update] = await mysql2.pool.query(`update billdetail set ProductStatus = ${item.ProductStatus} where ID = ${item.ID} and CompanyID = ${CompanyID}`)
+                }
+            }
+
+            const [updateMaster] = await mysql2.pool.query(`update billmaster set ProductStatus = '${productStatus}' where ID = ${BillMasterID} and CompanyID = ${CompanyID}`)
 
             response.message = "data update sucessfully"
             return res.send(response);
