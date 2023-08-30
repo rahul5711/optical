@@ -259,6 +259,52 @@ export class BillComponent implements OnInit {
     });
   }
 
+  changeEmployee() {
+    if(this.id2 != 0){
+    this.sp.show();
+    const dtm = {
+      BillMasterID: Number(this.id2),
+      UserID:this.BillMaster.Employee
+    }
+    const subs: Subscription = this.bill.changeEmployee(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+         
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+  }
+
+  changeProductStatus(i:any){
+
+    const newStatus = this.billItemList[i].ProductStatus === 1 ? 0 : 1;
+    this.billItemList[i].ProductStatus = newStatus;
+
+    const dtm = {
+      BillMasterID: Number(this.id2),
+      billDetailData:[this.billItemList[i]]
+    }
+    const subs: Subscription = this.bill.changeProductStatus(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          // this.employeeList = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+
   getTrayNo() {
     this.sp.show();
     const subs: Subscription = this.bill.getTrayNo().subscribe({

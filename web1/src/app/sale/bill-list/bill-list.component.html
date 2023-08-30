@@ -190,12 +190,12 @@
 <!-- costomer payment Modal -->
 <ng-template #content role="document" let-modal>
   <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
-    <h2 class="modal-title header pt-2" id="exampleModalLabel">Payment Detail's</h2>
-    <button *ngIf="this.paymentHistoryList[0]?.PaymentMode == 'Payment Initiated'" type="button" class="ms-5" mat-raised-button
+    <h2 class="modal-title header pt-2" id="exampleModalLabel">Payment Detail</h2>
+    <button *ngIf="this.paymentHistoryList[0]?.PaymentMode == 'Payment Initiated'" type="button" class="ms-1 ms-md-5" mat-raised-button
       color="primary" (click)="openModal12(content12)">Customer Debit (ReturnAmt)
     </button>
 
-    <button *ngIf="this.applyCreditPayment.PayableAmount != 0" type="button" class="ms-5" mat-raised-button
+    <button *ngIf="this.applyCreditPayment.PayableAmount != 0" type="button" class="ms-1 ms-md-5" mat-raised-button
       color="primary" (click)="openModal14(content14)">Customer Credit (ReturnAmt)
     </button>
 
@@ -206,20 +206,20 @@
       <div class="modal-body">
         <div class="row">
 
-          <div class="col-md-3">
+          <div class="col-md-3 col-6">
             <span style="font-size: 17px; font-weight: 600; color: #ff5100">BIll Date : </span>
             <span style="font-size: 15px; color: #000;"> {{dateFormat(this.paymentHistoryList[0]?.BillDate)}} </span>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-3 col-6">
             <span style="font-size: 17px; font-weight: 600; color: #ff5100">InvoiceNo : </span>
             <span style="font-size: 15px; color: #000;"> {{this.paymentHistoryList[0]?.InvoiceNo
               }} </span>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-3 col-6">
             <span style="font-size: 17px; font-weight: 600;color: #ff5100; ">PaymentStatus : </span>
             <span style="font-size: 15px; color: #000;"> {{this.paymentHistoryList[0]?.PaymentStatus}} </span>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-3 col-6">
             <span style="font-size: 17px; font-weight: 600;color: #ff5100; ">TotalAmount : </span>
             <span style="font-size: 15px; color: #000;"> {{this.paymentHistoryList[0]?.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}} </span>
           </div>
@@ -372,7 +372,7 @@
   <div class="modal-body">
     <form #f3="ngForm" (ngSubmit)="onPaymentSubmit()">
       <div class="row">
-        <div class="col-md-1 mb-0">
+        <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
           <mat-form-field class="example-full-width mb-0">
             <mat-label>Balance</mat-label>
             <input type="number" min="0" style="color: rgb(255 0 0 / 75%); font-size: 17px !important;" matInput
@@ -381,30 +381,29 @@
           </mat-form-field>
         </div>
 
-        <div class="col-md-2 mb-0">
+        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
           <mat-form-field class="example-full-width mb-0">
             <mat-label>Previous Customer Credit </mat-label>
             <div class="row mt-0">
-              <div class="col-md-3 p-0" style="height: 16px;">
+              <div class="col-md-3 col-2 p-0" style="height: 16px;">
                 <mat-checkbox color="primary" style="margin-left: 10px;" name="applyPayment.ApplyReturn"
                   [(ngModel)]="applyPayment.ApplyReturn"></mat-checkbox>
               </div>
-              <div class="col-md-9 p-0">
+              <div class="col-md-9 col-10 p-0">
                 <input type="number" min="0" style="font-size: 17px !important;" matInput name="CustomerCredit" disabled
                   [(ngModel)]="applyPayment.CustomerCredit" #CustomerCreditcontrol [autocomplete]="false">
               </div>
             </div>
           </mat-form-field>
         </div>
-
-        <div class="col-md-2 mb-0">
+        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
           <mat-form-field class="example-full-width mb-0">
             <mat-label>New Payment</mat-label>
             <input type="number" min="0" style="font-size: 17px !important;" matInput name="PaymentAmount"
               [(ngModel)]="applyPayment.PaidAmount" [autocomplete]="false">
           </mat-form-field>
         </div>
-        <div class="col-md-2 mb-0" *ngIf="applyPayment.ApplyReward !== true && applyPayment.ApplyReturn !== true">
+        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0" *ngIf="applyPayment.ApplyReward !== true && applyPayment.ApplyReturn !== true">
           <mat-form-field class="example-full-width mb-0">
             <mat-label>Payment Mode</mat-label>
             <mat-select name="PayMode" [(ngModel)]="applyPayment.PaymentMode" required #GSTTypecontrol1>
@@ -412,7 +411,7 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="col-md-2 mb-0" *ngIf="applyPayment.ApplyReward === true || applyPayment.ApplyReturn === true">
+        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0" *ngIf="applyPayment.ApplyReward === true || applyPayment.ApplyReturn === true">
           <mat-form-field class="example-full-width mb-0">
             <mat-label>Payment Mode</mat-label>
             <mat-select name="PayMode" [(ngModel)]="applyPayment.PaymentMode" required #GSTTypecontrol1>
@@ -434,7 +433,7 @@
             </mat-select>
           </mat-form-field>
         </div> -->
-        <div class="col-md-2 mb-0">
+        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
           <mat-form-field class="example-full-width mb-0">
             <mat-label> Card No.</mat-label>
             <input style="font-size: 17px !important;" matInput name="CardNo" [(ngModel)]="applyPayment.CardNo"
@@ -444,7 +443,7 @@
             </mat-error>
           </mat-form-field>
         </div>
-        <div class="col-md-3 mb-0">
+        <div class="col-xl-3 col-lg-3 col-md-3 col-6  mb-0">
           <mat-form-field class="example-full-width mb-0">
             <mat-label>Reference</mat-label>
             <input style="font-size: 17px !important;" matInput name="NamePay"
@@ -454,11 +453,11 @@
             </mat-error>
           </mat-form-field>
         </div>
-        <div class="col-md-2 col-6">
+        <div class="col-xl-2 col-lg-2 col-md-2 col-4">
           <button type="submit" [disabled]="f3.invalid || this.applyPayment.PaymentMode === 0" mat-raised-button
             color="primary">Apply Payment</button>
         </div>
-        <div class="col-md-3 col-6">
+        <div class="col-xl-3 col-lg-3 col-md-4 col-8 ps-md-4 ps-md-0">
           <button [disabled]="applyPayment.CustomerCredit === 0" type="button" mat-raised-button color="primary">
             Credit Note
           </button>
@@ -468,7 +467,7 @@
       </div>
     </form>
     <div class="row mt-3">
-      <div class="col-md-5">
+      <div class="col-lg-5 col-md-5 col-12">
         <div class="table-responsive " style="border: 1px solid #ff5100;overflow-x: scroll; max-height: 200px;">
           <table class="table table-striped table-hover table-sm table-bordered"
             style="border: 2px solid #fff !important; margin: 0; overflow-y: scroll; max-height: 150px;">
@@ -490,7 +489,7 @@
           </table>
         </div>
       </div>
-      <div class="col-md-6 ms-auto">
+      <div class="col-lg-6 col-md-7 col-12 mt-5 mt-md-0 ms-auto">
         <div class="table-responsive " style="border: 1px solid #ff5100;overflow-x: scroll; max-height: 200px;">
           <table class="table table-striped table-hover table-sm table-bordered"
             style="border: 2px solid #fff !important; margin: 0; ">
