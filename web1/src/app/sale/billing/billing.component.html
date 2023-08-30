@@ -416,7 +416,7 @@
                                                 <!-- Near input box end -->
 
                                                 <div class="row mt-1 powerRow">
-                                                        <div *ngIf="!showDoctorAdd" class="col-md-2 col-4 col-12 mb-0">
+                                                        <div *ngIf="!showDoctorAdd" class="col-md-2 col-4 mb-0">
                                                             <mat-form-field class="example-full-width mb-0">
                                                                 <mat-label>Rx By Doc</mat-label>
                                                                 <mat-select name="RefferedByDocSep" [(ngModel)]="spectacle.RefferedByDoc"  #RefferedByDocSepcontrol>
@@ -433,53 +433,52 @@
                                                                 </mat-error>
                                                             </mat-form-field>
                                                         </div>
-                                                        <div *ngIf="!showDoctorAdd" class="col-md-1 col-4 b-0">
+                                                        <div *ngIf="!showDoctorAdd" class="col-md-1 col-2 b-0">
                                                             <button mat-mini-fab color="primary" [routerLink]="['/sale/doctor',0]" [queryParams]="{ check: 1}"  aria-label="Example icon button with a bookmark icon">
                                                             <mat-icon>add</mat-icon>
                                                         </button>
                                                         </div>
-                                                    <div class="col-1 p-0 ps-1">
+                                                    <div class="col-md-1 col-3 p-0 ps-1">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>PD_R</mat-label>
                                                             <input matInput name="REPD" [(ngModel)]="spectacle.REPD" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-1 p-0">
+                                                    <div class="col-md-1 col-3 p-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>PD_L</mat-label>
                                                             <input matInput name="LEPD" [(ngModel)]="spectacle.LEPD" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-1 p-0">
+                                                    <div class="col-md-1 col-3 p-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Prism_R</mat-label>
                                                             <input matInput name="R_Prism"
                                                                 [(ngModel)]="spectacle.R_Prism" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-1 p-0">
+                                                    <div class="col-md-1 col-3 p-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Prism_L</mat-label>
                                                             <input matInput name="L_Prism"
                                                                 [(ngModel)]="spectacle.L_Prism" />
                                                         </mat-form-field>
                                                     </div>
-
-                                                    <div class="col-1 p-0">
+                                                    <div class="col-md-1 col-3 p-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>VertexDis</mat-label>
                                                             <input matInput name="VertexDistance"
                                                                 [(ngModel)]="spectacle.VertexDistance" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-1 p-0">
+                                                    <div class="col-md-1 col-3 p-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>RefractiveIn</mat-label>
                                                             <input matInput name="RefractiveIndex"
                                                                 [(ngModel)]="spectacle.RefractiveIndex" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-2 p-0 pe-3">
+                                                    <div class="col-md-1 col-3 p-0 pe-3">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>FittingHeight</mat-label>
                                                             <input matInput name="FittingHeight"
@@ -786,7 +785,7 @@
                                                 </div>
                                                 <!-- Near input box end -->
                                                 <div class="row mt-1 powerRow">
-                                                    <div *ngIf="!showDoctorAdd" class="col-md-2 col-4 col-12 mb-0">
+                                                    <div *ngIf="!showDoctorAdd" class="col-md-2 col-4  mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Rx By Doc</mat-label>
                                                             <mat-select name="RefferedByDocClens" [(ngModel)]="clens.RefferedByDoc"  #RefferedByDocClenscontrol>
@@ -803,51 +802,51 @@
                                                             </mat-error>
                                                         </mat-form-field>
                                                     </div>
-                                                    <div *ngIf="!showDoctorAdd" class="col-md-1 col-4 b-0">
+                                                    <div *ngIf="!showDoctorAdd" class="col-md-1 col-2 b-0">
                                                         <button mat-mini-fab color="primary" [routerLink]="['/sale/doctor',0]" [queryParams]="{ check: 1}"  aria-label="Example icon button with a bookmark icon">
                                                             <mat-icon>add</mat-icon>
                                                     </button>
                                                     </div>
-                                                    <div class="col-1 p-0 ps-1">
+                                                    <div class="col-md-1 col-3 p-0 ps-1">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>PD_R</mat-label>
                                                             <input matInput name="CREPD" [(ngModel)]="clens.REPD" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-1 p-0">
+                                                    <div class="col-md-1 col-3 p-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>PD_L</mat-label>
                                                             <input matInput name="CLEPD" [(ngModel)]="clens.LEPD" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-1 p-0">
+                                                    <div class="col-md-1 col-3 p-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>BC_R</mat-label>
                                                             <input matInput name="CR_Prism" [(ngModel)]="clens.R_BC" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-1 p-0">
+                                                    <div class="col-md-1 col-3 p-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>BC_L</mat-label>
                                                             <input matInput name="CL_Prism" [(ngModel)]="clens.L_BC" />
                                                         </mat-form-field>
                                                     </div>
 
-                                                    <div class="col-1 p-0">
+                                                    <div class="col-md-1 col-3 p-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>DiaMe_R</mat-label>
                                                             <input matInput name="CVertexDistance"
                                                                 [(ngModel)]="clens.R_Diameter" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-1 p-0">
+                                                    <div class="col-md-1 col-3 p-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>DiaMe_L</mat-label>
                                                             <input matInput name="CRefractiveIndex"
                                                                 [(ngModel)]="clens.L_Diameter" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-2 p-0 pe-3">
+                                                    <div class="col-md-1 col-3 p-0 pe-3">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Modality</mat-label>
                                                             <input matInput name="Modality"
@@ -987,69 +986,69 @@
                                                             style="padding: 2px;cursor: pointer;"
                                                             (click)="NewVisit('other')">N_Visit</b>
                                                     </div>
-                                                    <div class="col-md-1">
+                                                    <div class="col-md-1 col-3">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>VN_R</mat-label>
                                                             <input matInput name="R_VN" [(ngModel)]="other.R_VN" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-md-1">
+                                                    <div class="col-md-1 col-3">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>VN_L</mat-label>
                                                             <input matInput name="L_VN" [(ngModel)]="other.L_VN" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-md-2">
+                                                    <div class="col-md-2 col-3">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>TN_R</mat-label>
                                                             <input matInput name="R_TN" [(ngModel)]="other.R_TN" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-md-2">
+                                                    <div class="col-md-2 col-3">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>TN_L</mat-label>
                                                             <input matInput name="L_TN" [(ngModel)]="other.L_TN" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-md-2">
+                                                    <div class="col-md-2 col-3">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>SY/KY_R</mat-label>
                                                             <input matInput name="R_KR" [(ngModel)]="other.R_KR" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-md-2">
+                                                    <div class="col-md-2 col-3">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>SY/KY_L</mat-label>
                                                             <input matInput name="L_KR" [(ngModel)]="other.L_KR" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-md-2">
+                                                    <div class="col-md-2 col-3">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>BP</mat-label>
                                                             <input matInput name="BP" [(ngModel)]="other.BP" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-md-2">
+                                                    <div class="col-md-2 col-3">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Sugar</mat-label>
                                                             <input matInput name="Sugar" [(ngModel)]="other.Sugar" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-md-2">
+                                                    <div class="col-md-2 col-3">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>IOL Power</mat-label>
                                                             <input matInput name="IOL_Power"
                                                                 [(ngModel)]="other.IOL_Power" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-6 col-3">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Diagnosis</mat-label>
                                                             <input matInput type="text" name="Diagnosis"
                                                                 [(ngModel)]="other.Diagnosis">
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-3 col-3">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Family Name</mat-label>
                                                             <mat-select name="FamilyName" required
@@ -1061,7 +1060,7 @@
                                                             </mat-select>
                                                         </mat-form-field>
                                                     </div>
-                                                    <div *ngIf="!showDoctorAdd" class="col-md-2 col-4 col-12 mb-0">
+                                                    <div *ngIf="!showDoctorAdd" class="col-md-2 col-4  mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Rx By Doc</mat-label>
                                                             <mat-select name="RefferedByDocOther" [(ngModel)]="other.RefferedByDoc"  #RefferedByDocOthercontrol>
@@ -1078,19 +1077,19 @@
                                                             </mat-error>
                                                         </mat-form-field>
                                                     </div>
-                                                    <div *ngIf="!showDoctorAdd" class="col-md-1 col-4 b-0">
+                                                    <div *ngIf="!showDoctorAdd" class="col-md-1 col-2 b-0">
                                                         <button mat-mini-fab color="primary" [routerLink]="['/sale/doctor',0]" [queryParams]="{ check: 1}"  aria-label="Example icon button with a bookmark icon">
                                                             <mat-icon>add</mat-icon>
                                                     </button>
                                                     </div>
-                                                    <div class="col-md-3 mb-0" style="margin: 0; ">
+                                                    <div class="col-md-3 col-3 mb-0" style="margin: 0; ">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Treatment</mat-label>
                                                             <input matInput type="text" name="Treatment"
                                                                 [(ngModel)]="other.Treatment">
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-md-3 mb-0">
+                                                    <div class="col-md-3 col-3 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Operation</mat-label>
                                                             <input matInput name="Operation"
