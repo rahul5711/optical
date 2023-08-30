@@ -269,7 +269,7 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.bill.changeEmployee(dtm).subscribe({
       next: (res: any) => {
         if (res.success) {
-         
+         this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
         }
@@ -288,12 +288,33 @@ export class BillComponent implements OnInit {
 
     const dtm = {
       BillMasterID: Number(this.id2),
-      billDetailData:[this.billItemList[i]]
+      billDetailData:this.billItemList
     }
     const subs: Subscription = this.bill.changeProductStatus(dtm).subscribe({
       next: (res: any) => {
         if (res.success) {
-          // this.employeeList = res.data
+          this.getBillById(this.id2)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+  changeProductStatusAll(){
+    this.billItemList.forEach((el: any) => {
+      el.ProductStatus = 1
+    })
+    const dtm = {
+      BillMasterID: Number(this.id2),
+      billDetailData:this.billItemList
+    }
+    const subs: Subscription = this.bill.changeProductStatus(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.getBillById(this.id2)
         } else {
           this.as.errorToast(res.message)
         }

@@ -373,7 +373,17 @@ module.exports = {
                 billMaseterData.PaymentStatus = 'Paid'
             }
 
-            const [bMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}' , BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now(), LastUpdate = now(), TrayNo = '${billMaseterData.TrayNo}' where ID = ${bMasterID}`)
+            if (billDetailData.length) {
+                billMaseterData.ProductStatus = 'Pending'
+            }
+
+            const [fetchComm] = await mysql2.pool.query(`select * from commissiondetail where BillMasterID = ${bMasterID} and CommissionMasterID != 0`)
+
+            if (billDetailData.length && fetchComm.length) {
+               return res.send({success: false, message:"you can not add more product in this invoice because you have already settled commission of this invoice"})
+            }
+
+            const [bMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}', ProductStatus = '${billMaseterData.ProductStatus}', BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now(), LastUpdate = now(), TrayNo = '${billMaseterData.TrayNo}' where ID = ${bMasterID}`)
 
             console.log(connected("BillMaster Update SuccessFUlly !!!"));
 
@@ -479,8 +489,16 @@ module.exports = {
                 }
 
                 // delete comission
+
+                const [fetchComm] = await mysql2.pool.query(`select * from commissiondetail where BillMasterID = ${bMasterID} and CommissionMasterID != 0`)
+
                 const [delComm] = await mysql2.pool.query(`delete from commissiondetail where BillMasterID = ${bMasterID}`)
                 console.log(connected("Delete Comission and Again Initiated!!!"));
+
+                if (fetchComm.length) {
+                  const [delCommMaster] = await mysql2.pool.query(`delete from commissionmaster where ID = ${fetchComm[0].CommissionMasterID}`)
+                }
+
                 // save employee commission
 
                 if (billMaseterData.Employee !== 0 && billMaseterData.Employee !== undefined && billMaseterData.Employee !== null) {
@@ -539,7 +557,7 @@ module.exports = {
             const [fetch] = await mysql2.pool.query(`select * from commissiondetail where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Employee'`)
 
             if (!fetch.length) {
-                return res.send({ success: false, message: "Invalid BillMasterID" })
+                return res.send({ success: false, message: "Invalid BillMasterID and Not Available Commission of this Invoice, Please Check Employee Commission Setting" })
             }
 
             if (fetch[0].CommissionMasterID !== 0) {
@@ -547,6 +565,8 @@ module.exports = {
             }
 
             const [update] = await mysql2.pool.query(`update commissiondetail set UserID = ${UserID}, UpdatedOn = now(), UpdatedBy = ${LoggedOnUser} where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Employee'`)
+
+            const [updateMaster] = await mysql2.pool.query(`update billmaster set Employee = ${UserID} where ID = ${BillMasterID} and CompanyID = ${CompanyID}`)
 
             response.message = "data update sucessfully"
             return res.send(response);
@@ -563,10 +583,12 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
             const { BillMasterID, billDetailData } = req.body
 
+            console.log("changeProductStatus =====================>", req.body);
+
             if (!BillMasterID) return res.send({ message: "Invalid BillMasterID Data" })
             if (!billDetailData.length) return res.send({ message: "Invalid Data" })
 
-            const [fetch] = await mysql2.pool.query(`select * from billdetail where ID = ${BillMasterID} and CompanyID = ${CompanyID} and Status = 1`)
+            const [fetch] = await mysql2.pool.query(`select * from billmaster where ID = ${BillMasterID} and CompanyID = ${CompanyID} and Status = 1`)
 
             if (!fetch.length) {
                 return res.send({ success: false, message: "Invalid BillMasterID" })

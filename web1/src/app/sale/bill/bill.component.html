@@ -125,7 +125,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>BarCode</mat-label>
                         <input matInput name="SearchBarCode" [(ngModel)]="Req.SearchBarCode"
-                            (keydown.Tab)="getSearchByBarcodeNo()" required #SearchBarCodecontrol 
+                            (keydown.Tab)="getSearchByBarcodeNo()" required #SearchBarCodecontrol
                             autocomplete="off" appAutoFoucsDirectives>
                     </mat-form-field>
                 </div>
@@ -208,7 +208,7 @@
                                 (ngModelChange)="spec.SelectedValue = onChange($event)" required
                                 #NewProductTypecontrol>
                         </mat-form-field>
-                        
+
                         <button style="background: none;border:none"
                             *ngIf="spec.DisplayAdd === 0 && disableAddButtons"
                             (click)="displayAddField(i)">
@@ -386,8 +386,8 @@
                             (selectionChange)="calculations('TotalAmount', 'total')"  [required]=true #GSTTypecontrol1>
                             <mat-option value="None" *ngIf="BillItem.GSTPercentage === 0">None</mat-option>
                             <span *ngIf="BillItem.GSTPercentage !== 0">
-                                <mat-option  [value]="g.Name" *ngFor="let g of gstList"> 
-                                    <span *ngIf="BillItem.GSTPercentage !== 0">{{g.Name}} </span> 
+                                <mat-option  [value]="g.Name" *ngFor="let g of gstList">
+                                    <span *ngIf="BillItem.GSTPercentage !== 0">{{g.Name}} </span>
                                 </mat-option>
                             </span>
                         </mat-select>
@@ -509,7 +509,7 @@
                     <table class="table">
                         <thead class="thead-light">
                             <tr>
-                                <th> <mat-checkbox name="TempProductStatus"></mat-checkbox> </th>
+                                <th> <mat-checkbox (click)="changeProductStatusAll()" name="TempProductStatus"></mat-checkbox> </th>
                                 <th class="text-center">S.No</th>
                                 <th class="text-center">Action</th>
                                 <th class="text-center">HSNCode</th>
@@ -575,32 +575,32 @@
                                     <td *ngIf="!data.UpdateProduct" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                         {{data.DiscountPercentage}}%
                                     </td>
-    
+
                                     <td *ngIf="data.UpdateProduct" >
-                                        <input class="inputWidth" type="number" min="0" 
+                                        <input class="inputWidth" type="number" min="0"
                                             [(ngModel)]="data.DiscountPercentage" (change)="calculateFields1('DiscountPercentage', 'discount',data)"
                                             #name="ngModel" [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                     </td>
 
                                     <td *ngIf="!data.UpdateProduct" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                         {{data.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-    
+
                                     <td *ngIf="data.UpdateProduct">
-                                        <input  class="inputWidth" type="number" min="0" 
+                                        <input  class="inputWidth" type="number" min="0"
                                             [(ngModel)]="data.DiscountAmount"  (change)="calculateFields1('DiscountAmount', 'discount',data)"
                                             #name="ngModel" [ngModelOptions]="{standalone: true}" name="data{{i}}">
-                                    </td>  
+                                    </td>
 
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     {{data.SubTotal | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                              
+
 
                                 <td *ngIf="!data.UpdateProduct" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     {{data.GSTPercentage}}%
                                 </td>
-                                
+
                                 <td *ngIf="data.UpdateProduct" >
-                                    <input type="number" min="0" class="inputWidth" 
+                                    <input type="number" min="0" class="inputWidth"
                                         [(ngModel)]="data.GSTPercentage"  #name="ngModel"
                                         (change)="calculateFields1('GSTPercentage', 'gst',data)"
                                         [ngModelOptions]="{standalone: true}" name="data{{i}}">
@@ -796,19 +796,19 @@
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-12">
                     <button type="button" mat-raised-button color="primary" (click)="onSubmit(content1)" [disabled]="(billItemList?.length === 0 && serviceLists?.length === 0) || BillMaster.ID !== null" >Save</button>
-                    <button type="button" class="me-3 ms-3" mat-raised-button color="primary" 
+                    <button type="button" class="me-3 ms-3" mat-raised-button color="primary"
                      [disabled]="BillMaster.ID === null" (click)="update()">Update</button>
-                     <button type="button" class=" me-3" mat-raised-button color="primary" 
+                     <button type="button" class=" me-3" mat-raised-button color="primary"
                      [disabled]="BillMaster.ID === null" (click)="openModal1(content1)">Payment</button>
-                     <button type="button" class=" me-3" mat-raised-button color="primary" 
+                     <button type="button" class=" me-3" mat-raised-button color="primary"
                      [disabled]="BillMaster.ID === null" (click)="openModal12(content12)">Lens Order</button>
-                     <button type="button" class=" me-3" mat-raised-button color="primary" 
+                     <button type="button" class=" me-3" mat-raised-button color="primary"
                      [disabled]="BillMaster.ID === null" (click)="openModal13(content13)">Fitter Order</button>
                     <button type="button" mat-raised-button color="primary">Receipt</button>
                     <button type="button" class="me-3 ms-3" mat-raised-button color="primary">Invoice</button>
                     <button type="button"  mat-raised-button color="primary">Receipt +
                         Power</button>
-                  
+
                     <button type="button" class="me-3 ms-3" mat-raised-button color="primary">Invoice +
                         Power</button>
                     <button type="button" mat-raised-button color="primary"> Whatsapp</button>
@@ -930,7 +930,7 @@
                     <mat-select name="PowerSelect"  [(ngModel)]="PowerSelect" (selectionChange)="customerPowerDropdown()">
                     <mat-option [value]=""> </mat-option>
                         <mat-option *ngFor="let p of customerVisiList   let i = index;" [value]="p.VisitNo">
-                            VisitNo  {{p.VisitNo}} | {{dateFormat(p.CreatedOn)}} 
+                            VisitNo  {{p.VisitNo}} | {{dateFormat(p.CreatedOn)}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -1053,12 +1053,12 @@
                         </div>
                         <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                             <mat-form-field class="example-full-width mb-0">
-                                <mat-label>Previous Customer Credit </mat-label>  
+                                <mat-label>Previous Customer Credit </mat-label>
                             <div class="row mt-0">
-                               <div class="col-md-3 col-2 p-0" style="height: 16px;"> 
+                               <div class="col-md-3 col-2 p-0" style="height: 16px;">
                                    <mat-checkbox color="primary" style="margin-left: 10px;" name="applyPayment.ApplyReturn" [(ngModel)]="applyPayment.ApplyReturn" ></mat-checkbox>
                                </div>
-                               <div class="col-md-9 p-0 col-10">  
+                               <div class="col-md-9 p-0 col-10">
                                 <input type="number" min="0" style="font-size: 17px !important;" matInput name="CustomerCredit" disabled [(ngModel)]="applyPayment.CustomerCredit"   #CustomerCreditcontrol [autocomplete]="false">
                                </div>
                             </div>
@@ -1149,7 +1149,7 @@
                           <tr>
                             <th style="background-color: #ff5100; color: #fff !important;">Invoice No</th>
                             <th>Bill Amount</th>
-                            <th>Due Amount</th>  
+                            <th>Due Amount</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -1157,7 +1157,7 @@
                                 <td class="text-left" style="background-color: #ff5100; color: #fff;">{{inv.InvoiceNo}}</td>
                                 <td class="text-left">{{inv.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                 <td class="text-left">{{inv.DueAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                               
+
                             </tr>
                         </tbody>
                     </table>
@@ -1172,9 +1172,9 @@
                           <tr>
                             <th>PaymentDate</th>
                             <th>PaymentMode</th>
-                            <th>CardNo</th>  
-                            <th>ReferenceNo</th>   
-                            <th style="background-color: #ff5100; color: #fff !important;">PaidAmount</th>  
+                            <th>CardNo</th>
+                            <th>ReferenceNo</th>
+                            <th style="background-color: #ff5100; color: #fff !important;">PaidAmount</th>
                           </tr>
                         </thead>
                         <tbody >
@@ -1184,7 +1184,7 @@
                                 <td class="text-left">{{paid.CardNo}}</td>
                                 <td class="text-left">{{paid.PaymentReferenceNo}}</td>
                                 <td class="text-left" style="background-color: #ff5100; color: #fff;">{{paid.Amount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                               
+
                             </tr>
                         </tbody>
                     </table>
@@ -1247,7 +1247,7 @@
                     <tr *ngFor="let v of orderList; let i = index;">
                         <td>
                             <input type="checkbox" class="example-margin" id="{{v.ID}}"
-                            [(ngModel)]="v.checked" color="primary" [checked]="v.Sel" 
+                            [(ngModel)]="v.checked" color="primary" [checked]="v.Sel"
                             (click)="validate(v, $event)" name="feature{{v.ID}}"
                             value="{{v.Sel}}" style="width: 20px; height: 16px;">
                         </td>
@@ -1374,4 +1374,3 @@
   </ng-template>
 
 
-  
