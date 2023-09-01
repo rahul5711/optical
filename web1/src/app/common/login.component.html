@@ -2,8 +2,8 @@
 
   <div class="row">
     <div class="container ">
-      <div class="row">
-        <div class="col-lg-4 col-md-8 col-12 mt-5 mx-auto">
+      <div class="row mt-5 mt-sm-0">
+        <div class="col-xl-4 col-lg-6 col-md-8 col-12 mt-5 mx-auto">
           <div class="card">
             <form #f="ngForm" (ngSubmit)="onSubmit(content)" class="box">
               <div class="row">
@@ -24,7 +24,7 @@
                   </div>
                 </div>
               </div>
-              <p class="text-light"> Please enter your login and password!</p>
+              <p class="text-light tagline"> Please enter your login and password!</p>
               <input matInput type="text" name="LoginName" placeholder="LoginName" [(ngModel)]="data.LoginName" required>
               <div>
               <input #x  matInput type="password" name="Password" placeholder="Password" [(ngModel)]="data.Password"required>
@@ -33,7 +33,7 @@
               <a class="forgot text-light" href="#">Forgot password?</a>
               <br>
               <button class="logibtn" >Login</button>
-              <div class="col-md-12">
+              <div class="col-md-12 col-12">
                 <ul class="social-network social-circle">
                   <li><a href="#" class="icoFacebook" title="Facebook"><i class="fa-brands fa-facebook"></i></a></li>
                   <li><a href="#" class="icoFacebook" title="Facebook"><i class="fa-brands fa-facebook"></i></a></li>

@@ -215,10 +215,12 @@
       </div>
       <!-- companyAdmin or employee login btn end-->
       <!-- SuperAdmin login btn -->
+      <div class="col-md-2 col-1 order-0 me-auto " >
       <a  *ngIf="user?.UserGroup == 'SuperAdmin'" class="logoutBtn mt-md-1 mt-0 me-4 ps-md-0 ps-2 " (click)="logout()"
         title="LogOut">
         <i class="fa-solid fa-right-from-bracket"></i>
       </a>
+    </div>
       <!-- SuperAdmin login btn end -->
     </div>
   </div>

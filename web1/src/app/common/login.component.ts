@@ -163,10 +163,10 @@ export class LoginComponent implements OnInit {
     if (this.data.Password === "") {
       return this.as.errorToast("please fill up password")
     }
-
+    this.sp.show()
     const subs: Subscription = this.auth.login(this.data).subscribe({
       next: (res: any) => {
-        this.sp.show()
+
         if (res.success == true) {
           this.as.successToast(res.message)
           this.token.setToken(res.accessToken);
@@ -226,7 +226,7 @@ export class LoginComponent implements OnInit {
               this.dataStorageService.permission = this.moduleList;
                this.router.navigate(['/admin/CompanyDashborad'])
                .then(() => {
-                window.location.reload();
+                // window.location.reload();
               });
                Swal.fire({
                 position: 'center',
@@ -242,12 +242,9 @@ export class LoginComponent implements OnInit {
                 localStorage.setItem('companysetting', JSON.stringify(res.CompanySetting));
                 localStorage.setItem('user', JSON.stringify(res.data));
                 localStorage.setItem('permission', JSON.stringify(this.moduleList));
-
                 this.dataStorageService.permission = this.moduleList;
                 this.dropShoplist = res.shop
-
                 this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
-
             }
         }
         else {
@@ -270,16 +267,16 @@ export class LoginComponent implements OnInit {
        localStorage.setItem('shop', JSON.stringify(shop));
        this.rolesList()
        this.modalService.dismissAll()
-       this.router.navigate(['/admin/CompanyDashborad']).then(() => {
-        window.location.reload();
-      });;
        Swal.fire({
-         position: 'center',
-         icon: 'success',
-         title:   'Welcome TO ' + `${element.Name}`,
-         showConfirmButton: false,
-         timer: 100
-       })
+        position: 'center',
+        icon: 'success',
+        title:   'Welcome TO ' + `${element.UserName}`,
+        showConfirmButton: false,
+        timer: 1200
+      })
+       this.router.navigate(['/admin/CompanyDashborad']).then(() => {
+        // window.location.reload();
+      });;
      }
    });
  }

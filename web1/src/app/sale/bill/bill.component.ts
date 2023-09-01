@@ -124,7 +124,8 @@ export class BillComponent implements OnInit {
   loginShopID: any;
   gst_detail: any = [];
   GstTypeDis = false
-  
+  multiCheck = false
+
   PowerSelect :any
   PowerByRow:any = []
   ProductDetails:any
@@ -303,7 +304,11 @@ export class BillComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+
+
   changeProductStatusAll(){
+    
     this.billItemList.forEach((el: any) => {
       el.ProductStatus = 1
     })
@@ -314,6 +319,7 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.bill.changeProductStatus(dtm).subscribe({
       next: (res: any) => {
         if (res.success) {
+        
           this.getBillById(this.id2)
         } else {
           this.as.errorToast(res.message)
