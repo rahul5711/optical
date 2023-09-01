@@ -1754,7 +1754,9 @@ export class BillComponent implements OnInit {
       const subs: Subscription = this.bill.updateProduct(this.data1).subscribe({
         next: (res: any) => {
           if (res.success) {
-            // this.as.successToast(res.message)
+            this.data1.billDetailData = []
+            this.data1.billMaseterData = null
+            this.getBillById(this.id2)
           } else {
             this.as.errorToast(res.message)
           }
