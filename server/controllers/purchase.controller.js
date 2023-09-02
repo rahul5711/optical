@@ -732,10 +732,10 @@ module.exports = {
 
                         if (printdata.CompanyBarcode == 5) {
                             options = {
-                                // "height": "0.70in",
-                                // "width": "4.41in",
-                                "height": "0.90in",
-                                "width": "6.00in",
+                                "height": "0.70in",
+                                "width": "4.41in",
+                                // "height": "0.90in",
+                                // "width": "6.00in",
                             };
                         }
                         options.timeout = 540000,  // in milliseconds
