@@ -128,7 +128,7 @@
                               <!-- <td>{{s.DiscountAmount}} </td> -->
                               <td>{{s.SubTotal}}</td>
                               <td>{{s.GSTAmount}} </td>
-                              <td *ngIf="s.gst_detailssss[0][0].type === 'iGST'">{{s.gst_detailssss[0][0].amt }}</td>
+                              <td *ngIf="s.gst_detailssss[0][0].type === 'iGST'">{{s.gst_detailssss[0][0].amt.toFixed(2) }}</td>
                               <td *ngIf="s.gst_detailssss[0][1].type === 'cGST-sGST'">{{s.gst_detailssss[0][1].amt/2 }}</td>
                               <td *ngIf="s.gst_detailssss[0][1].type === 'cGST-sGST'">{{s.gst_detailssss[0][1].amt/2 }}</td>
                               <td>{{s.TotalAmount}}</td>
@@ -247,7 +247,7 @@
                           </div>
                         </div>
                         <!--  spec end -->
-                        <div class="col-xl-2 col-lg-4 col-md-6 col-12 ">
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-12 ">
                           <button  type="submit" mat-raised-button color="primary">
                           Search
                           </button>
@@ -381,7 +381,7 @@
               <tbody>
                 <tr class="text-center" *ngFor="let gst of gstMaster let i = index;">
                   <td>{{gst.GSTType}}</td>
-                  <td>{{gst.Amount }}</td>
+                  <td>{{gst.Amount.toFixed(2)}}</td>
                 </tr>
               </tbody>
               <tfoot class="text-center">
@@ -414,7 +414,7 @@
               <tbody>
                 <tr class="text-center" *ngFor="let gst of gstdetails let i = index;">
                   <td>{{gst.GSTType}}</td>
-                  <td>{{gst.Amount }}</td>
+                  <td>{{gst.Amount.toFixed(2)}}</td>
                 </tr>
               </tbody>
               <tfoot class="text-center">

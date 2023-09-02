@@ -5,342 +5,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Barcode</title>
-
-
     <link href="https://fonts.googleapis.com/css2" rel="stylesheet">
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.8.0/JsBarcode.all.js"></script>
     <script src="JsBarcode.all.min.js"></script>
-
 </head>
 
 <body>
     <% if(data.length !==0){ data.forEach(function (i, index) { %>
-        <% if (data.CompanyBarcode==2){%>
-            <table style="margin-left: -10px; margin-top: -10px;">
+        <% if (data.CompanyBarcode == 5){%>
+            <table style="margin-left: -10px; margin-top: -9px; background-color: aqua;">
                 <tr>
-                    <th ng-reflect-ng-style="[object Object]" style="width: 140px;">
+                    <th  style="width: 140px; padding: 0;">
                         <div
-                            style="font-size: 16px; font-weight: 600; font-family: verdana;margin-top: 0px; text-align: center; margin-top:4px; padding-bottom:1px; ">
-                            <%=i.BarcodeShopName%>
+                            style="font-size: 16px; font-weight: 600; font-family: verdana;margin-top: 0px; text-align: center; margin-top:6px; padding-bottom:1px; ">
+                            <%=i.BarcodeName%>
                         </div>
                         <div>
-                            <svg class="barcode"
-                                            jsbarcode-format="CODE128"
-                                            jsbarcode-value="<%=i.Barcode%>"
-                                            jsbarcode-textmargin="0"
-                                            jsbarcode-height="45"
-                                            jsbarcode-marginTop="-14"
-                                            jsbarcode-fontSize="15"
-                                            jsbarcode-marginBottom="0"
-                                            jsbarcode-width = "2"
-                                            jsbarcode-fontoptions="bold">
-                                          </svg>
-
-                                           <script>
-                                            JsBarcode(".barcode").init();
-                                           </script>
+                            <svg class="barcode" jsbarcode-format="CODE128" jsbarcode-value="<%=i.Barcode%>"
+                                jsbarcode-textmargin="0" jsbarcode-height="45" jsbarcode-marginTop="-15"
+                                jsbarcode-fontSize="15" jsbarcode-marginBottom="0" jsbarcode-width="2"
+                                jsbarcode-fontoptions="bold">
+                            </svg>
+                            <script>
+                                JsBarcode(".barcode").init();
+                            </script>
                         </div>
                     </th>
-                    <th ng-reflect-ng-style="[object Object]" style="width: 200px;  padding-top: -2px;;">
+                    <th  style="width: 200px;">
                         <div
-                            style="text-align: left; font-size: 20px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 18px;">
-                            MRP
-                            <%=i.RetailPrice%>
+                            style="text-align: left; font-size: 18px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 18px;">
+                                   MRP <%=i.RetailPrice%>              
                         </div>
                         <div
                             style="text-align: left; font-size: 12px; font-weight: 600;letter-spacing: 0.1px;margin-left: 18px; font-family: verdana ;">
                             (Inc. of all Taxes) </div>
                         <div
                             style="text-align: left; font-size: 14px; font-weight: 600; font-family: verdana;margin-left: 18px;">
-                            <%=i.ProductName%>
+                            <%=i.ProductBrandName%>
                         </div>
                         <div
                             style="text-align: left; font-size: 14px; font-weight: 600; font-family: verdana;margin-left: 18px;">
-                            <%=i.ProductNames%>
+                            <%=i.ProductModelName%>
                         </div>
                     </th>
                 </tr>
             </table>
             <%}%>
-                <% if (data.CompanyBarcode==0){%>
-                    <table style="margin-left: -10px; margin-top: -12px;">
-                        <tr>
-                            <th ng-reflect-ng-style="[object Object]" style="width: 150px;margin-left: -30px">
-                                <div
-                                    style="text-align: left; font-size: 18px; font-weight: bold; font-family: verdana; letter-spacing: 0px; ">
-                                    <%=i.BarcodeShopName%>
-                                </div>
-                                <div
-                                    style="text-align: left; font-size: 13px; font-weight: bold; font-family: verdana;">
-                                    <%=i.ProductNames%>
-                                </div>
-                                <div
-                                    style="text-align: left; font-size: 13px; font-weight: bold; font-family: verdana;">
-                                    <%=i. UniqueBarcode%>
-                                </div>
-                            </th>
-                            <th ng-reflect-ng-style="[object Object]" style="width: 300px;">
-                                <div
-                                    style="text-align: left; font-size: 12px; font-weight: bold; font-family: verdana; letter-spacing: 0px; margin-left: 15px;">
-                                    MRP
-                                    <%=i.RetailPrice%>
-                                </div>
-                                <div
-                                    style="text-align: left; font-size: 9px; font-weight: bold;letter-spacing: 0.1px;margin-left: 15px; font-family: verdana ;">
-                                    (Inc. of all Taxes) </div>
-                                <div>
-                                    <svg class="barcode"
-                                            jsbarcode-format="CODE128"
-                                            jsbarcode-value="<%=i.Barcode%>"
-                                            jsbarcode-textmargin="0"
-                                            jsbarcode-height="50"
-                                            jsbarcode-marginTop="-14"
-                                            jsbarcode-fontSize="15"
-                                            jsbarcode-marginBottom="0"
-                                            jsbarcode-width = "2"
-                                            jsbarcode-fontoptions="bold">
-                                          </svg>
-
-                                           <script>
-                                            JsBarcode(".barcode").init();
-                                           </script>
-                                </div>
-                            </th>
-
-                        </tr>
-                    </table>
-                    <%}%>
-                        <% if (data.CompanyBarcode==1){%>
-                       <table style="margin-left: -15px; margin-top: -10px;">
-                                <tr>
-                                    <th style="width: 160px; height: 50px;">
-
-                                        <div>
-                                            <div
-                                                style="text-align: center; font-size: 16px; font-weight: 700; font-family: verdana; letter-spacing: .5px;padding-bottom:0px;">
-                                                <%=i.BarcodeShopName%>
-                                            </div>
-
-                                            <svg class="barcode"
-                                            jsbarcode-format="CODE128"
-                                            jsbarcode-value="<%=i.Barcode%>"
-                                            jsbarcode-textmargin="0"
-                                            jsbarcode-height="50"
-                                            jsbarcode-marginTop="-14"
-                                            jsbarcode-fontSize="15"
-                                            jsbarcode-marginBottom="0"
-                                            jsbarcode-width = "2"
-                                            jsbarcode-fontoptions="bold">
-                                          </svg>
-
-                                           <script>
-                                            JsBarcode(".barcode").init();
-                                           </script>
-                                        </div>
-
-                                        </div>
-
-                                        
-                                    </th>
-                                    <th style="width: 200px;  margin: 0;padding: 0;">
-                                        <div
-                                            style="text-align: left; font-size: 20px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 15px; height: 22px;">
-                                            MRP
-                                            <%=i.RetailPrice%>
-                                        </div>
-                                        <div
-                                            style="text-align: left; font-size: 12px; font-weight: 600;letter-spacing: 0.1px;margin-left: 15px; font-family: verdana ;height: 17px;">
-                                            (Inc. of all Taxes) </div>
-                                        <div
-                                            style="text-align: left; font-size: 15px; font-weight: 600; font-family: verdana;margin-left: 15px;height: 18px;">
-                                            <%=i.UniqueBarcode%>
-                                        </div>
-                                        <div
-                                            style="text-align: left; font-size: 15px; font-weight: 600; font-family: verdana;margin-left: 15px;height: 25px;">
-                                            <%=i.ProductNames%>
-                                        </div>
-                                    </th>
-
-                                </tr>
-                            </table> 
-                            <%}%>
-                            <% if (data.CompanyBarcode==3){%>
-                          <table >
-                                <tr>
-                                            <div style="text-align: center;margin-top: -10px; font-size: 15px; font-weight: 700; font-family: verdana; letter-spacing: .5px;padding-top:0px;">
-                                                <%=i.BarcodeShopName%>
-                                            </div>
-                                            <div style="margin-left: -6.5px;">
-                                          <svg  class="barcode"
-                                            jsbarcode-format="CODE128"
-                                            jsbarcode-value="<%=i.Barcode%>"
-                                            jsbarcode-textmargin="0"
-                                            jsbarcode-height="50"
-                                            jsbarcode-marginTop="-14"
-                                            jsbarcode-marginLeft="0"
-                                            jsbarcode-fontSize="15"
-                                            jsbarcode-marginBottom="0"
-                                            jsbarcode-width = "2.2"
-                                            jsbarcode-fontoptions="bold">
-                                          </svg>
-                                           <script>
-                                            JsBarcode(".barcode").init();
-                                           </script>
-                                         </div>
-                                    <div
-                                    style="text-align: center; font-size: 9px; font-weight: 600; font-family: verdana;margin-top: -10px; height: 45px; " >
-                                    <%=i.ProductFullName%>
-                                </div>
-                                </tr>
-                            </table> 
-                            <%}%>
-
-                                      <% if (data.CompanyBarcode==4){%>
-                                            <table>
-                                                <tr>
-                                                    <div
-                                                        style="text-align: center; font-size: 15px; font-weight: 700; font-family: verdana; letter-spacing: .5px;padding-top:0px; ">
-                                                        <%=i.BarcodeShopName%>
-                                                    </div>
-                                                    <div style="margin-left: -6.5px;">
-                                                        <svg class="barcode" 
-                                                        jsbarcode-format="CODE128"
-                                                            jsbarcode-value="<%=i.Barcode%>" 
-                                                            jsbarcode-textmargin="0"
-                                                            jsbarcode-height="44"
-                                                             jsbarcode-marginTop="-14"
-                                                            jsbarcode-marginLeft="0" 
-                                                            jsbarcode-fontSize="15"
-                                                            jsbarcode-marginBottom="0" 
-                                                            jsbarcode-width="2"
-                                                            jsbarcode-fontoptions="bold">
-                                                        </svg>
-
-                                                        <script>
-                                                            JsBarcode(".barcode").init();
-                                                        </script>
-                                                    </div>
-                                                    <div
-                                                        style="text-align: center; font-size: 10px; font-weight: 600; font-family: verdana;margin-top: -10px; height: 30px; ">
-                                                        <%=i.ProductFullName%>
-                                                    </div>
-                                                    <div
-                                                        style="text-align: center; font-size: 16px; font-weight: 600; font-family: verdana; letter-spacing: 0px;  margin-top: 4px;">
-                                                        MRP
-                                                        <%=i.RetailPrice%>
-                                                    </div>
-                                                </tr>
-                                            </table>
-                                            <%}%>
-
-                                            <% if (data.CompanyBarcode==5){%>
-                                                <table style="margin-left: -15px; margin-top: -11px;">
-                                                    <tr>
-                                                        <th style="width: 160px; height: 50px;">
-                    
-                                                            <div>
-                                                                <div
-                                                                    style="text-align: center; font-size: 16px; font-weight: 700; font-family: verdana; letter-spacing: .5px;padding-top:0px; ">
-                                                                    <%=i.BarcodeShopName%>
-                                                                </div>
-                    
-                                                                <svg  class="barcode" jsbarcode-format="CODE128"
-                                                                    jsbarcode-value="<%=i.Barcode%>"
-                                                                     jsbarcode-textmargin="0"
-                                                                    jsbarcode-height="50" 
-                                                                    jsbarcode-marginTop="-14" 
-                                                                    jsbarcode-fontSize="15"
-                                                                    jsbarcode-marginBottom="0"
-                                                                    jsbarcode-width="2"
-                                                                    jsbarcode-fontoptions="bold"
-                                                                    >
-                                                                </svg>
-                    
-                                                                <script>
-                                                                    JsBarcode(".barcode").init();
-                                                                </script>
-                                                            </div>
-                    
-                                                            </div>
-                    
-                    
-                                                        </th>
-                                                        <th style="width: 200px;  margin: 0;padding: 0;">
-                                                            <div
-                                                                style="text-align: left; font-size: 20px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 15px; height: 24px;">
-                                                                MRP
-                                                                <%=i.RetailPrice%>
-                                                            </div>
-                                                            <div
-                                                                style="text-align: left; font-size: 12px; font-weight: 600;letter-spacing: 0.1px;margin-left: 15px; font-family: verdana ;height: 16px;">
-                                                                (Inc. of all Taxes) </div>
-                                                            <div
-                                                                style="text-align: left; font-size: 13px; font-weight: 600; font-family: verdana;margin-left: 15px;height: 47px;">
-                                                                <%=i.ProductFullName%>
-                                                            </div>
-                                                            
-                                                        </th>
-                    
-                                                    </tr>
-                                                </table>
-                                                <%}%>
-
-                                                <% if (data.CompanyBarcode==6){%>
-                                                    <table style="margin-left: -10px; margin-top: -10px;">
-                                                        <tr>
-                                                            <th ng-reflect-ng-style="[object Object]" style="width: 140px;">
-                                                                <div
-                                                                    style="font-size: 16px; font-weight: 700; font-family: verdana; text-align: center; margin-top:4px; padding-bottom:3px; ">
-                                                                    <%=i.BarcodeShopName%>
-                                                                </div>
-                                                                <div style="height: 22px;">
-                                                                    <svg class="barcode"
-                                                                                    jsbarcode-format="CODE128"
-                                                                                    jsbarcode-value="<%=i.Barcode%>"
-                                                                                    jsbarcode-textmargin="0"
-                                                                                    jsbarcode-height="43"
-                                                                                    jsbarcode-marginTop="-14"
-                                                                                    jsbarcode-fontSize="15"
-                                                                                    jsbarcode-marginBottom="0"
-                                                                                    jsbarcode-width = "2"
-                                                                                    jsbarcode-fontoptions="bold">
-                                                                                  </svg>
-                                        
-                                                                                   <script>
-                                                                                    JsBarcode(".barcode").init();
-                                                                                   </script>
-                                                                </div>
-                                                            </th>
-                                                            <th ng-reflect-ng-style="[object Object]" style="width: 200px;  padding-top: 0px;margin-top:-2px;">
-                                                                <div
-                                                                    style="text-align: left; font-size: 20px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 12px;height: 25px;">
-                                                                    MRP
-                                                                    <%=i.RetailPrice%>
-                                                                </div>
-                                                                <div
-                                                                    style="text-align: left; font-size: 14px; font-weight: 600;margin-left: 12px; font-family: verdana ;height: 17px;">
-                                                                    <%=i.ProductNames%> </div>
-                                                                
-                                                                <div
-                                                                    style="text-align: left; font-size: 14px; font-weight: 600; font-family: verdana;margin-left: 12px;height: 43px;">
-                                                                    Market By <br> EYSTELLA PVT. LTD.
-                                                                </div>
-                                                            </th>
-                                                        </tr>
-                                                    </table>
-                                                    <%}%>
-
-                                <%})}%>
-
-
-
-
-
-
-
+                <%})}%>
 </body>
-
-
 </html>

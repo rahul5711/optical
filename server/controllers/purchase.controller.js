@@ -681,7 +681,7 @@ module.exports = {
 
     PrintBarcode: async (req, res, next) => {
         try {
-            const bracodeData = req.body
+            let bracodeData = req.body
             let modifyBarcode = []
 
             for (var i = 0; i < bracodeData.Quantity; i++) {
@@ -689,18 +689,30 @@ module.exports = {
             }
 
             const printdata = modifyBarcode;
+            
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
             const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
             const [companysetting] = await mysql2.pool.query(`select * from companysetting where CompanyID = ${CompanyID}`)
-
+            const [barcode] = await mysql2.pool.query(`select * from barcodemasternew where CompanyID = ${CompanyID} and PurchaseDetailID = ${printdata[0].ID}`)
             printdata.shopdetails = shopdetails[0]
+            printdata[0].BarcodeName = shopdetails[0].BarcodeName
+            printdata[0].Barcode = barcode[0].Barcode
             printdata.companysetting = companysetting[0]
+
+            let ProductFullName = printdata[0].ProductName;
+            let ProductBrandName = printdata[0].ProductName.split("/")[1];
+            let ProductModelName = printdata[0].ProductName.split("/")[2].substr(0, 15);
+            printdata[0].ProductBrandName = ProductBrandName;
+            printdata[0].ProductModelName = ProductModelName;
+            printdata[0].ProductFullName = ProductFullName;
+           
             printdata.CompanyBarcode = 5
             var file = "barcode" + CompanyID + ".pdf";
             var formatName = "barcode.ejs";
             var appURL = clientConfig.appURL;
+            console.log(printdata);
             // var appURL = clientConfig.appURL;
             var fileName = "";
             fileName = "uploads/" + file;
@@ -720,8 +732,10 @@ module.exports = {
 
                         if (printdata.CompanyBarcode == 5) {
                             options = {
-                                "height": "0.70in",
-                                "width": "4.41in",
+                                // "height": "0.70in",
+                                // "width": "4.41in",
+                                "height": "0.90in",
+                                "width": "6.00in",
                             };
                         }
                         options.timeout = 540000,  // in milliseconds

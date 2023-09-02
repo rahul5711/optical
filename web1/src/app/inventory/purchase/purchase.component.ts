@@ -830,7 +830,9 @@ export class PurchaseComponent implements OnInit {
   openModal(content: any, data: any) {
     this.BarcodeQuantity = 0
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
-    this.BarcodeData = data
+    let bs =  this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
+    this.BarcodeData = data 
+    
   }
 
   BarcodeQty() {
@@ -838,7 +840,7 @@ export class PurchaseComponent implements OnInit {
     this.BarcodeData.Quantity = Number(this.BarcodeQuantity)
     const subs: Subscription = this.purchaseService.PrintBarcode(this.BarcodeData).subscribe({
       next: (res: any) => {
-        if (res.success) {
+        if (res != '') {
           window.open(res, "_blank");
           this.modalService.dismissAll();
         } else {
