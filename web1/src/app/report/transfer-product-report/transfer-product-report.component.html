@@ -28,7 +28,7 @@
                                         </mat-form-field>
                                     </div>
                                     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
-                                        <!-- <mat-form-field class="example-full-width mb-0">
+                                        <mat-form-field class="example-full-width mb-0">
                                             <mat-label>From Shop</mat-label>
                                             <mat-select name="FromShop" [(ngModel)]="data.FromShop" multiple>
                                                 <mat-option [value]=0>All</mat-option>
@@ -37,7 +37,7 @@
                                                         *ngIf="Fs.AreaName !== 'null'">({{Fs.AreaName}})</span>
                                                 </mat-option>
                                             </mat-select>
-                                        </mat-form-field> -->
+                                        </mat-form-field>
 
                                         <!-- <ng-select bindLabel="FromShop" name="FromShop" placeholder="FromShop" [(ngModel)]="data.FromShop" [required]="true" #ShopID="ngModel" [closeOnSelect]="true" [searchable]="true" [multiple]="true"    groupBy="selectedAllGroup" [selectableGroup]="true"  >
                                             <ng-option [value]=0>All</ng-option>
@@ -45,24 +45,6 @@
                                                  <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'"> ({{s.AreaName}})</span>
                                             </ng-option>
                                          </ng-select> -->
-
-                                         <ng-select [items]="billerList"  bindLabel="text"
-                                         bindValue="id"  [multiple]="true" placeholder="Form Shop"  formControlName="billerIds" >
-                                         <ng-template ng-header-tmp>
-                             
-                                           <div>
-                                             <button class="btn btn-link"
-                                                     (click)="onSelectAll()">Select All</button>
-                                             <button class="btn btn-link"
-                                                     (click)="onClearAll()">Clear All</button>
-                                             <button class="btn btn-link"
-                                             (click)="onClose()">Close</button>
-                             
-                                           </div>
-                             
-                                         </ng-template>
-                                       </ng-select>
-
                                     </div>
                                     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
                                         <mat-form-field class="example-full-width mb-0 paddingInp">

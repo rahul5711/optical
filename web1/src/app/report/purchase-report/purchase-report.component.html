@@ -144,10 +144,10 @@
                             <td>{{s.DiscountAmount }} </td>
                             <td>{{s.SubTotal }}</td>
                             <td>{{s.GSTAmount }} </td>
-                            <td *ngIf="s.gst_detailssss[0][0].type === 'iGST'">{{s.gst_detailssss[0][0].amt }}</td>
-                            <td *ngIf="s.gst_detailssss[0][1].type === 'cGST-sGST'">{{s.gst_detailssss[0][1].amt/2 }}
+                            <td *ngIf="s.gst_detailssss[0][0].type === 'iGST'">{{s.gst_detailssss[0][0].amt.toFixed(2)}}</td>
+                            <td *ngIf="s.gst_detailssss[0][1].type === 'cGST-sGST'">{{(s.gst_detailssss[0][1].amt/2).toFixed(2) }}
                             </td>
-                            <td *ngIf="s.gst_detailssss[0][1].type === 'cGST-sGST'">{{s.gst_detailssss[0][1].amt/2 }}
+                            <td *ngIf="s.gst_detailssss[0][1].type === 'cGST-sGST'">{{(s.gst_detailssss[0][1].amt/2).toFixed(2) }}
                             </td>
                             <td>{{s.TotalAmount }}</td>
                             <td>{{s.SupplierGSTNo}}</td>
@@ -286,7 +286,7 @@
                           </mat-select>
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-4 col-md-6 col-12 mb-0 ">
+                      <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-0 ">
                         <button class="me-3" type="submit" mat-raised-button color="primary">
                           Search
                         </button>
@@ -441,7 +441,7 @@
                           </mat-select>
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-4 col-md-6 col-12 mb-0">
+                      <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-0">
                         <button class="me-3" mat-raised-button color="primary">Search</button>
                         <button class="mr-0" type="button" mat-raised-button color="warn"
                           (click)="purchaseChargeFromReset()">Reset</button>
@@ -757,7 +757,7 @@
         <tbody>
           <tr class="text-center" *ngFor="let gst of gstMaster let i = index;">
             <td>{{gst.GSTType}}</td>
-            <td>{{gst.Amount }}</td>
+            <td>{{gst.Amount.toFixed(2)}}</td>
           </tr>
         </tbody>
         <tfoot class="text-center">
@@ -789,7 +789,7 @@
         <tbody>
           <tr class="text-center" *ngFor="let gst of gstdetails let i = index;">
             <td>{{gst.GSTType}}</td>
-            <td>{{gst.Amount }}</td>
+            <td>{{gst.Amount.toFixed(2)}}</td>
           </tr>
         </tbody>
         <tfoot class="text-center">
@@ -821,7 +821,7 @@
         <tbody>
           <tr class="text-center" *ngFor="let gst of gstCharge let i = index;">
             <td>{{gst.GSTType}}</td>
-            <td>{{gst.Amount }}</td>
+            <td>{{gst.Amount.toFixed(2)}}</td>
           </tr>
         </tbody>
         <tfoot class="text-center">
@@ -853,7 +853,7 @@
         <tbody>
           <tr class="text-center" *ngFor="let gst of gstExpirys let i = index;">
             <td>{{gst.GSTType}}</td>
-            <td>{{gst.Amount }}</td>
+            <td>{{gst.Amount.toFixed(2)}}</td>
           </tr>
         </tbody>
         <tfoot class="text-center">

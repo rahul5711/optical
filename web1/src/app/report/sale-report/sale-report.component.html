@@ -803,7 +803,7 @@
                 <tbody>
                     <tr class="text-center" *ngFor="let gst of gstMaster let i = index;">
                         <td>{{gst.GSTType}}</td>
-                        <td>{{gst.Amount }}</td>
+                        <td>{{gst.Amount.toFixed(2) }}</td>
                     </tr>
                 </tbody>
                 <tfoot class="text-center">
@@ -836,7 +836,7 @@
                 <tbody>
                     <tr class="text-center" *ngFor="let gst of gstdetails let i = index;">
                         <td>{{gst.GSTType}}</td>
-                        <td>{{gst.Amount }}</td>
+                        <td>{{gst.Amount.toFixed(2) }}</td>
                     </tr>
                 </tbody>
                 <tfoot class="text-center">
@@ -869,7 +869,7 @@
                 <tbody>
                     <tr class="text-center" *ngFor="let gst of gstService let i = index;">
                         <td>{{gst.GSTType}}</td>
-                        <td>{{gst.Amount }}</td>
+                        <td>{{gst.Amount.toFixed(2) }}</td>
                     </tr>
                 </tbody>
                 <tfoot class="text-center">

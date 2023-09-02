@@ -941,9 +941,9 @@ export class BillComponent implements OnInit {
           }
         }
 
-        if(this.BillItem.ProductTypeName  === 'LENS' || this.BillItem.ProductTypeName  === 'LENSES' || this.BillItem.ProductTypeName === 'CONTACT LENS'){
+        if(this.BillItem.ProductTypeName.toUpperCase()  === 'LENS'  || this.BillItem.ProductTypeName.toUpperCase()  === 'LENSES' || this.BillItem.ProductTypeName.toUpperCase() === 'CONTACT LENS'){
           let type = ''
-           if(this.BillItem.ProductTypeName === 'LENS'){
+           if(this.BillItem.ProductTypeName.toUpperCase() === 'LENS' || this.BillItem.ProductTypeName.toUpperCase()  === 'LENSES'){
               type = 'Lens'
            }else if(this.BillItem.ProductTypeName === 'CONTACT LENS'){
             type = 'ContactLens'
