@@ -1514,7 +1514,7 @@ module.exports = {
                 for (const item of data2) {
                     values.forEach(e => {
                         if (e.GSTType === item.GSTType) {
-                            e.Amount += item.GSTAmount.toFixed(2)
+                            e.Amount += item.GSTAmount
                         }
 
                         // CGST-SGST
@@ -1522,11 +1522,11 @@ module.exports = {
                         if (item.GSTType === 'CGST-SGST') {
 
                             if (e.GSTType === 'CGST') {
-                                e.Amount += item.GSTAmount.toFixed(2) / 2
+                                e.Amount += item.GSTAmount / 2
                             }
 
                             if (e.GSTType === 'SGST') {
-                                e.Amount += item.GSTAmount.toFixed(2) / 2
+                                e.Amount += item.GSTAmount / 2
                             }
                         }
                     })
@@ -1565,9 +1565,10 @@ module.exports = {
                     item.gst_detailssss = []
                     values2.forEach(e => {
                         if (e.GSTType === item.GSTType) {
+                            e.Amount += item.GSTAmount
                             item.gst_details.push({
                                 GSTType: item.GSTType,
-                                Amount: item.GSTAmount.toFixed(2),
+                                Amount: item.GSTAmount,
                                 InvoiceNo: item.InvoiceNo,
                             })
                         }
@@ -1577,17 +1578,19 @@ module.exports = {
                         if (item.GSTType === 'CGST-SGST') {
 
                             if (e.GSTType === 'CGST') {
+                                e.Amount += item.GSTAmount / 2
                                 item.gst_details.push({
                                     GSTType: 'CGST',
-                                    Amount: item.GSTAmount.toFixed(2) / 2,
+                                    Amount: item.GSTAmount / 2,
                                     InvoiceNo: item.InvoiceNo,
                                 })
                             }
 
                             if (e.GSTType === 'SGST') {
+                                e.Amount += item.GSTAmount / 2
                                 item.gst_details.push({
                                     GSTType: 'SGST',
-                                    Amount: item.GSTAmount.toFixed(2) / 2,
+                                    Amount: item.GSTAmount / 2,
                                     InvoiceNo: item.InvoiceNo,
 
                                 })
@@ -1600,7 +1603,7 @@ module.exports = {
 
             }
 
-            response.calculation[0].gst_details = values;
+            response.calculation[0].gst_details = values2;
             response.calculation[0].totalQty = datum[0].totalQty ? datum[0].totalQty : 0
             response.calculation[0].totalGstAmount = datum[0].totalGstAmount ? datum[0].totalGstAmount.toFixed(2) : 0
             response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount.toFixed(2) : 0
@@ -1679,7 +1682,7 @@ module.exports = {
                 for (const item of data2) {
                     values.forEach(e => {
                         if (e.GSTType === item.GSTType) {
-                            e.Amount += item.GSTAmount.toFixed(2)
+                            e.Amount += item.GSTAmount
                         }
 
                         // CGST-SGST
@@ -1687,11 +1690,11 @@ module.exports = {
                         if (item.GSTType === 'CGST-SGST') {
 
                             if (e.GSTType === 'CGST') {
-                                e.Amount += item.GSTAmount.toFixed(2) / 2
+                                e.Amount += item.GSTAmount / 2
                             }
 
                             if (e.GSTType === 'SGST') {
-                                e.Amount += item.GSTAmount.toFixed(2) / 2
+                                e.Amount += item.GSTAmount / 2
                             }
                         }
                     })
@@ -1729,9 +1732,10 @@ module.exports = {
                     item.gst_details = []
                     values2.forEach(e => {
                         if (e.GSTType === item.GSTType) {
+                            e.Amount += item.GSTAmount
                             item.gst_details.push({
                                 GSTType: item.GSTType,
-                                Amount: item.GSTAmount.toFixed(2)
+                                Amount: item.GSTAmount
                             })
                         }
 
@@ -1740,16 +1744,20 @@ module.exports = {
                         if (item.GSTType === 'CGST-SGST') {
 
                             if (e.GSTType === 'CGST') {
+                                e.Amount += item.GSTAmount / 2
+
                                 item.gst_details.push({
                                     GSTType: 'CGST',
-                                    Amount: item.GSTAmount.toFixed(2) / 2
+                                    Amount: item.GSTAmount / 2
                                 })
                             }
 
                             if (e.GSTType === 'SGST') {
+                                e.Amount += item.GSTAmount / 2
+
                                 item.gst_details.push({
                                     GSTType: 'SGST',
-                                    Amount: item.GSTAmount.toFixed(2) / 2
+                                    Amount: item.GSTAmount / 2
                                 })
                             }
                         }
@@ -1760,7 +1768,7 @@ module.exports = {
 
             }
 
-            response.calculation[0].gst_details = values;
+            response.calculation[0].gst_details = values2;
             response.calculation[0].totalQty = datum[0].totalQty ? datum[0].totalQty : 0
             response.calculation[0].totalGstAmount = datum[0].totalGstAmount ? datum[0].totalGstAmount.toFixed(2) : 0
             response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount.toFixed(2) : 0
