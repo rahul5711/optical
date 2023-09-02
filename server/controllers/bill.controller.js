@@ -1514,7 +1514,7 @@ module.exports = {
                 for (const item of data2) {
                     values.forEach(e => {
                         if (e.GSTType === item.GSTType) {
-                            e.Amount += item.GSTAmount
+                            e.Amount += item.GSTAmount.toFixed(2)
                         }
 
                         // CGST-SGST
@@ -1522,11 +1522,11 @@ module.exports = {
                         if (item.GSTType === 'CGST-SGST') {
 
                             if (e.GSTType === 'CGST') {
-                                e.Amount += item.GSTAmount / 2
+                                e.Amount += item.GSTAmount.toFixed(2) / 2
                             }
 
                             if (e.GSTType === 'SGST') {
-                                e.Amount += item.GSTAmount / 2
+                                e.Amount += item.GSTAmount.toFixed(2) / 2
                             }
                         }
                     })
@@ -1567,7 +1567,7 @@ module.exports = {
                         if (e.GSTType === item.GSTType) {
                             item.gst_details.push({
                                 GSTType: item.GSTType,
-                                Amount: item.GSTAmount,
+                                Amount: item.GSTAmount.toFixed(2),
                                 InvoiceNo: item.InvoiceNo,
                             })
                         }
@@ -1579,7 +1579,7 @@ module.exports = {
                             if (e.GSTType === 'CGST') {
                                 item.gst_details.push({
                                     GSTType: 'CGST',
-                                    Amount: item.GSTAmount / 2,
+                                    Amount: item.GSTAmount.toFixed(2) / 2,
                                     InvoiceNo: item.InvoiceNo,
                                 })
                             }
@@ -1587,7 +1587,7 @@ module.exports = {
                             if (e.GSTType === 'SGST') {
                                 item.gst_details.push({
                                     GSTType: 'SGST',
-                                    Amount: item.GSTAmount / 2,
+                                    Amount: item.GSTAmount.toFixed(2) / 2,
                                     InvoiceNo: item.InvoiceNo,
 
                                 })
@@ -1679,7 +1679,7 @@ module.exports = {
                 for (const item of data2) {
                     values.forEach(e => {
                         if (e.GSTType === item.GSTType) {
-                            e.Amount += item.GSTAmount
+                            e.Amount += item.GSTAmount.toFixed(2)
                         }
 
                         // CGST-SGST
@@ -1687,11 +1687,11 @@ module.exports = {
                         if (item.GSTType === 'CGST-SGST') {
 
                             if (e.GSTType === 'CGST') {
-                                e.Amount += item.GSTAmount / 2
+                                e.Amount += item.GSTAmount.toFixed(2) / 2
                             }
 
                             if (e.GSTType === 'SGST') {
-                                e.Amount += item.GSTAmount / 2
+                                e.Amount += item.GSTAmount.toFixed(2) / 2
                             }
                         }
                     })
@@ -1731,7 +1731,7 @@ module.exports = {
                         if (e.GSTType === item.GSTType) {
                             item.gst_details.push({
                                 GSTType: item.GSTType,
-                                Amount: item.GSTAmount
+                                Amount: item.GSTAmount.toFixed(2)
                             })
                         }
 
@@ -1742,14 +1742,14 @@ module.exports = {
                             if (e.GSTType === 'CGST') {
                                 item.gst_details.push({
                                     GSTType: 'CGST',
-                                    Amount: item.GSTAmount / 2
+                                    Amount: item.GSTAmount.toFixed(2) / 2
                                 })
                             }
 
                             if (e.GSTType === 'SGST') {
                                 item.gst_details.push({
                                     GSTType: 'SGST',
-                                    Amount: item.GSTAmount / 2
+                                    Amount: item.GSTAmount.toFixed(2) / 2
                                 })
                             }
                         }
