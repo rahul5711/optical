@@ -3,7 +3,7 @@ const mysql = require('../newdb')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const { now } = require('lodash')
-const { shopID, generateInvoiceNo, generateBillSno, generateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder, gstDetailBill, generateUniqueBarcode, generateInvoiceNoForService } = require('../helpers/helper_function')
+const { shopID, generateInvoiceNo, generateBillSno, generateCommission, updateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder, gstDetailBill, generateUniqueBarcode, generateInvoiceNoForService } = require('../helpers/helper_function')
 const _ = require("lodash")
 let ejs = require("ejs");
 let path = require("path");
@@ -490,25 +490,25 @@ module.exports = {
 
                 // delete comission
 
-                const [fetchComm] = await mysql2.pool.query(`select * from commissiondetail where BillMasterID = ${bMasterID} and CommissionMasterID != 0`)
+                // const [fetchComm] = await mysql2.pool.query(`select * from commissiondetail where BillMasterID = ${bMasterID} and CommissionMasterID != 0`)
 
-                const [delComm] = await mysql2.pool.query(`delete from commissiondetail where BillMasterID = ${bMasterID}`)
-                console.log(connected("Delete Comission and Again Initiated!!!"));
+                // const [delComm] = await mysql2.pool.query(`delete from commissiondetail where BillMasterID = ${bMasterID}`)
+                // console.log(connected("Delete Comission and Again Initiated!!!"));
 
-                if (fetchComm.length) {
-                  const [delCommMaster] = await mysql2.pool.query(`delete from commissionmaster where ID = ${fetchComm[0].CommissionMasterID}`)
-                }
+                // if (fetchComm.length) {
+                //   const [delCommMaster] = await mysql2.pool.query(`delete from commissionmaster where ID = ${fetchComm[0].CommissionMasterID}`)
+                // }
 
                 // save employee commission
 
                 if (billMaseterData.Employee !== 0 && billMaseterData.Employee !== undefined && billMaseterData.Employee !== null) {
-                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', billMaseterData.Employee, bMasterID, billMaseterData, LoggedOnUser)
+                    const saveEmpCommission = await updateCommission(CompanyID, 'Employee', billMaseterData.Employee, bMasterID, billMaseterData, LoggedOnUser)
                 }
 
                 // save doctor commission
 
                 if (billMaseterData.Doctor !== 0 && billMaseterData.Doctor !== undefined && billMaseterData.Doctor !== null) {
-                    const saveDocCommission = await generateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, bMasterID, billMaseterData, LoggedOnUser)
+                    const saveDocCommission = await updateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, bMasterID, billMaseterData, LoggedOnUser)
                 }
             }
 
@@ -1222,6 +1222,9 @@ module.exports = {
 
             const { billMaseterData, billDetailData } = req.body
 
+
+            console.log(req.body);
+
             if (!billMaseterData) return res.send({ message: "Invalid Query Data" })
             if (!billDetailData) return res.send({ message: "Invalid Query Data" })
             if (!billDetailData.length) return res.send({ message: "Invalid Query Data" })
@@ -1232,13 +1235,20 @@ module.exports = {
 
             let bMasterID = billMaseterData.ID;
 
+
+            const [fetchComm] = await mysql2.pool.query(`select * from commissiondetail where BillMasterID = ${bMasterID} and CommissionMasterID != 0`)
+
+            if (fetchComm.length) {
+               return res.send({success: false, message:"you can not add more product in this invoice because you have already settled commission of this invoice"})
+            }
+
             const [bMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}' , BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now(), LastUpdate = now(), TrayNo = '${billMaseterData.TrayNo}' where ID = ${bMasterID}`)
 
             console.log(connected("BillMaster Update SuccessFUlly !!!"));
 
             const billDetail = billDetailData[0];
 
-            const [update] = await mysql2.pool.query(`update billdetail set UnitPrice = ${billDetail.UnitPrice}, DiscountPercentage = ${billDetail.DiscountPercentage}, DiscountAmount = ${billDetail.DiscountAmount}, GSTPercentage = ${billDetail.GSTPercentage}, GSTAmount = ${billDetail.GSTAmount}, GSTType = '${billDetail.GSTType}', SubTotal = ${billDetail.SubTotal}, TotalAmount = ${billDetail.TotalAmount}, Remark = '${billDetail.Remark}', UpdatedBy = ${LoggedOnUser} where ID = ${billDetail.ID}`)
+            const [update] = await mysql2.pool.query(`update billdetail set UnitPrice = ${billDetail.UnitPrice}, DiscountPercentage = ${billDetail.DiscountPercentage}, DiscountAmount = ${billDetail.DiscountAmount}, GSTPercentage = ${billDetail.GSTPercentage}, GSTAmount = ${billDetail.GSTAmount}, GSTType = '${billDetail.GSTType}', SubTotal = ${billDetail.SubTotal}, TotalAmount = ${billDetail.TotalAmount}, Remark = '${billDetail.Remark}', UpdatedBy = ${LoggedOnUser} where ID = ${billDetail.ID} and CompanyID = ${CompanyID}`)
 
 
             //  update payment
@@ -1250,19 +1260,16 @@ module.exports = {
             const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0, DueAmount = ${billMaseterData.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
 
 
-            // delete comission
-            const [delComm] = await mysql2.pool.query(`delete from commissiondetail where BillMasterID = ${billMaseterData.ID}`)
-            console.log(connected("Delete Comission and Again Initiated!!!"));
             // save employee commission
 
             if (billMaseterData.Employee !== 0 && billMaseterData.Employee !== undefined && billMaseterData.Employee !== null) {
-                const saveEmpCommission = await generateCommission(CompanyID, 'Employee', billMaseterData.Employee, billMaseterData.ID, billMaseterData, LoggedOnUser)
+                const saveEmpCommission = await updateCommission(CompanyID, 'Employee', billMaseterData.Employee, billMaseterData.ID, billMaseterData, LoggedOnUser)
             }
 
             // save doctor commission
 
             if (billMaseterData.Doctor !== 0 && billMaseterData.Doctor !== undefined && billMaseterData.Doctor !== null) {
-                const saveDocCommission = await generateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, billMaseterData.ID, billMaseterData, LoggedOnUser)
+                const saveDocCommission = await updateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, billMaseterData.ID, billMaseterData, LoggedOnUser)
             }
 
             console.log(connected("BillDetail Update SuccessFUlly !!!"));
@@ -1558,6 +1565,7 @@ module.exports = {
                     item.gst_detailssss = []
                     values2.forEach(e => {
                         if (e.GSTType === item.GSTType) {
+                            e.Amount += item.GSTAmount
                             item.gst_details.push({
                                 GSTType: item.GSTType,
                                 Amount: item.GSTAmount,
@@ -1570,6 +1578,7 @@ module.exports = {
                         if (item.GSTType === 'CGST-SGST') {
 
                             if (e.GSTType === 'CGST') {
+                                e.Amount += item.GSTAmount / 2
                                 item.gst_details.push({
                                     GSTType: 'CGST',
                                     Amount: item.GSTAmount / 2,
@@ -1578,6 +1587,7 @@ module.exports = {
                             }
 
                             if (e.GSTType === 'SGST') {
+                                e.Amount += item.GSTAmount / 2
                                 item.gst_details.push({
                                     GSTType: 'SGST',
                                     Amount: item.GSTAmount / 2,
@@ -1593,7 +1603,7 @@ module.exports = {
 
             }
 
-            response.calculation[0].gst_details = values;
+            response.calculation[0].gst_details = values2;
             response.calculation[0].totalQty = datum[0].totalQty ? datum[0].totalQty : 0
             response.calculation[0].totalGstAmount = datum[0].totalGstAmount ? datum[0].totalGstAmount.toFixed(2) : 0
             response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount.toFixed(2) : 0
@@ -1722,6 +1732,7 @@ module.exports = {
                     item.gst_details = []
                     values2.forEach(e => {
                         if (e.GSTType === item.GSTType) {
+                            e.Amount += item.GSTAmount
                             item.gst_details.push({
                                 GSTType: item.GSTType,
                                 Amount: item.GSTAmount
@@ -1733,6 +1744,8 @@ module.exports = {
                         if (item.GSTType === 'CGST-SGST') {
 
                             if (e.GSTType === 'CGST') {
+                                e.Amount += item.GSTAmount / 2
+
                                 item.gst_details.push({
                                     GSTType: 'CGST',
                                     Amount: item.GSTAmount / 2
@@ -1740,6 +1753,8 @@ module.exports = {
                             }
 
                             if (e.GSTType === 'SGST') {
+                                e.Amount += item.GSTAmount / 2
+
                                 item.gst_details.push({
                                     GSTType: 'SGST',
                                     Amount: item.GSTAmount / 2
@@ -1753,7 +1768,7 @@ module.exports = {
 
             }
 
-            response.calculation[0].gst_details = values;
+            response.calculation[0].gst_details = values2;
             response.calculation[0].totalQty = datum[0].totalQty ? datum[0].totalQty : 0
             response.calculation[0].totalGstAmount = datum[0].totalGstAmount ? datum[0].totalGstAmount.toFixed(2) : 0
             response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount.toFixed(2) : 0

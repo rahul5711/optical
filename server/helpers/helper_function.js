@@ -406,8 +406,8 @@ module.exports = {
             commission1.Value = userData[0].CommissionValue;
           }
         } else if (userData.length !== 0 && userData[0].CommissionType == 2) {
-          let [userResultB] = await mysql2.pool.query(`SELECT SUM(billdetail.SubTotal) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' AND BrandType = 1`);
-          let [userResultNB] = await mysql2.pool.query(`SELECT SUM(billdetail.SubTotal) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' AND BrandType <> 1`);
+          let [userResultB] = await mysql2.pool.query(`SELECT SUM(billdetail.SubTotal) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' AND purchasedetailnew.BrandType = 1`);
+          let [userResultNB] = await mysql2.pool.query(`SELECT SUM(billdetail.SubTotal) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' AND purchasedetailnew.BrandType <> 1`);
           commission1.Type = userData[0].CommissionType;
           if (userData[0].CommissionMode == 2) {
             // commission1.Amount = subTotal;
@@ -466,6 +466,97 @@ module.exports = {
       return
     } catch (error) {
       next(error)
+      console.log(error);
+    }
+
+
+  },
+  updateCommission: async (CompanyID, UserType, UserID, bMasterID, billMaseterData, LoggedOnUser) => {
+    try {
+      let commission = { Type: 0, Mode: 0, Value: 0, Amount: 0, BrandedCommissionAmount: 0, NonBrandedCommissionAmount: 0 }
+      let commission1 = { Type: 0, Mode: 0, Value: 0, Amount: 0, BrandedCommissionAmount: 0, NonBrandedCommissionAmount: 0 }
+
+      if (UserType === 'Employee') {
+        let [userData] = await mysql2.pool.query(`select * from user where user.ID = ${UserID}`);
+        if (userData.length !== 0 && userData[0].CommissionType == 1) {
+          commission1.Type = userData[0].CommissionType;
+          if (userData[0].CommissionMode == 2) {
+            commission1.Amount = userData[0].CommissionValue;
+            commission1.Mode = userData[0].CommissionMode;
+            commission1.Value = userData[0].CommissionValue;
+          } else if (userData[0].CommissionMode == 1) {
+            commission1.Type = userData[0].CommissionType;
+            commission1.Amount = +billMaseterData.SubTotal * +userData[0].CommissionValue / 100;
+            commission1.Mode = userData[0].CommissionMode;
+            commission1.Value = userData[0].CommissionValue;
+          }
+        } else if (userData.length !== 0 && userData[0].CommissionType == 2) {
+          let [userResultB] = await mysql2.pool.query(`SELECT ROUND(SUM(billdetail.SubTotal), 2)as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' AND purchasedetailnew.BrandType = 1`);
+          let [userResultNB] = await mysql2.pool.query(`SELECT ROUND(SUM(billdetail.SubTotal), 2) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' AND purchasedetailnew.BrandType <> 1`);
+
+
+          commission1.Type = userData[0].CommissionType;
+          if (userData[0].CommissionMode == 2) {
+            // commission1.Amount = subTotal;
+            // commission1.Mode = userData[0].CommissionMode;
+            // commission1.Value = userData[0].CommissionValue;
+          } else if (userData[0].CommissionMode == 1) {
+            commission1.Type = userData[0].CommissionType;
+            commission1.Amount = userResultB[0].SubTotalVal * +userData[0].CommissionValue / 100 + userResultNB[0].SubTotalVal * +userData[0].CommissionValueNB / 100;
+            commission1.Mode = userData[0].CommissionMode;
+            commission1.Value = userData[0].CommissionValue;
+            commission1.BrandedCommissionAmount = userResultB[0].SubTotalVal * +userData[0].CommissionValue / 100;
+            commission1.NonBrandedCommissionAmount = userResultNB[0].SubTotalVal * +userData[0].CommissionValueNB / 100;
+          }
+        }
+
+        if (commission1.Type !== 0 && commission1.Amount !== 0) {
+          // const [save] = await mysql2.pool.query(`insert into commissiondetail (CompanyID,ShopID,CommissionMasterID, UserType, UserID,BillMasterID, CommissionMode, CommissionType, CommissionValue, CommissionAmount, BrandedCommissionAmount, NonBrandedCommissionAmount, Status,CreatedBy,CreatedOn ) values (${CompanyID}, ${billMaseterData.ShopID}, 0,'Employee', ${userData[0].ID}, ${bMasterID}, ${commission1.Mode},${commission1.Type},${commission1.Value},${commission1.Amount},${commission1.BrandedCommissionAmount},${commission1.NonBrandedCommissionAmount}, 1, '${LoggedOnUser}', now())`)
+
+
+
+          const [update] = await mysql2.pool.query(`update commissiondetail set CommissionMode = ${commission1.Mode}, CommissionType = ${commission1.Type}, CommissionValue = ${commission1.Value}, CommissionAmount = ${commission1.Amount}, BrandedCommissionAmount = ${commission1.BrandedCommissionAmount}, NonBrandedCommissionAmount = ${commission1.NonBrandedCommissionAmount}, UpdatedOn = now(), UpdatedBy = ${LoggedOnUser} where BillmasterID = ${bMasterID} and UserType = 'Employee' and UserID = ${userData[0].ID} and CompanyID = ${CompanyID}`)
+        }
+      } else if (UserType === 'Doctor') {
+        let [doctorData] = await mysql2.pool.query(`select * from doctor where doctor.ID = ${UserID}`);
+        if (doctorData.length !== 0 && doctorData[0].CommissionType == 1) {
+          commission.Type = doctorData[0].CommissionType;
+          if (doctorData[0].CommissionMode == 2) {
+            commission.Amount = doctorData[0].CommissionValue;
+            commission.Mode = doctorData[0].CommissionMode;
+            commission.Value = doctorData[0].CommissionValue;
+          } else if (doctorData[0].CommissionMode == 1) {
+            commission.Type = doctorData[0].CommissionType;
+            commission.Amount = +billMaseterData.SubTotal * +doctorData[0].CommissionValue / 100;
+            commission.Mode = doctorData[0].CommissionMode;
+            commission.Value = doctorData[0].CommissionValue;
+          }
+        } else if (doctorData.length !== 0 && doctorData[0].CommissionType == 2) {
+          let [doctorResultB] = await mysql2.pool.query(`SELECT ROUND(SUM(billdetail.SubTotal), 2) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' AND BrandType = 1`);
+          let [doctorResultNB] = await mysql2.pool.query(`SELECT ROUND(SUM(billdetail.SubTotal), 2) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' AND BrandType <> 1`);
+          commission.Type = doctorData[0].CommissionType;
+          if (doctorData[0].CommissionMode == 2) {
+            // commission.Amount = subTotal;
+            // commission.Mode = doctorData[0].CommissionMode;
+            // commission.Value = doctorData[0].CommissionValue;
+          } else if (doctorData[0].CommissionMode == 1) {
+            commission.Type = doctorData[0].CommissionType;
+            commission.Amount = doctorResultB[0].SubTotalVal * +doctorData[0].CommissionValue / 100 + doctorResultNB[0].SubTotalVal * +doctorData[0].CommissionValueNB / 100;
+            commission.Mode = doctorData[0].CommissionMode;
+            commission.Value = doctorData[0].CommissionValue;
+            commission.BrandedCommissionAmount = doctorResultB[0].SubTotalVal * +doctorData[0].CommissionValue / 100;
+            commission.NonBrandedCommissionAmount = doctorResultNB[0].SubTotalVal * +doctorData[0].CommissionValueNB / 100;
+          }
+        }
+
+        if (commission.Type !== 0 && commission.Amount !== 0) {
+          // await mysql2.pool.query(`insert into commissiondetail (CompanyID,ShopID,CommissionMasterID, UserType, UserID,BillMasterID, CommissionMode, CommissionType, CommissionValue, CommissionAmount,BrandedCommissionAmount,NonBrandedCommissionAmount, Status,CreatedBy,CreatedOn ) values (${CompanyID}, ${billMaseterData.ShopID}, 0,'Doctor', ${billMaseterData.Doctor}, ${bMasterID}, ${commission.Mode},${commission.Type},${commission.Value},${commission.Amount},${commission.BrandedCommissionAmount},${commission.NonBrandedCommissionAmount},1,${LoggedOnUser}, now())`)
+
+          const [update] = await mysql2.pool.query(`update commissiondetail set CommissionMode = ${commission.Mode}, CommissionType = ${commission.Type}, CommissionValue = ${commission.Value}, CommissionAmount = ${commission.Amount}, BrandedCommissionAmount = ${commission.BrandedCommissionAmount}, NonBrandedCommissionAmount = ${commission.NonBrandedCommissionAmount}, UpdatedOn = now(), UpdatedBy = ${LoggedOnUser} where BillmasterID = ${bMasterID} and UserType = 'Doctor' and UserID = ${doctorData[0].ID} and CompanyID = ${CompanyID}`)
+        }
+      }
+      return
+    } catch (error) {
       console.log(error);
     }
 
