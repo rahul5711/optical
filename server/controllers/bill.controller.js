@@ -2232,7 +2232,7 @@ module.exports = {
 
             await Promise.all(
                 Body.map(async (item) => {
-                    const [update] = await mysql2.pool.query(`update barcodemasternew set Remark = '${item.Remark}', FitterDocNo = '${item.FitterDocNo}', UpdatedOn=now() where  and BillDetailID = ${item.BillDetailID}`);
+                    const [update] = await mysql2.pool.query(`update barcodemasternew set Remark = '${item.Remark}', FitterDocNo = '${item.FitterDocNo}', UpdatedOn=now() where BillDetailID = ${item.BillDetailID}`);
                 })
             )
             // for (let item of Body) {
