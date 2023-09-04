@@ -227,4 +227,26 @@ module.exports = {
         }
     },
 
+    getExpenseReport: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            let qry = `select expense.*, shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from expense left join user as users1 on users1.ID = expense.CreatedBy left join user as users on users.ID = expense.UpdatedBy left join shop on shop.ID = expense.ShopID where expense.Status = 1 and expense.CompanyID = '${CompanyID}' ${Parem}  order by expense.ID desc`
+
+            let [data] = await mysql2.pool.query(qry);
+            response.message = "data fetch sucessfully"
+            response.data = data
+            return res.send(response);
+
+        } catch(err) {
+            next(err)
+        }
+    },
+
 }

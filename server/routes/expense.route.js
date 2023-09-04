@@ -12,4 +12,7 @@ router.post('/update',verifyAccessTokenAdmin, Controller.update)
 // Regex search
 router.post('/searchByFeild',verifyAccessTokenAdmin, Controller.searchByFeild)
 
+router.post('/getExpenseReport', verifyAccessTokenAdmin, Controller.getExpenseReport)
+
+
 module.exports = router
