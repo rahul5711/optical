@@ -1,0 +1,104 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                    <div class="card p-0">
+                        <div class="header p-2 py-0 pt-1">
+                            <div class="row">
+                                <div class="col-md-2 col-8 p-0 ms-3">
+                                    <h2>Expense</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="body">
+                            <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="searchData()">
+                                <div class="row">
+                                    <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>From</mat-label>
+                                            <input matInput name="FromDate" type="date" [(ngModel)]="data.FromDate"
+                                                #DOBcontrol [disabled]="!editEyeTestReport"/>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>To</mat-label>
+                                            <input matInput type="date" name="ToDate" [(ngModel)]="data.ToDate" [disabled]="!editEyeTestReport"/>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>ShopName</mat-label>
+                                            <mat-select name="ShopID" [(ngModel)]="data.ShopID" multiple>
+                                                <mat-option [value]=0>All</mat-option>
+                                                <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
+                                                    <span [style.color]="'blue'"
+                                                        *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0" >
+                                        <mat-form-field class="example-full-width mb-0">
+                                          <mat-label>Payment Mode</mat-label>
+                                          <mat-select name="PayMode" [(ngModel)]="data.PaymentMode" required #GSTTypecontrol1>
+                                            <mat-option [value]="p.Name" *ngFor="let p of PaymentModesList"> {{p.Name}} </mat-option>
+                                          </mat-select>
+                                        </mat-form-field>
+                                      </div>
+                                      <div *ngIf="data.PaymentMode === 'CASH' || data.PaymentMode === 'Cash'"
+                                      class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                      <mat-form-field class="example-full-width mb-0">
+                                          <mat-label>Cash Type</mat-label>
+                                          <mat-select name="CashType" [(ngModel)]="data.CashType" required>
+                                              <mat-option value="All">All</mat-option>
+                                              <mat-option value="CashCounter">Cash Counter</mat-option>
+                                              <mat-option value="PettyCash">Petty Cash</mat-option>
+                                          </mat-select>
+                                          <mat-error>
+                                              CashType is required
+                                          </mat-error>
+                                      </mat-form-field>
+                                  </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                        <button class="me-2" type="submit" mat-raised-button color="primary">
+                                             Search
+                                        </button>
+                                        <button type="button" mat-raised-button color="warn" >
+                                            Reset
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <!--  list -->
+                            <div class="body p-2">
+                                <div class="col-sm-12" style="overflow: auto; height: 450px;">
+                                    <table class="table table-striped table-hover table-sm table-bordered"
+                                        style="border: 2px solid #fff !important;" id="ProductTransferExcel">
+                                        <thead>
+                                            <tr style="white-space: nowrap;">
+                                                <th>S.No</th>
+                                                <th>Customer Name</th>
+                                                <th>MobileNo</th>
+                                                <th>Family</th>
+                                                <th>RefferedByDoctor</th>
+                                                <th>ShopName</th>
+                                                <th>EmployeeName</th>
+                                                <th>EyeTestingDate</th>
+                                                <th>FollowUpDate</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="text-center">
+                                           
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

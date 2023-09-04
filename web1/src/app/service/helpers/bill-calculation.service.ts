@@ -124,6 +124,7 @@ export class BillCalculationService {
 
       // serviceCalcultion    
       case 'serviceGst':
+        
         if (fieldName === 'GSTPercentageSer') {
           if (Service.GSTPercentage === null || Service.GSTPercentage === '' || (Number(Service.GSTPercentage) > 100)) {
             Swal.fire({
@@ -153,7 +154,11 @@ export class BillCalculationService {
         break;
 
       case 'serviceTotal': 
+      if (!BillItem.WholeSale) {
+        Service.TotalAmount = +Service.Price ;
+      }else{
         Service.TotalAmount = +Service.GSTAmount + +Service.Price;
+      }
         break;
     }
 

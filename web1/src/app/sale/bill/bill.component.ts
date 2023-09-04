@@ -121,6 +121,7 @@ export class BillComponent implements OnInit {
   gstList: any;
   BarcodeList: any;
   disableAddButtons = false;
+  PurchasePriceInput = false;
   loginShopID: any;
   gst_detail: any = [];
   GstTypeDis = false
@@ -664,6 +665,8 @@ export class BillComponent implements OnInit {
           next: (res: any) => {
             if (res.success) {
               this.BarcodeList = res.data;
+              console.log(this.BarcodeList,'this.BarcodeList');
+              
             } else {
               this.as.errorToast(res.message)
             }
@@ -713,6 +716,9 @@ export class BillComponent implements OnInit {
           next: (res: any) => {
             if (res.success) {
               this.BarcodeList = res.data;
+              if(this.BarcodeList == ''){
+                this.PurchasePriceInput = true
+              }
             } else {
               this.as.errorToast(res.message)
             }
@@ -941,11 +947,11 @@ export class BillComponent implements OnInit {
           }
         }
 
-        if(this.BillItem.ProductTypeName.toUpperCase()  === 'LENS'  || this.BillItem.ProductTypeName.toUpperCase()  === 'LENSES' || this.BillItem.ProductTypeName.toUpperCase() === 'CONTACT LENS'){
+        if(this.BillItem.ProductTypeName){
           let type = ''
-           if(this.BillItem.ProductTypeName.toUpperCase() === 'LENS' || this.BillItem.ProductTypeName.toUpperCase()  === 'LENSES'){
+           if(this.BillItem.ProductTypeName !== 'CONTACT LENS'){
               type = 'Lens'
-           }else if(this.BillItem.ProductTypeName === 'CONTACT LENS'){
+           }else {
             type = 'ContactLens'
            }
           const subs: Subscription = this.cs.getMeasurementByCustomer(this.id , type).subscribe({

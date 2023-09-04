@@ -152,6 +152,7 @@ export class CommissionComponent implements OnInit {
     })
 
     this.data1.Detail = CommissionDetails;
+
     const subs: Subscription = this.pay.saveCommissionDetail(this.data1).subscribe({
       next: (res: any) => {
         if (res.success) {

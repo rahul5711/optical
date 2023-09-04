@@ -161,8 +161,9 @@
                                                 {{spec.FieldName}}</mat-slide-toggle>
                                         </div>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-2 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12  mb-0 ">
                                         <button type="submit" mat-raised-button color="primary">Search</button>
+                                        <button type="button" (click)="deleteall()" class="ms-3"  mat-raised-button color="warn">Delete All</button>
                                     </div>
                                 </div>
                             </form>
@@ -176,6 +177,10 @@
                                             style="border: 2px solid #fff !important;">
                                             <thead>
                                                 <tr class="text-center">
+                                                    <th>   
+                                                        <mat-checkbox color="primary" (click)="selectAllPreorder('all')">
+                                                        </mat-checkbox>
+                                                   </th>
                                                     <th>Action</th>
                                                     <th>S.No</th>
                                                     <th>ProductName</th>
@@ -196,6 +201,9 @@
                                             <tbody>
                                                 <tr class="text-center" *ngFor="let data of dataList let i = index;"
                                                     style="white-space: nowrap;">
+                                                    <td>
+                                                        <mat-checkbox color="primary" [(ngModel)]="data.Checked" name="{{i + 'name'}}" [checked]="data.Checked" [ngModelOptions]="{standalone: true}" (click)="singleSelectPreOrder(i)" ></mat-checkbox>
+                                                    </td>
                                                     <td style="width: 5%;">
                                                         <button *ngIf="!data.UpdateProduct" class="bg-btn"
                                                             (click)="showInput(data)">

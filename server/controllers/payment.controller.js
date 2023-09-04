@@ -598,7 +598,8 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
 
             const { Master, Detail } = req.body
-
+               console.log(Master,'Master');
+               console.log(Detail,'Detail');
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;

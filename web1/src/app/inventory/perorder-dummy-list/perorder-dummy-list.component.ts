@@ -26,17 +26,19 @@ export class PerorderDummyListComponent implements OnInit {
   env = environment;
   gridview = true;
   term: any;
-  searchValue:any;
+  searchValue: any;
   supplierList: any;
   selectedProduct: any;
-  prodList:any;
+  prodList: any;
   specList: any;
   dataList: any;
+  dataListt: any = [];
   currentPage = 1;
   itemsPerPage = 10;
   pageSize!: number;
   collectionSize = 0
   page = 4;
+  checked = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -60,7 +62,7 @@ export class PerorderDummyListComponent implements OnInit {
     Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: 0.00, WholeSalePrice: 0.00, Ledger: false, WholeSale: false, BaseBarCode: '', NewBarcode: '', Status: 1, BrandType: 0, UpdateProduct: false
   };
 
-  data1:any = {SupplierID: 0,  Barcode: "", stringProductName :'', ProductCategory : 0, ProductName:'',  };
+  data1: any = { SupplierID: 0, Barcode: "", stringProductName: '', ProductCategory: 0, ProductName: '', };
 
   data: any = { PurchaseMaster: null, PurchaseDetail: null };
 
@@ -70,14 +72,14 @@ export class PerorderDummyListComponent implements OnInit {
     this.getList();
   }
 
-  dropdownSupplierlist(){
+  dropdownSupplierlist() {
     this.sp.show()
     const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
       next: (res: any) => {
-        if(res.success){
-          this.supplierList  = res.data
+        if (res.success) {
+          this.supplierList = res.data
           this.as.successToast(res.message)
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide()
@@ -87,14 +89,14 @@ export class PerorderDummyListComponent implements OnInit {
     });
   }
 
-  getProductList(){
+  getProductList() {
     this.sp.show()
-    const subs: Subscription =  this.ps.getList().subscribe({
+    const subs: Subscription = this.ps.getList().subscribe({
       next: (res: any) => {
-        if(res.success){
-          this.prodList  = res.data
+        if (res.success) {
+          this.prodList = res.data
           this.as.successToast(res.message)
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide()
@@ -104,27 +106,27 @@ export class PerorderDummyListComponent implements OnInit {
     });
   }
 
-  getFieldList(){
-    if(this.data1.ProductCategory !== 0){
+  getFieldList() {
+    if (this.data1.ProductCategory !== 0) {
       this.prodList.forEach((element: any) => {
         if (element.ID === this.data1.ProductCategory) {
           this.selectedProduct = element.Name;
         }
       })
-      const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
+      const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
         next: (res: any) => {
-          if(res.success){
+          if (res.success) {
             this.specList = res.data;
             this.getSptTableData();
             this.as.successToast(res.message)
-          }else{
+          } else {
             this.as.errorToast(res.message)
           }
           this.sp.hide()
-       },
-       error: (err: any) => console.log(err.message),
-       complete: () => subs.unsubscribe(),
-     });
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     }
     else {
       this.specList = [];
@@ -133,46 +135,46 @@ export class PerorderDummyListComponent implements OnInit {
     }
   }
 
-  getSptTableData() { 
+  getSptTableData() {
     this.sp.show()
     this.specList.forEach((element: any) => {
-     if (element.FieldType === 'DropDown' && element.Ref === '0') {
-       const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
-         next: (res: any) => {
-          if(res.success){
-            element.SptTableData = res.data;   
-            element.SptFilterData = res.data; 
-          }else{
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide()
-         },
-         error: (err: any) => console.log(err.message),
-         complete: () => subs.unsubscribe(),
-       });
-     }
+      if (element.FieldType === 'DropDown' && element.Ref === '0') {
+        const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              element.SptTableData = res.data;
+              element.SptFilterData = res.data;
+            } else {
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide()
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
     });
   }
 
-  getFieldSupportData(index:any) {
+  getFieldSupportData(index: any) {
     this.sp.show()
     this.specList.forEach((element: any) => {
-     if (element.Ref === this.specList[index].FieldName.toString() ) {
-       const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
-         next: (res: any) => {
-          if(res.success){
-            element.SptTableData = res.data; 
-            element.SptFilterData = res.data;   
-          }else{
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide()
-         },
-         error: (err: any) => console.log(err.message),
-         complete: () => subs.unsubscribe(),
-       });
+      if (element.Ref === this.specList[index].FieldName.toString()) {
+        const subs: Subscription = this.ps.getProductSupportData(this.specList[index].SelectedValue, element.SptTableName).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              element.SptTableData = res.data;
+              element.SptFilterData = res.data;
+            } else {
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide()
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
       }
-     });
+    });
   }
 
   onChange(event: any) {
@@ -187,56 +189,61 @@ export class PerorderDummyListComponent implements OnInit {
   filter() {
     let productName = '';
     this.specList.forEach((element: any) => {
-     if (productName === '') {
+      if (productName === '') {
         productName = element.SelectedValue;
-     } else if (element.SelectedValue !== '') {
+      } else if (element.SelectedValue !== '') {
         productName += '/' + element.SelectedValue;
-     }
+      }
     });
     this.data1.ProductName = productName;
   }
 
-  getDummyData(){
+  getDummyData() {
     this.sp.show()
     let Parem = '';
 
-    if (this.data1.SupplierID !== 0){
-      Parem = Parem + ' and purchasemasternew.SupplierID = ' +  this.data1.SupplierID;}
+    if (this.data1.SupplierID !== 0) {
+      Parem = Parem + ' and purchasemasternew.SupplierID = ' + this.data1.SupplierID;
+    }
 
-    if (this.data1.Barcode !== ''){
-      Parem = Parem + ' and purchasedetailnew.BaseBarCode Like ' + '"' + this.data1.Barcode + '%"';}
+    if (this.data1.Barcode !== '') {
+      Parem = Parem + ' and purchasedetailnew.BaseBarCode Like ' + '"' + this.data1.Barcode + '%"';
+    }
 
-    if (this.data1.stringProductName !== ''){
-      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + '"' + this.data1.stringProductName + '%"';}
+    if (this.data1.stringProductName !== '') {
+      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + '"' + this.data1.stringProductName + '%"';
+    }
 
-    if (this.data1.ProductCategory  !== 0){
-      Parem = Parem + ' and purchasedetailnew.ProductTypeID = ' +  this.data1.ProductCategory ;
-      this.filter();}
+    if (this.data1.ProductCategory !== 0) {
+      Parem = Parem + ' and purchasedetailnew.ProductTypeID = ' + this.data1.ProductCategory;
+      this.filter();
+    }
 
     if (this.data1.ProductName !== '') {
-      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + '"' + this.data1.ProductName + '%"';}
+      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + '"' + this.data1.ProductName + '%"';
+    }
 
-      const dtm = {
-        currentPage: 1,
-        itemsPerPage: 50000,
-        Parem : Parem
-      }
+    const dtm = {
+      currentPage: 1,
+      itemsPerPage: 50000,
+      Parem: Parem
+    }
 
-      const subs: Subscription = this.purchaseService.listPreOrderDummy(dtm).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.collectionSize = 1;
-            this.page = 1;
-            this.dataList = res.data;
-            this.as.successToast(res.message)
-          } else {
-            this.as.successToast(res.message)
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
+    const subs: Subscription = this.purchaseService.listPreOrderDummy(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.collectionSize = 1;
+          this.page = 1;
+          this.dataList = res.data;
+          this.as.successToast(res.message)
+        } else {
+          this.as.successToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   changePagesize(num: number): void {
@@ -390,24 +397,73 @@ export class PerorderDummyListComponent implements OnInit {
 
   exportAsXLSX(): void {
     let data = this.dataList.map((e: any) => {
-      return{
-        ProductName : e.ProductName,
+      return {
+        ProductName: e.ProductName,
         ProductTypeName: e.ProductTypeName,
-        Quantity : e.Quantity,
-        BaseBarCode : e.BaseBarCode,
-        UnitPrice : e.UnitPrice,
-        DiscountPercentage : e.DiscountPercentage,
-        GSTPercentage : e.GSTPercentage,
-        GSTType : e.GSTType,
-        RetailPrice : e.RetailPrice,
-        WholeSalePrice : e.WholeSalePrice,
-        ShopName : e.ShopName,
-        AreaName : e.AreaName,
+        Quantity: e.Quantity,
+        BaseBarCode: e.BaseBarCode,
+        UnitPrice: e.UnitPrice,
+        DiscountPercentage: e.DiscountPercentage,
+        GSTPercentage: e.GSTPercentage,
+        GSTType: e.GSTType,
+        RetailPrice: e.RetailPrice,
+        WholeSalePrice: e.WholeSalePrice,
+        ShopName: e.ShopName,
+        AreaName: e.AreaName,
       }
     })
     this.excelService.exportAsExcelFile(data, 'PreorderDummyList');
   }
 
+
+  selectAllPreorder(type: any) {
+    if (type === 'all') {
+      this.sp.show();
+      this.dataListt = [];
+
+      const isChecked = !this.checked;
+
+      for (let i = 0; i < this.dataList.length; i++) {
+        let ele = this.dataList[i];
+        ele.Checked = isChecked;
+        ele.index = i;
+
+        if (isChecked) {
+          this.dataListt.push(ele);
+        }
+      }
+      this.checked = isChecked;
+      this.sp.hide();
+    }
+  }
+
+  singleSelectPreOrder(i: any) {
+    const item = this.dataList[i];
+
+    if (item.Checked === false || item.Checked === 0) {
+      item.index = i;
+      this.dataListt.push(item);
+    } else if (item.Checked === true || item.Checked === 1) {
+      const indexToRemove = this.dataListt.findIndex((el: any) => el.index === i);
+      if (indexToRemove !== -1) {
+        this.dataListt.splice(indexToRemove, 1);
+      }
+    }
+  }
+
+  deleteall() {
+    if (this.dataListt.length === 0) {
+       Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'please select check box',
+        showConfirmButton: true,
+        backdrop:false
+      })
+    } else {
+      console.log(this.dataListt);
+    }
+  }
 
 }
 

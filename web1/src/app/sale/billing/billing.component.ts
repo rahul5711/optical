@@ -536,6 +536,29 @@ export class BillingComponent implements OnInit {
       this.data.other_rx = this.other
     }
 
+    this.param.Name = this.data.Name
+    const subs1: Subscription = this.cs.customerSearch(this.param).subscribe({
+      next: (res: any) => {
+        if (res) {
+          this.searchList = res.data
+          if(this.searchList.length !== 0){
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: 'Duplicate Customer',
+              showConfirmButton: true,
+              backdrop:false
+            })
+          }
+          this.srcBox = true
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs1.unsubscribe(),
+    });
+
     const subs: Subscription = this.cs.saveCustomer(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {

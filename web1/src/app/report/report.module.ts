@@ -31,6 +31,7 @@ import { ProductReturnComponent } from './product-return/product-return.componen
 import { NgxPrintModule } from 'ngx-print';
 import { SaleReportComponent } from './sale-report/sale-report.component';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { ExpenseComponent } from './expense/expense.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     EyetestReportComponent,
     ProductReturnComponent,
     SaleReportComponent,
+    ExpenseComponent,
 
 
   ],
