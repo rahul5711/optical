@@ -52,6 +52,11 @@ export class ExpenseService {
     .pipe(catchError(this.handleError));
   }
 
+  getExpenseReport(Parem: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getExpenseReport', {Parem:Parem})
+    .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);
