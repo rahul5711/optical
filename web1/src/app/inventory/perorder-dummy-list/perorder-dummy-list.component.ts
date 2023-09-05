@@ -456,12 +456,31 @@ export class PerorderDummyListComponent implements OnInit {
        Swal.fire({
         position: 'center',
         icon: 'warning',
-        title: 'please select check box',
+        title: 'Please select checkboxes',
         showConfirmButton: true,
         backdrop:false
       })
     } else {
-      console.log(this.dataListt);
+      let FullData:any = []
+      let PurchaseMasterRow:any = []
+      let PurchaseDetailRow:any = []
+      this.dataListt.forEach((ele: any) =>{
+        if (ele.ID !== null || ele.Status === 1) {
+          ele.Status = 0;
+          ele.Quantity = 0;
+          this.calculatesss(ele)
+          FullData.push(ele)
+          PurchaseMasterRow.push(ele.PurchaseMasterData)
+          delete ele.PurchaseMasterRow
+          PurchaseDetailRow.push(ele)
+        }
+      })
+
+      const body = {
+        PurchaseMaster: PurchaseMasterRow,
+        PurchaseDetail: PurchaseDetailRow
+      }
+      console.log(body);
     }
   }
 
