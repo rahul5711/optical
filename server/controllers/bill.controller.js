@@ -1952,7 +1952,7 @@ module.exports = {
             if (data.length) {
                 for (let Item of data) {
                     Item.DiscountAmount = discountAmount(Item)
-                    Item.SubTotal = Item.UnitPrice * 1 - Item.DiscountAmount
+                    Item.SubTotal = Item.UnitPrice * 3 - Item.DiscountAmount
                     Item.GSTAmount = gstAmount(Item.SubTotal, Item.GSTPercentage)
                     Item.TotalAmount = Item.SubTotal + Item.GSTAmount
                 }
