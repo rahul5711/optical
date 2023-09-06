@@ -2812,12 +2812,13 @@ module.exports = {
                 DiscountAmount: PurchaseMaster.DiscountAmount,
                 GSTAmount: PurchaseMaster.GSTAmount,
                 TotalAmount: PurchaseMaster.TotalAmount,
+                PurchaseDate: PurchaseMaster.PurchaseDate || '',
                 Status: 1,
                 SupplierCn: "",
             }
 
             //  save purchasereturn data
-            const [savePurchaseReturn] = await mysql2.pool.query(`insert into purchasereturn(SupplierID,CompanyID,ShopID,SystemCn,SupplierCn,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,CreatedBy,CreatedOn)values(${purchasereturn.SupplierID},${purchasereturn.CompanyID},${purchasereturn.ShopID},'${purchasereturn.SystemCn}','${purchasereturn.SupplierCn}',${purchasereturn.Quantity},${purchasereturn.SubTotal},${purchasereturn.DiscountAmount},${purchasereturn.GSTAmount},${purchasereturn.TotalAmount},1,${LoggedOnUser}, now())`);
+            const [savePurchaseReturn] = await mysql2.pool.query(`insert into purchasereturn(SupplierID,CompanyID,ShopID,SystemCn,SupplierCn,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,CreatedBy,CreatedOn,PurchaseDate)values(${purchasereturn.SupplierID},${purchasereturn.CompanyID},${purchasereturn.ShopID},'${purchasereturn.SystemCn}','${purchasereturn.SupplierCn}',${purchasereturn.Quantity},${purchasereturn.SubTotal},${purchasereturn.DiscountAmount},${purchasereturn.GSTAmount},${purchasereturn.TotalAmount},1,${LoggedOnUser}, now(), '${purchasereturn.PurchaseDate}')`);
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
@@ -2904,13 +2905,14 @@ module.exports = {
                 DiscountAmount: PurchaseMaster.DiscountAmount,
                 GSTAmount: PurchaseMaster.GSTAmount,
                 TotalAmount: PurchaseMaster.TotalAmount,
+                PurchaseDate: PurchaseMaster.PurchaseDate || '',
                 Status: 1,
             }
 
             const supplierId = purchase.SupplierID;
 
             // update purchasemaster
-            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasereturn set Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and ShopID = ${purchase.ShopID} and ID = ${purchase.ID}`)
+            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasereturn set Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now(), PurchaseDate='${purchase.PurchaseDate}' where CompanyID = ${CompanyID} and ShopID = ${purchase.ShopID} and ID = ${purchase.ID}`)
 
 
             //  save purchase return detail data
