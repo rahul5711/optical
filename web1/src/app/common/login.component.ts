@@ -263,7 +263,7 @@ export class LoginComponent implements OnInit {
      if (element.ID === this.selectedShop) {
         let shop = []
         shop.push(element)
-       localStorage.setItem('selectedShop', JSON.stringify([`${element.ID}`]));
+       localStorage.setItem('selectedShop', JSON.stringify([`${element.ShopID}`]));
        localStorage.setItem('shop', JSON.stringify(shop));
        this.rolesList()
        this.modalService.dismissAll()
