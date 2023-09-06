@@ -164,7 +164,7 @@ module.exports = {
             if (billMaseterData.ID !== null || billMaseterData.ID === undefined) return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.CustomerID == null || billMaseterData.CustomerID === undefined) return res.send({ message: "Invalid Query Data" })
 
-            const [existShop] = await mysql2.pool.query(`select * from shop where Status = 1 and ID = ${shopid}`)
+            const [existShop] = await mysql2.pool.query(`select * from shop where Status = 1 and ID = ${billMaseterData.ShopID}`)
 
             if (!existShop.length) {
                 return res.send({ message: "You have already delete this shop" })
