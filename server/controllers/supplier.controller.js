@@ -179,6 +179,24 @@ module.exports = {
         }
     },
 
+    dropdownlistForPreOrder: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const UserID = req.user.ID ? req.user.ID : 0;
+            const UserGroup = req.user.UserGroup ? req.user.UserGroup : 'CompanyAdmin';
+
+
+            let [data] = await mysql2.pool.query(`select * from supplier where Status = 1 and Name = 'PreOrder Supplier' and CompanyID = ${CompanyID}`);
+            response.message = "data fetch sucessfully"
+            response.data = data
+            return res.send(response);;
+
+        } catch (err) {
+            next(err)
+        }
+    },
+
     getSupplierById: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
