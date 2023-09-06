@@ -31,14 +31,14 @@
                                                     <mat-label>From</mat-label>
                                                     <input matInput name="FromDate" type="date"
                                                         (change)="getChangeDate()" [(ngModel)]="BillMaster.FromDate"
-                                                        #DOBcontrol [disabled]="!editSaleReport" />
+                                                        #DOBcontrol />
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>To</mat-label>
                                                     <input matInput type="date" name="ToDate"
-                                                        [(ngModel)]="BillMaster.ToDate" [disabled]="!editSaleReport" />
+                                                        [(ngModel)]="BillMaster.ToDate"  />
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
@@ -98,11 +98,10 @@
                                                     <mat-label>Payment Status</mat-label>
                                                     <mat-select name="PaymentStatus"
                                                         [(ngModel)]="BillMaster.PaymentStatus">
-                                                        <mat-option [value]="0"
-                                                            *ngIf="this.employeeHide">All</mat-option>
-                                                        <mat-option value="Paid"
-                                                            *ngIf="this.employeeHide">Paid</mat-option>
-                                                        <mat-option value="Unpaid">Unpaid</mat-option>
+                                                        <mat-option [value]="0" *ngIf="this.employeeHide">All</mat-option>
+                                                        <mat-option value="Paid"*ngIf="this.employeeHide">Paid</mat-option>
+                                                        <mat-option value="Unpaid" *ngIf="!this.employeeHide">Unpaid</mat-option>
+                                                        
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>

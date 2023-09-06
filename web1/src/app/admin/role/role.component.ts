@@ -16,7 +16,7 @@ import { JsonPipe } from '@angular/common';
   styleUrls: ['./role.component.css']
 })
 export class RoleComponent implements OnInit {
-  loggedInCompany: any = (localStorage.getItem('LoggedINCompany') || '');
+  company: any = (localStorage.getItem('company') || '');
   user = (localStorage.getItem('user') || '');
 
   constructor(
@@ -27,7 +27,7 @@ export class RoleComponent implements OnInit {
     private sp: NgxSpinnerService,
   ) { }
 
-  selectedRole: any = { ID: null, Name: "", CompanyID: this.loggedInCompany, Permission: "[]", Status: 1 };
+  selectedRole: any = { ID: null, Name: "", CompanyID: '', Permission: "[]", Status: 1 };
   roleList: any = []
   showAdd = false;
   displayModule: any;
@@ -174,7 +174,7 @@ export class RoleComponent implements OnInit {
             if (res.success) {
               this.getRoleById(res.data.ID)
               this.getRoleList();
-              this.selectedRole = { ID: null, Name: "", CompanyID: this.loggedInCompany, Permission: "[]", Status: 1 }
+              this.selectedRole = { ID: null, Name: "", CompanyID: '', Permission: "[]", Status: 1 }
               this.as.successToast(res.message)
               Swal.fire({
                 position: 'center',
@@ -219,10 +219,11 @@ export class RoleComponent implements OnInit {
     } else {
       for (var i = 0; i < this.roleList.length; i++ ) {
         if (this.roleList[i].ID === this.selectedRole.ID){
-          if (this.roleList[i].Permission === ""){
+          if (this.roleList[i].Permission == ""){
             this.roleList[i].Name = this.selectedRole.Name
         this.displayModule = this.moduleList;
       } else {
+        this.selectedRole.Name = this.roleList[i].Name 
         this.displayModule = JSON.parse(this.roleList[i].Permission);
       }
     }
@@ -242,12 +243,13 @@ export class RoleComponent implements OnInit {
 
   addRole(){
     this.sp.show()
-    this.selectedRole = { ID: null, Name: "", CompanyID: this.loggedInCompany, Permission: "[]", Status: 1 }
+    // this.selectedRole = { ID: null, Name: "", CompanyID: '', Permission: "[]", Status: 1 }
     this.sp.hide()
   }
 
   savePermission(){
     this.sp.show()
+    this.selectedRole.Name = 
     this.selectedRole.Permission = JSON.stringify(this.displayModule);
 
     const subs: Subscription = this.role.update(this.selectedRole).subscribe({

@@ -599,6 +599,7 @@ export class BillComponent implements OnInit {
             this.BillItem.Barcode = this.searchList.Barcode;
             this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
             this.BillItem.BaseBarCode = this.searchList.BaseBarCode;
+            this.BillItem.PurchasePrice = this.searchList.UnitPrice;
             this.BillItem.Quantity = 0;
 
             if (this.searchList !== undefined || this.searchList.Barcode !== null && this.searchList.BarCodeCount !== 0) {
@@ -700,6 +701,14 @@ export class BillComponent implements OnInit {
   }
 
   getBarCodeList(index: any) {
+
+    this.searchList.BarCodeCount = 0;
+    this.BillItem.ProductName = '';
+    this.BillItem.UnitPrice = 0;
+    this.BillItem.PurchasePrice = 0;
+    this.BillItem.Quantity = 1;
+    this.BillItem.GSTPercentage = 0;
+    this.BillItem.GSTType = 'None';
     let searchString = "";
 
     this.specList.forEach((element: any, i: any) => {
@@ -716,9 +725,7 @@ export class BillComponent implements OnInit {
           next: (res: any) => {
             if (res.success) {
               this.BarcodeList = res.data;
-              if(this.BarcodeList == ''){
-                this.PurchasePriceInput = true
-              }
+              this.PurchasePriceInput = this.BarcodeList == '' || this.BarcodeList.length == 0 ? true : false;
             } else {
               this.as.errorToast(res.message)
             }

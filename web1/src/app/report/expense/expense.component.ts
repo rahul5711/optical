@@ -54,6 +54,7 @@ export class ExpenseComponent implements OnInit {
     });
     this.dropdownShoplist();
     this.getPaymentModesList();
+    this.searchData()
   }
 
   dropdownShoplist(){

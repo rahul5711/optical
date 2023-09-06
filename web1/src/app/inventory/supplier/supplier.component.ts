@@ -16,6 +16,7 @@ import { take } from 'rxjs/operators';
 import { SupportService } from 'src/app/service/support.service';
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
+import { ShopService } from 'src/app/service/shop.service';
 
 @Component({
   selector: 'app-supplier',
@@ -30,7 +31,9 @@ export class SupplierComponent implements OnInit {
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+  selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
 
+  searchValue:any
   env = environment;
   gridview = true;
   term: any;
@@ -60,6 +63,7 @@ export class SupplierComponent implements OnInit {
     private compressImage: CompressImageService,
     private excelService: ExcelService,
     private supps: SupportService,
+    private shop: ShopService,
   ) {
     this.id = this.route.snapshot.params['id'];
     this.env = environment
@@ -74,6 +78,12 @@ export class SupplierComponent implements OnInit {
   editSupplierList = false
   addSupplierList = false
   deleteSupplierList = false
+
+  supplierDropList :any = []
+  dropShoplist :any = []
+  note: any = {
+    SupplierID:null, ShopID:null, CreditNumber:null,  CreditDate:'00-00-0000',  Amount:0, Remark:'',
+  }
 
   async ngOnInit(): Promise<void> {
     this.permission.forEach((element: any) => {
@@ -368,4 +378,54 @@ export class SupplierComponent implements OnInit {
       Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
     };
   }
+
+  // credit note code 
+
+  openModal1(content1:any){
+    this.modalService.open(content1, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
+    this.getdropdownSupplierlist()
+    this.dropdownShoplist()
+    this.note = []
+  }
+
+  getdropdownSupplierlist() {
+    this.sp.show();
+    const subs: Subscription = this.ss.dropdownSupplierlist('').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.supplierDropList = res.data;
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  dropdownShoplist() {
+    this.sp.show()
+    const subs: Subscription = this.shop.dropdownShoplist(this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.dropShoplist = res.data
+          let shopId = []
+          shopId = res.data.filter((s:any) => s.ID === Number(this.selectedShop[0]));
+          this.note.ShopID = shopId[0].ID
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  creditNoteSave(){
+    console.log(this.note);
+    
+  }
+
 }
