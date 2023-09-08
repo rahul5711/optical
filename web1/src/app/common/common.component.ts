@@ -154,23 +154,17 @@ export class CommonComponent implements OnInit {
     });
   }
 
-  refresh(mode:any){
-    if(mode === 'purchaseList'){
-      this.router.navigate(['/inventory/purchaseList',0])
-      // .then(() => {
-      //   window.history.go();
-      // });
-    }else if(mode === 'billinglist'){
-      this.router.navigate(['/sale/billinglist',0])
-      // .then(() => {
-      //   window.location.reload();
-      // });
-    }else if(mode === 'commissionList'){
-      this.router.navigate(['/sale/commissionList',0])
-      // .then(() => {
-      //   window.location.reload();
-      // });
+  refresh(mode: any) {
+    if (mode === 'purchaseList') {
+      this.router.navigateByUrl('/inventory/purchaseList', { skipLocationChange: true }).then(() => {
+        this.router.navigate(['/inventory/purchaseList', 0]);
+      });
+    } else if (mode === 'billinglist' || mode === 'commissionList') {
+      const route = mode === 'billinglist' ? '/sale/billinglist' : '/sale/commissionList';
+      this.router.navigateByUrl(route, { skipLocationChange: true }).then(() => {
+        this.router.navigate([route, 0]);
+      });
     }
-
   }
+  
 }

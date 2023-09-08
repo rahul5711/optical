@@ -123,6 +123,7 @@ export class BillComponent implements OnInit {
   disableAddButtons = false;
   PurchasePriceInput = false;
   loginShopID: any;
+  BarcodeListShow = false
   gst_detail: any = [];
   GstTypeDis = false
   multiCheck = false
@@ -570,6 +571,9 @@ export class BillComponent implements OnInit {
     return event;
   }
 
+  shopAll(){
+    this.getBarCodeList('')
+  }
   getSearchByBarcodeNo() {
     if(this.Req.SearchBarCode !== ''){
     this.sp.show();
@@ -662,12 +666,11 @@ export class BillComponent implements OnInit {
       if (this.BillItem.PreOrder) {
         // PreOrder product name
         this.PreOrder = "true"
+        this.BarcodeListShow = false
         const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
           next: (res: any) => {
             if (res.success) {
               this.BarcodeList = res.data;
-              console.log(this.BarcodeList,'this.BarcodeList');
-              
             } else {
               this.as.errorToast(res.message)
             }
@@ -680,6 +683,8 @@ export class BillComponent implements OnInit {
       } else {
         // stock product name
         this.PreOrder = "false"
+        this.BarcodeListShow = true
+
         const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
           next: (res: any) => {
             if (res.success) {
@@ -721,6 +726,8 @@ export class BillComponent implements OnInit {
     if (this.BillItem.Manual === false) {
       if (this.BillItem.PreOrder) {
         this.PreOrder = "true"
+        this.BarcodeListShow = false
+
         const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
           next: (res: any) => {
             if (res.success) {
@@ -738,6 +745,7 @@ export class BillComponent implements OnInit {
       else {
         // stock select barcodelist
         this.PreOrder = "false"
+        this.BarcodeListShow = true
         const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
           next: (res: any) => {
             if (res.success) {

@@ -145,6 +145,7 @@ export class SaleReportComponent implements OnInit {
   getChangeDate() {
     const currentDate = moment().format('YYYY-MM-DD');
     if (this.user.UserGroup !== "CompanyAdmin") {
+      if(this.editSaleReport === false){
         if (this.BillMaster.FromDate === currentDate) {
             this.employeeHide = true;
             this.BillMaster.PaymentStatus = 0;
@@ -154,6 +155,11 @@ export class SaleReportComponent implements OnInit {
             this.BillMaster.PaymentStatus = 'Unpaid';
             this.BillMaster.ProductStatus = '0';
         }
+      }else{
+        this.employeeHide = true;
+        this.BillMaster.PaymentStatus = 0;
+        this.BillMaster.ProductStatus = 'All';
+      }
     }
   }
 

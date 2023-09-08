@@ -156,7 +156,7 @@
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0 pt-3">
-                    <mat-slide-toggle  name="ShopMode"  [(ngModel)]="ShopMode" color="primary" #ShopModecontrol class="example-margin" style="color:#ff651e;">All Shops
+                    <mat-slide-toggle  name="ShopMode"  [(ngModel)]="ShopMode" color="primary" [ngModelOptions]="{standalone: true}" #ShopModecontrol class="example-margin" style="color:#ff651e;" (change)="shopAll()">All Shops
                     </mat-slide-toggle>
                 </div>
                 <div class="col-xl-6 col-lg-6 col-md-9 col-8 mb-0"
@@ -164,7 +164,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Select Barcode</mat-label>
                         <mat-select name="FieldType" [(ngModel)]="Req.SearchBarCode" #Typecontrol (selectionChange)="getSearchByBarcodeNo()">
-                            <mat-option [disabled]="this.loginShopID !== bc.ShopID" [ngClass]="{'otherShopClass': this.loginShopID !== bc.ShopID }" *ngFor="let bc of BarcodeList ; let i = index;" [value]="bc.Barcode">
+                            <mat-option [disabled]="this.loginShopID !== bc.ShopID && BarcodeListShow" [ngClass]="{'otherShopClass': this.loginShopID !== bc.ShopID }" *ngFor="let bc of BarcodeList ; let i = index;" [value]="bc.Barcode">
                                 {{bc.Barcode}} # {{bc.BarCodeCount }} {{bc.p}}| {{bc.ProductName | uppercase}} |
                                 {{bc.ShopName | titlecase }} <span [style.color]="'blue'"
                                     *ngIf="bc.AreaName !== 'null'">({{bc.AreaName | titlecase}})</span>

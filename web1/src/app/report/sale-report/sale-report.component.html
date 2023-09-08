@@ -99,8 +99,11 @@
                                                     <mat-select name="PaymentStatus"
                                                         [(ngModel)]="BillMaster.PaymentStatus">
                                                         <mat-option [value]="0" *ngIf="this.employeeHide">All</mat-option>
-                                                        <mat-option value="Paid"*ngIf="this.employeeHide">Paid</mat-option>
+                                                        <mat-option value="Paid" *ngIf="this.employeeHide">Paid</mat-option>
                                                         <mat-option value="Unpaid" *ngIf="!this.employeeHide">Unpaid</mat-option>
+                                                        <mat-option value="Unpaid" *ngIf="this.employeeHide">Unpaid</mat-option>
+                                                        
+                                                        
                                                         
                                                     </mat-select>
                                                 </mat-form-field>

@@ -267,26 +267,26 @@ export class LoginComponent implements OnInit {
        localStorage.setItem('shop', JSON.stringify(shop));
        this.rolesList()
        this.modalService.dismissAll()
-       Swal.fire({
-        position: 'center',
-        icon: 'success',
-        title:   'Welcome TO ' + `${element.UserName}`,
-        showConfirmButton: false,
-        timer: 1200
-      })
-       this.router.navigate(['/admin/CompanyDashborad']).then(() => {
-        // window.location.reload();
-      });;
      }
    });
  }
 
  setPermission() {
+  this.sp.show()
   this.roleList.forEach((element: any) => {
     if (element.ID === Number(JSON.parse(localStorage.getItem('shop') || '')[0].RoleID)) {
      localStorage.setItem('permission', element.Permission);
      this.dataStorageService.permission = JSON.parse(element.Permission);
     }
   });
+  this.sp.hide()
+  this.router.navigate(['/admin/CompanyDashborad']);
+  Swal.fire({
+    position: 'center',
+    icon: 'success',
+    title:   'Welcome TO ' + this.user.Name,
+    showConfirmButton: false,
+    timer: 1200
+  })
 }
 }
