@@ -509,7 +509,7 @@
                     <table class="table">
                         <thead class="thead-light">
                             <tr>
-                                <th> <mat-checkbox type="checkbox" (click)="changeProductStatusAll()" [checked]="this.multiCheck" name="TempProductStatus"></mat-checkbox> </th>
+                                <th> <mat-checkbox type="checkbox"  (click)="changeProductStatusAll()" [(ngModel)]="checked" ></mat-checkbox> </th>
                                 <th class="text-center">S.No</th>
                                 <th class="text-center">Action</th>
                                 <th class="text-center">HSNCode</th>
@@ -535,7 +535,7 @@
                         <tbody>
                             <tr class="text-center" *ngFor="let data of billItemList ; let i = index;">
                                 <td>
-                                    <mat-checkbox type="checkbox" name="{{'ProductStatus'+ i}}" class="input" [(ngModel)]="data.ProductStatus" (click)="changeProductStatus(i)"></mat-checkbox>
+                                    <mat-checkbox type="checkbox" name="{{'ProductStatus'+ i}}" class="input" [(ngModel)]="data.ProductStatus" (click)="changeProductStatus(i)" [ngModelOptions]="{standalone: true}"></mat-checkbox>
 
                                 </td>
                                 <td>{{i+1}}</td>

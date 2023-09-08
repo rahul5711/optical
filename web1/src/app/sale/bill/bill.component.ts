@@ -99,6 +99,9 @@ export class BillComponent implements OnInit {
   data:any = { billMaseterData: null, billDetailData: null, service: null };
   data1:any = { billMaseterData: null, billDetailData: [] };
 
+  billItemCheckList:any
+  checked :any= false;
+
   category = 'Product';
   employeeList: any;
   searchProductName: any;
@@ -285,7 +288,7 @@ export class BillComponent implements OnInit {
   }
 
   changeProductStatus(i:any){
-
+    this.sp.show()
     const newStatus = this.billItemList[i].ProductStatus === 1 ? 0 : 1;
     this.billItemList[i].ProductStatus = newStatus;
 
@@ -306,22 +309,27 @@ export class BillComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
-
-
-
+  
   changeProductStatusAll(){
-    
-    this.billItemList.forEach((el: any) => {
-      el.ProductStatus = 1
-    })
+    this.sp.show()
+    this.billItemCheckList = [];
+    const isChecked = !this.checked;
+    for (let i = 0; i < this.billItemList.length; i++) {
+      let ele = this.billItemList[i];
+      ele.Checked = isChecked;
+      ele.ProductStatus = ele.Checked ? 1 : 0;
+      ele.index = i;
+      this.billItemCheckList.push(ele);
+    }
+    this.checked = isChecked;
+
     const dtm = {
       BillMasterID: Number(this.id2),
-      billDetailData:this.billItemList
+      billDetailData:this.billItemCheckList
     }
     const subs: Subscription = this.bill.changeProductStatus(dtm).subscribe({
       next: (res: any) => {
         if (res.success) {
-        
           this.getBillById(this.id2)
         } else {
           this.as.errorToast(res.message)
