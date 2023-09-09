@@ -15,7 +15,7 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
-            if (Body.Name.trim() === "") return res.send({ message: "Invalid Query Data" })
+            // if (Body.Name.trim() === "") return res.send({ message: "Invalid Query Data" })
             if (Body.ShopID === null || Body.ShopID === undefined) return res.send({ message: "Invalid Query Data" })
 
             const datum = {

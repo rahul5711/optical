@@ -79,7 +79,7 @@ module.exports = {
             if (UserGroup === 'CompanyAdmin') {
                 qry = `select * from shop where Status = 1 and CompanyID = '${CompanyID}'  order by ID desc`;
             } else {
-                qry = `SELECT * FROM shop LEFT JOIN usershop ON usershop.ShopID = shop.ID WHERE usershop.Status = 1 AND shop.CompanyID = ${CompanyID} AND usershop.UserID = ${UserID} order by shop.ID desc`
+                qry = `SELECT shop.* FROM shop LEFT JOIN usershop ON usershop.ShopID = shop.ID WHERE usershop.Status = 1 AND shop.CompanyID = ${CompanyID} AND usershop.UserID = ${UserID} order by shop.ID desc`
             }
 
             let [data] = await mysql2.pool.query(qry);
