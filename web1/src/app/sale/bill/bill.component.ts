@@ -180,6 +180,9 @@ export class BillComponent implements OnInit {
     if (this.id2 != 0) {
       this.getCustomerById1()
     }
+
+    console.log(this.checked,'========================status');
+    
   }
 
   getCustomerById1() {
@@ -331,6 +334,8 @@ export class BillComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.getBillById(this.id2)
+          console.log(this.checked,'==========statuschange');
+          
         } else {
           this.as.errorToast(res.message)
         }
@@ -340,7 +345,6 @@ export class BillComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
-
 
   getTrayNo() {
     this.sp.show();

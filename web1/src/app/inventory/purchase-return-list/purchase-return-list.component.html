@@ -55,6 +55,7 @@
                             <th>SupplierName</th>
                             <th>SystemDb No.</th>
                             <th>SupplierCn No.</th>
+                            <th>PurchaseDate</th>
                             <th>ReturnDate</th>
                             <th>Quantity</th>
                             <th>Discount</th>
@@ -86,6 +87,7 @@
                           <td>{{data.SupplierName}}</td>
                           <td>{{data.SystemCn}}</td>
                           <td>{{data.SupplierCn}}</td>
+                          <td>{{dateFormat(data.PurchaseDate)}}</td>
                           <td>{{dateFormat(data.CreatedOn)}}</td>
                           <td>{{data.Quantity}}</td>
                           <td>{{data.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>

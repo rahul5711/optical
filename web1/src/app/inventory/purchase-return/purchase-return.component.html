@@ -39,7 +39,14 @@
                                       </mat-select>
                                     </mat-form-field>
                                   </div>
-                                  <div class="col-xl-2 col-lg-4 col-md-3 col-6 mb-0">
+                                  <div class="col-xl-1 col-lg-4 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label> PurchaseDate </mat-label>
+                                        <input matInput type="date" name="PurchaseDate " [(ngModel)]="selectedPurchaseMaster.PurchaseDate"
+                                        required   autocomplete="off">
+                                    </mat-form-field>
+                                </div>
+                                  <div class="col-xl-1 col-lg-4 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>System Debit No.</mat-label>
                                         <input matInput name="SystemCn " [(ngModel)]="selectedPurchaseMaster.SystemCn"
@@ -202,7 +209,7 @@
                                
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <button *ngIf="addPurchaseReturn" class="mr-3" mat-raised-button color="primary"
-                                         (click)="calculateFields()" type="submit" [disabled]="this.xferItem.Quantity == 0">Add</button>
+                                         (click)="calculateFields()" type="submit" [disabled]="!f.valid || this.xferItem.Quantity == 0">Add</button>
                                 </div>
                             </div>
                         </form>
