@@ -179,10 +179,7 @@ export class BillComponent implements OnInit {
     this.getService();
     if (this.id2 != 0) {
       this.getCustomerById1()
-    }
-
-    console.log(this.checked,'========================status');
-    
+    }    
   }
 
   getCustomerById1() {
@@ -221,6 +218,13 @@ export class BillComponent implements OnInit {
           this.BillMaster.BillDate = moment(res.result.billMaster[0].BillDate).format('YYYY-MM-DD') 
           this.BillMaster.DeliveryDate =  moment(res.result.billMaster[0].DeliveryDate).format('YYYY-MM-DD') 
           this.gst_detail = this.BillMaster.gst_detail
+          res.result.billDetail.forEach((e: any) =>{
+             if(e.ProductStatus == 0){
+               this.checked = false;
+             }else{
+               this.checked = true;
+             }
+          })
           this.billItemList = res.result.billDetail
           this.serviceLists = res.result.service
         } else {
