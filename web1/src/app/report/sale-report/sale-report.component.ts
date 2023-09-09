@@ -149,16 +149,13 @@ export class SaleReportComponent implements OnInit {
         if (this.BillMaster.FromDate === currentDate) {
             this.employeeHide = true;
             this.BillMaster.PaymentStatus = 0;
-            this.BillMaster.ProductStatus = 'All';
         } else {
             this.employeeHide = false;
             this.BillMaster.PaymentStatus = 'Unpaid';
-            this.BillMaster.ProductStatus = '0';
         }
       }else{
         this.employeeHide = true;
         this.BillMaster.PaymentStatus = 0;
-        this.BillMaster.ProductStatus = 'All';
       }
     }
   }

@@ -41,13 +41,6 @@
                                   </div>
                                   <div class="col-xl-1 col-lg-4 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
-                                        <mat-label> PurchaseDate </mat-label>
-                                        <input matInput type="date" name="PurchaseDate " [(ngModel)]="selectedPurchaseMaster.PurchaseDate"
-                                        required   autocomplete="off">
-                                    </mat-form-field>
-                                </div>
-                                  <div class="col-xl-1 col-lg-4 col-md-3 col-6 mb-0">
-                                    <mat-form-field class="example-full-width mb-0">
                                         <mat-label>System Debit No.</mat-label>
                                         <input matInput name="SystemCn " [(ngModel)]="selectedPurchaseMaster.SystemCn"
                                         required   (ngModelChange)="selectedPurchaseMaster.SystemCn = onChange($event)" autocomplete="off">
@@ -58,6 +51,13 @@
                                         <mat-label>Supplier CN No.</mat-label>
                                         <input matInput name="SupplierCn" [(ngModel)]="selectedPurchaseMaster.SupplierCn"
                                           disabled  (ngModelChange)="selectedPurchaseMaster.SupplierCn = onChange($event)" autocomplete="off">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-4 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label> CN Date </mat-label>
+                                        <input matInput type="date" name="PurchaseDate " [(ngModel)]="selectedPurchaseMaster.PurchaseDate"
+                                        required   autocomplete="off">
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-4 col-lg-2 col-md-0 col-sm-0 mb-0">

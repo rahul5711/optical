@@ -102,9 +102,6 @@
                                                         <mat-option value="Paid" *ngIf="this.employeeHide">Paid</mat-option>
                                                         <mat-option value="Unpaid" *ngIf="!this.employeeHide">Unpaid</mat-option>
                                                         <mat-option value="Unpaid" *ngIf="this.employeeHide">Unpaid</mat-option>
-                                                        
-                                                        
-                                                        
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
@@ -113,11 +110,9 @@
                                                     <mat-label>Product Status</mat-label>
                                                     <mat-select name="ProductStatus"
                                                         [(ngModel)]="BillMaster.ProductStatus">
-                                                        <mat-option value="All"
-                                                            *ngIf="this.employeeHide">All</mat-option>
+                                                        <mat-option value="All">All</mat-option>
                                                         <mat-option value="0">Pending</mat-option>
-                                                        <mat-option value="1"
-                                                            *ngIf="this.employeeHide">Deliverd</mat-option>
+                                                        <mat-option value="1">Deliverd</mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
