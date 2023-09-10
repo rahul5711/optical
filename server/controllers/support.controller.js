@@ -167,7 +167,7 @@ module.exports = {
             const [doesExist] = await mysql2.pool.query(`select * from servicemaster where CompanyID = '${CompanyID}' and Status = 1 and Name = '${Body.Name}'`)
             if (doesExist.length) return res.send({ message: `Data Already exist from this Name ${Body.Name}` })
 
-            const [saveData] = await mysql2.pool.query(`insert into servicemaster (CompanyID, Name, Description,Cost, Price,  GSTPercentage, GSTAmount, GSTType, TotalAmount, Status, CreatedBy , CreatedOn ) values (${CompanyID},'${Body.Name}','${Body.Description}', ${Body.Cost},${Body.Price}, ${Body.GSTPercentage},${Body.GSTAmount},'${Body.GSTType}',${Body.TotalAmount}, 1, ${LoggedOnUser}, now())`)
+            const [saveData] = await mysql2.pool.query(`insert into servicemaster (CompanyID, Name, Description,Cost, Price, SubTotal,  GSTPercentage, GSTAmount, GSTType, TotalAmount, Status, CreatedBy , CreatedOn ) values (${CompanyID},'${Body.Name}','${Body.Description}', ${Body.Cost},${Body.Price},${Body.SubTotal},${Body.GSTPercentage},${Body.GSTAmount},'${Body.GSTType}',${Body.TotalAmount}, 1, ${LoggedOnUser}, now())`)
 
             console.log(connected("Data Added SuccessFUlly !!!"));
 
