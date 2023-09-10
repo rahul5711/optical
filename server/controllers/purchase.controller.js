@@ -689,7 +689,7 @@ module.exports = {
             }
 
             const printdata = modifyBarcode;
-            
+
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
@@ -707,7 +707,7 @@ module.exports = {
             printdata[0].ProductBrandName = ProductBrandName;
             printdata[0].ProductModelName = ProductModelName;
             printdata[0].ProductFullName = ProductFullName;
-           
+
             printdata.CompanyBarcode = 5
             var file = "barcode" + CompanyID + ".pdf";
             var formatName = "barcode.ejs";
@@ -2041,6 +2041,61 @@ module.exports = {
             next(err)
         }
     },
+    deleteAllPreOrderDummy: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+
+            const {
+                PurchaseMaster,
+                PurchaseDetail,
+            } = req.body;
+
+
+            // check
+
+            if (!PurchaseDetail.length) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+
+            for (const item of PurchaseDetail) {
+                if (item.Sel == 0) {
+                    return res.send({ message: "Invalid Query Data" })
+                }
+
+                if (item.Status == 1) {
+                    return res.send({ message: "Invalid Query Data" })
+                }
+            }
+
+            // update purchasemaster
+            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set  Quantity = ${PurchaseMaster.Quantity}, SubTotal = ${PurchaseMaster.SubTotal}, DiscountAmount = ${PurchaseMaster.DiscountAmount}, GSTAmount=${PurchaseMaster.GSTAmount}, TotalAmount = ${PurchaseMaster.TotalAmount}, DueAmount = ${PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and ShopID = ${shopid} and ID=${PurchaseMaster.ID}`)
+
+            console.log(connected("Purchase Update SuccessFUlly !!!"));
+
+            for (const item of PurchaseDetail) {
+
+                const [deletePurchasedetail] = await mysql2.pool.query(`update purchasedetailnew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${item.ID} and CompanyID = ${CompanyID}`)
+
+                console.log("Product Delete SuccessFUlly !!!");
+
+                const [deleteBarcode] = await mysql2.pool.query(`update barcodemasternew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where purchaseDetailID = ${item.ID} and CompanyID = ${CompanyID}`)
+
+                console.log("Barcode Delete SuccessFUlly !!!");
+            }
+
+
+
+            response.message = "data delete sucessfully"
+            response.data = []
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        }
+    },
     updatePreOrderDummy: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
@@ -2084,7 +2139,7 @@ module.exports = {
 
             const [PurchaseMaster] = await mysql2.pool.query(`select * from purchasemasternew  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid} and PStatus = 1`)
 
-            const [PurchaseDetail] = await mysql2.pool.query(`select * from purchasedetailnew where  PurchaseID = ${ID} and CompanyID = ${CompanyID}`)
+            const [PurchaseDetail] = await mysql2.pool.query(`select 0 as Sel, purchasedetailnew.* from purchasedetailnew where  PurchaseID = ${ID} and CompanyID = ${CompanyID}`)
 
 
 
@@ -3291,6 +3346,8 @@ module.exports = {
             const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${supplierId}, ${CompanyID}, ${shopid}, 'Supplier','Credit',now(), 'Vendor Credit', '', '', ${doesExist[0].TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
 
             const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${SupplierCn}',${ID},${supplierId},${CompanyID},${doesExist[0].TotalAmount},0,'Vendor Credit','Credit',1,${LoggedOnUser}, now())`)
+
+            const [saveVendorCredit] = await mysql2.pool.query(`insert into vendorcredit(CompanyID, ShopID, CreditNumber, CreditDate, Amount, Remark, Is_Return, Status, CreatedBy, CreatedOn)values(${CompanyID}, ${shopid}, '${SupplierCn}', now(), ${doesExist[0].TotalAmount}, 'Amount Credited By Product Return From CN No ${SupplierCn}', 1, 1, ${LoggedOnUser}, now())`)
 
             console.log(connected("Vendor Credit SuccessFUlly !!!"));
 
