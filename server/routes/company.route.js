@@ -26,6 +26,10 @@ router.post('/searchByFeild', verifyAccessTokenAdmin, Controller.searchByFeild)
 router.post('/searchByFeildAdmin', verifyAccessTokenAdmin, Controller.searchByFeildAdmin)
 
 
+// bill formate
+router.post('/saveBillFormate', verifyAccessTokenAdmin, Controller.saveBillFormate)
+router.post('/getBillFormateById', verifyAccessTokenAdmin, Controller.getBillFormateById)
+
 
 
 module.exports = router

@@ -630,6 +630,48 @@ module.exports = {
         } catch {
             next(err)
         }
-    }
+    },
+    saveBillFormate: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "", count: 0 }
+            const Body = req.body;
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (!Body.CompanyID) return res.send({ message: "Invalid CompanyID Data" })
+
+            const [fetch] = await mysql2.pool.query(`select * from billformate where CompanyID = ${Body.CompanyID} and Status = 1`)
+
+            if (fetch.length) {
+                // update
+                const [update] = await mysql2.pool.query(`update billformate set BillHeader = '${Body.BillHeader}', HeaderWidth = '${Body.HeaderWidth}', HeaderHeight='${Body.HeaderHeight}', HeaderPadding = '${Body.HeaderPadding}', HeaderMargin = '${Body.HeaderMargin}', ImageWidth = '${Body.ImageWidth}', ImageHeight = '${Body.ImageHeight}', ShopNameFont = '${Body.ShopNameFont}', ShopNameBold = '${Body.ShopNameBold}', Color = '${Body.Color}', ShopDetailFont = '${Body.ShopDetailFont}', LineSpace = '${Body.LineSpace}', TableHeading = '${Body.TableHeading}', TableBody = '${Body.TableBody}', UpdateBy = 0, UpdatedOn = now()  where CompanyID = ${Body.CompanyID}`)
+            } else {
+                // save
+                const [save] = await mysql2.pool.query(`insert into billformate(CompanyID, BillHeader, HeaderWidth, HeaderHeight, HeaderPadding, HeaderMargin, ImageWidth, ImageHeight, ShopNameFont, ShopNameBold, Color, ShopDetailFont, LineSpace, TableHeading, TableBody, Status, CreatedOn, CreatedBy)values(${Body.CompanyID}, '${Body.BillHeader}', '${Body.HeaderWidth}', '${Body.HeaderHeight}', '${Body.HeaderPadding}', '${Body.HeaderMargin}', '${Body.ImageWidth}', '${Body.ImageHeight}', '${Body.ShopNameFont}', '${Body.ShopNameBold}', '${Body.Color}', '${Body.ShopDetailFont}', '${Body.LineSpace}', '${Body.TableHeading}','${Body.TableBody}', 1,now(),0)`)
+            }
+
+            response.message = "data update successfully"
+            return res.send(response);
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+        }
+    },
+    getBillFormateById: async (req, res, next) => {
+        try {
+            const response = { data: null, user: null, success: true, message: "" }
+
+            const Body = req.body;
+            if (!Body.CompanyID) res.send({ message: "Invalid CompanyID Data" })
+
+
+            const [fetch] = await mysql2.pool.query(`select * from billformate where CompanyID = ${Body.CompanyID} and Status = 1`)
+
+            response.message = "data fetch sucessfully"
+            response.data = fetch || []
+            return res.send(response);
+        } catch {
+            next(err)
+        }
+    },
 
 }
