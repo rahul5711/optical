@@ -471,7 +471,7 @@ export class PerorderDummyListComponent implements OnInit {
           this.calculatesss(ele)
           FullData.push(ele)
           PurchaseMasterRow.push(ele.PurchaseMasterData)
-          delete ele.PurchaseMasterRow
+          delete ele.PurchaseMasterData
           PurchaseDetailRow.push(ele)
         }
       })
@@ -481,6 +481,26 @@ export class PerorderDummyListComponent implements OnInit {
         PurchaseDetail: PurchaseDetailRow
       }
       console.log(body);
+      const subs: Subscription = this.purchaseService.deleteAllPreOrderDummy(body).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been delete.',
+              showConfirmButton: false,
+              timer: 1200
+            })
+            this.getList()
+            this.as.successToast(res.message)
+          } else {
+            this.as.successToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     }
   }
 

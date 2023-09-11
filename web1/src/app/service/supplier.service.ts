@@ -36,6 +36,13 @@ export class SupplierService {
     return this.httpClient.post<any>(this.url + '/dropdownlist', Body)
     .pipe(catchError(this.handleError));
   }
+  
+  dropdownlistForPreOrder(Body:any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/dropdownlistForPreOrder', Body)
+    .pipe(catchError(this.handleError));
+  }
 
   getList(Body: any): Observable<any> {
     const params = new HttpParams()

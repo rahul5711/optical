@@ -25,7 +25,7 @@ export class BillCalculationService {
   calculations(fieldName: any, mode: any, BillItem: any, Service: any) {
     const propertiesToValidate = ['UnitPrice', 'Quantity', 'DiscountPercentage', 'DiscountAmount', 'GSTPercentage', 'GSTAmount'];
     propertiesToValidate.forEach(property => this.validateAndSetToZero(BillItem, property));
-  
+
     switch (mode) {
       case 'subTotal':
         if (BillItem.Quantity === null || BillItem.Quantity === '') {
@@ -122,9 +122,41 @@ export class BillCalculationService {
         BillItem.SubTotal = BillItem.TotalAmount - +BillItem.GSTAmount;
         break;
 
-      // serviceCalcultion    
+      // serviceCalcultion  
+      
+      case 'serviceSubTotal': 
+      if (Service.Price === null || Service.Price === '') {
+        Service.Price = 0;
+      } else {
+        Service.GSTAmount = (+Service.Price) - ((+Service.Price) / (1 + +Service.GSTPercentage / 100));
+      }
+      if (Service.Service === null || Service.Service === '') {
+        Service.Service = 0;
+      }
+      Service.SubTotal = +Service.Price;
+      break;
+
       case 'serviceGst':
-        
+      if (!BillItem.WholeSale) {
+        if (fieldName === 'GSTPercentageSer') {
+          if (Service.GSTPercentage === null || Service.GSTPercentage === '' || (Number(Service.GSTPercentage) > 100)) {
+            Swal.fire({
+              icon: 'warning',
+              title: `You can't give more than 100% GSTPercentage`,
+              text: ``,
+              footer: '',
+              backdrop: false,
+            });
+            Service.GSTPercentage = 0;
+            Service.GSTType = 'None'
+          } else {
+            Service.GSTAmount = (+Service.Price) - ((+Service.Price) / (1 + +Service.GSTPercentage / 100));
+          }
+        }
+        if (fieldName === 'GSTAmt') {
+          Service.GSTPercentage = 100 * +Service.GSTAmount / (+Service.Price);
+        }
+      } else {
         if (fieldName === 'GSTPercentageSer') {
           if (Service.GSTPercentage === null || Service.GSTPercentage === '' || (Number(Service.GSTPercentage) > 100)) {
             Swal.fire({
@@ -138,29 +170,38 @@ export class BillCalculationService {
             Service.GSTType = 'None'
           }
           else {
-            Service.GSTAmount = +Service.Price * +Service.GSTPercentage / 100;
+            Service.GSTAmount = (+Service.Price) * +Service.GSTPercentage / 100;
           }
         }
-
-        if (fieldName === 'GSTAmountSer') {
+        if (fieldName === 'GSTAmt') {
           if (Service.GSTAmount === null || Service.GSTAmount === '') {
             Service.GSTAmount = 0;
-            Service.GSTType = 'None'
           } else {
             Service.GSTPercentage = 100 * +Service.GSTAmount / (+Service.Price);
           }
-        
         }
+      }
         break;
 
       case 'serviceTotal': 
       if (!BillItem.WholeSale) {
-        Service.TotalAmount = +Service.Price ;
-      }else{
-        Service.TotalAmount = +Service.GSTAmount + +Service.Price;
+        Service.TotalAmount = +Service.Price;
+        Service.SubTotal = +Service.TotalAmount - +Service.GSTAmount ;
+      } else {
+        Service.SubTotal = +Service.Price ;
+        Service.TotalAmount = +Service.Price + +Service.GSTAmount;
       }
         break;
+
+      
     }
+
+    Service.SubTotal = this.convertToDecimal(+Service.SubTotal, 2);
+    Service.GSTPercentage = this.convertToDecimal(+Service.GSTPercentage, 2);
+    Service.GSTAmount = this.convertToDecimal(+Service.GSTAmount, 2);
+    Service.TotalAmount = this.convertToDecimal(+Service.TotalAmount, 2);
+
+    // serviceCalcultionEnd 
 
     // WholeSalecalculations
     if (!BillItem.WholeSale) {

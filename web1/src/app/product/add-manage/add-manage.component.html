@@ -265,7 +265,16 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>Customer Price</mat-label>
-                                        <input matInput name="Price"  type="number" min="0" [(ngModel)]="Service.Price" required #Pricecontrol [disabled]="this.setValueServiceDisbled">
+                                        <input matInput name="Price"  type="number" min="0" [(ngModel)]="Service.Price" (blur)="calculateSevice('SubTotal', 'subTotal')"  required #Pricecontrol disabled>
+                                        <mat-error>
+                                            Invalid Value
+                                            </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label>SubTotal</mat-label>
+                                        <input matInput name="Price"  type="number" min="0" [(ngModel)]="Service.SubTotal" required #SubTotalcontrol [disabled]="this.setValueServiceDisbled">
                                         <mat-error>
                                             Invalid Value
                                             </mat-error>
@@ -345,6 +354,7 @@
                                 <th>Description</th>
                                 <th>InternalCost</th>
                                 <th>Price</th>
+                                <th>SubTotal</th>
                                 <th>GSTPercentage</th>
                                 <th>GSTAmount</th>
                                 <th>GSTType</th>
@@ -359,6 +369,7 @@
                                 <td>{{c.Description}}</td>
                                 <td>{{c.Cost | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                 <td>{{c.Price | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                <td>{{c.SubTotal | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                 <td>{{c.GSTPercentage}}</td>
                                 <td>{{c.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                 <td>{{c.GSTType}}</td>

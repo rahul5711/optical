@@ -56,7 +56,7 @@ export class AddManageComponent implements OnInit {
   newDepartment: any  = {ID: null, CompanyID: null, Name: "", TableName:null,   Status: 1};
 
   selectedRow: any = {ID: null, CompanyID: null, Name: null, Description:null, Cost:0,  Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: " "};
-  Service: any = {ID: null, CompanyID: null, Name: null, Description:null, Cost:0,  Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: " " };
+  Service: any = {ID: null, CompanyID: null, Name: null, Description:null, Cost:0,  Price: 0, SubTotal:0, GSTPercentage: 0, GSTAmount: 0, GSTType: " " };
   
   
   editAddManagement = false
@@ -362,11 +362,12 @@ export class AddManageComponent implements OnInit {
 
   setValuesService(){
     this.setValueServiceDisbled = true
-    this.serviceList.forEach((element: { ID: any; Name:any; Cost:any,  Price: any; Description: any; GSTAmount: any; GSTPercentage: any; GSTType: any; TotalAmount: any; }) => {
+    this.serviceList.forEach((element: { ID: any; Name:any; Cost:any,  Price: any; Description: any; SubTotal:any, GSTAmount: any; GSTPercentage: any; GSTType: any; TotalAmount: any; }) => {
       if (element.Name === this.Service.Name) {
       this.Service.Cost = element.Cost;
       this.Service.Price = element.Price;
       this.Service.Description = element.Description;
+      this.Service.SubTotal = element.SubTotal;
       this.Service.GSTAmount = element.GSTAmount;
       this.Service.GSTPercentage = element.GSTPercentage;
       this.Service.GSTType = element.GSTType;
@@ -377,6 +378,10 @@ export class AddManageComponent implements OnInit {
 
   calculateSevice(fieldName: string, mode: any){
     switch (mode) {
+      case 'subTotal':
+        this.Service.SubTotal = +this.Service.Price;
+        break;
+
       case 'chgst1':
         if (fieldName === 'GSTPercentage') {
         if (this.Service.GSTPercentage === null || this.Service.GSTPercentage === '' || (Number(this.Service.GSTPercentage) > 100)) {
@@ -411,7 +416,7 @@ export class AddManageComponent implements OnInit {
   
   serviceresetData(){
     this.setValueServiceDisbled = false
-    this.Service = {ID: null, CompanyID: null, Name: null, Description:null, Cost: 0, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "" };
+    this.Service = {ID: null, CompanyID: null, Name: null, Description:null, Cost: 0, Price: 0, SubTotal:0, GSTPercentage: 0, GSTAmount: 0, GSTType: "" };
   }
 
   servicesave(){
@@ -464,7 +469,7 @@ export class AddManageComponent implements OnInit {
             if(res.success){
               this.serviceList.splice(i, 1);
               this.as.successToast(res.message)
-              this.Service = {ID: null, CompanyID: null, Name: null, Description: null, Cost:0, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "" };
+              this.Service = {ID: null, CompanyID: null, Name: null, Description: null, Cost:0, Price: 0,SubTotal:0, GSTPercentage: 0, GSTAmount: 0, GSTType: "" };
               this.servicelist();
               Swal.fire({
                 position: 'center',

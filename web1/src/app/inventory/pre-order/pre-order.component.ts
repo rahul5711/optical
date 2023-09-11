@@ -84,7 +84,8 @@ export class PreOrderComponent implements OnInit {
       }
     });
     this.getProductList();
-    this.getdropdownSupplierlist();
+    // this.getdropdownSupplierlist();
+    this.dropdownlistForPreOrder();
     this.getGSTList();
     if (this.id != 0){
       this.getPurchaseByIdPreOrder();
@@ -115,9 +116,26 @@ export class PreOrderComponent implements OnInit {
     })
   }
 
-  getdropdownSupplierlist(){
+  // getdropdownSupplierlist(){
+  //   this.sp.show()
+  //   const subs: Subscription =  this.ss.dropdownSupplierlist('').subscribe({
+  //     next: (res: any) => {
+  //       if(res.success){
+  //         this.supplierList = res.data;
+  //         this.as.successToast(res.message)
+  //       }else{
+  //         this.as.errorToast(res.message)
+  //       }
+  //       this.sp.hide()
+  //     },
+  //     error: (err: any) => console.log(err.message),
+  //     complete: () => subs.unsubscribe(),
+  //   });
+  // }
+
+  dropdownlistForPreOrder(){
     this.sp.show()
-    const subs: Subscription =  this.ss.dropdownSupplierlist('').subscribe({
+    const subs: Subscription =  this.ss.dropdownlistForPreOrder('').subscribe({
       next: (res: any) => {
         if(res.success){
           this.supplierList = res.data;

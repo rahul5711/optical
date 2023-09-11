@@ -82,7 +82,7 @@ export class BillComponent implements OnInit {
   };
 
   Service: any = {
-    ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, DuaCal : '',
+    ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal:0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, DuaCal : '',
   };
 
   customer: any = {
@@ -448,9 +448,10 @@ export class BillComponent implements OnInit {
         this.Service.ID = null
         this.Service.CompanyID = element.CompanyID
         this.Service.Name = element.Name
-        this.Service.Price = element.Price;
-        this.Service.Cost = element.Cost;
         this.Service.Description = element.Description;
+        this.Service.Cost = element.Cost;
+        this.Service.Price = element.Price;
+        this.Service.SubTotal = element.SubTotal;
         this.Service.GSTPercentage = element.GSTPercentage;
         this.Service.GSTAmount = element.GSTAmount;
         this.Service.GSTType = element.GSTType;
@@ -901,7 +902,7 @@ export class BillComponent implements OnInit {
       this.serviceLists.push(this.Service);
       this.calculateGrandTotal()
       this.Service = {
-        ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1
+        ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal:0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1
       };
       
     }
