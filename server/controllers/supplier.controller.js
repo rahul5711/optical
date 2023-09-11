@@ -239,25 +239,24 @@ module.exports = {
     },
     saveVendorCredit: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "", count: 0 }
+            const response = { data: null, success: true, message: "" }
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
-            if (!Body.SupplierID) res.send({ message: "Invalid Query Data" })
-            if (!Body.CreditNumber) res.send({ message: "Invalid Query Data" })
-            if (!Body.Amount) res.send({ message: "Invalid Query Data" })
-            if (!Body.CreditDate) res.send({ message: "Invalid Query Data" })
-            if (!Body.Remark) res.send({ message: "Invalid Query Data" })
-
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data1" })
+            if (!Body.SupplierID) res.send({ message: "Invalid Query Data2" })
+            if (!Body.CreditNumber) res.send({ message: "Invalid Query Data3" })
+            if (!Body.Amount) res.send({ message: "Invalid Query Data4" })
+            if (!Body.CreditDate) res.send({ message: "Invalid Query Data5" })
+            console.table({...Body, shopid : shopid})
             const [doesCheckCn] = await mysql2.pool.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${Body.CreditNumber.trim()}' and PaymentType = 'Vendor Credit' and Credit = 'Credit'`)
 
             if (doesCheckCn.length) {
                return res.send({message: `Vendor Credit  Already exist from this CreditNumber ${Body.CreditNumber}`})
             }
 
-            const [saveVendorCredit] = await mysql2.pool.query(`insert into vendorcredit(CompanyID, ShopID,SupplierID, CreditNumber, CreditDate, Amount, Remark, Is_Return, Status, CreatedBy, CreatedOn)values(${CompanyID}, ${shopid}, ${Body.SupplierID}, '${Body.CreditNumber}', '${Body.CreditDate}', ${Body.Amount}, '${Body.Remark ? Body.Remark : ""}', 0, 1, ${LoggedOnUser}, now())`)
+            const [saveVendorCredit] = await mysql2.pool.query(`insert into vendorcredit(CompanyID, ShopID,SupplierID, CreditNumber, CreditDate, Amount, Remark, Is_Return, Status, CreatedBy, CreatedOn)values(${CompanyID}, ${shopid}, ${Body.SupplierID}, '${Body.CreditNumber}', '${Body.CreditDate}', ${Body.Amount}, '${Body.Remark ? Body.Remark : `Amount Credited By CreditNumber ${Body.CreditNumber}`}', 0, 1, ${LoggedOnUser}, now())`)
 
             const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${Body.SupplierID}, ${CompanyID}, ${shopid}, 'Supplier','Credit',now(), 'Vendor Credit', '', '', ${Body.Amount}, 0, '',1,${LoggedOnUser}, now())`)
 
