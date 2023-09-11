@@ -59,7 +59,7 @@
                                                     <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
                                                     </ngx-mat-select-search>
                                                 </mat-option>
-                                                <mat-option [value]="0">All</mat-option>
+                                                <!-- <mat-option [value]="0">All</mat-option> -->
                                                 <mat-option *ngFor="let sup of supplierList | proditemfilter: searchValue  let i = index;" [value]="sup.ID">
                                                     {{sup.Name}}
                                                 </mat-option>

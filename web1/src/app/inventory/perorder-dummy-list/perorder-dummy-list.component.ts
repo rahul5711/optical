@@ -67,19 +67,37 @@ export class PerorderDummyListComponent implements OnInit {
   data: any = { PurchaseMaster: null, PurchaseDetail: null };
 
   ngOnInit(): void {
-    this.dropdownSupplierlist();
+    // this.dropdownSupplierlist();
+    this.dropdownlistForPreOrder();
     this.getProductList();
     this.getList();
   }
 
-  dropdownSupplierlist() {
+  // dropdownSupplierlist() {
+  //   this.sp.show()
+  //   const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
+  //     next: (res: any) => {
+  //       if (res.success) {
+  //         this.supplierList = res.data
+  //         this.as.successToast(res.message)
+  //       } else {
+  //         this.as.errorToast(res.message)
+  //       }
+  //       this.sp.hide()
+  //     },
+  //     error: (err: any) => console.log(err.message),
+  //     complete: () => subs.unsubscribe(),
+  //   });
+  // }
+
+  dropdownlistForPreOrder(){
     this.sp.show()
-    const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
+    const subs: Subscription =  this.sup.dropdownlistForPreOrder('').subscribe({
       next: (res: any) => {
-        if (res.success) {
-          this.supplierList = res.data
+        if(res.success){
+          this.supplierList = res.data;
           this.as.successToast(res.message)
-        } else {
+        }else{
           this.as.errorToast(res.message)
         }
         this.sp.hide()
