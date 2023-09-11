@@ -2061,7 +2061,7 @@ module.exports = {
             }
 
             for (const item of PurchaseDetail) {
-                if (item.Sel == 0) {
+                if (!item.Sel || item.Sel == 0) {
                     return res.send({ message: "Invalid Query Data" })
                 }
 
@@ -2093,6 +2093,7 @@ module.exports = {
             return res.send(response);
 
         } catch (err) {
+            console.log(err);
             next(err)
         }
     },
@@ -3335,6 +3336,12 @@ module.exports = {
                 return res.send({ message: "purchasereturn doesnot exist from this id " })
             }
 
+            const [doesCheckCn] = await mysql2.pool.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${SupplierCn.trim()}' and PaymentType = 'Vendor Credit' and Credit = 'Credit'`)
+
+            if (doesCheckCn.length) {
+               return res.send({message: `PurchaseReturn Already exist from this SupplierCn ${SupplierCn}`})
+            }
+
             let supplierId = doesExist[0].SupplierID
 
 
@@ -3347,7 +3354,7 @@ module.exports = {
 
             const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${SupplierCn}',${ID},${supplierId},${CompanyID},${doesExist[0].TotalAmount},0,'Vendor Credit','Credit',1,${LoggedOnUser}, now())`)
 
-            const [saveVendorCredit] = await mysql2.pool.query(`insert into vendorcredit(CompanyID, ShopID, CreditNumber, CreditDate, Amount, Remark, Is_Return, Status, CreatedBy, CreatedOn)values(${CompanyID}, ${shopid}, '${SupplierCn}', now(), ${doesExist[0].TotalAmount}, 'Amount Credited By Product Return From CN No ${SupplierCn}', 1, 1, ${LoggedOnUser}, now())`)
+            const [saveVendorCredit] = await mysql2.pool.query(`insert into vendorcredit(CompanyID, ShopID, SupplierID, CreditNumber, CreditDate, Amount, Remark, Is_Return, Status, CreatedBy, CreatedOn)values(${CompanyID}, ${shopid},${supplierId}, '${SupplierCn}', now(), ${doesExist[0].TotalAmount}, 'Amount Credited By Product Return From CN No ${SupplierCn}', 1, 1, ${LoggedOnUser}, now())`)
 
             console.log(connected("Vendor Credit SuccessFUlly !!!"));
 
