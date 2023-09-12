@@ -30,16 +30,16 @@ module.exports = {
 
             if (PaymentType === 'Supplier') {
 
-                const [credit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Vendor Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
+                // const [credit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Vendor Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
 
-                const [debit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Vendor Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
+                // const [debit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Vendor Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
 
-                if (credit[0].CreditAmount !== null) {
-                    creditCreditAmount = credit[0].CreditAmount
-                }
-                if (debit[0].CreditAmount !== null) {
-                    creditDebitAmount = debit[0].CreditAmount
-                }
+                // if (credit[0].CreditAmount !== null) {
+                //     creditCreditAmount = credit[0].CreditAmount
+                // }
+                // if (debit[0].CreditAmount !== null) {
+                //     creditDebitAmount = debit[0].CreditAmount
+                // }
 
                 const [due] = await mysql2.pool.query(`select SUM(purchasemasternew.DueAmount) as due from purchasemasternew where CompanyID = ${CompanyID} and SupplierID = ${PayeeName} and PStatus = 0`)
 
@@ -163,8 +163,45 @@ module.exports = {
             response.message = "data fetch sucessfully"
             return res.send(response);
 
-        } catch(err) {
+        } catch (err) {
             next(err)
+        }
+    },
+    getSupplierCreditNote: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const Body = req.body;
+            const { SupplierID } = Body
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (!SupplierID) return res.send({ message: "Invalid Query Data" })
+
+            const [data] = await mysql2.pool.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${SupplierID}`)
+
+
+            response.data = data;
+            response.message = 'data fetch successfully'
+            return res.send(response)
+        } catch (error) {
+            next(error)
+        }
+    },
+    getSupplierCreditNoteByCreditNumber: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const Body = req.body;
+            const { SupplierID, CreditNumber } = Body
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (!SupplierID) return res.send({ message: "Invalid Query Data" })
+            if (!CreditNumber) return res.send({ message: "Invalid Query Data" })
+            const [data] = await mysql2.pool.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and CreditNumber = '${CreditNumber}'`)
+
+            response.totalCreditAmount = data[0].Amount || creditDebitAmount;
+            response.message = 'data fetch successfully'
+            return res.send(response)
+        } catch (error) {
+            next(error)
         }
     },
     applyPayment: async (req, res, next) => {
@@ -175,7 +212,7 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
-            const { PaymentType, CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PayableAmount } = req.body
+            const { PaymentType, CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PayableAmount, CreditNumber } = req.body
 
             if (!CustomerID || CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
             if (ApplyReturn === null || ApplyReturn === undefined) return res.send({ message: "Invalid ApplyReturn Data" })
@@ -288,6 +325,14 @@ module.exports = {
                 }
 
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
+                    if (!CreditNumber || CreditNumber === undefined) return res.send({ message: "Invalid CreditNumber Data" })
+
+                    const [data] = await mysql2.pool.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
+
+                    if (data[0].Amount < PaidAmount) {
+                      return res.send({message : `you can't apply amount more than ${data[0].Amount}`})
+                    }
+
                     let [pMaster] = await mysql2.pool.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Supplier',  '1',${LoggedOnUser}, now())`
                     );
@@ -311,6 +356,8 @@ module.exports = {
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Vendor Credit', '${CreditType}', 1, ${LoggedOnUser}, now())`;
                             let [pDetail] = await mysql2.pool.query(qry);
                             let [bMaster] = await mysql2.pool.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now() where ID = ${item.ID}`);
+
+                            const [updateVendorCredit] = await mysql2.pool.query(`update vendorcredit set PaidAmount = ${PaidAmount} where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
                         }
 
                     }
@@ -513,7 +560,7 @@ module.exports = {
 
 
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -550,13 +597,13 @@ module.exports = {
             return res.send(response);
 
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
     getCommissionDetailByID: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "", master: null, detail:null }
+            const response = { data: null, success: true, message: "", master: null, detail: null }
 
             const { PaymentType, PayeeName, ShopID, ID } = req.body
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -589,7 +636,7 @@ module.exports = {
             return res.send(response);
 
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -598,8 +645,8 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
 
             const { Master, Detail } = req.body
-               console.log(Master,'Master');
-               console.log(Detail,'Detail');
+            console.log(Master, 'Master');
+            console.log(Detail, 'Detail');
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -649,7 +696,7 @@ module.exports = {
             return res.send(response);
 
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -671,7 +718,7 @@ module.exports = {
             response.data = data
             return res.send(response);
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -703,7 +750,7 @@ module.exports = {
             response.count = count.length
             await mysql2.pool.query("COMMIT");
             return res.send(response);
-        } catch(err) {
+        } catch (err) {
             console.log(err);
             next(err)
         }
@@ -851,7 +898,7 @@ module.exports = {
             }
             return res.send(response);
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -890,7 +937,7 @@ module.exports = {
             }
             return res.send(response)
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
 
@@ -923,7 +970,7 @@ module.exports = {
             }
             return res.send(response)
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
 
@@ -965,7 +1012,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             return res.send(response);
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -1002,7 +1049,7 @@ module.exports = {
             }
             return res.send(response);
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },

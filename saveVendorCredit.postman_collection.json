@@ -1,0 +1,366 @@
+{
+	"info": {
+		"_postman_id": "91bc9089-77ca-434b-84e0-403bac64a977",
+		"name": "saveVendorCredit",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "saveVendorCredit",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTQ0NTUyOTIsImV4cCI6MTY5NDU0MTY5MiwiYXVkIjoiJzcnIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.agnVhbuX8IH4AcGj-vubQa3TK1_SZg_EP4RvLSjrb3Y",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"SupplierID\": 11,\r\n    \"CreditNumber\": \"kkk177\",\r\n    \"CreditDate\": \"2023-09-11\",\r\n    \"Remark\": \"\",\r\n    \"Amount\": 100\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/supplier/saveVendorCredit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"supplier",
+						"saveVendorCredit"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "saveVendorCredit",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"SupplierID\": 11,\r\n    \"CreditNumber\": \"kkk\",\r\n    \"Remark\": \"kkk\",\r\n    \"CreditDate\": \"2023-09-11\",\r\n    \"Amount\": 100\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/supplier/saveVendorCredit",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"supplier",
+								"saveVendorCredit"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "69"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"45-l5ip3d4YDs4mqzeINQOdskeJ098\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 11 Sep 2023 18:11:31 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Vendor Credit  Already exist from this CreditNumber kkk\"\n}"
+				}
+			]
+		},
+		{
+			"name": "getSupplierCreditNote",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTQ1NDA1NDgsImV4cCI6MTY5NDYyNjk0OCwiYXVkIjoiJzcnIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.9SdCfePAf7xyWwjABbGWq1eVtus-YAEnuDwC8FwyeOc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"SupplierID\": 11\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/payment/getSupplierCreditNote",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"payment",
+						"getSupplierCreditNote"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getSupplierCreditNote",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"SupplierID\": 11\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/payment/getSupplierCreditNote",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"payment",
+								"getSupplierCreditNote"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "432"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1b0-YM2WHfSFm1EbWP3qmqvI/vUV8ZQ\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 12 Sep 2023 17:51:58 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"SupplierID\": 11,\n            \"CreditNumber\": \"ccc\",\n            \"Amount\": 500\n        },\n        {\n            \"SupplierID\": 11,\n            \"CreditNumber\": \"ccc\",\n            \"Amount\": 2500\n        },\n        {\n            \"SupplierID\": 11,\n            \"CreditNumber\": \"ppp\",\n            \"Amount\": 500\n        },\n        {\n            \"SupplierID\": 11,\n            \"CreditNumber\": \"kkk\",\n            \"Amount\": 100\n        },\n        {\n            \"SupplierID\": 11,\n            \"CreditNumber\": \"kkk1\",\n            \"Amount\": 100\n        },\n        {\n            \"SupplierID\": 11,\n            \"CreditNumber\": \"kkk17\",\n            \"Amount\": 100\n        },\n        {\n            \"SupplierID\": 11,\n            \"CreditNumber\": \"kkk177\",\n            \"Amount\": 100\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch successfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "getSupplierCreditNoteByCreditNumber",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTQ1NDA1NDgsImV4cCI6MTY5NDYyNjk0OCwiYXVkIjoiJzcnIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.9SdCfePAf7xyWwjABbGWq1eVtus-YAEnuDwC8FwyeOc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"SupplierID\": 11,\r\n    \"CreditNumber\": \"ccc\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/payment/getSupplierCreditNoteByCreditNumber",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"payment",
+						"getSupplierCreditNoteByCreditNumber"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getSupplierCreditNoteByCreditNumber",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"SupplierID\": 11,\r\n    \"CreditNumber\": \"ccc\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/payment/getSupplierCreditNoteByCreditNumber",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"payment",
+								"getSupplierCreditNoteByCreditNumber"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "88"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"58-JzCa1YdiHx5DqoHgsffE9dZYoq8\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 12 Sep 2023 18:04:25 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": null,\n    \"success\": true,\n    \"message\": \"data fetch successfully\",\n    \"totalCreditAmount\": 500\n}"
+				}
+			]
+		}
+	]
+}
