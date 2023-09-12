@@ -103,7 +103,6 @@ export class FitterPoComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
   // call Api ngOnInit end 
 
@@ -169,7 +168,6 @@ export class FitterPoComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   // popup opne by fitter assing 
@@ -268,7 +266,6 @@ export class FitterPoComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     }
-    this.sp.hide()
   }
 
   // order done 
@@ -289,7 +286,6 @@ export class FitterPoComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   // order All prosecc this function order cancel/ qc check/ qc cancel/ Complete 
@@ -374,7 +370,6 @@ export class FitterPoComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     }
-    this.sp.hide()
   }
 
   completePo(mode: any) {
@@ -431,10 +426,7 @@ export class FitterPoComponent implements OnInit {
           });
         }
       })
-
-
     }
-    this.sp.hide()
   }
 
   // fitter doc No  
@@ -466,7 +458,6 @@ export class FitterPoComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   // top buttons to function
@@ -566,8 +557,6 @@ export class FitterPoComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     }
-
-    this.sp.hide()
   }
 
   // reset form befor Search 
@@ -593,7 +582,6 @@ export class FitterPoComponent implements OnInit {
       if(this.filtersList.length > 0){
         let data1: any = { productList: this.filtersList }
          console.log(data1);
-         
       }
   }
 

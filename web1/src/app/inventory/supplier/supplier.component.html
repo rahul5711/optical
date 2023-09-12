@@ -42,9 +42,9 @@
                                 </div>
                             </div>
                             <div class="col-md-1 col-2 order-3 order-md-1 ms-3 ms-md-0 d-flex" style="width: 70px;padding: 0;">
-                                <button class="bg-none" (click)="openModal(content)">
+                                <button *ngIf="addSupplierList" class="bg-none" (click)="openModal(content)">
                                     <mat-icon class="col-white plus_icon me-1" data-mdb-toggle="modal"
-                                    data-mdb-target="#exampleModal" *ngIf="addSupplierList"> add</mat-icon>
+                                    data-mdb-target="#exampleModal" > add</mat-icon>
                                 </button>
                                 <button class="bg-none" (click)="gridview = !gridview">
                                 <mat-icon class="col-white Grid_icon"  title="Grid View"
@@ -106,7 +106,7 @@
                                 <tbody class="text-center">
                                     <tr *ngFor="let data of dataList  let i = index;" >
                                         <td style="white-space: nowrap;" >
-                                            <button [disabled]="data.Name === 'PreOrder Supplier'" *ngIf="editSupplierList" class="bg-none" (click)="openModal(content)" data-mdb-toggle="modal" data-mdb-target="#exampleModal" (click)="getSupplierById(data)">
+                                            <button class="bg-none" [disabled]="data.Name === 'PreOrder Supplier'" *ngIf="editSupplierList"  (click)="openModal(content)" data-mdb-toggle="modal" data-mdb-target="#exampleModal" (click)="getSupplierById(data)">
                                               <mat-icon class="edit_icon ms-1"> edit</mat-icon>
                                             </button>
                                             <button [disabled]="data.Name === 'PreOrder Supplier'" *ngIf="deleteSupplierList" class="bg-none" (click)="deleteItem(i)">

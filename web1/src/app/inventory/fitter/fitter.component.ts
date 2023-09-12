@@ -96,7 +96,6 @@ export class FitterComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   dropdownShoplist() {
@@ -113,7 +112,6 @@ export class FitterComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   onsubmit() {
@@ -145,7 +143,6 @@ export class FitterComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   updateFitter() {
@@ -171,7 +168,6 @@ export class FitterComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   getFitterById() {
@@ -198,7 +194,6 @@ export class FitterComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     })
-    this.sp.hide();
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
@@ -250,7 +245,6 @@ export class FitterComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   deleteRateCard(i: any) {
@@ -321,7 +315,6 @@ export class FitterComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   deleteFitterAssignedShop(i: any) {
@@ -358,7 +351,6 @@ export class FitterComponent implements OnInit {
         });
       }
     })
-    this.sp.hide();
   }
 
 }

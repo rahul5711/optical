@@ -94,7 +94,6 @@ export class FitterInvoiceListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   changePagesize(num: number): void {
@@ -130,7 +129,6 @@ export class FitterInvoiceListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getFitterInvoiceListByID() {
@@ -156,7 +154,6 @@ export class FitterInvoiceListComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     })
-    this.sp.hide();
   }
 
   calculateGrandTotal(v:any){
@@ -188,13 +185,11 @@ gstCheck(v:any){
 }
 
   updateInvoice(v:any){
-
       this.calculateGrandTotal(v)
       this.UpdateProduct = false
       const subs: Subscription = this.fitters.updateFitterInvoiceNo(v).subscribe({
         next: (res: any) => {
           if (res.success) {
-            
             this.as.successToast(res.message)
           } else {
             this.as.errorToast(res.message)

@@ -101,6 +101,7 @@ export class PreOrderComponent implements OnInit {
     const subs: Subscription = this.purchaseService.getPurchaseByIdPreOrder(this.id).subscribe({
       next: (res: any) => {
         this.selectedPurchaseMaster = res.result.PurchaseMaster[0]
+        this.selectedPurchaseMaster.PurchaseDate =  moment(res.result.PurchaseMaster[0].PurchaseDate).format('YYYY-MM-DD')
         this.itemList = res.result.PurchaseDetail
         this.gst_detail = this.selectedPurchaseMaster.gst_detail
         this.calculateGrandTotal();

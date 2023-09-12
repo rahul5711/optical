@@ -1,8 +1,7 @@
-/* model popup width and height clsaa start */
 
-
-/* model popup width and height clsaa end */
-
+.mat-icon {
+    pointer-events: none !important;
+  }
 
 .bg-none{
     background-color: rgba(0, 0, 0, 0);

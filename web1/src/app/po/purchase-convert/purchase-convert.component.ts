@@ -118,7 +118,6 @@ export class PurchaseConvertComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide();
   }
 
   multicheck() {
@@ -170,15 +169,12 @@ export class PurchaseConvertComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   getParem(){
     this.sp.show()
 
     let parem = ''
-
-
     if (this.PurchaseMaster.FromDate !== '' && this.PurchaseMaster.FromDate !== null){
       let FromDate =  moment(this.PurchaseMaster.FromDate).format('YYYY-MM-DD')
       parem = parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between ' +  `'${FromDate}'`;}
@@ -192,7 +188,6 @@ export class PurchaseConvertComponent implements OnInit {
 
     if (this.PurchaseMaster.SupplierID !== 0){
       parem = parem + ' and barcodemasternew.SupplierID = '  + `'${this.PurchaseMaster.SupplierID}'`;}
-
 
       const dtm = {
         currentPage: 1,
@@ -215,7 +210,6 @@ export class PurchaseConvertComponent implements OnInit {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
-      this.sp.hide()
   }
 
   calculateFields(fieldName: any, mode: any, item:any) {
@@ -231,7 +225,6 @@ export class PurchaseConvertComponent implements OnInit {
         item.UpdateProduct = true
       }
     } 
-   
     this.calculation.calculateFields(fieldName, mode, item, '')
   }
 
@@ -248,9 +241,7 @@ export class PurchaseConvertComponent implements OnInit {
   onSubmit() {
     this.sp.show();
     this.filterList = this.dataList.filter((d: any) => d.Sel === 1);
-    if (this.filterList.length > 0) {
-
-    }
+    if (this.filterList.length > 0) { }
 
     if (this.PurchaseMaster.InvoiceNo === null || this.PurchaseMaster.InvoiceNo === '') {
       Swal.fire({

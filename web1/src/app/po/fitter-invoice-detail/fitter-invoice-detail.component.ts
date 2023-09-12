@@ -68,7 +68,6 @@ export class FitterInvoiceDetailComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     })
-    this.sp.hide();
   }
 
 }

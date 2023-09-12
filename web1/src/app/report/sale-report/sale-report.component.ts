@@ -151,7 +151,7 @@ export class SaleReportComponent implements OnInit {
             this.BillMaster.PaymentStatus = 0;
         } else {
             this.employeeHide = false;
-            this.BillMaster.PaymentStatus = 'Unpaid';
+            this.BillMaster.PaymentStatus = 'Unpaid';276
         }
       }else{
         this.employeeHide = true;
@@ -169,9 +169,7 @@ export class SaleReportComponent implements OnInit {
           this.shopList  = res.data
           let shop = res.data
           this.shopLists = shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
-          this.shopLists =  '/ ' + this.shopLists[0].Name + ' (' + this.shopLists[0].AreaName + ')'
-          console.log(this.shopLists);
-          
+          this.shopLists =  '/ ' + this.shopLists[0].Name + ' (' + this.shopLists[0].AreaName + ')'          
         }else{
           this.as.errorToast(res.message)
         }
@@ -272,8 +270,6 @@ export class SaleReportComponent implements OnInit {
     if (this.BillMaster.ProductStatus !== '' && this.BillMaster.ProductStatus !== null  && this.BillMaster.ProductStatus !== 'All'){
       Parem = Parem + ' and BillDetail.ProductStatus = '  + `'${this.BillMaster.ProductStatus}'`; }
 
-      console.log(Parem,'BillMaster');
-      
     const subs: Subscription =  this.bill.getSalereports(Parem).subscribe({
       next: (res: any) => {
         if(res.success){

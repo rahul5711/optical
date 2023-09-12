@@ -88,7 +88,6 @@ export class FitterListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   deleteItem(i:any){
@@ -125,7 +124,6 @@ export class FitterListComponent implements OnInit {
         });
       }
     })
-    this.sp.hide()
   }
 
   ngAfterViewInit() {
@@ -177,10 +175,11 @@ export class FitterListComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     } else {
+      this.sp.hide();
       this.getList();
      } 
     });
-    this.sp.hide();
+
   }
 
   exportAsXLSX(): void {

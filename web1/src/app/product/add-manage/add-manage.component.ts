@@ -72,8 +72,6 @@ export class AddManageComponent implements OnInit {
   deleteServiceManagement = false
 
   ngOnInit(): void {
-    console.log(this.companySetting);
-    
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'AddManagement') {
         this.editAddManagement = element.Edit;

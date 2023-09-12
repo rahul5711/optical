@@ -166,18 +166,19 @@
     <form #f="ngForm">
       <div class="modal-body">
         <div class="row">
-          <div class="col-md-4">
+          <div class="col-lg-4 col-md-4">
             <span style="font-size: 17px; font-weight: 600;color: #ff5100; ">InvoiceNo : </span>
             <span style="font-size: 15px; color: #000;">{{this.paymentHistoryList[0]?.InvoiceNo}} </span>
           </div>
-          <div class="col-md-4">
-            <span style="font-size: 17px; font-weight: 600; color: #ff5100">PurchaseDate : </span> <span
-              style="font-size: 15px; color: #000;">{{this.paymentHistoryList[0]?.PurchaseDate}}</span>
-          </div>
-          <div class="col-md-4">
+          <div class="col-lg-3 col-md-4 mt-2 mt-md-0 mb-2 mb-md-0">
             <span style="font-size: 17px; font-weight: 600; color: #ff5100">PaymentType : </span> <span
               style="font-size: 15px; color: #000;">{{this.paymentHistoryList[0]?.PaymentType}} </span>
           </div>
+          <div class="col-lg-5 col-md-4">
+            <span style="font-size: 17px; font-weight: 600; color: #ff5100">PurchaseDate : </span> <span
+              style="font-size: 15px; color: #000;">{{dateFormat(this.paymentHistoryList[0]?.PurchaseDate)}}</span>
+          </div>
+
           <div class="col-md-4" style="margin-top: 10px;">
             <span style="font-size: 17px; font-weight: 600;color: #ff5100; ">PaymentStatus : </span> <span
               style="font-size: 15px; color: #000;">{{this.paymentHistoryList[0]?.PaymentStatus}}</span>

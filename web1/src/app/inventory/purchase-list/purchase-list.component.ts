@@ -38,7 +38,7 @@ export class PurchaseListComponent implements OnInit {
   pageSize!: number;
   collectionSize = 0
   page = 4;
-  paymentHistoryList:any;
+  paymentHistoryList:any = [];
   CustomerTotal:any = []
   TotalAmountInv:any
   DueAmountIvn:any
@@ -207,7 +207,7 @@ export class PurchaseListComponent implements OnInit {
 
   openModal(content: any,data:any) {
     this.sp.show();
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'lg'});
     const subs: Subscription = this.purchaseService.paymentHistory(data.ID, data.InvoiceNo).subscribe({
       next: (res: any) => {
         if(res.success){

@@ -108,7 +108,6 @@ export class SupplierPoListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   Search(){
@@ -152,7 +151,6 @@ export class SupplierPoListComponent implements OnInit {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
-      this.sp.hide()
   }
 
   Reset(){

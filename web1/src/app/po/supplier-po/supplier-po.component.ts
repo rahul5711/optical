@@ -151,7 +151,6 @@ export class SupplierPoComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   openModal(content: any) {
@@ -224,8 +223,6 @@ export class SupplierPoComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     }
-
-    this.sp.hide()
   }
 
   assignSupplierPo(mode: any) {
@@ -271,7 +268,6 @@ export class SupplierPoComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     }
-    this.sp.hide()
   }
   
   assignSupplierPoCancel(mode: any) {
@@ -315,7 +311,6 @@ export class SupplierPoComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     }
-    this.sp.hide()
   }
 
   getList() {
@@ -338,7 +333,6 @@ export class SupplierPoComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    this.sp.hide()
   }
 
   Unassigned() {
@@ -399,7 +393,6 @@ export class SupplierPoComponent implements OnInit {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
-    this.sp.hide()
   }
 
   dateFormat(date:any){
@@ -424,7 +417,6 @@ export class SupplierPoComponent implements OnInit {
            error: (err: any) => console.log(err.message),
            complete: () => subs.unsubscribe(),
          });
-         this.sp.hide();
       }
   }
 
