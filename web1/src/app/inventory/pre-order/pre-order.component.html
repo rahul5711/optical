@@ -358,7 +358,7 @@
                                         <thead>
                                             <tr style="white-space: nowrap;">
                                                 <th style="z-index: 0 !important;">
-                                                    <mat-checkbox></mat-checkbox>
+                                                    <mat-checkbox  color="primary" (click)="selectAllPreorder('all')"></mat-checkbox>
                                                 </th>
                                                 <th>Action</th>
                                                 <th>BarCode</th>
@@ -381,8 +381,8 @@
                                         <tbody>
                                             <tr *ngFor="let data of itemList ; let i = index;">
                                                 <td class="text-center">
-                                                    <mat-checkbox [(ngModel)]="data.Checked" name="{{i + 'name'}}"
-                                                        [checked]="data.Checked" [ngModelOptions]="{standalone: true}">
+                                                    <mat-checkbox *ngIf="data.Status !== 0" color="primary" [(ngModel)]="data.Checked" name="{{i + 'name'}}"
+                                                        [checked]="data.Checked" [ngModelOptions]="{standalone: true}" (click)="singleSelectPreOrder(i)">
                                                     </mat-checkbox>
                                                 </td>
                                                 <!-- <td style="z-index: -999 !important;" *ngIf="data.Status === 0"></td> -->
@@ -526,9 +526,12 @@
                                     </button>
                                 </div>
                                 <div *ngIf="selectedPurchaseMaster.ID !== null"
-                                    class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 mr-3">
-                                    <button type="button" [disabled]="itemList.length === 0" (click)="updatedPurchase()"
+                                    class="col-xl-2 col-lg-2 col-md-6 col-8 mb-0 mr-3">
+                                    <button type="button" class="me-3" [disabled]="itemList.length === 0" (click)="updatedPurchase()"
                                         mat-raised-button color="primary">Update</button>
+                               
+                                    <button type="button"  (click)="deleteAllItem()" mat-raised-button color="warn"> All-Delete
+                                </button>
                                 </div>
                             </div>
                             <!-- Total calculcation end -->

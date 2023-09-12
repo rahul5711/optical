@@ -385,7 +385,6 @@ export class SupplierComponent implements OnInit {
     this.modalService.open(content1, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
     this.getdropdownSupplierlist()
     this.dropdownShoplist()
-    this.note = []
   }
 
   getdropdownSupplierlist() {
@@ -424,7 +423,22 @@ export class SupplierComponent implements OnInit {
   }
 
   creditNoteSave(){
-    console.log(this.note);
+    this.sp.show()
+    const subs: Subscription = this.ss.saveVendorCredit(this.note).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          // this.supplierDropList = res.data;
+          this.as.successToast(res.message)
+          this.modalService.dismissAll();
+          this.note = []
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
     
   }
 

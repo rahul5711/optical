@@ -69,6 +69,8 @@ export class PreOrderComponent implements OnInit {
   gstList:any;
   tempItem = { Item: null, Spec: null };
   itemList:any = [];
+  dataListt:any = [] ;
+  checked = false;
   gst_detail:any = [];
 
   editOrderPrice = false
@@ -557,4 +559,92 @@ export class PreOrderComponent implements OnInit {
     });
   }
 
+  selectAllPreorder(type: any) {
+    if (type === 'all') {
+      this.sp.show();
+      this.dataListt = [];
+
+      const isChecked = !this.checked;
+
+      for (let i = 0; i < this.itemList.length; i++) {
+        let ele = this.itemList[i];
+        ele.Checked = isChecked;
+        ele.index = i;
+        if (isChecked) {
+          if(ele.Status === 1){
+            this.dataListt.push(ele);
+          }
+        }
+      }
+      this.checked = isChecked;
+      this.sp.hide();
+    }
+  }
+
+  singleSelectPreOrder(i: any) {
+    const item = this.itemList[i];
+
+    if (item.Checked === false || item.Checked === 0) {
+      item.index = i;
+      this.dataListt.push(item);
+    } else if (item.Checked === true || item.Checked === 1) {
+      const indexToRemove = this.dataListt.findIndex((el: any) => el.index === i);
+      if (indexToRemove !== -1) {
+        this.dataListt.splice(indexToRemove, 1);
+      }
+    }
+  }
+
+  deleteAllItem(){
+    if (this.dataListt.length === 0 ) {
+      Swal.fire({
+       position: 'center',
+       icon: 'warning',
+       title: 'Please select checkboxes. || Note that rows have already been deleted.',
+       showConfirmButton: true,
+       backdrop:false
+     })
+   } else {
+    this.sp.show()
+     let FullData:any = []
+     let PurchaseDetailRow:any = []
+     this.dataListt.forEach((ele: any) =>{
+       if (ele.ID !== null || ele.Status === 1) {
+        ele.Sel = 1;
+        ele.Status = 0;
+        ele.Quantity = 0;
+         FullData.push(ele)
+         this.calculateFields(ele,'')
+         PurchaseDetailRow.push(ele)
+       }
+     })
+     this.calculateGrandTotal()
+     const body = {
+       PurchaseMaster: this.selectedPurchaseMaster,
+       PurchaseDetail: PurchaseDetailRow
+     }
+     console.log(body);
+
+     const subs: Subscription = this.purchaseService.deleteAllPreOrderDummy(body).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.getPurchaseByIdPreOrder();
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been delete.',
+            showConfirmButton: false,
+            timer: 1200
+          })
+          this.as.successToast(res.message)
+        } else {
+          this.as.successToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+   }
+  }
 }

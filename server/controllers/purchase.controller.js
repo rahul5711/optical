@@ -2052,21 +2052,22 @@ module.exports = {
                 PurchaseMaster,
                 PurchaseDetail,
             } = req.body;
-
+             console.log(PurchaseMaster,'PurchaseMaster========================');
+             console.log(PurchaseMaster,'PurchaseDetail========================');
 
             // check
 
             if (!PurchaseDetail.length) {
-                return res.send({ message: "Invalid Query Data" })
+                return res.send({ message: "Invalid Query Data1" })
             }
 
             for (const item of PurchaseDetail) {
                 if (!item.Sel || item.Sel == 0) {
-                    return res.send({ message: "Invalid Query Data" })
+                    return res.send({ message: "Invalid Query Data2" })
                 }
 
                 if (item.Status == 1) {
-                    return res.send({ message: "Invalid Query Data" })
+                    return res.send({ message: "Invalid Query Data3" })
                 }
             }
 

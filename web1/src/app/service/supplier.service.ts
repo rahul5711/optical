@@ -62,6 +62,11 @@ export class SupplierService {
     .pipe(catchError(this.handleError));
   }
 
+  saveVendorCredit(body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/saveVendorCredit', body)
+    .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);
