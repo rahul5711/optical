@@ -213,6 +213,8 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
 
             const { PaymentType, CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PayableAmount, CreditNumber } = req.body
+            console.log('<============= applyPayment =============>');
+            console.table({PaymentType, CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, CustomerCredit, ShopID, PayableAmount, CreditNumber})
 
             if (!CustomerID || CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
             if (ApplyReturn === null || ApplyReturn === undefined) return res.send({ message: "Invalid ApplyReturn Data" })
@@ -357,7 +359,7 @@ module.exports = {
                             let [pDetail] = await mysql2.pool.query(qry);
                             let [bMaster] = await mysql2.pool.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now() where ID = ${item.ID}`);
 
-                            const [updateVendorCredit] = await mysql2.pool.query(`update vendorcredit set PaidAmount = ${PaidAmount} where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
+                            const [updateVendorCredit] = await mysql2.pool.query(`update vendorcredit set PaidAmount = ${PaidAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
                         }
 
                     }
