@@ -331,8 +331,10 @@ module.exports = {
 
                     const [data] = await mysql2.pool.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount, PaidAmount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
 
+                    if (!data.length) {
+                        return res.send({message : `Invalid CreditNumber ${CreditNumber}`})
+                    }
 
-                    console.log(data[0].Amount , PaidAmount);
                     if (data[0].Amount < PaidAmount) {
                       return res.send({message : `you can't apply amount more than ${data[0].Amount}`})
                     }
