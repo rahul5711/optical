@@ -1402,7 +1402,7 @@ module.exports = {
                 }
             }
 
-            qry = `select billservice.*, shop.name as ShopName, shop.AreaName as AreaName, billmaster.InvoiceNo as InvoiceNo from billservice left join billmaster on billmaster.ID = billservice.BillID left join shop on shop.ID = billmaster.ShopID WHERE billservice.CompanyID = ${CompanyID} AND billservice.Status = 1 ` + Parem;
+            qry = `select billservice.*, shop.name as ShopName, shop.AreaName as AreaName, billmaster.InvoiceNo as InvoiceNo, billmaster.BillDate from billservice left join billmaster on billmaster.ID = billservice.BillID left join shop on shop.ID = billmaster.ShopID WHERE billservice.CompanyID = ${CompanyID} AND billservice.Status = 1 ` + Parem;
 
             let [data] = await mysql2.pool.query(qry);
 
