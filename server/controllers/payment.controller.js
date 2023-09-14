@@ -331,7 +331,9 @@ module.exports = {
 
                     const [data] = await mysql2.pool.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount, PaidAmount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
 
-                    if (data[0].Amount <= PaidAmount) {
+
+                    console.log(data[0].Amount , PaidAmount);
+                    if (data[0].Amount < PaidAmount) {
                       return res.send({message : `you can't apply amount more than ${data[0].Amount}`})
                     }
 
@@ -359,7 +361,7 @@ module.exports = {
                             let [pDetail] = await mysql2.pool.query(qry);
                             let [bMaster] = await mysql2.pool.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now() where ID = ${item.ID}`);
 
-                            const updateAmountForCredit = data[0].PaidAmount + item.Amount
+                            const updateAmountForCredit = data[0].PaidAmount + PaidAmount
 
                             const [updateVendorCredit] = await mysql2.pool.query(`update vendorcredit set PaidAmount = ${updateAmountForCredit}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
                         }
