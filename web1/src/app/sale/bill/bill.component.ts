@@ -42,6 +42,7 @@ export class BillComponent implements OnInit {
 
   @Input() customerID2: any
   company = JSON.parse(localStorage.getItem('company') || '');
+  shop = JSON.parse(localStorage.getItem('shop') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
@@ -99,6 +100,11 @@ export class BillComponent implements OnInit {
   data:any = { billMaseterData: null, billDetailData: null, service: null };
   data1:any = { billMaseterData: null, billDetailData: [] };
 
+  body = {
+    customer: null, billMaster: null, billItemList: null, serviceList: null, employeeList: null, paidList: null, unpaidList: null, Shop: null,
+    Company: null, CompanySetting: null, User: null,mode:null
+  };
+
   billItemCheckList:any
   checked :any= false;
 
@@ -140,6 +146,7 @@ export class BillComponent implements OnInit {
 
   invoiceList:any = []
   paidList:any = []
+  paidListPDF:any = []
   totalBalance = 0
   orderList:any = []
   filtersList:any = []
@@ -1351,10 +1358,11 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.bill.paymentHistoryByMasterID(CustomerID,BillMasterID).subscribe({
       next: (res: any) => {
           if(res.success ){
-            res.data.forEach((ele: any) => {
-              ele.Amount = ele.Type === 'Debit' ? '-' + ele.Amount : '+' + ele.Amount;
-            });
-             this.paidList = res.data
+            this.paidListPDF = res.data
+             this.paidList = this.paidListPDF
+            //  this.paidListPDF.forEach((ele: any) => {
+            //   ele.Amount = ele.Type === 'Debit' ? '-' + ele.Amount : '+' + ele.Amount;
+            // });
              this.paidList.forEach((e: any) => {
               this.totalpaid =+ this.totalpaid + e.Amount
              });             
@@ -1807,5 +1815,46 @@ export class BillComponent implements OnInit {
   
   dateFormat(date:any){
     return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
+
+
+  billPrint(mode:any){
+    this.body.customer = this.customer;
+    this.body.billMaster = this.BillMaster;
+    this.body.billItemList = this.billItemList;
+    this.body.serviceList = this.serviceLists;
+    this.body.employeeList = this.employeeList;
+    this.body.paidList = this.paidListPDF;
+    this.body.unpaidList = this.invoiceList;
+    [this.body.Shop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));;
+    this.body.Company = this.company;
+    this.body.CompanySetting = this.companySetting;
+    this.body.User = this.user;
+    this.body.mode = mode
+    // this.body.billMaster.showPower = this.showPower;
+
+    
+    const subs: Subscription = this.bill.billPrint(this.body).subscribe({
+      next: (res: any) => {
+        if(res){
+          if (mode === "Invoice") {
+            this.BillMaster.Invoice = res;
+            const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
+            window.open(url, "_blank")
+          } else if (mode === "Receipt") {
+            this.BillMaster.Receipt = res;
+            const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt;
+            window.open(url, "_blank");
+          }
+
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+
   }
 }

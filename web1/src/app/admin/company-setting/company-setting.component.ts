@@ -18,6 +18,7 @@ export class CompanySettingComponent implements OnInit {
 
   companysetting:any = JSON.parse(localStorage.getItem('companysetting') || '');
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
+ 
   env = environment;
   img: any;
   userImage: string | undefined;
@@ -37,8 +38,8 @@ export class CompanySettingComponent implements OnInit {
      InvoiceFormat: 'option.ejs', LoginTimeStart: '', LoginTimeEnd: '', year: false, month: false, partycode: false, type: false , BarCode:'', FeedbackDate:'', ServiceDate:'',DeliveryDay:'',UpdatedBy:null
   };
 
-  bill : any ={addfont:'15px', BillHeader:'3',headerwidth:'100vh', headerheight:'25vh', headerpadding:'5px',headermargin:'5px',imagewidth:'200px',imageheight:'150px',ShopNameFont:'25px',ShopNameBold:'400',color:'#000000',linespece:'20px' ,
-  table_Body:'12px',table_Heading:'15px'}
+  bill : any ={CompanyID: null,  BillHeader:'3',HeaderWidth:100, HeaderHeight:25, HeaderPadding:5,HeaderMargin:5,ImageWidth:200,ImageHeight:150,ImageAlign:'center',ShopNameFont:25,ShopNameBold:'400', ShopDetailFont:15, Color:'#000000',LineSpace:20, CustomerFont:15, CustomerLineSpace:20,
+  TableBody:12,TableHeading:15, NoteFont:15, NoteLineSpace:20, UpdateBy:null}
 
   companyWatermark: any;
   companyWholeSalePrice: any;
@@ -58,16 +59,17 @@ export class CompanySettingComponent implements OnInit {
 
   ngOnInit(): void {
    this.getCompanySetting()
-   console.log(this.data);
+
+     this.getBillFormateById()
    
   }
 
   getCompanySetting(){
     this.data = JSON.parse(localStorage.getItem('companysetting') || '');
+    this.wlcmArray1 = JSON.parse(this.companysetting.WelComeNote) || ''
     if (this.data.LogoURL === "null" || this.data.LogoURL === "") {
      this.data.LogoURL = "assets/images/userEmpty.png"
    } 
-    this.wlcmArray1 = JSON.parse(this.companysetting.WelComeNote) || ''
   }
 
   uploadImage(e:any, mode:any){
@@ -118,7 +120,53 @@ export class CompanySettingComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
-
   }
+
+  saveBillFormate(){
+    this.sp.show()
+    this.bill.CompanyID = this.companysetting.CompanyID
+   const subs: Subscription =  this.cs.saveBillFormate(this.bill).subscribe({
+    next: (res: any) => {
+      if (res.success) {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Update.',
+            showConfirmButton: false,
+            timer: 1500
+          })
+      } else {
+        this.as.errorToast(res.message)
+      }
+      this.sp.hide();
+    },
+    error: (err: any) => {
+      console.log(err.msg);
+    },
+    complete: () => subs.unsubscribe(),
+  });
+  }
+
+  getBillFormateById(){
+    this.sp.show()
+ 
+   let dtm = {
+     CompanyID : this.companysetting.CompanyID
+    }
+    const subs: Subscription =  this.cs.getBillFormateById(dtm).subscribe({
+     next: (res: any) => {
+       if (res.success) {
+           this.bill = res.data[0]  
+       } else {
+         this.as.errorToast(res.message)
+       }
+       this.sp.hide();
+     },
+     error: (err: any) => {
+       console.log(err.msg);
+     },
+     complete: () => subs.unsubscribe(),
+   });
+   }
 
 }

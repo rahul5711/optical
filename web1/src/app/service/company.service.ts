@@ -92,6 +92,16 @@ export class CompanyService {
     .pipe(catchError(this.handleError));
   }
 
+  saveBillFormate(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/saveBillFormate', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+  
+  getBillFormateById(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getBillFormateById', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

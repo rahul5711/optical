@@ -816,8 +816,9 @@
                      [disabled]="BillMaster.ID === null" (click)="openModal12(content12)">Lens Order</button>
                      <button type="button" class=" me-3" mat-raised-button color="primary"
                      [disabled]="BillMaster.ID === null" (click)="openModal13(content13)">Fitter Order</button>
-                    <button type="button" mat-raised-button color="primary">Receipt</button>
-                    <button type="button" class="me-3 ms-3" mat-raised-button color="primary">Invoice</button>
+                    <button type="button" mat-raised-button color="primary" (click)="billPrint('Receipt')">Receipt</button>
+                    <button type="button" class="me-3 ms-3" mat-raised-button color="primary"(click)="billPrint('Invoice')">Invoice</button>
+
                     <button type="button"  mat-raised-button color="primary">Receipt +
                         Power</button>
 
@@ -1195,7 +1196,7 @@
                                 <td class="text-left">{{paid.PaymentMode}}</td>
                                 <td class="text-left">{{paid.CardNo}}</td>
                                 <td class="text-left">{{paid.PaymentReferenceNo}}</td>
-                                <td class="text-left" style="background-color: #ff5100; color: #fff;">{{paid.Amount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                <td class="text-left" style="background-color: #ff5100; color: #fff;">  {{ paid.Type === 'Debit' ? '-' + paid.Amount : '+' + paid.Amount   | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
 
                             </tr>
                         </tbody>

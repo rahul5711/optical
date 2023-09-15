@@ -194,6 +194,11 @@ export class BillService {
     return this.httpClient.post<any>(this.url + '/changeProductStatus', Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
+  
+  billPrint(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/billPrint', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
 
   private handleError(errorResponse: HttpErrorResponse) {

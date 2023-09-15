@@ -1308,6 +1308,103 @@ module.exports = {
             next(err)
         }
     },
+    billPrint: async (req, res, next) => {
+        try {
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const printdata = req.body; 
+            // console.log(printdata.mode);
+            const Company = req.body.Company;
+            const CompanySetting = req.body.CompanySetting;
+            const CompanyWelComeNote = JSON.parse(req.body.CompanySetting.WelComeNote);
+            const Shop = req.body.Shop;
+            const User = req.body.User;
+            // const EmployeeList = req.body.employeeList;
+            const Customer = req.body.customer;
+            const BillMaster = req.body.billMaster;
+            const BillItemList = req.body.billItemList;
+            const ServiceList = req.body.serviceList;
+            const PaidList = req.body.paidList;
+            const UnpaidList = req.body.unpaidList;
+
+            const [billformate] = await mysql2.pool.query(`select * from billformate where CompanyID = ${CompanyID}`)
+            const [Employee] = await mysql2.pool.query(`select * from user where CompanyID = ${CompanyID} and ID = ${BillMaster.Employee}`)
+            printdata.billformate = billformate[0]
+            printdata.BillHeader = `${Number(printdata.billformate.BillHeader)}`;
+            printdata.Color = printdata.billformate.Color;
+            printdata.ShopNameBold = `${Number(printdata.billformate.ShopNameBold)}`;
+            printdata.HeaderWidth = `${Number(printdata.billformate.HeaderWidth)}px`;
+            printdata.HeaderHeight = `${Number(printdata.billformate.HeaderHeight)}px`;
+            printdata.HeaderPadding = `${Number(printdata.billformate.HeaderPadding)}px`;
+            printdata.HeaderMargin = `${Number(printdata.billformate.HeaderMargin)}px`;
+            printdata.ImageWidth = `${Number(printdata.billformate.ImageWidth)}px`;
+            printdata.ImageHeight = `${Number(printdata.billformate.ImageHeight)}px`;
+            printdata.ImageAlign = printdata.billformate.ImageAlign;
+            printdata.ShopNameFont = `${Number(printdata.billformate.ShopNameFont)}px`;
+            printdata.ShopDetailFont = `${Number(printdata.billformate.ShopDetailFont)}px`;
+            printdata.LineSpace = `${Number(printdata.billformate.LineSpace)}px`;
+            printdata.CustomerFont = `${Number(printdata.billformate.CustomerFont)}px`;
+            printdata.CustomerLineSpace = `${Number(printdata.billformate.CustomerLineSpace)}px`;
+            printdata.TableHeading = `${Number(printdata.billformate.TableHeading)}px`;
+            printdata.TableBody = `${Number(printdata.billformate.TableBody)}px`;
+            printdata.NoteFont = `${Number(printdata.billformate.NoteFont)}px`;
+            printdata.NoteLineSpace = `${Number(printdata.billformate.NoteLineSpace)}px`;
+            
+            printdata.company = Company
+            printdata.companysetting = CompanySetting
+            printdata.companyWelComeNote = CompanyWelComeNote
+            printdata.shopdetails = Shop
+            printdata.user = User
+            printdata.customer = Customer
+            printdata.billMaster = BillMaster
+            printdata.billItemList = BillItemList
+            printdata.serviceList = ServiceList
+            printdata.paidlist = PaidList
+            printdata.unpaidlist = UnpaidList
+            printdata.employee = Employee[0].Name
+            printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
+            printdata.welcomeNoteCompany = printdata.companyWelComeNote.filter(ele => ele.NoteType === "retail");
+            printdata.recivePayment = printdata.paidlist.reduce((total, element) =>total + element.Amount, 0);
+            printdata.CurrentInvoiceBalance = printdata.unpaidlist.length > 0 ? printdata.unpaidlist[0].DueAmount : 0;
+            printdata.DueAmount = printdata.unpaidlist.reduce((total, item) => total + item.DueAmount, 0);
+
+            printdata.billMaster.PaymentStatus = printdata.mode === "Invoice" ? "Unpaid" : "Paid";
+            printdata.bill = printdata.mode === "Invoice" ? "Cash Memo" : "Tax Invoice";
+
+            let fileName = "";
+            const file = "invoice.ejs" + ".pdf";
+            const formatName = "invoice.ejs";
+            fileName = "uploads/" + file;
+
+            ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                if (err) {
+                    res.send(err);
+                } else {
+                    let options = {
+                        "height": "5.8in",
+                        "width": "8.3in",
+                        // "height": "8.3in",
+                        // "width": "5.8in",
+                        "header": {
+                            "height": "0mm"
+                        },
+                        "footer": {
+                            "height": "0mm",
+                        },
+                    };
+                    pdf.create(data, options).toFile(fileName, function (err, data) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            res.json(file);
+                        }
+                    });
+                }
+            });
+        } catch (err) {
+            next(err)
+        }
+    },
+
     billByCustomer: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
