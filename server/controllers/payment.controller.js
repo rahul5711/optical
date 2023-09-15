@@ -176,7 +176,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!SupplierID) return res.send({ message: "Invalid Query Data" })
 
-            const [data] = await mysql2.pool.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${SupplierID}`)
+            const [data] = await mysql2.pool.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and (Amount - PaidAmount) > 0`)
 
 
             response.data = data;
@@ -329,7 +329,11 @@ module.exports = {
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
                     if (!CreditNumber || CreditNumber === undefined) return res.send({ message: "Invalid CreditNumber Data" })
 
-                    const [data] = await mysql2.pool.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
+                    const [data] = await mysql2.pool.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount, PaidAmount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
+
+                    if (!data.length) {
+                        return res.send({message : `Invalid CreditNumber ${CreditNumber}`})
+                    }
 
                     if (data[0].Amount < PaidAmount) {
                       return res.send({message : `you can't apply amount more than ${data[0].Amount}`})
@@ -359,7 +363,9 @@ module.exports = {
                             let [pDetail] = await mysql2.pool.query(qry);
                             let [bMaster] = await mysql2.pool.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now() where ID = ${item.ID}`);
 
-                            const [updateVendorCredit] = await mysql2.pool.query(`update vendorcredit set PaidAmount = ${PaidAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
+                            const updateAmountForCredit = data[0].PaidAmount + PaidAmount
+
+                            const [updateVendorCredit] = await mysql2.pool.query(`update vendorcredit set PaidAmount = ${updateAmountForCredit}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
                         }
 
                     }

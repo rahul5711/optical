@@ -251,16 +251,16 @@ module.exports = {
             if (!Body.CreditNumber) res.send({ message: "Invalid Query Data3" })
             if (!Body.Amount) res.send({ message: "Invalid Query Data4" })
             if (!Body.CreditDate) res.send({ message: "Invalid Query Data5" })
-            console.table({...Body, shopid : shopid})
+            console.table({ ...Body, shopid: shopid })
             const [doesCheckCn] = await mysql2.pool.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${Body.CreditNumber.trim()}' and PaymentType = 'Vendor Credit' and Credit = 'Credit'`)
 
             if (doesCheckCn.length) {
-               return res.send({message: `Vendor Credit  Already exist from this CreditNumber ${Body.CreditNumber}`})
+                return res.send({ message: `Vendor Credit  Already exist from this CreditNumber ${Body.CreditNumber}` })
             }
 
-            const [saveVendorCredit] = await mysql2.pool.query(`insert into vendorcredit(CompanyID, ShopID,SupplierID, CreditNumber, CreditDate, Amount, Remark, Is_Return, Status, CreatedBy, CreatedOn)values(${CompanyID}, ${Body.ShopID ? Body.ShopID :shopid}, ${Body.SupplierID}, '${Body.CreditNumber}', '${Body.CreditDate}', ${Body.Amount}, '${Body.Remark ? Body.Remark : `Amount Credited By CreditNumber ${Body.CreditNumber}`}', 0, 1, ${LoggedOnUser}, now())`)
+            const [saveVendorCredit] = await mysql2.pool.query(`insert into vendorcredit(CompanyID, ShopID,SupplierID, CreditNumber, CreditDate, Amount, Remark, Is_Return, Status, CreatedBy, CreatedOn)values(${CompanyID}, ${Body.ShopID ? Body.ShopID : shopid}, ${Body.SupplierID}, '${Body.CreditNumber}', '${Body.CreditDate}', ${Body.Amount}, '${Body.Remark ? Body.Remark : `Amount Credited By CreditNumber ${Body.CreditNumber}`}', 0, 1, ${LoggedOnUser}, now())`)
 
-            const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${Body.SupplierID}, ${CompanyID}, ${Body.ShopID ? Body.ShopID :shopid}, 'Supplier','Credit',now(), 'Vendor Credit', '', '', ${Body.Amount}, 0, '',1,${LoggedOnUser}, now())`)
+            const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${Body.SupplierID}, ${CompanyID}, ${Body.ShopID ? Body.ShopID : shopid}, 'Supplier','Credit',now(), 'Vendor Credit', '', '', ${Body.Amount}, 0, '',1,${LoggedOnUser}, now())`)
 
             const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${Body.CreditNumber}',${saveVendorCredit.insertId},${Body.SupplierID},${CompanyID},${Body.Amount},0,'Vendor Credit','Credit',1,${LoggedOnUser}, now())`)
 
@@ -274,4 +274,30 @@ module.exports = {
             next(error)
         }
     },
+
+    vendorCreditReport: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            const { Parem } = req.body
+
+            let params = ``
+            if (Parem !== undefined) {
+                params = Parem
+            }
+
+            qry = `select vendorcredit.*, supplier.Name as SupplierName, shop.Name as ShopName, shop.AreaName from vendorcredit left join shop on shop.ID = vendorcredit.ShopID left join supplier on supplier.ID = vendorcredit.SupplierID where vendorcredit.CompanyID = ${CompanyID} ` + params;
+
+            response.message = 'data fetch successfully'
+            const [data] = await mysql2.pool.query(qry)
+            response.data = data
+
+            return res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+        }
+    }
 }

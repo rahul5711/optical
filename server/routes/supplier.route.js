@@ -18,6 +18,7 @@ router.post('/searchByFeild',verifyAccessTokenAdmin, Controller.searchByFeild)
 // save vendor credit
 
 router.post('/saveVendorCredit',verifyAccessTokenAdmin, Controller.saveVendorCredit)
+router.post('/vendorCreditReport',verifyAccessTokenAdmin, Controller.vendorCreditReport)
 
 
 module.exports = router
