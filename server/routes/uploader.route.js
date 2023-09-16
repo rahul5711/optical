@@ -19,4 +19,7 @@ router.post('/processCusSpectacleFile', verifyAccessTokenAdmin, Controller.proce
 
 router.post('/processCusContactFile', verifyAccessTokenAdmin, Controller.processCusContactFile)
 
+router.post('/processBillMaster', verifyAccessTokenAdmin, Controller.processBillMaster)
+router.post('/processBillDetail', verifyAccessTokenAdmin, Controller.processBillDetail)
+
 module.exports = router

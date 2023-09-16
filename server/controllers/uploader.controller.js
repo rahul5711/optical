@@ -410,12 +410,13 @@ module.exports = {
 
                 newData.Idd = 0
                 newData.CompanyID = CompanyID
-                newData.Sno = ""
+                newData.Sno = `${CompanyID}-${fd[0]}` ? `${CompanyID}-${fd[0]}` : ""
                 newData.PhotoURL = ""
                 newData.RefferedByDoc = ""
                 newData.ReferenceType = ""
                 newData.Other = ""
-                newData.Remarks = ""
+                newData.Remarks = fd[12] ? fd[12] : ''
+                newData.Category = fd[13] ? fd[13] : ''
                 newData.GSTNo = ""
                 // console.log(newData);
                 processedFileData.push(newData)
@@ -447,7 +448,7 @@ module.exports = {
                     console.log(Id);
                     datum.Idd = Id
 
-                    const [customer] = await mysql2.pool.query(`insert into customer(SystemID,ShopID,Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Status,CreatedBy,CreatedOn,VisitDate) values('${datum.SystemID}',${shopid},'${datum.Idd}', '${datum.Name}','${datum.Sno}',${datum.CompanyID},'${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Address}','${datum.GSTNo}','${datum.Email}','${datum.PhotoURL}',${datum.DOB},'${datum.RefferedByDoc}','${datum.Age}',${datum.Anniversary},'${datum.ReferenceType}','${datum.Gender}','${datum.Other}','${datum.Remarks}',1,'${LoggedOnUser}',now(),${datum.VisitDate})`);
+                    const [customer] = await mysql2.pool.query(`insert into customer(SystemID,ShopID,Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Category,Status,CreatedBy,CreatedOn,VisitDate) values('${datum.SystemID}',${shopid},'${datum.Idd}', '${datum.Name}','${datum.Sno}',${datum.CompanyID},'${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Address}','${datum.GSTNo}','${datum.Email}','${datum.PhotoURL}',${datum.DOB},'${datum.RefferedByDoc}','${datum.Age}',${datum.Anniversary},'${datum.ReferenceType}','${datum.Gender}','${datum.Other}','${datum.Remarks}','${datum.Category}',1,'${LoggedOnUser}',now(),${datum.VisitDate})`);
 
                     console.log(connected("Customer Added SuccessFUlly !!!"));
                 }
@@ -695,6 +696,207 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        }
+    },
+    processBillMaster: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const {
+                filename,
+                originalname,
+                path,
+                destination
+            } = req.body
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+
+            filepath = destination + '/' + filename
+
+            const sheets = xlsx.parse(filepath) // parses a file
+            sheets[0].data = sheets[0].data.filter((el) => el.length > 0);
+            let fileData = []
+            let processedFileData = []
+            for (const sheet of sheets) {
+                fileData = [...fileData, ...sheet.data]
+            }
+
+            for (const fd of fileData) {
+                let newData = {
+                    "SystemID": `${CompanyID}-${fd[0]}` || 0,
+                    "BillNo": fd[1] || '',
+                    "SerialNo": fd[2] || '',
+                    "BillDate": fd[3] || '',
+                    "DeliveryDate": fd[4] || '',
+                    "Qty": fd[5] || 0,
+                    "SubTotal": fd[6] || 0,
+                    "GSTPercentage": fd[7] || 0,
+                    "GST": fd[8] || 0,
+                    "AdditionalDiscountPercentage": fd[9] || 0,
+                    "AdditionalDiscount": fd[10] || 0,
+                    "GrandTotal": fd[11] || 0,
+
+                }
+                newData.CompanyID = CompanyID,
+                    newData.CustomerID = 0
+                processedFileData.push(newData)
+            }
+
+            processedFileData.reverse()
+            processedFileData.pop()
+            processedFileData.reverse()
+
+            const body = processedFileData
+            let data = []
+            if (!body.length) {
+                console.log('syncing done....')
+                return
+            } else {
+                 data = body
+
+                if (!(data && data.length)) {
+                    return next(createError.BadRequest())
+                }
+
+                for (let datum of data) {
+                    if (!datum.SystemID || datum.SystemID === 0) {
+                        return res.send({ message: "Invalid Query SystemID" })
+                    }
+                    if (!datum.BillNo || datum.BillNo === '') {
+                        return res.send({ message: "Invalid Query BillNo" })
+                    }
+                    if (!datum.Qty || datum.Qty === 0) {
+                        return res.send({ message: "Invalid Query Qty" })
+                    }
+
+                    const [fetchCustomer] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID} and SystemID = ${datum.SystemID}`)
+
+                    if (!fetchCustomer.length) {
+                        return res.send({ message: "Invalid SystemID, Customer Not Found" })
+                    }
+
+                    datum.CustomerID = fetchCustomer[0].ID
+
+                    const [fetchBillMaster] = await mysql2.pool.query(`select * from oldbillmaster where CustomerID = ${datum.CustomerID} and CompanyID = ${CompanyID} and BillNo = '${datum.BillNo}'`)
+
+                    if (fetchBillMaster.length) {
+                        return res.send({ message: "Invalid BillNo, Bill Already Found From Provided Bill No" })
+                    }
+                }
+
+
+            }
+
+            // save data
+            for (let datum of data) {
+                const [saveData] = await mysql2.pool.query(`insert into oldbillmaster(SystemID, CompanyID, CustomerID, BillNo, SerialNo, BillDate, DeliveryDate, Qty, SubTotal, GSTPercentage, GST, AdditionalDiscountPercentage, AdditionalDiscount, GrandTotal, CreatedBy, CreatedOn) values(${datum.SystemID}, ${datum.CompanyID}, ${datum.CustomerID}, '${datum.BillNo}', '${datum.SerialNo}', '${datum.BillDate}' ,'${datum.DeliveryDate}', ${datum.Qty}, ${datum.SubTotal}, ${datum.GSTPercentage}, ${datum.GST}, ${datum.AdditionalDiscountPercentage}, ${datum.AdditionalDiscount}, ${datum.GrandTotal}, ${LoggedOnUser}, now())`)
+            }
+
+            console.log(connected("Customer Bill Added SuccessFUlly !!!"));
+
+            response.message = "data save sucessfully"
+            response.data = []
+            return res.send(response);
+
+        } catch (error) {
+            next(error)
+        }
+    },
+    processBillDetail: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const {
+                filename,
+                originalname,
+                path,
+                destination
+            } = req.body
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+
+            filepath = destination + '/' + filename
+
+            const sheets = xlsx.parse(filepath) // parses a file
+            sheets[0].data = sheets[0].data.filter((el) => el.length > 0);
+            let fileData = []
+            let processedFileData = []
+            for (const sheet of sheets) {
+                fileData = [...fileData, ...sheet.data]
+            }
+
+            for (const fd of fileData) {
+                let newData = {
+                    "BillNo": fd[0] || '',
+                    "ProductDescription": fd[1] || '',
+                    "UnitPrice": fd[2] || '',
+                    "Qty": fd[3] || 0,
+                    "DiscountPercentage": fd[4] || 0,
+                    "Discount": fd[5] || 0,
+                    "SubTotal": fd[6] || 0,
+                    "GSTPercentage": fd[7] || 0,
+                    "GST": fd[8] || 0,
+                    "Amount": fd[9] || 0
+
+                }
+                newData.CompanyID = CompanyID,
+                newData.CustomerID = 0
+                newData.BillMasterID = 0
+                processedFileData.push(newData)
+            }
+
+            processedFileData.reverse()
+            processedFileData.pop()
+            processedFileData.reverse()
+
+            const body = processedFileData
+
+            let data = []
+            if (!body.length) {
+                console.log('syncing done....')
+                return
+            } else {
+                 data = body
+
+                if (!(data && data.length)) {
+                    return next(createError.BadRequest())
+                }
+
+                for (let datum of data) {
+                    if (!datum.BillNo || datum.BillNo === '') {
+                        return res.send({ message: "Invalid Query BillNo" })
+                    }
+                    if (!datum.Qty || datum.Qty === 0) {
+                        return res.send({ message: "Invalid Query Qty" })
+                    }
+
+                    const [fetchBillMaster] = await mysql2.pool.query(`select * from oldbillmaster where CompanyID = ${CompanyID} and BillNo = '${datum.BillNo}'`)
+
+                    if (!fetchBillMaster.length) {
+                        return res.send({ message: "Invalid BillNo, Bill Not Found From Provided Bill No" })
+                    }
+
+                    datum.BillMasterID = fetchBillMaster[0].ID
+                    datum.CustomerID = fetchBillMaster[0].CustomerID
+                }
+
+
+            }
+
+            // save data
+            for (let datum of data) {
+                const [saveData] = await mysql2.pool.query(`insert into oldbilldetail(BillMasterID, CompanyID, CustomerID, ProductDescription, UnitPrice, Qty, DiscountPercentage, Discount, SubTotal, GSTPercentage, GST, Amount, CreatedBy, CreatedOn) values(${datum.BillMasterID}, ${datum.CompanyID}, ${datum.CustomerID}, '${datum.ProductDescription}',${datum.UnitPrice}, ${datum.Qty}, ${datum.DiscountPercentage},${datum.Discount},${datum.SubTotal}, ${datum.GSTPercentage}, ${datum.GST}, ${datum.Amount}, ${LoggedOnUser}, now())`)
+            }
+
+            console.log(connected("Customer Bill Detail Added SuccessFUlly !!!"));
+
+            response.message = "data save sucessfully"
+            response.data = []
+            return res.send(response);
+        } catch (error) {
+            next(error)
         }
     }
 
