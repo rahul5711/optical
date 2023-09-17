@@ -77,6 +77,8 @@ export class CustomerBlukComponent implements OnInit {
     'Anniversary' : '',
     'Gender' : '',
     'VisitDate' : '',
+    'Remarks' : '',
+    'Category' : '',
     }
   ]
 

@@ -1317,6 +1317,7 @@ module.exports = {
             const CompanySetting = req.body.CompanySetting;
             const CompanyWelComeNote = JSON.parse(req.body.CompanySetting.WelComeNote);
             const Shop = req.body.Shop;
+            const ShopWelComeNote = JSON.parse(req.body.Shop.WelcomeNote);
             const User = req.body.User;
             // const EmployeeList = req.body.employeeList;
             const Customer = req.body.customer;
@@ -1353,6 +1354,7 @@ module.exports = {
             printdata.companysetting = CompanySetting
             printdata.companyWelComeNote = CompanyWelComeNote
             printdata.shopdetails = Shop
+            printdata.shopWelComeNote = ShopWelComeNote
             printdata.user = User
             printdata.customer = Customer
             printdata.billMaster = BillMaster
@@ -1362,7 +1364,8 @@ module.exports = {
             printdata.unpaidlist = UnpaidList
             printdata.employee = Employee[0].Name
             printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
-            printdata.welcomeNoteCompany = printdata.companyWelComeNote.filter(ele => ele.NoteType === "retail");
+            // printdata.welcomeNoteCompany = printdata.companyWelComeNote.filter(ele => ele.NoteType === "retail");
+            // printdata.welComeNoteShop = printdata.shopWelComeNote.filter(ele => ele.NoteType === "retail");
             printdata.recivePayment = printdata.paidlist.reduce((total, element) =>total + element.Amount, 0);
             printdata.CurrentInvoiceBalance = printdata.unpaidlist.length > 0 ? printdata.unpaidlist[0].DueAmount : 0;
             printdata.DueAmount = printdata.unpaidlist.reduce((total, item) => total + item.DueAmount, 0);
@@ -1370,6 +1373,17 @@ module.exports = {
             printdata.billMaster.PaymentStatus = printdata.mode === "Invoice" ? "Unpaid" : "Paid";
             printdata.bill = printdata.mode === "Invoice" ? "Cash Memo" : "Tax Invoice";
 
+
+            printdata.welComeNoteShop = printdata.shopWelComeNote.filter((ele) => {
+                if (printdata.company.WholeSale == "true" && ele.NoteType === "wholesale") {
+                    return true;
+                } else if (printdata.company.RetailPrice == "true" && ele.NoteType === "retail") {
+                    return true;
+                }
+                return false;
+            });
+            
+           
             let fileName = "";
             const file = "invoice.ejs" + ".pdf";
             const formatName = "invoice.ejs";

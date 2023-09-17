@@ -334,6 +334,7 @@
                         class="example-margin">GST</mat-slide-toggle>
                 </div>
             </div>
+           
             <!-- Save/Cancel -->
             <div class="row my-4">
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
@@ -345,6 +346,64 @@
                 </div>
             </div>
         </form>
+         <!-- Software Bill note  -->
+         <!-- <h2 class="header mt-4">Important Note</h2> -->
+         <div class="row mt-3">
+             <div class="col-sm-12 header">
+                 <h2>Important Note
+                     <button class="bg-none" (click)="addRow()">
+                     <mat-icon class="col-white plus_icon" > add</mat-icon>
+                 </button>
+                 </h2>
+             </div>
+         </div>
+         <div class="row mt-3">
+             <div class="col-sm-12 table-container" style="overflow:auto;height:200px;">
+                 <table class="table">
+                     <thead class="thead-light">
+                         <tr>
+                             <th>S.No.</th>
+                             <th>Note Type</th>
+                             <th>Content</th>
+                             <th>Action</th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                         <tr *ngFor="let data of wlcmArray1; let i = index;" style="height: 20px;">
+                             <td class="text-center">{{i+1}}</td>
+                             <td class="text-center">
+                                 <mat-form-field class="example-full-width"
+                                     appearance="outline" [style.width.px]=150>
+                                     <mat-select [(ngModel)]="data.NoteType"
+                                         name="{{data.NoteType + i}}">
+                                         <mat-option value="retail">Retail</mat-option>
+                                         <mat-option value="wholesale">Wholesale </mat-option>
+                                         <mat-option value="CustomerPower">CustomerPower
+                                         <mat-option value="CustomerCredit"> CustomerCredit</mat-option>
+                                         </mat-option>
+                                     </mat-select>
+                                 </mat-form-field>
+                             </td>
+                             <td class="text-center">
+                                 <mat-form-field class="example-full-width"
+                                     appearance="outline">
+                                     <input matInput [(ngModel)]="data.Content"
+                                         name="{{data.Content + i}}">
+                                 </mat-form-field>
+                             </td>
+                             <td class="text-center">
+                                 <ul class="header-dropdown list-inline-item m-r--5">
+                                     <li class="d-inline"><i (click)="delete(i)"
+                                             class="material-icons"
+                                             style="cursor: pointer;  color:red;">delete</i>
+                                     </li>
+                                 </ul>
+                             </td>
+                         </tr>
+                     </tbody>
+                 </table>
+             </div>
+         </div>
     </div>
 </ng-template>
 <!-- model popup ent -->

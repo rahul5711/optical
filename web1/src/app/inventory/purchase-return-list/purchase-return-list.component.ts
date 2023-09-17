@@ -35,6 +35,7 @@ export class PurchaseReturnListComponent implements OnInit {
   page = 4;
   paymentHistoryList:any;
   SupplierCNNo:any
+  PurchaseDate:any
   supplierCnPRlist :any
 
   constructor(

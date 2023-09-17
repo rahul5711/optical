@@ -45,7 +45,7 @@ export class ShopListComponent implements OnInit {
 
   data: any = {
     ID: null, CompanyID: null, Name: '', AreaName: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '',
-    Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: false, GSTnumber: false, LogoURL: null, HSNCode: false, CustGSTNo: false, Rate: false, Discounts: false, Tax: false, SubTotal: false, Total: false, BillShopWise: false, ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: 'No Terms and Conditions', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
+    Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: false, GSTnumber: false, LogoURL: null, HSNCode: false, CustGSTNo: false, Rate: false, Discounts: false, Tax: false, SubTotal: false, Total: false, BillShopWise: false, ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: '[{"NoteType":"retail","Content":"No Return once sold. No Cash Refund."},{"NoteType":"retail","Content":"50% Advance at the time of booking the order."},{"NoteType":"retail","Content":"Please collect your  spects within 15 days from the date of order."},{"NoteType":"retail","Content":"Free Computerized EYES* Testing Facility Available."},{"NoteType":"retail","Content":"Repairing work at customer risk."}]', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
   };
 
   constructor(
@@ -68,6 +68,9 @@ export class ShopListComponent implements OnInit {
   editShopList = false
   addShopList = false
   deleteShopList = false
+
+  wlcmArray: any = [];
+  wlcmArray1: any = [];
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
@@ -96,7 +99,7 @@ export class ShopListComponent implements OnInit {
     }
     const subs: Subscription = this.ss.getList(dtm).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.collectionSize = res.count;
           this.dataList = res.data
           this.dataList.forEach((element: { LogoURL: any; }) => {
@@ -107,7 +110,7 @@ export class ShopListComponent implements OnInit {
             }
           });
           this.as.successToast(res.message)
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -131,7 +134,7 @@ export class ShopListComponent implements OnInit {
         this.sp.show();
         const subs: Subscription = this.ss.deleteData(this.dataList[i].ID).subscribe({
           next: (res: any) => {
-            if(res.success){
+            if (res.success) {
               this.getList()
               this.as.successToast(res.message)
               Swal.fire({
@@ -141,7 +144,7 @@ export class ShopListComponent implements OnInit {
                 showConfirmButton: false,
                 timer: 1000
               })
-            }else{
+            } else {
               this.as.errorToast(res.message)
             }
             this.sp.hide();
@@ -165,9 +168,10 @@ export class ShopListComponent implements OnInit {
     //   this.suBtn = false;
     //   this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     // }
-        this.companyImage = '';
-        this.suBtn = false;
-        this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+    this.companyImage = '';
+    this.wlcmArray1 = JSON.parse(this.data.WelcomeNote) || []
+    this.suBtn = false;
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
   }
 
   openModalEdit(content: any, datas: any) {
@@ -175,58 +179,22 @@ export class ShopListComponent implements OnInit {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, });
     this.companyImage = datas.LogoURL;
     this.data = datas
-    if(datas.length !== 0){
-      if(datas.Discount === 'true') {
-       this.data.Discount = true;
-     } else if (datas.Discount === 'false' ) {
-       this.data.Discount = false;
-     }
-     if(datas.GSTnumber === 'true') {
-       this.data.GSTnumber = true;
-     } else if (datas.GSTnumber === 'false' ) {
-       this.data.GSTnumber = false;
-     }
-     if(datas.HSNCode === 'true') {
-      this.data.HSNCode = true;
-     } else if (datas.HSNCode === 'false' ) {
-      this.data.HSNCode = false;
-     }
-     if(datas.CustGSTNo === 'true') {
-      this.data.CustGSTNo = true;
-     } else if (datas.CustGSTNo === 'false' ) {
-      this.data.CustGSTNo = false;
-     }
-     if(datas.Rate === 'true') {
-      this.data.Rate = true;
-     } else if (datas.Rate === 'false' ) {
-      this.data.Rate = false;
-     }
-     if(datas.Discounts === 'true') {
-      this.data.Discounts = true;
-     } else if (datas.Discounts === 'false' ) {
-      this.data.Discounts = false;
-     }
-     if(datas.Tax === 'true') {
-      this.data.Tax = true;
-     } else if (datas.Tax === 'false' ) {
-      this.data.Tax = false;
-     }
-     if(datas.SubTotal === 'true') {
-      this.data.SubTotal = true;
-     } else if (datas.SubTotal === 'false' ) {
-      this.data.SubTotal = false;
-     }
-     if(datas.Total === 'true') {
-      this.data.Total = true;
-     } else if (datas.Total === 'false' ) {
-      this.data.Total = false;
-     }
-     if(datas.BillShopWise === 'true') {
-      this.data.BillShopWise = true;
-     } else if (datas.BillShopWise === 'false' ) {
-      this.data.BillShopWise = false;
-     }
+    if (datas.length !== 0) {
 
+      this.wlcmArray1 = datas.WelcomeNote ? JSON.parse(datas.WelcomeNote) : [];
+
+      const stringToBoolean = (value: string) => value === 'true';
+
+      this.data.Discount = stringToBoolean(datas.Discount);
+      this.data.GSTnumber = stringToBoolean(datas.GSTnumber);
+      this.data.HSNCode = stringToBoolean(datas.HSNCode);
+      this.data.CustGSTNo = stringToBoolean(datas.CustGSTNo);
+      this.data.Rate = stringToBoolean(datas.Rate);
+      this.data.Discounts = stringToBoolean(datas.Discounts);
+      this.data.Tax = stringToBoolean(datas.Tax);
+      this.data.SubTotal = stringToBoolean(datas.SubTotal);
+      this.data.Total = stringToBoolean(datas.Total);
+      this.data.BillShopWise = stringToBoolean(datas.BillShopWise);
     }
   }
 
@@ -247,9 +215,10 @@ export class ShopListComponent implements OnInit {
 
   onsubmit() {
     this.sp.show();
-    if(this.data.LogoURL  === '' || this.data.LogoURL  === null ){
+    if (this.data.LogoURL === '' || this.data.LogoURL === null) {
       this.data.LogoURL = '/assets/images/logo.png'
     }
+    this.data.WelcomeNote = JSON.stringify(this.wlcmArray1);
     var shopdate = this.data ?? " ";
     const subs: Subscription = this.ss.shopSave(shopdate).subscribe({
       next: (res: any) => {
@@ -267,16 +236,16 @@ export class ShopListComponent implements OnInit {
           })
         } else {
           this.as.errorToast(res.message)
-            Swal.fire({
-              position: 'center',
-              icon: 'warning',
-              title: 'Opps !!',
-              text: res.message,
-              showConfirmButton: true,
-              backdrop : false,
-            })
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Opps !!',
+            text: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
         }
-         this.sp.hide();
+        this.sp.hide();
       },
       error: (err: any) => {
         console.log(err.msg);
@@ -314,7 +283,7 @@ export class ShopListComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
-      this.sp.hide()
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.message);
@@ -325,6 +294,7 @@ export class ShopListComponent implements OnInit {
 
   updateShop() {
     this.sp.show()
+    this.data.WelcomeNote = JSON.stringify(this.wlcmArray1);
     const subs: Subscription = this.ss.updateShop(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -342,7 +312,7 @@ export class ShopListComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
-      this.sp.hide()
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.msg);
@@ -386,12 +356,12 @@ export class ShopListComponent implements OnInit {
         this.sp.show()
         const subs: Subscription = this.ss.searchByFeild(dtm).subscribe({
           next: (res: any) => {
-            if(res.success){
+            if (res.success) {
               this.collectionSize = 1;
               this.page = 1;
               this.dataList = res.data
               this.as.successToast(res.message)
-            }else{
+            } else {
               this.as.errorToast(res.message)
             }
             this.sp.hide()
@@ -408,19 +378,19 @@ export class ShopListComponent implements OnInit {
 
   exportAsXLSX(): void {
     let data = this.dataList.map((e: any) => {
-      return{
+      return {
         Name: e.Name,
         AreaName: e.AreaName,
-        MobileNo1 : e.MobileNo1,
-        MobileNo2 : e.MobileNo2,
-        PhoneNo : e.PhoneNo,
-        Email : e.Email,
-        Website : e.Website,
-        GSTNo : e.GSTNo,
-        CINNo : e.CINNo,
-        ShopTiming : e.ShopTiming,
-        CreatedPerson : e.CreatedPerson,
-        UpdatedPerson : e.UpdatedPerson,
+        MobileNo1: e.MobileNo1,
+        MobileNo2: e.MobileNo2,
+        PhoneNo: e.PhoneNo,
+        Email: e.Email,
+        Website: e.Website,
+        GSTNo: e.GSTNo,
+        CINNo: e.CINNo,
+        ShopTiming: e.ShopTiming,
+        CreatedPerson: e.CreatedPerson,
+        UpdatedPerson: e.UpdatedPerson,
       }
     })
     this.excelService.exportAsExcelFile(data, 'shop_list');
@@ -429,9 +399,16 @@ export class ShopListComponent implements OnInit {
   formReset() {
     this.data = {
       ID: null, CompanyID: null, Name: '', AreaName: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '',
-      Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: false, GSTnumber: false, LogoURL: '', HSNCode: false, CustGSTNo: false, Rate: false, Discounts: false, Tax: false, SubTotal: false, Total: false, ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: 'No Terms and Conditions', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
+      Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: false, GSTnumber: false, LogoURL: '', HSNCode: false, CustGSTNo: false, Rate: false, Discounts: false, Tax: false, SubTotal: false, Total: false, ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF',  WelcomeNote: '[{"NoteType":"retail","Content":"No Return once sold. No Cash Refund."},{"NoteType":"retail","Content":"50% Advance at the time of booking the order."},{"NoteType":"retail","Content":"Please collect your  spects within 15 days from the date of order."},{"NoteType":"retail","Content":"Free Computerized EYES* Testing Facility Available."},{"NoteType":"retail","Content":"Repairing work at customer risk."}]', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
     };
     this.toggleChecked = false
   }
 
+  addRow() {
+    this.wlcmArray1.push({ NoteType: '', Content: '' });
+  }
+
+  delete(i: any) {
+    this.wlcmArray1.splice(this.wlcmArray.indexOf(this.wlcmArray[i]), 1);
+  }
 }

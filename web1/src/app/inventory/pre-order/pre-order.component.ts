@@ -606,46 +606,58 @@ export class PreOrderComponent implements OnInit {
        backdrop:false
      })
    } else {
-    this.sp.show()
-     let FullData:any = []
-     let PurchaseDetailRow:any = []
-     this.dataListt.forEach((ele: any) =>{
-       if (ele.ID !== null || ele.Status === 1) {
-        ele.Sel = 1;
-        ele.Status = 0;
-        ele.Quantity = 0;
-         FullData.push(ele)
-         this.calculateFields(ele,'')
-         PurchaseDetailRow.push(ele)
-       }
-     })
-     this.calculateGrandTotal()
-     const body = {
-       PurchaseMaster: this.selectedPurchaseMaster,
-       PurchaseDetail: PurchaseDetailRow
-     }
-     console.log(body);
-
-     const subs: Subscription = this.purchaseService.deleteAllPreOrderDummy(body).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.getPurchaseByIdPreOrder();
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Your file has been delete.',
-            showConfirmButton: false,
-            timer: 1200
-          })
-          this.as.successToast(res.message)
-        } else {
-          this.as.successToast(res.message)
+        Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) { 
+        this.sp.show()
+        let FullData:any = []
+        let PurchaseDetailRow:any = []
+        this.dataListt.forEach((ele: any) =>{
+          if (ele.ID !== null || ele.Status === 1) {
+           ele.Sel = 1;
+           ele.Status = 0;
+           ele.Quantity = 0;
+            FullData.push(ele)
+            this.calculateFields(ele,'')
+            PurchaseDetailRow.push(ele)
+          }
+        })
+        this.calculateGrandTotal()
+        const body = {
+          PurchaseMaster: this.selectedPurchaseMaster,
+          PurchaseDetail: PurchaseDetailRow
         }
-        this.sp.hide();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+   
+        const subs: Subscription = this.purchaseService.deleteAllPreOrderDummy(body).subscribe({
+         next: (res: any) => {
+           if (res.success) {
+             this.getPurchaseByIdPreOrder();
+             Swal.fire({
+               position: 'center',
+               icon: 'success',
+               title: 'Your file has been delete.',
+               showConfirmButton: false,
+               timer: 1200
+             })
+             this.as.successToast(res.message)
+           } else {
+             this.as.successToast(res.message)
+           }
+           this.sp.hide();
+         },
+         error: (err: any) => console.log(err.message),
+         complete: () => subs.unsubscribe(),
+       });
+      }
+    })
+
    }
   }
 }
