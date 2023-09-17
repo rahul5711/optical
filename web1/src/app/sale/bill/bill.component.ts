@@ -131,7 +131,7 @@ export class BillComponent implements OnInit {
   BarcodeList: any;
   disableAddButtons = false;
   PurchasePriceInput = false;
-  loginShopID: any;
+  loginShop: any;
   BarcodeListShow = false
   gst_detail: any = [];
   GstTypeDis = false
@@ -177,7 +177,7 @@ export class BillComponent implements OnInit {
     this.BillMaster.Employee = this.user.ID
     this.BillMaster.BillDate = moment().format('YYYY-MM-DD');
     this.BillMaster.DeliveryDate = moment(new Date()).add(this.companySetting.DeliveryDay, 'days').format('YYYY-MM-DD');
-    this.loginShopID = Number(this.selectedShop[0])
+    [this.loginShop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
     this.getTrayNo();
     this.getEmployee();
     this.getDoctor();
@@ -187,6 +187,7 @@ export class BillComponent implements OnInit {
     if (this.id2 != 0) {
       this.getCustomerById1()
     }    
+
   }
 
   getCustomerById1() {
@@ -1038,7 +1039,7 @@ export class BillComponent implements OnInit {
 
   onSubmit(content1: any) {
     this.sp.show()
-    this.BillMaster.ShopID = this.loginShopID
+    this.BillMaster.ShopID = this.loginShop.ID
     this.BillMaster.CustomerID = this.customerID2
     this.data.billMaseterData = this.BillMaster;
     this.data.billDetailData = this.billItemList;
@@ -1077,7 +1078,7 @@ export class BillComponent implements OnInit {
 
   update() {
 
-    this.BillMaster.ShopID = this.loginShopID;
+    this.BillMaster.ShopID = this.loginShop.ID;
     this.BillMaster.CustomerID = this.customerID2;
 
     if(this.BillMaster.DueAmount !== 0){

@@ -1319,9 +1319,11 @@ module.exports = {
             const Shop = req.body.Shop;
             const ShopWelComeNote = JSON.parse(req.body.Shop.WelcomeNote);
             const User = req.body.User;
-            // const EmployeeList = req.body.employeeList;
             const Customer = req.body.customer;
             const BillMaster = req.body.billMaster;
+            req.body.billItemList = req.body.billItemList.filter((element) => {
+                return element.Status !== 0;
+            });
             const BillItemList = req.body.billItemList;
             const ServiceList = req.body.serviceList;
             const PaidList = req.body.paidList;
@@ -1372,18 +1374,47 @@ module.exports = {
 
             printdata.billMaster.PaymentStatus = printdata.mode === "Invoice" ? "Unpaid" : "Paid";
             printdata.bill = printdata.mode === "Invoice" ? "Cash Memo" : "Tax Invoice";
-
+            printdata.invoiceNo = printdata.shopdetails.BillName.split("/")[0]
+            printdata.TotalValue = printdata.shopdetails.BillName.split("/")[1]
 
             printdata.welComeNoteShop = printdata.shopWelComeNote.filter((ele) => {
-                if (printdata.company.WholeSale == "true" && ele.NoteType === "wholesale") {
+                if (printdata.shopdetails.WholesaleBill == "true" && ele.NoteType === "wholesale") {
                     return true;
-                } else if (printdata.company.RetailPrice == "true" && ele.NoteType === "retail") {
+                } else if (printdata.shopdetails.RetailBill == "true" && ele.NoteType === "retail") {
                     return true;
                 }
                 return false;
             });
+
+            printdata.billItemList = printdata.billItemList.map((element) => {
+                if (element.Status === 1) {
+                    printdata.GSTTypes = element.GSTType;
+                    if (element.GSTType.toUpperCase() === "CGST-SGST") {
+                        return {
+                            ...element,
+                            GSTPercentage: (element.GSTPercentage / 2) + '%',
+                            GSTAmount: (element.GSTAmount / 2).toFixed(2),
+                        };
+                    }
+                }
+                return element;
+            });
+        
+            printdata.serviceList = printdata.serviceList.map((element) => {
+                if (element.Status === 1) {
+                    printdata.GSTTypes = element.GSTType;
+                    if (element.GSTType.toUpperCase() === "CGST-SGST") {
+                        return {
+                            ...element,
+                            GSTPercentage: (element.GSTPercentage / 2) + '%',
+                            GSTAmount: (element.GSTAmount / 2).toFixed(2),
+                        };
+                    }
+                }
+                return element;
+            });
             
-           
+       
             let fileName = "";
             const file = "invoice.ejs" + ".pdf";
             const formatName = "invoice.ejs";
@@ -1394,8 +1425,10 @@ module.exports = {
                     res.send(err);
                 } else {
                     let options = {
-                        "height": "5.8in",
-                        "width": "8.3in",
+                        "height": "15cm",
+                        "width": "21cm",
+                        format : "A5",
+                        orientation : "landscape",
                         // "height": "8.3in",
                         // "width": "5.8in",
                         "header": {

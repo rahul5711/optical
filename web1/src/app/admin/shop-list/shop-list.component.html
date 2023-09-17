@@ -268,6 +268,16 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
+                        <div class="col-md-3 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>BillName</mat-label>
+                                <input matInput name="BillName"  [(ngModel)]="data.BillName"
+                                    #BillNamecontrol>
+                                <mat-error >
+                                    BillName is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-2 col-11 ">
@@ -289,6 +299,16 @@
             <!-- Bill Fromat Options -->
             <h2 class="header">Bill Format Hide/Show</h2>
             <div class="row ps-3">
+                <div class="col-md-2 col-sm-6 col-6 p-0" *ngIf="this.company.WholeSale === 'true'">
+                    <mat-slide-toggle type="ratio" name="WholesaleBill" color="primary" [(ngModel)]="data.WholesaleBill" class="example-margin">WholesaleBill
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-md-2 col-sm-6 col-6 p-0" *ngIf="this.company.RetailPrice === 'true'">
+                    <mat-slide-toggle type="ratio" name="RetailBill" color="primary" [(ngModel)]="data.RetailBill" class="example-margin">RetailBill
+                    </mat-slide-toggle>
+                </div>
+                </div>
+                <div class="row ps-3 mt-3">
                 <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
                     <mat-slide-toggle type="ratio"  name="HSNCode" color="primary" [(ngModel)]="data.HSNCode" class="example-margin">
                         HSN</mat-slide-toggle>
@@ -321,6 +341,7 @@
                     <mat-slide-toggle type="ratio" name="BillShopWise" color="primary" [(ngModel)]="data.BillShopWise" class="example-margin">BillShopWise
                     </mat-slide-toggle>
                 </div>
+              
             </div>
             <!-- Software Bill Options Hide/Show -->
             <h2 class="header mt-4">Software Bill Hide/Show</h2>

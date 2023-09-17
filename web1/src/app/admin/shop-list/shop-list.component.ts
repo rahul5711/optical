@@ -45,7 +45,7 @@ export class ShopListComponent implements OnInit {
 
   data: any = {
     ID: null, CompanyID: null, Name: '', AreaName: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '',
-    Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: false, GSTnumber: false, LogoURL: null, HSNCode: false, CustGSTNo: false, Rate: false, Discounts: false, Tax: false, SubTotal: false, Total: false, BillShopWise: false, ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: '[{"NoteType":"retail","Content":"No Return once sold. No Cash Refund."},{"NoteType":"retail","Content":"50% Advance at the time of booking the order."},{"NoteType":"retail","Content":"Please collect your  spects within 15 days from the date of order."},{"NoteType":"retail","Content":"Free Computerized EYES* Testing Facility Available."},{"NoteType":"retail","Content":"Repairing work at customer risk."}]', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
+    Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: false, GSTnumber: false, LogoURL: null, HSNCode: false, CustGSTNo: false, Rate: false, Discounts: false, Tax: false, SubTotal: false, Total: false, BillShopWise: false, RetailBill:false, WholesaleBill:false, BillName:'InvoiceNo./Total', ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: '[{"NoteType":"retail","Content":"No Return once sold. No Cash Refund."},{"NoteType":"retail","Content":"50% Advance at the time of booking the order."},{"NoteType":"retail","Content":"Please collect your  spects within 15 days from the date of order."},{"NoteType":"retail","Content":"Free Computerized EYES* Testing Facility Available."},{"NoteType":"retail","Content":"Repairing work at customer risk."}]', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
   };
 
   constructor(
@@ -195,6 +195,8 @@ export class ShopListComponent implements OnInit {
       this.data.SubTotal = stringToBoolean(datas.SubTotal);
       this.data.Total = stringToBoolean(datas.Total);
       this.data.BillShopWise = stringToBoolean(datas.BillShopWise);
+      this.data.WholesaleBill = stringToBoolean(datas.WholesaleBill);
+      this.data.RetailBill = stringToBoolean(datas.RetailBill);
     }
   }
 
@@ -209,7 +211,8 @@ export class ShopListComponent implements OnInit {
       this.data.LogoURL = this.company.LogoURL;
       this.data.PhoneNo = this.company.PhoneNo;
       this.data.MobileNo1 = this.company.MobileNo1;
-      this.data.MobileNo2 = this.company.MobileNo2;
+      this.data.WholesaleBill = this.company.WholeSale;
+      this.data.RetailBill = this.company.RetailPrice;
     }
   }
 
