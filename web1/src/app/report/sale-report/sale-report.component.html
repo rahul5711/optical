@@ -723,6 +723,7 @@
                                                     <tr style="white-space: nowrap;">
                                                         <th>S.No</th>
                                                         <th>ShopName</th>
+                                                        <th>BillDate</th>
                                                         <th>InvoiceNo</th>
                                                         <th>Description</th>
                                                         <th>Amount</th>
@@ -741,6 +742,7 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
+                                                        <td></td>
                                                         <td>{{this.ServiceAmount}}</td>
                                                         <td></td>
                                                         <td></td>
@@ -755,6 +757,7 @@
                                                         <td>{{c.ShopName}}<span [style.color]="'blue'"
                                                                 *ngIf="c.AreaName !== 'null'">({{c.AreaName}})</span>
                                                         </td>
+                                                        <td>{{dateFormat(c.BillDate)}}</td>
                                                         <td>{{c.InvoiceNo}}</td>
                                                         <td>{{c.Description}}</td>
                                                         <td>{{c.Price }}</td>

@@ -11,6 +11,7 @@ import { SupplierService } from 'src/app/service/supplier.service';
 import { CalculationService } from 'src/app/service/helpers/calculation.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { SupportService } from 'src/app/service/support.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-purchase-return',
@@ -152,6 +153,7 @@ export class PurchaseReturnComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.selectedPurchaseMaster = res.result.PurchaseMaster[0]
+          this.selectedPurchaseMaster.PurchaseDate = moment(res.result.PurchaseMaster[0].PurchaseDate).format('YYYY-MM-DD')
           this.itemList = res.result.PurchaseDetail
           this.gst_detail = this.selectedPurchaseMaster.gst_detail
           this.calculateGrandTotal();
