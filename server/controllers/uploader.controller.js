@@ -770,7 +770,8 @@ module.exports = {
                         return res.send({ message: "Invalid Query Qty" })
                     }
 
-                    const [fetchCustomer] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID} and SystemID = ${datum.SystemID}`)
+
+                    const [fetchCustomer] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
 
                     if (!fetchCustomer.length) {
                         return res.send({ message: "Invalid SystemID, Customer Not Found" })
@@ -788,9 +789,11 @@ module.exports = {
 
             }
 
+
+
             // save data
             for (let datum of data) {
-                const [saveData] = await mysql2.pool.query(`insert into oldbillmaster(SystemID, CompanyID, CustomerID, BillNo, SerialNo, BillDate, DeliveryDate, Qty, SubTotal, GSTPercentage, GST, AdditionalDiscountPercentage, AdditionalDiscount, GrandTotal, CreatedBy, CreatedOn) values(${datum.SystemID}, ${datum.CompanyID}, ${datum.CustomerID}, '${datum.BillNo}', '${datum.SerialNo}', '${datum.BillDate}' ,'${datum.DeliveryDate}', ${datum.Qty}, ${datum.SubTotal}, ${datum.GSTPercentage}, ${datum.GST}, ${datum.AdditionalDiscountPercentage}, ${datum.AdditionalDiscount}, ${datum.GrandTotal}, ${LoggedOnUser}, now())`)
+                const [saveData] = await mysql2.pool.query(`insert into oldbillmaster(SystemID, CompanyID, CustomerID, BillNo, SerialNo, BillDate, DeliveryDate, Qty, SubTotal, GSTPercentage, GST, AdditionalDiscountPercentage, AdditionalDiscount, GrandTotal, CreatedBy, CreatedOn) values(${datum.SystemID}, ${datum.CompanyID}, ${datum.CustomerID}, '${datum.BillNo}', '${datum.SerialNo}', ${datum.BillDate} ,${datum.DeliveryDate}, ${datum.Qty}, ${datum.SubTotal}, ${datum.GSTPercentage}, ${datum.GST}, ${datum.AdditionalDiscountPercentage}, ${datum.AdditionalDiscount}, ${datum.GrandTotal}, ${LoggedOnUser}, now())`)
             }
 
             console.log(connected("Customer Bill Added SuccessFUlly !!!"));
@@ -831,7 +834,7 @@ module.exports = {
                 let newData = {
                     "BillNo": fd[0] || '',
                     "ProductDescription": fd[1] || '',
-                    "UnitPrice": fd[2] || '',
+                    "UnitPrice": fd[2] || 0,
                     "Qty": fd[3] || 0,
                     "DiscountPercentage": fd[4] || 0,
                     "Discount": fd[5] || 0,
@@ -884,6 +887,7 @@ module.exports = {
 
 
             }
+
 
             // save data
             for (let datum of data) {
