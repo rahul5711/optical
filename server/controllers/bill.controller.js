@@ -17,13 +17,13 @@ function discountAmount(item) {
     let discountAmount = 0
     discountAmount = (item.UnitPrice * item.Quantity) * item.DiscountPercentage / 100;
     return discountAmount
-  }
+}
 
-  function gstAmount(SubTotal, GSTPercentage) {
+function gstAmount(SubTotal, GSTPercentage) {
     let gstAmount = 0
     gstAmount = (SubTotal * GSTPercentage) / 100
     return gstAmount
-  }
+}
 
 module.exports = {
     getDoctor: async (req, res, next) => {
@@ -208,7 +208,7 @@ module.exports = {
 
 
             // save service
-            console.log(service,'serviceserviceserviceserviceserviceserviceserviceserviceserviceservice');
+            console.log(service, 'serviceserviceserviceserviceserviceserviceserviceserviceserviceservice');
             if (service.length) {
                 await Promise.all(
                     service.map(async (ele) => {
@@ -445,7 +445,7 @@ module.exports = {
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
                     } else if (preorder === 1 && item.Barcode !== "0") {
-                         [result] = await mysql2.pool.query(
+                        [result] = await mysql2.pool.query(
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
                     } else if (preorder === 1 && item.Barcode === "0") {
@@ -475,7 +475,7 @@ module.exports = {
                         // generate unique barcode
                         item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item)
                         const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser);
-                       [result] = await mysql2.pool.query(`insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.prod_UnitPrice},${item.PurchasePrice},${item.prod_Quantity},${item.prod_SubTotal}, ${item.prod_DiscountPercentage},${item.prod_DiscountAmount},${item.prod_GSTPercentage},${item.prod_GSTAmount},'${item.GSTType}',${item.prod_TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
+                        [result] = await mysql2.pool.query(`insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.prod_UnitPrice},${item.PurchasePrice},${item.prod_Quantity},${item.prod_SubTotal}, ${item.prod_DiscountPercentage},${item.prod_DiscountAmount},${item.prod_GSTPercentage},${item.prod_GSTAmount},'${item.GSTType}',${item.prod_TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
                     } else if (manual === 1 && preorder === 0) {
                         item.BaseBarCode = await generateBarcode(CompanyID, 'MB')
@@ -1006,6 +1006,49 @@ module.exports = {
             next(err)
         }
     },
+    billHistoryByCustomerOld: async (req, res, next) => {
+        try {
+            const response = { data: { customerData: null, bill: null }, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const { CustomerID } = req.body;
+
+            if (!CustomerID || CustomerID === undefined || CustomerID === null) return res.send({ message: "Invalid Query Data" })
+
+            const [customerData] = await mysql2.pool.query(`select customer.ID, customer.Name, customer.MobileNo1, customer.SystemID, users1.Name as CreatedPerson, shop.Name as ShopName, shop.AreaName as AreaName from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy left join shop on shop.ID = customer.ShopID where customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.ID = ${CustomerID}`)
+
+            if (!customerData.length) {
+                return res.send({ message: "Invalid CustomerID Data" })
+            }
+
+            const [billMasterData] = await mysql2.pool.query(`select * from oldbillmaster where CompanyID = ${CompanyID} and CustomerID = ${CustomerID}`)
+
+            if (!billMasterData.length) {
+                return res.send({ message: "Bill Not Found" })
+            }
+
+            for (let item of billMasterData) {
+
+                const [billDetails] = await mysql2.pool.query(`select * from oldbilldetail where CompanyID = ${CompanyID} and BillMasterID =${item.ID}`)
+
+                if (billDetails.length !== 0) {
+                    item.billDetail = billDetails
+                }
+            }
+
+            response.data.customerData = customerData[0]
+            response.data.bill = billMasterData
+            response.message = "data fetch successfully"
+            return res.send(response);
+
+
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
     deleteBill: async (req, res, next) => {
         try {
             const response = { data: null, sumData: null, success: true, message: "" }
@@ -1311,13 +1354,12 @@ module.exports = {
     billPrint: async (req, res, next) => {
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const printdata = req.body; 
+            const printdata = req.body;
             // console.log(printdata.mode);
             const Company = req.body.Company;
             const CompanySetting = req.body.CompanySetting;
             const CompanyWelComeNote = JSON.parse(req.body.CompanySetting.WelComeNote);
             const Shop = req.body.Shop;
-            const ShopWelComeNote = JSON.parse(req.body.Shop.WelcomeNote);
             const User = req.body.User;
             const Customer = req.body.customer;
             const BillMaster = req.body.billMaster;
@@ -1351,12 +1393,11 @@ module.exports = {
             printdata.TableBody = `${Number(printdata.billformate.TableBody)}px`;
             printdata.NoteFont = `${Number(printdata.billformate.NoteFont)}px`;
             printdata.NoteLineSpace = `${Number(printdata.billformate.NoteLineSpace)}px`;
-            
+
             printdata.company = Company
             printdata.companysetting = CompanySetting
             printdata.companyWelComeNote = CompanyWelComeNote
             printdata.shopdetails = Shop
-            printdata.shopWelComeNote = ShopWelComeNote
             printdata.user = User
             printdata.customer = Customer
             printdata.billMaster = BillMaster
@@ -1366,14 +1407,14 @@ module.exports = {
             printdata.unpaidlist = UnpaidList
             printdata.employee = Employee[0].Name
             printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
-            // printdata.welcomeNoteCompany = printdata.companyWelComeNote.filter(ele => ele.NoteType === "retail");
-            // printdata.welComeNoteShop = printdata.shopWelComeNote.filter(ele => ele.NoteType === "retail");
-            printdata.recivePayment = printdata.paidlist.reduce((total, element) =>total + element.Amount, 0);
+            printdata.welcomeNoteCompany = printdata.companyWelComeNote.filter(ele => ele.NoteType === "retail");
+            printdata.recivePayment = printdata.paidlist.reduce((total, element) => total + element.Amount, 0);
             printdata.CurrentInvoiceBalance = printdata.unpaidlist.length > 0 ? printdata.unpaidlist[0].DueAmount : 0;
             printdata.DueAmount = printdata.unpaidlist.reduce((total, item) => total + item.DueAmount, 0);
 
             printdata.billMaster.PaymentStatus = printdata.mode === "Invoice" ? "Unpaid" : "Paid";
             printdata.bill = printdata.mode === "Invoice" ? "Cash Memo" : "Tax Invoice";
+
             printdata.invoiceNo = printdata.shopdetails.BillName.split("/")[0]
             printdata.TotalValue = printdata.shopdetails.BillName.split("/")[1]
 
@@ -1415,6 +1456,9 @@ module.exports = {
             });
             
        
+
+
+
             let fileName = "";
             const file = "invoice.ejs" + ".pdf";
             const formatName = "invoice.ejs";
