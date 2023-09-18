@@ -23,13 +23,39 @@
 
               <!-- doctor list start -->
               <div class="body mt-5 mt-md-2  p-2">
-                <div class="row" *ngIf="gridview">
-                  <div class="col-sm-12" style="overflow: auto; height: 530px;">
-                    <div class="table-responsive">
-                      <table class="table table-striped table-hover table-sm table-bordered"
-                        style="border: 2px solid #fff !important;">
+                <div class="row mb-3"  *ngFor="let data of BillMatser let i = index;">
+                  <div class="col-sm-12" style="overflow: auto; height: 150px; ">
+                    <div class="table-responsive" style="box-shadow: inset 0px 0px 10px #00000078;">
+                      <table class=" table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important; margin: 0;width: 100%;">
                         <thead>
-                          <tr>
+                            <tr class="text-center" style="background: #c7c7c7a3;">
+                                <th >SNo.</th>
+                                <th >Bill No.</th>
+                                <th >ProductDescription</th>
+                                <th >UnitPrice</th>
+                                <th >Qty</th>
+                                <th >Dis%</th>
+                                <th >Dis Amt</th>
+                                <th >SubTotal</th>
+                                <th >GST%</th>
+                                <th >GSTAmt</th>
+                                <th >Total</th>
+                              </tr>
+                            <tr class="text-center" *ngFor="let datas of data.billDetail let i = index;">
+                                <td >{{i+1}}</td>
+                                <td >{{datas.BillNo}}</td>
+                                <td >{{datas.ProductDescription }}</td>
+                                <td >{{datas.UnitPrice}}</td>
+                                <td >{{datas.Qty}}</td>
+                                <td >{{datas.DiscountPercentage}} </td>
+                                <td >{{datas.Discount}} </td>
+                                <td >{{datas.SubTotal}} </td>
+                                <td >{{datas.GSTPercentage}} </td>
+                                <td >{{datas.GST}} </td>
+                                <td >{{datas.Amount}} </td>
+                            </tr>
+                          <tr class="text-center" style="border-top: 2px solid red;color: red;">
                             <th >Bill No.</th>
                             <th >S.No</th>
                             <th >BillDate</th>
@@ -42,23 +68,22 @@
                             <th >Additional DisAmt</th>
                             <th >GrandTotal</th>
                           </tr>
+                          <tr class="text-center"  style="white-space: nowrap; border-bottom: 1px solid red;">
+                          <td >{{data.BillNo}}</td>
+                          <td >{{data.SerialNo }}</td>
+                          <td >{{data.BillDate}}</td>
+                          <td >{{data.DeliveryDate}}</td>
+                          <td >{{data.Qty}}</td>
+                          <td >{{data.SubTotal}} </td>
+                          <td >{{data.GSTPercentage}} </td>
+                          <td >{{data.GST}} </td>
+                          <td >{{data.AdditionalDiscountPercentage}} </td>
+                          <td >{{data.AdditionalDiscount}} </td>
+                          <td >{{data.GrandTotal}} </td>
+                        </tr>
+                       
                         </thead>
-                        <tbody>
-                            <tr class="text-center" *ngFor="let data of BillMatser let i = index;"
-                            style="white-space: nowrap;">
-                            <td >{{data.BillNo}}</td>
-                            <td >{{data.SerialNo }}</td>
-                            <td >{{data.BillDate}}</td>
-                            <td >{{data.DeliveryDate}}</td>
-                            <td >{{data.Qty}}</td>
-                            <td >{{data.SubTotal}} </td>
-                            <td >{{data.GSTPercentage}} </td>
-                            <td >{{data.GST}} </td>
-                            <td >{{data.AdditionalDiscountPercentage}} </td>
-                            <td >{{data.AdditionalDiscount}} </td>
-                            <td >{{data.GrandTotal}} </td>
-                          </tr>
-                        </tbody>
+                     
                       </table>
                     </div>
                   </div>

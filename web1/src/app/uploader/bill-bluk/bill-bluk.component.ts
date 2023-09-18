@@ -202,7 +202,7 @@ export class BillBlukComponent implements OnInit {
             Swal.fire({
               position: 'center',
               icon: 'success',
-              title: 'Your Customer Has Been Imported',
+              title: 'Your bill master has been imported',
               showConfirmButton: false,
               timer: 2000
             })
