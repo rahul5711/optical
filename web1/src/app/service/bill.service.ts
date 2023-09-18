@@ -85,6 +85,11 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  billHistoryByCustomerOld(CustomerID: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/billHistoryByCustomerOld', {CustomerID: CustomerID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   deleteData(ID:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/deleteBill', {ID: ID}, httpOptions)
     .pipe(catchError(this.handleError));

@@ -8,11 +8,13 @@ import { BillListComponent } from './bill-list/bill-list.component';
 import { CommissionComponent } from './commission/commission.component';
 import { CommissionListComponent } from './commission-list/commission-list.component';
 import { CommissionDetailComponent } from './commission-detail/commission-detail.component';
+import { OldBillListComponent } from './old-bill-list/old-bill-list.component';
 
 const routes: Routes = [ { path: '',
 children: [
   { path: 'billing/:customerid/:billid', component: BillingComponent },
   { path: 'billinglist/:customerid', component: BillListComponent },
+  { path: 'oldBilllist/:customerOldid', component: OldBillListComponent },
   { path: 'customerList', component: CustomerListComponent },  
   { path: 'doctor/:id', component: DoctorComponent },  
   { path: 'doctorList', component: DoctorListComponent },  

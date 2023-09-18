@@ -95,7 +95,7 @@
                             <mat-icon *ngIf="editDoctorList" class="edit_icon ms-1" [routerLink]="['/sale/doctor',data.ID]">edit</mat-icon>
                             <mat-icon *ngIf="deleteDoctorList" class="delete_icon ms-1" (click)="deleteItem(i)">delete_forever</mat-icon>
                           </td>
-                          <td class="text-left">{{ dataList.length - i }}</td>
+                          <td class="text-left">{{dataList.length - i }}</td>
                           <td class="text-left">{{data.Name}}</td>
                           <td class="text-left">{{data.MobileNo1 }}</td>
                           <td class="text-left">{{(data.MobileNo2 !== 'null')? data.MobileNo2: ''}}</td>

@@ -28,13 +28,15 @@ import { ModalModule } from 'ngb-modal';
 import { CustomerBlukComponent } from './customer-bluk/customer-bluk.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
+import { BillBlukComponent } from './bill-bluk/bill-bluk.component';
 
 
 
 @NgModule({
   declarations: [
     PurchaseBlukComponent,
-    CustomerBlukComponent
+    CustomerBlukComponent,
+    BillBlukComponent
   ],
   imports: [
     

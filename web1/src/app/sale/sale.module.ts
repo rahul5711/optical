@@ -34,6 +34,7 @@ import { CommissionDetailComponent } from './commission-detail/commission-detail
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { NameFilterS} from './../filterDropDown/nameFilter';
 import { ProductItemFilterBill} from './../filterDropDown/nameFilter';
+import { OldBillListComponent } from './old-bill-list/old-bill-list.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { ProductItemFilterBill} from './../filterDropDown/nameFilter';
     CommissionListComponent,
     CommissionDetailComponent,
     NameFilterS,
-    ProductItemFilterBill
+    ProductItemFilterBill,
+    OldBillListComponent
   ],
   imports: [
     CommonModule,

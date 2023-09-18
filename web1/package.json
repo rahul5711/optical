@@ -54,6 +54,7 @@
     "tsparticles": "^2.2.4",
     "tsparticles-engine": "^2.2.4",
     "xlsx": "^0.18.5",
+    "xlsx-style": "^0.8.13",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {

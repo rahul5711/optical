@@ -151,6 +151,11 @@
                                         <div class="col-xl-5 col-lg-8 col-md-6 col-12 mb-0 mb-4 mb-md-0 ms-auto">
                                             <button *ngIf="id != 0" class="me-2" mat-raised-button color="primary"
                                                 style="padding: 0px 10px;"
+                                                [routerLink]="['/sale/oldBilllist/',data.ID]">Old Bill
+                                            </button>
+
+                                            <button *ngIf="id != 0" class="me-2" mat-raised-button color="primary"
+                                                style="padding: 0px 10px;"
                                                 [routerLink]="['/sale/billinglist/',data.ID]">Bill History</button>
 
                                             <button *ngIf="id != 0" (click)="updateCustomer()" [disabled]="!f.valid"
