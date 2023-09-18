@@ -746,20 +746,24 @@ module.exports = {
             processedFileData.reverse()
             processedFileData.pop()
             processedFileData.reverse()
-
+            let count = 0
             const body = processedFileData
             let data = []
             if (!body.length) {
                 console.log('syncing done....')
                 return
             } else {
-                 data = body
+                data = body
 
                 if (!(data && data.length)) {
                     return next(createError.BadRequest())
                 }
 
                 for (let datum of data) {
+                    count += 1
+
+                    console.log("checking", count);
+
                     if (!datum.SystemID || datum.SystemID === 0) {
                         return res.send({ message: "Invalid Query SystemID" })
                     }
@@ -773,8 +777,8 @@ module.exports = {
 
                     const [fetchCustomer] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
 
-                    if (!fetchCustomer.length) {
-                        return res.send({ message: "Invalid SystemID, Customer Not Found" })
+                    if (fetchCustomer.length === 0) {
+                        return res.send({ message: `Invalid SystemID, Customer Not Found From ${datum.SystemID}` })
                     }
 
                     datum.CustomerID = fetchCustomer[0].ID
@@ -790,10 +794,13 @@ module.exports = {
             }
 
 
-
+            count = 0
             // save data
             for (let datum of data) {
-                const [saveData] = await mysql2.pool.query(`insert into oldbillmaster(SystemID, CompanyID, CustomerID, BillNo, SerialNo, BillDate, DeliveryDate, Qty, SubTotal, GSTPercentage, GST, AdditionalDiscountPercentage, AdditionalDiscount, GrandTotal, CreatedBy, CreatedOn) values(${datum.SystemID}, ${datum.CompanyID}, ${datum.CustomerID}, '${datum.BillNo}', '${datum.SerialNo}', ${datum.BillDate} ,${datum.DeliveryDate}, ${datum.Qty}, ${datum.SubTotal}, ${datum.GSTPercentage}, ${datum.GST}, ${datum.AdditionalDiscountPercentage}, ${datum.AdditionalDiscount}, ${datum.GrandTotal}, ${LoggedOnUser}, now())`)
+                count += 1
+
+                console.log("data saving", count);
+                const [saveData] = await mysql2.pool.query(`insert into oldbillmaster(SystemID, CompanyID, CustomerID, BillNo, SerialNo, BillDate, DeliveryDate, Qty, SubTotal, GSTPercentage, GST, AdditionalDiscountPercentage, AdditionalDiscount, GrandTotal, CreatedBy, CreatedOn) values('${datum.SystemID}', ${datum.CompanyID}, ${datum.CustomerID}, '${datum.BillNo}', '${datum.SerialNo}', ${datum.BillDate} ,${datum.DeliveryDate}, ${datum.Qty}, ${datum.SubTotal}, ${datum.GSTPercentage}, ${datum.GST}, ${datum.AdditionalDiscountPercentage}, ${datum.AdditionalDiscount}, ${datum.GrandTotal}, ${LoggedOnUser}, now())`)
             }
 
             console.log(connected("Customer Bill Added SuccessFUlly !!!"));
@@ -845,7 +852,7 @@ module.exports = {
 
                 }
                 newData.CompanyID = CompanyID,
-                newData.CustomerID = 0
+                    newData.CustomerID = 0
                 newData.BillMasterID = 0
                 processedFileData.push(newData)
             }
@@ -861,7 +868,7 @@ module.exports = {
                 console.log('syncing done....')
                 return
             } else {
-                 data = body
+                data = body
 
                 if (!(data && data.length)) {
                     return next(createError.BadRequest())

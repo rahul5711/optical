@@ -247,6 +247,32 @@ export class BillBlukComponent implements OnInit {
     });
 
   }
+  updateFileRecordDetail(ID: any) {
+    this.sp.show();
+    const dtm = {
+      "ID": ID,
+      "key": "Process",
+      "value": 1,
+      "Type": "BillDetail"
+    }
+
+    const subs: Subscription = this.uploader.updateFileRecord(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+
+          // this.router.navigate(['/sale/customerList'])
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+
+  }
 
   deleteItem(data: any, i: any) {
     if (data.Process === 1) {
@@ -413,7 +439,7 @@ export class BillBlukComponent implements OnInit {
             })
             this.sp.show();
             if (res.success) {
-              this.updateFileRecord(ID)
+              this.updateFileRecordDetail(ID)
             } else {
               this.as.errorToast(res.message)
             }
