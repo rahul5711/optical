@@ -49,14 +49,15 @@ export class PaymentComponent implements OnInit {
   ) { }
 
   data: any = {
-    ID: null,  CompanyID: null, BillMasterID:null, ShopID: null, PaymentType: null,CustomerID: null, PayableAmount: 0, CustomerCredit: 0, PaidAmount: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '',  CreditType: 'Debit', PaymentDate: null,  Comments: 0, Status: 1, pendingPaymentList: {}, ApplyReturn:false
+    ID: null,  CompanyID: null, BillMasterID:null, ShopID: null, PaymentType: null,CustomerID: null, PayableAmount: 0, CustomerCredit: 0, PaidAmount: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '',  CreditType: 'Debit', PaymentDate: null,  Comments: 0, Status: 1, pendingPaymentList: {}, ApplyReturn:false,CreditNumber:''
   };
 
   searchValue:any
   PaymentModesList:any = []
+  creditList:any = []
   payeeList:any = []
   invoiceList:any = []
-
+  vendorCredit:any
   ngOnInit(): void {
     this.getPaymentModesList() 
   }
@@ -74,6 +75,27 @@ export class PaymentComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+  getSupplierCreditNote(SupplierID:any) {
+    this.sp.show()
+    const subs: Subscription = this.pay.getSupplierCreditNote(SupplierID).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.creditList = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+      this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  vendorCreditValue(){
+   this.data.CustomerCredit = this.vendorCredit.Amount
+   this.data.CreditNumber = this.vendorCredit.CreditNumber
+  }
+
 
   // getPayeeList(){
   //   this.data.CreditType = 'Debit'
@@ -250,7 +272,14 @@ export class PaymentComponent implements OnInit {
         next: (res: any) => {
             if(res.success ){
               this.getInvoicePayment(res.data.PaymentType, res.data.PayeeName)
-              this.data.PaidAmount = 0; this.data.PaymentMode = ''; this.data.ApplyReturn = false; 
+              this.data.PaidAmount = 0; this.data.PaymentMode = ''; 
+              if(res.data.PaymentType === 'Supplier'){
+                  if(this.data.ApplyReturn === true){
+                    this.getSupplierCreditNote(res.data.PayeeName)
+                    this.getSupplierCreditNoteByCreditNumber()
+                  }
+              }
+  
             }else{
               this.as.errorToast(res.message)
               Swal.fire({
@@ -270,6 +299,22 @@ export class PaymentComponent implements OnInit {
     }
   }
 
+  getSupplierCreditNoteByCreditNumber(){
+    this.sp.show()
+    const subs: Subscription = this.pay.getSupplierCreditNoteByCreditNumber(this.vendorCredit.SupplierID,this.vendorCredit.CreditNumber).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.data.CustomerCredit = res.totalCreditAmount
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
     if (this.companySetting.DataFormat === '1') {
       event = event.toUpperCase()
@@ -280,26 +325,34 @@ export class PaymentComponent implements OnInit {
   }
 
   ApplyReturn(){
-    switch (this.data.PaymentType) {
-      case 'Supplier':
-        this.data.PaymentMode = 'Vendor Credit';
-        break;
-      case 'Employee':
-        this.data.PaymentMode = 'Employee Credit';
-        break;
-      case 'Fitter':
-        this.data.PaymentMode = 'Fitter Credit';
-        break;
-      case 'Customer':
-        this.data.PaymentMode = 'Customer Credit';
-        break;
-      case 'Doctor':
-        this.data.PaymentMode = 'Doctor Credit';
-        break;
-      default:
-        this.as.errorToast('Invalid Payment Type');
-        return;
+    if(this.data.ApplyReturn === false){
+      switch (this.data.PaymentType) {
+        case 'Supplier':
+          this.data.PaymentMode = 'Vendor Credit';
+          this.getSupplierCreditNote(this.data.CustomerID) 
+          break;
+        case 'Employee':
+          this.data.PaymentMode = 'Employee Credit';
+          break;
+        case 'Fitter':
+          this.data.PaymentMode = 'Fitter Credit';
+          break;
+        case 'Customer':
+          this.data.PaymentMode = 'Customer Credit';
+          break;
+        case 'Doctor':
+          this.data.PaymentMode = 'Doctor Credit';
+          break;
+        default:
+          this.as.errorToast('Invalid Payment Type');
+          return;
+      }
+    }else{
+      this.creditList = []
+      this.data.PaymentMode = ''
+      this.data.CustomerCredit = 0
     }
+
   }
 
   dateFormat(date:any){

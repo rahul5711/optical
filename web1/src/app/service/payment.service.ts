@@ -82,6 +82,16 @@ export class PaymentService {
     .pipe(catchError(this.handleError));
   }
 
+  getSupplierCreditNote(SupplierID: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getSupplierCreditNote', {SupplierID:SupplierID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getSupplierCreditNoteByCreditNumber(SupplierID: any,CreditNumber:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getSupplierCreditNoteByCreditNumber', {SupplierID:SupplierID,CreditNumber:CreditNumber}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);
