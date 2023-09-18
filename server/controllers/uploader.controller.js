@@ -521,16 +521,16 @@ module.exports = {
                     "VertexDistance": fd[26] || '',
                     "RefractiveIndex": fd[27] || '',
                     "FittingHeight": fd[28] || '',
-                    "ConstantUse": fd[29] || '',
-                    "NearWork": fd[30] || '',
-                    "DistanceWork": fd[31] || '',
+                    "ConstantUse": fd[29] || 0,
+                    "NearWork": fd[30] || 0,
+                    "DistanceWork": fd[31] || 0,
                     "UploadBy": 'Upload',
                     "PhotoURL": '',
                     "FileURL": '',
                     "Family": 'Self',
                     "RefferedByDoc": 'Self',
                     "Reminder": '6',
-                    "ExpiryDate": '"0000-00-00"',
+                    "ExpiryDate": "0000-00-00",
                 }
                 newData.VisitNo = 1,
                     newData.CompanyID = CompanyID,
@@ -558,7 +558,7 @@ module.exports = {
                     if (cID.length) {
                         datum.CustomerID = cID[0].ID
 
-                        const [saveSpec] = await mysql2.pool.query(`insert into spectacle_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_Prism,L_Prism,Lens,Shade,Frame,VertexDistance,RefractiveIndex,FittingHeight,ConstantUse,NearWork,DistanceWork,UploadBy,PhotoURL,FileURL,Family,RefferedByDoc,Reminder,ExpiryDate,Status,CreatedBy,CreatedOn) values(${datum.VisitNo}, ${CompanyID}, ${datum.CustomerID},'${datum.REDPSPH}','${datum.REDPCYL}','${datum.REDPAxis}','${datum.REDPVA}','${datum.LEDPSPH}','${datum.LEDPCYL}','${datum.LEDPAxis}','${datum.LEDPVA}','${datum.RENPSPH}','${datum.RENPCYL}','${datum.RENPAxis}','${datum.RENPVA}','${datum.LENPSPH}','${datum.LENPCYL}','${datum.LENPAxis}','${datum.LENPVA}','${datum.REPD}','${datum.LEPD}','${datum.R_Addition}','${datum.L_Addition}','${datum.R_Prism}','${datum.L_Prism}','${datum.Lens}','${datum.Shade}','${datum.Frame}','${datum.VertexDistance}','${datum.RefractiveIndex}','${datum.FittingHeight}','${datum.ConstantUse}','${datum.NearWork}','${datum.DistanceWork}','${datum.UploadBy}','${datum.PhotoURL}','${datum.FileURL}','${datum.Family}','${datum.RefferedByDoc}','${datum.Reminder}','${datum.ExpiryDate}',1,${LoggedOnUser},now())`)
+                        const [saveSpec] = await mysql2.pool.query(`insert into spectacle_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_Prism,L_Prism,Lens,Shade,Frame,VertexDistance,RefractiveIndex,FittingHeight,ConstantUse,NearWork,DistanceWork,UploadBy,PhotoURL,FileURL,Family,RefferedByDoc,Reminder,ExpiryDate,Status,CreatedBy,CreatedOn) values(${datum.VisitNo}, ${CompanyID}, ${datum.CustomerID},'${datum.REDPSPH}','${datum.REDPCYL}','${datum.REDPAxis}','${datum.REDPVA}','${datum.LEDPSPH}','${datum.LEDPCYL}','${datum.LEDPAxis}','${datum.LEDPVA}','${datum.RENPSPH}','${datum.RENPCYL}','${datum.RENPAxis}','${datum.RENPVA}','${datum.LENPSPH}','${datum.LENPCYL}','${datum.LENPAxis}','${datum.LENPVA}','${datum.REPD}','${datum.LEPD}','${datum.R_Addition}','${datum.L_Addition}','${datum.R_Prism}','${datum.L_Prism}','${datum.Lens}','${datum.Shade}','${datum.Frame}','${datum.VertexDistance}','${datum.RefractiveIndex}','${datum.FittingHeight}',${datum.ConstantUse},${datum.NearWork},${datum.DistanceWork},'${datum.UploadBy}','${datum.PhotoURL}','${datum.FileURL}','${datum.Family}','${datum.RefferedByDoc}','${datum.Reminder}','${datum.ExpiryDate}',1,${LoggedOnUser},now())`)
 
                     }
                 }
