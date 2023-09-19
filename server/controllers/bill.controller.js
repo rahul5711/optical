@@ -1354,12 +1354,13 @@ module.exports = {
     billPrint: async (req, res, next) => {
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const printdata = req.body;
+            const printdata = req.body; 
             // console.log(printdata.mode);
             const Company = req.body.Company;
             const CompanySetting = req.body.CompanySetting;
             const CompanyWelComeNote = JSON.parse(req.body.CompanySetting.WelComeNote);
             const Shop = req.body.Shop;
+            const ShopWelComeNote = JSON.parse(req.body.Shop.WelcomeNote);
             const User = req.body.User;
             const Customer = req.body.customer;
             const BillMaster = req.body.billMaster;
@@ -1398,6 +1399,7 @@ module.exports = {
             printdata.companysetting = CompanySetting
             printdata.companyWelComeNote = CompanyWelComeNote
             printdata.shopdetails = Shop
+            printdata.shopWelComeNote = ShopWelComeNote
             printdata.user = User
             printdata.customer = Customer
             printdata.billMaster = BillMaster
@@ -1407,7 +1409,7 @@ module.exports = {
             printdata.unpaidlist = UnpaidList
             printdata.employee = Employee[0].Name
             printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
-            printdata.welcomeNoteCompany = printdata.companyWelComeNote.filter(ele => ele.NoteType === "retail");
+            // printdata.welcomeNoteCompany = printdata.companyWelComeNote.filter(ele => ele.NoteType === "retail");
             printdata.recivePayment = printdata.paidlist.reduce((total, element) => total + element.Amount, 0);
             printdata.CurrentInvoiceBalance = printdata.unpaidlist.length > 0 ? printdata.unpaidlist[0].DueAmount : 0;
             printdata.DueAmount = printdata.unpaidlist.reduce((total, item) => total + item.DueAmount, 0);
@@ -1418,6 +1420,7 @@ module.exports = {
             printdata.invoiceNo = printdata.shopdetails.BillName.split("/")[0]
             printdata.TotalValue = printdata.shopdetails.BillName.split("/")[1]
 
+
             printdata.welComeNoteShop = printdata.shopWelComeNote.filter((ele) => {
                 if (printdata.shopdetails.WholesaleBill == "true" && ele.NoteType === "wholesale") {
                     return true;
@@ -1426,7 +1429,7 @@ module.exports = {
                 }
                 return false;
             });
-
+            
             printdata.billItemList = printdata.billItemList.map((element) => {
                 if (element.Status === 1) {
                     printdata.GSTTypes = element.GSTType;
@@ -1455,9 +1458,6 @@ module.exports = {
                 return element;
             });
             
-       
-
-
 
             let fileName = "";
             const file = "invoice.ejs" + ".pdf";
@@ -1469,18 +1469,12 @@ module.exports = {
                     res.send(err);
                 } else {
                     let options = {
-                        "height": "15cm",
-                        "width": "21cm",
-                        format : "A5",
-                        orientation : "landscape",
-                        // "height": "8.3in",
-                        // "width": "5.8in",
-                        "header": {
-                            "height": "0mm"
-                        },
-                        "footer": {
-                            "height": "0mm",
-                        },
+                        height: "15cm",
+                        width: "21cm",
+                        format : "A4",
+                        orientation : "portrait",
+                        // orientation : "portrait",
+                      
                     };
                     pdf.create(data, options).toFile(fileName, function (err, data) {
                         if (err) {
