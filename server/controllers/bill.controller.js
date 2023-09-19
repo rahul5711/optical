@@ -1030,7 +1030,7 @@ module.exports = {
 
             for (let item of billMasterData) {
 
-                const [billDetails] = await mysql2.pool.query(`select * from oldbilldetail where CompanyID = ${CompanyID} and BillMasterID =${item.ID}`)
+                const [billDetails] = await mysql2.pool.query(`select oldbilldetail.*, oldbillmaster.BillNo from oldbilldetail left join oldbillmaster on oldbillmaster.ID = oldbilldetail.BillMasterID where oldbilldetail.CompanyID = ${CompanyID} and oldbilldetail.BillMasterID =${item.ID}`)
 
                 if (billDetails.length !== 0) {
                     item.billDetail = billDetails

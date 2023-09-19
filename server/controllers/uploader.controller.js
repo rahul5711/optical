@@ -221,9 +221,9 @@ module.exports = {
                     "GSTType": fd[6],
                     "RetailPrice": fd[7],
                     "WholeSalePrice": fd[8],
-                    "WholeSale": fd[9],
-                    "BrandType": fd[10],
-                    "BarcodeExist": fd[11],
+                    "WholeSale": fd[9] ? fd[9] : 0,
+                    "BrandType": fd[10] ? fd[10] : 0,
+                    "BarcodeExist": fd[11] ? fd[11] : 0,
                     "BaseBarCode": fd[12],
                     "ProductExpDate": fd[13]
                 }
@@ -448,7 +448,10 @@ module.exports = {
                     console.log(Id);
                     datum.Idd = Id
 
-                    const [customer] = await mysql2.pool.query(`insert into customer(SystemID,ShopID,Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Category,Status,CreatedBy,CreatedOn,VisitDate) values('${datum.SystemID}',${shopid},'${datum.Idd}', '${datum.Name}','${datum.Sno}',${datum.CompanyID},'${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Address}','${datum.GSTNo}','${datum.Email}','${datum.PhotoURL}',${datum.DOB},'${datum.RefferedByDoc}','${datum.Age}',${datum.Anniversary},'${datum.ReferenceType}','${datum.Gender}','${datum.Other}','${datum.Remarks}','${datum.Category}',1,'${LoggedOnUser}',now(),${datum.VisitDate})`);
+                    let remark = datum.Remarks.toString().replace(/[\r\n]/gm, '');
+                    let addr = datum.Address.toString().replace(/[\r\n]/gm, '');
+
+                    const [customer] = await mysql2.pool.query(`insert into customer(SystemID,ShopID,Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Category,Status,CreatedBy,CreatedOn,VisitDate) values('${datum.SystemID}',${shopid},'${datum.Idd}', '${datum.Name}','${datum.Sno}',${datum.CompanyID},'${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${addr}','${datum.GSTNo}','${datum.Email}','${datum.PhotoURL}',${datum.DOB},'${datum.RefferedByDoc}','${datum.Age}',${datum.Anniversary},'${datum.ReferenceType}','${datum.Gender}','${datum.Other}','${remark}','${datum.Category}',1,'${LoggedOnUser}',now(),${datum.VisitDate})`);
 
                     console.log(connected("Customer Added SuccessFUlly !!!"));
                 }
@@ -639,10 +642,10 @@ module.exports = {
                     "Material": fd[32] || '',
                     "Modality": fd[33] || '',
                     "Other": fd[34] || '',
-                    "ConstantUse": fd[35] || '',
-                    "NearWork": fd[36] || '',
-                    "DistanceWork": fd[37] || '',
-                    "Multifocal": fd[38] || '',
+                    "ConstantUse": fd[35] || 0,
+                    "NearWork": fd[36] || 0,
+                    "DistanceWork": fd[37] || 0,
+                    "Multifocal": fd[38] || 0,
                     "UploadBy": 'Upload',
                     "PhotoURL": '',
                     "FileURL": '',
@@ -679,7 +682,7 @@ module.exports = {
 
                     if (cID.length) {
                         datum.CustomerID = cID[0].ID
-                        const [saveContact] = await mysql2.pool.query(`insert into contact_lens_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_KR,L_KR,R_HVID,L_HVID,R_CS,L_CS,R_BC,L_BC,R_Diameter,L_Diameter,BR,Material,Modality,Other,ConstantUse,NearWork,DistanceWork,Multifocal,PhotoURL,FileURL,Family,RefferedByDoc,Status,CreatedBy,CreatedOn) values (${datum.VisitNo}, ${CompanyID}, ${datum.CustomerID},'${datum.REDPSPH}','${datum.REDPCYL}','${datum.REDPAxis}','${datum.REDPVA}','${datum.LEDPSPH}','${datum.LEDPCYL}','${datum.LEDPAxis}','${datum.LEDPVA}','${datum.RENPSPH}','${datum.RENPCYL}','${datum.RENPAxis}','${datum.RENPVA}','${datum.LENPSPH}','${datum.LENPCYL}','${datum.LENPAxis}','${datum.LENPVA}','${datum.REPD}','${datum.LEPD}','${datum.R_Addition}','${datum.L_Addition}','${datum.R_KR}','${datum.L_KR}','${datum.R_HVID}','${datum.L_HVID}','${datum.R_CS}','${datum.L_CS}','${datum.R_BC}','${datum.L_BC}','${datum.R_Diameter}','${datum.L_Diameter}','${datum.BR}','${datum.Material}','${datum.Modality}','${datum.Other}','${datum.ConstantUse}','${datum.NearWork}','${datum.DistanceWork}','${datum.Multifocal}','${datum.PhotoURL}','${datum.FileURL}','${datum.Family}','${datum.RefferedByDoc}',1,${LoggedOnUser},now())`)
+                        const [saveContact] = await mysql2.pool.query(`insert into contact_lens_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_KR,L_KR,R_HVID,L_HVID,R_CS,L_CS,R_BC,L_BC,R_Diameter,L_Diameter,BR,Material,Modality,Other,ConstantUse,NearWork,DistanceWork,Multifocal,PhotoURL,FileURL,Family,RefferedByDoc,Status,CreatedBy,CreatedOn) values (${datum.VisitNo}, ${CompanyID}, ${datum.CustomerID},'${datum.REDPSPH}','${datum.REDPCYL}','${datum.REDPAxis}','${datum.REDPVA}','${datum.LEDPSPH}','${datum.LEDPCYL}','${datum.LEDPAxis}','${datum.LEDPVA}','${datum.RENPSPH}','${datum.RENPCYL}','${datum.RENPAxis}','${datum.RENPVA}','${datum.LENPSPH}','${datum.LENPCYL}','${datum.LENPAxis}','${datum.LENPVA}','${datum.REPD}','${datum.LEPD}','${datum.R_Addition}','${datum.L_Addition}','${datum.R_KR}','${datum.L_KR}','${datum.R_HVID}','${datum.L_HVID}','${datum.R_CS}','${datum.L_CS}','${datum.R_BC}','${datum.L_BC}','${datum.R_Diameter}','${datum.L_Diameter}','${datum.BR}','${datum.Material}','${datum.Modality}','${datum.Other}',${datum.ConstantUse},${datum.NearWork},${datum.DistanceWork},${datum.Multifocal},'${datum.PhotoURL}','${datum.FileURL}','${datum.Family}','${datum.RefferedByDoc}',1,${LoggedOnUser},now())`)
 
 
 

@@ -30,16 +30,16 @@ module.exports = {
 
             if (PaymentType === 'Supplier') {
 
-                // const [credit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Vendor Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
+                const [credit] = await mysql2.pool.query(`select SUM(vendorcredit.Amount) as CreditAmount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${PayeeName}`);
 
-                // const [debit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Vendor Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
+                const [debit] = await mysql2.pool.query(`select SUM(vendorcredit.PaidAmount) as CreditAmount from vendorcredit where CompanyID = ${CompanyID}  and SupplierID = ${PayeeName}`);
 
-                // if (credit[0].CreditAmount !== null) {
-                //     creditCreditAmount = credit[0].CreditAmount
-                // }
-                // if (debit[0].CreditAmount !== null) {
-                //     creditDebitAmount = debit[0].CreditAmount
-                // }
+                if (credit[0].CreditAmount !== null) {
+                    creditCreditAmount = credit[0].CreditAmount
+                }
+                if (debit[0].CreditAmount !== null) {
+                    creditDebitAmount = debit[0].CreditAmount
+                }
 
                 const [due] = await mysql2.pool.query(`select SUM(purchasemasternew.DueAmount) as due from purchasemasternew where CompanyID = ${CompanyID} and SupplierID = ${PayeeName} and PStatus = 0`)
 
