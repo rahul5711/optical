@@ -767,8 +767,8 @@ export class PurchaseComponent implements OnInit {
           showConfirmButton: true,
           backdrop: false,
         })
+        data.UpdateProduct = true
       }
-      data.UpdateProduct = true
     }
    else{
       this.calculateFields1(fieldName, mode, data)

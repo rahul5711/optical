@@ -28,7 +28,7 @@ export class PurchaseReportComponent implements OnInit {
   supplierList :any;
   shopList :any;
   selectsShop :any;
-  PurchaseMasterList:any
+  PurchaseMasterList:any = [];
   totalQty: any;
   totalDiscount: any;
   totalUnitPrice: any;
@@ -37,7 +37,7 @@ export class PurchaseReportComponent implements OnInit {
   totalGstAmount: any;
   gstMaster: any;
 
-  PurchaseDetailList:any
+  PurchaseDetailList:any = [];
   selectedProduct: any;
   prodList:any;
   specList: any;
@@ -50,14 +50,14 @@ export class PurchaseReportComponent implements OnInit {
   gstdetails:any
 
   v :any = []
-  PurchaseChargeList :any;
+  PurchaseChargeList :any = [];
   ChargeAmount:any
   ChargetotalAmount: any;
   ChargetotalGstAmount: any;
   gstCharge:any
 
 
-  ProductExpiryList:any
+  ProductExpiryList:any = [];
   specList1:any
   ExpirytotalQty :any 
   ExpirytotalDiscount :any 
@@ -148,8 +148,8 @@ export class PurchaseReportComponent implements OnInit {
     this.getProductList();
     this.getGSTList();
     // PurchaseMaster Today Data
-    this.PurchaseMaster.FromDate = moment().format('YYYY-MM-DD');
-    this.PurchaseMaster.ToDate = moment().format('YYYY-MM-DD');
+    this.PurchaseMaster.FromDate =  moment(this.PurchaseMaster.FromDate).format('YYYY-MM-DD')
+    this.PurchaseMaster.ToDate = moment(this.PurchaseMaster.ToDate).format('YYYY-MM-DD')
     this.getPurchaseMaster();
     // PurchaseMaster Today Data
     this.PurchaseDetail.FromDate = moment().format('YYYY-MM-DD');
@@ -190,7 +190,7 @@ export class PurchaseReportComponent implements OnInit {
   getPurchaseMaster(){
     this.sp.show()
     let Parem = '';
-
+    this.PurchaseMasterList = []
     if (this.PurchaseMaster.FromDate !== '' && this.PurchaseMaster.FromDate !== null){
       let FromDate =  moment(this.PurchaseMaster.FromDate).format('YYYY-MM-DD')
       Parem = Parem + ' and purchasemasternew.PurchaseDate between ' +  `'${FromDate}'`; }
@@ -367,6 +367,7 @@ export class PurchaseReportComponent implements OnInit {
   getPurchaseDetails(){
     this.sp.show()
     let Parem = '';
+    this.PurchaseDetailList = []
 
     if (this.PurchaseDetail.FromDate !== '' && this.PurchaseDetail.FromDate !== null){
       let FromDate =  moment(this.PurchaseDetail.FromDate).format('YYYY-MM-DD')
@@ -457,7 +458,7 @@ export class PurchaseReportComponent implements OnInit {
   purchaseCharge(){
     this.sp.show()
     let Parem = '';
-
+    this.PurchaseChargeList = []
     if (this.charge.FromDate !== '' && this.charge.FromDate !== null){
       let FromDate =  moment(this.charge.FromDate).format('YYYY-MM-DD')
       Parem = Parem + ' and purchasemasternew.PurchaseDate between ' +  `'${FromDate}'`; }
@@ -579,7 +580,7 @@ export class PurchaseReportComponent implements OnInit {
     this.sp.show()
     this.todaydate = moment(new Date()).format('YYYY-MM-DD');
     let Parem = '';
-
+    this.ProductExpiryList = []
     if (this.ProductExpiry.FromDate !== '' && this.ProductExpiry.FromDate !== null){
       let FromDate =  moment(this.ProductExpiry.FromDate).format('YYYY-MM-DD')
       Parem = Parem + ' and purchasedetailnew.ProductExpDate between ' +  `'${FromDate}'`; }
@@ -607,33 +608,33 @@ export class PurchaseReportComponent implements OnInit {
     if (this.ProductExpiry.GSTType !== 0){
       Parem = Parem + ' and purchasedetailnew.GSTType = '  + `'${this.ProductExpiry.GSTType}'`; }
 
-    const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem).subscribe({
-      next: (res: any) => {
-        if(res.success){
-          this.ProductExpiryList = res.data
-          this.ProductExpiryList.forEach((element: any) => {
-            if(element.ProductExpDate < this.todaydate) {
-              element.Color = true;
-              console.log( element.Color);
+    // const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem).subscribe({
+    //   next: (res: any) => {
+    //     if(res.success){
+    //       this.ProductExpiryList = res.data
+    //       this.ProductExpiryList.forEach((element: any) => {
+    //         if(element.ProductExpDate < this.todaydate) {
+    //           element.Color = true;
+    //           console.log( element.Color);
               
-            } else {
-              element.Color = false;
-            }
-          });
-          this.ExpirytotalQty = res.calculation[0].totalQty;
-          this.ExpirytotalDiscount = res.calculation[0].totalDiscount.toFixed(2);
-          this.ExpirytotalUnitPrice = res.calculation[0].totalUnitPrice.toFixed(2);
-          this.ExpirytotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
-          this.ExpirytotalAmount = res.calculation[0].totalAmount.toFixed(2);
-          this.gstExpirys = res.calculation[0].gst_details
-        }else{
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+    //         } else {
+    //           element.Color = false;
+    //         }
+    //       });
+    //       this.ExpirytotalQty = res.calculation[0].totalQty;
+    //       this.ExpirytotalDiscount = res.calculation[0].totalDiscount.toFixed(2);
+    //       this.ExpirytotalUnitPrice = res.calculation[0].totalUnitPrice.toFixed(2);
+    //       this.ExpirytotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
+    //       this.ExpirytotalAmount = res.calculation[0].totalAmount.toFixed(2);
+    //       this.gstExpirys = res.calculation[0].gst_details
+    //     }else{
+    //       this.as.errorToast(res.message)
+    //     }
+    //     this.sp.hide()
+    //   },
+    //   error: (err: any) => console.log(err.message),
+    //   complete: () => subs.unsubscribe(),
+    // });
   }
 
   openModal2(content2: any) {

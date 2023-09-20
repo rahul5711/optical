@@ -1,15 +1,15 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, fromEvent } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { take } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, take } from 'rxjs/operators';
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
 import * as moment from 'moment';
 import { CustomerModel, SpectacleModel, ContactModel, OtherModel } from 'src/app/interface/Customer';
@@ -39,6 +39,7 @@ import { SupportService } from 'src/app/service/support.service';
 })
 
 export class BillingComponent implements OnInit {
+  @ViewChild('UserNamecontrol') UserNamecontrol: ElementRef | any;
   user = JSON.parse(localStorage.getItem('user') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
@@ -1023,5 +1024,51 @@ export class BillingComponent implements OnInit {
       event = event.toTitleCase()
     }
     return event;
+  }
+
+  ngAfterViewInit() {
+    fromEvent(this.UserNamecontrol.nativeElement, 'keyup').pipe(
+      map((event: any) => {
+        return event.target.value;
+      }),
+      debounceTime(1000),
+      distinctUntilChanged(),
+      
+    ).subscribe((text: string) => {
+
+    let data = {
+      searchQuery: text.trim(),
+    }
+       
+    if(data.searchQuery !== "") {
+      const dtm = {
+        searchQuery: data.searchQuery 
+      }
+      this.sp.show()
+      const subs: Subscription = this.cs.searchByFeild(dtm).subscribe({
+        next: (res: any) => {
+          if(res.success){
+            this.searchList = res.data
+            this.srcBox = true
+            this.as.successToast(res.message)
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+      } 
+    });
+    this.srcBox = false
+  }
+
+
+  close(){
+    this.ngAfterViewInit()
+  }
+  opne(mode:any){
+    this.srcBox = true
   }
 }

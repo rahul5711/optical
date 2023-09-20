@@ -249,19 +249,17 @@ export class BillCalculationService {
         BillMaster.DueAmount = +BillMaster.DueAmount -  element.TotalAmount
      }
 
-
      BillMaster.SubTotal = this.convertToDecimal(+BillMaster.SubTotal, 2);
      BillMaster.DiscountAmount = this.convertToDecimal(+BillMaster.DiscountAmount, 2);
      BillMaster.GSTAmount = this.convertToDecimal(+BillMaster.GSTAmount, 2);
      BillMaster.TotalAmount = this.convertToDecimal(+BillMaster.TotalAmount, 2);
      BillMaster.DueAmount = this.convertToDecimal(+BillMaster.DueAmount, 2);
-
     });
 
     // serviceList
     serviceLists.forEach((element: any) => {
       if (element.Status !== 0) {
-        BillMaster.SubTotal = +BillMaster.SubTotal + +element.Price;
+        BillMaster.SubTotal = +BillMaster.SubTotal + +element.SubTotal;
         BillMaster.GSTAmount = +BillMaster.GSTAmount + +element.GSTAmount;
         BillMaster.TotalAmount = +BillMaster.TotalAmount + +element.TotalAmount;
       }
@@ -278,9 +276,9 @@ export class BillCalculationService {
 
     // RoundOff
     let TotalAmt = '';
-    // TotalAmt = BillMaster.TotalAmount;
-    BillMaster.RoundOff = Math.round(BillMaster.TotalAmount).toFixed(2);
-    // BillMaster.RoundOff = (BillMaster.TotalAmount - Number(TotalAmt)).toFixed(2); 
+    TotalAmt = BillMaster.TotalAmount;
+    BillMaster.TotalAmount = Math.round(BillMaster.TotalAmount);
+    BillMaster.RoundOff = (BillMaster.TotalAmount - Number(TotalAmt)).toFixed(2); 
 
   };
   // bill Master calculation start
@@ -288,7 +286,6 @@ export class BillCalculationService {
 
   AddDiscalculate(fieldName: any, mode: any, BillMaster: any,) {
     switch (mode) {
-
       case 'discount':
         if (fieldName === 'AddlDiscountPercentage') {
           if (BillMaster.AddlDiscountPercentage > 100) {
@@ -301,10 +298,9 @@ export class BillCalculationService {
             });
             BillMaster.AddlDiscountPercentage = 0
           } else {
-            BillMaster.TotalAmount =+ BillMaster.SubTotal + BillMaster.DiscountAmount + BillMaster.GSTAmount;
+            BillMaster.TotalAmount =+ BillMaster.SubTotal + BillMaster.GSTAmount;
             BillMaster.AddlDiscount =+ BillMaster.TotalAmount * +BillMaster.AddlDiscountPercentage / 100;
             BillMaster.TotalAmount =+ BillMaster.TotalAmount - BillMaster.AddlDiscount;
-
           }
         }
         if (fieldName === 'AddlDiscount') {
@@ -318,15 +314,20 @@ export class BillCalculationService {
             });
             BillMaster.AddlDiscount = 0
           } else {
-            BillMaster.TotalAmount =+ BillMaster.SubTotal + BillMaster.DiscountAmount + BillMaster.GSTAmount
+            BillMaster.TotalAmount =+ BillMaster.SubTotal + BillMaster.GSTAmount;
             BillMaster.AddlDiscountPercentage = 100 * +BillMaster.AddlDiscount / (+BillMaster.TotalAmount);
             BillMaster.TotalAmount =+ BillMaster.TotalAmount - BillMaster.AddlDiscount
-    
           }
         }
         break;
     }
-    BillMaster.RoundOff = Math.round(BillMaster.TotalAmount).toFixed(2);
+    BillMaster.AddlDiscountPercentage = this.convertToDecimal(+ BillMaster.AddlDiscountPercentage, 2);
+    BillMaster.AddlDiscount = this.convertToDecimal(+BillMaster.AddlDiscount, 2);
+
+    let TotalAmt = '';
+    TotalAmt = BillMaster.TotalAmount;
+    BillMaster.TotalAmount = Math.round(BillMaster.TotalAmount);
+    BillMaster.RoundOff = (BillMaster.TotalAmount - Number(TotalAmt)).toFixed(2); 
   }
 
   private handleError(errorResponse: HttpErrorResponse) {

@@ -69,7 +69,7 @@
                                                 </mat-select>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-3 col-md-3  col-8 mb-0">
+                                        <!-- <div class="col-xl-3 col-lg-3 col-md-3  col-8 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label> Name</mat-label>
                                                 <input matInput min="3" [(ngModel)]="data.Name" name="Name"
@@ -82,6 +82,26 @@
                                                 <div class="row m-0 search mostly-customized-scrollbar" *ngIf="searchList.length !== 0 && srcBox">
                                                     <div class="col-12" style="cursor: pointer; " *ngFor="let data of searchList" >
                                                         <div class="row" style="border-bottom: 1px solid #fff ;" (click)="getCustomerSearchId(data.ID)">
+                                                            <div class="col-7 " style="padding: 0 4px;">{{data.Name}}</div>
+                                                            <div class="col-5 p-0">{{data.MobileNo1}}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        </div> -->
+                                        <div class="col-xl-3 col-lg-3 col-md-3  col-8 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label> Name</mat-label>
+                                                <input matInput min="3" [(ngModel)]="data.Name" name="Name"
+                                                 required (blur)="close()"
+                                                #UserNamecontrol >
+                                                <mat-error>
+                                                    Name is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                            <br>
+                                                <div #boxserching class="row  m-0 search mostly-customized-scrollbar" *ngIf="searchList.length !== 0 && srcBox">
+                                                    <div class="col-12" style="cursor: pointer; " *ngFor="let data of searchList" >
+                                                        <div class="row" style="border-bottom: 1px solid #fff ;" (click)="getCustomerSearchId(data.ID);">
                                                             <div class="col-7 " style="padding: 0 4px;">{{data.Name}}</div>
                                                             <div class="col-5 p-0">{{data.MobileNo1}}</div>
                                                         </div>
@@ -1184,7 +1204,7 @@
                                     <h2 class="modal-title header pt-2" id="exampleModalLabel">Customer Extra Fields
                                         <span class="ms-md-5 me-md-5 ms-0 pe-5 pt-3 pt-md-0">Cust_ID - <b
                                                 style="color:#000;">{{this.data.Idd}}</b> </span>
-                                        <span class="ms-5 me-5 pt-3 pt-md-0">Cust_Category</span>
+                                        <span class="ms-5 me-5 pt-3 pt-md-0">Cust_Category - <b  style="color:#000;">{{this.data.Category}}</b></span>
                                     </h2>
                                     <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
                                         (click)="modal.dismiss('Cross click')"></button>

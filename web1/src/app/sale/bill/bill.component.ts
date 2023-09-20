@@ -848,7 +848,26 @@ export class BillComponent implements OnInit {
   }
 
   AddDiscalculate(fieldName: any, mode: any) {
-    this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)  
+    let PaidAmount = 0
+    if(this.BillMaster.DueAmount >= this.BillMaster.AddlDiscount && this.BillMaster.DueAmount >= this.BillMaster.AddlDiscountPercentage ){
+      PaidAmount =  this.BillMaster.TotalAmount - this.BillMaster.DueAmount
+      this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)  
+      this.BillMaster.DueAmount =+ this.BillMaster.TotalAmount - PaidAmount
+    }else{
+      this.BillMaster.AddlDiscount = 0
+      this.BillMaster.AddlDiscountPercentage = 0
+      PaidAmount =  this.BillMaster.TotalAmount - this.BillMaster.DueAmount
+      this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)  
+      this.BillMaster.DueAmount =+ this.BillMaster.TotalAmount - PaidAmount
+      Swal.fire({
+        icon: 'warning',
+        title: 'You cannot give an additional discount greater than the due amount (0).',
+        text: '',
+        footer: '',
+        backdrop: false,
+      });
+    }
+
   }
 
   addProductItem() {
@@ -1820,6 +1839,7 @@ export class BillComponent implements OnInit {
 
 
   billPrint(mode:any){
+    this.sp.show()
     this.body.customer = this.customer;
     this.body.billMaster = this.BillMaster;
     this.body.billItemList = this.billItemList;

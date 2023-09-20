@@ -132,25 +132,25 @@
                           </tr>
                         </thead>
                         <tbody class="text-center">
-                          <tr *ngFor="let s of PurchaseMasterList; let i = index" text="left">
+                          <tr *ngFor="let m of PurchaseMasterList; let i = index" text="left">
                             <td> {{ i+1 }} </td>
-                            <td>{{s.SupplierName}}</td>
-                            <td>{{s.ShopName}} <span [style.color]="'blue'"
-                                *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></td>
-                            <td>{{s.InvoiceNo}}</td>
-                            <td>{{dateFormat(s.PurchaseDate)}}</td>
-                            <td>{{s.PaymentStatus}}</td>
-                            <td>{{s.Quantity}}</td>
-                            <td>{{s.DiscountAmount }} </td>
-                            <td>{{s.SubTotal }}</td>
-                            <td>{{s.GSTAmount }} </td>
-                            <td *ngIf="s.gst_detailssss[0][0].type === 'iGST'">{{s.gst_detailssss[0][0].amt.toFixed(2)}}</td>
-                            <td *ngIf="s.gst_detailssss[0][1].type === 'cGST-sGST'">{{(s.gst_detailssss[0][1].amt/2).toFixed(2) }}
+                            <td>{{m.SupplierName}}</td>
+                            <td>{{m.ShopName}} <span [style.color]="'blue'"
+                                *ngIf="m.AreaName !== 'null'">({{m.AreaName}})</span></td>
+                            <td>{{m.InvoiceNo}}</td>
+                            <td>{{dateFormat(m.PurchaseDate)}}</td>
+                            <td>{{m.PaymentStatus}}</td>
+                            <td>{{m.Quantity}}</td>
+                            <td>{{m.DiscountAmount }} </td>
+                            <td>{{m.SubTotal }}</td>
+                            <td>{{m.GSTAmount }} </td>
+                            <td *ngIf="m.gst_detailssss[0][0].type === 'iGST'">{{m.gst_detailssss[0][0].amt.toFixed(2)}}</td>
+                            <td *ngIf="m.gst_detailssss[0][1].type === 'cGST-sGST'">{{(m.gst_detailssss[0][1].amt/2).toFixed(2) }}
                             </td>
-                            <td *ngIf="s.gst_detailssss[0][1].type === 'cGST-sGST'">{{(s.gst_detailssss[0][1].amt/2).toFixed(2) }}
+                            <td *ngIf="m.gst_detailssss[0][1].type === 'cGST-sGST'">{{(m.gst_detailssss[0][1].amt/2).toFixed(2) }}
                             </td>
-                            <td>{{s.TotalAmount }}</td>
-                            <td>{{s.SupplierGSTNo}}</td>
+                            <td>{{m.TotalAmount }}</td>
+                            <td>{{m.SupplierGSTNo}}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -161,19 +161,19 @@
               <!-- Purchase (Detailed) -->
               <mat-tab *ngIf="viewPurchaseProductReport" label="Purchase (Product Type)">
                 <div class="body">
-                  <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getPurchaseDetails()">
+                  <form class="p-3 pb-0" #f2="ngForm" (ngSubmit)="getPurchaseDetails()">
                     <div class="row">
                       <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>From</mat-label>
-                          <input matInput name="FromDate" type="date" [(ngModel)]="PurchaseDetail.FromDate" #DOBcontrol
+                          <input matInput name="FromDateD" type="date" [(ngModel)]="PurchaseDetail.FromDate" #DOBcontrol
                             [disabled]="!editPurchaseProductReport" />
                         </mat-form-field>
                       </div>
                       <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>To</mat-label>
-                          <input matInput type="date" name="ToDate" [(ngModel)]="PurchaseDetail.ToDate"
+                          <input matInput type="date" name="ToDateD" [(ngModel)]="PurchaseDetail.ToDate"
                             [disabled]="!editPurchaseProductReport" />
                         </mat-form-field>
                       </div>
@@ -413,7 +413,7 @@
               <!-- Purchase Charge -->
               <mat-tab *ngIf="viewPurchaseChargeReport" label="Purchase Charge">
                 <div class="body">
-                  <form class="p-3 pb-0" #f="ngForm" (ngSubmit)="purchaseCharge()">
+                  <form class="p-3 pb-0" #f3="ngForm" (ngSubmit)="purchaseCharge()">
                     <div class="row">
                       <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                         <mat-form-field class="example-full-width mb-0">
@@ -509,7 +509,7 @@
               <!-- Purchase Product Expiry -->
               <mat-tab *ngIf="viewPurchaseProductExpiryReport" label="Purchase (Product Expiry)">
                 <div class="body">
-                  <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="purchaseProductExpiry()">
+                  <form class="p-3 pb-0" #f4="ngForm" (ngSubmit)="purchaseProductExpiry()">
                     <div class="row">
                       <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
