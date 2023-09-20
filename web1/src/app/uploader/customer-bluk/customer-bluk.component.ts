@@ -116,6 +116,8 @@ export class CustomerBlukComponent implements OnInit {
       "ConstantUse": '',
       "NearWork": '',
       "DistanceWork": '',
+      "ExpiryDate": '"0000-00-00"',
+      "VisitDate": '"0000-00-00"',
     }
   ]
 
@@ -161,6 +163,9 @@ export class CustomerBlukComponent implements OnInit {
       "DistanceWork": '',
       "__EMPTY": '',
       "Multifocal": '',
+      "ExpiryDate": '"0000-00-00"',
+      "VisitDate": '"0000-00-00"',
+
     }
   ]
 
