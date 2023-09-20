@@ -301,9 +301,10 @@ export class BillCalculationService {
             });
             BillMaster.AddlDiscountPercentage = 0
           } else {
-            BillMaster.AddlDiscount = +BillMaster.TotalAmount * +BillMaster.AddlDiscountPercentage / 100;
-            BillMaster.TotalAmount = BillMaster.TotalAmount - BillMaster.AddlDiscount
-           
+            BillMaster.TotalAmount =+ BillMaster.SubTotal + BillMaster.DiscountAmount + BillMaster.GSTAmount;
+            BillMaster.AddlDiscount =+ BillMaster.TotalAmount * +BillMaster.AddlDiscountPercentage / 100;
+            BillMaster.TotalAmount =+ BillMaster.TotalAmount - BillMaster.AddlDiscount;
+
           }
         }
         if (fieldName === 'AddlDiscount') {
@@ -317,9 +318,10 @@ export class BillCalculationService {
             });
             BillMaster.AddlDiscount = 0
           } else {
+            BillMaster.TotalAmount =+ BillMaster.SubTotal + BillMaster.DiscountAmount + BillMaster.GSTAmount
             BillMaster.AddlDiscountPercentage = 100 * +BillMaster.AddlDiscount / (+BillMaster.TotalAmount);
-            BillMaster.TotalAmount = BillMaster.TotalAmount - BillMaster.AddlDiscount
-          
+            BillMaster.TotalAmount =+ BillMaster.TotalAmount - BillMaster.AddlDiscount
+    
           }
         }
         break;

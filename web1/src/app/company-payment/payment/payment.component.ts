@@ -351,6 +351,7 @@ export class PaymentComponent implements OnInit {
       this.creditList = []
       this.data.PaymentMode = ''
       this.data.CustomerCredit = 0
+      this.getInvoicePayment(this.data.PaymentType,this.data.CustomerID)
     }
 
   }

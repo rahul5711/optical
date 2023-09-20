@@ -233,8 +233,7 @@ export class BillBlukComponent implements OnInit {
     const subs: Subscription = this.uploader.updateFileRecord(dtm).subscribe({
       next: (res: any) => {
         if (res.success) {
-
-          // this.router.navigate(['/sale/customerList'])
+          this.getList()
         } else {
           this.as.errorToast(res.message)
         }
@@ -247,6 +246,7 @@ export class BillBlukComponent implements OnInit {
     });
 
   }
+
   updateFileRecordDetail(ID: any) {
     this.sp.show();
     const dtm = {
@@ -259,8 +259,7 @@ export class BillBlukComponent implements OnInit {
     const subs: Subscription = this.uploader.updateFileRecord(dtm).subscribe({
       next: (res: any) => {
         if (res.success) {
-
-          // this.router.navigate(['/sale/customerList'])
+          this.getDetailList()
         } else {
           this.as.errorToast(res.message)
         }
@@ -466,7 +465,7 @@ export class BillBlukComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.sp.show();
-          // this.router.navigate(['/sale/customerList'])
+          this.getDetailList()
         } else {
           this.as.errorToast(res.message)
         }
