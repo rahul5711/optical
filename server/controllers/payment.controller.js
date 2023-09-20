@@ -195,9 +195,20 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!SupplierID) return res.send({ message: "Invalid Query Data" })
             if (!CreditNumber) return res.send({ message: "Invalid Query Data" })
-            const [data] = await mysql2.pool.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and CreditNumber = '${CreditNumber}'`)
+            // const [data] = await mysql2.pool.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and CreditNumber = '${CreditNumber}'`)
 
-            response.totalCreditAmount = data[0].Amount || creditDebitAmount;
+            const [credit] = await mysql2.pool.query(`select SUM(vendorcredit.Amount) as CreditAmount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${SupplierID}`);
+
+            const [debit] = await mysql2.pool.query(`select SUM(vendorcredit.PaidAmount) as CreditAmount from vendorcredit where CompanyID = ${CompanyID}  and SupplierID = ${SupplierID}`);
+
+            if (credit[0].CreditAmount !== null) {
+                creditCreditAmount = credit[0].CreditAmount
+            }
+            if (debit[0].CreditAmount !== null) {
+                creditDebitAmount = debit[0].CreditAmount
+            }
+
+            response.totalCreditAmount = creditCreditAmount - creditDebitAmount || 0
             response.message = 'data fetch successfully'
             return res.send(response)
         } catch (error) {
@@ -214,7 +225,7 @@ module.exports = {
 
             const { PaymentType, CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PayableAmount, CreditNumber } = req.body
             console.log('<============= applyPayment =============>');
-            console.table({PaymentType, CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, CustomerCredit, ShopID, PayableAmount, CreditNumber})
+            console.table({ PaymentType, CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, CustomerCredit, ShopID, PayableAmount, CreditNumber })
 
             if (!CustomerID || CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
             if (ApplyReturn === null || ApplyReturn === undefined) return res.send({ message: "Invalid ApplyReturn Data" })
@@ -332,11 +343,11 @@ module.exports = {
                     const [data] = await mysql2.pool.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount, PaidAmount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
 
                     if (!data.length) {
-                        return res.send({message : `Invalid CreditNumber ${CreditNumber}`})
+                        return res.send({ message: `Invalid CreditNumber ${CreditNumber}` })
                     }
 
                     if (data[0].Amount < PaidAmount) {
-                      return res.send({message : `you can't apply amount more than ${data[0].Amount}`})
+                        return res.send({ message: `you can't apply amount more than ${data[0].Amount}` })
                     }
 
                     let [pMaster] = await mysql2.pool.query(
