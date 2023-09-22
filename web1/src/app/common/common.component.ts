@@ -159,7 +159,11 @@ export class CommonComponent implements OnInit {
       this.router.navigateByUrl('/inventory/purchaseList', { skipLocationChange: true }).then(() => {
         this.router.navigate(['/inventory/purchaseList', 0]);
       });
-    } else if (mode === 'billinglist' || mode === 'commissionList') {
+    } else if (mode === 'fitterInvoiceList') {
+      this.router.navigateByUrl('/po/fitterInvoiceList', { skipLocationChange: true }).then(() => {
+        this.router.navigate(['/po/fitterInvoiceList', 0]);
+      });
+    }else if (mode === 'billinglist' || mode === 'commissionList') {
       const route = mode === 'billinglist' ? '/sale/billinglist' : '/sale/commissionList';
       this.router.navigateByUrl(route, { skipLocationChange: true }).then(() => {
         this.router.navigate([route, 0]);

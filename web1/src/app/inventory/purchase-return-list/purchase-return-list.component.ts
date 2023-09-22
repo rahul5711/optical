@@ -225,12 +225,13 @@ export class PurchaseReturnListComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.sp.show();
-        const subs: Subscription =  this.purchaseService.supplierCnPR(this.SupplierCNNo,this.supplierCnPRlist.ID).subscribe({
+        const subs: Subscription =  this.purchaseService.supplierCnPR(this.PurchaseDate,this.SupplierCNNo,this.supplierCnPRlist.ID).subscribe({
           next: (res: any) => {
             if(res.success){
               this.modalService.dismissAll();
               this.getList();
               this.SupplierCNNo = '';
+              this.PurchaseDate = '';
               Swal.fire({
                   position: 'center',
                   icon: 'success',

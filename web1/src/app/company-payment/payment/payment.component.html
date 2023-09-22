@@ -150,6 +150,8 @@
                                                 <th>Invoice Amount</th>
                                                 <th>Due Amount</th>
                                                 <th>Paid Amount</th>
+                                                <th>Deposit A/C </th>
+                                                <th>Reference</th>
                                             </tr>
                                         </thead>
                                         <tbody class="text-center">
@@ -168,6 +170,8 @@
                                                 <td>{{data.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                 <td>{{data.DueAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                 <td>{{data.PaidAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                                <td></td>
+                                                <td></td>
                                             </tr>
                                         </tbody>
                                     </table>

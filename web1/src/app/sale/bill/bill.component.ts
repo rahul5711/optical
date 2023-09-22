@@ -849,24 +849,30 @@ export class BillComponent implements OnInit {
 
   AddDiscalculate(fieldName: any, mode: any) {
     let PaidAmount = 0
-    if(this.BillMaster.DueAmount >= this.BillMaster.AddlDiscount && this.BillMaster.DueAmount >= this.BillMaster.AddlDiscountPercentage ){
-      PaidAmount =  this.BillMaster.TotalAmount - this.BillMaster.DueAmount
+
+    if(this.id2 == 0){
       this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)  
-      this.BillMaster.DueAmount =+ this.BillMaster.TotalAmount - PaidAmount
     }else{
-      this.BillMaster.AddlDiscount = 0
-      this.BillMaster.AddlDiscountPercentage = 0
-      PaidAmount =  this.BillMaster.TotalAmount - this.BillMaster.DueAmount
-      this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)  
-      this.BillMaster.DueAmount =+ this.BillMaster.TotalAmount - PaidAmount
-      Swal.fire({
-        icon: 'warning',
-        title: 'You cannot give an additional discount greater than the due amount (0).',
-        text: '',
-        footer: '',
-        backdrop: false,
-      });
+      if(this.BillMaster.DueAmount >= this.BillMaster.AddlDiscount && this.BillMaster.DueAmount >= this.BillMaster.AddlDiscountPercentage ){
+        PaidAmount =  this.BillMaster.TotalAmount - this.BillMaster.DueAmount
+        this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)  
+        this.BillMaster.DueAmount =+ this.BillMaster.TotalAmount - PaidAmount
+      }else{
+        this.BillMaster.AddlDiscount = 0
+        this.BillMaster.AddlDiscountPercentage = 0
+        PaidAmount =  this.BillMaster.TotalAmount - this.BillMaster.DueAmount
+        this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)  
+        this.BillMaster.DueAmount =+ this.BillMaster.TotalAmount - PaidAmount
+        Swal.fire({
+          icon: 'warning',
+          title: 'You cannot give an additional discount greater than the due amount (0).',
+          text: '',
+          footer: '',
+          backdrop: false,
+        });
+      }
     }
+   
 
   }
 
@@ -1152,7 +1158,6 @@ export class BillComponent implements OnInit {
         this.calculateGrandTotal();
         this.billItemList.splice(i, 1);
         this.calculateGrandTotal();
-
       }  else {
         Swal.fire({
           title: 'Are you sure?',
@@ -1169,12 +1174,15 @@ export class BillComponent implements OnInit {
             this.billItemList[i].Status = 0;
             this.data.billMaseterData = this.BillMaster;
             this.data.billDetailData = this.billItemList[i];
+            this.calculateGrandTotal();
             delete this.data.service
             this.sp.show()
             const subs: Subscription = this.bill.deleteProduct(this.data).subscribe({
               next: (res: any) => {
                 if (res.success) {
-                  this.getBillById(res.data[0].BillMasterID)
+                 
+                  // this.getBillById(res.data[0].BillMasterID);
+                 
                 } else {
                   this.as.errorToast(res.message)
                 }

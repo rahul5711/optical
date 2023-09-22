@@ -107,7 +107,7 @@ export class PurchaseComponent implements OnInit {
     if (this.id != 0) {
       this.getPurchaseById();
     } else {
-      this.selectedPurchaseMaster.PurchaseDate = moment(new Date()).format('YYYY-MM-DD');
+      this.selectedPurchaseMaster.PurchaseDate = moment('day').format('YYYY-MM-DD');
     }
   }
 
@@ -117,7 +117,7 @@ export class PurchaseComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.selectedPurchaseMaster = res.result.PurchaseMaster[0]
-          res.result.PurchaseMaster[0].PurchaseDate = moment().format('YYYY-MM-DD')
+          this.selectedPurchaseMaster.PurchaseDate = moment(res.result.PurchaseMaster[0].PurchaseDate).format('YYYY-MM-DD')
           this.itemList = res.result.PurchaseDetail
           this.chargeList = res.result.Charge
           this.gst_detail = this.selectedPurchaseMaster.gst_detail
@@ -350,7 +350,7 @@ export class PurchaseComponent implements OnInit {
 
   calculateFields(fieldName: any, mode: any,) {
     this.calculation.calculateFields(fieldName, mode, this.item, this.charge)
-    this.GstTypeDis = false
+    // this.GstTypeDis = false
   }
 
   calculateGrandTotal() {
@@ -757,20 +757,7 @@ export class PurchaseComponent implements OnInit {
   }
 
   updataEditProdcut(fieldName: any, mode: any, data: any) {
-    this.sp.show();
-    if(data.GSTType === 'None'){
-      if(data.GSTPercentage != 0){
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: 'Without GSTType the selected value will not be saved ',
-          showConfirmButton: true,
-          backdrop: false,
-        })
-        data.UpdateProduct = true
-      }
-    }
-   else{
+
       this.calculateFields1(fieldName, mode, data)
       this.calculateGrandTotal();
       const dtm = {
@@ -794,13 +781,10 @@ export class PurchaseComponent implements OnInit {
               this.getPurchaseById()
           }
           this.disbaleupdate = false
-          this.sp.hide();
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
-     }
-     this.sp.hide();
   }
 
   PurchaseDetailPDF() {

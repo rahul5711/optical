@@ -238,7 +238,7 @@ module.exports = {
                 newData.Multiple = 0
 
                 if (newData.GSTType !== "CGST-SGST" && newData.GSTType !== "IGST" && newData.GSTType !== "None" && newData.GSTType !== "GSTType") {
-                    return res.send({ success: false, message: "Invalid GSTType, You Can Add CGST-SGST , IGST OR None" })
+                    return res.send({ success: false, message: "Invalid GSTType, You Can Add CGST-SGST , IGST OR None, Duplicate Invoice Number" })
                 }
 
                 processedFileData.push(newData)

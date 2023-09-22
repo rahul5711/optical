@@ -272,14 +272,9 @@ export class PaymentComponent implements OnInit {
         next: (res: any) => {
             if(res.success ){
               this.getInvoicePayment(res.data.PaymentType, res.data.PayeeName)
-              this.data.PaidAmount = 0; this.data.PaymentMode = ''; 
-              if(res.data.PaymentType === 'Supplier'){
-                  if(this.data.ApplyReturn === true){
-                    this.getSupplierCreditNote(res.data.PayeeName)
-                    this.getSupplierCreditNoteByCreditNumber()
-                  }
-              }
-  
+              this.data.PaidAmount = 0; this.data.PaymentMode = ''; this.data.CardNo = ''; this.data.PaymentReferenceNo = ''; this.data.ApplyReturn = false
+              this.creditList = []
+            
             }else{
               this.as.errorToast(res.message)
               Swal.fire({

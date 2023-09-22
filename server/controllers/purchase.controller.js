@@ -214,9 +214,9 @@ module.exports = {
             }
 
             // update purchasemaster
-            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now(), InvoiceNo = '${PurchaseMaster.InvoiceNo}' where CompanyID = ${CompanyID}  and ShopID = ${shopid} and ID=${purchase.ID}`)
+            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now(), InvoiceNo = '${PurchaseMaster.InvoiceNo}', PurchaseDate = '${PurchaseMaster.PurchaseDate}' where CompanyID = ${CompanyID}  and ShopID = ${shopid} and ID=${purchase.ID}`)
 
-            console.log(`update purchasemasternew set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and ShopID = ${shopid} and ID=${purchase.ID}`);
+            console.log(`update purchasemasternew set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${PurchaseMaster.InvoiceNo}' , PurchaseDate = '${PurchaseMaster.PurchaseDate}' and ShopID = ${shopid} and ID=${purchase.ID}`);
 
             console.log(connected("Purchase Update SuccessFUlly !!!"));
 
@@ -3322,7 +3322,7 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
 
-            const { SupplierCn, ID } = req.body;
+            const {PurchaseDate, SupplierCn, ID } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -3346,7 +3346,7 @@ module.exports = {
             let supplierId = doesExist[0].SupplierID
 
 
-            let [update] = await mysql2.pool.query(`update purchasereturn set SupplierCn = '${SupplierCn}', CreatedOn=now(), UpdatedBy=${LoggedOnUser} where ID =${ID}`)
+            let [update] = await mysql2.pool.query(`update purchasereturn set SupplierCn = '${SupplierCn}', PurchaseDate = '${PurchaseDate}', CreatedOn=now(), UpdatedBy=${LoggedOnUser} where ID =${ID}`)
 
             console.log("Purchase Return Update SuccessFUlly !!!");
 

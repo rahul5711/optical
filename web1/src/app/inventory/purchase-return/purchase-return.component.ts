@@ -249,8 +249,7 @@ export class PurchaseReturnComponent implements OnInit {
           if (this.item.Barcode === null) {
             Swal.fire({
               icon: 'warning',
-              title: 'Product Not Available In This Shop For Selected Barcode For Supplier.',
-              text: ' Please Check the Barcode. ',
+              title: 'Product Not Available OR This barcode assign to another supplier',
               footer: '',
               backdrop : false,
             });

@@ -133,7 +133,7 @@
               <a *ngIf="viewFlag.viewFitterList" href="javascript:void(0)" [routerLink]="['/inventory/fitterList']" id="collapseExample">Fitter</a>
               <a *ngIf="viewFlag.viewFitterOrder" href="javascript:void(0)" [routerLink]="['/po/fitterPo']" id="collapseExample">Fitter Order</a>
               <a *ngIf="viewFlag.viewFitterInvoice" href="javascript:void(0)" [routerLink]="['/po/fitterInvoice']" id="collapseExample">Fitter Invoice</a>
-              <a *ngIf="viewFlag.viewFitterInvoiceList" href="javascript:void(0)" [routerLink]="['/po/fitterInvoiceList',0]" id="collapseExample">Fitter Invoice List</a>
+              <a *ngIf="viewFlag.viewFitterInvoiceList" href="javascript:void(0)" (click)="refresh('fitterInvoiceList')" [routerLink]="['/po/fitterInvoiceList',0]" id="collapseExample">Fitter Invoice List</a>
             </div>
           </div>
           <!-- companyadmin end Lens Order -->

@@ -14,14 +14,15 @@
                                     </button></h2>
                             </div>
                             <!-- togggle btn start -->
-                            <div class="col-xl-3 col-lg-5 col-md-6 col-5 ms-auto">
-                                <span class="ms-md-5 ps-md-5 me-md-3 ms-0 ps-0 me-0" style="font-weight: 600;">
-                                    <mat-slide-toggle name="Multiple" color="primary" [(ngModel)]="disableAddButtons"
-                                        class="example-margin" #Multiplecontrol>Quick Entry</mat-slide-toggle>
-                                </span>
-                                <span style="font-weight: 600;">
-                                    <mat-slide-toggle name="WholeSale" color="primary" [(ngModel)]="item.WholeSale"
+                            <div class="col-xl-1 col-lg-3 col-md-6 col-5 ms-auto">
+                              
+                                <span *ngIf="company.WholeSale === 'true' || shop.WholesaleBill === 'true'" style="font-weight: 600;" class=" me-md-2 me-0 ps-0 me-0" >
+                                    <mat-slide-toggle  name="WholeSale" color="primary" [(ngModel)]="item.WholeSale"
                                         class="example-margin" #Multiplecontrol>WholeSale</mat-slide-toggle>
+                                </span>
+                                <span style="font-weight: 600;" >
+                                    <mat-slide-toggle name="Multiple" color="primary" [(ngModel)]="disableAddButtons"
+                                        class="example-margin" #Multiplecontrol>QuickEntry</mat-slide-toggle>
                                 </span>
                             </div>
                             <!-- togggle btn end -->
@@ -323,7 +324,7 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0"
-                                    *ngIf="company.WholeSale === 'true' && item.WholeSale === true">
+                                    *ngIf="company.WholeSale === 'true' || shop.WholesaleBill === 'true' && item.WholeSale === 'true'">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Wholesale Rate</mat-label>
                                         <input matInput name="WholeSalePrice" min="0" type="number"
@@ -473,8 +474,8 @@
                                                     <th>TAXAmt</th>
                                                     <th>TAXType</th>
                                                     <th>TotalAmt</th>
-                                                    <th *ngIf="company.RetailPrice === 'true'">SalePrice/Unit</th>
-                                                    <th *ngIf="company.WholeSale === 'true'">WholeSalePrice/Unit</th>
+                                                    <th *ngIf="company.RetailPrice === 'true' || shop.RetailBill === 'true'">SalePrice/Unit</th>
+                                                    <th *ngIf="company.WholeSale === 'true' || shop.WholesaleBill === 'true'">WholeSalePrice/Unit</th>
                                                     <th>Brand</th>
                                                 </tr>
                                             </thead>
@@ -531,7 +532,7 @@
                                                         <input style=" width:60px;text-align: center;" min="0"
                                                             type="number" [(ngModel)]="data.UnitPrice"
                                                             (ngModelChange)="data.UnitPrice = onChange($event)"
-                                                            (change)="updataEditProdcut('UnitPrice', 'subTotal',data)"
+                                                            (blur)="updataEditProdcut('UnitPrice', 'subTotal',data)"
                                                             #name="ngModel" [ngModelOptions]="{standalone: true}"
                                                             name="data{{i}}">
                                                     </td>
@@ -611,10 +612,10 @@
                                                     <td class="text-center"
                                                         [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                                         {{data.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                                                    <td *ngIf="!data.UpdateProduct " class="text-center"
+                                                    <td *ngIf="!data.UpdateProduct && company.RetailPrice === 'true' || shop.RetailBill === 'true'" class="text-center"
                                                         [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                                         {{data.RetailPrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                                                    <td *ngIf="data.UpdateProduct "
+                                                    <td *ngIf="data.UpdateProduct && company.RetailPrice === 'true' || shop.RetailBill === 'true'"
                                                         style=" width:60px;text-align: center;">
                                                         <input style=" width:60px;text-align: center;" min="0"
                                                             type="number" [(ngModel)]="data.RetailPrice"
@@ -622,10 +623,10 @@
                                                             (change)="updataEditProdcut('','',data)" #name="ngModel"
                                                             [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                                     </td>
-                                                    <td *ngIf="!data.UpdateProduct " class="text-center"
+                                                    <td *ngIf="!data.UpdateProduct && company.WholeSale === 'true' || shop.WholesaleBill === 'true' " class="text-center"
                                                         [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                                         {{data.WholeSalePrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                                                    <td *ngIf="data.UpdateProduct "
+                                                    <td *ngIf="data.UpdateProduct && company.WholeSale === 'true' || shop.WholesaleBill === 'true'"
                                                         style=" width:60px;text-align: center;">
                                                         <input style=" width:60px;text-align: center;" min="0"
                                                             type="number" [(ngModel)]="data.WholeSalePrice"

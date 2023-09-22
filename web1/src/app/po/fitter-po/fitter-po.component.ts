@@ -373,7 +373,6 @@ export class FitterPoComponent implements OnInit {
   }
 
   completePo(mode: any) {
-    this.sp.show()
     this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
 
     if (this.filtersList.length > 0) {

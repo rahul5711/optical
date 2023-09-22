@@ -1065,10 +1065,5 @@ export class BillingComponent implements OnInit {
   }
 
 
-  close(){
-    this.ngAfterViewInit()
-  }
-  opne(mode:any){
-    this.srcBox = true
-  }
+
 }

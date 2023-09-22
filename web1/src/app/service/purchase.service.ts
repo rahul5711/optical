@@ -246,8 +246,8 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
-  supplierCnPR(SupplierCn:any, ID:any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/supplierCnPR', {SupplierCn: SupplierCn, ID: ID }, httpOptions)
+  supplierCnPR(PurchaseDate:any,SupplierCn:any, ID:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/supplierCnPR', {PurchaseDate:PurchaseDate,SupplierCn: SupplierCn, ID: ID }, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
