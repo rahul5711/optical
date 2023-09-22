@@ -626,26 +626,24 @@
                                                       <span *ngIf="this.bill.BillHeader == '3'">
                                                         <header  style="width:{{this.bill.HeaderWidth}}px; height: {{this.bill.HeaderHeight}}px; padding: {{this.bill.HeaderPadding}}px; margin: {{this.bill.HeaderMargin}}px;  border: 1px solid #000">
                                                             <span style="width: 50%; float: left; height: 90px; text-align:{{this.bill.ImageAlign}}">
-                                                                <img src="../../../assets/images/OGorange.png" alt=""
+                                                                <img src="{{this.shop.LogoURL}}" alt=""
                                                                     style="width:{{this.bill.ImageWidth}}px; height: {{this.bill.ImageHeight}}px;">
                                                             </span>
                                                             <div style="width: 50%; float: right;line-height: {{this.bill.LineSpace}}px; ">
                                                                 <div style=" font-weight: {{this.bill.ShopNameBold}}; font-size: {{this.bill.ShopNameFont}}px;color:{{this.bill.Color}}">
-                                                                    RELINKSYS SOFTWARE
+                                                                    {{this.shop.Name}}
                                                                 </div>
                                                                 <span style="font-size: {{this.bill.ShopDetailFont}}px;">
 
                                                                
                                                                 <div style=" font-weight: 400; padding-top:5px">
-                                                                    TH SCHONEAR SAMAROL, OPP-RAOSAHEB PATWARDHAN
-                                                                    SMARAK, BHISBAUG ROAD, PROFESSOR CHOWK, SAVEDI,
-                                                                    A.NAGAR-414003
+                                                                    {{this.shop.Address}}
                                                                 </div>
-                                                                <div style="font-weight: 400;">9766666248 , 9175773955
+                                                                <div style="font-weight: 400;">{{this.shop.MobileNo1}} ,{{this.shop.MobileNo2}}
                                                                 </div>
-                                                                <div style="font-weight: 400;">RELINKSYS@GMAIL.COM
+                                                                <div style="font-weight: 400;">{{this.shop.Email}}
                                                                 </div>
-                                                                <div style="font-weight: 400;"> 9766666248</div>
+                                                                <div style="font-weight: 400;">{{this.shop.PhoneNo}}</div>
                                                             </span>
                                                             </div>
                                                         </header>

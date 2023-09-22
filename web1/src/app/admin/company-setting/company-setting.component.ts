@@ -18,6 +18,8 @@ export class CompanySettingComponent implements OnInit {
 
   companysetting:any = JSON.parse(localStorage.getItem('companysetting') || '');
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
+  shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
+  selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
  
   env = environment;
   img: any;
@@ -58,10 +60,9 @@ export class CompanySettingComponent implements OnInit {
   wlcmArray1: any = [] ;
 
   ngOnInit(): void {
-   this.getCompanySetting()
-
-     this.getBillFormateById()
-   
+   this.getCompanySetting();
+   this.getBillFormateById();
+   [this.shop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));;
   }
 
   getCompanySetting(){

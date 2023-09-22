@@ -1469,12 +1469,8 @@ module.exports = {
                     res.send(err);
                 } else {
                     let options = {
-                        height: "15cm",
-                        width: "21cm",
                         format : "A4",
                         orientation : "portrait",
-                        // orientation : "portrait",
-                      
                     };
                     pdf.create(data, options).toFile(fileName, function (err, data) {
                         if (err) {

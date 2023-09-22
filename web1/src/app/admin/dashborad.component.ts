@@ -15,20 +15,15 @@ export class DashboradComponent implements OnInit {
   ngOnInit(): void {
 
    let dashcard = [
-    {
-      "icon" : "assets/images/customer.png",
-      "title": "Customer",
-      "routersLinks" : "/sale/billing/0/0"
-    },
+    // {
+    //   "icon" : "assets/images/customer.png",
+    //   "title": "Customer",
+    //   "routersLinks" : "/sale/billing/0/0"
+    // },
     {
       "icon" : "assets/images/billing.png",
       "title": "Billing",
       "routersLinks" : "/sale/billing/0/0"
-    },
-    {
-      "icon" : "assets/images/supp.png",
-      "title": "Supplier",
-      "routersLinks" : "/inventory/supplier"
     },
     {
       "icon" : "assets/images/purchase.png",
@@ -36,23 +31,30 @@ export class DashboradComponent implements OnInit {
       "routersLinks" : "/inventory/purchase/0"
     },
     {
-      "icon" : "assets/images/transfer.png",
-      "title": "Prod_Transfer",
-      "routersLinks" : "/inventory/product-transfer"
-    },
-    {
-      "icon" : "assets/images/sms-removebg-preview.png",
-      "title": "SMS",
-      "routersLinks" : "/admin/smsSetting"
-    },
-    {
       "icon" : "assets/images/expense.png",
       "title": "Expense",
       "routersLinks" : "/companyPayment/expense"
     },
+    // {
+    //   "icon" : "assets/images/supp.png",
+    //   "title": "Supplier",
+    //   "routersLinks" : "/inventory/supplier"
+    // },
+  
     {
-      "icon" : "assets/images/search-product.png",
-      "title": "Search_Prod",
+      "icon" : "assets/images/transfer.png",
+      "title": "Product Transfer",
+      "routersLinks" : "/inventory/product-transfer"
+    },
+    {
+      "icon" : "assets/images/sms-removebg-preview.png",
+      "title": "Bluk SMS",
+      "routersLinks" : "/admin/smsSetting"
+    },
+  
+    {
+      "icon" : "assets/images/nreminder.png",
+      "title": "Reminder",
       "routersLinks" : "/product/productManage"
     },
    ]
