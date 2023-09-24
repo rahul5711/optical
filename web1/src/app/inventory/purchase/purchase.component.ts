@@ -92,6 +92,7 @@ export class PurchaseComponent implements OnInit {
   addPurchase = false
   deletePurchase = false
   supplierGSTType = '';
+  currentTime ='';
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'Purchase') {
@@ -107,8 +108,10 @@ export class PurchaseComponent implements OnInit {
     if (this.id != 0) {
       this.getPurchaseById();
     } else {
-      this.selectedPurchaseMaster.PurchaseDate = moment('day').format('YYYY-MM-DD');
+      this.selectedPurchaseMaster.PurchaseDate = moment().format('YYYY-MM-DD');
     }
+    this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", second:"2-digit", hour12: false })
+    
   }
 
   getPurchaseById() {
@@ -515,6 +518,8 @@ export class PurchaseComponent implements OnInit {
   onSumbit() {
     this.sp.show();
     this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
+    this.selectedPurchaseMaster.PurchaseDate = this.selectedPurchaseMaster.PurchaseDate + ' ' + this.currentTime;
+
     this.data.PurchaseMaster = this.selectedPurchaseMaster;
     this.data.PurchaseDetail = JSON.stringify(this.itemList);
     this.data.Charge = this.chargeList;
@@ -679,6 +684,7 @@ export class PurchaseComponent implements OnInit {
     this.sp.show()
     this.data.UpdateProduct = true
     this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
+    this.selectedPurchaseMaster.PurchaseDate = this.selectedPurchaseMaster.PurchaseDate + ' ' + this.currentTime;
     this.data.PurchaseMaster = this.selectedPurchaseMaster;
     this.data.Charge = this.chargeList;
     let items: any = [];

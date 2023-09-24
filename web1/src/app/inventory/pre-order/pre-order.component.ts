@@ -76,6 +76,7 @@ export class PreOrderComponent implements OnInit {
   editOrderPrice = false
   addOrderPrice = false
   deleteOrderPrice = false
+  currentTime = ''
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
@@ -94,6 +95,7 @@ export class PreOrderComponent implements OnInit {
     }else{
       this.selectedPurchaseMaster.PurchaseDate = moment().format('YYYY-MM-DD');
     }
+    this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", second:"2-digit", hour12: false })
   }
 
   getPurchaseByIdPreOrder(){
@@ -407,6 +409,7 @@ export class PreOrderComponent implements OnInit {
     this.sp.show()
     // this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
     this.data.PurchaseDetail = JSON.stringify(this.itemList);
+    this.selectedPurchaseMaster.PurchaseDate = this.selectedPurchaseMaster.PurchaseDate + ' ' + this.currentTime;
     this.data.PurchaseMaster = this.selectedPurchaseMaster;
     const subs: Subscription = this.purchaseService.createPreOrder(this.data).subscribe({
       next: (res: any) => {
@@ -532,6 +535,7 @@ export class PreOrderComponent implements OnInit {
     })
     this.data.PurchaseDetail = JSON.stringify(items) ;
     this.selectedPurchaseMaster.preOrder = true;
+    this.selectedPurchaseMaster.PurchaseDate = this.selectedPurchaseMaster.PurchaseDate + ' ' + this.currentTime;
     this.data.PurchaseMaster = this.selectedPurchaseMaster;
     const subs: Subscription =  this.purchaseService.updatePreOrder(this.data).subscribe({
       next: (res: any) => {

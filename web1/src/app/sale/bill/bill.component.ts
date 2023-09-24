@@ -165,7 +165,7 @@ export class BillComponent implements OnInit {
   addCustomerBill = false
   editCustomerBill = false
   deleteCustomerBill = false
-
+  currentTime = '';
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'CustomerBill') {
@@ -187,7 +187,7 @@ export class BillComponent implements OnInit {
     if (this.id2 != 0) {
       this.getCustomerById1()
     }    
-
+    this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", second:"2-digit", hour12: false })
   }
 
   getCustomerById1() {
@@ -599,6 +599,7 @@ export class BillComponent implements OnInit {
   shopAll(){
     this.getBarCodeList('')
   }
+
   getSearchByBarcodeNo() {
     if(this.Req.SearchBarCode !== ''){
     this.sp.show();
@@ -1066,6 +1067,8 @@ export class BillComponent implements OnInit {
     this.sp.show()
     this.BillMaster.ShopID = this.loginShop.ID
     this.BillMaster.CustomerID = this.customerID2
+    this.BillMaster.BillDate = this.BillMaster.BillDate + ' ' + this.currentTime;
+    this.BillMaster.DeliveryDate = this.BillMaster.DeliveryDate + ' ' + this.currentTime;
     this.data.billMaseterData = this.BillMaster;
     this.data.billDetailData = this.billItemList;
     this.data.service = this.serviceLists;
@@ -1105,6 +1108,8 @@ export class BillComponent implements OnInit {
 
     this.BillMaster.ShopID = this.loginShop.ID;
     this.BillMaster.CustomerID = this.customerID2;
+    this.BillMaster.BillDate = this.BillMaster.BillDate + ' ' + this.currentTime;
+    this.BillMaster.DeliveryDate = this.BillMaster.DeliveryDate + ' ' + this.currentTime;
 
     if(this.BillMaster.DueAmount !== 0){
       this.BillMaster.PaymentStatus = 'Unpaid'
@@ -1287,9 +1292,6 @@ export class BillComponent implements OnInit {
       }
     }
   }
-
-
-
 
   // update power 
   openModal(content: any, data:any){
@@ -1489,9 +1491,10 @@ export class BillComponent implements OnInit {
     if(this.applyPayment.PaidAmount !== 0){
       this.sp.show()
       this.applyPayment.CustomerID = this.BillMaster.CustomerID;
+
       this.applyPayment.CompanyID = this.company.ID;
       this.applyPayment.ShopID = Number(this.selectedShop);
-      this.applyPayment.PaymentDate =  moment().format('YYYY-MM-DD');
+      this.applyPayment.PaymentDate =  moment().format('YYYY-MM-DD') +  ' ' + this.currentTime;
       this.applyPayment.pendingPaymentList = this.invoiceList;
       const subs: Subscription = this.pay.customerPayment(this.applyPayment).subscribe({
         next: (res: any) => {

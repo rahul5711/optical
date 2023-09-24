@@ -50,6 +50,7 @@ export class PurchaseReturnListComponent implements OnInit {
   editPurchaseReturnList = false
   addPurchaseReturnList = false
   deletePurchaseReturnList = false
+  currentTime = '';
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
@@ -60,6 +61,7 @@ export class PurchaseReturnListComponent implements OnInit {
       }
     });
     this.getList();
+    this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", second:"2-digit", hour12: false })
   }
   
   changePagesize(num: number): void {
@@ -225,6 +227,7 @@ export class PurchaseReturnListComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.sp.show();
+      this.PurchaseDate = this.PurchaseDate + ' ' + this.currentTime; 
         const subs: Subscription =  this.purchaseService.supplierCnPR(this.PurchaseDate,this.SupplierCNNo,this.supplierCnPRlist.ID).subscribe({
           next: (res: any) => {
             if(res.success){

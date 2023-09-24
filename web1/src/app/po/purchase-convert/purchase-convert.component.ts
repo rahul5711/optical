@@ -64,7 +64,7 @@ export class PurchaseConvertComponent implements OnInit {
   dataList:any =[]
   gst_detail: any = [];
   filterList: any = [];
-
+  currentTime = ''
 
   ngOnInit(): void {
     // this.PurchaseMaster.PurchaseDate = moment().format('YYYY-MM-DD');
@@ -74,6 +74,7 @@ export class PurchaseConvertComponent implements OnInit {
     this.dropdownSupplierlist();
     // this.getList();
     this.getGSTList();
+    this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", second:"2-digit", hour12: false })
   }
 
   dropdownShoplist() {
@@ -255,6 +256,7 @@ export class PurchaseConvertComponent implements OnInit {
       this.PurchaseMaster.ShopID = Number(this.selectedShop[0]);
       this.PurchaseMaster.SupplierID = Number(this.PurchaseMaster.SupplierID);
       this.PurchaseMaster.CompanyID = this.company.ID;
+      this.PurchaseMaster.PurchaseDate = moment().format('YYYY-MM-DD') +  ' ' + this.currentTime;
       this.PurchaseMaster.DueAmount = this.PurchaseMaster.TotalAmount;
       delete this.PurchaseMaster.FromDate
       delete this.PurchaseMaster.ToDate

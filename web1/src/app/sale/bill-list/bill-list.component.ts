@@ -88,7 +88,7 @@ export class BillListComponent implements OnInit {
   editBillingSearch = false
   addBillingSearch = false
   deleteBillingSearch = false
-
+  currentTime = ''
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'BillingSearch') {
@@ -102,6 +102,8 @@ export class BillListComponent implements OnInit {
     } else {
       this.getList()
     }
+    this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", second:"2-digit", hour12: false })
+
   }
 
   changePagesize(num: number): void {
@@ -207,6 +209,7 @@ export class BillListComponent implements OnInit {
   // payment date update 
   updateCustomerPaymentDate(data: any) {
     this.sp.show()
+    data.PaymentDate = data.PaymentDate + ' ' +this.currentTime
     const subs: Subscription = this.pay.updateCustomerPaymentDate(data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -426,6 +429,7 @@ export class BillListComponent implements OnInit {
       this.applyPayment.CompanyID = this.company.ID;
       this.applyPayment.ShopID = Number(this.selectedShop);
       this.applyPayment.PaymentDate = moment().format('YYYY-MM-DD');
+      this.applyPayment.PaymentDate =  moment().format('YYYY-MM-DD') +  ' ' + this.currentTime;
       this.applyPayment.pendingPaymentList = this.invoiceList;
       console.log(this.applyPayment);
       const subs: Subscription = this.pay.customerPayment(this.applyPayment).subscribe({

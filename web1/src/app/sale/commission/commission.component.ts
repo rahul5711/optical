@@ -56,6 +56,7 @@ export class CommissionComponent implements OnInit {
   editLoyalty = false
   addLoyalty = false
   deleteLoyalty = false
+  currentTime = '';
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
@@ -66,6 +67,7 @@ export class CommissionComponent implements OnInit {
       }
     });
     this.dropdownShoplist()
+    this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", second:"2-digit", hour12: false })
   }
 
   dropdownShoplist(){
@@ -142,6 +144,7 @@ export class CommissionComponent implements OnInit {
     this.sp.show();
     this.data.ShopID = Number(this.selectedShop[0]);
     this.data.PayeeName = Number(this.data.PayeeName);
+    this.data.PurchaseDate = this.data.PurchaseDate.moment().format('YYYY-MM-DD') +  ' ' + this.currentTime; 
     this.data1.Master = this.data;
 
     let CommissionDetails: any = []
