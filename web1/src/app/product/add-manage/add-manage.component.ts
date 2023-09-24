@@ -55,8 +55,8 @@ export class AddManageComponent implements OnInit {
   data1: any = { ID : null, CompanyID : null,  Name:'', Category : null, Status : 1, CreatedBy: null, UpdatedBy: null,};
   newDepartment: any  = {ID: null, CompanyID: null, Name: "", TableName:null,   Status: 1};
 
-  selectedRow: any = {ID: null, CompanyID: null, Name: null, Description:null, Cost:0,  Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: " "};
-  Service: any = {ID: null, CompanyID: null, Name: null, Description:null, Cost:0,  Price: 0, SubTotal:0, GSTPercentage: 0, GSTAmount: 0, GSTType: " " };
+  selectedRow: any = {ID: null, CompanyID: null, Name: null, Description:null, Cost:0,  Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "" ,TotalAmount:0};
+  Service: any = {ID: null, CompanyID: null, Name: null, Description:null, Cost:0,  Price: 0, SubTotal:0, GSTPercentage: 0, GSTAmount: 0, GSTType: " ", TotalAmount:0};
   
   
   editAddManagement = false
@@ -229,7 +229,7 @@ export class AddManageComponent implements OnInit {
               backdrop: false,
             });
             this.selectedRow.GSTPercentage = 0;
-            // this.selectedRow.GSTType = 'None'
+            this.selectedRow.GSTType = 'None'
           } else {
             this.selectedRow.GSTAmount =+this.selectedRow.Price * +this.selectedRow.GSTPercentage / 100;
           }
@@ -253,39 +253,83 @@ export class AddManageComponent implements OnInit {
 
   resetData(){
     this.setValueDisbled = false
-    this.selectedRow = {ID: null, CompanyID: null, Name: null, Description:null, Cost: 0, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "",};
+    this.selectedRow = {ID: null, CompanyID: null, Name: null, Description:null, Cost: 0, Price: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: "None",TotalAmount:0};
   }
 
   chargesave(){
-    this.sp.show()
-    const subs: Subscription =  this.supps.chargesave( this.selectedRow).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.resetData();
-          this.chargelist();
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Your file has been Save.',
-            showConfirmButton: false,
-            timer: 1200
-          }) 
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Duplicate or Empty Values are not allowed',
-            text: '',
-            footer: ''
-          }); 
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => {
-        console.log(err.msg);
-      },
-      complete: () => subs.unsubscribe(),
-    });
+    if(this.selectedRow.GSTPercentage !== 0){
+       if(this.selectedRow.GSTType === 'None'){
+        Swal.fire({
+          icon: 'warning',
+          title: `Pls Select GSTType.`,
+          text: ``,
+          footer: '',
+          backdrop: false,
+        });
+        this.showAddCharge = true
+       }else{
+        this.sp.show()
+        const subs: Subscription =  this.supps.chargesave( this.selectedRow).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.resetData();
+              this.chargelist();
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been Save.',
+                showConfirmButton: false,
+                timer: 1200
+              }) 
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Duplicate or Empty Values are not allowed',
+                text: '',
+                footer: ''
+              }); 
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide()
+          },
+          error: (err: any) => {
+            console.log(err.msg);
+          },
+          complete: () => subs.unsubscribe(),
+        });
+       }
+     }else{
+      this.sp.show()
+      const subs: Subscription =  this.supps.chargesave( this.selectedRow).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.resetData();
+            this.chargelist();
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been Save.',
+              showConfirmButton: false,
+              timer: 1200
+            }) 
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Duplicate or Empty Values are not allowed',
+              text: '',
+              footer: ''
+            }); 
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => {
+          console.log(err.msg);
+        },
+        complete: () => subs.unsubscribe(),
+      });
+     }
+ 
   }
 
   chargedelete(i: string | number){

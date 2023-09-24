@@ -1198,6 +1198,8 @@ export class BillComponent implements OnInit {
 
     else if (category === "Service") {
       if (this.serviceLists[i].ID === null) {
+        this.serviceLists[i].DuaCal = 'delete';
+        this.calculateGrandTotal();
         this.serviceLists.splice(i, 1);
         this.calculateGrandTotal();
       } else {
@@ -1214,8 +1216,10 @@ export class BillComponent implements OnInit {
           if (result.isConfirmed) {
             this.sp.show();
             this.serviceLists[i].Status = 0;
+            this.serviceLists[i].DuaCal = 'delete';
             this.data.service = this.serviceLists[i];
             this.data.billMaseterData = this.BillMaster;
+            this.calculateGrandTotal();
             delete this.data.billDetailData
             const subs: Subscription = this.bill.deleteProduct(this.data).subscribe({
               next: (res: any) => {
