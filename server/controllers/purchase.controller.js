@@ -530,7 +530,7 @@ module.exports = {
             const doesProduct = await doesExistProduct(CompanyID, Body)
 
             if (doesProduct !== 0) {
-                return res.send({message: "Product Already Exist from this Price, You Can Not Update"})
+                return res.send({message: `Product Already Exist With Same Barcode Number, Please Change Purchase Price OR Retail Price`})
             }
 
             const uniqueBarcode = await generateUniqueBarcode(CompanyID, Body.PurchaseMaster.SupplierID, Body)
