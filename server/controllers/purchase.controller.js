@@ -109,7 +109,7 @@ module.exports = {
 
             if (detailDataForBarCode.length) {
                 for (const item of detailDataForBarCode) {
-                    const barcode = Number(item.BaseBarCode) * 1000
+                    const barcode = Number(item.BaseBarCode)
                     let count = 0;
                     count = item.Quantity;
                     for (j = 0; j < count; j++) {
@@ -246,7 +246,7 @@ module.exports = {
 
                     await Promise.all(
                         detailDataForBarCode.map(async (item) => {
-                            const barcode = Number(item.BaseBarCode) * 1000
+                            const barcode = Number(item.BaseBarCode)
                             let count = 0;
                             count = item.Quantity;
                             for (j = 0; j < count; j++) {
@@ -1901,7 +1901,7 @@ module.exports = {
 
             if (detailDataForBarCode.length) {
                 for (const item of detailDataForBarCode) {
-                    const barcode = Number(item.BaseBarCode) * 1000
+                    const barcode = Number(item.BaseBarCode)
                     let count = 0;
                     count = 1;
                     for (j = 0; j < count; j++) {
@@ -2347,7 +2347,7 @@ module.exports = {
 
                     await Promise.all(
                         detailDataForBarCode.map(async (item) => {
-                            const barcode = Number(item.BaseBarCode) * 1000
+                            const barcode = Number(item.BaseBarCode)
                             let count = 0;
                             count = 1;
                             for (j = 0; j < count; j++) {
