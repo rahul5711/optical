@@ -134,12 +134,12 @@ export class SaleReportComponent implements OnInit {
     this.dropdownCustomerGSTNo();
     this.BillMaster.FromDate = moment().format('YYYY-MM-DD');
     this.BillMaster.ToDate = moment().format('YYYY-MM-DD');
+    this.getBillMaster();
     if(!this.editSaleReport){
       this.employeeHide = true
     }else  if(this.BillMaster.FromDate === moment().format('YYYY-MM-DD')) {
       this.employeeHide = true
     }
-    this.getBillMaster();
   }
 
   getChangeDate() {
