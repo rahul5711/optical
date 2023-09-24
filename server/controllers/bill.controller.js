@@ -1154,8 +1154,9 @@ module.exports = {
                 DueAmount: billMaseterData.DueAmount
             }
 
-            console.log(bMaster, 'previous');
+            console.table(bMaster);
 
+            return
 
             if (billDetailData) {
 
