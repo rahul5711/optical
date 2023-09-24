@@ -1172,6 +1172,7 @@ export class BillComponent implements OnInit {
           if (result.isConfirmed) {
             // this.sp.show();
             this.billItemList[i].Status = 0;
+            this.billItemList[i].DuaCal = 'delete';
             this.data.billMaseterData = this.BillMaster;
             this.data.billDetailData = this.billItemList[i];
             this.calculateGrandTotal();
@@ -1180,9 +1181,7 @@ export class BillComponent implements OnInit {
             const subs: Subscription = this.bill.deleteProduct(this.data).subscribe({
               next: (res: any) => {
                 if (res.success) {
-                 
-                  // this.getBillById(res.data[0].BillMasterID);
-                 
+                  this.getBillById(res.data[0].BillMasterID);
                 } else {
                   this.as.errorToast(res.message)
                 }
