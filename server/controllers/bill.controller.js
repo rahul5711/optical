@@ -1235,6 +1235,167 @@ module.exports = {
             if (DueAmount < 0) {
                 CreditAmount = Math.abs(DueAmount)
                 bMaster.DueAmount = 0
+                DueAmount = 0
+            }
+
+            if (DueAmount === 0) {
+                paymentStatus = 'Paid'
+            }
+
+            // update bill naster
+            const [updateMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${paymentStatus}', Quantity=${bMaster.Quantity}, SubTotal=${bMaster.SubTotal}, GSTAmount=${bMaster.GSTAmount}, DiscountAmount=${bMaster.DiscountAmount}, TotalAmount=${bMaster.TotalAmount}, DueAmount=${bMaster.DueAmount} where ID=${bMaster.ID}`)
+            console.log(connected("Bill Master Update SuccessFUlly !!!"));
+
+
+            // if payment length zero we have to update payment
+            const [doesCheckPayment] = await mysql2.pool.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${bMaster.InvoiceNo}' and BillMasterID = ${bMaster.ID}`)
+
+            if (doesCheckPayment.length === 1) {
+                //  update payment
+                const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${bMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+
+                const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0 , DueAmount = ${bMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
+                console.log(connected("Payment Update SuccessFUlly !!!"));
+            }
+
+            // generate credit note
+            console.log(CreditAmount, 'CreditAmount');
+            if (CreditAmount !== 0) {
+                const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${bMaster.CustomerID}, ${CompanyID}, ${shopid},'Customer', 'Debit', now(), 'Customer Credit', '', '${bMaster.InvoiceNo}', ${CreditAmount}, 0, '',1,${LoggedOnUser}, now())`);
+
+                const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID, BillID, BillMasterID, CustomerID, CompanyID, Amount, DueAmount, PaymentType, Credit, Status, CreatedBy, CreatedOn)values(${savePaymentMaster.insertId},'${bMaster.InvoiceNo}',${bMaster.ID}, ${bMaster.CustomerID},${CompanyID}, ${CreditAmount}, 0, 'Customer Credit', 'Debit', 1,${LoggedOnUser}, now())`);
+
+                console.log(connected("Customer Credit Update SuccessFUlly !!!"));
+            }
+
+            response.data = [{
+                "CustomerID": bMaster.CustomerID,
+                "BillMasterID": bMaster.ID
+            }]
+            response.message = "success";
+
+            return res.send(response);
+
+
+
+        } catch (err) {
+            next(err)
+        }
+    },
+    cancelProduct: async (req, res, next) => {
+        try {
+            // return res.send({message: "coming soon !!!!"})
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const { billMaseterData, billDetailData, service } = req.body
+
+            if (!billMaseterData) return res.send({ message: "Invalid Query Data" })
+            // if (!billDetailData) return res.send({ message: "Invalid Query Data" })
+            // if (!billDetailData.length && !service.length) return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.ID === null || billMaseterData.ID === undefined || billMaseterData.ID == 0 || billMaseterData.ID === "") return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.ShopID === null || billMaseterData.ShopID === undefined || billMaseterData.ShopID == 0 || billMaseterData.ShopID === "") return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.InvoiceNo === null || billMaseterData.InvoiceNo === undefined || billMaseterData.InvoiceNo == 0 || billMaseterData.InvoiceNo === "") return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.CustomerID === null || billMaseterData.CustomerID === undefined) return res.send({ message: "Invalid Query Data" })
+
+
+            let bMaster = {
+                ID: billMaseterData.ID,
+                CustomerID: billMaseterData.CustomerID,
+                InvoiceNo: billMaseterData.InvoiceNo,
+                Quantity: billMaseterData.Quantity,
+                SubTotal: billMaseterData.SubTotal,
+                GSTAmount: billMaseterData.GSTAmount,
+                DiscountAmount: billMaseterData.DiscountAmount,
+                AddlDiscount: billMaseterData.AddlDiscount,
+                TotalAmount: billMaseterData.TotalAmount,
+                DueAmount: billMaseterData.DueAmount
+            }
+
+            if (billDetailData) {
+
+                const bDetail = {
+                    ID: billDetailData.ID,
+                    Quantity: billDetailData.Quantity,
+                    SubTotal: billDetailData.SubTotal,
+                    GSTAmount: billDetailData.GSTAmount,
+                    DiscountAmount: billDetailData.DiscountAmount,
+                    TotalAmount: billDetailData.TotalAmount,
+                    Manual: billDetailData.Manual,
+                    PreOrder: billDetailData.PreOrder
+                }
+
+                // update calculation
+                // bMaster.Quantity -= bDetail.Quantity
+                // bMaster.SubTotal -= bDetail.SubTotal
+                // bMaster.GSTAmount -= bDetail.GSTAmount
+                // bMaster.DiscountAmount -= bDetail.DiscountAmount
+                // bMaster.TotalAmount -= bDetail.TotalAmount
+                // bMaster.DueAmount -= bDetail.TotalAmount
+
+                // delete bill product
+
+                const [delProduct] = await mysql2.pool.query(`update billdetail set Status = 0, CancelStatus = 0, UpdatedBy=${LoggedOnUser} where ID = ${bDetail.ID}`)
+                console.log(connected("Bill Detail Update SuccessFUlly !!!"));
+
+                if (bDetail.Manual === 1) {
+                    const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Not Available' limit ${bDetail.Quantity}`)
+                    console.log(connected("Barcode Update SuccessFUlly !!!"));
+                }
+
+                if (bDetail.PreOrder === 1) {
+                    const [fetchBarcode] = await mysql2.pool.query(`select * from barcodemasternew where BillDetailID = ${bDetail.ID} and PurchaseDetailID = 0 and CurrentStatus = 'Pre Order' limit ${bDetail.Quantity}`);
+
+                    // if length available it means product in only pre order not purchsed right now, you have to only delete
+                    if (fetchBarcode.length && fetchBarcode.length === bDetail.Quantity) {
+                        const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Pre Order' and PurchaseDetailID = 0 limit ${bDetail.Quantity}`)
+                        console.log(connected("Barcode Update SuccessFUlly !!!"));
+                    }
+                    // if product is in preorder and has been purchased so we have to update for availlable
+                    else if (!fetchBarcode.length) {
+                        const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set BillDetailID=0,CurrentStatus='Available' where BillDetailID = ${bDetail.ID} and PurchaseDetailID != 0 limit ${bDetail.Quantity}`)
+                        console.log(connected("Barcode Update SuccessFUlly !!!"));
+                    }
+                }
+
+                if (bDetail.Manual === 0 && bDetail.PreOrder === 0) {
+                    const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus='Available', BillDetailID=0 where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Sold' limit ${bDetail.Quantity}`)
+                    console.log(connected("Barcode Update SuccessFUlly !!!"));
+                }
+            }
+
+            if (service) {
+
+                const bService = {
+                    ID: service.ID,
+                    BillID: service.BillID,
+                    GSTAmount: service.GSTAmount,
+                    Price: service.Price,
+                    TotalAmount: service.TotalAmount
+                }
+                // update calculation
+                // bMaster.SubTotal -= bService.Price
+                // bMaster.GSTAmount -= bService.GSTAmount
+                // bMaster.TotalAmount -= bService.TotalAmount
+                // bMaster.DueAmount -= bService.TotalAmount
+
+                // delete service
+
+                const [delService] = await mysql2.pool.query(`update billservice set Status = 0 where ID = ${bService.ID}`)
+
+                console.log(connected("Bill Service Update SuccessFUlly !!!"));
+            }
+
+            let DueAmount = 0
+            let CreditAmount = 0
+            DueAmount = bMaster.DueAmount
+            let paymentStatus = 'Unpaid'
+            if (DueAmount < 0) {
+                CreditAmount = Math.abs(DueAmount)
+                bMaster.DueAmount = 0
+                DueAmount = 0
             }
 
             if (DueAmount === 0) {
@@ -1677,7 +1838,7 @@ module.exports = {
             qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, billdetail.ProductStatus as ProductStatus, billdetail.HSNCode as HSNCode, billdetail.ProductDeliveryDate as ProductDeliveryDate,billdetail.GSTType AS GSTType ,billdetail.UnitPrice AS UnitPrice,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and (billdetail.Manual = 0 || billdetail.Manual = 1 ) and billmaster.Status = 1 AND shop.Status = 1 ` +
                 Parem + " GROUP BY billmaster.InvoiceNo ORDER BY billmaster.ID DESC"
 
-            let [datum] = await mysql2.pool.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
+            let [datum] = await mysql2.pool.query(`SELECT SUM(billmaster.Quantity) as totalQty, SUM(billmaster.GSTAmount) as totalGstAmount, SUM(billmaster.TotalAmount) as totalAmount, SUM(billmaster.DiscountAmount) as totalDiscount, SUM(billmaster.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
             left join user on user.ID = billmaster.Employee
             LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.Status = 1  AND billdetail.CompanyID = ${CompanyID}  ` + Parem)
 

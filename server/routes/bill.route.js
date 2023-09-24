@@ -22,6 +22,7 @@ router.post('/billHistoryByCustomerOld', verifyAccessTokenAdmin, Controller.bill
 router.post('/deleteBill', verifyAccessTokenAdmin, Controller.deleteBill)
 router.post('/updatePower', verifyAccessTokenAdmin, Controller.updatePower)
 router.post('/deleteProduct', verifyAccessTokenAdmin, Controller.deleteProduct)
+router.post('/cancelProduct', verifyAccessTokenAdmin, Controller.cancelProduct)
 router.post('/updateProduct', verifyAccessTokenAdmin, Controller.updateProduct)
 router.post('/billPrint', verifyAccessTokenAdmin, Controller.billPrint)
 
