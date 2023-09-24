@@ -535,6 +535,11 @@ module.exports = {
 
             console.log("Product Update SuccessFUlly !!!");
 
+
+            const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set RetailPrice=${Body.RetailPrice},WholeSalePrice=${Body.WholeSalePrice}, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where PurchaseDetailID = ${Body.ID} and CompanyID = ${CompanyID}`)
+
+            console.log("Barcode Update SuccessFUlly !!!");
+
             // update purchasemaster
             const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${Body.PurchaseMaster.InvoiceNo}' and ShopID = ${shopid}`)
 
@@ -1469,6 +1474,7 @@ module.exports = {
                     "totalUnitPrice": 0,
                     "totalRetailPrice": 0,
                     "totalWholeSalePrice": 0,
+                    "totalSubTotalPrice": 0,
                     "gst_details": []
                 }], success: true, message: ""
             }
@@ -1484,7 +1490,7 @@ module.exports = {
 
 
 
-            let [datum] = await mysql2.pool.query(`SELECT SUM(purchasedetailnew.Quantity) as totalQty, SUM(purchasedetailnew.GSTAmount) as totalGstAmount, SUM(purchasedetailnew.TotalAmount) as totalAmount, SUM(purchasedetailnew.DiscountAmount) as totalDiscount, SUM(purchasedetailnew.UnitPrice) as totalUnitPrice, SUM(purchasedetailnew.RetailPrice) as totalRetailPrice, SUM(purchasedetailnew.WholeSalePrice) as totalWholeSalePrice FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1 and purchasemasternew.PStatus = 0 AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem)
+            let [datum] = await mysql2.pool.query(`SELECT SUM(purchasedetailnew.Quantity) as totalQty, SUM(purchasedetailnew.GSTAmount) as totalGstAmount, SUM(purchasedetailnew.TotalAmount) as totalAmount, SUM(purchasedetailnew.DiscountAmount) as totalDiscount, SUM(purchasedetailnew.UnitPrice) as totalUnitPrice, SUM(purchasedetailnew.RetailPrice) as totalRetailPrice,SUM(purchasedetailnew.SubTotal) as totalSubTotalPrice, SUM(purchasedetailnew.WholeSalePrice) as totalWholeSalePrice FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1 and purchasemasternew.PStatus = 0 AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem)
 
             let [data] = await mysql2.pool.query(qry);
 
@@ -1527,6 +1533,7 @@ module.exports = {
             response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice : 0
             response.calculation[0].totalRetailPrice = datum[0].totalRetailPrice ? datum[0].totalRetailPrice : 0
             response.calculation[0].totalWholeSalePrice = datum[0].totalWholeSalePrice ? datum[0].totalWholeSalePrice : 0
+            response.calculation[0].totalSubTotalPrice = datum[0].totalSubTotalPrice ? datum[0].totalSubTotalPrice : 0
 
             if (data.length && values.length) {
                 for (const item of data) {
