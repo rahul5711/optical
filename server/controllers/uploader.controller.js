@@ -323,7 +323,7 @@ module.exports = {
 
                 for (const item of data) {
                     console.log(item);
-                    const [savePurchaseDetail] = await mysql2.pool.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn, Is_Upload, BarcodeExist)values(${savePurchase.insertId},${purchase.CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${item.BaseBarCode}',${item.Ledger},1,'${item.BaseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}',${item.ProductExpDate},0,0,${LoggedOnUser},now(), 1, ${BarcodeExist === 0 ? 0 : 1})`)
+                    const [savePurchaseDetail] = await mysql2.pool.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn, Is_Upload, BarcodeExist)values(${savePurchase.insertId},${purchase.CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${item.BaseBarCode}',${item.Ledger},1,'${item.BaseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}',${item.ProductExpDate},0,0,${LoggedOnUser},now(), 1, ${item.BarcodeExist === 0 ? 0 : 1})`)
                 }
 
                 console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
@@ -336,9 +336,10 @@ module.exports = {
                 if (detailDataForBarCode.length) {
                     for (const item of detailDataForBarCode) {
                         let barcode = 0
+                        console.log(item.BarcodeExist, 'item.BarcodeExistitem.BarcodeExistitem.BarcodeExist');
                         if (item.BarcodeExist === 1) {
                             barcode = item.BaseBarCode
-                        } else {
+                        } else if(item.BarcodeExist === 0) {
                             barcode =  Number(item.BaseBarCode) * 1000
                         }
                         let count = 0;
