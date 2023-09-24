@@ -526,7 +526,12 @@ module.exports = {
                 return res.send({ message: `You have product already sold` })
             }
 
+            Body.Multiple = 0
+            const doesProduct = await doesExistProduct(CompanyID, Body)
 
+            if (doesProduct !== 0) {
+                return res.send({message: "Product Already Exist from this Price, You Can Not Update"})
+            }
 
             const uniqueBarcode = await generateUniqueBarcode(CompanyID, Body.PurchaseMaster.SupplierID, Body)
 
@@ -2063,8 +2068,8 @@ module.exports = {
                 PurchaseMaster,
                 PurchaseDetail,
             } = req.body;
-             console.log(PurchaseMaster,'PurchaseMaster========================');
-             console.log(PurchaseMaster,'PurchaseDetail========================');
+            console.log(PurchaseMaster, 'PurchaseMaster========================');
+            console.log(PurchaseMaster, 'PurchaseDetail========================');
 
             // check
 
@@ -3333,7 +3338,7 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
 
-            const {PurchaseDate, SupplierCn, ID } = req.body;
+            const { PurchaseDate, SupplierCn, ID } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -3351,7 +3356,7 @@ module.exports = {
             const [doesCheckCn] = await mysql2.pool.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${SupplierCn.trim()}' and PaymentType = 'Vendor Credit' and Credit = 'Credit'`)
 
             if (doesCheckCn.length) {
-               return res.send({message: `PurchaseReturn Already exist from this SupplierCn ${SupplierCn}`})
+                return res.send({ message: `PurchaseReturn Already exist from this SupplierCn ${SupplierCn}` })
             }
 
             let supplierId = doesExist[0].SupplierID

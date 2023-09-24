@@ -39,6 +39,8 @@ router.post('/getSalereports', verifyAccessTokenAdmin, Controller.getSalereports
 
 router.post('/getSalereportsDetail', verifyAccessTokenAdmin, Controller.getSalereportsDetail)
 
+router.post('/getCancelProductReport', verifyAccessTokenAdmin, Controller.getCancelProductReport)
+
 // po supplier
 router.post('/getSupplierPo', verifyAccessTokenAdmin, Controller.getSupplierPo)
 router.post('/assignSupplierPo', verifyAccessTokenAdmin, Controller.assignSupplierPo)
