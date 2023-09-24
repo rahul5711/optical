@@ -1154,10 +1154,6 @@ module.exports = {
                 DueAmount: billMaseterData.DueAmount
             }
 
-            console.table(bMaster);
-
-            return
-
             if (billDetailData) {
 
                 const bDetail = {
@@ -1172,12 +1168,12 @@ module.exports = {
                 }
 
                 // update calculation
-                bMaster.Quantity -= bDetail.Quantity
-                bMaster.SubTotal -= bDetail.SubTotal
-                bMaster.GSTAmount -= bDetail.GSTAmount
-                bMaster.DiscountAmount -= bDetail.DiscountAmount
-                bMaster.TotalAmount -= bDetail.TotalAmount
-                bMaster.DueAmount -= bDetail.TotalAmount
+                // bMaster.Quantity -= bDetail.Quantity
+                // bMaster.SubTotal -= bDetail.SubTotal
+                // bMaster.GSTAmount -= bDetail.GSTAmount
+                // bMaster.DiscountAmount -= bDetail.DiscountAmount
+                // bMaster.TotalAmount -= bDetail.TotalAmount
+                // bMaster.DueAmount -= bDetail.TotalAmount
 
                 // delete bill product
 
@@ -1220,10 +1216,10 @@ module.exports = {
                     TotalAmount: service.TotalAmount
                 }
                 // update calculation
-                bMaster.SubTotal -= bService.Price
-                bMaster.GSTAmount -= bService.GSTAmount
-                bMaster.TotalAmount -= bService.TotalAmount
-                bMaster.DueAmount -= bService.TotalAmount
+                // bMaster.SubTotal -= bService.Price
+                // bMaster.GSTAmount -= bService.GSTAmount
+                // bMaster.TotalAmount -= bService.TotalAmount
+                // bMaster.DueAmount -= bService.TotalAmount
 
                 // delete service
 

@@ -222,7 +222,7 @@ module.exports = {
 
             //  barcode initiated for company
 
-            const barcode = { CompanyID: saveCompany.insertId, SB: '10000', PB: '90000', MB: '00001' }
+            const barcode = { CompanyID: saveCompany.insertId, SB: '10000000', PB: '90000000', MB: '00001000' }
 
             const [savebarcode] = await mysql2.pool.query(`insert into barcode(CompanyID, SB, PB, MB, Status, CreatedBy, CreatedOn)values(${barcode.CompanyID}, '${barcode.SB}', '${barcode.PB}', '${barcode.MB}',1,0,now())`)
 
