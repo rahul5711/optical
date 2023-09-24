@@ -1467,6 +1467,8 @@ module.exports = {
                     "totalAmount": 0,
                     "totalDiscount": 0,
                     "totalUnitPrice": 0,
+                    "totalRetailPrice": 0,
+                    "totalWholeSalePrice": 0,
                     "gst_details": []
                 }], success: true, message: ""
             }
@@ -1482,7 +1484,7 @@ module.exports = {
 
 
 
-            let [datum] = await mysql2.pool.query(`SELECT SUM(purchasedetailnew.Quantity) as totalQty, SUM(purchasedetailnew.GSTAmount) as totalGstAmount, SUM(purchasedetailnew.TotalAmount) as totalAmount, SUM(purchasedetailnew.DiscountAmount) as totalDiscount, SUM(purchasedetailnew.SubTotal) as totalUnitPrice  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1 and purchasemasternew.PStatus = 0 AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem)
+            let [datum] = await mysql2.pool.query(`SELECT SUM(purchasedetailnew.Quantity) as totalQty, SUM(purchasedetailnew.GSTAmount) as totalGstAmount, SUM(purchasedetailnew.TotalAmount) as totalAmount, SUM(purchasedetailnew.DiscountAmount) as totalDiscount, SUM(purchasedetailnew.UnitPrice) as totalUnitPrice, SUM(purchasedetailnew.RetailPrice) as totalRetailPrice, SUM(purchasedetailnew.WholeSalePrice) as totalWholeSalePrice FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1 and purchasemasternew.PStatus = 0 AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem)
 
             let [data] = await mysql2.pool.query(qry);
 
@@ -1523,6 +1525,8 @@ module.exports = {
             response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount : 0
             response.calculation[0].totalDiscount = datum[0].totalDiscount ? datum[0].totalDiscount : 0
             response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice : 0
+            response.calculation[0].totalRetailPrice = datum[0].totalRetailPrice ? datum[0].totalRetailPrice : 0
+            response.calculation[0].totalWholeSalePrice = datum[0].totalWholeSalePrice ? datum[0].totalWholeSalePrice : 0
 
             if (data.length && values.length) {
                 for (const item of data) {
