@@ -549,12 +549,16 @@
 
                                 </td>
                                 <td>{{i+1}}</td>
-                                <td style="white-space: nowrap;"> <button class="bgRemove"  >
+                                <td style="white-space: nowrap;"> 
+                                    <button class="bgRemove" >
+                                        
+                                    <button class="bgRemove" [disabled]="data.Status === 0 " (click)="deleteItem('Product', i)">
+                                        <mat-icon *ngIf="deleteCustomerBill && (data.Status !== 0 || data.Status === 0)  || (data.Status === 0 || data.CancelStatus == 1) "  class="deletes_icon ms-1"   title="Delete">delete_forever</mat-icon>
+                                    </button>
                                     
-                                    <mat-icon *ngIf="deleteCustomerBill && data.CancelStatus === 1" class="deletes_icon ms-1" (click)="deleteItem('Product', i)" title="Delete">delete_forever</mat-icon>
-
-                                    <mat-icon *ngIf="deleteCustomerBill && data.CancelStatus === 0" class="deletes_icon  ms-1" (click)="cancelProduct('Product', i)" title="Cancel">cancel</mat-icon>
-
+                                    <button class="bgRemove" [disabled]="data.CancelStatus === 0 || data.Status === 0" (click)="cancelProduct('Product', i)" >
+                                    <mat-icon *ngIf="(data.CancelStatus === 0 || data.CancelStatus !== 0) || (data.Status == 0 && data.CancelStatus == 0)" class="deletes_icon  ms-1" title="Cancel">cancel</mat-icon>
+                                   </button>
                                    
 
                                     <mat-icon *ngIf="data.Status !== 0" class="edit_icon ms-1" (click)="openModal(content,data)"  >remove_red_eye</mat-icon>
