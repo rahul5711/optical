@@ -549,12 +549,16 @@
 
                                 </td>
                                 <td>{{i+1}}</td>
-                                <td style="white-space: nowrap;"> <button class="bgRemove" *ngIf="data.Status !== 0" >
-                                    <mat-icon *ngIf="deleteCustomerBill" class="deletes_icon ms-1" (click)="deleteItem('Product', i)" >delete_forever</mat-icon>
-                                    <mat-icon class="edit_icon ms-1" (click)="openModal(content,data)"  >remove_red_eye</mat-icon>
+                                <td style="white-space: nowrap;"> <button class="bgRemove"  >
+                                    
+                                    <mat-icon *ngIf="deleteCustomerBill && data.CancelStatus === 1" class="deletes_icon ms-1" (click)="deleteItem('Product', i)" title="Delete">delete_forever</mat-icon>
 
-                                    <mat-icon  class="edit_icon1 ms-1" (click)="showInput(data)"
-                                    *ngIf="!data.UpdateProduct && editCustomerBill">edit
+                                    <mat-icon *ngIf="deleteCustomerBill && data.CancelStatus === 0" class="deletes_icon  ms-1" (click)="cancelProduct('Product', i)" title="Cancel">cancel</mat-icon>
+
+                                   
+
+                                    <mat-icon *ngIf="data.Status !== 0" class="edit_icon ms-1" (click)="openModal(content,data)"  >remove_red_eye</mat-icon>
+                                    <mat-icon *ngIf="!data.UpdateProduct && editCustomerBill && data.Status !== 0" class="edit_icon1 ms-1" (click)="showInput(data)" >edit
                                 </mat-icon>
                                 <mat-icon class="edit_icon1 ms-1"
                                     (click)="showInput(data)"

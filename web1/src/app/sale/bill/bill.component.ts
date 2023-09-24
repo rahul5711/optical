@@ -1195,7 +1195,6 @@ export class BillComponent implements OnInit {
         })
       }
     }
-
     else if (category === "Service") {
       if (this.serviceLists[i].ID === null) {
         this.serviceLists[i].DuaCal = 'delete';
@@ -1240,8 +1239,57 @@ export class BillComponent implements OnInit {
 
       }
     }
-
   }
+
+  cancelProduct(category: any, i: any) {
+    if (category === "Product" ) {
+      if (this.billItemList[i].ID === null) {
+        this.billItemList[i].DuaCal = 'delete';
+        this.calculateGrandTotal();
+        this.billItemList.splice(i, 1);
+        this.calculateGrandTotal();
+      }  else {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!',
+          backdrop: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // this.sp.show();
+            this.billItemList[i].Status = 0;
+            this.billItemList[i].CancelStatus = 0;
+            this.billItemList[i].DuaCal = 'delete';
+            this.data.billMaseterData = this.BillMaster;
+            this.data.billDetailData = this.billItemList[i];
+            this.calculateGrandTotal();
+            delete this.data.service
+            this.sp.show()
+            const subs: Subscription = this.bill.cancelProduct(this.data).subscribe({
+              next: (res: any) => {
+                if (res.success) {
+                  this.getBillById(res.data[0].BillMasterID);
+                } else {
+                  this.as.errorToast(res.message)
+                }
+                this.sp.hide()
+              },
+              error: (err: any) => console.log(err.message),
+              complete: () => subs.unsubscribe(),
+         
+            });
+          }
+        })
+      }
+    }
+  }
+
+
+
 
   // update power 
   openModal(content: any, data:any){

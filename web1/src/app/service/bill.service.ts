@@ -60,6 +60,10 @@ export class BillService {
     return this.httpClient.post<any>(this.url + '/deleteProduct', Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
+  cancelProduct(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/cancelProduct', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
   getList(Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/list', Body, httpOptions)
     .pipe(catchError(this.handleError));
