@@ -59,9 +59,6 @@ export class CompanyLoginHistoryComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.collectionSize = res.count;
-          res.data.forEach((el: any) => {
-            el.LoginTime = moment(el.LoginTime).format(`${this.companySetting.DateFormat} h:mm a`);
-          })
           this.dataList = res.data
           this.as.successToast(res.message)
         }else{
@@ -126,5 +123,9 @@ export class CompanyLoginHistoryComponent implements OnInit {
       this.getList();
     }
     });
+  }
+
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
   }
 }

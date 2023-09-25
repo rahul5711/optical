@@ -162,9 +162,9 @@ export class SaleReportComponent implements OnInit {
     this.getGSTList();
     this.dropdownCustomerlist();
     this.dropdownCustomerGSTNo();
-    this.BillMaster.FromDate = moment().format('YYYY-MM-DD');
-    this.BillMaster.ToDate = moment().format('YYYY-MM-DD');
-    this.getBillMaster();
+    // this.BillMaster.FromDate = moment().format('YYYY-MM-DD');
+    // this.BillMaster.ToDate = moment().format('YYYY-MM-DD');
+    // this.getBillMaster();
     if(!this.editSaleReport){
       this.employeeHide = true
     }else  if(this.BillMaster.FromDate === moment().format('YYYY-MM-DD')) {
@@ -261,14 +261,16 @@ export class SaleReportComponent implements OnInit {
   getBillMaster(){
     this.sp.show()
     let Parem = '';
-
+    let time = '00:00:01'
+    let time2 = '23:59:00'
     if (this.BillMaster.FromDate !== '' && this.BillMaster.FromDate !== null && this.BillMaster.FilterTypes === 'BillDate'){
-        let FromDate =  moment(this.BillMaster.FromDate).format('YYYY-MM-DD')
-        Parem = Parem + ' and billmaster.BillDate between ' +  `'${FromDate}'`;
+   
+        let FromDate =  moment(this.BillMaster.FromDate).format('YYYY-MM-DD') + ' ' + time
+        Parem = Parem + ' and billmaster.BillDate between ' +  `'${FromDate}'` ;
     }
 
     if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null  && this.BillMaster.FilterTypes === 'BillDate'){
-        let ToDate =  moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
+        let ToDate =  moment(this.BillMaster.ToDate).format('YYYY-MM-DD') + ' ' + time2
         Parem = Parem + ' and ' + `'${ToDate}'`; 
     }
 
@@ -460,7 +462,7 @@ export class SaleReportComponent implements OnInit {
 
     if (this.Billdetail.FromDate !== '' && this.Billdetail.FromDate !== null && this.Billdetail.FilterTypes === 'BillDate'){
         let FromDate =  moment(this.Billdetail.FromDate).format('YYYY-MM-DD')
-        Parem = Parem + ' and billmaster.BillDate between ' +  `'${FromDate}'`;
+        Parem = Parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between ' +  `'${FromDate}'`;
     }
 
     if (this.Billdetail.ToDate !== '' && this.Billdetail.ToDate !== null  && this.Billdetail.FilterTypes === 'BillDate'){
@@ -470,7 +472,7 @@ export class SaleReportComponent implements OnInit {
 
     if (this.Billdetail.FromDate !== '' && this.Billdetail.FromDate !== null && this.Billdetail.FilterTypes === 'DeliveryDate'){
       let FromDate =  moment(this.Billdetail.FromDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and billmaster.DeliveryDate between ' +  `'${FromDate}'`; 
+      Parem = Parem + ' and DATE_FORMAT(billmaster.DeliveryDate, "%Y-%m-%d") between ' +  `'${FromDate}'`; 
     }
 
     if (this.Billdetail.ToDate !== '' && this.Billdetail.ToDate !== null  && this.Billdetail.FilterTypes === 'DeliveryDate'){
@@ -574,7 +576,7 @@ export class SaleReportComponent implements OnInit {
 
     if (this.service.FromDate !== '' && this.service.FromDate !== null){
       let FromDate =  moment(this.service.FromDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and billmaster.BillDate between ' +  `'${FromDate}'`; }
+      Parem = Parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between ' +  `'${FromDate}'`; }
 
     if (this.service.ToDate !== '' && this.service.ToDate !== null){
       let ToDate =  moment(this.service.ToDate).format('YYYY-MM-DD')
@@ -707,7 +709,7 @@ export class SaleReportComponent implements OnInit {
 
     if (this.cancel.FromDate !== '' && this.cancel.FromDate !== null && this.cancel.FilterTypes === 'BillDate'){
         let FromDate =  moment(this.cancel.FromDate).format('YYYY-MM-DD')
-        Parem = Parem + ' and billmaster.BillDate between ' +  `'${FromDate}'`;
+        Parem = Parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between ' +  `'${FromDate}'`;
     }
 
     if (this.cancel.ToDate !== '' && this.cancel.ToDate !== null  && this.cancel.FilterTypes === 'BillDate'){
@@ -899,7 +901,7 @@ getProductPending(){
 
   if (this.pending.FromDate !== '' && this.pending.FromDate !== null && this.pending.FilterTypes === 'BillDate'){
       let FromDate =  moment(this.pending.FromDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and billmaster.BillDate between ' +  `'${FromDate}'`;
+      Parem = Parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between ' +  `'${FromDate}'`;
   }
 
   if (this.pending.ToDate !== '' && this.pending.ToDate !== null  && this.pending.FilterTypes === 'BillDate'){
@@ -966,7 +968,6 @@ getProductPending(){
         this.pendingtotalGstAmount = res.calculation[0].totalGstAmount;
         this.pendingtotalAmount = res.calculation[0].totalAmount;
         this.gstpending = res.calculation[0].gst_details
-console.log(res);
 
       }else{
         this.as.errorToast(res.message)
