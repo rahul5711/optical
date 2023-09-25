@@ -196,7 +196,7 @@ export class PurchaseReportComponent implements OnInit {
     this.PurchaseMasterList = []
     if (this.PurchaseMaster.FromDate !== '' && this.PurchaseMaster.FromDate !== null){
       let FromDate =  moment(this.PurchaseMaster.FromDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and purchasemasternew.PurchaseDate between ' +  `'${FromDate}'`; }
+      Parem = Parem + ' and DATE_FORMAT(purchasemasternew.PurchaseDate, "%Y-%m-%d")  between ' +  `'${FromDate}'`; }
 
     if (this.PurchaseMaster.ToDate !== '' && this.PurchaseMaster.ToDate !== null){
       let ToDate =  moment(this.PurchaseMaster.ToDate).format('YYYY-MM-DD')
@@ -374,7 +374,7 @@ export class PurchaseReportComponent implements OnInit {
 
     if (this.PurchaseDetail.FromDate !== '' && this.PurchaseDetail.FromDate !== null){
       let FromDate =  moment(this.PurchaseDetail.FromDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and purchasemasternew.PurchaseDate between ' +  `'${FromDate}'`; }
+      Parem = Parem + ' and DATE_FORMAT(purchasemasternew.PurchaseDate, "%Y-%m-%d")  between ' +  `'${FromDate}'`; }
 
     if (this.PurchaseDetail.ToDate !== '' && this.PurchaseDetail.ToDate !== null){
       let ToDate =  moment(this.PurchaseDetail.ToDate).format('YYYY-MM-DD')
@@ -467,7 +467,7 @@ export class PurchaseReportComponent implements OnInit {
     this.PurchaseChargeList = []
     if (this.charge.FromDate !== '' && this.charge.FromDate !== null){
       let FromDate =  moment(this.charge.FromDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and purchasemasternew.PurchaseDate between ' +  `'${FromDate}'`; }
+      Parem = Parem + ' and DATE_FORMAT(purchasemasternew.PurchaseDate, "%Y-%m-%d")  between ' +  `'${FromDate}'`; }
 
     if (this.charge.ToDate !== '' && this.charge.ToDate !== null){
       let ToDate =  moment(this.charge.ToDate).format('YYYY-MM-DD')

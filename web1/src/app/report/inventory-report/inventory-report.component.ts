@@ -274,7 +274,7 @@ export class InventoryReportComponent implements OnInit {
 
     if (this.inventory.FromDate !== '' && this.inventory.FromDate !== null){
       let FromDate =  moment(this.inventory.FromDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and purchasemasternew.PurchaseDate between ' +  `'${FromDate}'`; }
+      Parem = Parem + ' and  DATE_FORMAT(purchasemasternew.PurchaseDate, "%Y-%m-%d")  between ' +  `'${FromDate}'`; }
 
     if (this.inventory.ToDate !== '' && this.inventory.ToDate !== null){
       let ToDate =  moment(this.inventory.ToDate).format('YYYY-MM-DD')
@@ -442,7 +442,7 @@ export class InventoryReportComponent implements OnInit {
   
       if (this.ProductExpiry.FromDate !== '' && this.ProductExpiry.FromDate !== null){
         let FromDate =  moment(this.ProductExpiry.FromDate).format('YYYY-MM-DD')
-        Parem = Parem + ' and purchasedetailnew.ProductExpDate between ' +  `'${FromDate}'`; }
+        Parem = Parem + ' and  DATE_FORMAT(purchasedetailnew.ProductExpDate, "%Y-%m-%d")  between ' +  `'${FromDate}'`; }
   
       if (this.ProductExpiry.ToDate !== '' && this.ProductExpiry.ToDate !== null){
         let ToDate =  moment(this.ProductExpiry.ToDate).format('YYYY-MM-DD')

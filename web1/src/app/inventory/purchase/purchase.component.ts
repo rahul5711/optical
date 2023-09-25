@@ -108,9 +108,9 @@ export class PurchaseComponent implements OnInit {
     if (this.id != 0) {
       this.getPurchaseById();
     } else {
-      this.selectedPurchaseMaster.PurchaseDate = moment().format('YYYY-MM-DD');
+      this.selectedPurchaseMaster.PurchaseDate = moment().format('yyyy-MM-DD');
     }
-    this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", second:"2-digit", hour12: false })
+    this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit',  minute: "2-digit", second:"2-digit", hourCycle:"h23", hour12: false })
     
   }
 
@@ -200,6 +200,8 @@ export class PurchaseComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.specList = res.data;
+          console.log(this.specList);
+          
           this.getSptTableData();
         } else {
           this.as.errorToast(res.message)

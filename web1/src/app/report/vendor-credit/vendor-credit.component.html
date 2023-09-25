@@ -93,6 +93,7 @@
                                                 <th>Shop</th>
                                                 <th>Amount</th>
                                                 <th>PaidAmount</th>
+                                                <th>Balance</th>
                                                 <th>Remark</th>
                                                 <th>Return</th>
                                               
@@ -103,6 +104,7 @@
                                                         aria-hidden="true" type="button" (click)="exportAsXLSX()"> </i>
                                                    
                                                 </td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -123,6 +125,7 @@
                                                         *ngIf="data.AreaName !== 'null'">({{data.AreaName}})</span></td>
                                                 <td>{{data.Amount}}</td>
                                                 <td>{{data.PaidAmount}}</td>
+                                                <td> {{data.Amount - data.PaidAmount}} </td>
                                                 <td>{{data.Remark}}</td>
                                                 <td>{{data.Is_Return}}</td>
                                              

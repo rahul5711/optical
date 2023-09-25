@@ -166,7 +166,7 @@ export class SupplierPoComponent implements OnInit {
 
     if (this.data.FromDate !== '' && this.data.FromDate !== null) {
       let FromDate = moment(this.data.FromDate).format('YYYY-MM-DD')
-      Parem = Parem + 'and billmaster.BillDate between ' + `'${FromDate}'`;
+      Parem = Parem + 'and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
     }
 
     if (this.data.ToDate !== '' && this.data.ToDate !== null) {
