@@ -70,4 +70,8 @@ export class FitterInvoiceDetailComponent implements OnInit {
     })
   }
 
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
+
 }

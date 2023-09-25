@@ -70,7 +70,6 @@ export class SupplierPoComponent implements OnInit {
     this.dropdownShoplist();
     this.dropdownSupplierlist();
     this.getSupplierPo();
-  
     this.sp.hide()
   }
 

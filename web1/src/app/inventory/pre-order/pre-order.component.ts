@@ -409,7 +409,7 @@ export class PreOrderComponent implements OnInit {
     this.sp.show()
     // this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
     this.data.PurchaseDetail = JSON.stringify(this.itemList);
-    this.selectedPurchaseMaster.PurchaseDate = this.selectedPurchaseMaster.PurchaseDate + ' ' + this.currentTime;
+    this.selectedPurchaseMaster.PurchaseDate =  this.selectedPurchaseMaster.PurchaseDate + ' ' + this.currentTime;
     this.data.PurchaseMaster = this.selectedPurchaseMaster;
     const subs: Subscription = this.purchaseService.createPreOrder(this.data).subscribe({
       next: (res: any) => {

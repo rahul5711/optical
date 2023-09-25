@@ -40,12 +40,12 @@ export class ProductReturnComponent implements OnInit {
   prodList:any;
   specList: any;
   gstList: any;
-  DetailtotalQty: any;
-  DetailtotalDiscount: any;
-  DetailtotalUnitPrice: any;
-  DetailtotalAmount: any;
-  DetailtotalGstAmount: any;
-  gstdetails:any
+  DetailtotalQty = 0;
+  DetailtotalDiscount= 0;
+  DetailtotalUnitPrice= 0;
+  DetailtotalAmount= 0;
+  DetailtotalGstAmount = 0;
+  gstdetails:any = []
 
 
   constructor(
@@ -101,13 +101,13 @@ export class ProductReturnComponent implements OnInit {
     this.getProductList();
     this.getGSTList();
     // ReturnMaster Today Data
-    this.ReturnMaster.FromDate = moment().format('YYYY-MM-DD');
-    this.ReturnMaster.ToDate = moment().format('YYYY-MM-DD');
-    this.getPurchaseReturnMaster();
+    // this.ReturnMaster.FromDate = moment().format('YYYY-MM-DD');
+    // this.ReturnMaster.ToDate = moment().format('YYYY-MM-DD');
+    // this.getPurchaseReturnMaster();
     // ReturnDetail Today Data
-    this.ReturnDetail.FromDate = moment().format('YYYY-MM-DD');
-    this.ReturnDetail.ToDate = moment().format('YYYY-MM-DD');
-    this.getReturnDetails();
+    // this.ReturnDetail.FromDate = moment().format('YYYY-MM-DD');
+    // this.ReturnDetail.ToDate = moment().format('YYYY-MM-DD');
+    // this.getReturnDetails();
     this.sp.hide()
   }
 
@@ -394,11 +394,12 @@ export class ProductReturnComponent implements OnInit {
       PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
     };
     this.RetureDetailList = [];
-    this.DetailtotalQty = ''
-    this.DetailtotalDiscount = ''
-    this.DetailtotalUnitPrice = ''
-    this.DetailtotalGstAmount =''
-    this.DetailtotalAmount = ''
+    this.DetailtotalQty = 0;
+    this.DetailtotalDiscount= 0;
+    this.DetailtotalUnitPrice= 0;
+    this.DetailtotalAmount= 0;
+    this.DetailtotalGstAmount = 0;
+    this.gstdetails = []
   }
   
   openModal(content: any) {

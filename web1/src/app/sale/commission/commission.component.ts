@@ -144,7 +144,7 @@ export class CommissionComponent implements OnInit {
     this.sp.show();
     this.data.ShopID = Number(this.selectedShop[0]);
     this.data.PayeeName = Number(this.data.PayeeName);
-    this.data.PurchaseDate = this.data.PurchaseDate.moment().format('YYYY-MM-DD') +  ' ' + this.currentTime; 
+    this.data.PurchaseDate = moment().format('yyyy-MM-dd') +  ' ' + this.currentTime; 
     this.data1.Master = this.data;
 
     let CommissionDetails: any = []

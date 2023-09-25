@@ -151,9 +151,9 @@ export class PurchaseReportComponent implements OnInit {
     this.getProductList();
     this.getGSTList();
     // PurchaseMaster Today Data
-    this.PurchaseMaster.FromDate =  moment(this.PurchaseMaster.FromDate).format('YYYY-MM-DD')
-    this.PurchaseMaster.ToDate = moment(this.PurchaseMaster.ToDate).format('YYYY-MM-DD')
-    this.getPurchaseMaster();
+    // this.PurchaseMaster.FromDate =  moment(this.PurchaseMaster.FromDate).format('YYYY-MM-DD')
+    // this.PurchaseMaster.ToDate = moment(this.PurchaseMaster.ToDate).format('YYYY-MM-DD')
+    // this.getPurchaseMaster();
     // PurchaseMaster Today Data
     // this.PurchaseDetail.FromDate = moment().format('YYYY-MM-DD');
     // this.PurchaseDetail.ToDate = moment().format('YYYY-MM-DD');

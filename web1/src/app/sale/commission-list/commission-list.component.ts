@@ -104,9 +104,6 @@ export class CommissionListComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.collectionSize = res.count;
-          res.data.forEach((el: any) => {
-            el.PurchaseDate = moment(el.PurchaseDate).format(`${this.companySetting.DateFormat}`);
-          })
           this.dataList = res.data;
           this.as.successToast(res.message)
         } else {
@@ -137,8 +134,6 @@ export class CommissionListComponent implements OnInit {
     })
   }
 
-
-
   openModal(content: any) {
     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
   }
@@ -157,6 +152,10 @@ export class CommissionListComponent implements OnInit {
       }
     })
     this.excelService.exportAsExcelFile(data, 'fitter_Invocielist');
+  }
+
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
   }
 
 }

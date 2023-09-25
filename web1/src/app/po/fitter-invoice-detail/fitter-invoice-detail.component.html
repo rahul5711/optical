@@ -89,6 +89,7 @@
                                             <thead class="text-center">
                                                 <tr class="text-center">
                                                     <th>Sno.</th>
+                                                    <th>Customer Invoice</th>
                                                     <th>Product Name</th>
                                                     <th>Lens Type</th>
                                                     <th>Requested Date</th>
@@ -100,9 +101,10 @@
                                             <tbody class="text-center">
                                                 <tr class="text-center" *ngFor="let item of dataList ; let i = index;">
                                                     <td>{{dataList.length - i}}</td>
+                                                    <td>{{item.CustomerInvoice}}</td>
                                                     <td>{{item.ProductName}}</td>
                                                     <td>{{item.LensType}}</td>
-                                                    <td>{{item.AssignedOn | date:'dd-MM-y'}}</td>
+                                                    <td>{{dateFormat(item.AssignedOn)}}</td>
                                                     <td>{{item.UnitPrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                     <td>{{item.Quantity}}</td>
                                                     <td>{{item.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>

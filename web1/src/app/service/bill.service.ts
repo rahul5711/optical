@@ -114,6 +114,11 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  getCancelProductReport(Parem:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getCancelProductReport',{Parem:Parem}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   updatePower(ID:any,MeasurementID:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/updatePower',{ID:ID,MeasurementID:MeasurementID}, httpOptions)
     .pipe(catchError(this.handleError));

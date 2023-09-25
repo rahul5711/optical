@@ -58,8 +58,11 @@ export class PaymentComponent implements OnInit {
   payeeList:any = []
   invoiceList:any = []
   vendorCredit:any
+  currentTime:any; 
+
   ngOnInit(): void {
     this.getPaymentModesList() 
+    this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", second:"2-digit", hour12: false })
   }
 
   getPaymentModesList() {
@@ -75,6 +78,7 @@ export class PaymentComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
   getSupplierCreditNote(SupplierID:any) {
     this.sp.show()
     const subs: Subscription = this.pay.getSupplierCreditNote(SupplierID).subscribe({
@@ -95,7 +99,6 @@ export class PaymentComponent implements OnInit {
    this.data.CustomerCredit = this.vendorCredit.Amount
    this.data.CreditNumber = this.vendorCredit.CreditNumber
   }
-
 
   // getPayeeList(){
   //   this.data.CreditType = 'Debit'
@@ -266,7 +269,7 @@ export class PaymentComponent implements OnInit {
       this.sp.show()
       this.data.CompanyID = this.company.ID;
       this.data.ShopID = Number(this.selectedShop);
-      this.data.PaymentDate =  moment().format('YYYY-MM-DD');
+      this.data.PaymentDate =  moment().format('YYYY-MM-DD') +' '+ this.currentTime;
       this.data.pendingPaymentList = this.invoiceList;
       const subs: Subscription = this.pay.applyPayment(this.data).subscribe({
         next: (res: any) => {

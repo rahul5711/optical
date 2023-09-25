@@ -73,6 +73,9 @@ export class ExpenseComponent implements OnInit {
       }
     });
     this.getList();
+    this.dropdownShoplist();
+    this.getPaymentModesList();
+    this.getExpenseTypeList();
   }
 
   dropdownShoplist() {
@@ -259,9 +262,6 @@ export class ExpenseComponent implements OnInit {
   }
 
   openModal(content: any) {
-    this.dropdownShoplist();
-    this.getPaymentModesList();
-    this.getExpenseTypeList();
     this.formReset();
     this.suBtn = false;
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });

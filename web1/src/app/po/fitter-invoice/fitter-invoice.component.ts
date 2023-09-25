@@ -50,7 +50,7 @@ export class FitterInvoiceComponent implements OnInit {
   shopList:any = []
   gstList:any = []
   dataList:any = []
-
+  currentTime = ''
   ngOnInit(): void {
     this.sp.show();
     // this.FitterMaster.PurchaseDate = moment().format('YYYY-MM-DD');
@@ -58,6 +58,7 @@ export class FitterInvoiceComponent implements OnInit {
     this.dropdownShoplist()
     this.getGSTList()
     this.sp.hide();
+    this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", second:"2-digit", hour12: false })
   }
 
   dropdownfitterlist() {
@@ -176,9 +177,11 @@ export class FitterInvoiceComponent implements OnInit {
   }
 
   onSubmit(){
+    this.sp.show()
     this.calculateGrandTotal();
     this.FitterMaster.ShopID = Number(this.selectedShop[0]);
     this.FitterMaster.FitterID = Number(this.FitterMaster.FitterID);
+    this.FitterMaster.PurchaseDate =  moment(this.FitterMaster.PurchaseDate).format('YYYY-MM-DD') +  ' ' + this.currentTime;
     this.data.FitterMaster = this.FitterMaster;
 
     let FitterDetails: any = []

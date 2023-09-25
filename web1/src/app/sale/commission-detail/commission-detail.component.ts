@@ -55,7 +55,6 @@ export class CommissionDetailComponent implements OnInit {
     }
   }
 
-
   getCommissionDetailByID(id:any,Type:any,UserID:any,ShopID:any) {
     this.sp.show()
     const dtm = {
@@ -80,5 +79,9 @@ export class CommissionDetailComponent implements OnInit {
       complete: () => subs.unsubscribe(),
  
     })
+  }
+
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
   }
 }

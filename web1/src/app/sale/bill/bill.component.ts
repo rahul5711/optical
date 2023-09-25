@@ -1261,7 +1261,7 @@ export class BillComponent implements OnInit {
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!',
+          confirmButtonText: 'Yes, Cancel it!',
           backdrop: false,
         }).then((result) => {
           if (result.isConfirmed) {

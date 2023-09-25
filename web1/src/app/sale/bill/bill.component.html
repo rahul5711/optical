@@ -552,15 +552,14 @@
                                 <td style="white-space: nowrap;"> 
                                     <button class="bgRemove" >
                                         
-                                    <button class="bgRemove" [disabled]="data.Status === 0 " (click)="deleteItem('Product', i)">
-                                        <mat-icon *ngIf="deleteCustomerBill && (data.Status !== 0 || data.Status === 0)  || (data.Status === 0 || data.CancelStatus == 1) "  class="deletes_icon ms-1"   title="Delete">delete_forever</mat-icon>
+                                    <button class="bgRemove p-0" *ngIf="deleteCustomerBill && data.ID == null || data.ID !== null &&  data.CancelStatus === 1" [disabled]="data.Status === 0 " (click)="deleteItem('Product', i)">
+                                        <mat-icon   class="deletes_icon "   title="Delete">delete_forever</mat-icon>
                                     </button>
                                     
-                                    <button class="bgRemove" [disabled]="data.CancelStatus === 0 || data.Status === 0" (click)="cancelProduct('Product', i)" >
-                                    <mat-icon *ngIf="(data.CancelStatus === 0 || data.CancelStatus !== 0) || (data.Status == 0 && data.CancelStatus == 0)" class="deletes_icon  ms-1" title="Cancel">cancel</mat-icon>
+                                    <button *ngIf="data.ID != null && data.Status === 0  && data.CancelStatus === 0 || (data.Status === 1  && data.CancelStatus === 1)" class="bgRemove p-0 ms-1" [disabled]="data.CancelStatus === 0 || data.Status === 0" (click)="cancelProduct('Product', i)" >
+                                    <mat-icon  class="deletes_icon  " title="Cancel">cancel</mat-icon>
                                    </button>
                                    
-
                                     <mat-icon *ngIf="data.Status !== 0" class="edit_icon ms-1" (click)="openModal(content,data)"  >remove_red_eye</mat-icon>
                                     <mat-icon *ngIf="!data.UpdateProduct && editCustomerBill && data.Status !== 0" class="edit_icon1 ms-1" (click)="showInput(data)" >edit
                                 </mat-icon>

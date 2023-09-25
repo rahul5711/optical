@@ -256,7 +256,7 @@ export class PurchaseConvertComponent implements OnInit {
       this.PurchaseMaster.ShopID = Number(this.selectedShop[0]);
       this.PurchaseMaster.SupplierID = Number(this.PurchaseMaster.SupplierID);
       this.PurchaseMaster.CompanyID = this.company.ID;
-      this.PurchaseMaster.PurchaseDate = moment().format('YYYY-MM-DD') +  ' ' + this.currentTime;
+      this.PurchaseMaster.PurchaseDate = moment(this.PurchaseMaster.PurchaseDate).format('yyyy-MM-DD') +  ' ' + this.currentTime;
       this.PurchaseMaster.DueAmount = this.PurchaseMaster.TotalAmount;
       delete this.PurchaseMaster.FromDate
       delete this.PurchaseMaster.ToDate

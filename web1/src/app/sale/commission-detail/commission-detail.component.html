@@ -108,7 +108,7 @@
                                                     <td>{{dataList.length - i}}</td>
                                                     <td>{{item.CustomerName}}</td>
                                                     <td>{{item.InvoiceNo}}</td>
-                                                    <td>{{item.BillDate | date:'dd-MM-y'}}</td>
+                                                    <td>{{dateFormat(item.BillDate)}}</td>
                                                     <td>{{item.PaymentStatus}}</td>
                                                     <td>{{item.BrandedCommissionAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                     <td>{{item.NonBrandedCommissionAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
