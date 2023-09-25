@@ -704,7 +704,7 @@ module.exports = {
 
             let master = `SELECT fittermaster.*, Customer1.Name AS CustomerName, Customer1.MobileNo1 AS CustomerMob, shop.Name AS ShopName, shop.AreaName AS AreaName, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser FROM fittermaster LEFT JOIN shop ON shop.ID = fittermaster.ShopID LEFT JOIN user ON user.ID = fittermaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = fittermaster.UpdatedBy LEFT JOIN fitter AS Customer1 ON Customer1.ID = fittermaster.FitterID WHERE fittermaster.CompanyID = ${CompanyID} and fittermaster.ID = ${ID} AND fittermaster.Status = 1`
 
-            let detail = `select * from fitterdetail where CompanyID = ${CompanyID} and Status=1 and FitterMasterID = ${ID}`
+            let detail = `select fitterdetail.*, Customer.Name as CustomerName, customer.MobileNo1, billmaster.BillDate, shop.Name as ShopName, shop.AreaName from fitterdetail left join billmaster on billmaster.InvoiceNo = fitterdetail.CustomerInvoice left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = billmaster.ShopID where fitterdetail.CompanyID = ${CompanyID} and fitterdetail.Status=1 and fitterdetail.FitterMasterID = ${ID}`
 
 
             const [FitterMaster] = await mysql2.pool.query(master)
