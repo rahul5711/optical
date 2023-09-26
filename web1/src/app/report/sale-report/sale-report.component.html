@@ -533,6 +533,7 @@
                                                         <th>Product DeliveryDate</th>
                                                         <th>Cust_GSTNo</th>
                                                         <th>Status</th>
+                                                        <th>Shop Name</th>
                                                     </tr>
                                                     <tr class="totolRow"
                                                         *ngIf="this.DetailtotalQty != null && this.DetailtotalQty != '' ">
@@ -567,6 +568,7 @@
                                                         <td style="display: none;"></td>
                                                         <td style="display: none;"></td>
                                                         <td>{{this.DetailtotalAmount}}</td>
+                                                        <td></td>
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
@@ -659,6 +661,10 @@
                                                             <span *ngIf="t.PreOrder === 1">PreOrder</span>
                                                             <span
                                                                 *ngIf="t.PreOrder === 0 && t.Manual === 0">Stock</span>
+                                                        </td>
+                                                        <td [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}"> {{
+                                                            t.ShopName }} <span [style.color]="'blue'"
+                                                                *ngIf="t.AreaName !== 'null'">({{t.AreaName}})</span>
                                                         </td>
                                                     </tr>
                                                 </tbody>

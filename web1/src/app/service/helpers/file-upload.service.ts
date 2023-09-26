@@ -47,6 +47,17 @@ export class FileUploadService {
     });
   }
 
+  uploadFileEmployee(file: any) {
+    const fd = new FormData();
+    // fd.append('docname', docname);
+    // fd.append('mobile', mobile);
+    fd.append('file', file, file.name);
+    return this.httpClient.post(this.url + '/upload', fd, {
+      reportProgress: true,
+      observe: 'events'
+    });
+  }
+
   
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

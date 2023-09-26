@@ -45,7 +45,7 @@ export class VendorCreditComponent implements OnInit {
   billerList :any = []
   
   data: any =  {
-    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID : 0,
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID : 0,VendorStatus:0,
   };
 
   ngOnInit(): void {
@@ -116,7 +116,11 @@ export class VendorCreditComponent implements OnInit {
   
     if (this.data.SupplierID != 0){
       Parem = Parem + ' and vendorcredit.SupplierID IN ' +  `(${this.data.SupplierID})`;}
+
+    if (this.data.VendorStatus != 0){
+      Parem = Parem + ' and ' +  `(${this.data.VendorStatus})`;}
   
+console.log(Parem);
 
     const subs: Subscription =  this.sup.vendorCreditReport(Parem).subscribe({
       next: (res: any) => {

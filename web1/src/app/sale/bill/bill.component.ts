@@ -942,7 +942,7 @@ export class BillComponent implements OnInit {
     }
 
     // additem Product
-    if (this.category === 'Product') {
+    if (this.category === 'Product' && this.BillItem.ProductTypeID !== '') {
 
         // GSTType disable condition
         if (this.BillItem.GSTPercentage === 0 || this.BillItem.GSTAmount === 0) {
@@ -1020,6 +1020,7 @@ export class BillComponent implements OnInit {
            }else {
             type = 'ContactLens'
            }
+           this.sp.show()
           const subs: Subscription = this.cs.getMeasurementByCustomer(this.id , type).subscribe({
             next: (res: any) => {
               console.log(res);
@@ -1175,13 +1176,13 @@ export class BillComponent implements OnInit {
           backdrop: false,
         }).then((result) => {
           if (result.isConfirmed) {
-            // this.sp.show();
             this.billItemList[i].Status = 0;
             this.billItemList[i].DuaCal = 'delete';
             this.data.billMaseterData = this.BillMaster;
             this.data.billDetailData = this.billItemList[i];
             this.calculateGrandTotal();
             delete this.data.service
+
             this.sp.show()
             const subs: Subscription = this.bill.deleteProduct(this.data).subscribe({
               next: (res: any) => {
@@ -1305,7 +1306,7 @@ export class BillComponent implements OnInit {
     this.ProductDetails =  data.ProductTypeName + '/' + data.ProductName
     this.UpdatePowerID = data
     let type = '';
-    if(data.ProductTypeName === "LENS" || data.ProductTypeName === "LENSES"){
+    if(data.ProductTypeName){
        type = 'Lens'
     }else{
       type = 'ContactLens'

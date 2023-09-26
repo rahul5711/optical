@@ -61,6 +61,9 @@ export class EmployeeComponent implements OnInit {
   addEmployee = false
   deleteEmployee = false
 
+
+  imgArray: any = [];
+
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'Employee') {
@@ -330,5 +333,40 @@ export class EmployeeComponent implements OnInit {
    this.UserShop = {ID: data.ID, UserID: data.UserID, ShopID: data.ShopID, RoleID: data.RoleID, Status: 1};
    this.saveUpdateHide = true
   }
+
+  add() {
+    this.imgArray.push({ImageName: '' , Src: ''});
+  }
+
+  download(imgArray:any) {
+    const url = 'http://opticalguru.relinksys.com:50080/zip?id=' + JSON.stringify(imgArray);
+    window.open(url, '_blank');
+  }
+
+  uploadImage1(e:any,  i:any){
+
+    this.img = e.target.files[0];
+     const subs: Subscription = this.compressImage.compress(this.img).pipe(take(1)).subscribe({
+      next: (compressedImage: any) => {
+        const subss: Subscription = this.fu.uploadFileEmployee(compressedImage).subscribe({
+          next: (data: any) => {
+            if (data.body !== undefined) {
+              this.imgArray[i].ImageName = this.env.apiUrl + data.body?.download;
+              this.as.successToast(data.body.message)
+             }
+          },
+          error: (err: any) => {
+            console.log(err.message);
+          },
+          complete: () => subss.unsubscribe(),
+        })
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
+    }
+
 
 }

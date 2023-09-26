@@ -39,13 +39,6 @@
                                                 </mat-option>
                                             </mat-select>
                                         </mat-form-field>
-
-                                        <!-- <ng-select bindLabel="FromShop" name="FromShop" placeholder="FromShop" [(ngModel)]="data.FromShop" [required]="true" #ShopID="ngModel" [closeOnSelect]="true" [searchable]="true" [multiple]="true"    groupBy="selectedAllGroup" [selectableGroup]="true"  >
-                                            <ng-option [value]=0>All</ng-option>
-                                            <ng-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}}
-                                                 <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'"> ({{s.AreaName}})</span>
-                                            </ng-option>
-                                         </ng-select> -->
                                     </div>
                                     <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0">
@@ -63,6 +56,17 @@
                                           </mat-error>
                                         </mat-form-field>
                                       </div>
+                                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp">
+                                            <mat-label>Status</mat-label>
+                                            <mat-select name="ProductStatus" [(ngModel)]="data.VendorStatus">
+                                                <mat-option [value]="0">All</mat-option>
+                                                <mat-option value="vendorcredit.PaidAmount = 0">Not Used</mat-option>
+                                                <mat-option value="vendorcredit.Amount > vendorcredit.PaidAmount && vendorcredit.PaidAmount != 0">Partial Used</mat-option>
+                                                <mat-option value="vendorcredit.Amount = vendorcredit.PaidAmount && vendorcredit.PaidAmount != 0">Used</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
                                     <!--  spec end -->
                                     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0 ">
                                         <button class="me-3" type="submit" mat-raised-button color="primary">
@@ -92,11 +96,11 @@
                                                 <th>CreditDate</th>
                                                 <th>Shop</th>
                                                 <th>Amount</th>
-                                                <th>PaidAmount</th>
-                                                <th>Balance</th>
+                                                <th>PaidAmount(Used)</th>
+                                                <th>Balance(Not Used)</th>
+                                                <th>Status</th>
                                                 <th>Remark</th>
                                                 <th>Return</th>
-                                              
                                             </tr>
                                             <tr class="totolRow" *ngIf="this.dataList != null && this.dataList != ''" >
                                                 <td>
@@ -104,6 +108,7 @@
                                                         aria-hidden="true" type="button" (click)="exportAsXLSX()"> </i>
                                                    
                                                 </td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -125,7 +130,12 @@
                                                         *ngIf="data.AreaName !== 'null'">({{data.AreaName}})</span></td>
                                                 <td>{{data.Amount}}</td>
                                                 <td>{{data.PaidAmount}}</td>
-                                                <td> {{data.Amount - data.PaidAmount}} </td>
+                                                <td>{{data.Amount - data.PaidAmount}} </td>
+                                                <td>
+                                                    <span *ngIf="data.PaidAmount == 0">Not Used </span>
+                                                    <span *ngIf="data.Amount > data.PaidAmount && data.PaidAmount !== 0" >Partial Used </span>
+                                                    <span *ngIf="data.Amount === data.PaidAmount && data.PaidAmount !== 0">Used  </span>
+                                                </td>
                                                 <td>{{data.Remark}}</td>
                                                 <td>{{data.Is_Return}}</td>
                                              

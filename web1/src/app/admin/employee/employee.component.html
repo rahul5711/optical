@@ -230,6 +230,22 @@
                                 </table>
                             </div>
                         </div>
+
+                        <!-- <div class="row" style="margin: 0;">
+                            <div class="col-sm-12">
+                                <mat-label style="font-size:20px;">Upload Document:</mat-label> <button (click)="add()" mat-mini-fab class="ml-3 btn" color="primary"><i  class="fa fa-plus"></i></button>
+                                <button (click)="download(imgArray);" mat-mini-fab class="ml-2 btn" color="primary">  <i class="fa fa-download" style="cursor: pointer;"></i> 
+                                 </button>
+                                 <div class="row">
+                                <div class="col-md-4" *ngFor="let data of imgArray; let i = index;">
+                                    
+                                    <input #fileInput id="my-input" class="mt-4" type="file" [(ngModel)]="data.ImageName" #name="ngModel" name="data{{i}}" (change)="uploadImage1($event, i)">
+                                    
+                                    <img class="fit-picture" width="50" height="50" [src]="data.Src">
+                                </div>
+                              </div>
+                            </div>
+                        </div> -->
                         <div>
                         </div>
                     </div>

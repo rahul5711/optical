@@ -18,6 +18,7 @@ import { CompressImageService } from 'src/app/service/helpers/compress-image.ser
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { ShopService } from 'src/app/service/shop.service';
 
+
 @Component({
   selector: 'app-supplier',
   templateUrl: './supplier.component.html',
@@ -96,8 +97,10 @@ export class SupplierComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.purchasVariable = +params['check'] || 0;
     });
-    await Promise.all([this.getList(), this.getGSTList()]);
+    await Promise.all([this.getList(), this.getGSTList(), ]);
   }
+
+
 
   onsubmit() {
     this.sp.show()
@@ -137,8 +140,6 @@ export class SupplierComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
-
- 
 
   getList() {
     this.sp.show()
