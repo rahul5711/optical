@@ -277,7 +277,11 @@ module.exports = {
 
     vendorCreditReport: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "" }
+            const response = { data: null, success: true, message: "", calculation: [{
+                "totalAmount": 0,
+                "totalPaidAmount": 0,
+                "totalBalance": 0
+            }]}
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
             const { Parem } = req.body
@@ -287,9 +291,18 @@ module.exports = {
                 params = Parem
             }
 
+            sumQry = `select SUM(Amount) as Amount, SUM(PaidAmount) as PaidAmount, ( SUM(Amount) - SUM(PaidAmount) ) as Balance from vendorcredit where vendorcredit.CompanyID = ${CompanyID}` + params;
+
+            const [datum] = await mysql2.pool.query(sumQry);
+
+
             qry = `select vendorcredit.*, supplier.Name as SupplierName, shop.Name as ShopName, shop.AreaName from vendorcredit left join shop on shop.ID = vendorcredit.ShopID left join supplier on supplier.ID = vendorcredit.SupplierID where vendorcredit.CompanyID = ${CompanyID} ` + params;
 
             response.message = 'data fetch successfully'
+            response.calculation[0].totalAmount = datum[0].Amount || 0
+            response.calculation[0].totalPaidAmount = datum[0].PaidAmount || 0
+            response.calculation[0].totalBalance = datum[0].Balance || 0
+
             const [data] = await mysql2.pool.query(qry)
             response.data = data
 

@@ -1073,7 +1073,7 @@ module.exports = {
                 return res.send({ message: `First you'll have to delete product` })
             }
 
-            const [deleteBill] = await mysql2.pool.query(`update billmaster set Status = 0, CreatedBy = ${LoggedOnUser}, UpdatedBy = now() where ID = ${ID}`)
+            const [deleteBill] = await mysql2.pool.query(`update billmaster set Status = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${ID}`)
 
             response.message = "data delete sucessfully"
             response.data = []
@@ -1512,7 +1512,7 @@ module.exports = {
     billPrint: async (req, res, next) => {
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const printdata = req.body; 
+            const printdata = req.body;
             // console.log(printdata.mode);
             const Company = req.body.Company;
             const CompanySetting = req.body.CompanySetting;
@@ -1587,7 +1587,7 @@ module.exports = {
                 }
                 return false;
             });
-            
+
             printdata.billItemList = printdata.billItemList.map((element) => {
                 if (element.Status === 1) {
                     printdata.GSTTypes = element.GSTType;
@@ -1601,7 +1601,7 @@ module.exports = {
                 }
                 return element;
             });
-        
+
             printdata.serviceList = printdata.serviceList.map((element) => {
                 if (element.Status === 1) {
                     printdata.GSTTypes = element.GSTType;
@@ -1615,7 +1615,7 @@ module.exports = {
                 }
                 return element;
             });
-            
+
 
             let fileName = "";
             const file = "invoice.ejs" + ".pdf";
@@ -1627,8 +1627,8 @@ module.exports = {
                     res.send(err);
                 } else {
                     let options = {
-                        format : "A4",
-                        orientation : "portrait",
+                        format: "A4",
+                        orientation: "portrait",
                     };
                     pdf.create(data, options).toFile(fileName, function (err, data) {
                         if (err) {
@@ -1738,7 +1738,7 @@ module.exports = {
                 }
             }
 
-            qry = `select billservice.*, shop.name as ShopName, shop.AreaName as AreaName, billmaster.InvoiceNo as InvoiceNo, billmaster.BillDate from billservice left join billmaster on billmaster.ID = billservice.BillID left join shop on shop.ID = billmaster.ShopID WHERE billservice.CompanyID = ${CompanyID} AND billservice.Status = 1 ` + Parem;
+            qry = `select billservice.*, shop.name as ShopName, shop.AreaName as AreaName, billmaster.InvoiceNo as InvoiceNo, billmaster.BillDate, customer.Name as CustomerName, customer.MobileNo1 from billservice left join billmaster on billmaster.ID = billservice.BillID left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = billmaster.ShopID WHERE billservice.CompanyID = ${CompanyID} AND billservice.Status = 1 ` + Parem;
 
             let [data] = await mysql2.pool.query(qry);
 
@@ -1772,6 +1772,7 @@ module.exports = {
 
             if (data.length) {
                 for (const item of data) {
+                    item.gst_detail = []
                     response.calculation[0].totalGstAmount += item.GSTAmount
                     response.calculation[0].totalAmount += item.Price
 
@@ -1779,6 +1780,10 @@ module.exports = {
                         values.forEach(e => {
                             if (e.GSTType === item.GSTType) {
                                 e.Amount += item.GSTAmount
+                                item.gst_detail.push({
+                                    "GSTType": item.GSTType,
+                                    "Amount": item.GSTAmount,
+                                })
                             }
 
                             // CGST-SGST
@@ -1787,10 +1792,22 @@ module.exports = {
 
                                 if (e.GSTType === 'CGST') {
                                     e.Amount += item.GSTAmount / 2
+                                    item.gst_detail.push(
+                                        {
+                                            "GSTType": "CGST",
+                                            "Amount": item.GSTAmount / 2,
+                                        },
+                                    )
                                 }
 
                                 if (e.GSTType === 'SGST') {
                                     e.Amount += item.GSTAmount / 2
+                                    item.gst_detail.push(
+                                        {
+                                            "GSTType": "SGST",
+                                            "Amount": item.GSTAmount / 2,
+                                        },
+                                    )
                                 }
                             }
                         })
