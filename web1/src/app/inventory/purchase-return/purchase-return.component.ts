@@ -85,8 +85,15 @@ export class PurchaseReturnComponent implements OnInit {
         this.deletePurchaseReturn = element.Delete;
       }
     });
+
+    if(this.user.UserGroup === 'Employee'){
+      this.shopList  = this.shop;
+      this.selectedPurchaseMaster.ShopID = this.shopList[0].ShopID
+    }else{
+      this.dropdownShoplist();
+    }
+
     this.getProductList();
-    this.dropdownShoplist();
     this.dropdownSupplierlist(); 
     if (this.id != 0){
       this.getPurchaseReturnById(); 

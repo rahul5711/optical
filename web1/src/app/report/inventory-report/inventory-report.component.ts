@@ -20,6 +20,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 
 export class InventoryReportComponent implements OnInit {
+  user:any =JSON.parse(localStorage.getItem('user') || '') ;
+  shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
@@ -113,7 +115,16 @@ export class InventoryReportComponent implements OnInit {
         this.deletePurchaseProductExpiryReport = element.Delete;
       }
     });
-    this.dropdownShoplist();
+
+    if(this.user.UserGroup === 'Employee'){
+      this.shopList  = this.shop;
+      this.inventory.ShopID = this.shopList[0].ShopID
+      this.data.ShopID = this.shopList[0].ShopID
+      this.ProductExpiry.ShopID = this.shopList[0].ShopID
+    }else{
+      this.dropdownShoplist()
+    }
+
     this.dropdownSupplierlist();
     this.getProductList();
     this.getGSTList();
@@ -121,9 +132,6 @@ export class InventoryReportComponent implements OnInit {
     this.inventory.ToDate = moment().format('YYYY-MM-DD');
     this.getInventory()
 
-    this.ProductExpiry.FromDate = moment().format('YYYY-MM-DD');
-    this.ProductExpiry.ToDate = moment().format('YYYY-MM-DD');
-    this.purchaseProductExpiry();
   }
 
   dropdownShoplist(){

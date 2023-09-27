@@ -47,10 +47,18 @@
                           </mat-form-field>
                         </div>
                         <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
-                          <mat-form-field class="example-full-width mb-0">
+                          <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
                             <mat-label>Shop Name</mat-label>
                             <mat-select name="shopID" [(ngModel)]="ReturnMaster.ShopID" multiple>
                               <mat-option [value]=0>All</mat-option>
+                              <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}}
+                                <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                          <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                            <mat-label>Shop Name</mat-label>
+                            <mat-select name="shopID" [(ngModel)]="ReturnMaster.ShopID" >
                               <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}}
                                 <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
                               </mat-option>
@@ -175,10 +183,18 @@
                           </mat-form-field>
                         </div>
                         <div class="col-xl-2 col-lg-2 col-md-4 col-6">
-                          <mat-form-field class="example-full-width mb-0">
+                          <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
                             <mat-label>Shop Name</mat-label>
                             <mat-select name="shopID" [(ngModel)]="ReturnDetail.ShopID" multiple>
                               <mat-option [value]=0>All</mat-option>
+                              <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}}
+                                <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                          <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                            <mat-label>Shop Name</mat-label>
+                            <mat-select name="shopID" [(ngModel)]="ReturnDetail.ShopID" >
                               <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}}
                                 <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
                               </mat-option>

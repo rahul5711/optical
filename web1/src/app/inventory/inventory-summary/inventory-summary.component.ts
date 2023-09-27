@@ -39,6 +39,7 @@ export class InventorySummaryComponent implements OnInit {
   UpdateBarndType = false;
   BarndTypeUp:any = 0;
   searchValue:any
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -56,8 +57,13 @@ export class InventorySummaryComponent implements OnInit {
   data:any = {PurchaseID: 0, ShopID: 0, ProductCategory : 0, ProductName:'', CurrentStatus : "Available", SupplierID: 0, BrandType:0 ,  Barcode: "", };
 
   ngOnInit(): void {
+    if(this.user.UserGroup === 'Employee'){
+      this.shopList  = this.shop;
+      this.data.ShopID = this.shopList[0].ShopID
+    }else{
+      this.dropdownShoplist();
+    }
     this.getProductList();
-    this.dropdownShoplist();
     this.dropdownSupplierlist();
   }
 

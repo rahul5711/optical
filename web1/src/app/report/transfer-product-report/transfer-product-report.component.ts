@@ -15,7 +15,9 @@ import { FormBuilder,FormGroup } from '@angular/forms';
   styleUrls: ['./transfer-product-report.component.scss']
 })
 export class TransferProductReportComponent implements OnInit {
-  selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
+  user:any =JSON.parse(localStorage.getItem('user') || '');
+  shop:any =JSON.parse(localStorage.getItem('shop') || '');
+  selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
 
@@ -63,8 +65,15 @@ export class TransferProductReportComponent implements OnInit {
         this.deleteProductTransferReport = element.Delete;
       }
     });
+    if(this.user.UserGroup === 'Employee'){
+      this.dropdownShoplist();
+      this.shopList  = this.shop;
+      this.data.FromShop = this.shopList[0].ShopID
+    }else{
+      this.dropdownShoplist();
+    }
+
     this.getProductList();
-    this. dropdownShoplist();
     // TransferReport Today Data
     this.data.FromDate = moment().format('YYYY-MM-DD');
     this.data.ToDate = moment().format('YYYY-MM-DD');

@@ -20,6 +20,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 
 export class ProductReturnComponent implements OnInit {
+  shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
+  user:any =JSON.parse(localStorage.getItem('user') || '') ;
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
@@ -96,7 +98,15 @@ export class ProductReturnComponent implements OnInit {
         this.deleteProductReturnProductTypeReport = element.Delete;
       }
     });
-    this.dropdownShoplist();
+
+    if(this.user.UserGroup === 'Employee'){
+      this.shopList  = this.shop;
+      this.ReturnMaster.ShopID = this.shopList[0].ShopID;
+      this.ReturnDetail.ShopID = this.shopList[0].ShopID;
+    }else{
+      this.dropdownShoplist()
+    }
+
     this.dropdownSupplierlist();
     this.getProductList();
     this.getGSTList();

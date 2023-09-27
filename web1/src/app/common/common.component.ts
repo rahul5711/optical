@@ -26,7 +26,7 @@ export class CommonComponent implements OnInit {
 
   CompanyAdmindisplsy: any
   SuperAdmindis: any
-  x: any;
+  x: any = 'none'
   dropShoplist: any;
   selectedShops: any = [];
   searchText: any
@@ -68,6 +68,16 @@ export class CommonComponent implements OnInit {
     viewInventoryExcelImport: true, viewCustomerExcelImport: true,
   }
   heroes: any = []
+
+  element:any
+  element1:any
+  element2:any
+  element3:any
+  element4:any
+  element5:any
+  element6:any
+  element7:any
+  element8:any
 
   ngOnInit(): void {
     this.sp.show()
@@ -128,14 +138,388 @@ export class CommonComponent implements OnInit {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
   }
 
-  myFunction() {
-    this.x = document.getElementById("myTopnav");
-    if (this.x.className === "topnav") {
-      this.x.className += " responsive";
-    } else {
-      this.x.className = "topnav";
+
+  myFunctionS(mode:any) {
+    if(mode == 'A'){
+      this.x = document.getElementById("collapseExample1");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+
+      this.x = document.getElementById("collapseExample2");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+
+      this.x = document.getElementById("collapseExample3");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample4");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample5");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample6");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample7");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+
+      this.x = document.getElementById("collapseExample8");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample");
+      if (this.x.style.display == "none" || this.x.style.display == "" ) {
+        this.x.style.display = "block";
+      } else {
+        this.x.style.display = "none";
+      }
+    }
+    if(mode == 'B'){
+      this.x = document.getElementById("collapseExample");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample2");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+
+      this.x = document.getElementById("collapseExample3");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample4");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample5");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample6");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample7");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+
+      this.x = document.getElementById("collapseExample8");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+
+      this.x  = document.getElementById("collapseExample1");
+      if (this.x.style.display == "none" ||  this.x.style.display == ""  ) {
+          this.x.style.display = "block";
+      } else {
+        this.x.style.display = "none";
+      }
+    }
+    if(mode == 'C'){
+      this.x = document.getElementById("collapseExample");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample1");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+
+      this.x = document.getElementById("collapseExample3");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample4");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample5");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample6");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample7");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+
+      this.x = document.getElementById("collapseExample8");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+
+      this.x  = document.getElementById("collapseExample2");
+      if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
+        this.x.style.display = "block";
+      } else {
+        this.x.style.display = "none";
+      }
+    }
+    if(mode == 'D'){
+      this.x = document.getElementById("collapseExample");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample1");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample2");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+
+      this.x = document.getElementById("collapseExample4");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample5");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample6");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+
+      this.x = document.getElementById("collapseExample7");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample8");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x  = document.getElementById("collapseExample3");
+      if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
+        this.x.style.display = "block";
+      } else {
+        this.x.style.display = "none";
+      }
+    }
+    if(mode == 'E'){
+      this.x = document.getElementById("collapseExample");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample1");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample2");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample3");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample5");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+
+      this.x = document.getElementById("collapseExample6");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample7");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample8");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+
+      this.x  = document.getElementById("collapseExample4");
+      if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
+        this.x.style.display = "block";
+      } else {
+        this.x.style.display = "none";
+      }
+    }
+    if(mode == 'F'){
+      this.x = document.getElementById("collapseExample");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample1");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample2");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample3");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample4");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample6");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample7");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample8");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+
+      this.x  = document.getElementById("collapseExample5");
+      if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
+        this.x.style.display = "block";
+      } else {
+        this.x.style.display = "none";
+      }
+    }
+    if(mode == 'G'){
+      this.x = document.getElementById("collapseExample");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample1");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample2");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample3");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample4");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample5");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+
+      this.x = document.getElementById("collapseExample7");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample8");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+
+      this.x  = document.getElementById("collapseExample6");
+      if (this.x.style.display == "none" || this.x.style.display == "" ) {
+        this.x.style.display = "block";
+      } else {
+        this.x.style.display = "none";
+      }
+    }
+    if(mode == 'H'){
+      this.x = document.getElementById("collapseExample");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample1");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample2");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample3");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample4");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample5");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample6");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample8");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+
+      this.x  = document.getElementById("collapseExample7");
+      if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
+        this.x.style.display = "block";
+      } else {
+        this.x.style.display = "none";
+      }
+    }
+    if(mode == 'I'){
+      this.x = document.getElementById("collapseExample");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample1");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample2");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample3");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample4");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample5");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample6");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample7");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+
+      this.x  = document.getElementById("collapseExample8");
+      if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
+        this.x.style.display = "block";
+      } else {
+        this.x.style.display = "none";
+      }
     }
   }
+ 
 
   saveSelectedShop() {
     localStorage.removeItem('selectedShop');

@@ -23,6 +23,8 @@ import { SupportService } from 'src/app/service/support.service';
 export class SupplierPoListComponent implements OnInit {
 
   evn = environment
+  shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
+  user:any =JSON.parse(localStorage.getItem('user') || '') ;
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   searchValue:any;
@@ -56,9 +58,15 @@ export class SupplierPoListComponent implements OnInit {
   dataList:any =[]
 
   ngOnInit(): void {
-    this.dropdownShoplist();
+    if(this.user.UserGroup === 'Employee'){
+      this.shopList  = this.shop;
+      this.data.ShopID = this.shopList[0].ShopID
+    }else{
+      this.dropdownShoplist();
+      this.getList();
+    }
     this.dropdownSupplierlist();
-    this.getList();
+
   }
 
   dropdownShoplist() {

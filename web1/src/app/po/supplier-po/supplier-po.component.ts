@@ -22,6 +22,8 @@ import { ShopService } from 'src/app/service/shop.service';
   styleUrls: ['./supplier-po.component.css']
 })
 export class SupplierPoComponent implements OnInit {
+  shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
+  user:any =JSON.parse(localStorage.getItem('user') || '') ;
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
 
   env = environment;
@@ -67,9 +69,14 @@ export class SupplierPoComponent implements OnInit {
 
   ngOnInit(): void {
     this.sp.show()
-    this.dropdownShoplist();
-    this.dropdownSupplierlist();
+    if(this.user.UserGroup === 'Employee'){
+      this.shopList  = this.shop;
+      this.data.ShopID = this.shopList[0].ShopID
+    }else{
+      this.dropdownShoplist();
+    }
     this.getSupplierPo();
+    this.dropdownSupplierlist();
     this.sp.hide()
   }
 
@@ -129,7 +136,13 @@ export class SupplierPoComponent implements OnInit {
   getSupplierPo() {
     this.sp.show()
     this.orderSupplier = true
-    const subs: Subscription = this.bill.getSupplierPo(this.ID, '').subscribe({
+    let Parem = '';
+    if(this.user.UserGroup === 'Employee'){
+      Parem = Parem + ' and barcodemasternew.ShopID = ' + this.data.ShopID;
+    }else{
+      Parem = '';
+    }
+    const subs: Subscription = this.bill.getSupplierPo(this.ID, Parem).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.orderList = res.data
@@ -338,14 +351,22 @@ export class SupplierPoComponent implements OnInit {
     this.getSupplierPo()
     this.orderSupplier = true
     this.orderComplete = false
-    this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' }
+    if(this.user.UserGroup === 'Employee'){
+      this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: this.data.ShopID, stringProductName: '' }
+    }else{
+      this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' }
+    }
   }
 
   Assigned() {
-    this.getList()
     this.orderSupplier = false
     this.orderComplete = true
-    this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' }
+    if(this.user.UserGroup === 'Employee'){
+      this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: this.data.ShopID, stringProductName: '' }
+    }else{
+      this.getList()
+      this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' }
+    }
   }
 
   openModal1(content1: any, data: any) {

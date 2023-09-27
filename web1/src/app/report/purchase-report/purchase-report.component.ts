@@ -21,6 +21,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./purchase-report.component.css']
 })
 export class PurchaseReportComponent implements OnInit {
+  user:any =JSON.parse(localStorage.getItem('user') || '') ;
+  shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
@@ -146,7 +148,16 @@ export class PurchaseReportComponent implements OnInit {
         this.deletePurchaseProductExpiryReport = element.Delete;
       }
     });
-    this.dropdownShoplist();
+
+    if(this.user.UserGroup === 'Employee'){
+      this.shopList  = this.shop;
+      this.PurchaseMaster.ShopID = this.shopList[0].ShopID
+      this.PurchaseDetail.ShopID = this.shopList[0].ShopID
+      this.charge.ShopID = this.shopList[0].ShopID
+      this.ProductExpiry.ShopID = this.shopList[0].ShopID
+    }else{
+      this.dropdownShoplist()
+    }
     this.dropdownSupplierlist();
     this.getProductList();
     this.getGSTList();

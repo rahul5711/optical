@@ -42,10 +42,20 @@
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
-                                                <mat-form-field class="example-full-width mb-0">
+                                                <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
                                                     <mat-label>Shop Name</mat-label>
                                                     <mat-select name="shopID" [(ngModel)]="BillMaster.ShopID" multiple>
-                                                        <mat-option [value]=0>All</mat-option>
+                                                        <mat-option [value]=0 >All</mat-option>
+                                                        <mat-option [value]="s.ID" *ngFor="let s of shopList">
+                                                            {{s.Name}}
+                                                            <span [style.color]="'blue'"
+                                                                *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                                <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                                                    <mat-label>Shop Name</mat-label>
+                                                    <mat-select name="shopID" [(ngModel)]="BillMaster.ShopID" >
                                                         <mat-option [value]="s.ID" *ngFor="let s of shopList">
                                                             {{s.Name}}
                                                             <span [style.color]="'blue'"
@@ -195,8 +205,8 @@
                                                         <td></td>
                                                         <td>{{this.totalAmount}}</td>
                                                         <td></td>
-                                                        <td></td>
-                                                        <td></td>
+                                                        <td>{{this.totalPaid}}</td>
+                                                        <td>{{this.totalBalance}}</td>
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
@@ -212,14 +222,12 @@
                                                         </td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             {{dateFormat(d.BillDate)}}</td>
-
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.InvoiceNo}} </td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.CustomerName }} </td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.MobileNo1 }} </td>
-
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.PaymentStatus }} </td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
@@ -232,7 +240,6 @@
                                                             {{d.GSTType}} </td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.GSTAmount }} </td>
-
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"
                                                             *ngIf="d.gst_detailssss[0][1].type === 'cGST-sGST'">
                                                             {{d.gst_detailssss[0][1].amt }}</td>
@@ -246,10 +253,13 @@
                                                             {{d.TotalAmount - d.AddlDiscount }} </td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             {{d.AddlDiscount }} </td>
+
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             {{(d.TotalAmount - d.AddlDiscount) - d.DueAmount }} </td>
+                                                            
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.DueAmount }} </td>
+
                                                         <td *ngIf="d.ProductStatus === 1 "
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             Deliverd </td>
@@ -302,10 +312,21 @@
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
-                                                <mat-form-field class="example-full-width mb-0">
+                                                <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'" >
                                                     <mat-label>Shop Name</mat-label>
                                                     <mat-select name="shopID" [(ngModel)]="Billdetail.ShopID" multiple>
                                                         <mat-option [value]=0>All</mat-option>
+                                                        <mat-option [value]="s.ID" *ngFor="let s of shopList">
+                                                            {{s.Name}}
+                                                            <span [style.color]="'blue'"
+                                                                *ngIf="s.AreaName != 'null' || s.AreaName !== ''">({{s.AreaName}})</span>
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                         
+                                                <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                                                    <mat-label>Shop Name</mat-label>
+                                                    <mat-select name="shopID" [(ngModel)]="Billdetail.ShopID" >
                                                         <mat-option [value]="s.ID" *ngFor="let s of shopList">
                                                             {{s.Name}}
                                                             <span [style.color]="'blue'"
@@ -695,10 +716,20 @@
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0 ">
-                                                <mat-form-field class="example-full-width mb-0">
+                                                <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
                                                     <mat-label>Shop Name</mat-label>
                                                     <mat-select name="shopID" [(ngModel)]="service.ShopID" multiple>
                                                         <mat-option [value]=0>All</mat-option>
+                                                        <mat-option [value]="s.ID" *ngFor="let s of shopList">
+                                                            {{s.Name}}
+                                                            <span [style.color]="'blue'"
+                                                                *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                                <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                                                    <mat-label>Shop Name</mat-label>
+                                                    <mat-select name="shopID" [(ngModel)]="service.ShopID" >
                                                         <mat-option [value]="s.ID" *ngFor="let s of shopList">
                                                             {{s.Name}}
                                                             <span [style.color]="'blue'"
@@ -729,6 +760,8 @@
                                                     <tr style="white-space: nowrap;">
                                                         <th>S.No</th>
                                                         <th>ShopName</th>
+                                                        <th>CustomerName</th>
+                                                        <th>MobileNo</th>
                                                         <th>BillDate</th>
                                                         <th>InvoiceNo</th>
                                                         <th>Description</th>
@@ -749,6 +782,8 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
+                                                        <td></td>
+                                                        <td></td>
                                                         <td>{{this.ServiceAmount}}</td>
                                                         <td></td>
                                                         <td></td>
@@ -763,6 +798,8 @@
                                                         <td>{{c.ShopName}}<span [style.color]="'blue'"
                                                                 *ngIf="c.AreaName !== 'null'">({{c.AreaName}})</span>
                                                         </td>
+                                                        <td>{{c.CustomerName}}</td>
+                                                        <td>{{c.MobileNo1}}</td>
                                                         <td>{{dateFormat(c.BillDate)}}</td>
                                                         <td>{{c.InvoiceNo}}</td>
                                                         <td>{{c.Description}}</td>
@@ -809,10 +846,20 @@
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
-                                                <mat-form-field class="example-full-width mb-0">
+                                                <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
                                                     <mat-label>Shop Name</mat-label>
                                                     <mat-select name="shopID" [(ngModel)]="cancel.ShopID" multiple>
                                                         <mat-option [value]=0>All</mat-option>
+                                                        <mat-option [value]="s.ID" *ngFor="let s of shopList">
+                                                            {{s.Name}}
+                                                            <span [style.color]="'blue'"
+                                                                *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                                <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                                                    <mat-label>Shop Name</mat-label>
+                                                    <mat-select name="shopID" [(ngModel)]="cancel.ShopID" >
                                                         <mat-option [value]="s.ID" *ngFor="let s of shopList">
                                                             {{s.Name}}
                                                             <span [style.color]="'blue'"
@@ -1193,10 +1240,20 @@
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
-                                                <mat-form-field class="example-full-width mb-0">
+                                                <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
                                                     <mat-label>Shop Name</mat-label>
                                                     <mat-select name="shopID" [(ngModel)]="pending.ShopID" multiple>
                                                         <mat-option [value]=0>All</mat-option>
+                                                        <mat-option [value]="s.ID" *ngFor="let s of shopList">
+                                                            {{s.Name}}
+                                                            <span [style.color]="'blue'"
+                                                                *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                                <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                                                    <mat-label>Shop Name</mat-label>
+                                                    <mat-select name="shopID" [(ngModel)]="pending.ShopID" >
                                                         <mat-option [value]="s.ID" *ngFor="let s of shopList">
                                                             {{s.Name}}
                                                             <span [style.color]="'blue'"

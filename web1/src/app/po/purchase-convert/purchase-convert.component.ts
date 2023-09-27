@@ -24,6 +24,8 @@ import { SupportService } from 'src/app/service/support.service';
 })
 export class PurchaseConvertComponent implements OnInit {
   evn = environment
+  shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
+  user:any =JSON.parse(localStorage.getItem('user') || '') ;
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   company = JSON.parse(localStorage.getItem('company') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
@@ -70,9 +72,14 @@ export class PurchaseConvertComponent implements OnInit {
     // this.PurchaseMaster.PurchaseDate = moment().format('YYYY-MM-DD');
     // this.PurchaseMaster.FromDate = moment().format('YYYY-MM-DD');
     // this.PurchaseMaster.ToDate = moment().format('YYYY-MM-DD');
-    this.dropdownShoplist();
-    this.dropdownSupplierlist();
     // this.getList();
+    if(this.user.UserGroup === 'Employee'){
+      this.shopList  = this.shop;
+    }else{
+      this.dropdownShoplist();
+    }
+
+    this.dropdownSupplierlist();
     this.getGSTList();
     this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", second:"2-digit", hour12: false })
   }

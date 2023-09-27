@@ -24,9 +24,10 @@ import { CustomerService } from 'src/app/service/customer.service';
   styleUrls: ['./sale-report.component.css']
 })
 export class SaleReportComponent implements OnInit {
+  shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
+  user:any =JSON.parse(localStorage.getItem('user') || '') ;
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
-  user:any =JSON.parse(localStorage.getItem('user') || '') ;
   companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
 
   constructor(
@@ -53,6 +54,8 @@ export class SaleReportComponent implements OnInit {
   totalUnitPrice: any;
   totalAmount: any;
   totalGstAmount: any;
+  totalBalance = 0
+  totalPaid = 0
   gstMaster: any;
 
   selectedProduct: any;
@@ -154,7 +157,7 @@ export class SaleReportComponent implements OnInit {
       }
     });
     // billmaster
-    this.dropdownShoplist()
+   
     this.dropdownUserlist()
     this.getProductList();
     this.getProductList1();
@@ -170,6 +173,18 @@ export class SaleReportComponent implements OnInit {
     }else  if(this.BillMaster.FromDate === moment().format('YYYY-MM-DD')) {
       this.employeeHide = true
     }
+
+    if(this.user.UserGroup === 'Employee'){
+      this.shopList  = this.shop;
+      this.BillMaster.ShopID = this.shopList[0].ShopID
+      this.Billdetail.ShopID = this.shopList[0].ShopID
+      this.service.ShopID = this.shopList[0].ShopID
+      this.cancel.ShopID = this.shopList[0].ShopID
+      this.pending.ShopID = this.shopList[0].ShopID
+    }else{
+      this.dropdownShoplist()
+    }
+
   }
 
   getChangeDate() {
@@ -196,10 +211,10 @@ export class SaleReportComponent implements OnInit {
     const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
       next: (res: any) => {
         if(res.success){
-          this.shopList  = res.data
-          let shop = res.data
-          this.shopLists = shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
-          this.shopLists =  '/ ' + this.shopLists[0].Name + ' (' + this.shopLists[0].AreaName + ')'          
+            this.shopList  = res.data
+            let shop = res.data
+            this.shopLists = shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
+            this.shopLists =  '/ ' + this.shopLists[0].Name + ' (' + this.shopLists[0].AreaName + ')'  
         }else{
           this.as.errorToast(res.message)
         }
@@ -261,22 +276,21 @@ export class SaleReportComponent implements OnInit {
   getBillMaster(){
     this.sp.show()
     let Parem = '';
-    let time = '00:00:01'
-    let time2 = '23:59:00'
+
     if (this.BillMaster.FromDate !== '' && this.BillMaster.FromDate !== null && this.BillMaster.FilterTypes === 'BillDate'){
    
-        let FromDate =  moment(this.BillMaster.FromDate).format('YYYY-MM-DD') + ' ' + time
-        Parem = Parem + ' and billmaster.BillDate between ' +  `'${FromDate}'` ;
+        let FromDate =  moment(this.BillMaster.FromDate).format('YYYY-MM-DD') 
+        Parem = Parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d")  between ' +  `'${FromDate}'` ;
     }
 
     if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null  && this.BillMaster.FilterTypes === 'BillDate'){
-        let ToDate =  moment(this.BillMaster.ToDate).format('YYYY-MM-DD') + ' ' + time2
+        let ToDate =  moment(this.BillMaster.ToDate).format('YYYY-MM-DD') 
         Parem = Parem + ' and ' + `'${ToDate}'`; 
     }
 
     if (this.BillMaster.FromDate !== '' && this.BillMaster.FromDate !== null && this.BillMaster.FilterTypes === 'DeliveryDate'){
       let FromDate =  moment(this.BillMaster.FromDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and billmaster.DeliveryDate between ' +  `'${FromDate}'`; 
+      Parem = Parem + ' and DATE_FORMAT(billmaster.DeliveryDate, "%Y-%m-%d") between ' +  `'${FromDate}'`; 
     }
 
     if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null  && this.BillMaster.FilterTypes === 'DeliveryDate'){
@@ -326,12 +340,17 @@ export class SaleReportComponent implements OnInit {
             c.push(gs)
             e.gst_detailssss.push(c)
           })
-
+          
+          for (const billMaster of this.BillMasterList) {
+            this.totalBalance += billMaster.DueAmount;
+          }
+          
           this.totalQty = res.calculation[0].totalQty;
           this.totalDiscount = res.calculation[0].totalDiscount;
           this.totalUnitPrice = res.calculation[0].totalUnitPrice;
           this.totalGstAmount = res.calculation[0].totalGstAmount;
           this.totalAmount = res.calculation[0].totalAmount;
+          this.totalPaid = this.totalAmount - this.totalBalance;
           this.gstMaster = res.calculation[0].gst_details
         }else{
           this.as.errorToast(res.message)
@@ -342,6 +361,13 @@ export class SaleReportComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+  // totalCalculation1(data) {
+  //   for (var i = 0; i < data.length; i++) {
+  //     this.Balance = this.convertToDecimal(this.Balance + data[i].DueAmount, 2);
+  //   }
+  //   this.Paid = (this.totalInvoiceAmt - this.AddlDiscount1) - this.Balance;
+  // }
 
   openModalSale(content3: any) {
     this.modalService.open(content3, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
@@ -591,8 +617,8 @@ export class SaleReportComponent implements OnInit {
         if(res.success){
           this.as.successToast(res.message)
           this.BillServiceList = res.data
-          this.ServiceAmount = res.calculation[0].totalAmount;
-          this.ServicetotalGstAmount = res.calculation[0].totalGstAmount;
+          this.ServiceAmount = (res.calculation[0].totalAmount).toFixed(2);
+          this.ServicetotalGstAmount = (res.calculation[0].totalGstAmount).toFixed(2);
           this.gstService = res.calculation[0].gst_details
         }else{
           this.as.errorToast(res.message)

@@ -58,12 +58,13 @@ export class ExpenseComponent implements OnInit {
   ) { this.id = this.route.snapshot.params['id']; }
 
 
-  data: ExpenseModel = { ID: 0, CompanyID: 0, ShopID: 0, Name: '', InvoiceNo: '', Category: '', SubCategory: '', Amount: '', PaymentMode: '', CashType: '', PaymentRefereceNo: '', Comments: '', Status: 1, CreatedBy: '', UpdatedBy: '', CreatedOn: '', UpdatedOn: '', };
+  data: any = { ID: 0, CompanyID: 0, ShopID: 0, Name: '', InvoiceNo: '', Category: '', SubCategory: '', Amount: '', PaymentMode: '', CashType: '', PaymentRefereceNo: '', Comments: '', Status: 1, CreatedBy: '', UpdatedBy: '', CreatedOn: '', UpdatedOn: '', };
 
   editExpenseList = false
   addExpenseList = false
   deleteExpenseList = false
-
+  shopId:any =[]
+  
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'ExpenseList') {
@@ -79,22 +80,24 @@ export class ExpenseComponent implements OnInit {
   }
 
   dropdownShoplist() {
-    this.sp.show()
-    const subs: Subscription = this.ss.dropdownShoplist(this.data).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.dropShoplist = res.data
-          let shopId = []
-          shopId = res.data.filter((s:any) => s.ID === Number(this.selectedShop[0]));
-          this.data.ShopID = shopId[0].ID
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+    this.sp.show()  
+      const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.dropShoplist = res.data
+            this.shopId = []
+            this.shopId = res.data.filter((s:any) => s.ID === Number(this.selectedShop[0]));
+            this.data.ShopID = this.shopId[0].ID
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    
+
   }
 
   getExpenseTypeList() {
@@ -257,6 +260,7 @@ export class ExpenseComponent implements OnInit {
   openEditModal(content: any, datas: any) {
     this.suBtn = true;
     this.data = datas
+
     this.data.ShopID = Number(datas.ShopID);
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
   }
@@ -264,6 +268,7 @@ export class ExpenseComponent implements OnInit {
   openModal(content: any) {
     this.formReset();
     this.suBtn = false;
+    this.dropdownShoplist();
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
   }
 

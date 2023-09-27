@@ -12,6 +12,8 @@ import * as XLSX from 'xlsx';
   styleUrls: ['./eyetest-report.component.css']
 })
 export class EyetestReportComponent implements OnInit {
+  shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
+  user:any =JSON.parse(localStorage.getItem('user') || '') ;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
 
   constructor(
@@ -39,7 +41,14 @@ export class EyetestReportComponent implements OnInit {
         this.deleteEyeTestReport = element.Delete;
       }
     });
-    this. dropdownShoplist();
+
+    if(this.user.UserGroup === 'Employee'){
+      this.shopList  = this.shop;
+      this.data.ShopID = this.shopList[0].ShopID
+    }else{
+      this.dropdownShoplist();
+    }
+
   }
 
   dropdownShoplist(){

@@ -583,7 +583,33 @@ export class BillListComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.sp.show()
-        if (this.dataList[i].Quantity == 0) {
+        if (this.dataList[i].Quantity == 0 && this.dataList[i].DueAmount == 0) {
+          const subs: Subscription = this.bill.deleteData(this.dataList[i].ID).subscribe({
+            next: (res: any) => {
+              if (res.success) {
+                this.dataList.splice(i, 1);
+                this.as.successToast(res.message)
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Your file has been deleted.',
+                  showConfirmButton: false,
+                  timer: 1000
+                })
+              } else {
+                this.as.errorToast(res.message)
+                Swal.fire({
+                  position: 'center',
+                  icon: 'warning',
+                  title: res.message,
+                  showCancelButton: true,
+                })
+              }
+              this.sp.hide()
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subs.unsubscribe(),
+          });
         } else {
           this.sp.hide()
           Swal.fire({
@@ -595,32 +621,7 @@ export class BillListComponent implements OnInit {
             confirmButtonText: 'OK!'
           })
         }
-        const subs: Subscription = this.bill.deleteData(this.dataList[i].ID).subscribe({
-          next: (res: any) => {
-            if (res.success) {
-              this.dataList.splice(i, 1);
-              this.as.successToast(res.message)
-              Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'Your file has been deleted.',
-                showConfirmButton: false,
-                timer: 1000
-              })
-            } else {
-              this.as.errorToast(res.message)
-              Swal.fire({
-                position: 'center',
-                icon: 'warning',
-                title: res.message,
-                showCancelButton: true,
-              })
-            }
-            this.sp.hide()
-          },
-          error: (err: any) => console.log(err.message),
-          complete: () => subs.unsubscribe(),
-        });
+
       }
     })
   }

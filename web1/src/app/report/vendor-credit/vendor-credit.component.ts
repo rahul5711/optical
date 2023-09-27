@@ -16,11 +16,13 @@ import { SupplierService } from 'src/app/service/supplier.service';
   styleUrls: ['./vendor-credit.component.css']
 })
 export class VendorCreditComponent implements OnInit {
-
+  shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
+  user:any =JSON.parse(localStorage.getItem('user') || '') ;
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   form :any | FormGroup;
+
 
   constructor(
     private purchaseService: PurchaseService,
@@ -48,8 +50,18 @@ export class VendorCreditComponent implements OnInit {
     FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID : 0,VendorStatus:0,
   };
 
+  totalAmount: any;
+  totalBalance: any;
+  totalPaidAmount: any;
+  
   ngOnInit(): void {
     this.dropdownShoplist()
+    if(this.user.UserGroup === 'Employee'){
+      this.shopList  = this.shop;
+      this.data.ShopID = this.shopList[0].ShopID
+    }else{
+      this.dropdownShoplist()
+    }
     this.dropdownSupplierlist()
   }
 
@@ -127,6 +139,9 @@ console.log(Parem);
         if(res.success){
           this.as.successToast(res.message)
           this.dataList = res.data
+          this.totalAmount = res.calculation[0].totalAmount;
+          this.totalBalance = res.calculation[0].totalBalance;
+          this.totalPaidAmount = res.calculation[0].totalPaidAmount;
         }else{
           this.as.errorToast(res.message)
         }

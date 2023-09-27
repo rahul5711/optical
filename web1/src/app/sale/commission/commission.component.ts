@@ -21,12 +21,14 @@ import * as moment from 'moment';
   styleUrls: ['./commission.component.css']
 })
 export class CommissionComponent implements OnInit {
-  user = JSON.parse(localStorage.getItem('user') || '');
+  shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
+  user:any =JSON.parse(localStorage.getItem('user') || '') ;
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   env = environment;
   searchValue:any
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -66,7 +68,13 @@ export class CommissionComponent implements OnInit {
         this.deleteLoyalty = element.Delete;
       }
     });
-    this.dropdownShoplist()
+
+    if(this.user.UserGroup === 'Employee'){
+      this.shopList = this.shop
+    }else{
+      this.dropdownShoplist()
+    }
+
     this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", second:"2-digit", hour12: false })
   }
 
@@ -109,12 +117,14 @@ export class CommissionComponent implements OnInit {
   }
 
   getCommissionDetail(){
+    this.sp.show()
     const subs: Subscription = this.pay.getCommissionDetail(this.data).subscribe({
       next: (res: any) => {
         res.data.forEach((el: any) => {
           el.BillDate = moment(el.BillDate).format(`${this.companySetting.DateFormat}`);
         })
         this.dataList  = res.data
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),

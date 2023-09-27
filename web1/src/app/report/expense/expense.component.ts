@@ -14,7 +14,8 @@ import { ExpenseService } from 'src/app/service/expense.service';
   styleUrls: ['./expense.component.css']
 })
 export class ExpenseComponent implements OnInit {
-
+  shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
+  user:any =JSON.parse(localStorage.getItem('user') || '') ;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
@@ -52,7 +53,14 @@ export class ExpenseComponent implements OnInit {
         this.deleteEyeTestReport = element.Delete;
       }
     });
-    this.dropdownShoplist();
+
+    if(this.user.UserGroup === 'Employee'){
+      this.shopList  = this.shop;
+      this.data.ShopID = this.shopList[0].ShopID
+    }else{
+      this.dropdownShoplist();
+    }
+
     this.getPaymentModesList();
     this.searchData()
   }

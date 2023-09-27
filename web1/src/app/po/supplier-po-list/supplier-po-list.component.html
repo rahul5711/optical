@@ -41,11 +41,21 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0 ">
-                                    <mat-form-field class="example-full-width mb-0">
+                                    <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
                                         <mat-label>Shop Name</mat-label>
                                         <mat-select name="Supplier" editable="true" [(ngModel)]="data.ShopID"
                                             [ngModelOptions]="{standalone: true}" #singleSelect required>
                                             <mat-option [value]=0>All</mat-option>
+                                            <mat-option *ngFor="let sup of shopList  let i = index;" [value]="sup.ID">
+                                                {{sup.Name}} <span [style.color]="'blue'"
+                                                    *ngIf="sup.AreaName !== 'null'">({{sup.AreaName}})</span>
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                                        <mat-label>Shop Name</mat-label>
+                                        <mat-select name="Supplier" editable="true" [(ngModel)]="data.ShopID"
+                                            [ngModelOptions]="{standalone: true}" #singleSelect required>
                                             <mat-option *ngFor="let sup of shopList  let i = index;" [value]="sup.ID">
                                                 {{sup.Name}} <span [style.color]="'blue'"
                                                     *ngIf="sup.AreaName !== 'null'">({{sup.AreaName}})</span>

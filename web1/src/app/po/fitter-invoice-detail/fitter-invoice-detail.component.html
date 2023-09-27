@@ -92,6 +92,7 @@
                                                     <th>Customer Name</th>
                                                     <th>Customer MobileNo</th>
                                                     <th>Customer Invoice</th>
+                                                    <th>BillDate</th>
                                                     <th>Product Name</th>
                                                     <th>Lens Type</th>
                                                     <th>Requested Date</th>
@@ -106,6 +107,7 @@
                                                     <td>{{item.CustomerName}}</td>
                                                     <td>{{item.MobileNo1}}</td>
                                                     <td>{{item.CustomerInvoice}}</td>
+                                                    <td>{{dateFormat(item.BillDate)}}</td>
                                                     <td>{{item.ProductName}}</td>
                                                     <td>{{item.LensType}}</td>
                                                     <td>{{dateFormat(item.AssignedOn)}}</td>

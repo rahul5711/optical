@@ -21,10 +21,11 @@ import { FitterService } from 'src/app/service/fitter.service';
 })
 export class FitterInvoiceComponent implements OnInit {
   evn = environment
+  shop:any =JSON.parse(localStorage.getItem('shop') || '');
+  user:any =JSON.parse(localStorage.getItem('user') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   company = JSON.parse(localStorage.getItem('company') || '');
   companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
-
 
   constructor(
     private route: ActivatedRoute,
@@ -50,14 +51,17 @@ export class FitterInvoiceComponent implements OnInit {
   shopList:any = []
   gstList:any = []
   dataList:any = []
-  currentTime = ''
+  currentTime = '';
+
   ngOnInit(): void {
-    this.sp.show();
-    // this.FitterMaster.PurchaseDate = moment().format('YYYY-MM-DD');
+    if(this.user.UserGroup === 'Employee'){
+      this.shopList  = this.shop;
+    }else{
+      this.dropdownShoplist();
+    }
     this.dropdownfitterlist()
-    this.dropdownShoplist()
     this.getGSTList()
-    this.sp.hide();
+    // this.FitterMaster.PurchaseDate = moment().format('YYYY-MM-DD');
     this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", second:"2-digit", hour12: false })
   }
 

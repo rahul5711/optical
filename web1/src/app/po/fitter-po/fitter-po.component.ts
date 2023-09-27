@@ -22,6 +22,8 @@ import { SupportService } from 'src/app/service/support.service';
   styleUrls: ['./fitter-po.component.css']
 })
 export class FitterPoComponent implements OnInit {
+  shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
+  user:any =JSON.parse(localStorage.getItem('user') || '') ;
   companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
 
   constructor(
@@ -72,9 +74,14 @@ export class FitterPoComponent implements OnInit {
   // call Api ngOnInit start 
   ngOnInit(): void {
     this.sp.show()
-    this.dropdownShoplist();
+    if(this.user.UserGroup === 'Employee'){
+      this.shopList  = this.shop;
+      this.data.ShopID = this.shopList[0].ShopID
+    }else{
+      this.dropdownShoplist();
+      this.getFitterPo();
+    }
     this.dropdownfitterlist();
-    this.getFitterPo();
     this.getLensTypeList();
     this.sp.hide(); 
   }
@@ -138,8 +145,14 @@ export class FitterPoComponent implements OnInit {
   // order pendding list 
   getFitterPo() {
     this.sp.show()
+    let Parem = '';
     this.orderFitter = true
-    const subs: Subscription = this.bill.getFitterPo(this.ID, '').subscribe({
+    if(this.user.UserGroup === 'Employee'){
+      Parem = Parem + ' and barcodemasternew.ShopID = ' + this.data.ShopID;
+    }else{
+      Parem = '';
+    }
+    const subs: Subscription = this.bill.getFitterPo(this.ID, Parem).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.orderList = res.data
@@ -465,7 +478,11 @@ export class FitterPoComponent implements OnInit {
     this.orderComplete = true
     this.orderFitterbtn = true
     this.getList();
-    this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '' }
+    if(this.user.UserGroup === 'Employee'){
+      this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: this.data.ShopID, stringProductName: '' }
+    }else{
+      this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '' }
+    }
   }
 
   // top buttons to function
@@ -473,7 +490,12 @@ export class FitterPoComponent implements OnInit {
     this.getFitterPo()
     this.orderFitter = true
     this.orderComplete = false
-    this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '' }
+    if(this.user.UserGroup === 'Employee'){
+      this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: this.data.ShopID, stringProductName: '' }
+    }else{
+      this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '' }
+    }
+
   }
 
   // power popup

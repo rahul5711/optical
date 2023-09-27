@@ -1306,7 +1306,7 @@ export class BillComponent implements OnInit {
     this.ProductDetails =  data.ProductTypeName + '/' + data.ProductName
     this.UpdatePowerID = data
     let type = '';
-    if(data.ProductTypeName){
+    if(data.ProductTypeName.toUpperCase() !== 'CONTACT LENS'){
        type = 'Lens'
     }else{
       type = 'ContactLens'
