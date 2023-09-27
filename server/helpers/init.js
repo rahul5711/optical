@@ -82,7 +82,7 @@ const init = async () => {
 
 
     } catch (error) {
-        next(error)
+        console.log(error)
     }
 }
 
@@ -132,7 +132,7 @@ const product = async () => {
         }
 
     } catch (error) {
-        next(error)
+        console.log(error)
     }
 }
 
@@ -181,8 +181,7 @@ const product_support = async () => {
 
 
     } catch (error) {
-        throw error
-
+        console.log(error)
     }
 }
 

@@ -179,6 +179,7 @@ module.exports = {
 
             let billType = 1
             let paymentMode = 'Unpaid';
+            let productStatus = 'Deliverd';
 
             if (billMaseterData.TotalAmount == 0) {
                 paymentMode = 'Paid'
@@ -189,6 +190,7 @@ module.exports = {
             if (billDetailData.length) {
                 const invoiceNo = await generateInvoiceNo(CompanyID, shopid, billDetailData, billMaseterData)
                 billMaseterData.InvoiceNo = invoiceNo;
+                productStatus = 'Pending'
             }
 
             if (service.length && !billDetailData.length) {
@@ -199,7 +201,7 @@ module.exports = {
 
             // save Bill master data
             let [bMaster] = await mysql2.pool.query(
-                `insert into billmaster (CustomerID,CompanyID, Sno,ShopID,BillDate, DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee, BillType, RoundOff, AddlDiscountPercentage) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}','${billMaseterData.DeliveryDate}', '${paymentMode}',  '${billMaseterData.InvoiceNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.SubTotal}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount}, 1, ${LoggedOnUser}, now(), now(), ${billMaseterData.Doctor}, '${billMaseterData.TrayNo}', ${billMaseterData.Employee}, ${billType}, ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0})`
+                `insert into billmaster (CustomerID,CompanyID, Sno,ShopID,BillDate, DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee, BillType, RoundOff, AddlDiscountPercentage, ProductStatus) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}','${billMaseterData.DeliveryDate}', '${paymentMode}',  '${billMaseterData.InvoiceNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.SubTotal}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount}, 1, ${LoggedOnUser}, now(), now(), ${billMaseterData.Doctor}, '${billMaseterData.TrayNo}', ${billMaseterData.Employee}, ${billType}, ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, '${productStatus}')`
             );
 
             console.log(connected("BillMaster Add SuccessFUlly !!!"));
@@ -403,6 +405,7 @@ module.exports = {
             if (billDetailData.length && fetchComm.length) {
                 return res.send({ success: false, message: "you can not add more product in this invoice because you have already settled commission of this invoice" })
             }
+
 
             const [bMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}', ProductStatus = '${billMaseterData.ProductStatus}', BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, RoundOff = ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, AddlDiscountPercentage = ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, UpdatedOn = now(), LastUpdate = now(), TrayNo = '${billMaseterData.TrayNo}' where ID = ${bMasterID}`)
 
@@ -1998,6 +2001,176 @@ module.exports = {
 
 
         } catch (err) {
+            next(err)
+        }
+
+    },
+    getSalereport: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, calculation: [{
+                    "totalQty": 0,
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalDiscount": 0,
+                    "totalUnitPrice": 0,
+                    "totalSubTotalPrice": 0,
+                    "gst_details": []
+                }], success: true, message: ""
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 ` +
+                Parem + " GROUP BY billmaster.ID ORDER BY billmaster.ID DESC"
+
+            let [data] = await mysql2.pool.query(qry);
+
+
+            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        response.calculation[0].gst_details.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        response.calculation[0].gst_details.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+
+            if (data.length) {
+                for (const item of data) {
+                    if (item.BillType === 0) {
+                        // service bill
+                        const [fetchService] = await mysql2.pool.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+
+                        if (fetchService.length) {
+                            for (const item2 of fetchService) {
+                                response.calculation[0].totalAmount += item2.TotalAmount
+                                response.calculation[0].totalGstAmount += item2.GSTAmount
+                                response.calculation[0].totalSubTotalPrice += item2.SubTotal
+                                response.calculation[0].totalUnitPrice += item2.Price
+
+                                if (item2.GSTType === 'CGST-SGST') {
+                                    response.calculation[0].gst_details.forEach(e => {
+                                        if (e.GSTType === 'CGST') {
+                                            e.Amount += item2.GSTAmount / 2
+                                        }
+                                        if (e.GSTType === 'SGST') {
+                                            e.Amount += item2.GSTAmount / 2
+                                        }
+                                    })
+                                }
+
+                                if (item2.GSTType !== 'CGST-SGST') {
+                                    response.calculation[0].gst_details.forEach(e => {
+                                        if (e.GSTType === item2.GSTType ) {
+                                            e.Amount += item2.GSTAmount
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                    }
+
+                    if (item.BillType === 1) {
+                        // product & service bill
+
+                        // service bill
+                        const [fetchService] = await mysql2.pool.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+
+                        if (fetchService.length) {
+                            for (const item2 of fetchService) {
+                                response.calculation[0].totalAmount += item2.TotalAmount
+                                response.calculation[0].totalGstAmount += item2.GSTAmount
+                                response.calculation[0].totalSubTotalPrice += item2.SubTotal
+                                response.calculation[0].totalUnitPrice += item2.Price
+                                if (item2.GSTType === 'CGST-SGST') {
+                                    response.calculation[0].gst_details.forEach(e => {
+                                        if (e.GSTType === 'CGST') {
+                                            e.Amount += item2.GSTAmount / 2
+                                        }
+                                        if (e.GSTType === 'SGST') {
+                                            e.Amount += item2.GSTAmount / 2
+                                        }
+                                    })
+                                }
+
+                                if (item2.GSTType !== 'CGST-SGST') {
+                                    response.calculation[0].gst_details.forEach(e => {
+                                        if (e.GSTType === item2.GSTType ) {
+                                            e.Amount += item2.GSTAmount
+                                        }
+                                    })
+                                }
+                            }
+                        }
+
+                        // product bill
+                        const [fetchProduct] = await mysql2.pool.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+
+                        if(fetchProduct.length) {
+                            for(const item2 of fetchProduct) {
+                                response.calculation[0].totalQty += item2.Quantity
+                                response.calculation[0].totalAmount += item2.TotalAmount
+                                response.calculation[0].totalGstAmount += item2.GSTAmount
+                                response.calculation[0].totalUnitPrice += item2.UnitPrice
+                                response.calculation[0].totalDiscount += item2.DiscountAmount
+                                response.calculation[0].totalSubTotalPrice += item2.SubTotal
+
+                                if (item2.GSTType === 'CGST-SGST') {
+                                    response.calculation[0].gst_details.forEach(e => {
+                                        if (e.GSTType === 'CGST') {
+                                            e.Amount += item2.GSTAmount / 2
+                                        }
+                                        if (e.GSTType === 'SGST') {
+                                            e.Amount += item2.GSTAmount / 2
+                                        }
+                                    })
+                                }
+
+                                if (item2.GSTType !== 'CGST-SGST') {
+                                    response.calculation[0].gst_details.forEach(e => {
+                                        if (e.GSTType === item2.GSTType ) {
+                                            e.Amount += item2.GSTAmount
+                                        }
+                                    })
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            response.data = data
+            response.message = "success";
+
+            return res.send(response);
+
+
+
+        } catch (err) {
+            console.log(err)
             next(err)
         }
 

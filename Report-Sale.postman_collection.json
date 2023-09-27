@@ -1,0 +1,201 @@
+{
+	"info": {
+		"_postman_id": "37438863-c4e5-4e6b-9150-195ed9a43863",
+		"name": "Report-Sale",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "SaleReport",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTU4MzQ0MDYsImV4cCI6MTY5NTkyMDgwNiwiYXVkIjoiJzcnIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.IhtZ6mIlnsrlUXRcletAaw-Udf26mNJWOOMdrFJ33OM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Selectedshop",
+						"value": "[\"7\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Parem\": \" and billmaster.BillDate between '2023-09-28 00:00:01' and '2023-09-28 23:59:00' and billmaster.BillType = 0\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/bill/getSalereport",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"bill",
+						"getSalereport"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "SaleReport",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Selectedshop",
+								"value": "[\"7\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Parem\": \" and billmaster.BillDate between '2023-09-28 00:00:01' and '2023-09-28 23:59:00' and billmaster.BillType = 0\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/getSalereport",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"getSalereport"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "998"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"3e6-cqfiW5yK09rWBMM3Go04BNKgPvU\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 27 Sep 2023 18:47:25 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 359,\n            \"CustomerID\": 6022,\n            \"CompanyID\": 3,\n            \"ShopID\": 7,\n            \"Sno\": \"108\",\n            \"BillDate\": \"2023-09-27T18:39:45.000Z\",\n            \"DeliveryDate\": \"2023-09-27T18:39:45.000Z\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"InvoiceNo\": \"2309S00009\",\n            \"GSTNo\": \"\",\n            \"Quantity\": 0,\n            \"SubTotal\": 246,\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 54,\n            \"AddlDiscount\": 0,\n            \"TotalAmount\": 300,\n            \"DueAmount\": 300,\n            \"RoundOff\": 0,\n            \"AddlDiscountPercentage\": 0,\n            \"Invoice\": null,\n            \"Receipt\": null,\n            \"Status\": 1,\n            \"CreatedBy\": 7,\n            \"CreatedOn\": \"2023-09-27T18:43:13.000Z\",\n            \"UpdatedBy\": 7,\n            \"UpdatedOn\": \"2023-09-27T18:47:17.000Z\",\n            \"LastUpdate\": \"2023-09-27T18:47:17.000Z\",\n            \"Doctor\": null,\n            \"TrayNo\": \"null\",\n            \"ProductStatus\": \"Deliverd\",\n            \"Employee\": 7,\n            \"BillType\": 0,\n            \"ShopName\": \"opto\",\n            \"AreaName\": \"palasia\",\n            \"CustomerName\": \"new santosh\",\n            \"MobileNo1\": \"\",\n            \"EmployeeName\": \"OPTOSIGHT\"\n        }\n    ],\n    \"calculation\": [\n        {\n            \"totalQty\": 0,\n            \"totalGstAmount\": 54,\n            \"totalAmount\": 300,\n            \"totalDiscount\": 0,\n            \"totalUnitPrice\": 0,\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"IGST\",\n                    \"Amount\": 36\n                },\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 9\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 9\n                }\n            ]\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				},
+				{
+					"name": "SaleReport",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Selectedshop",
+								"value": "[\"7\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Parem\": \" and billmaster.BillDate between '2023-09-28 00:00:01' and '2023-09-28 23:59:00'\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/getSalereport",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"getSalereport"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2536"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"9e8-vbpsb19igtdRObgCWZq1OaM1UKw\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 27 Sep 2023 19:06:23 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 361,\n            \"CustomerID\": 6022,\n            \"CompanyID\": 3,\n            \"ShopID\": 7,\n            \"Sno\": \"110\",\n            \"BillDate\": \"2023-09-27T18:39:45.000Z\",\n            \"DeliveryDate\": \"2023-09-27T18:39:45.000Z\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"InvoiceNo\": \"2309R00077\",\n            \"GSTNo\": \"\",\n            \"Quantity\": 5,\n            \"SubTotal\": 5357.14,\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 642.86,\n            \"AddlDiscount\": 0,\n            \"TotalAmount\": 6000,\n            \"DueAmount\": 6000,\n            \"RoundOff\": 0,\n            \"AddlDiscountPercentage\": 0,\n            \"Invoice\": null,\n            \"Receipt\": null,\n            \"Status\": 1,\n            \"CreatedBy\": 7,\n            \"CreatedOn\": \"2023-09-27T19:06:19.000Z\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"LastUpdate\": \"2023-09-27T19:06:19.000Z\",\n            \"Doctor\": null,\n            \"TrayNo\": \"null\",\n            \"ProductStatus\": \"Pending\",\n            \"Employee\": 7,\n            \"BillType\": 1,\n            \"ShopName\": \"opto\",\n            \"AreaName\": \"palasia\",\n            \"CustomerName\": \"new santosh\",\n            \"MobileNo1\": \"\",\n            \"EmployeeName\": \"OPTOSIGHT\"\n        },\n        {\n            \"ID\": 360,\n            \"CustomerID\": 6022,\n            \"CompanyID\": 3,\n            \"ShopID\": 7,\n            \"Sno\": \"109\",\n            \"BillDate\": \"2023-09-27T18:39:45.000Z\",\n            \"DeliveryDate\": \"2023-09-27T18:39:45.000Z\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"InvoiceNo\": \"2309R00076\",\n            \"GSTNo\": \"\",\n            \"Quantity\": 3,\n            \"SubTotal\": 1592.57,\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 207.43,\n            \"AddlDiscount\": 0,\n            \"TotalAmount\": 1800,\n            \"DueAmount\": 1800,\n            \"RoundOff\": 0,\n            \"AddlDiscountPercentage\": 0,\n            \"Invoice\": null,\n            \"Receipt\": null,\n            \"Status\": 1,\n            \"CreatedBy\": 7,\n            \"CreatedOn\": \"2023-09-27T18:56:12.000Z\",\n            \"UpdatedBy\": 7,\n            \"UpdatedOn\": \"2023-09-27T19:04:49.000Z\",\n            \"LastUpdate\": \"2023-09-27T19:04:49.000Z\",\n            \"Doctor\": null,\n            \"TrayNo\": \"null\",\n            \"ProductStatus\": \"Pending\",\n            \"Employee\": 7,\n            \"BillType\": 1,\n            \"ShopName\": \"opto\",\n            \"AreaName\": \"palasia\",\n            \"CustomerName\": \"new santosh\",\n            \"MobileNo1\": \"\",\n            \"EmployeeName\": \"OPTOSIGHT\"\n        },\n        {\n            \"ID\": 359,\n            \"CustomerID\": 6022,\n            \"CompanyID\": 3,\n            \"ShopID\": 7,\n            \"Sno\": \"108\",\n            \"BillDate\": \"2023-09-27T18:39:45.000Z\",\n            \"DeliveryDate\": \"2023-09-27T18:39:45.000Z\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"InvoiceNo\": \"2309S00009\",\n            \"GSTNo\": \"\",\n            \"Quantity\": 0,\n            \"SubTotal\": 246,\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 54,\n            \"AddlDiscount\": 0,\n            \"TotalAmount\": 300,\n            \"DueAmount\": 300,\n            \"RoundOff\": 0,\n            \"AddlDiscountPercentage\": 0,\n            \"Invoice\": null,\n            \"Receipt\": null,\n            \"Status\": 1,\n            \"CreatedBy\": 7,\n            \"CreatedOn\": \"2023-09-27T18:43:13.000Z\",\n            \"UpdatedBy\": 7,\n            \"UpdatedOn\": \"2023-09-27T18:47:17.000Z\",\n            \"LastUpdate\": \"2023-09-27T18:47:17.000Z\",\n            \"Doctor\": null,\n            \"TrayNo\": \"null\",\n            \"ProductStatus\": \"Deliverd\",\n            \"Employee\": 7,\n            \"BillType\": 0,\n            \"ShopName\": \"opto\",\n            \"AreaName\": \"palasia\",\n            \"CustomerName\": \"new santosh\",\n            \"MobileNo1\": \"\",\n            \"EmployeeName\": \"OPTOSIGHT\"\n        }\n    ],\n    \"calculation\": [\n        {\n            \"totalQty\": 8,\n            \"totalGstAmount\": 904.29,\n            \"totalAmount\": 8100,\n            \"totalDiscount\": 0,\n            \"totalUnitPrice\": 2700,\n            \"totalSubTotalPrice\": 7195.710000000001,\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"IGST\",\n                    \"Amount\": 72\n                },\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 416.145\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 416.145\n                }\n            ]\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				}
+			]
+		}
+	]
+}
