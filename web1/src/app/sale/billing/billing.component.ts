@@ -444,7 +444,16 @@ x:any
     this.srcBox = true;
   }
 
+ 
 
+  op1(){
+    this.x = document.getElementById("u");
+      if ( this.x.open === false  ) {
+        this.x.open = true ;
+      } else {
+        this.x.open = false ;
+      }
+  }
 
   
   doctorList() {

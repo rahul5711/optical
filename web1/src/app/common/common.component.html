@@ -63,6 +63,7 @@
               <a *ngIf="viewFlag.viewRecycleBin" href="javascript:void(0)" [routerLink]="['/admin/CompanyDashborad']">Recycle-Bin</a>
             </div>
           </div>
+          
           <!-- companyadmin end Administration -->
           <!-- companyadmin Product -->
           <div *ngIf="user?.UserGroup !== 'SuperAdmin'"  class="dropdown" (click)="myFunctionS('B')">
