@@ -2031,13 +2031,13 @@ module.exports = {
 
             let [data] = await mysql2.pool.query(qry);
 
-            if (data.length) {
-                data.forEach(ee => {
-                    ee.gst_detailssss = []
-                    ee.gst_details = [{ InvoiceNo: ee.InvoiceNo, }]
-                    data.push(ee)
-                })
-            }
+            // if (data.length) {
+            //     data.forEach(ee => {
+            //         ee.gst_detailssss = []
+            //         ee.gst_details = [{ InvoiceNo: ee.InvoiceNo, }]
+            //         data.push(ee)
+            //     })
+            // }
 
 
             let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
@@ -2068,6 +2068,8 @@ module.exports = {
 
             if (data.length) {
                 for (const item of data) {
+                    item.gst_detailssss = []
+                    item.gst_details = [{ InvoiceNo: item.InvoiceNo, }]
                     if (item.BillType === 0) {
                         // service bill
                         const [fetchService] = await mysql2.pool.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
