@@ -2031,11 +2031,14 @@ module.exports = {
 
             let [data] = await mysql2.pool.query(qry);
 
-            data.forEach(ee =>{
-              ee.gst_detailssss = []
-              ee.gst_details = [{InvoiceNo: ee.InvoiceNo,}]
-              data.push(ee)
-            })
+            if (data.length) {
+                data.forEach(ee => {
+                    ee.gst_detailssss = []
+                    ee.gst_details = [{ InvoiceNo: ee.InvoiceNo, }]
+                    data.push(ee)
+                })
+            }
+
 
             let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
@@ -2089,7 +2092,7 @@ module.exports = {
 
                                 if (item2.GSTType !== 'CGST-SGST') {
                                     response.calculation[0].gst_details.forEach(e => {
-                                        if (e.GSTType === item2.GSTType ) {
+                                        if (e.GSTType === item2.GSTType) {
                                             e.Amount += item2.GSTAmount
                                         }
                                     })
@@ -2106,14 +2109,14 @@ module.exports = {
 
                         if (fetchService.length) {
                             for (const item2 of fetchService) {
-                                
+
                                 response.calculation[0].totalAmount += item2.TotalAmount
                                 response.calculation[0].totalGstAmount += item2.GSTAmount
                                 response.calculation[0].totalSubTotalPrice += item2.SubTotal
                                 response.calculation[0].totalUnitPrice += item2.Price
                                 if (item2.GSTType === 'CGST-SGST') {
                                     response.calculation[0].gst_details.forEach(e => {
-                                        
+
                                         if (e.GSTType === 'CGST') {
                                             e.Amount += item2.GSTAmount / 2
                                         }
@@ -2125,7 +2128,7 @@ module.exports = {
 
                                 if (item2.GSTType !== 'CGST-SGST') {
                                     response.calculation[0].gst_details.forEach(e => {
-                                        if (e.GSTType === item2.GSTType ) {
+                                        if (e.GSTType === item2.GSTType) {
                                             e.Amount += item2.GSTAmount
                                         }
                                     })
@@ -2136,15 +2139,15 @@ module.exports = {
                         // product bill
                         const [fetchProduct] = await mysql2.pool.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
 
-                        if(fetchProduct.length) {
-                            for(const item2 of fetchProduct) {
+                        if (fetchProduct.length) {
+                            for (const item2 of fetchProduct) {
                                 response.calculation[0].totalQty += item2.Quantity
                                 response.calculation[0].totalAmount += item2.TotalAmount
                                 response.calculation[0].totalGstAmount += item2.GSTAmount
                                 response.calculation[0].totalUnitPrice += item2.UnitPrice
                                 response.calculation[0].totalDiscount += item2.DiscountAmount
                                 response.calculation[0].totalSubTotalPrice += item2.SubTotal
-                               
+
                                 if (item2.GSTType === 'CGST-SGST') {
                                     response.calculation[0].gst_details.forEach(e => {
                                         if (e.GSTType === 'CGST') {
@@ -2158,7 +2161,7 @@ module.exports = {
 
                                 if (item2.GSTType !== 'CGST-SGST') {
                                     response.calculation[0].gst_details.forEach(e => {
-                                        if (e.GSTType === item2.GSTType ) {
+                                        if (e.GSTType === item2.GSTType) {
                                             e.Amount += item2.GSTAmount
                                         }
                                     })
