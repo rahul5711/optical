@@ -323,22 +323,27 @@ module.exports = {
     }
 
     let lastInvoiceID = []
-
+    // and InvoiceNo LIKE '${newInvoiceID}%'
+    // and InvoiceNo LIKE '${newInvoiceID}%'
     if (billShopWiseBoolean) {
-      [lastInvoiceID] = await mysql2.pool.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID} and BillType = 1 and InvoiceNo LIKE '${newInvoiceID}%' )`);
+      [lastInvoiceID] = await mysql2.pool.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID} and BillType = 1 )`);
     } else {
-      [lastInvoiceID] = await mysql2.pool.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and BillType = 1 and InvoiceNo LIKE '${newInvoiceID}%' )`);
+      [lastInvoiceID] = await mysql2.pool.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and BillType = 1 )`);
     }
+
+    const [shopDetails] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
 
     if (lastInvoiceID.length === 0 || lastInvoiceID[0].MaxID === null ||
       lastInvoiceID[0].InvoiceNo.substring(0, 4) !== newInvoiceID
     ) {
-      newInvoiceID = newInvoiceID + rw + "00001";
+      newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].Sno + "-" + "1";
     } else {
-      let temp3 = lastInvoiceID[0].InvoiceNo;
-      let temp1 = parseInt(temp3.substring(10, 5)) + 1;
-      let temp2 = "0000" + temp1;
-      newInvoiceID = newInvoiceID + rw + temp2.slice(-5);
+      let temp3 = lastInvoiceID[0].InvoiceNo.split("-");
+      let temp1 = parseInt(temp3[temp3.length - 1]) + 1;
+      console.log(temp1 , 'temp1');
+      let temp2 =  temp1;
+      newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].Sno + "-" + temp2
+      // .slice(-5);
     }
 
     return newInvoiceID
@@ -363,20 +368,24 @@ module.exports = {
     let lastInvoiceID = []
 
     if (billShopWiseBoolean) {
-      [lastInvoiceID] = await mysql2.pool.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID} and BillType = 0 and InvoiceNo LIKE '${newInvoiceID}%' )`);
+      [lastInvoiceID] = await mysql2.pool.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID} and BillType = 0  )`);
     } else {
-      [lastInvoiceID] = await mysql2.pool.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and BillType = 0 and InvoiceNo LIKE '${newInvoiceID}%' )`);
+      [lastInvoiceID] = await mysql2.pool.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and BillType = 0  )`);
     }
+
+    const [shopDetails] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
 
     if (lastInvoiceID.length === 0 || lastInvoiceID[0].MaxID === null ||
       lastInvoiceID[0].InvoiceNo.substring(0, 4) !== newInvoiceID
     ) {
-      newInvoiceID = newInvoiceID + rw + "00001";
+      newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].Sno + "-" + "1";
     } else {
-      let temp3 = lastInvoiceID[0].InvoiceNo;
-      let temp1 = parseInt(temp3.substring(10, 5)) + 1;
-      let temp2 = "0000" + temp1;
-      newInvoiceID = newInvoiceID + rw + temp2.slice(-5);
+      let temp3 = lastInvoiceID[0].InvoiceNo.split("-");
+      let temp1 = parseInt(temp3[temp3.length - 1]) + 1;
+      console.log(temp1 , 'temp1');
+      let temp2 =  temp1;
+      newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].Sno + "-" + temp2;
+      // .slice(-5)
     }
 
     return newInvoiceID
