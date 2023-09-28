@@ -108,6 +108,10 @@ export class BillService {
     return this.httpClient.post<any>(this.url + '/getSalereports',{Parem:Parem}, httpOptions)
     .pipe(catchError(this.handleError));
   }
+  getSalereport(Parem:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getSalereport',{Parem:Parem}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
   getSalereportsDetail(Parem:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/getSalereportsDetail',{Parem:Parem}, httpOptions)

@@ -126,6 +126,17 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Bill Type</mat-label>
+                                                    <mat-select name="ProductStatus"
+                                                        [(ngModel)]="BillMaster.BillType">
+                                                        <mat-option value="All">All</mat-option>
+                                                        <mat-option [value]=0>Service</mat-option>
+                                                        <mat-option [value]=1>Invoice + Service</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
                                             <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
                                                 <button type="submit" mat-raised-button color="primary">
                                                     Search
@@ -260,10 +271,10 @@
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.DueAmount }} </td>
 
-                                                        <td *ngIf="d.ProductStatus === 1 "
+                                                        <td *ngIf="d.ProductStatus !== 'Pending' "
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             Deliverd </td>
-                                                        <td *ngIf="d.ProductStatus === 0 "
+                                                        <td *ngIf="d.ProductStatus === 'Pending'"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             pending </td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
@@ -738,6 +749,17 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Bill Type</mat-label>
+                                                    <mat-select name="ProductStatus"
+                                                        [(ngModel)]="service.BillType">
+                                                        <mat-option value="All">All</mat-option>
+                                                        <mat-option [value]=0>Service</mat-option>
+                                                        <mat-option [value]=1>Invoice + Service</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
                                             <div class="col-xl-4 col-lg-4 col-md-4 col-12 mb-0">
                                                 <button class="me-1" mat-raised-button color="primary">Search</button>
                                                 <button class="mr-0" type="button" mat-raised-button color="warn"
@@ -749,6 +771,7 @@
                                                         style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
                                                 </button>
                                             </div>
+                                            
                                         </div>
                                     </form>
                                     <div class="body p-2">

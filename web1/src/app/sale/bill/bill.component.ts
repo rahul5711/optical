@@ -187,7 +187,7 @@ export class BillComponent implements OnInit {
     if (this.id2 != 0) {
       this.getCustomerById1()
     }    
-    this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", second:"2-digit", hour12: false })
+     this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23'})
   }
 
   getCustomerById1() {

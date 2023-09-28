@@ -11,7 +11,8 @@ let pdf = require("html-pdf");
 var TinyURL = require('tinyurl');
 var moment = require("moment");
 const clientConfig = require("../helpers/constants");
-const mysql2 = require('../database')
+const mysql2 = require('../database');
+const { log } = require('winston');
 
 function discountAmount(item) {
     let discountAmount = 0
@@ -2025,11 +2026,16 @@ module.exports = {
 
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
-            qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 ` +
+            qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo,  billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 ` +
                 Parem + " GROUP BY billmaster.ID ORDER BY billmaster.ID DESC"
 
             let [data] = await mysql2.pool.query(qry);
 
+            data.forEach(ee =>{
+              ee.gst_detailssss = []
+              ee.gst_details = [{InvoiceNo: ee.InvoiceNo,}]
+              data.push(ee)
+            })
 
             let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
@@ -2100,12 +2106,14 @@ module.exports = {
 
                         if (fetchService.length) {
                             for (const item2 of fetchService) {
+                                
                                 response.calculation[0].totalAmount += item2.TotalAmount
                                 response.calculation[0].totalGstAmount += item2.GSTAmount
                                 response.calculation[0].totalSubTotalPrice += item2.SubTotal
                                 response.calculation[0].totalUnitPrice += item2.Price
                                 if (item2.GSTType === 'CGST-SGST') {
                                     response.calculation[0].gst_details.forEach(e => {
+                                        
                                         if (e.GSTType === 'CGST') {
                                             e.Amount += item2.GSTAmount / 2
                                         }
@@ -2136,7 +2144,7 @@ module.exports = {
                                 response.calculation[0].totalUnitPrice += item2.UnitPrice
                                 response.calculation[0].totalDiscount += item2.DiscountAmount
                                 response.calculation[0].totalSubTotalPrice += item2.SubTotal
-
+                               
                                 if (item2.GSTType === 'CGST-SGST') {
                                     response.calculation[0].gst_details.forEach(e => {
                                         if (e.GSTType === 'CGST') {

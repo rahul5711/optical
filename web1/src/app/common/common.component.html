@@ -48,7 +48,7 @@
 
           <!-- CompanyAdmin start nav-->
           <a *ngIf="user?.UserGroup !== 'SuperAdmin'" (click)="openModal(content)"><i class="fas fa-search"></i></a>
-          <a *ngIf="user?.UserGroup !== 'SuperAdmin'" [routerLink]="['/admin/CompanyDashborad']">Dashborad</a>
+          <a *ngIf="user?.UserGroup !== 'SuperAdmin'" [routerLink]="['/admin/CompanyDashborad']" (click)="myFunctionS('A0')">Dashborad</a>
           <!-- companyadmin  Administration -->
           <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown" (click)="myFunctionS('A')" >
             <a class="dropBtn" data-target="#collapseExample" >Administration <i class="fa fa-caret-down" aria-hidden="true"></i> </a>

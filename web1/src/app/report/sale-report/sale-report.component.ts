@@ -78,7 +78,7 @@ export class SaleReportComponent implements OnInit {
   gstService:any
 
   BillMaster: any =  { 
-    FilterTypes:'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,  EmployeeID:0,  CustomerID: 0,  CustomerGSTNo:0, PaymentStatus: 0, ProductStatus:'All'
+    FilterTypes:'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,  EmployeeID:0,  CustomerID: 0,  CustomerGSTNo:0, PaymentStatus: 0, ProductStatus:'All',BillType:'All'
   };
 
   Billdetail: any =  { 
@@ -86,7 +86,7 @@ export class SaleReportComponent implements OnInit {
   };
 
   service: any =  { 
-    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,BillType:'All'
   };
 
   cancel: any =  { 
@@ -316,7 +316,10 @@ export class SaleReportComponent implements OnInit {
     if (this.BillMaster.ProductStatus !== '' && this.BillMaster.ProductStatus !== null  && this.BillMaster.ProductStatus !== 'All'){
       Parem = Parem + ' and BillDetail.ProductStatus = '  + `'${this.BillMaster.ProductStatus}'`; }
 
-    const subs: Subscription =  this.bill.getSalereports(Parem).subscribe({
+    if (this.BillMaster.BillType !== '' && this.BillMaster.BillType !== null  && this.BillMaster.BillType !== 'All'){
+      Parem = Parem + ' and billmaster.BillType = '  + `'${this.BillMaster.BillType}'`; }
+
+    const subs: Subscription =  this.bill.getSalereport(Parem).subscribe({
       next: (res: any) => {
         if(res.success){
           this.as.successToast(res.message)
@@ -340,16 +343,17 @@ export class SaleReportComponent implements OnInit {
             c.push(gs)
             e.gst_detailssss.push(c)
           })
-          
+          this.totalBalance = 0
+          this.totalPaid = 0
           for (const billMaster of this.BillMasterList) {
-            this.totalBalance += billMaster.DueAmount;
+            this.totalBalance = this.totalBalance + billMaster.DueAmount;
           }
           
           this.totalQty = res.calculation[0].totalQty;
-          this.totalDiscount = res.calculation[0].totalDiscount;
-          this.totalUnitPrice = res.calculation[0].totalUnitPrice;
-          this.totalGstAmount = res.calculation[0].totalGstAmount;
-          this.totalAmount = res.calculation[0].totalAmount;
+          this.totalDiscount = (parseFloat(res.calculation[0].totalDiscount)).toFixed(2);
+          this.totalUnitPrice = (parseFloat(res.calculation[0].totalUnitPrice)).toFixed(2);
+          this.totalGstAmount = (parseFloat(res.calculation[0].totalGstAmount)).toFixed(2);
+          this.totalAmount = (parseFloat(res.calculation[0].totalAmount)).toFixed(2);
           this.totalPaid = this.totalAmount - this.totalBalance;
           this.gstMaster = res.calculation[0].gst_details
         }else{
@@ -361,13 +365,6 @@ export class SaleReportComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
-
-  // totalCalculation1(data) {
-  //   for (var i = 0; i < data.length; i++) {
-  //     this.Balance = this.convertToDecimal(this.Balance + data[i].DueAmount, 2);
-  //   }
-  //   this.Paid = (this.totalInvoiceAmt - this.AddlDiscount1) - this.Balance;
-  // }
 
   openModalSale(content3: any) {
     this.modalService.open(content3, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
@@ -610,6 +607,9 @@ export class SaleReportComponent implements OnInit {
 
     if (this.service.ShopID != 0){
       Parem = Parem + ' and billmaster.ShopID IN ' +  `(${this.service.ShopID})`;}
+
+    if ( this.service.BillType !== 'All'){
+      Parem = Parem + ' and billmaster.BillType = '  + `'${this.service.BillType}'`; }
 
       
     const subs: Subscription =  this.bill.saleServiceReport(Parem).subscribe({

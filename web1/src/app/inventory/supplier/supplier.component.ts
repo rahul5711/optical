@@ -17,6 +17,7 @@ import { SupportService } from 'src/app/service/support.service';
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { ShopService } from 'src/app/service/shop.service';
+import { content } from 'html2canvas/dist/types/css/property-descriptors/content';
 
 
 @Component({
@@ -97,7 +98,8 @@ export class SupplierComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.purchasVariable = +params['check'] || 0;
     });
-    await Promise.all([this.getList(), this.getGSTList(), ]);
+
+    await Promise.all([this.getList(), this.getGSTList(),  ]);
   }
 
 

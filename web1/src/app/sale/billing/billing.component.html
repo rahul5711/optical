@@ -285,21 +285,26 @@
                                                     style="justify-content: space-between;margin-right: 12px;">
                                                     <div class="col-1 fw-bold pe-0">Dis.</div>
                                                     <div class="col-1">
-
-                                                        <!-- <ng-select style="height: 40px;
-                                                        border: 1px solid;"  class="inputWidth box" bindLabel="REDPSPH" name="REDPSPH"  type="text" [(ngModel)]="spectacle.REDPSPH" [required]="true" #REDPSPH="ngModel" id="REDPSPH" [closeOnSelect]="true" [searchable]="true" [clearable]="false">
-                                                         <ng-option [value]="d.Name" *ngFor="let d of dataSPH" >
-                                                                {{d.Name}} 
-                                                        </ng-option>
-                                                         </ng-select> -->
-
                                                         <input class="inputWidth box" type="text" name="REDPSPH"
                                                             [(ngModel)]="spectacle.REDPSPH" id="REDPSPH"
-                                                            list="dpsphList" (change)="calculate('Lens', 'RD', 0.00)">
+                                                            list="dpsphList" (change)="calculate('Lens', 'RD', 0.00)" >
                                                         <datalist id="dpsphList">
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH">
                                                                 {{d.Name}}</option>
                                                         </datalist>
+
+                                                        <!-- <input > -->
+                                                        <!-- <input class="inputWidth box" type="text" name="REDPSPH" [(ngModel)]="spectacle.REDPSPH" id="REDPSPH"
+                                                        (change)="calculate('Lens', 'RD', 0.00)" >
+
+                                                            <select   class="inputWidth box" style="width: 22px;position: absolute;
+                                                            top: 85px;
+                                                            left: 58.4%;" type="text" name="REDPSPH" [(ngModel)]="spectacle.REDPSPH" 
+                                                            (change)="calculate('Lens', 'RD', 0.00)" >
+                                                                <option  [value]="d.Name" *ngFor="let d of dataSPH"> {{d.Name}}</option>
+                                                            </select> -->
+
+                                                       
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box " type="text" name="REDPCYL"
@@ -311,11 +316,11 @@
                                                         </datalist>
                                                     </div>
                                                     <div class="col-1">
-                                                        <input class="inputWidth box" type="text" name="REDPAxis"
+                                                        <input class="inputWidth box" type="number" name="REDPAxis"
                                                             [(ngModel)]="spectacle.REDPAxis">
                                                     </div>
                                                     <div class="col-1">
-                                                        <input class="inputWidth box" type="text" name="REDPVA"
+                                                        <input class="inputWidth box" type="number" name="REDPVA"
                                                             [(ngModel)]="spectacle.REDPVA" id="REDPVA" list="dpvaList">
                                                         <datalist id="dpvaList">
                                                             <option [value]="d.Name" *ngFor="let d of dataPVA">
@@ -323,7 +328,7 @@
                                                         </datalist>
                                                     </div>
                                                     <div class="col-1">
-                                                        <input class="inputWidth box" type="text" name="R_Addition"
+                                                        <input class="inputWidth box" type="number" name="R_Addition"
                                                             [(ngModel)]="spectacle.R_Addition"
                                                             (change)="calculate('Lens', 'R', 0.00)">
                                                     </div>
@@ -346,11 +351,11 @@
                                                         </datalist>
                                                     </div>
                                                     <div class="col-1">
-                                                        <input class="inputWidth box" type="text" name="LEDPAxis"
+                                                        <input class="inputWidth box" type="number" name="LEDPAxis"
                                                             [(ngModel)]="spectacle.LEDPAxis">
                                                     </div>
                                                     <div class="col-1">
-                                                        <input class="inputWidth box" type="text" name="LEDPVA"
+                                                        <input class="inputWidth box" type="number" name="LEDPVA"
                                                             [(ngModel)]="spectacle.LEDPVA" id="LEDPVA" list="dpvaList">
                                                         <datalist id="dpvaList">
                                                             <option [value]="d.Name" *ngFor="let d of dataPVA">
@@ -358,7 +363,7 @@
                                                         </datalist>
                                                     </div>
                                                     <div class="col-1">
-                                                        <input class="inputWidth box" type="text" name="L_Addition"
+                                                        <input class="inputWidth box" type="number" name="L_Addition"
                                                             [(ngModel)]="spectacle.L_Addition"
                                                             (change)="calculate('Lens', 'L', 0.00)">
                                                     </div>
@@ -388,11 +393,11 @@
                                                         </datalist>
                                                     </div>
                                                     <div class="col-1">
-                                                        <input class="inputWidth box" type="text" name="RENPAxis"
+                                                        <input class="inputWidth box" type="number" name="RENPAxis"
                                                             [(ngModel)]="spectacle.RENPAxis">
                                                     </div>
                                                     <div class="col-1">
-                                                        <input class="inputWidth box" type="text" name="RENPVA"
+                                                        <input class="inputWidth box" type="number" name="RENPVA"
                                                             [(ngModel)]="spectacle.RENPVA" id="RENPVA" list="dpvaList">
                                                         <datalist id="dpvaList">
                                                             <option [value]="d.Name" *ngFor="let d of dataPVA">
@@ -423,11 +428,11 @@
                                                         </datalist>
                                                     </div>
                                                     <div class="col-1">
-                                                        <input class="inputWidth box" type="text" name="LENPAxis"
+                                                        <input class="inputWidth box" type="number" name="LENPAxis"
                                                             [(ngModel)]="spectacle.LENPAxis">
                                                     </div>
                                                     <div class="col-1">
-                                                        <input class="inputWidth box" type="text" name="LENPVA"
+                                                        <input class="inputWidth box" type="number" name="LENPVA"
                                                             [(ngModel)]="spectacle.LENPVA" id="LENPVA" list="dpvaList">
                                                         <datalist id="dpvaList">
                                                             <option [value]="d.Name" *ngFor="let d of dataPVA">

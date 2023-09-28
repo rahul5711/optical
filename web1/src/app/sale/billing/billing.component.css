@@ -48,6 +48,8 @@
     top: 150px;
 }
 
+
+
 @import "~@ng-select/ng-select/themes/default.theme.css";
 
 @import "~@ng-select/ng-select/themes/material.theme.css";
@@ -119,6 +121,8 @@
 
 .box {
     width: 60px;
+    font-weight: 600;
+    color: red;
 }
 
 .visible-scrollbar,

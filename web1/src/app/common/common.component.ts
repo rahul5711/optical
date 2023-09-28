@@ -140,6 +140,48 @@ export class CommonComponent implements OnInit {
 
 
   myFunctionS(mode:any) {
+    if(mode == 'A0'){
+
+        this.x = document.getElementById("collapseExample");
+        if (this.x.style.display == "block" ) {
+          this.x.style.display = "none";
+        }
+        this.x = document.getElementById("collapseExample1");
+        if (this.x.style.display == "block" ) {
+          this.x.style.display = "none";
+        }
+  
+        this.x = document.getElementById("collapseExample2");
+        if (this.x.style.display == "block" ) {
+          this.x.style.display = "none";
+        }
+  
+        this.x = document.getElementById("collapseExample3");
+        if (this.x.style.display == "block" ) {
+          this.x.style.display = "none";
+        }
+        this.x = document.getElementById("collapseExample4");
+        if (this.x.style.display == "block" ) {
+          this.x.style.display = "none";
+        }
+        this.x = document.getElementById("collapseExample5");
+        if (this.x.style.display == "block" ) {
+          this.x.style.display = "none";
+        }
+        this.x = document.getElementById("collapseExample6");
+        if (this.x.style.display == "block" ) {
+          this.x.style.display = "none";
+        }
+        this.x = document.getElementById("collapseExample7");
+        if (this.x.style.display == "block" ) {
+          this.x.style.display = "none";
+        }
+  
+        this.x = document.getElementById("collapseExample8");
+        if (this.x.style.display == "block" ) {
+          this.x.style.display = "none";
+        }
+    }
     if(mode == 'A'){
       this.x = document.getElementById("collapseExample1");
       if (this.x.style.display == "block" ) {

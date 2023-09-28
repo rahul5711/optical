@@ -109,7 +109,7 @@
                                                 <th>Balance(Not Used)</th>
                                                 <th>Status</th>
                                                 <th>Remark</th>
-                                                <th>Return</th>
+                                                <th>CreditType</th>
                                             </tr>
                                             <tr class="totolRow " *ngIf="this.dataList != null && this.dataList != ''" >
                                                 <td>
@@ -146,7 +146,10 @@
                                                     <span *ngIf="data.Amount === data.PaidAmount && data.PaidAmount !== 0">Used  </span>
                                                 </td>
                                                 <td>{{data.Remark}}</td>
-                                                <td>{{data.Is_Return}}</td>
+                                                <td>
+                                                    <span *ngIf="data.Is_Return === 0"> Credit Note</span>
+                                                    <span *ngIf="data.Is_Return === 1"> Return Credit Note</span>
+                                                </td>
                                              
                                             </tr>
                                         </tbody>

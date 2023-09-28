@@ -62,7 +62,7 @@ export class FitterInvoiceComponent implements OnInit {
     this.dropdownfitterlist()
     this.getGSTList()
     // this.FitterMaster.PurchaseDate = moment().format('YYYY-MM-DD');
-    this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", second:"2-digit", hour12: false })
+     this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23'})
   }
 
   dropdownfitterlist() {

@@ -427,7 +427,7 @@ export class BillingComponent implements OnInit {
   deleteCustomer = false
   numberList:any=[]
   otherLists:any=[]
-
+x:any
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'Customer') {
@@ -444,6 +444,9 @@ export class BillingComponent implements OnInit {
     this.srcBox = true;
   }
 
+
+
+  
   doctorList() {
     this.sp.show();
     const subs: Subscription = this.dc.dropdownDoctorlist().subscribe({

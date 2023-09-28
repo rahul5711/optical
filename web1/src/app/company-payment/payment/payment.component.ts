@@ -62,7 +62,7 @@ export class PaymentComponent implements OnInit {
 
   ngOnInit(): void {
     this.getPaymentModesList() 
-    this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", second:"2-digit", hour12: false })
+     this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23'})
   }
 
   getPaymentModesList() {

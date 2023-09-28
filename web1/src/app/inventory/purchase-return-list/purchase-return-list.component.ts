@@ -61,7 +61,7 @@ export class PurchaseReturnListComponent implements OnInit {
       }
     });
     this.getList();
-    this.currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", second:"2-digit", hour12: false })
+     this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23'})
   }
   
   changePagesize(num: number): void {
