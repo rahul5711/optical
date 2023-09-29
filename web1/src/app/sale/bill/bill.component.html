@@ -506,7 +506,7 @@
                 </div>
                 <div *ngIf="addCustomerBill" class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0  mb-3">
                     <button  type="submit" (click)=" calculations('TotalAmount', 'serviceTotal');notifyGst();" class="mr-3"
-                        [disabled]="this.GstTypeDis" mat-raised-button color="primary">Add</button>
+                        [disabled]="this.GstTypeDis || Service.TotalAmount === 0" mat-raised-button color="primary">Add</button>
                 </div>
             </div>
         </form>

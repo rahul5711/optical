@@ -61,7 +61,7 @@ export class CompanySettingComponent implements OnInit {
 
   ngOnInit(): void {
    this.getCompanySetting();
-   this.getBillFormateById();
+  //  this.getBillFormateById();
    [this.shop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));;
   }
 
