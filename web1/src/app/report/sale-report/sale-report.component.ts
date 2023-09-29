@@ -75,6 +75,7 @@ export class SaleReportComponent implements OnInit {
   ServiceAmount:any
   ServicetotalAmount: any;
   ServicetotalGstAmount: any;
+  ServiceGtotalAmount: any;
   gstService:any
 
   BillMaster: any =  { 
@@ -351,7 +352,7 @@ export class SaleReportComponent implements OnInit {
           
           this.totalQty = res.calculation[0].totalQty;
           this.totalDiscount = (parseFloat(res.calculation[0].totalDiscount)).toFixed(2);
-          this.totalUnitPrice = (parseFloat(res.calculation[0].totalUnitPrice)).toFixed(2);
+          this.totalUnitPrice = (parseFloat(res.calculation[0].totalSubTotalPrice)).toFixed(2);
           this.totalGstAmount = (parseFloat(res.calculation[0].totalGstAmount)).toFixed(2);
           this.totalAmount = (parseFloat(res.calculation[0].totalAmount)).toFixed(2);
           this.totalPaid = this.totalAmount - this.totalBalance;
@@ -619,6 +620,7 @@ export class SaleReportComponent implements OnInit {
           this.BillServiceList = res.data
           this.ServiceAmount = (res.calculation[0].totalAmount).toFixed(2);
           this.ServicetotalGstAmount = (res.calculation[0].totalGstAmount).toFixed(2);
+          this.ServiceGtotalAmount = (res.calculation[0].totalAmount + res.calculation[0].totalGstAmount).toFixed(2);
           this.gstService = res.calculation[0].gst_details
         }else{
           this.as.errorToast(res.message)

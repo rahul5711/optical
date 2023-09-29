@@ -84,6 +84,7 @@
                                                 <tr>
                                                     <th>Action</th>
                                                     <th>S.No</th>
+                                                    <th>ShopID</th>
                                                     <th>Shop Name</th>
                                                     <th>Area Name</th>
                                                     <th>Mobile No1</th>
@@ -111,6 +112,7 @@
                                                         </button>
                                                     </td>
                                                     <td [ngClass]="{'bcolor': data.Status == 0 }">{{dataList.length - i }}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.ID}}</td>
                                                     <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.Name}}</td>
                                                     <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.AreaName}}</td>
                                                     <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.MobileNo1 }}</td>

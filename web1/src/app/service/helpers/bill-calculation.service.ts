@@ -240,7 +240,7 @@ export class BillCalculationService {
         BillMaster.TotalAmount = (+BillMaster.TotalAmount + +element.TotalAmount);
       }
       
-      if(element.DuaCal === 'yes'){
+      if(element.DuaCal === 'yes' || element.DuaCal == '' || element.DuaCal == undefined ){
          element.DuaCal = 'No'
          BillMaster.DueAmount = +BillMaster.DueAmount +  element.TotalAmount
       }
@@ -264,7 +264,7 @@ export class BillCalculationService {
         BillMaster.TotalAmount = +BillMaster.TotalAmount + +element.TotalAmount;
       }
 
-      if(element.DuaCal === 'yes'){
+      if(element.DuaCal === 'yes' ){
         element.DuaCal = 'No'
         BillMaster.DueAmount = +BillMaster.DueAmount +  element.TotalAmount
      }

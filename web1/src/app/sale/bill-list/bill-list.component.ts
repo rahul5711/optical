@@ -142,7 +142,7 @@ export class BillListComponent implements OnInit {
   showInput() {
     this.UpdateMode = !this.UpdateMode;
     this.paymentHistoryList.forEach((ep: any) => {
-      ep.PaymentDate = moment(ep.PaymentDate).format('YYYY-MM-DD')
+      ep.PaymentDate = moment(ep.PaymentDate).format('YYYY-MM-DD') 
     })
   }
 
@@ -209,7 +209,7 @@ export class BillListComponent implements OnInit {
   // payment date update 
   updateCustomerPaymentDate(data: any) {
     this.sp.show()
-    data.PaymentDate = data.PaymentDate + ' ' +this.currentTime
+    data.PaymentDate = data.PaymentDate + ' ' + this.currentTime
     const subs: Subscription = this.pay.updateCustomerPaymentDate(data).subscribe({
       next: (res: any) => {
         if (res.success) {

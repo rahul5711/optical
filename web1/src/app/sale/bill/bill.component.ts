@@ -79,11 +79,11 @@ export class BillComponent implements OnInit {
   }
 
   BillItem: any = {
-    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal : '', PurchasePrice:0,UpdateProduct: false
+    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal : 'yes', PurchasePrice:0,UpdateProduct: false
   };
 
   Service: any = {
-    ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal:0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, DuaCal : '',
+    ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal:0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, DuaCal : 'yes',
   };
 
   customer: any = {
@@ -916,7 +916,8 @@ export class BillComponent implements OnInit {
   addItem() {
     // additem Services
     if (this.category === 'Services') {
-      if (this.BillMaster.ID !== null) { this.Service.Status = 2; this.Service.DuaCal = 'yes'}
+      if (this.BillMaster.ID !== null) 
+      { this.Service.Status = 2; this.Service.DuaCal = 'yes'}
 
       if (this.Service.GSTPercentage === 0 || this.Service.GSTAmount === 0) {
         this.Service.GSTType = 'None'

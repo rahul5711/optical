@@ -141,7 +141,6 @@ export class CommonComponent implements OnInit {
 
   myFunctionS(mode:any) {
     if(mode == 'A0'){
-
         this.x = document.getElementById("collapseExample");
         if (this.x.style.display == "block" ) {
           this.x.style.display = "none";

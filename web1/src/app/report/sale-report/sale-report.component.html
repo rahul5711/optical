@@ -133,6 +133,7 @@
                                                         [(ngModel)]="BillMaster.BillType">
                                                         <mat-option value="All">All</mat-option>
                                                         <mat-option [value]=0>Service</mat-option>
+                                                        <mat-option [value]=1>Invoice </mat-option>
                                                         <mat-option [value]=1>Invoice + Service</mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
@@ -771,7 +772,6 @@
                                                         style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
                                                 </button>
                                             </div>
-                                            
                                         </div>
                                     </form>
                                     <div class="body p-2">
@@ -791,6 +791,12 @@
                                                         <th>Amount</th>
                                                         <th>GST Type</th>
                                                         <th>GST%</th>
+                                                        <th style="display:none">IGST%</th>
+                                                        <th style="display:none">IGSTAmt</th>
+                                                        <th style="display:none">CGST%</th>
+                                                        <th style="display:none">CGSTAmt</th>
+                                                        <th style="display:none">SGST%</th>
+                                                        <th style="display:none">SGSTAmt</th>
                                                         <th>GST Amount</th>
                                                         <th>GrandTotal</th>
                                                     </tr>
@@ -810,9 +816,15 @@
                                                         <td>{{this.ServiceAmount}}</td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td (click)="openModalService(content1)">
-                                                            {{this.ServicetotalGstAmount}}</td>
-                                                        <td></td>
+                                                        <td style="display:none"></td>
+                                                        <td style="display:none"></td>
+                                                        <td style="display:none"></td>
+                                                        <td style="display:none"></td>
+                                                        <td style="display:none"></td>
+                                                        <td style="display:none"></td>
+                                                        <td (click)="openModalService(content1)"> {{this.ServicetotalGstAmount}}</td>
+                                                        <td>{{this.ServiceGtotalAmount}}</td>
+
                                                     </tr>
                                                 </thead>
                                                 <tbody class="text-center">
@@ -829,6 +841,12 @@
                                                         <td>{{c.Price }}</td>
                                                         <td>{{c.GSTType}}</td>
                                                         <td>{{c.GSTPercentage}}%</td>
+                                                        <td style="display:none"> <span *ngIf="c.gst_detail[0]?.GSTType === 'IGST'"> {{c.GSTPercentage}}</span> </td>
+                                                        <td style="display:none"> <span *ngIf="c.gst_detail[0]?.GSTType === 'IGST'"> {{c.gst_detail[0]?.Amount}}</span> </td>
+                                                        <td style="display:none"> <span *ngIf="c.gst_detail[0]?.GSTType === 'CGST'"> {{c.GSTPercentage/2}}</span> </td>
+                                                        <td style="display:none"> <span *ngIf="c.gst_detail[0]?.GSTType === 'CGST'"> {{c.gst_detail[0]?.Amount}}</span> </td>
+                                                        <td style="display:none"> <span *ngIf="c.gst_detail[1]?.GSTType === 'SGST'"> {{c.GSTPercentage/2}}</span> </td>
+                                                        <td style="display:none"> <span *ngIf="c.gst_detail[1]?.GSTType === 'SGST'"> {{c.gst_detail[0]?.Amount}}</span> </td>
                                                         <td>{{c.GSTAmount }}</td>
                                                         <td>{{c.TotalAmount }}</td>
                                                     </tr>
