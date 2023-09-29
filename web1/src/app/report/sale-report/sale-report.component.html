@@ -133,8 +133,7 @@
                                                         [(ngModel)]="BillMaster.BillType">
                                                         <mat-option value="All">All</mat-option>
                                                         <mat-option [value]=0>Service</mat-option>
-                                                        <mat-option [value]=1>Invoice </mat-option>
-                                                        <mat-option [value]=1>Invoice + Service</mat-option>
+                                                        <mat-option [value]=1>Invoice</mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
@@ -279,7 +278,7 @@
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             pending </td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
-                                                            {{dateFormat(d.DeliveryDate)}} </td>
+                                                            {{dateFormat(d.ProductDeliveryDate)}} </td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             {{d.GSTNo}} </td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
@@ -757,7 +756,7 @@
                                                         [(ngModel)]="service.BillType">
                                                         <mat-option value="All">All</mat-option>
                                                         <mat-option [value]=0>Service</mat-option>
-                                                        <mat-option [value]=1>Invoice + Service</mat-option>
+                                                        <mat-option [value]=1>Invoice</mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
@@ -788,7 +787,7 @@
                                                         <th>BillDate</th>
                                                         <th>InvoiceNo</th>
                                                         <th>Description</th>
-                                                        <th>Amount</th>
+                                                        <th>SubTotal</th>
                                                         <th>GST Type</th>
                                                         <th>GST%</th>
                                                         <th style="display:none">IGST%</th>
@@ -813,7 +812,7 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td>{{this.ServiceAmount}}</td>
+                                                        <td></td>
                                                         <td></td>
                                                         <td></td>
                                                         <td style="display:none"></td>
@@ -823,7 +822,7 @@
                                                         <td style="display:none"></td>
                                                         <td style="display:none"></td>
                                                         <td (click)="openModalService(content1)"> {{this.ServicetotalGstAmount}}</td>
-                                                        <td>{{this.ServiceGtotalAmount}}</td>
+                                                        <td>{{this.ServiceAmount}}</td>
 
                                                     </tr>
                                                 </thead>
@@ -838,7 +837,7 @@
                                                         <td>{{dateFormat(c.BillDate)}}</td>
                                                         <td>{{c.InvoiceNo}}</td>
                                                         <td>{{c.Description}}</td>
-                                                        <td>{{c.Price }}</td>
+                                                        <td>{{c.SubTotal }}</td>
                                                         <td>{{c.GSTType}}</td>
                                                         <td>{{c.GSTPercentage}}%</td>
                                                         <td style="display:none"> <span *ngIf="c.gst_detail[0]?.GSTType === 'IGST'"> {{c.GSTPercentage}}</span> </td>
@@ -848,7 +847,7 @@
                                                         <td style="display:none"> <span *ngIf="c.gst_detail[1]?.GSTType === 'SGST'"> {{c.GSTPercentage/2}}</span> </td>
                                                         <td style="display:none"> <span *ngIf="c.gst_detail[1]?.GSTType === 'SGST'"> {{c.gst_detail[0]?.Amount}}</span> </td>
                                                         <td>{{c.GSTAmount }}</td>
-                                                        <td>{{c.TotalAmount }}</td>
+                                                        <td>{{c.Price }}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
