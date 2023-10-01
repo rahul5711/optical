@@ -228,6 +228,22 @@ module.exports = {
 
             console.log(connected("Barcode Initiated SuccessFully !!!"));
 
+
+
+            // invoice setting initiated for company
+
+            const invoice = {
+                ShopID: 0,
+                Retail:1,
+                WholeSale:1,
+                Service:1
+            }
+
+            const [saveinvoice] = await mysql2.pool.query(`insert into invoice(CompanyID, ShopID, Retail, WholeSale, Service)values(${saveCompany.insertId},0,1,1,1)`);
+
+            console.log(connected("Invoice Number Setting Initiated SuccessFully !!!"));
+
+
             const [Company] = await mysql2.pool.query(`select * from company where ID = ${saveCompany.insertId}`)
             const [User] = await mysql2.pool.query(`select * from user where ID = ${saveUser.insertId}`)
 

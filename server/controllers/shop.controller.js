@@ -35,6 +35,20 @@ module.exports = {
 
             console.log(connected("Data Added SuccessFUlly !!!"));
 
+
+             // invoice setting initiated for company
+
+             const invoice = {
+                ShopID: `${saveData.insertId}`,
+                Retail:1,
+                WholeSale:1,
+                Service:1
+            }
+
+            const [saveinvoice] = await mysql2.pool.query(`insert into invoice(CompanyID, ShopID, Retail, WholeSale, Service)values(${CompanyID},${invoice.ShopID},1,1,1)`);
+
+            console.log(connected("Invoice Number Setting Initiated SuccessFully !!!"));
+
             response.message = "data save sucessfully"
             // response.data =  await mysql2.pool.query(`select * from shop where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
             return res.send(response);

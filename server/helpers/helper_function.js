@@ -323,6 +323,104 @@ module.exports = {
     }
 
     let lastInvoiceID = []
+
+    if (billShopWiseBoolean) {
+      [lastInvoiceID] = await mysql2.pool.query(`select * from invoice WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`);
+
+      const updateDatum = {
+        Retail : rw === "R" ? lastInvoiceID[0].Retail + 1 : lastInvoiceID[0].Retail,
+        WholeSale : rw === "W" ? lastInvoiceID[0].WholeSale + 1 : lastInvoiceID[0].WholeSale,
+      }
+
+      const [update] = await mysql2.pool.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale} WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`)
+
+    } else {
+      [lastInvoiceID] = await mysql2.pool.query(`select * from invoice WHERE CompanyID = '${CompanyID}' and ShopID = 0`);
+
+      const updateDatum = {
+        Retail : rw === "R" ? lastInvoiceID[0].Retail + 1 : lastInvoiceID[0].Retail,
+        WholeSale : rw === "W" ? lastInvoiceID[0].WholeSale + 1 : lastInvoiceID[0].WholeSale,
+      }
+
+      const [update] = await mysql2.pool.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale} WHERE CompanyID = '${CompanyID}' and ShopID = 0`)
+    }
+
+    const [shopDetails] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
+
+    if (lastInvoiceID) {
+      newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].Sno + "-" + (rw === "R" ? lastInvoiceID[0].Retail : lastInvoiceID[0].WholeSale);
+
+    }
+
+    return newInvoiceID
+  },
+  generateInvoiceNoForService: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
+    let rw = "S";
+    let billShopWiseBoolean = false
+    let newInvoiceID = new Date();
+    if (billMaseterData.ID === null || billMaseterData.ID === undefined) {
+      newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
+    }
+
+    const [billShopWise] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID}`);
+    if (billShopWise.length) {
+      if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
+        billShopWiseBoolean = true
+      } else {
+        billShopWiseBoolean = false
+      }
+    }
+
+    let lastInvoiceID = []
+
+    if (billShopWiseBoolean) {
+      [lastInvoiceID] = await mysql2.pool.query(`select * from invoice WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`);
+
+      const updateDatum = {
+        Service :lastInvoiceID[0].Service + 1
+      }
+
+      const [update] = await mysql2.pool.query(`update invoice set Service = ${updateDatum.Service} WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`)
+
+    } else {
+      [lastInvoiceID] = await mysql2.pool.query(`select * from invoice WHERE CompanyID = '${CompanyID}' and ShopID = 0`);
+
+      const updateDatum = {
+        Service :lastInvoiceID[0].Service + 1
+      }
+
+      const [update] = await mysql2.pool.query(`update invoice set Service = ${updateDatum.Service} WHERE CompanyID = '${CompanyID}' and ShopID = 0`)
+    }
+
+    const [shopDetails] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
+
+    if (lastInvoiceID) {
+      newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].Sno + "-" +  lastInvoiceID[0].Service;
+
+    }
+
+    return newInvoiceID
+  },
+  generateInvoiceNo2: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
+    let rw = "W";
+    let billShopWiseBoolean = false
+    let newInvoiceID = new Date();
+    if (billMaseterData.ID === null || billMaseterData.ID === undefined) {
+      newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
+    }
+    if (billDetailData.length !== 0 && !billDetailData[0].WholeSale) {
+      rw = "R";
+    }
+    const [billShopWise] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID}`);
+    if (billShopWise.length) {
+      if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
+        billShopWiseBoolean = true
+      } else {
+        billShopWiseBoolean = false
+      }
+    }
+
+    let lastInvoiceID = []
     // and InvoiceNo LIKE '${newInvoiceID}%'
     // and InvoiceNo LIKE '${newInvoiceID}%'
     if (billShopWiseBoolean) {
@@ -333,22 +431,21 @@ module.exports = {
 
     const [shopDetails] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
 
-    if (lastInvoiceID.length === 0 || lastInvoiceID[0].MaxID === null ||
-      lastInvoiceID[0].InvoiceNo.substring(0, 4) !== newInvoiceID
+    if (lastInvoiceID.length === 0 || lastInvoiceID[0].MaxID === null
     ) {
+      // || lastInvoiceID[0].InvoiceNo.substring(0, 4) !== newInvoiceID
       newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].Sno + "-" + "1";
     } else {
       let temp3 = lastInvoiceID[0].InvoiceNo.split("-");
       let temp1 = parseInt(temp3[temp3.length - 1]) + 1;
-      console.log(temp1 , 'temp1');
-      let temp2 =  temp1;
+      let temp2 = temp1;
       newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].Sno + "-" + temp2
       // .slice(-5);
     }
 
     return newInvoiceID
   },
-  generateInvoiceNoForService: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
+  generateInvoiceNoForService2: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     let rw = "S";
     let billShopWiseBoolean = false
     let newInvoiceID = new Date();
@@ -375,15 +472,14 @@ module.exports = {
 
     const [shopDetails] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
 
-    if (lastInvoiceID.length === 0 || lastInvoiceID[0].MaxID === null ||
-      lastInvoiceID[0].InvoiceNo.substring(0, 4) !== newInvoiceID
+    if (lastInvoiceID.length === 0 || lastInvoiceID[0].MaxID === null
     ) {
+      // || lastInvoiceID[0].InvoiceNo.substring(0, 4) !== newInvoiceID
       newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].Sno + "-" + "1";
     } else {
       let temp3 = lastInvoiceID[0].InvoiceNo.split("-");
       let temp1 = parseInt(temp3[temp3.length - 1]) + 1;
-      console.log(temp1 , 'temp1');
-      let temp2 =  temp1;
+      let temp2 = temp1;
       newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].Sno + "-" + temp2;
       // .slice(-5)
     }
