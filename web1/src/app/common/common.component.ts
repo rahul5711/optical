@@ -584,6 +584,7 @@ export class CommonComponent implements OnInit {
       this.router.navigateByUrl('/inventory/purchaseList', { skipLocationChange: true }).then(() => {
         this.router.navigate(['/inventory/purchaseList', 0]);
       });
+
     } else if (mode === 'fitterInvoiceList') {
       this.router.navigateByUrl('/po/fitterInvoiceList', { skipLocationChange: true }).then(() => {
         this.router.navigate(['/po/fitterInvoiceList', 0]);

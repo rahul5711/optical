@@ -839,13 +839,13 @@
                                                         <td>{{c.Description}}</td>
                                                         <td>{{c.SubTotal }}</td>
                                                         <td>{{c.GSTType}}</td>
-                                                        <td>{{c.GSTPercentage}}%</td>
+                                                        <td>{{c.GSTPercentage}}</td>
                                                         <td style="display:none"> <span *ngIf="c.gst_detail[0]?.GSTType === 'IGST'"> {{c.GSTPercentage}}</span> </td>
-                                                        <td style="display:none"> <span *ngIf="c.gst_detail[0]?.GSTType === 'IGST'"> {{c.gst_detail[0]?.Amount}}</span> </td>
+                                                        <td style="display:none"> <span *ngIf="c.gst_detail[0]?.GSTType === 'IGST'"> {{c.gst_detail[0]?.Amount | number:'1.2-2'}}</span> </td>
                                                         <td style="display:none"> <span *ngIf="c.gst_detail[0]?.GSTType === 'CGST'"> {{c.GSTPercentage/2}}</span> </td>
-                                                        <td style="display:none"> <span *ngIf="c.gst_detail[0]?.GSTType === 'CGST'"> {{c.gst_detail[0]?.Amount}}</span> </td>
+                                                        <td style="display:none"> <span *ngIf="c.gst_detail[0]?.GSTType === 'CGST'"> {{c.gst_detail[0]?.Amount | number:'1.2-2'}}</span> </td>
                                                         <td style="display:none"> <span *ngIf="c.gst_detail[1]?.GSTType === 'SGST'"> {{c.GSTPercentage/2}}</span> </td>
-                                                        <td style="display:none"> <span *ngIf="c.gst_detail[1]?.GSTType === 'SGST'"> {{c.gst_detail[0]?.Amount}}</span> </td>
+                                                        <td style="display:none"> <span *ngIf="c.gst_detail[1]?.GSTType === 'SGST'"> {{c.gst_detail[0]?.Amount | number:'1.2-2'}}</span> </td>
                                                         <td>{{c.GSTAmount }}</td>
                                                         <td>{{c.Price }}</td>
                                                     </tr>

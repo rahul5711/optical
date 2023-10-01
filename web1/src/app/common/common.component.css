@@ -79,6 +79,10 @@
   display: block;
 } */
 /* drondown links */
+
+#collapseExample ::before{
+  display: none;
+}
 .drop-content a {
   padding: 12px 10px;
   border-bottom: 1px solid rgb(197, 197, 250);
