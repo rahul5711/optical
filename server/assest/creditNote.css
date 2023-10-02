@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+/* Customer Details css  start*/
+.CustomerRow{
+    margin-bottom: 1%;
+    width:100%; 
+}
+
+/* Customer left side */
+.CustomerRow .col1{
+    width:40%; float: left;  
+}
+.CustomerRow .col1 .ul1{
+    max-width:25%; float: left; list-style: none;  padding: 0;margin: 0; 
+}
+.CustomerRow .col1 .ul2{
+    width:70%; float: right;  list-style: none; text-align: left;  padding: 0;margin: 0; 
+}
+
+/* Customer invoice type  */
+.CustomerRow .col3{
+    width:15%;  float: left; text-align: center; padding-top: 2%;
+ }
+
+/* Customer right side  */
+.CustomerRow .col2{
+   width:35%;  float: right; ;
+}
+.CustomerRow .col2 .ul1{
+    width:33%; float: left; list-style: none;   padding: 0;margin: 0; 
+}
+.CustomerRow .col2 .ul2{
+    width:60%; float: right;  list-style: none;   padding: 0;margin: 0; 
+}
+.CustomerRow .col2 .ul2 li{
+   height: 19px;
+    width:100%;
+}
+/* Customer Details css  end*/

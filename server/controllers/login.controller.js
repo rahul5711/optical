@@ -26,7 +26,8 @@ module.exports = {
             if (_.isEmpty(Body)) res.send({ success: false, message: "Invalid Query Data" })
 
             const [User] = await mysql2.pool.query(`select * from user where LoginName = '${Body.LoginName}' and Status = 1`)
-
+            console.log(!User.length,'User');
+     
             if (!User.length) {
                 return res.send({ success: false, message: "LoginName doesnot matched" })
             }
@@ -36,7 +37,7 @@ module.exports = {
                 return res.send({ success: false, message: "Password doesnot matched" })
             }
 
-            if (User[0].UserGroup === 'SuperAdmin') {
+            if (User.length  && User[0].UserGroup === 'SuperAdmin') {
 
                 const accessToken = await signAccessTokenAdmin(`'${User[0].ID}'`)
                 const refreshToken = await signRefreshTokenAdmin(`'${User[0].ID}'`)

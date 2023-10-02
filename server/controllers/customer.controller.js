@@ -769,7 +769,7 @@ module.exports = {
                 printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
             }
 
-            var formatName = "customerPowerPDF.ejs";
+            var formatName = "CreditNote.ejs";
             var file = formatName + "_" + CompanyID + "-" + customer.ID + ".pdf";
             fileName = "uploads/" + file;
 

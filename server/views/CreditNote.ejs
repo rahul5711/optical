@@ -1,0 +1,90 @@
+<html>
+<link rel="stylesheet" href="http://localhost:3000/assest/creditNote.css">
+<style>
+    html body {
+        zoom: 100%;
+    }
+
+    .headingName {
+         position: absolute;
+         margin-left: 39.2%;
+         width: 30%;
+         color: red;
+         margin-top: 0px;
+         font-size: 14px !important;
+      }
+
+</style>
+<body>
+    <div>
+        <section>
+            <%- include('./header.ejs', {pageNumber: 1}) %>
+            <div>
+                <div style="border-bottom: 1px solid; width: 38%; position:absolute; margin-top: 1%;"> </div>
+                <div style="border-bottom: 1px solid; width: 38%; float: right; position: relative; margin-top: 1%;"></div>
+                <span class="headingName">CREDIT NOTE VOUCHER</span>
+             </div>
+        </section>
+
+        <section style="width: 100%;">
+            <div class="CustomerRow">
+                <div class="col1">
+                    <ul class="ul1">
+                                <li>Invoice No</li>
+                                <li>Cust_ID</li>
+                                <li>Name</li>
+                                <li>MobileNo1</li>
+                    </ul>
+                    <ul class="ul2">
+                                <li>
+                                  344
+                                </li>
+                                <li>
+                                  4443
+                                </li>
+                                <li>
+                                    bbbb
+                                </li>
+                                <li>
+                                  8888
+                                </li>
+                    </ul>
+                </div>
+                <!-- <div class="col3">
+                    <h4>
+                        <%=data.bill%>
+                    </h4>
+                </div> -->
+                <div class="col2">
+                    <ul class="ul1">
+                                <li>Date</li>
+                                <li>Del. Date</li>
+                                <li>Rx BY</li>
+                                <li>GSTNo</li>
+                                <li>Sale Person</li>
+                    </ul>
+                    <ul class="ul2" >
+                                <li>
+                                    12
+                                </li>
+                                <li>
+                                    1221
+                                </li>
+                                <li>
+                                    1212
+                                </li>
+                                <li>
+                                   121
+                                </li>
+                                <li>
+                                   121
+                                </li>
+
+                    </ul>
+                </div>
+            </div>
+        </section>
+       
+    </div>
+</body>
+</html>

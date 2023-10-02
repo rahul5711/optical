@@ -239,14 +239,18 @@ export class BillCalculationService {
         BillMaster.GSTAmount = (+BillMaster.GSTAmount + +element.GSTAmount);
         BillMaster.TotalAmount = (+BillMaster.TotalAmount + +element.TotalAmount);
       }
-      
-      if(element.DuaCal === 'yes' || element.DuaCal == '' || element.DuaCal == undefined ){
+
+      if(element.DuaCal === 'yes'){
          element.DuaCal = 'No'
          BillMaster.DueAmount = +BillMaster.DueAmount +  element.TotalAmount
       }
 
       if(element.DuaCal === 'delete'){
         BillMaster.DueAmount = +BillMaster.DueAmount -  element.TotalAmount
+     }
+     
+      if(element.DuaCal === 'delete2'){
+        BillMaster.DueAmount = BillMaster.DueAmount -  element.TotalAmount
      }
 
      BillMaster.SubTotal = this.convertToDecimal(+BillMaster.SubTotal, 2);
@@ -264,6 +268,8 @@ export class BillCalculationService {
         BillMaster.TotalAmount = +BillMaster.TotalAmount + +element.TotalAmount;
       }
 
+  
+
       if(element.DuaCal === 'yes' ){
         element.DuaCal = 'No'
         BillMaster.DueAmount = +BillMaster.DueAmount +  element.TotalAmount
@@ -272,6 +278,9 @@ export class BillCalculationService {
      if(element.DuaCal === 'delete'){
        BillMaster.DueAmount = +BillMaster.DueAmount -  element.TotalAmount
     }
+    if(element.DuaCal === 'delete2'){
+      BillMaster.DueAmount = BillMaster.DueAmount -  element.TotalAmount
+   }
     });
 
     // RoundOff

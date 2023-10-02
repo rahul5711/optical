@@ -881,6 +881,8 @@ export class BillComponent implements OnInit {
     if (this.BillMaster.ID !== null) {
       this.BillItem.Status = 2;
       this.BillItem.DuaCal = 'yes';
+    }else{
+      this.BillItem.DuaCal = 'yes'
     }
 
     if (!this.BillItem.PreOrder && !this.BillItem.Manual && this.BillItem.Quantity > this.searchList.BarCodeCount) {
@@ -917,7 +919,9 @@ export class BillComponent implements OnInit {
     // additem Services
     if (this.category === 'Services') {
       if (this.BillMaster.ID !== null) 
-      { this.Service.Status = 2; this.Service.DuaCal = 'yes'}
+      { this.Service.Status = 2; this.Service.DuaCal = 'yes'}else{
+        this.Service.DuaCal = 'yes'
+      }
 
       if (this.Service.GSTPercentage === 0 || this.Service.GSTAmount === 0) {
         this.Service.GSTType = 'None'
@@ -1177,6 +1181,20 @@ export class BillComponent implements OnInit {
           backdrop: false,
         }).then((result) => {
           if (result.isConfirmed) {
+            let billlIst: any[] = this.billItemList
+            this.billItemList.forEach((ele: any) => {
+               if(ele.Status === 2){
+                 ele.Status = 0;
+                 ele.DuaCal = 'delete2';
+               }
+            })
+            this.serviceLists.forEach((ele: any) => {
+              if(ele.Status === 2){
+                ele.Status = 0;
+                ele.DuaCal = 'delete2';
+              }
+           })
+            this.billItemList = billlIst
             this.billItemList[i].Status = 0;
             this.billItemList[i].DuaCal = 'delete';
             this.data.billMaseterData = this.BillMaster;
@@ -1221,6 +1239,20 @@ export class BillComponent implements OnInit {
         }).then((result) => {
           if (result.isConfirmed) {
             this.sp.show();
+            let billlIst: any[] = this.serviceLists
+            this.serviceLists.forEach((ele: any) => {
+               if(ele.Status === 2){
+                 ele.Status = 0;
+                 ele.DuaCal = 'delete2';
+               }
+            })
+            this.billItemList.forEach((ele: any) => {
+              if(ele.Status === 2){
+                ele.Status = 0;
+                ele.DuaCal = 'delete2';
+              }
+           })
+            this.serviceLists = billlIst
             this.serviceLists[i].Status = 0;
             this.serviceLists[i].DuaCal = 'delete';
             this.data.service = this.serviceLists[i];

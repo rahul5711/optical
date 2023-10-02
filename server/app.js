@@ -16,6 +16,7 @@ const connected = chalk.bold.cyan;
 const morgan = require('morgan') 
 const { addRoutes } = require('./helpers/routes')
 const loggerss = require("./helpers/logger");
+const { log } = require('console');
 var app = express();
 global.appRoot = path.resolve(__dirname);
 app.use('/assest', express.static( 'assest'));
@@ -54,8 +55,9 @@ app.use(function(req, res, next) {
       }
 
       const [user] = await mysql2.pool.query(`select * from user where ID = ${payload.aud}`)
+      console.log(user,'user');
      
-      if ( user && ( user[0].UserGroup !== 'CompanyAdmin' && user[0].UserGroup !== 'SuperAdmin')) {
+      if ( user.length && user && ( user[0].UserGroup !== 'CompanyAdmin' && user[0].UserGroup !== 'SuperAdmin')) {
         const [companysetting] = await mysql2.pool.query(`select * from companysetting where Status = 1 and CompanyID = ${user[0].CompanyID}`)
         var currentTime = moment().tz("Asia/Kolkata").format("HH:mm");
         if (
