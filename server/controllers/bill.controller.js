@@ -274,7 +274,7 @@ module.exports = {
                             item.BrandType = 0
                             item.WholeSale = wholesale
                             item.BaseBarCode = await generateBarcode(CompanyID, 'PB')
-                            item.Barcode = Number(item.BaseBarCode) * 1000
+                            item.Barcode = Number(item.BaseBarCode)
                             // generate unique barcode
                             item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item)
                             const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser)
@@ -283,7 +283,7 @@ module.exports = {
                             );
                         } else if (manual === 1 && preorder === 0) {
                             item.BaseBarCode = await generateBarcode(CompanyID, 'MB')
-                            item.Barcode = Number(item.BaseBarCode) * 1000
+                            item.Barcode = Number(item.BaseBarCode)
                             let [result] = await mysql2.pool.query(
                                 `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                             );
@@ -475,7 +475,7 @@ module.exports = {
                         item.BrandType = 0
                         item.WholeSale = wholesale
                         item.BaseBarCode = await generateBarcode(CompanyID, 'PB')
-                        item.Barcode = Number(item.BaseBarCode) * 1000
+                        item.Barcode = Number(item.BaseBarCode)
                         // generate unique barcode
                         item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item)
                         const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser);
@@ -483,7 +483,7 @@ module.exports = {
                         );
                     } else if (manual === 1 && preorder === 0) {
                         item.BaseBarCode = await generateBarcode(CompanyID, 'MB')
-                        item.Barcode = Number(item.BaseBarCode) * 1000;
+                        item.Barcode = Number(item.BaseBarCode);
                         [result] = await mysql2.pool.query(
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
