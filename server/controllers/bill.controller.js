@@ -226,71 +226,134 @@ module.exports = {
             // save Bill Details
 
             if (billDetailData.length) {
-                await Promise.all(
-                    billDetailData.map(async (item) => {
-                        let preorder = 0;
-                        if (item.PreOrder === true) {
-                            preorder = 1;
+                // await Promise.all(
+                //     billDetailData.map(async (item) => {
+                //         let preorder = 0;
+                //         if (item.PreOrder === true) {
+                //             preorder = 1;
+                //         }
+                //         let manual = 0;
+                //         if (item.Manual === true) {
+                //             manual = 1;
+                //         }
+
+                //         let wholesale = 0
+
+                //         if (item.WholeSale === true) {
+                //             wholesale = 1;
+                //         }
+
+                //         if (manual === 0 && preorder === 0) {
+                //             let [result] = await mysql2.pool.query(
+                //                 `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
+                //             );
+                //         } else if (preorder === 1 && item.Barcode !== "0") {
+                //             let [result] = await mysql2.pool.query(
+                //                 `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
+                //             );
+                //         } else if (preorder === 1 && item.Barcode === "0") {
+                //             item.prod_UnitPrice = item.UnitPrice
+                //             item.prod_Quantity = item.Quantity
+                //             item.prod_SubTotal = item.SubTotal
+                //             item.prod_DiscountPercentage = item.DiscountPercentage
+                //             item.prod_DiscountAmount = item.DiscountAmount
+                //             item.prod_GSTPercentage = item.GSTPercentage
+                //             item.prod_GSTAmount = item.GSTAmount
+                //             item.prod_TotalAmount = item.TotalAmount
+
+                //             if (item.WholeSale === false) {
+                //                 item.WholeSalePrice = 0
+                //                 item.RetailPrice = item.PurchasePrice
+                //             } else {
+                //                 item.WholeSalePrice = item.PurchasePrice
+                //                 item.RetailPrice = 0
+
+                //             }
+                //             item.Multiple = 0
+                //             item.Ledger = 0
+                //             item.BrandType = 0
+                //             item.WholeSale = wholesale
+                //             item.BaseBarCode = await generateBarcode(CompanyID, 'PB')
+                //             item.Barcode = Number(item.BaseBarCode)
+                //             // generate unique barcode
+                //             item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item)
+                //             const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser)
+                //             let [result] = await mysql2.pool.query(
+                //                 `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.prod_UnitPrice},${item.PurchasePrice},${item.prod_Quantity},${item.prod_SubTotal}, ${item.prod_DiscountPercentage},${item.prod_DiscountAmount},${item.prod_GSTPercentage},${item.prod_GSTAmount},'${item.GSTType}',${item.prod_TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
+                //             );
+                //         } else if (manual === 1 && preorder === 0) {
+                //             item.BaseBarCode = await generateBarcode(CompanyID, 'MB')
+                //             item.Barcode = Number(item.BaseBarCode)
+                //             let [result] = await mysql2.pool.query(
+                //                 `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
+                //             );
+                //         }
+
+                //     })
+                // );
+
+                for(const item of billDetailData) {
+                    let preorder = 0;
+                    if (item.PreOrder === true) {
+                        preorder = 1;
+                    }
+                    let manual = 0;
+                    if (item.Manual === true) {
+                        manual = 1;
+                    }
+
+                    let wholesale = 0
+
+                    if (item.WholeSale === true) {
+                        wholesale = 1;
+                    }
+
+                    if (manual === 0 && preorder === 0) {
+                        let [result] = await mysql2.pool.query(
+                            `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
+                        );
+                    } else if (preorder === 1 && item.Barcode !== "0") {
+                        let [result] = await mysql2.pool.query(
+                            `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
+                        );
+                    } else if (preorder === 1 && item.Barcode === "0") {
+                        item.prod_UnitPrice = item.UnitPrice
+                        item.prod_Quantity = item.Quantity
+                        item.prod_SubTotal = item.SubTotal
+                        item.prod_DiscountPercentage = item.DiscountPercentage
+                        item.prod_DiscountAmount = item.DiscountAmount
+                        item.prod_GSTPercentage = item.GSTPercentage
+                        item.prod_GSTAmount = item.GSTAmount
+                        item.prod_TotalAmount = item.TotalAmount
+
+                        if (item.WholeSale === false) {
+                            item.WholeSalePrice = 0
+                            item.RetailPrice = item.PurchasePrice
+                        } else {
+                            item.WholeSalePrice = item.PurchasePrice
+                            item.RetailPrice = 0
+
                         }
-                        let manual = 0;
-                        if (item.Manual === true) {
-                            manual = 1;
-                        }
-
-                        let wholesale = 0
-
-                        if (item.WholeSale === true) {
-                            wholesale = 1;
-                        }
-
-                        if (manual === 0 && preorder === 0) {
-                            let [result] = await mysql2.pool.query(
-                                `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
-                            );
-                        } else if (preorder === 1 && item.Barcode !== "0") {
-                            let [result] = await mysql2.pool.query(
-                                `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
-                            );
-                        } else if (preorder === 1 && item.Barcode === "0") {
-                            item.prod_UnitPrice = item.UnitPrice
-                            item.prod_Quantity = item.Quantity
-                            item.prod_SubTotal = item.SubTotal
-                            item.prod_DiscountPercentage = item.DiscountPercentage
-                            item.prod_DiscountAmount = item.DiscountAmount
-                            item.prod_GSTPercentage = item.GSTPercentage
-                            item.prod_GSTAmount = item.GSTAmount
-                            item.prod_TotalAmount = item.TotalAmount
-
-                            if (item.WholeSale === false) {
-                                item.WholeSalePrice = 0
-                                item.RetailPrice = item.PurchasePrice
-                            } else {
-                                item.WholeSalePrice = item.PurchasePrice
-                                item.RetailPrice = 0
-
-                            }
-                            item.Multiple = 0
-                            item.Ledger = 0
-                            item.BrandType = 0
-                            item.WholeSale = wholesale
-                            item.BaseBarCode = await generateBarcode(CompanyID, 'PB')
-                            item.Barcode = Number(item.BaseBarCode)
-                            // generate unique barcode
-                            item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item)
-                            const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser)
-                            let [result] = await mysql2.pool.query(
-                                `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.prod_UnitPrice},${item.PurchasePrice},${item.prod_Quantity},${item.prod_SubTotal}, ${item.prod_DiscountPercentage},${item.prod_DiscountAmount},${item.prod_GSTPercentage},${item.prod_GSTAmount},'${item.GSTType}',${item.prod_TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
-                            );
-                        } else if (manual === 1 && preorder === 0) {
-                            item.BaseBarCode = await generateBarcode(CompanyID, 'MB')
-                            item.Barcode = Number(item.BaseBarCode)
-                            let [result] = await mysql2.pool.query(
-                                `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
-                            );
-                        }
-
-                    })
-                );
+                        item.Multiple = 0
+                        item.Ledger = 0
+                        item.BrandType = 0
+                        item.WholeSale = wholesale
+                        item.BaseBarCode = await generateBarcode(CompanyID, 'PB')
+                        item.Barcode = Number(item.BaseBarCode)
+                        // generate unique barcode
+                        item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item)
+                        const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser)
+                        let [result] = await mysql2.pool.query(
+                            `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.prod_UnitPrice},${item.PurchasePrice},${item.prod_Quantity},${item.prod_SubTotal}, ${item.prod_DiscountPercentage},${item.prod_DiscountAmount},${item.prod_GSTPercentage},${item.prod_GSTAmount},'${item.GSTType}',${item.prod_TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
+                        );
+                    } else if (manual === 1 && preorder === 0) {
+                        item.BaseBarCode = await generateBarcode(CompanyID, 'MB')
+                        item.Barcode = Number(item.BaseBarCode)
+                        let [result] = await mysql2.pool.query(
+                            `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
+                        );
+                    }
+                }
 
                 // fetch bill detail so that we can save and update barcode master table data
 
