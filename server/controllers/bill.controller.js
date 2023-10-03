@@ -2822,7 +2822,7 @@ module.exports = {
                 saleCount = Number(item.saleQuantity)
                 count = Number(item.Quantity) - saleCount
 
-                const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set PurchaseDetailID = ${savePurchaseDetail.insertId}, CurrentStatus = 'Sold' where ID = ${item.ID}`)
+                const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set PurchaseDetailID = ${savePurchaseDetail.insertId}, CurrentStatus = 'Sold' where BillDetailID = ${item.BillDetailID}`)
 
                 if (count !== 0 && count > 0) {
                     for (j = 0; j < count; j++) {

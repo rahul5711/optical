@@ -348,7 +348,7 @@ module.exports = {
     const [shopDetails] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
 
     if (lastInvoiceID) {
-      newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].Sno + "-" + (rw === "R" ? lastInvoiceID[0].Retail : lastInvoiceID[0].WholeSale);
+      newInvoiceID = newInvoiceID + "-" + rw + ShopID + "-" + shopDetails[0].Sno + "-" + (rw === "R" ? lastInvoiceID[0].Retail : lastInvoiceID[0].WholeSale);
 
     }
 
@@ -395,7 +395,7 @@ module.exports = {
     const [shopDetails] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
 
     if (lastInvoiceID) {
-      newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].Sno + "-" +  lastInvoiceID[0].Service;
+      newInvoiceID = newInvoiceID + "-" + rw + ShopID + "-" + shopDetails[0].Sno + "-" +  lastInvoiceID[0].Service;
 
     }
 
@@ -728,7 +728,7 @@ module.exports = {
 
         if (detailDataForBarCode.length) {
           for (const item of detailDataForBarCode) {
-            const barcode = Number(item.BaseBarCode) * 1000
+            const barcode = Number(item.BaseBarCode)
             let count = 0;
             count = 1;
             for (j = 0; j < count; j++) {
@@ -778,7 +778,7 @@ module.exports = {
 
         if (detailDataForBarCode.length) {
           for (const item of detailDataForBarCode) {
-            const barcode = Number(item.BaseBarCode) * 1000
+            const barcode = Number(item.BaseBarCode)
             let count = 0;
             count = 1;
             for (j = 0; j < count; j++) {
@@ -832,7 +832,7 @@ module.exports = {
 
       if (detailDataForBarCode.length) {
         for (const item of detailDataForBarCode) {
-          const barcode = Number(item.BaseBarCode) * 1000
+          const barcode = Number(item.BaseBarCode)
           let count = 0;
           count = 1;
           for (j = 0; j < count; j++) {

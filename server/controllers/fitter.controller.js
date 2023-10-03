@@ -463,7 +463,7 @@ module.exports = {
             for (const item of FitterDetail) {
                 const [savePurchaseDetail] = await mysql2.pool.query(`insert into fitterdetail(FitterMasterID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,TotalAmount,Status, CustomerInvoice, BarcodeID, LensType, AssignedOn,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.TotalAmount},1,'${item.InvoiceNo}','${item.Barcode}','${item.LensType}','${item.CreatedOn}',${LoggedOnUser},now())`)
 
-                const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set FitterStatus='invoice', UpdatedOn=now() where ID = ${item.ID}`)
+                const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set FitterStatus='invoice', UpdatedOn=now() where BillDetailID = ${item.BillDetailID}`)
             }
             console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
 
