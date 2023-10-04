@@ -244,11 +244,13 @@
                     <td *ngIf="!UpdateMode" class="text-center">{{dateFormat(data.PaymentDate)}}</td>
                     <td *ngIf="UpdateMode" style=" text-align: center;">
                       <input name="PaymentDate" type="date" [(ngModel)]="data.PaymentDate"
-                        (blur)="updateCustomerPaymentDate(data)" #name="ngModel" [ngModelOptions]="{standalone: true}"
+                        #name="ngModel" [ngModelOptions]="{standalone: true}"
                         name="data.PaymentDate{{i}}" *ngIf='this.user.UserGroup === "CompanyAdmin"'> 
                          <span *ngIf='this.user.UserGroup !== "CompanyAdmin"'>
                           {{dateFormat(data.PaymentDate)}}
                         </span>
+                        <button (click)="updateCustomerPaymentDate(data)"  type="button"  mat-raised-button
+                        color="primary" class="p-0 ms-2" style="height: 32px;">Update</button>
                     </td>
                     <td *ngIf="!UpdateMode" class="text-center">{{data.PaymentMode}} </td>
                     <td

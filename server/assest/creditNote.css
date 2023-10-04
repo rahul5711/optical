@@ -7,28 +7,34 @@
 /* Customer Details css  start*/
 .CustomerRow{
     margin-bottom: 1%;
+    margin-top: 4%;
     width:100%; 
 }
 
 /* Customer left side */
 .CustomerRow .col1{
-    width:40%; float: left;  
+    width:38%; float: left;  
 }
 .CustomerRow .col1 .ul1{
     max-width:25%; float: left; list-style: none;  padding: 0;margin: 0; 
 }
 .CustomerRow .col1 .ul2{
-    width:70%; float: right;  list-style: none; text-align: left;  padding: 0;margin: 0; 
+    width:72%; float: right;  list-style: none; text-align: left;  padding: 0;margin: 0; 
 }
 
 /* Customer invoice type  */
 .CustomerRow .col3{
-    width:15%;  float: left; text-align: center; padding-top: 2%;
+    width:23%;  float: left; text-align: center; padding-top: 0%;
  }
-
+ .CustomerRow .col3 .ul1{
+    width:50%; float: left; list-style: none;   padding: 0;margin: 0; 
+}
+.CustomerRow .col3 .ul2{
+    width:50%; float: right;  list-style: none;   padding: 0;margin: 0; 
+}
 /* Customer right side  */
 .CustomerRow .col2{
-   width:35%;  float: right; ;
+   width:28%;  float: right; ;
 }
 .CustomerRow .col2 .ul1{
     width:33%; float: left; list-style: none;   padding: 0;margin: 0; 
@@ -40,4 +46,52 @@
    height: 19px;
     width:100%;
 }
+
+.CustomerRow .col1 .ul1 li, .col2 .ul1 li, .col3 .ul1 li{
+    font-size: 14px;
+    font-weight: 600;
+}
+.CustomerRow .col1 .ul2 li, .col2 .ul2 li, .col3 .ul2 li{
+    font-size: 13px;
+}
+
 /* Customer Details css  end*/
+
+table{
+    width: 100% !important; text-align:center; border: none; margin: 0;padding: 0px; margin-top: 1%;
+}
+
+table thead tr{
+    height: 25px;  background-color: rgb(224, 224, 224); font-size: 13px;
+}
+
+table thead tr th{
+    padding: 2px !important;
+}
+
+table tbody tr{
+    height: 25px;  font-size: 12px;
+}
+
+table tbody tr th{
+    padding: 2px !important;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+table tfoot tr th{
+    border-top: 1px solid; color: red; padding: 5px !important; font-size: 13px;
+}
+
+
+.footerLast{
+    width: 50%;
+}
+.footerLast .ui1{
+    float: left;width: 30%; font-size: 15px; font-weight: 600; list-style: none; padding: 0; line-height:22px;
+}
+.footerLast .ui2{
+    float: right;width: 68%; font-size: 13px; list-style: none;padding: 0;line-height: 22px;
+}

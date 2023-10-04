@@ -640,8 +640,8 @@
                                                         <span *ngIf="data.BrandType == 2">Non-Brand</span>
                                                     </td>
                                                     <td *ngIf="data.UpdateProduct" style=" text-align: center;">
-                                                        <select style="height: 26px; width: 60px;" name="BarndTypeUp"
-                                                            [(ngModel)]="data.BrandType" #name="ngModel"
+                                                        <select style="height: 26px; width: 60px;" name="BrandType"
+                                                            [(ngModel)]="data.BrandType" type="number" #name="ngModel"
                                                             (change)="updataEditProdcut('','',data)"
                                                             [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                                             <option [value]='0'>None</option>

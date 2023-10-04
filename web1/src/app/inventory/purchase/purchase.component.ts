@@ -769,15 +769,20 @@ export class PurchaseComponent implements OnInit {
 
       this.calculateFields1(fieldName, mode, data)
       this.calculateGrandTotal();
+
+        data.BrandType = Number(data.BrandType)
+
       const dtm = {
         PurchaseMaster: this.selectedPurchaseMaster,
         ...data
       }
       const subs: Subscription = this.purchaseService.updateProduct(dtm).subscribe({
         next: (res: any) => {
-          if (res.success) {
+          if (res.success === true) {
             // this.showInput(data)
-            // this.as.successToast(res.message)
+            this.as.successToast(res.message)
+            this.showInput(data)
+            this.getPurchaseById()
           } else {
             Swal.fire({
               position: 'center',

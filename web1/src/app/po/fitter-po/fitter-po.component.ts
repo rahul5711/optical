@@ -372,6 +372,7 @@ export class FitterPoComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.multiCheck = true
+            this.orderFitterbtn = true
             this.getList()
             // this.as.successToast(res.message)
           } else {
@@ -426,6 +427,7 @@ export class FitterPoComponent implements OnInit {
             next: (res: any) => {
               if (res.success) {
                 this.multiCheck = true
+                this.orderFitterbtn = true
                 this.getList()
                 // this.as.successToast(res.message)
               } else {
@@ -461,6 +463,9 @@ export class FitterPoComponent implements OnInit {
     const subs: Subscription = this.bill.assignFitterDoc(Body).subscribe({
       next: (res: any) => {
         if (res.success) {
+          this.multiCheck = true
+          this.orderFitterbtn = true
+          this.getList()
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)

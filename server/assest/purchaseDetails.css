@@ -11,7 +11,58 @@ body{
 .main{
     width: 100% !important; height: 100px; display: flex;
 }
+/* Customer Details css  start*/
+.CustomerRow{
+    margin-bottom: 1%;
+    margin-top: 4%;
+    width:100%; 
+}
 
+/* Customer left side */
+.CustomerRow .col1{
+    width:40%; float: left;  
+}
+.CustomerRow .col1 .ul1{
+    max-width:35%; float: left; list-style: none;  padding: 0;margin: 0; 
+}
+.CustomerRow .col1 .ul2{
+    width:64%; float: right;  list-style: none; text-align: left;  padding: 0;margin: 0; 
+}
+
+/* Customer invoice type  */
+.CustomerRow .col3{
+    width:23%;  float: left; text-align: center; padding-top: 0%;
+ }
+ .CustomerRow .col3 .ul1{
+    width:20%; float: left; list-style: none;   padding: 0;margin: 0; 
+}
+.CustomerRow .col3 .ul2{
+    width:80%; float: right;  list-style: none;   padding: 0;margin: 0; 
+}
+/* Customer right side  */
+.CustomerRow .col2{
+   width:30%;  float: right; ;
+}
+.CustomerRow .col2 .ul1{
+    width:40%; float: left; list-style: none;   padding: 0;margin: 0; 
+}
+.CustomerRow .col2 .ul2{
+    width:60%; float: right;  list-style: none;   padding: 0;margin: 0; 
+}
+.CustomerRow .col2 .ul2 li{
+   height: 19px;
+    width:100%;
+}
+
+.CustomerRow .col1 .ul1 li, .col2 .ul1 li, .col3 .ul1 li{
+    font-size: 14px;
+    font-weight: 600;
+}
+.CustomerRow .col1 .ul2 li, .col2 .ul2 li, .col3 .ul2 li{
+    font-size: 13px;
+}
+
+/* Customer Details css  end*/
 .row1{
     width: 50% !important; float: left !important; height: 100px; ; 
 }

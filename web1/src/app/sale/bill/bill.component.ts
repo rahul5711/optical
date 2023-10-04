@@ -187,7 +187,7 @@ export class BillComponent implements OnInit {
     if (this.id2 != 0) {
       this.getCustomerById1()
     }    
-     this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23'})
+     this.currentTime = new Date().toLocaleTimeString('en-IN', { hourCycle: 'h23'})
   }
 
   getCustomerById1() {
@@ -901,10 +901,11 @@ export class BillComponent implements OnInit {
       this.billCalculation.calculations('', '', this.BillItem, this.Service)
     } else {
       this.billItemList.unshift(this.BillItem);
-      console.log(this.billItemList);
       this.calculateGrandTotal()
+      console.log(this.billItemList);
+    
       this.BillItem = {
-        ID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '',
+        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale:  this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal : 'yes', PurchasePrice:0,UpdateProduct: false
       };
 
       this.searchList.BarCodeCount = 0;

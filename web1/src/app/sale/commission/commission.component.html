@@ -63,8 +63,7 @@
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Invoice Date</mat-label>
-                                        <input matInput name="InvoiceDate" type="date" [(ngModel)]="data.PurchaseDate"
-                                            [ngModelOptions]="{standalone: true}" required>
+                                        <input matInput name="PurchaseDate" type="date" [(ngModel)]="data.PurchaseDate"  required>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
@@ -149,10 +148,10 @@
                             </div>
                             <div class="col-xl-2 col-lg-3 col-md-4 col-12 mb-0 ms-auto p-0">
                                 <button type="button"   class="mr-3" mat-raised-button
-                                    color="primary" (click)="calculateGrandTotal()">
+                                    color="primary" (click)="calculateGrandTotal()" >
                                     Calculate Invoice
                                 </button>
-                                <button *ngIf="addLoyalty" type="submit" [disabled]="!f.valid || !f2.valid "
+                                <button *ngIf="addLoyalty" type="submit" [disabled]="!f.valid || !f2.valid || data.TotalAmount === 0"
                                     class="ms-3" mat-raised-button color="primary">
                                     Save
                                 </button>

@@ -58,6 +58,34 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>SubTotal</mat-label>
+                                        <input matInput name="SubTotal" value="{{FitterMaster.TotalAmount - FitterMaster.GSTAmount}}"
+                                            #InvoiceNocontrol required disabled>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>GSTType </mat-label>
+                                        <input matInput name="GSTType" [(ngModel)]="FitterMaster.GSTType"
+                                            #InvoiceNocontrol required disabled>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>GSTPercentage </mat-label>
+                                        <input matInput name="GSTPercentage" [(ngModel)]="FitterMaster.GSTPercentage"
+                                            #InvoiceNocontrol required disabled>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>GSTAmount  </mat-label>
+                                        <input matInput name="GSTAmount" [(ngModel)]="FitterMaster.GSTAmount"
+                                            #InvoiceNocontrol required disabled>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Invoice Amount </mat-label>
                                         <input matInput name="TotalAmount" [(ngModel)]="FitterMaster.TotalAmount"
                                             #InvoiceNocontrol required disabled>
@@ -94,7 +122,7 @@
                                                     <th>Customer Invoice</th>
                                                     <th>BillDate</th>
                                                     <th>Product Name</th>
-                                                    <th>Lens Type</th>
+                                                    <th>Fitting Type</th>
                                                     <th>Requested Date</th>
                                                     <th>UnitPrice</th>
                                                     <th>Quantity</th>

@@ -4,34 +4,56 @@
     html body {
         zoom: 100%;
     }
+
+    .headingName {
+         position: absolute;
+         margin-left: 39.2%;
+         width: 30%;
+         color: red;
+         margin-top: 0px;
+         font-size: 14px !important;
+      }
+
 </style>
 <body>
     <section>
-        <h4>Purchase Invoice</h4>
-        <div class="main">
-            <div class="row1">
-                <div class="col-1">
-                   <img src="<%=data.LogoURL%>" alt="" class="logo">
-                </div>
+        <%- include('./header.ejs', {pageNumber: 1}) %>
+        <div>
+            <div style="border-bottom: 1px solid; width: 38%; position:absolute; margin-top: 1%;"> </div>
+            <div style="border-bottom: 1px solid; width: 38%; float: right; position: relative; margin-top: 1%;"></div>
+            <span class="headingName">PURCHASE INVOICE</span>
+         </div>
+    </section>
+    <section style="width: 100%; height: 30px;">
+        <div class="CustomerRow">
+            <div class="col1">
+                <ul class="ul1">
+                    <li>Supplier Name:</li>   
+                </ul>
+                <ul class="ul2">
+                    <li> <%=data.supplier.Name%> </li>
+                </ul>
             </div>
-            <div class="row2">
-                <div class="col-1">
-                    <p>Supplier Name</p>
-                    <p>InvoiceNo </p>
-                    <p>PurchaseDate </p>
-                </div>
-                <div class="col-2">
-                    <p> : <%=data.supplier.Name%>
-                    </p>
-                    <p> : <%=data.PurchaseMaster.InvoiceNo%>
-                    </p>
-                    <p> : <%=data.PurchaseMaster.PurchaseDate%>
-                    </p>
-                </div>
+            <div class="col3">
+                <ul class="ul1">
+                    <li>InvoiceNo:</li>   
+                </ul>
+                <ul class="ul2">
+                    <li> <%=data.PurchaseMaster.InvoiceNo%> </li>
+                </ul>
+            </div>
+
+            <div class="col2">
+                <ul class="ul1">
+                            <li>Purchase Date:</li>
+                </ul>
+                <ul class="ul2" >
+                            <li><%=data.PurchaseMaster.PurchaseDate%> </li>
+                </ul>
             </div>
         </div>
     </section>
-
+ 
     <section>
         <table>
             <thead>

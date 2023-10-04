@@ -142,7 +142,7 @@ export class BillListComponent implements OnInit {
   showInput() {
     this.UpdateMode = !this.UpdateMode;
     this.paymentHistoryList.forEach((ep: any) => {
-      ep.PaymentDate = moment(ep.PaymentDate).format('YYYY-MM-DD') 
+      ep.PaymentDate = moment(ep.PaymentDate).format('YYYY-MM-DD')
     })
   }
 
@@ -173,6 +173,7 @@ export class BillListComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+ 
 
   // payment mode 
   getPaymentModesList() {
@@ -208,21 +209,38 @@ export class BillListComponent implements OnInit {
 
   // payment date update 
   updateCustomerPaymentDate(data: any) {
-    this.sp.show()
-    data.PaymentDate = data.PaymentDate + ' ' + this.currentTime
-    const subs: Subscription = this.pay.updateCustomerPaymentDate(data).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.UpdateMode = false
-          this.as.successToast(res.message)
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+
+    let dtm = data
+    const specific_date = new Date(dtm.PaymentDate);
+    const current_date = new Date();
+    if(current_date.getTime() > specific_date.getTime()){
+      this.sp.show()
+      dtm.PaymentDate = dtm.PaymentDate + ' ' + this.currentTime
+      const subs: Subscription = this.pay.updateCustomerPaymentDate(dtm).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.UpdateMode = false
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+    else{
+      
+      Swal.fire({
+        icon: 'warning',
+        title: 'current_date date is lower than Payment date',
+        footer: '',
+        backdrop: false,
+      });
+
+
+    }
   }
 
   // customer payment debit and credit
