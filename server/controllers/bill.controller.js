@@ -697,7 +697,7 @@ module.exports = {
                         productStatus = 'Pending'
                     }
 
-                    const [update] = await mysql2.pool.query(`update billdetail set ProductStatus = ${item.ProductStatus} where ID = ${item.ID} and CompanyID = ${CompanyID}`)
+                    const [update] = await mysql2.pool.query(`update billdetail set ProductStatus = ${item.ProductStatus}, ProductDeliveryDate = now() where ID = ${item.ID} and CompanyID = ${CompanyID}`)
                 }
             }
 

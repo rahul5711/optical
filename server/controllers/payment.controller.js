@@ -881,7 +881,7 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
-            const { CreditType, CustomerID, ID, PaidAmount, PayableAmount, PaymentMode } = req.body
+            const { CreditType, CustomerID, ID, PaidAmount, PayableAmount, PaymentMode, PaymentReferenceNo } = req.body
 
             if (!CustomerID || CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
@@ -903,7 +903,7 @@ module.exports = {
             const [update] = await mysql2.pool.query(`update billmaster set DueAmount = ${DueAmount}, PaymentStatus = 'Unpaid', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${ID}`)
 
 
-            const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Debit',now(), '${PaymentMode}', '', '', ${DueAmount}, ${PayableAmount - PaidAmount}, '',1,${LoggedOnUser}, now())`)
+            const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Debit',now(), '${PaymentMode}', '', '${PaymentReferenceNo ? PaymentReferenceNo : ''}', ${DueAmount}, ${PayableAmount - PaidAmount}, '',1,${LoggedOnUser}, now())`)
 
             const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${fetchBillMaster[0].InvoiceNo}',${fetchBillMaster[0].ID},${CustomerID},${CompanyID},${PaidAmount},${DueAmount},'Customer','Debit',1,${LoggedOnUser}, now())`)
 
