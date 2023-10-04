@@ -1725,7 +1725,7 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
      
             const printdata = req.body;
-            const MeasurementID  = req.body.data;
+            const MeasurementID  = JSON.parse(req.body.data.MeasurementID);
             const Company = req.body.Company;
             const CompanySetting = req.body.CompanySetting;
             const CompanyWelComeNote = JSON.parse(req.body.CompanySetting.WelComeNote);
@@ -1749,10 +1749,11 @@ module.exports = {
             printdata.user = User
             printdata.customer = Customer
             printdata.billMaster = BillMaster
-            console.log( printdata.billMaster);
             printdata.billItemList = BillItemList
             printdata.paidlist = PaidList
             printdata.unpaidlist = UnpaidList
+            printdata.Measurement = MeasurementID[0]
+            console.log(printdata.Measurement);
             printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
 
             

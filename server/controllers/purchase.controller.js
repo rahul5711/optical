@@ -713,7 +713,7 @@ module.exports = {
 
             let ProductFullName = printdata[0].ProductName;
             let ProductBrandName = printdata[0].ProductName.split("/")[1];
-            let ProductModelName = printdata[0].ProductName.split("/")[2].substr(0, 15);
+            let ProductModelName = printdata[0].ProductName.split("/")[2]?.substr(0, 15);
             printdata[0].ProductBrandName = ProductBrandName;
             printdata[0].ProductModelName = ProductModelName;
             printdata[0].ProductFullName = ProductFullName;

@@ -14,11 +14,12 @@
          font-size: 14px !important;
       }
 
+ 
 </style>
 <body>
-    <section>
+    <section >
         <%- include('./header.ejs', {pageNumber: 1}) %>
-        <div>
+        <div style="height: 10px;">
             <div style="border-bottom: 1px solid; width: 38%; position:absolute; margin-top: 1%;"> </div>
             <div style="border-bottom: 1px solid; width: 38%; float: right; position: relative; margin-top: 1%;"></div>
             <span class="headingName">Order Form</span>
@@ -33,21 +34,128 @@
                 <li>BillDate</li>
              </ul>
              <ul class="ul2">
-                 <li>2309R00017 </li>
-                 <li>2309R00017 </li>
+                 <li>: <%=data.billMaster.InvoiceNo%></li>
+                 <li>: <%=data.billMaster.BillDate%> ;</li>
              </ul>
           </div>
           <div class="col2">
              <ul class="ul1">
-               <li>Name</li>
+               <li>Name :</li>
                <li>DeliveryDate</li>
              </ul>
              <ul class="ul2">
-                <li>DeliveryDate</li>
-                <li>00-00-000</li>
+                <li>: <%=data.customer.Name%></li>
+                <li>: <%=data.billMaster.DeliveryDate%></li>
              </ul>
           </div>
         </div>
+    </section>
+
+    <section>
+        <table style="width: 100%; height: 100px;">
+            <thead>
+                <tr>
+                    <th style="border: none;"></th>
+                    <th style="border: none;"></th>
+                    <th style="border: none;"></th>
+                    <th style="border: none;">Right</th>
+                    <th style="border: none;"></th>
+                    <th style="border-left: none;"></th>
+                    <th style="border: none;"></th>
+                    <th style="border: none;"></th>
+                    <th style="border: none;">Left</th>
+                    <th style="border: none;"></th>
+                    <th style="border: none;"></th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>SPH</th>
+                    <th>CYL</th>
+                    <th>AXIS</th>
+                    <th>VA</th>
+                    <th>ADD</th>
+                    <th>SPH</th>
+                    <th>CYL</th>
+                    <th>AXIS</th>
+                    <th>VA</th>
+                    <th>ADD</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="text-align: center;">
+                    <td>D/V</td>
+                    <td> <%=data.Measurement.REDPSPH%></td>
+                    <td> <%=data.Measurement.REDPCYL%></td>
+                    <td> <%=data.Measurement.REDPAxis%></td>
+                    <td> <%=data.Measurement.REDPVA%></td>
+                    <td> <%=data.Measurement.R_Addition%></td>
+                    <td> <%=data.Measurement.LEDPSPH%> </td>
+                    <td> <%=data.Measurement.LEDPCYL%></td>
+                    <td> <%=data.Measurement.LEDPAxis%></td>
+                    <td> <%=data.Measurement.LEDPVA%></td>
+                    <td> <%=data.Measurement.L_Addition%> </td>
+                </tr>
+                <tr style="text-align: center;">
+                    <td>N/V</td>
+                    <td><%=data.Measurement.RENPSPH%></td>
+                    <td><%=data.Measurement.RENPCYL%></td>
+                    <td><%=data.Measurement.RENPAxis%></td>
+                    <td><%=data.Measurement.RENPVA%></td>
+                    <td></td>
+                    <td><%=data.Measurement.LENPSPH%></td>
+                    <td><%=data.Measurement.LENPCYL%></td>
+                    <td><%=data.Measurement.LENPAxis%></td>
+                    <td><%=data.Measurement.LENPVA%></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <div class="rowFooter">
+          <div class="col1">
+            <ul class="ul1">
+                <li>Refractive Index :</li>
+                <li>Vertex Distance :</li>
+                <li>Fitting Height :</li>
+            </ul>
+            <ul class="ul2">
+                <li><%=data.Measurement.RefractiveIndex%></li>
+                <li><%=data.Measurement.VertexDistance%></li>
+                <li><%=data.Measurement.FittingHeight%></li>
+            </ul>
+          </div>
+          <div class="col2">
+            <ul class="ul1">
+                <li>PD Right :</li>
+                <li>PD Left :</li>
+            </ul>
+            <ul class="ul2">
+                <li><%=data.Measurement.REPD%></li>
+                <li><%=data.Measurement.LEPD%></li>
+            </ul>
+          </div>
+          <div class="col3">
+            <ul class="ul1">
+                <li>Prism Right :</li>
+                <li>Prism Left :</li>
+            </ul>
+            <ul class="ul2"> 
+                <li><%=data.Measurement.R_Prism%></li>
+                <li><%=data.Measurement.L_Prism%></li>
+            </ul>
+          </div>
+        </div>
+    </section>
+
+    <section class="ProdRow" >
+        <p> 
+            <b >Product Description : </b>
+            <% if(data.billItemList.length !==0){ data.billItemList.forEach(function (i, index) { %>
+                 <span class="ProdcutName"> (<%=i.ProductTypeName%> / <%=i.ProductName%>),  </span>
+               <%})}%>
+        </p>
     </section>
 </body>
 
