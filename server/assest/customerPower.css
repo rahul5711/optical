@@ -84,7 +84,15 @@ table  {
     border-spacing: 0px;
 }
 
-
+.rowFooter{
+    width: 100%;
+}
+.rowFooter .col1{
+    width: 60%; float: left;
+}
+.rowFooter .col2{
+    width: 30%; float: right;
+}
 
 
 

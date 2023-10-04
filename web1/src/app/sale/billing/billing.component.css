@@ -248,3 +248,16 @@ input::-webkit-inner-spin-button {
     margin: 0;
 }
 
+.pdfpower{
+    color: #f7f7f7;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 0px 5px;
+    /* background: red; */
+    padding: 6px 8px;
+    border-radius: 22px;
+    height: 26px;
+    box-shadow: 3px 4px 5px #a3a3a3;
+    background: #0070ff;
+
+}

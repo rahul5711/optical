@@ -119,6 +119,89 @@
             </section>
             <!-- Customet Details end  -->
 
+            <!-- customer power start -->
+            <% if (data.ShowPower === true){%>
+                <section class="power_spec" >
+                    <% if(data.EyeMeasurement !== null && data.EyeMeasurement.length !== 0){ data.EyeMeasurement.forEach(function (i, index) { %>
+                    <table class="tbl0">
+                       <tr style="background-color: rgb(211, 211, 211);">
+                          <th> </th> 
+                        </tr>
+                       <tr>
+                          <th></th>
+                       </tr>
+                       <tr>
+                         <td class="top_btm"> DP-</td> 
+                       </tr>
+                       <tr>
+                          <td> NP- </td> 
+                        </tr>
+                    </table>
+                    <table class="tbl1">
+                       <tr style="background-color: rgb(211, 211, 211);">
+                          <th> </th> 
+                          <th> </th> 
+                          <th>Right </th> 
+                          <th> </th> 
+                          <th> </th> 
+                        </tr>
+                       <tr>
+                          <th  >SPH</th>
+                          <th  >CYL</th>
+                          <th>AXIS</th>
+                          <th >VA</th>
+                          <th  >ADD</th>
+                       </tr>
+                       <tr>
+                         <td class="top_btm"> <%=i.REDPSPH%> </td> 
+                         <td class="top_btm"> <%=i.REDPCYL%> </td> 
+                         <td class="top_btm"> <%=i.REDPAxis%> </td> 
+                         <td class="top_btm"> <%=i.REDPVA%> </td> 
+                         <td class="top_btm"> <%=i.R_Addition%> </td> 
+                       </tr>
+                       <tr>
+                          <td> <%=i.RENPSPH%> </td> 
+                          <td> <%=i.RENPCYL%> </td> 
+                          <td> <%=i.RENPAxis%> </td> 
+                          <td> <%=i.RENPVA%> </td> 
+                          <!-- <td> <%=i.R_Addition%> </td>  -->
+                        </tr>
+                    </table>
+              
+                   <table class="tbl2">
+                    <tr style="background-color: rgb(211, 211, 211);"> 
+                       <th> </th> 
+                       <th> </th> 
+                       <th>Left </th> 
+                       <th> </th> 
+                       <th> </th> 
+                    </tr>
+                    <tr>
+                      <th>SPH</th>
+                      <th>CYL</th>
+                      <th>AXIS</th>
+                      <th>VA</th>
+                      <th>ADD</th>
+                    </tr>
+                    <tr>
+                      <td class="top_btm"> <%=i.LEDPSPH%> </td> 
+                      <td class="top_btm"> <%=i.LEDPCYL%> </td> 
+                      <td class="top_btm"> <%=i.LEDPAxis%> </td> 
+                      <td class="top_btm"> <%=i.LEDPVA%> </td> 
+                      <td class="top_btm"> <%=i.L_Addition%> </td> 
+                    </tr>
+                    <tr>
+                      <td > <%=i.LENPSPH%> </td> 
+                      <td > <%=i.LENPCYL%> </td> 
+                      <td > <%=i.LENPAxis%> </td> 
+                      <td > <%=i.LENPVA%> </td> 
+                      <!-- <td> <%=i.L_Addition%> </td>  -->
+                    </tr>
+                   </table>
+                   <%})}%>
+                 </section>   
+            <%}%>
+            <!-- customer power end -->
             <!-- Product list start  -->
             <section>
                 <table <% %> style="width:100%; border-bottom: 1px solid <%= data.Color %>;padding-top: 1%;">

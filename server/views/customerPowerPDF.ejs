@@ -55,10 +55,17 @@
       </div>
    </section>
    <!-- <h6 class="titleName"> <%=data.rx%></h6> -->
+
    <section class="titleName">
+      <% if (data.mode === 'spectacle') { %>
       <h6> Spectacle RX</h6>
+      <%} %>
+      <% if (data.mode === 'contact') { %>
+      <h6> Contact RX</h6>
+      <%} %>
    </section>
     <!-- power spec -->
+   <% if (data.mode === 'spectacle') { %>
    <section class="power_spec">
       <table class="tbl0">
          <tr style="background-color: rgb(211, 211, 211);">
@@ -136,9 +143,104 @@
       </tr>
      </table>
    </section>
+   <%} %>
+
+   <% if (data.mode === 'contact') { %>
+      <section class="power_spec">
+         <table class="tbl0">
+            <tr style="background-color: rgb(211, 211, 211);">
+               <th> </th> 
+             </tr>
+            <tr>
+               <th></th>
+            </tr>
+            <tr>
+              <td class="top_btm"> DP-</td> 
+            </tr>
+            <tr>
+               <td> NP- </td> 
+             </tr>
+         </table>
+         <table class="tbl1">
+            <tr style="background-color: rgb(211, 211, 211);">
+               <th> </th> 
+               <th> </th> 
+               <th>Right </th> 
+               <th> </th> 
+               <th> </th> 
+             </tr>
+            <tr>
+               <th  >SPH</th>
+               <th  >CYL</th>
+               <th>AXIS</th>
+               <th >VA</th>
+               <th  >ADD</th>
+            </tr>
+            <tr>
+              <td class="top_btm"> <%=data.contact.REDPSPH%> </td> 
+              <td class="top_btm"> <%=data.contact.REDPCYL%> </td> 
+              <td class="top_btm"> <%=data.contact.REDPAxis%> </td> 
+              <td class="top_btm"> <%=data.contact.REDPVA%> </td> 
+              <td class="top_btm"> <%=data.contact.R_Addition%> </td> 
+            </tr>
+            <tr>
+               <td> <%=data.contact.RENPSPH%> </td> 
+               <td> <%=data.contact.RENPCYL%> </td> 
+               <td> <%=data.contact.RENPAxis%> </td> 
+               <td> <%=data.contact.RENPVA%> </td> 
+               <!-- <td> <%=data.spectacle.R_Addition%> </td>  -->
+             </tr>
+         </table>
+   
+        <table class="tbl2">
+         <tr style="background-color: rgb(211, 211, 211);"> 
+            <th> </th> 
+            <th> </th> 
+            <th>Left </th> 
+            <th> </th> 
+            <th> </th> 
+         </tr>
+         <tr>
+           <th>SPH</th>
+           <th>CYL</th>
+           <th>AXIS</th>
+           <th>VA</th>
+           <th>ADD</th>
+         </tr>
+         <tr>
+           <td class="top_btm"> <%=data.contact.LEDPSPH%> </td> 
+           <td class="top_btm"> <%=data.contact.LEDPCYL%> </td> 
+           <td class="top_btm"> <%=data.contact.LEDPAxis%> </td> 
+           <td class="top_btm"> <%=data.contact.LEDPVA%> </td> 
+           <td class="top_btm"> <%=data.contact.L_Addition%> </td> 
+         </tr>
+         <tr>
+           <td > <%=data.contact.LENPSPH%> </td> 
+           <td > <%=data.contact.LENPCYL%> </td> 
+           <td > <%=data.contact.LENPAxis%> </td> 
+           <td > <%=data.contact.LENPVA%> </td> 
+           <!-- <td> <%=data.spectacle.L_Addition%> </td>  -->
+         </tr>
+        </table>
+      </section>
+      <%} %>
     <!-- footer -->
     <div class="rowFooter">
-       
+          <div class="col1">
+             <h3 style="padding: 0;margin: 0;">Note</h3>
+             <% if(data.powerNoteShop.length !==0){ data.powerNoteShop.forEach(function (i, index) { %>
+               <p style="padding: 0;">
+                 <%=index+1%>. <%=i.Content%>
+               </p>
+               <%})}%>
+          </div>
+          <div class="col2">
+            <h3 style="padding: 0;margin: 0;">.......................................</h3>
+               <p style="padding: 0;margin: 0;">
+                  Bring this card on your next visit.
+                  CHECK YEARLY, SEE CLEARLY
+               </p>
+          </div>
     </div>
 
 </body>

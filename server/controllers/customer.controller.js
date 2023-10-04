@@ -746,20 +746,20 @@ module.exports = {
 
             const printdata = req.body
             const customer = req.body.customer
-            const spectacle = req.body.spectacle
-            const contact = req.body.contact
-            const other = req.body.other
-
-
-
-
+           
             const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
             const [companysetting] = await mysql2.pool.query(`select * from companysetting where CompanyID = ${CompanyID}`)
-
-
+            
             printdata.shopdetails = shopdetails[0]
             printdata.companysetting = companysetting[0]
-            console.log(shopdetails);
+            const ShopWelComeNote = JSON.parse(printdata.shopdetails.WelcomeNote);
+           
+            printdata.powerNoteShop = ShopWelComeNote.filter((ele) => {
+                if (ele.NoteType === "CustomerPower") {
+                    return true;
+                }
+                return false;
+            });
 
             var fileName = "";
 
@@ -769,7 +769,7 @@ module.exports = {
                 printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
             }
 
-            var formatName = "CreditNote.ejs";
+            var formatName = "customerPowerPDF.ejs";
             var file = formatName + "_" + CompanyID + "-" + customer.ID + ".pdf";
             fileName = "uploads/" + file;
 

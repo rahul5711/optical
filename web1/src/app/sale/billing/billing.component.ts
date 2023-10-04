@@ -902,22 +902,42 @@ x:any
     this.calculation.calculate(mode, x, y, this.spectacle, this.clens)
   }
 
-  customerPowerPDF() {
-    let body = { customer: this.data, spectacle: this.spectacle, contact: this.clens, other: this.other, }
-    this.sp.show();
-    const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
-      next: (res: any) => {
-        if (res) {
-          const url = this.env.apiUrl + "/uploads/" + res;
-          window.open(url, "_blank");
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+  customerPowerPDF(i:any,mode:any) {
+    if(mode === 'spectacle'){
+
+      let body = { customer: this.data, spectacle: this.spectacleLists[i], contact: this.contactList[i], other: this.other[i], mode }
+      this.sp.show();
+      const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
+        next: (res: any) => {
+          if (res) {
+            const url = this.env.apiUrl + "/uploads/" + res;
+            window.open(url, "_blank");
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+    if(mode === 'contact'){
+      let body = { customer: this.data, spectacle: this.spectacle, contact: this.clens, other: this.other, mode }
+      this.sp.show();
+      const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
+        next: (res: any) => {
+          if (res) {
+            const url = this.env.apiUrl + "/uploads/" + res;
+            window.open(url, "_blank");
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
   }
   // Billing
 

@@ -23,6 +23,7 @@ body{
 .CustomerRow{
     margin-bottom: 1%;
     width:100%; 
+    height: 100px;
 }
 
 /* Customer left side */
@@ -56,6 +57,46 @@ body{
     width:100%;
 }
 /* Customer Details css  end*/
+
+/* CUSTOMER POWER CSS START */
+
+.power_spec{
+    width: 100% !important; height: 100px; text-align: center;   
+}
+
+.power_spec .tbl0{
+    width: 5% !important; float: left ; text-align: center;
+}
+
+.power_spec .tbl0 tr{
+    height: 25px; font-size: 12px !important;
+}
+
+.power_spec .tbl1{
+    width: 45% !important; float: left ; text-align: center;
+}
+
+.power_spec .tbl1 tr{
+    height: 25px; font-size: 12px !important;
+}
+
+.power_spec .tbl2{
+    width: 45% !important; float: right;  text-align: center;
+}
+
+.power_spec .tbl2 tr{
+    height: 25px;font-size: 12px !important;
+}
+
+.top_btm{
+    border-bottom: 1px solid #000 !important; border-top: 1px solid #000;
+}
+
+table  {
+    border-spacing: 0px;
+}
+
+/* CUSTOMER POWER CSS END */
 
 /* billTotal colume css  start*/
 .billTotalRow {

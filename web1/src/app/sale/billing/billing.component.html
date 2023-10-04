@@ -189,10 +189,10 @@
                                                 style="padding: 0px 22px">
                                                 Clear
                                             </button>
-                                            <button class="ms-2" (click)="customerPowerPDF()" mat-raised-button
+                                            <!-- <button class="ms-2" (click)="customerPowerPDF('','contact')" mat-raised-button
                                                 color="primary" style="padding: 0px 22px">
                                                 PDF
-                                            </button>
+                                            </button> -->
                                         </div>
 
                                     </div>
@@ -328,7 +328,7 @@
                                                         </datalist>
                                                     </div>
                                                     <div class="col-1">
-                                                        <input class="inputWidth box" type="number" name="R_Addition"
+                                                        <input class="inputWidth box" type="text" name="R_Addition"
                                                             [(ngModel)]="spectacle.R_Addition"
                                                             (change)="calculate('Lens', 'R', 0.00)">
                                                     </div>
@@ -363,7 +363,7 @@
                                                         </datalist>
                                                     </div>
                                                     <div class="col-1">
-                                                        <input class="inputWidth box" type="number" name="L_Addition"
+                                                        <input class="inputWidth box" type="text" name="L_Addition"
                                                             [(ngModel)]="spectacle.L_Addition"
                                                             (change)="calculate('Lens', 'L', 0.00)">
                                                     </div>
@@ -577,6 +577,7 @@
                                                                             <mat-icon *ngIf="editCustomer"
                                                                                 class="deletes_icon ms-1"
                                                                                 (click)="deleteSpec(i,'spectacle_rx')">delete_forever</mat-icon>
+                                                                                <i  (click)="customerPowerPDF(i,'spectacle')" class="fa fa-file-pdf pdfpower"></i>
                                                                         </td>
                                                                         <td class="text-left">{{spectacleLists.length -
                                                                             i }}</td>
@@ -951,6 +952,7 @@
                                                                             <mat-icon *ngIf="deleteCustomer"
                                                                                 class="deletes_icon ms-1"
                                                                                 (click)="deleteSpec(i,'contact')">delete_forever</mat-icon>
+                                                                                <i  (click)="customerPowerPDF(i,'contact')" class="fa fa-file-pdf pdfpower"></i>
                                                                         </td>
                                                                         <td class="text-left">{{contactList.length - i
                                                                             }}</td>

@@ -1592,6 +1592,15 @@ module.exports = {
             req.body.billItemList = req.body.billItemList.filter((element) => {
                 return element.Status !== 0;
             });
+
+            const x = [];
+            req.body.billItemList.forEach((element) => {
+                if (element.MeasurementID !== "null" && element.MeasurementID !== "undefined" && element.MeasurementID !== undefined && element.MeasurementID !== '' && x.length === 0) {
+                    x.push(JSON.parse(element.MeasurementID));
+                }
+            });
+            printdata.EyeMeasurement = x[0];
+           console.log(printdata.EyeMeasurement);
             const BillItemList = req.body.billItemList;
             const ServiceList = req.body.serviceList;
             const PaidList = req.body.paidList;
@@ -1687,6 +1696,70 @@ module.exports = {
             let fileName = "";
             const file = "invoice.ejs" + ".pdf";
             const formatName = "invoice.ejs";
+            fileName = "uploads/" + file;
+
+            ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                if (err) {
+                    res.send(err);
+                } else {
+                    let options = {
+                        format: "A4",
+                        orientation: "portrait",
+                    };
+                    pdf.create(data, options).toFile(fileName, function (err, data) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            res.json(file);
+                        }
+                    });
+                }
+            });
+        } catch (err) {
+            next(err)
+        }
+    },
+
+    orderFormPrint: async (req, res, next) => {
+        try {
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+     
+            const printdata = req.body;
+            const MeasurementID  = req.body.data;
+            const Company = req.body.Company;
+            const CompanySetting = req.body.CompanySetting;
+            const CompanyWelComeNote = JSON.parse(req.body.CompanySetting.WelComeNote);
+            const Shop = req.body.Shop;
+            const ShopWelComeNote = JSON.parse(req.body.Shop.WelcomeNote);
+            const User = req.body.User;
+            const Customer = req.body.customer;
+            const BillMaster = req.body.billMaster;
+            req.body.billItemList = req.body.billItemList.filter((element) => {
+                return element.Status !== 0;
+            });
+            const BillItemList = req.body.billItemList;
+            const PaidList = req.body.paidList;
+            const UnpaidList = req.body.unpaidList;
+
+            printdata.company = Company
+            printdata.companysetting = CompanySetting
+            printdata.companyWelComeNote = CompanyWelComeNote
+            printdata.shopdetails = Shop
+            printdata.shopWelComeNote = ShopWelComeNote
+            printdata.user = User
+            printdata.customer = Customer
+            printdata.billMaster = BillMaster
+            console.log( printdata.billMaster);
+            printdata.billItemList = BillItemList
+            printdata.paidlist = PaidList
+            printdata.unpaidlist = UnpaidList
+            printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
+
+            
+
+            let fileName = "";
+            const file = "OrderForm.ejs" + ".pdf";
+            const formatName = "OrderForm.ejs";
             fileName = "uploads/" + file;
 
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {

@@ -559,6 +559,10 @@
                                     <button *ngIf="data.ID != null && data.Status === 0  && data.CancelStatus === 0 || (data.Status === 1  && data.CancelStatus === 1)" class="bgRemove p-0 ms-1" [disabled]="data.CancelStatus === 0 || data.Status === 0" (click)="cancelProduct('Product', i)" >
                                     <mat-icon  class="deletes_icon  " title="Cancel">cancel</mat-icon>
                                    </button>
+
+                                    <button *ngIf="data.ID != null" class="bgRemove p-0 ms-1"  (click)="OrderPrint(data)" >
+                                    <mat-icon  class="deletes_icon  " title="Order Form">print</mat-icon>
+                                   </button>
                                    
                                     <mat-icon *ngIf="data.Status !== 0" class="edit_icon ms-1" (click)="openModal(content,data)"  >remove_red_eye</mat-icon>
                                     <mat-icon *ngIf="!data.UpdateProduct && editCustomerBill && data.Status !== 0" class="edit_icon1 ms-1" (click)="showInput(data)" >edit
@@ -826,7 +830,7 @@
                      [disabled]="BillMaster.ID === null" (click)="openModal13(content13)">Fitter Order</button>
                     <button type="button" mat-raised-button color="primary" (click)="billPrint('Receipt')">Receipt</button>
                     <button type="button" class="me-3 ms-3" mat-raised-button color="primary"(click)="billPrint('Invoice')">Invoice</button>
-
+                    <mat-slide-toggle name="ShowPower" color="primary" [(ngModel)]="ShowPower" class="example-margin" #ShowPowercontrol>Show Power</mat-slide-toggle>
                     <button type="button"  mat-raised-button color="primary">Receipt +
                         Power</button>
 

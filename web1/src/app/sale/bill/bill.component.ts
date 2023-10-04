@@ -102,9 +102,9 @@ export class BillComponent implements OnInit {
 
   body = {
     customer: null, billMaster: null, billItemList: null, serviceList: null, employeeList: null, paidList: null, unpaidList: null, Shop: null,
-    Company: null, CompanySetting: null, User: null,mode:null
+    Company: null, CompanySetting: null, User: null,mode:null,ShowPower:false
   };
-
+  ShowPower = false
   billItemCheckList:any
   checked :any= false;
 
@@ -1949,6 +1949,8 @@ export class BillComponent implements OnInit {
     this.body.CompanySetting = this.companySetting;
     this.body.User = this.user;
     this.body.mode = mode
+    this.body.ShowPower = this.ShowPower
+    
     // this.body.billMaster.showPower = this.showPower;
 
     
@@ -1974,5 +1976,42 @@ export class BillComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
 
+  }
+
+  OrderPrint(data:any){
+    this.sp.show()
+    let Body:any = {
+      data:data 
+    }
+    this.body = Body
+    this.body.customer = this.customer;
+    this.body.billMaster = this.BillMaster;
+    this.body.billItemList = this.billItemList;
+    this.body.serviceList = this.serviceLists;
+    this.body.employeeList = this.employeeList;
+    this.body.paidList = this.paidListPDF;
+    this.body.unpaidList = this.invoiceList;
+    [this.body.Shop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));;
+    this.body.Company = this.company;
+    this.body.CompanySetting = this.companySetting;
+    this.body.User = this.user;
+
+    // this.body.billMaster.showPower = this.showPower;
+
+    
+    const subs: Subscription = this.bill.orderFormPrint(this.body).subscribe({
+      next: (res: any) => {
+        if(res){
+            this.BillMaster.Invoice = res;
+            const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
+            window.open(url, "_blank")
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 }

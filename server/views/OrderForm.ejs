@@ -1,0 +1,54 @@
+<html>
+<link rel="stylesheet" href="http://localhost:3000/assest/orderFrom.css">
+<style>
+    html body {
+        zoom: 100%;
+    }
+
+    .headingName {
+         position: absolute;
+         margin-left: 39.2%;
+         width: 30%;
+         color: red;
+         margin-top: 0px;
+         font-size: 14px !important;
+      }
+
+</style>
+<body>
+    <section>
+        <%- include('./header.ejs', {pageNumber: 1}) %>
+        <div>
+            <div style="border-bottom: 1px solid; width: 38%; position:absolute; margin-top: 1%;"> </div>
+            <div style="border-bottom: 1px solid; width: 38%; float: right; position: relative; margin-top: 1%;"></div>
+            <span class="headingName">Order Form</span>
+         </div>
+    </section>
+ 
+    <section>
+        <div class="CustomerRow">
+          <div class="col1">
+             <ul class="ul1">
+                <li>Order No</li>
+                <li>BillDate</li>
+             </ul>
+             <ul class="ul2">
+                 <li>2309R00017 </li>
+                 <li>2309R00017 </li>
+             </ul>
+          </div>
+          <div class="col2">
+             <ul class="ul1">
+               <li>Name</li>
+               <li>DeliveryDate</li>
+             </ul>
+             <ul class="ul2">
+                <li>DeliveryDate</li>
+                <li>00-00-000</li>
+             </ul>
+          </div>
+        </div>
+    </section>
+</body>
+
+</html>
