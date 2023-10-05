@@ -48,7 +48,7 @@ export class DashboradComponent implements OnInit {
     },
     {
       "icon" : "assets/images/sms-removebg-preview.png",
-      "title": "Bluk SMS",
+      "title": "Bulk SMS",
       "routersLinks" : "/admin/smsSetting"
     },
   

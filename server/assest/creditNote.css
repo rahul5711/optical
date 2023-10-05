@@ -87,11 +87,15 @@ table tfoot tr th{
 
 
 .footerLast{
-    width: 50%;
+    width: 50%;  float: left;
 }
 .footerLast .ui1{
     float: left;width: 30%; font-size: 15px; font-weight: 600; list-style: none; padding: 0; line-height:22px;
 }
 .footerLast .ui2{
     float: right;width: 68%; font-size: 13px; list-style: none;padding: 0;line-height: 22px;
+}
+
+.footerLast2{
+    width: 20%; float: right;
 }

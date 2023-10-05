@@ -42,6 +42,18 @@ input::-webkit-inner-spin-button {
     transition: 0.5s;
     box-shadow: 2px 2px 6px #9c9795fa;
 }
+.pritn_icon {
+    background: #007cff;
+    color: #fff;
+    padding: 3px;
+    border-radius: 20px;
+    font-size: 17px;
+    height: 24px !important;
+    width: 24px !important;
+    cursor: pointer;
+    transition: 0.5s;
+    box-shadow: 2px 2px 6px #9c9795fa;
+}
 
 .table tbody tr td {
     font-size: 13px !important;
@@ -122,4 +134,14 @@ button:disabled .deletes_icon{
     color: #000;
     height: 25px;
     border: #f71a1c 1px solid;
+}
+
+.redclass{
+    color: red !important;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.mat-input-element:disabled {
+    color: rgb(0 0 0) !important;
 }

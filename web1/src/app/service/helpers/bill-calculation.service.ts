@@ -242,15 +242,15 @@ export class BillCalculationService {
 
       if(element.DuaCal === 'yes'){
          element.DuaCal = 'No'
-         BillMaster.DueAmount = +BillMaster.DueAmount +  element.TotalAmount
+         BillMaster.DueAmount = +BillMaster.DueAmount +  (element.TotalAmount - BillMaster.AddlDiscount)
       }
 
       if(element.DuaCal === 'delete'){
-        BillMaster.DueAmount = +BillMaster.DueAmount -  element.TotalAmount
+        BillMaster.DueAmount = +BillMaster.DueAmount -  (element.TotalAmount - BillMaster.AddlDiscount)
      }
      
       if(element.DuaCal === 'delete2'){
-        BillMaster.DueAmount = BillMaster.DueAmount -  element.TotalAmount
+        BillMaster.DueAmount = BillMaster.DueAmount - (element.TotalAmount - BillMaster.AddlDiscount)
      }
 
      BillMaster.SubTotal = this.convertToDecimal(+BillMaster.SubTotal, 2);
@@ -258,6 +258,7 @@ export class BillCalculationService {
      BillMaster.GSTAmount = this.convertToDecimal(+BillMaster.GSTAmount, 2);
      BillMaster.TotalAmount = this.convertToDecimal(+BillMaster.TotalAmount, 2);
      BillMaster.DueAmount = this.convertToDecimal(+BillMaster.DueAmount, 2);
+     
     });
 
     // serviceList
@@ -267,8 +268,6 @@ export class BillCalculationService {
         BillMaster.GSTAmount = +BillMaster.GSTAmount + +element.GSTAmount;
         BillMaster.TotalAmount = +BillMaster.TotalAmount + +element.TotalAmount;
       }
-
-  
 
       if(element.DuaCal === 'yes' ){
         element.DuaCal = 'No'

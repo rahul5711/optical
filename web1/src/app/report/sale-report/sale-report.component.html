@@ -261,12 +261,12 @@
                                                             *ngIf="d.gst_detailssss[0][0].type === 'iGST'">
                                                             {{d.gst_detailssss[0][0].amt }}</td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
-                                                            {{d.TotalAmount - d.AddlDiscount }} </td>
+                                                            {{d.TotalAmount}} </td>
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             {{d.AddlDiscount }} </td>
 
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
-                                                            {{(d.TotalAmount - d.AddlDiscount) - d.DueAmount }} </td>
+                                                            {{(d.TotalAmount) - d.DueAmount }} </td>
                                                             
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.DueAmount }} </td>

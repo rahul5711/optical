@@ -223,6 +223,11 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  creditNotePrint(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/creditNotePrint', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

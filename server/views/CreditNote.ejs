@@ -33,7 +33,7 @@
                         <li>Issued To:</li>   
                     </ul>
                     <ul class="ul2">
-                        <li> ASDASFASFASF </li>
+                        <li> <%=data.customer.Name%> </li>
                     </ul>
                 </div>
                 <div class="col3">
@@ -41,16 +41,16 @@
                         <li>Issue Date:</li>   
                     </ul>
                     <ul class="ul2">
-                        <li> 20-20-2020 </li>
+                        <li> <%=data.billMaster.BillDate%></li>
                     </ul>
                 </div>
 
                 <div class="col2">
                     <ul class="ul1">
-                                <li>MoblieNo.:</li>
+                        <li>MoblieNo.:</li>
                     </ul>
                     <ul class="ul2" >
-                                <li>919166666098 </li>
+                        <li><%=data.customer.MoblieNo1%> </li>
                     </ul>
                 </div>
             </div>
@@ -69,14 +69,16 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <% if(data.paidlist.length !== 0 ){ data.paidlist.forEach(function (i, index) { %>
                     <tr>
-                        <td>2309R00017 </td>
-                        <td>2023-10-02</td>
-                        <td>Customer Return</td>
-                        <td>Customer Credit</td>
-                        <td>2309R00017 </td>
-                        <td>-1000</td>
+                        <td><%=i.PaymentReferenceNo%> </td>
+                        <td><%=i.PaymentDate%></td>
+                        <td><%=i.PaymentMode%></td>
+                        <td><%=i.Type%></td>
+                        <td><%=i.PaymentReferenceNo%> </td>
+                        <td><%=i.Amount%></td>
                     </tr>
+                    <%})}%>
                 </tbody>
                 <tfoot>
                     <tr>
@@ -85,7 +87,7 @@
                         <th></th>
                         <th></th>
                         <th>Total Previous Customer Credit</th>
-                        <th>1000  </th>
+                        <th><%=data.total%>  </th>
                     </tr>
                 </tfoot>
             </table>
@@ -98,12 +100,15 @@
                     <li>Place Of Issue :</li>
                 </ul>
                 <ul class="ui2">
-                    <li>OPTICALGURU</li>
-                    <li>RELINKSYS SOFTWARE,TH SCHONEAR SAMAROL, OPP-RAOSAHEB SAVEDI, A.NAGAR-414003</li>
+                    <li><%=data.user.Name%> </li>
+                    <li><%=data.shopdetails.Name%> <%=data.shopdetails.Address%> </li>
                 </ul>
             </div>
             <div class="footerLast2" >
-
+                <h3 style="padding: 0;margin: 0;">...........................</h3>
+                <p style="padding: 0;margin: 0;">
+                    Stamp & Signature
+                </p>
             </div>
         </section>
     </div>

@@ -1198,11 +1198,13 @@ export class BillComponent implements OnInit {
             this.billItemList = billlIst
             this.billItemList[i].Status = 0;
             this.billItemList[i].DuaCal = 'delete';
+          
             this.data.billMaseterData = this.BillMaster;
             this.data.billDetailData = this.billItemList[i];
             this.calculateGrandTotal();
+        
             delete this.data.service
-
+            
             this.sp.show()
             const subs: Subscription = this.bill.deleteProduct(this.data).subscribe({
               next: (res: any) => {
@@ -2000,6 +2002,36 @@ export class BillComponent implements OnInit {
 
     
     const subs: Subscription = this.bill.orderFormPrint(this.body).subscribe({
+      next: (res: any) => {
+        if(res){
+            this.BillMaster.Invoice = res;
+            const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
+            window.open(url, "_blank")
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  CreditNotePdf(){
+    this.sp.show()
+    this.body.customer = this.customer;
+    this.body.billMaster = this.BillMaster;
+    this.body.billItemList = this.billItemList;
+    this.body.serviceList = this.serviceLists;
+    this.body.employeeList = this.employeeList;
+    this.body.paidList = this.paidListPDF;
+    this.body.unpaidList = this.invoiceList;
+    [this.body.Shop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));;
+    this.body.Company = this.company;
+    this.body.CompanySetting = this.companySetting;
+    this.body.User = this.user;
+
+    const subs: Subscription = this.bill.creditNotePrint(this.body).subscribe({
       next: (res: any) => {
         if(res){
             this.BillMaster.Invoice = res;

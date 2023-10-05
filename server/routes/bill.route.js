@@ -26,6 +26,7 @@ router.post('/cancelProduct', verifyAccessTokenAdmin, Controller.cancelProduct)
 router.post('/updateProduct', verifyAccessTokenAdmin, Controller.updateProduct)
 router.post('/billPrint', verifyAccessTokenAdmin, Controller.billPrint)
 router.post('/orderFormPrint', verifyAccessTokenAdmin, Controller.orderFormPrint)
+router.post('/creditNotePrint', verifyAccessTokenAdmin, Controller.creditNotePrint)
 
 // customer bills and their payments
 

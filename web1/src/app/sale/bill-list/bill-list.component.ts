@@ -234,7 +234,7 @@ export class BillListComponent implements OnInit {
       
       Swal.fire({
         icon: 'warning',
-        title: 'current_date date is lower than Payment date',
+        title: ' Date should be less then or Equal to Current date',
         footer: '',
         backdrop: false,
       });
