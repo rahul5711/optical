@@ -62,4 +62,9 @@ router.post('/getFitterPoList', verifyAccessTokenAdmin, Controller.getFitterPoLi
 router.post('/getFitterPoPurchaseList', verifyAccessTokenAdmin, Controller.getFitterPoPurchaseList)
 router.post('/assignFitterDoc', verifyAccessTokenAdmin, Controller.assignFitterDoc)
 router.post('/AssignFitterPDF', verifyAccessTokenAdmin, Controller.AssignFitterPDF)
+
+// report
+router.post('/cashcollectionreport', verifyAccessTokenAdmin, Controller.cashcollectionreport)
+
+
 module.exports = router

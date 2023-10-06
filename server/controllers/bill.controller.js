@@ -292,7 +292,7 @@ module.exports = {
                 //     })
                 // );
 
-                for(const item of billDetailData) {
+                for (const item of billDetailData) {
                     let preorder = 0;
                     if (item.PreOrder === true) {
                         preorder = 1;
@@ -1602,7 +1602,7 @@ module.exports = {
                 }
             });
             printdata.EyeMeasurement = x[0];
-           console.log(printdata.EyeMeasurement);
+            console.log(printdata.EyeMeasurement);
             const BillItemList = req.body.billItemList;
             const ServiceList = req.body.serviceList;
             const PaidList = req.body.paidList;
@@ -1725,9 +1725,9 @@ module.exports = {
     orderFormPrint: async (req, res, next) => {
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-     
+
             const printdata = req.body;
-            const MeasurementID  = JSON.parse(req.body.data.MeasurementID);
+            const MeasurementID = JSON.parse(req.body.data.MeasurementID);
             const Company = req.body.Company;
             const CompanySetting = req.body.CompanySetting;
             const CompanyWelComeNote = JSON.parse(req.body.CompanySetting.WelComeNote);
@@ -1758,7 +1758,7 @@ module.exports = {
             console.log(printdata.Measurement);
             printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
 
-            
+
 
             let fileName = "";
             const file = "OrderForm.ejs" + ".pdf";
@@ -1823,14 +1823,14 @@ module.exports = {
             printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
 
             let total = 0;
-            printdata.paidlist.forEach(ee =>{
-              if(ee.Type === 'Debit'){
-                total = total + ee.Amount
-                ee.Amount = '-' + ee.Amount
-              }else{
-                total = total - ee.Amount
-                ee.Amount = '+' + ee.Amount
-              }
+            printdata.paidlist.forEach(ee => {
+                if (ee.Type === 'Debit') {
+                    total = total + ee.Amount
+                    ee.Amount = '-' + ee.Amount
+                } else {
+                    total = total - ee.Amount
+                    ee.Amount = '+' + ee.Amount
+                }
             })
             printdata.total = total
 
@@ -3207,10 +3207,10 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
 
             const printdata = req.body
-        
+
             // const MeasurementID = JSON.parse(req.body.productList.MeasurementID) ;
             const productList = req.body.productList
-            productList.forEach(e =>{
+            productList.forEach(e => {
                 e.InvoiceDate = moment(e.InvoiceDate).format("DD-MM-YYYY")
                 e.DeliveryDate = moment(e.DeliveryDate).format("DD-MM-YYYY")
             })
@@ -3334,6 +3334,71 @@ module.exports = {
             response.message = "success";
             return res.send(response);
         } catch (err) {
+            next(err)
+        }
+    },
+    cashcollectionreport: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "", paymentMode: [], sumOfPaymentMode: 0, AmountReturnByDebit:0, AmountReturnByCredit: 0, totalAmount: 0 }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+
+            const { Date, ShopID, PaymentMode, PaymentStatus } = req.body;
+
+            let shop = ``
+            let paymentType = ``
+            let paymentStatus = ``
+
+            if (ShopID) {
+                shop = ` and billmaster.ShopID = ${ShopID}`
+            }
+            if (PaymentMode) {
+                paymentType = ` and paymentmaster.PaymentMode = '${paymentType}'`
+            }
+            if (PaymentStatus) {
+                paymentStatus = ` and billmaster.PaymentStatus = '${PaymentStatus}'`
+            }
+
+
+            let qry = `select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, billmaster.BillDate,billmaster.DeliveryDate, billmaster.PaymentStatus, billmaster.TotalAmount, shop.Name as ShopName, shop.AreaName, customer.Name as CustomerName, customer.MobileNo1 from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID left join shop on shop.ID = paymentmaster.ShopID left join customer on customer.ID = paymentmaster.CustomerID where paymentmaster.PaymentType = 'Customer' and paymentmaster.CreditType = 'Credit' ${shop} ${paymentStatus} ${paymentType} ` + Date + ` order by paymentdetail.BillMasterID desc`
+
+
+            const [data] = await mysql2.pool.query(qry)
+
+            const [paymentMode] = await mysql2.pool.query(`select supportmaster.Name, 0 as Amount from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = 'PaymentModeType' order by ID desc`)
+
+            response.paymentMode = paymentMode
+
+            if (data) {
+                for (const item of data) {
+                    response.paymentMode.forEach(x => {
+                        if (item.PaymentMode === x.Name) {
+                            x.Amount += item.Amount
+                            response.sumOfPaymentMode += item.Amount
+                        }
+                    })
+
+                }
+            }
+
+            const [debitReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer' and paymentdetail.Credit = 'Debit'` + Date )
+            const [creditReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer Credit' and paymentdetail.Credit = 'Credit'` + Date )
+
+            if (debitReturn[0].Amount !== null) {
+                response.AmountReturnByDebit = debitReturn[0].Amount
+            }
+            if (creditReturn[0].Amount !== null) {
+                response.AmountReturnByCredit = creditReturn[0].Amount
+            }
+
+
+            response.totalAmount = response.sumOfPaymentMode - response.AmountReturnByDebit - response.AmountReturnByCredit
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+        } catch (err) {
+            console.log(err);
             next(err)
         }
     },
