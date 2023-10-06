@@ -447,6 +447,13 @@ module.exports = {
                 return res.send({ message: "product doesnot exist from this id " })
             }
 
+            const [doesExistProductQty] = await mysql2.pool.query(`select * from barcodemasternew where Status = 1 and CompanyID = '${CompanyID}' and PurchaseDetailID = '${Body.ID}' and CurrentStatus = 'Available'`)
+
+            if (doesExist[0].Quantity !== doesExistProductQty.length) {
+                // return res.send({ message: `You have product already sold` })
+                return res.send({ message: `You can't delete this product` })
+            }
+
             const [doesCheckPayment] = await mysql2.pool.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${Body.PurchaseMaster.InvoiceNo}' and BillMasterID = ${Body.PurchaseMaster.ID}`)
 
             if (doesCheckPayment.length > 1) {
@@ -454,12 +461,7 @@ module.exports = {
             }
 
 
-            const [doesExistProductQty] = await mysql2.pool.query(`select * from barcodemasternew where Status = 1 and CompanyID = '${CompanyID}' and PurchaseDetailID = '${Body.ID}' and CurrentStatus = 'Available'`)
 
-            if (doesExist[0].Quantity !== doesExistProductQty.length) {
-                // return res.send({ message: `You have product already sold` })
-                return res.send({ message: `You can't delete this product` })
-            }
 
             const [deletePurchasedetail] = await mysql2.pool.query(`update purchasedetailnew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
@@ -2861,6 +2863,11 @@ module.exports = {
             if (PurchaseMaster.ID !== null || PurchaseMaster.ID === undefined) return res.send({ message: "Invalid Query Data" })
 
             if (PurchaseMaster.Quantity == 0 || !PurchaseMaster?.Quantity || PurchaseMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
+
+
+            if (PurchaseMaster.ShopID !== shopid) {
+                return res.send({ message: " Selected Shop Should Be Header Shop" })
+            }
 
             const [doesExistSystemCn] = await mysql2.pool.query(`select * from purchasereturn  where Status = 1 and SystemCn = '${PurchaseMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 

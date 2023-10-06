@@ -351,7 +351,7 @@ module.exports = {
                     }
 
                     let [pMaster] = await mysql2.pool.query(
-                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Supplier',  '1',${LoggedOnUser}, now())`
+                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', 'CN Amount Rs ${PaidAmount} Apply Ref CN No ${CreditNumber}.', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Supplier',  '1',${LoggedOnUser}, now())`
                     );
 
                     let pMasterID = pMaster.insertId;
@@ -633,15 +633,11 @@ module.exports = {
             if (!PayeeName || PayeeName === undefined) return res.send({ message: "Invalid PayeeName Data" })
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
 
-            let param = ``
 
-            if (ShopID !== 0) {
-                param = ` and commissiondetail.ShopID = ${ShopID}`
-            }
 
             let qry = ``
             if (PaymentType === 'Employee') {
-                qry = `select 0 AS Sel, commissiondetail.ID, commissiondetail.CommissionAmount, commissiondetail.BrandedCommissionAmount, commissiondetail.NonBrandedCommissionAmount, user.Name as PayeeName, user1.Name as SalesPerson, billmaster.InvoiceNo, billmaster.BillDate, billmaster.PaymentStatus, billmaster.TotalAmount as BillAmount, billmaster.Quantity AS Quantity,  customer.Name as CustomerName, customer.MobileNo1 as MobileNo,shop.Name as ShopName, shop.AreaName as AreaName from commissiondetail left join shop on shop.ID = commissiondetail.ShopID left join user on user.ID = commissiondetail.UserID left join user as user1 on user1.ID = commissiondetail.CreatedBy left join billmaster on billmaster.ID = commissiondetail.BillMasterID left join customer on customer.ID = billmaster.CustomerID where commissiondetail.UserType = 'Employee' and commissiondetail.UserID = ${PayeeName} and commissiondetail.CompanyID = ${CompanyID} ${param} and commissiondetail.CommissionMasterID = ${ID}`
+                qry = `select 0 AS Sel, commissiondetail.ID, commissiondetail.CommissionAmount, commissiondetail.BrandedCommissionAmount, commissiondetail.NonBrandedCommissionAmount, user.Name as PayeeName, user1.Name as SalesPerson, billmaster.InvoiceNo, billmaster.BillDate, billmaster.PaymentStatus, billmaster.TotalAmount as BillAmount, billmaster.Quantity AS Quantity,  customer.Name as CustomerName, customer.MobileNo1 as MobileNo,shop.Name as ShopName, shop.AreaName as AreaName from commissiondetail left join shop on shop.ID = commissiondetail.ShopID left join user on user.ID = commissiondetail.UserID left join user as user1 on user1.ID = commissiondetail.CreatedBy left join billmaster on billmaster.ID = commissiondetail.BillMasterID left join customer on customer.ID = billmaster.CustomerID where commissiondetail.UserType = 'Employee' and commissiondetail.UserID = ${PayeeName} and commissiondetail.CompanyID = ${CompanyID}  and commissiondetail.CommissionMasterID = ${ID}`
             } else if (PaymentType === 'Doctor') {
                 qry = `select 0 AS Sel, commissiondetail.ID, commissiondetail.CommissionAmount, doctor.Name as PayeeName, user1.Name as SalesPerson, billmaster.InvoiceNo, billmaster.BillDate, billmaster.PaymentStatus, billmaster.Quantity AS Quantity,  billmaster.TotalAmount as BillAmount, customer.Name as CustomerName, customer.MobileNo1 as MobileNo,shop.Name as ShopName, shop.AreaName as AreaName from commissiondetail left join shop on shop.ID = commissiondetail.ShopID left join doctor on doctor.ID = commissiondetail.UserID left join user as user1 on user1.ID = commissiondetail.CreatedBy left join billmaster on billmaster.ID = commissiondetail.BillMasterID left join customer on customer.ID = billmaster.CustomerID where commissiondetail.UserType = 'Doctor' and commissiondetail.UserID = ${PayeeName} and commissiondetail.CompanyID = ${CompanyID} ${param} and commissiondetail.CommissionMasterID = ${ID}`
             }
@@ -730,7 +726,7 @@ module.exports = {
 
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
 
-            let qry = `select commissionmaster.*, COALESCE( user.Name, doctor.Name ) AS UserName, commissiondetail.BillMasterID from commissionmaster left join commissiondetail on commissiondetail.CommissionMasterID = commissionmaster.ID left join user as user on user.ID = commissionmaster.UserID and commissionmaster.UserType = 'Employee' left join doctor on doctor.ID = commissionmaster.UserID and commissionmaster.UserType = 'Doctor' where commissionmaster.CompanyID = ${CompanyID} and commissionmaster.ShopID = ${shopid} and commissionmaster.ID = ${ID}`
+            let qry = `select commissionmaster.*, COALESCE( user.Name, doctor.Name ) AS UserName from commissionmaster left join user as user on user.ID = commissionmaster.UserID and commissionmaster.UserType = 'Employee' left join doctor on doctor.ID = commissionmaster.UserID and commissionmaster.UserType = 'Doctor' where commissionmaster.CompanyID = ${CompanyID} and commissionmaster.ID = ${ID}`
 
             response.message = "data fetch sucessfully"
             const [data] = await mysql2.pool.query(qry)

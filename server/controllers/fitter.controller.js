@@ -155,9 +155,10 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const UserID = req.user.ID ? req.user.ID : 0;
             const UserGroup = req.user.UserGroup ? req.user.UserGroup : 'CompanyAdmin';
+            const shopid = await shopID(req.headers) || 0;
 
 
-            let [data] = await mysql2.pool.query(`select fitter.ID, fitter.Name from fitter where Status = 1 and CompanyID = ${CompanyID}`);
+            let [data] = await mysql2.pool.query(`select fitter.ID, fitter.Name from fitter left join fitterassignedshop on fitterassignedshop.FitterID = fitter.ID where fitter.Status = 1 and fitter.CompanyID = ${CompanyID} and fitterassignedshop.ShopID = ${shopid}`);
             response.message = "data fetch sucessfully"
             response.data = data
             return res.send(response);
