@@ -1,18 +1,11 @@
 <section class="content">
     <div class="container-fluid ">
-        <div class="row p-4 mt-0">
-            <div *ngFor="let stat of cards" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12 crds">
-                <app-dashcard [title]="stat.title" [icon]="stat.icon" [routersLinks]="stat.routersLinks">
-                </app-dashcard>
+  
+        <div class="row p-4">
+            <div class="col-12">
+                <h1 style="color: white; font-weight: 800;">Summary Report</h1>
             </div>
-        </div>
-          <div class="row">
-            <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12 crds">
-            </div>
-          </div>
-
-        <!-- <div class="row p-4">
-            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12 crds">
+            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12 crds ">
                 <div class="table-responsive" style="width:100%; overflow: auto; height: 295px; border: 1px solid #1e2672;
                 box-shadow: 2px 2px 10px #606060bf;
                 border-radius: 5px; background: #ffffffd6;">
@@ -21,7 +14,7 @@
                         style="border: 2px solid #fff !important;">
                         <thead>
                             <tr>
-                                <th>Summry</th>
+                                <th>Summary</th>
                                 <th>Today</th>
                                 <th>Month</th>
                             </tr>
@@ -53,7 +46,7 @@
                                 <td>1000</td>
                             </tr>
                             <tr>
-                                <td>New Eye Testing Collection</td>
+                                <td>New Eye Testing</td>
                                 <td>104000</td>
                                 <td>104000</td>
                             </tr>
@@ -76,7 +69,7 @@
                     </table>
                 </div>
             </div>
-            <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12 crds">
+            <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12 crds mt-md-0 mb-md-0 mt-5 mb-5">
                 <div class="table-responsive" style="width:100%; overflow: auto;  border: 1px solid #1e2672;
                 box-shadow: 2px 2px 10px #606060bf;
                 border-radius: 5px; background: #ffffffd6;">
@@ -170,7 +163,6 @@
                     </table>
                 </div>
             </div>
-        </div> -->
+        </div>
     </div>
 </section>
-

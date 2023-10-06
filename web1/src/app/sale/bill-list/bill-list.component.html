@@ -122,7 +122,7 @@
                       <tbody class="text-center ">
                         <tr *ngFor="let Bdata of dataList ; let i = index;"
                           [ngStyle]="{whiteSpace: 'nowrap', overflowX: 'auto'}">
-                          <td>
+                          <td >
                             <button title="Messenger" class="bg-btn msg">
                               <i class="fab fa-facebook-messenger"></i>
                             </button>
@@ -147,30 +147,30 @@
                             </button>
 
                           </td>
-                          <td>{{ dataList.length - i }}</td>
-                          <td>{{Bdata.Idd}}</td>
-                          <td>{{Bdata.CustomerName}}</td>
-                          <td>{{Bdata.CustomerMob}}</td>
-                          <td>{{Bdata.InvoiceNo}}</td>
-                          <td>{{dateFormat(Bdata.BillDate)}}</td>
-                          <td>{{Bdata.ProductStatus }}</td>
-                          <td>{{dateFormat(Bdata.DeliveryDate)}}</td>
-                          <td>{{Bdata.PaymentStatus}}</td>
-                          <td>{{Bdata.Quantity}}</td>
-                          <td>{{Bdata.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                          <td>{{Bdata.AddlDiscount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                          <td>{{Bdata.TotalAmount - Bdata.DueAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                          <td>{{Bdata.DueAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                          <td>{{Bdata.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                          <td>{{Bdata.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                          <td>{{Bdata.TrayNo}}</td>
-                          <td>{{Bdata.ShopName}}<span [style.color]="'blue'"
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{ dataList.length - i }}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.Idd}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.CustomerName}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.CustomerMob}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.InvoiceNo}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{dateFormat(Bdata.BillDate)}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.ProductStatus }}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{dateFormat(Bdata.DeliveryDate)}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.PaymentStatus}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.Quantity}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.AddlDiscount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.TotalAmount - Bdata.DueAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.DueAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.TrayNo}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.ShopName}}<span [style.color]="'blue'"
                               *ngIf="Bdata.AreaName !== 'null'">({{Bdata.AreaName}})</span>
                           </td>
-                          <td>{{Bdata.Sno}}</td>
-                          <td>{{Bdata.SalePerson}}</td>
-                          <td>{{Bdata.CreatedByUser}}</td>
-                          <td>{{Bdata.UpdatedByUser}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.Sno}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.SalePerson}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.CreatedByUser}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.UpdatedByUser}}</td>
 
                         </tr>
                       </tbody>

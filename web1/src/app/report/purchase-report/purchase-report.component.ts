@@ -53,6 +53,8 @@ export class PurchaseReportComponent implements OnInit {
   DetailtotalWholeSalePrice: any;
   DetailtotalRetailPrice: any;
   gstdetails:any
+  TtlR:any = 0
+  TtlW:any = 0
 
   v :any = []
   PurchaseChargeList :any = [];
@@ -414,6 +416,10 @@ export class PurchaseReportComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.PurchaseDetailList = res.data
+          this.PurchaseDetailList.forEach((element: any) => {
+            this.TtlR  =+ this.TtlR + element.RetailPrice * element.Quantity
+            this.TtlW  =+ this.TtlW + element.WholeSalePrice * element.Quantity
+           });
           this.DetailtotalQty = res.calculation[0].totalQty;
           this.DetailtotalDiscount = res.calculation[0].totalDiscount.toFixed(2);
           this.DetailtotalUnitPrice = res.calculation[0].totalUnitPrice.toFixed(2);

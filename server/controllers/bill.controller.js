@@ -3211,8 +3211,8 @@ module.exports = {
             // const MeasurementID = JSON.parse(req.body.productList.MeasurementID) ;
             const productList = req.body.productList
             productList.forEach(e =>{
-                e.InvoiceDate = moment(e.InvoiceDate).format("YYYY-MM-DD")
-                e.DeliveryDate = moment(e.DeliveryDate).format("YYYY-MM-DD")
+                e.InvoiceDate = moment(e.InvoiceDate).format("DD-MM-YYYY")
+                e.DeliveryDate = moment(e.DeliveryDate).format("DD-MM-YYYY")
             })
             printdata.productList = productList
 

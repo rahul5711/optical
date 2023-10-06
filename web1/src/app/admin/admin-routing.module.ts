@@ -18,6 +18,7 @@ import { ShopListComponent } from './shop-list/shop-list.component';
 import { ShopComponent } from './shop/shop.component';
 import { SmsSettingComponent } from './sms-setting/sms-setting.component';
 import { UserUpdatePasswordComponent } from './user-update-password/user-update-password.component';
+import { SummaryComponent } from './summary/summary.component';
 
 
 const routes: Routes = [
@@ -45,6 +46,7 @@ children: [
   { path: 'companySetting', component: CompanySettingComponent },
   { path: 'smsSetting', component: SmsSettingComponent },
   { path: 'companyLoginHistory', component: CompanyLoginHistoryComponent },
+  { path: 'dashboardSummary', component: SummaryComponent },
   // ComapnyAdmin end routes 
 ]}
 ]

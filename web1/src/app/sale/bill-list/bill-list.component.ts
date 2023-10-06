@@ -614,6 +614,7 @@ export class BillListComponent implements OnInit {
                   showConfirmButton: false,
                   timer: 1000
                 })
+                this.getList()
               } else {
                 this.as.errorToast(res.message)
                 Swal.fire({

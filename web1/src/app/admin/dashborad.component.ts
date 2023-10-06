@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-dashborad',
@@ -8,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DashboradComponent implements OnInit {
 
-  constructor( ) { }
+  constructor( 
+    private modalService: NgbModal,
+  ) { }
   
   cards: any = []
  
@@ -22,8 +24,13 @@ export class DashboradComponent implements OnInit {
     // },
     {
       "icon" : "assets/images/billing.png",
-      "title": "Billing",
+      "title": "Customer",
       "routersLinks" : "/sale/billing/0/0"
+    },
+    {
+      "icon" : "assets/images/search-list.png",
+      "title": "Bill Search",
+      "routersLinks" : "/sale/billinglist/0"
     },
     {
       "icon" : "assets/images/purchase.png",
@@ -53,13 +60,20 @@ export class DashboradComponent implements OnInit {
     },
   
     {
-      "icon" : "assets/images/nreminder.png",
+      "icon" : "assets/images/reminder.png",
       "title": "Reminder",
       "routersLinks" : "/product/productManage"
     },
+    {
+      "icon" : "assets/images/sms-removebg-preview.png",
+      "title": "Summary",
+      "routersLinks" : "/admin/dashboardSummary"
+    },
+
    ]
 
    this.cards = dashcard
   }
+
 
 }

@@ -348,8 +348,10 @@
                             <th>Grand Total</th>
                             <th>BarCode</th>
                             <th>Payment Status</th>
-                            <th>Retail Price</th>
-                            <th>WholeSale Price</th>
+                            <th>Retail Per_Pc Price</th>
+                            <th>Retail Total Price</th>
+                            <th>WholeSale Per_Pc Price</th>
+                            <th>WholeSale Total Price</th>
                             <th>Current Shop</th>
                           </tr>
                           <tr class="totolRow" *ngIf="this.DetailtotalQty != null && this.DetailtotalQty != '' ">
@@ -379,8 +381,12 @@
                             <td>{{this.DetailtotalAmount}}</td>
                             <td></td>
                             <td></td>
-                            <td>{{this.DetailtotalRetailPrice}}</td>
-                            <td>{{this.DetailtotalWholeSalePrice}}</td>
+                            <!-- <td>{{this.DetailtotalRetailPrice}}</td> -->
+                            <td></td>
+                            <td>{{this.TtlR}}</td>
+                            <!-- <td>{{this.DetailtotalWholeSalePricet}}</td> -->
+                            <td></td>
+                            <td>{{this.TtlW}}</td>
                             <td></td>
                           </tr>
                         </thead>
@@ -416,7 +422,9 @@
                             <td>{{s.BaseBarCode}}</td>
                             <td>{{s.PaymentStatus}}</td>
                             <td>{{s.RetailPrice }}</td>
+                            <td>{{s.RetailPrice * s.Quantity}}</td>
                             <td>{{s.WholeSalePrice }}</td>
+                            <td>{{s.WholeSalePrice * s.Quantity}}</td>
                             <td>{{s.ShopName}}<span [style.color]="'blue'"
                                 *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></td>
                           </tr>

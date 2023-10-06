@@ -320,11 +320,12 @@
                                                             [(ngModel)]="spectacle.REDPAxis">
                                                     </div>
                                                     <div class="col-1">
-                                                        <input class="inputWidth box" type="text" name="REDPVA"
+                                                        <input class="inputWidth box"  name="REDPVA"
                                                             [(ngModel)]="spectacle.REDPVA" id="REDPVA" list="dpvaList">
                                                         <datalist id="dpvaList">
                                                             <option [value]="d.Name" *ngFor="let d of dataPVA">
-                                                                {{d.Name}} </option>
+                                                                {{d.Name}} 
+                                                            </option>
                                                         </datalist>
                                                     </div>
                                                     <div class="col-1">

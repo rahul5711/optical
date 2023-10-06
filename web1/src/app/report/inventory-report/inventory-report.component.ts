@@ -56,6 +56,8 @@ export class InventoryReportComponent implements OnInit {
   DetailtotalRetailPrice: any;
   DetailtotalWholeSalePricet: any;
   gstdetails:any
+  TtlR:any = 0
+  TtlW:any = 0
 
   ProductExpiryList:any
   specList1:any
@@ -317,7 +319,13 @@ export class InventoryReportComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.as.successToast(res.message)
+          
+        
           this.inventoryList = res.data
+          this.inventoryList.forEach((element: any) => {
+            this.TtlR  =+ this.TtlR + element.RetailPrice * element.Count
+            this.TtlW  =+ this.TtlW + element.WholeSalePrice * element.Count
+           });
           this.DetailtotalQty = res.calculation[0].totalQty;
           this.DetailtotalDiscount = res.calculation[0].totalDiscount.toFixed(2);
           this.DetailtotalUnitPrice = res.calculation[0].totalUnitPrice.toFixed(2);

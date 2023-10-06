@@ -137,3 +137,8 @@
   color: #fff;
   box-shadow: 1px 1px 10px #0003;
 }
+
+.deleteClass {
+  color: red !important;
+  text-decoration: line-through;
+}
