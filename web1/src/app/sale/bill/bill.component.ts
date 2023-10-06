@@ -1170,6 +1170,7 @@ export class BillComponent implements OnInit {
         this.calculateGrandTotal();
         this.billItemList.splice(i, 1);
         this.calculateGrandTotal();
+        
       }  else {
         Swal.fire({
           title: 'Are you sure?',
@@ -1202,9 +1203,14 @@ export class BillComponent implements OnInit {
             this.data.billMaseterData = this.BillMaster;
             this.data.billDetailData = this.billItemList[i];
             this.calculateGrandTotal();
-        
+            if(this.data.billMaseterData.TotalAmount === 0 ){
+              this.data.billMaseterData.AddlDiscountPercentage = 0
+              this.data.billMaseterData.AddlDiscount = 0
+            }else{
+              this.AddDiscalculate('AddlDiscountPercentage', 'discount')
+            }
             delete this.data.service
-            
+
             this.sp.show()
             const subs: Subscription = this.bill.deleteProduct(this.data).subscribe({
               next: (res: any) => {

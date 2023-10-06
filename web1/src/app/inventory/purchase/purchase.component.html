@@ -459,7 +459,7 @@
                                             <thead>
                                                 <tr style="white-space: nowrap;">
                                                     <th style="z-index: 0 !important;">
-                                                        <mat-checkbox></mat-checkbox>
+                                                        <mat-checkbox type="checkbox" name="checked"  (click)="selectBarcode('all')"></mat-checkbox>
                                                     </th>
                                                     <th>Action</th>
                                                     <th>BarCode</th>
@@ -484,7 +484,7 @@
                                                     <td class="text-center">
                                                         <mat-checkbox [(ngModel)]="data.Checked" name="{{i + 'name'}}"
                                                             [checked]="data.Checked"
-                                                            [ngModelOptions]="{standalone: true}">
+                                                            [ngModelOptions]="{standalone: true}" (click)="singleSelectBarcode(i)">
                                                         </mat-checkbox>
                                                     </td>
                                                     <!-- <td style="z-index: -999 !important;" *ngIf="data.Status === 0"></td> -->

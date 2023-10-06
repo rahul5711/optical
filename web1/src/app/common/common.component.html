@@ -15,31 +15,29 @@
         <div class="nav-links">
           <!-- SuperAdmin nav -->
 
-          <a *ngIf="user?.UserGroup === 'SuperAdmin'" [routerLink]="['/admin/adminDashborad']">Dashborad</a>
+          <a *ngIf="user?.UserGroup === 'SuperAdmin'" [routerLink]="['/admin/adminDashborad']" (click)="myFunctionS('S3')">Dashborad</a>
           <!-- super admin Administration -->
-          <div *ngIf="user?.UserGroup === 'SuperAdmin'" class="dropdown">
-            <a class="dropBtn" data-target="#collapseExample">Administration <i class="fa fa-caret-down"
-                aria-hidden="true"></i></a>
-            <div class="drop-content" id="collapseExample">
-              <a  href="javascript:void(0)" [routerLink]="['/admin/company',0]"
-                id="collapseExample">Add Company</a>
-              <a href="javascript:void(0)" [routerLink]="['/admin/companyList']" id="collapseExample">Company List</a>
-              <a href="javascript:void(0)" [routerLink]="['/admin/userList']" id="collapseExample">User List</a>
-              <a href="javascript:void(0)" [routerLink]="['/admin/deactiveList']" id="collapseExample">Deactive List</a>
-              <a href="javascript:void(0)" [routerLink]="['/admin/loginHistory']" id="collapseExample">Login History</a>
+          <div *ngIf="user?.UserGroup === 'SuperAdmin'" class="dropdown" (click)="myFunctionS('S1')">
+            <a class="dropBtn" data-target="#collapseExampleS1">Administration <i class="fa fa-caret-down"  aria-hidden="true"></i></a>
+            <div class="drop-content" id="collapseExampleS1">
+              <a  href="javascript:void(0)" [routerLink]="['/admin/company',0]"  id="collapseExampleS1">Add Company</a>
+              <a href="javascript:void(0)" [routerLink]="['/admin/companyList']" id="collapseExampleS1">Company List</a>
+              <a href="javascript:void(0)" [routerLink]="['/admin/userList']" id="collapseExampleS1">User List</a>
+              <a href="javascript:void(0)" [routerLink]="['/admin/deactiveList']" id="collapseExampleS1">Deactive List</a>
+              <a href="javascript:void(0)" [routerLink]="['/admin/loginHistory']" id="collapseExampleS1">Login History</a>
             </div>
           </div>
           <!-- super admin end Administration -->
           <!-- super admin  Product Assign  -->
-          <div *ngIf="user?.UserGroup === 'SuperAdmin'" class="dropdown">
-            <a class="dropBtn" data-target="#collapseExample">Product Assign <i class="fa fa-caret-down"
+          <div *ngIf="user?.UserGroup === 'SuperAdmin'" class="dropdown" (click)="myFunctionS('S2')">
+            <a class="dropBtn" data-target="#collapseExampleS2">Product Assign <i class="fa fa-caret-down"
                 aria-hidden="true"></i></a>
-            <div class="drop-content" id="collapseExample">
-              <a href="javascript:void(0)" [routerLink]="['/admin/productManageAssign']" id="collapseExample">Product
+            <div class="drop-content" id="collapseExampleS2">
+              <a href="javascript:void(0)" [routerLink]="['/admin/productManageAssign']" id="collapseExampleS2">Product
                 Type</a>
-              <a href="javascript:void(0)" [routerLink]="['/admin/productMasterAssign']" id="collapseExample">Product
+              <a href="javascript:void(0)" [routerLink]="['/admin/productMasterAssign']" id="collapseExampleS2">Product
                 Master</a>
-              <a href="javascript:void(0)" [routerLink]="['/admin/addTypeAssign']" id="collapseExample">Add Manager</a>
+              <a href="javascript:void(0)" [routerLink]="['/admin/addTypeAssign']" id="collapseExampleS2">Add Manager</a>
             </div>
 
           </div>

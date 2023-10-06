@@ -29,6 +29,10 @@ $OguruPro-theme: mat.define-light-theme((
   )
 ));
 
+html body {
+    zoom:100%
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;

@@ -787,7 +787,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Additional Discount%</mat-label>
-                        <input matInput name="AddlDiscountPercentage" (change)="AddDiscalculate('AddlDiscountPercentage', 'discount')" type="number" min="0" [(ngModel)]="BillMaster.AddlDiscountPercentage" #AddlDiscountPercentagecontrol
+                        <input matInput name="AddlDiscountPercentage" (blur)="AddDiscalculate('AddlDiscountPercentage', 'discount')" type="number" min="0" [(ngModel)]="BillMaster.AddlDiscountPercentage" #AddlDiscountPercentagecontrol
                             [autocomplete]="false">
                         <mat-error>
                             Additional Discount is required
@@ -797,7 +797,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Additional Discount</mat-label>
-                        <input matInput name="AddlDiscount" type="number" min="0" (change)="AddDiscalculate('AddlDiscount', 'discount')" [(ngModel)]="BillMaster.AddlDiscount" #AddlDiscounttcontrol
+                        <input matInput name="AddlDiscount" type="number" min="0" (blur)="AddDiscalculate('AddlDiscount', 'discount')" [(ngModel)]="BillMaster.AddlDiscount" #AddlDiscounttcontrol
                             [autocomplete]="false">
                         <mat-error>
                             Additional Discount is required

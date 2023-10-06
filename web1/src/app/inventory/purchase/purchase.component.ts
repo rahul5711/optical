@@ -31,7 +31,7 @@ export class PurchaseComponent implements OnInit {
   addDis: any
   GstTypeDis = false
   searchValue: any = '';
-
+  checked = false;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -80,6 +80,8 @@ export class PurchaseComponent implements OnInit {
   chargeOptions: any;
   tempItem = { Item: null, Spec: null };
   itemList: any = [];
+  barcodeListt: any = [];
+
   chargeList: any = [];
 
   gst_detail: any = [];
@@ -851,4 +853,47 @@ export class PurchaseComponent implements OnInit {
     });
   }
 
+  selectBarcode(type:any) {
+    if (type === 'all') {
+      // Toggle the checked property
+      this.checked = !this.checked;
+  
+      // Reset the barcodeListt
+      this.barcodeListt = [];
+  
+      this.sp.show();
+  
+      this.itemList.forEach((ele: any, i: any) => {
+        if (this.checked) {
+          if (ele.Status !== 0) {
+            ele.Checked = 1;
+            ele.index = i;
+            this.barcodeListt.push(ele);
+          }
+        } else {
+          // If this.checked is false, uncheck all items and clear barcodeListt
+          ele.Checked = 0;
+        }
+      });
+  
+      this.sp.hide();
+    }
+  }
+  
+  singleSelectBarcode(i:any) {
+    const currentItem = this.itemList[i];
+  
+    if (currentItem.Checked === false || currentItem.Checked === 0) {
+      currentItem.index = i;
+      this.barcodeListt.push(currentItem);
+    } else if (currentItem.Checked === true || currentItem.Checked === 1) {
+      // Use filter to remove the item from barcodeListt based on the index
+   
+      this.barcodeListt = this.barcodeListt.filter((el: any) => el.index !== i);
+      this.selectBarcode('all')
+    }
+  
+    console.log(this.barcodeListt);
+  }
+  
 }
