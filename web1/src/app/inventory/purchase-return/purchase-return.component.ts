@@ -105,7 +105,8 @@ export class PurchaseReturnComponent implements OnInit {
     const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
       next: (res: any) => {
         if(res.success){
-          this.shopList  = res.data
+          this.shopList  = res.data.filter((s:any) => s.ID === Number(this.selectedShop[0]));
+          this.selectedPurchaseMaster.ShopID = this.shopList[0].ID
         }else{
           this.as.errorToast(res.message)
         }

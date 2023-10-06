@@ -25,6 +25,7 @@ export class FitterPoComponent implements OnInit {
   shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
   companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
+  env = environment;
 
   constructor(
     private route: ActivatedRoute,
@@ -602,13 +603,25 @@ export class FitterPoComponent implements OnInit {
 
   }
 
-  AssignSupplierPDF(){
+  AssignFitterPDF(){
     this.sp.show();
     this.filtersList = this.orderList.filter((d: any) => d.Sel === 1);
-      if(this.filtersList.length > 0){
-        let data1: any = { productList: this.filtersList }
-         console.log(data1);
-      }
+    if(this.filtersList.length > 0){
+      let body: any = { productList: this.filtersList }
+       const subs: Subscription = this.bill.AssignFitterPDF(body).subscribe({
+         next: (res: any) => {
+           if (res) {
+             const url = this.env.apiUrl + "/uploads/" + res;
+             window.open(url, "_blank");
+           } else {
+             this.as.errorToast(res.message)
+           }
+           this.sp.hide();
+         },
+         error: (err: any) => console.log(err.message),
+         complete: () => subs.unsubscribe(),
+       });
+    }
   }
 
   dateFormat(date:any){

@@ -316,6 +316,13 @@
               </mat-select>
             </mat-form-field>
           </div>
+          <div class="col-md-12 mb-0">
+            <mat-form-field class="example-full-width mb-0">
+              <mat-label>Remark</mat-label>
+              <input type="text"  style="font-size: 17px !important;" matInput name="PaymentReferenceNo"
+                [(ngModel)]="applyDebitPayment.PaymentReferenceNo" [autocomplete]="false">
+            </mat-form-field>
+          </div>
           <div class="col-md-12 col-6">
             <button type="submit" [disabled]="f3.invalid" mat-raised-button color="primary">Apply Payment</button>
           </div>

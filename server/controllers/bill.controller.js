@@ -3198,6 +3198,77 @@ module.exports = {
             next(err)
         }
     },
+
+    AssignFitterPDF: async (req, res, next) => {
+        try {
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const printdata = req.body
+        
+            // const MeasurementID = JSON.parse(req.body.productList.MeasurementID) ;
+            const productList = req.body.productList
+            productList.forEach(e =>{
+                e.InvoiceDate = moment(e.InvoiceDate).format("YYYY-MM-DD")
+                e.DeliveryDate = moment(e.DeliveryDate).format("YYYY-MM-DD")
+            })
+            printdata.productList = productList
+
+            const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
+            const [companysetting] = await mysql2.pool.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+
+            printdata.shopdetails = shopdetails[0]
+            printdata.companysetting = companysetting[0]
+
+            var fileName = "";
+
+            if (!printdata.companysetting.LogoURL) {
+                printdata.LogoURL = clientConfig.appURL + '../assest/no-image.png';
+            } else {
+                printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
+            }
+
+            var formatName = "AssignFitterPDF.ejs";
+            var file = formatName + "_" + CompanyID + ".pdf";
+            fileName = "uploads/" + file;
+
+            console.log(fileName);
+
+            ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    res.send(err);
+                } else {
+                    let options = {
+                        "height": "11.25in",
+                        "width": "8.5in",
+                        header: {
+                            height: "0mm"
+                        },
+                        footer: {
+                            height: "0mm",
+                            contents: {
+                                last: ``,
+                            },
+                        },
+                    };
+                    pdf.create(data, options).toFile(fileName, function (err, data) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            res.json(file);
+                        }
+                    });
+                }
+            });
+
+            return
+
+        } catch (err) {
+            next(err)
+        }
+
+    },
     getFitterPoList: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }

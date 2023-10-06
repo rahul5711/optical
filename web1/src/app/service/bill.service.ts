@@ -198,6 +198,11 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  AssignFitterPDF(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/AssignFitterPDF', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   updateProduct(Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/updateProduct', Body, httpOptions)
     .pipe(catchError(this.handleError));

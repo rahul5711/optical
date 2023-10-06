@@ -53,7 +53,7 @@ export class BillListComponent implements OnInit {
   DueAmountInv: any
 
   applyDebitPayment: any = {
-    ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Debit', PayableAmount: 0, PaidAmount: 0,
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Debit', PayableAmount: 0, PaidAmount: 0, PaymentReferenceNo:''
   };
 
   applyCreditPayment: any = {

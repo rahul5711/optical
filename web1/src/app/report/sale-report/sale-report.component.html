@@ -684,8 +684,8 @@
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
                                                             pending </td>
                                                         <td [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
-                                                            {{dateFormat(t.ProductDeliveryDate) !== '0000-00-00' ?
-                                                            t.ProductDeliveryDate: '-'}}</td>
+                                                            {{dateFormat(t.ProductDeliveryDate !== '0000-00-00' ?
+                                                            t.ProductDeliveryDate: '-')}}</td>
                                                         <td [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
                                                             {{t.GSTNo}}</td>
                                                         <td [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
