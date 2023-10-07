@@ -708,6 +708,7 @@ module.exports = {
             const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
             const [companysetting] = await mysql2.pool.query(`select * from companysetting where CompanyID = ${CompanyID}`)
             const [barcode] = await mysql2.pool.query(`select * from barcodemasternew where CompanyID = ${CompanyID} and PurchaseDetailID = ${printdata[0].ID}`)
+            
             printdata.shopdetails = shopdetails[0]
             printdata[0].BarcodeName = shopdetails[0].BarcodeName
             printdata[0].Barcode = barcode[0].Barcode
@@ -765,6 +766,108 @@ module.exports = {
             );
             return
         } catch (err) {
+            next(err)
+        }
+    },
+
+    AllPrintBarcode: async (req, res, next) => {
+        try {
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            let printdata = req.body
+            const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
+
+            // printdata.forEach(ele => {
+            //     if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
+            //         let ProductBrandName = ele.ProductName.split("/")[1];
+            //         let ProductModelName = ele.ProductName.split("/")[2];
+            //         let ProductFullName = ele.ProductName
+            //         let Barcode = ele.BaseBarCode
+            //         let BarcodeName = shopdetails[0].BarcodeName
+
+            //         ele.ProductBrandName = ProductBrandName;
+            //         ele.ProductModelName = ProductModelName;
+            //         ele.ProductFullName = ProductFullName;
+            //         ele.Barcode = Barcode;
+            //         ele.BarcodeName = BarcodeName;
+
+            //     } else {
+            //         let ProductBrandName = ele.ProductName.split("/")[0];
+            //         let ProductModelName = ele.ProductName.split("/")[1];
+            //         let ProductFullName = ele.ProductName
+            //         let Barcode = ele.BaseBarCode
+            //         let BarcodeName = shopdetails[0].BarcodeName
+    
+            //         ele.ProductFullName = ProductFullName;
+            //         ele.ProductBrandName = ProductBrandName;
+            //         ele.ProductModelName = ProductModelName;
+            //         ele.Barcode = Barcode;
+            //         ele.BarcodeName = BarcodeName;
+            //     }
+            // })
+
+            printdata.forEach(ele => {
+                let ProductBrandName, ProductModelName;
+                
+                if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
+                  [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(1, 3);
+                } else {
+                  [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(0, 2);
+                }
+              
+                ele.ProductFullName = ele.ProductName;
+                ele.ProductBrandName = ProductBrandName;
+                ele.ProductModelName = ProductModelName;
+                ele.Barcode = ele.BaseBarCode;
+                ele.BarcodeName = shopdetails[0].BarcodeName;
+              });
+
+         if (printdata.length > 0) {
+            printdata.CompanyID = CompanyID;
+            printdata.CompanyBarcode = 5
+            var file = "barcode" + CompanyID + ".pdf";
+            var formatName = "barcode.ejs";
+            var appURL = clientConfig.appURL;
+            
+            // var appURL = clientConfig.appURL;
+            var fileName = "";
+            fileName = "uploads/" + file;
+            let url = appURL + "/uploads/" + file;
+            let updateUrl = '';
+            TinyURL.shorten(url, function (res) {
+                updateUrl = res;
+            });
+
+            ejs.renderFile(
+                path.join(appRoot, "./views/", formatName), { data: printdata },
+                (err, data) => {
+                    if (err) {
+                        res.send(err);
+                    } else {
+                        let options;
+
+                        if (printdata.CompanyBarcode == 5) {
+                            options = {
+                                "height": "0.70in",
+                                "width": "4.41in",
+                                // "height": "0.90in",
+                                // "width": "6.00in",
+                            };
+                        }
+                        options.timeout = 540000,  // in milliseconds
+                            pdf.create(data, options).toFile(fileName, function (err, data) {
+                                if (err) {
+                                    console.log(err, 'err');
+                                    res.send(err);
+                                } else {
+                                    res.json(updateUrl);
+                                }
+                            });
+                    }
+                }
+            );
+            return
+        } }catch (err) {
             next(err)
         }
     },

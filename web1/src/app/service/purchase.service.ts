@@ -276,6 +276,11 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+  AllPrintBarcode(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/AllPrintBarcode',Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   purchaseHistoryBySupplier(SupplierID: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/purchaseHistoryBySupplier', {SupplierID: SupplierID}, httpOptions)
     .pipe(catchError(this.handleError));

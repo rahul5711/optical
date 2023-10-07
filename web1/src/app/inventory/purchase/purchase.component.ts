@@ -857,12 +857,9 @@ export class PurchaseComponent implements OnInit {
     if (type === 'all') {
       // Toggle the checked property
       this.checked = !this.checked;
-  
       // Reset the barcodeListt
       this.barcodeListt = [];
-  
       this.sp.show();
-  
       this.itemList.forEach((ele: any, i: any) => {
         if (this.checked) {
           if (ele.Status !== 0) {
@@ -875,7 +872,6 @@ export class PurchaseComponent implements OnInit {
           ele.Checked = 0;
         }
       });
-  
       this.sp.hide();
     }
   }
@@ -888,12 +884,37 @@ export class PurchaseComponent implements OnInit {
       this.barcodeListt.push(currentItem);
     } else if (currentItem.Checked === true || currentItem.Checked === 1) {
       // Use filter to remove the item from barcodeListt based on the index
-   
       this.barcodeListt = this.barcodeListt.filter((el: any) => el.index !== i);
-      this.selectBarcode('all')
     }
+  }
   
-    console.log(this.barcodeListt);
+  barcodePrintAll() {
+    this.sp.show();
+    let tempItem: any = [];
+    let Qty = 0;
+  
+    this.barcodeListt.forEach((ele: any) => {
+      if (ele.Status !== 0) {
+        Qty += ele.Quantity;
+        // Create a copy of 'ele' for each quantity and push it to 'tempItem'
+        for (let i = 0; i < ele.Quantity; i++) {
+          tempItem.push({ ...ele }); // Copy 'ele' using the spread operator
+        }
+      }
+    });
+    const subs: Subscription = this.purchaseService.AllPrintBarcode(tempItem).subscribe({
+      next: (res: any) => {
+        if (res != '') {
+          window.open(res, "_blank");
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+
   }
   
 }

@@ -15,6 +15,7 @@ router.post('/updateProduct', verifyAccessTokenAdmin, Controller.updateProduct)
 router.post('/deleteCharge', verifyAccessTokenAdmin, Controller.deleteCharge)
 router.post('/purchaseDetailPDF', verifyAccessTokenAdmin, Controller.purchaseDetailPDF)
 router.post('/PrintBarcode', verifyAccessTokenAdmin, Controller.PrintBarcode)
+router.post('/AllPrintBarcode', verifyAccessTokenAdmin, Controller.AllPrintBarcode)
 
 
 // Regex search
