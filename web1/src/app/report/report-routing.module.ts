@@ -8,6 +8,7 @@ import { TransferProductReportComponent } from './transfer-product-report/transf
 import { SaleReportComponent } from './sale-report/sale-report.component';
 import { ExpenseComponent } from './expense/expense.component';
 import { VendorCreditComponent } from './vendor-credit/vendor-credit.component';
+import { CashCollectionComponent } from './cash-collection/cash-collection.component';
 
 const routes: Routes = [
   { path: '',
@@ -20,6 +21,7 @@ const routes: Routes = [
     { path: 'eyetest', component: EyetestReportComponent },
     { path: 'expenes', component: ExpenseComponent },
     { path: 'supplierCredit', component: VendorCreditComponent },
+    { path: 'cashCollection', component: CashCollectionComponent },
   ]}
   ]
 

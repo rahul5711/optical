@@ -566,6 +566,8 @@
                                                         <th>Cust_GSTNo</th>
                                                         <th>Status</th>
                                                         <th>Shop Name</th>
+                                                        <th *ngIf="user.UserGroup === 'CompanyAdmin'">PurchasePrice</th>
+                                                        <th *ngIf="user.UserGroup === 'CompanyAdmin'">Profit</th>
                                                     </tr>
                                                     <tr class="totolRow"
                                                         *ngIf="this.DetailtotalQty != null && this.DetailtotalQty != '' ">
@@ -607,6 +609,8 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
+                                                        <td *ngIf="user.UserGroup === 'CompanyAdmin'"></td>
+                                                        <td *ngIf="user.UserGroup === 'CompanyAdmin'"></td>
                                                     </tr>
                                                 </thead>
                                                 <tbody class="text-center">
@@ -698,6 +702,11 @@
                                                             t.ShopName }} <span [style.color]="'blue'"
                                                                 *ngIf="t.AreaName !== 'null'">({{t.AreaName}})</span>
                                                         </td>
+                                                        <td *ngIf="user.UserGroup === 'CompanyAdmin'" [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{t.PurchasePrice * t.Quantity  | number : '1.2-2'}}</td>
+
+                                                        <td *ngIf="user.UserGroup === 'CompanyAdmin'" [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{ t.SubTotal - t.PurchasePrice  * t.Quantity   | number : '1.2-2'}}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>

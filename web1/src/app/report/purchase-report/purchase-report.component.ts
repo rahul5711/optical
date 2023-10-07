@@ -383,6 +383,8 @@ export class PurchaseReportComponent implements OnInit {
   getPurchaseDetails(){
     this.sp.show()
     let Parem = '';
+    this.TtlR = 0
+    this.TtlW = 0
     this.PurchaseDetailList = []
 
     if (this.PurchaseDetail.FromDate !== '' && this.PurchaseDetail.FromDate !== null){
@@ -471,6 +473,8 @@ export class PurchaseReportComponent implements OnInit {
     this.DetailtotalUnitPrice = ''
     this.DetailtotalGstAmount =''
     this.DetailtotalAmount = ''
+    this.TtlR = 0
+    this.TtlW = 0
   }
 
   openModal(content: any) {

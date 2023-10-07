@@ -281,6 +281,8 @@ export class InventoryReportComponent implements OnInit {
   getInventory(){
     this.sp.show()
     let Parem = '';
+    this.TtlR = 0
+    this.TtlW = 0
 
     if (this.inventory.FromDate !== '' && this.inventory.FromDate !== null){
       let FromDate =  moment(this.inventory.FromDate).format('YYYY-MM-DD')
@@ -365,7 +367,10 @@ export class InventoryReportComponent implements OnInit {
     this.DetailtotalDiscount = ''
     this.DetailtotalUnitPrice = ''
     this.DetailtotalGstAmount =''
+    this.DetailtotalSubTotal = ''
     this.DetailtotalAmount = ''
+    this.TtlR = 0
+    this.TtlW = 0
   }
 
   openModal(content: any) {

@@ -120,17 +120,17 @@ export class CalculationService {
       }
       if(item.GSTType !== "") {
         item.DiscountAmount = +item.UnitPrice * +item.Quantity  * +item.DiscountPercentage / 100; 
-        item.GSTAmount =  (+item.UnitPrice * +item.Quantity - item.DiscountAmount) * +item.GSTPercentage / 100;
         item.SubTotal = +item.Quantity * +item.UnitPrice - +item.DiscountAmount;
+        item.GSTAmount =  (+item.UnitPrice * +item.Quantity - item.DiscountAmount) * +item.GSTPercentage / 100;
         item.TotalAmount = +item.SubTotal + +item.GSTAmount;
       }
 
-      item.GSTAmount = this.convertToDecimal(+item.GSTAmount, 2);
-      item.GSTPercentage = this.convertToDecimal(+item.GSTPercentage, 0);
+      item.DiscountPercentage = this.convertToDecimal(+item.DiscountPercentage, 3);
       item.DiscountAmount = this.convertToDecimal(+item.DiscountAmount, 2);
-      item.DiscountPercentage = this.convertToDecimal(+item.DiscountPercentage, 2);
-      item.TotalAmount = this.convertToDecimal(+item.TotalAmount, 2);
       item.SubTotal = this.convertToDecimal(+item.SubTotal, 2);
+      item.GSTPercentage = this.convertToDecimal(+item.GSTPercentage, 0);
+      item.GSTAmount = this.convertToDecimal(+item.GSTAmount, 2);
+      item.TotalAmount = this.convertToDecimal(+item.TotalAmount, 2);
     }
   }
   // purchase details calculation end
