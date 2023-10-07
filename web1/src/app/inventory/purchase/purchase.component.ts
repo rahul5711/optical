@@ -889,6 +889,7 @@ export class PurchaseComponent implements OnInit {
   }
   
   barcodePrintAll() {
+    if (this.barcodeListt.length != 0) {
     this.sp.show();
     let tempItem: any = [];
     let Qty = 0;
@@ -914,7 +915,15 @@ export class PurchaseComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-
+    } else {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: `' Check if there are checkboxes on the page and make sure you've selected the appropriate ones.'`,
+        showConfirmButton: true,
+        backdrop: false,
+      })
+    }
   }
   
 }
