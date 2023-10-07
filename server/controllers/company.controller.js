@@ -55,8 +55,8 @@ module.exports = {
                 CompanyID: `${saveCompany.insertId}`,
                 CompanyLanguage: "English",
                 CompanyCurrency: "INR",
-                CurrencyFormat: "4.2-2",
-                DateFormat: "llll",
+                CurrencyFormat: "1.2-2",
+                DateFormat: "DD-MM-YYYY h:mm a",
                 CompanyTagline: "",
                 BillHeader: "",
                 BillFooter: "",
@@ -65,8 +65,8 @@ module.exports = {
                 MessageReport: 0,
                 LogoURL: "null",
                 WatermarkLogoURL: "null",
-                LoginTimeStart: "09:00",
-                LoginTimeEnd: "22:30",
+                LoginTimeStart: "10:00",
+                LoginTimeEnd: "22:00",
                 Status: 1,
                 CreatedBy: 0,
                 CreatedOn: now(),
@@ -243,6 +243,18 @@ module.exports = {
 
             console.log(connected("Invoice Number Setting Initiated SuccessFully !!!"));
 
+            // save default role and permission for company
+
+            const roleData = {
+                Name: "EMPLOYEE",
+                CompanyID: `${saveCompany.insertId}`,
+                Status: 1,
+                Permission: `[{"ModuleName":"CompanyInfo","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Employee","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"EmployeeList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Shop","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ShopList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"RolePermission","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"CompanySetting","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"SmsSetting","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"LoginHistory","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"RecycleBin","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ProductType","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ProductMaster","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"AddManagement","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ChargeManagement","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ServiceManagement","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Supplier","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"SupplierList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Purchase","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseReturn","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseReturnList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ProductTransfer","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"OrderPrice","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"OrderPriceList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"SearchOrderPriceList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"StockAdjustment","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"BrandNonBrandAssign","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"CustomerBill","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"BillingSearch","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"Customer","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"CustomerSearch","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"Doctor","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"DoctorList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Loyalty","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"LoyaltyInvoice","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"SupplierOrder","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseConvert","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"SupplierOrderList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Fitter","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"FitterList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"FitterOrder","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"FitterInvoice","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"FitterInvoiceList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Payment","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PaymentList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Payroll","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"payrollList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Expense","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"ExpenseList","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"PettyCashReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"SaleReport","MView":true,"Edit":false,"Add":true,"View":true,"Delete":false},{"ModuleName":"SaleProductReport","MView":true,"Edit":false,"Add":true,"View":true,"Delete":false},{"ModuleName":"SaleServiceReport","MView":true,"Edit":false,"Add":true,"View":true,"Delete":false},{"ModuleName":"PurchaseReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseProductReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseChargeReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseProductExpiryReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"InventoryReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"ProductSummaryReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ProductTransferReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ProductReturnReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ProductReturnProductTypeReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"EyeTestReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"InventoryExcelImport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"CustomerExcelImport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false}]`
+            }
+
+            const [saveRoleData] = await mysql2.pool.query(`insert into role(Name,CompanyID,Permission,Status,CreatedBy,CreatedOn)values('${roleData.Name}', ${roleData.CompanyID}, '${roleData.Permission}', 1, '${LoggedOnUser}', now())`)
+
+            console.log(connected("Default Employee Role  Initiated SuccessFully !!!"));
 
             const [Company] = await mysql2.pool.query(`select * from company where ID = ${saveCompany.insertId}`)
             const [User] = await mysql2.pool.query(`select * from user where ID = ${saveUser.insertId}`)
