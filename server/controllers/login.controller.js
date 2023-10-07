@@ -36,7 +36,7 @@ module.exports = {
             if (!isValidPassword) {
                 return res.send({ success: false, message: "Password doesnot matched" })
             }
-
+            User[0].is_direct = false
             if (User.length  && User[0].UserGroup === 'SuperAdmin') {
 
                 const accessToken = await signAccessTokenAdmin(`'${User[0].ID}'`)
@@ -147,6 +147,8 @@ module.exports = {
             const refreshToken = await signRefreshTokenAdmin(`'${User[0].ID}'`)
 
             const [shop] = await mysql2.pool.query(`select * from shop where Status = 1 and CompanyID = '${User[0].CompanyID}'`)
+
+            User[0].is_direct = true
             return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], shop: shop, success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
         } catch(err) {
             next(err)
