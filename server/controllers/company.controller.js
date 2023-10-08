@@ -21,8 +21,8 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
 
             const Body = req.body;
-            console.log(Body);
             const LoggedOnUser = 0;
+            const { user } = req
 
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
@@ -114,104 +114,111 @@ module.exports = {
             console.log(connected("CompanySetting Save SuccessFUlly !!!"));
 
 
-            const [product] = await mysql2.pool.query(`SELECT ${saveCompany.insertId} as CompanyID ,product.Name, product.HSNCode, product.GSTPercentage,product.GSTType, product.Status, 0 AS CreatedBy, NOW() AS CreatedOn FROM product WHERE Status = 1 AND CompanyID = 0`)
-            let result = []
-            if (product) {
-                result = JSON.parse(JSON.stringify(product))
-            }
+            // support start
 
-            if (result) {
+            if (Body.dataAssign === true) {
 
-                for (const item of result) {
-                    const [saveProduct] = await mysql2.pool.query(`insert into product(CompanyID, Name, HSNCode,GSTPercentage,GSTType,Status,CreatedBy,CreatedOn) values(${saveCompany.insertId}, '${item.Name}', '${item.HSNCode}',${item.GSTPercentage}, '${item.GSTType}', 1, 0, now())`)
+                const [product] = await mysql2.pool.query(`SELECT ${saveCompany.insertId} as CompanyID ,product.Name, product.HSNCode, product.GSTPercentage,product.GSTType, product.Status, 0 AS CreatedBy, NOW() AS CreatedOn FROM product WHERE Status = 1 AND CompanyID = 0`)
+                let result = []
+                if (product) {
+                    result = JSON.parse(JSON.stringify(product))
                 }
 
-                console.log(connected("Product Assign SuccessFully !!!!"));
+                if (result) {
 
-            }
-
-            const [productSpec] = await mysql2.pool.query(`select * from productspec where Status = 1 and CompanyID = 0`)
-            let result2 = []
-            if (productSpec) {
-                result2 = JSON.parse(JSON.stringify(productSpec))
-            }
-
-            if (result2) {
-
-                for (const item of result2) {
-                    if (item.Type === 'DropDown') {
-                        item.SptTableName = item.ProductName + Math.floor(Math.random() * 999999) + 1;
-                    } else {
-                        item.SptTableName = ''
+                    for (const item of result) {
+                        const [saveProduct] = await mysql2.pool.query(`insert into product(CompanyID, Name, HSNCode,GSTPercentage,GSTType,Status,CreatedBy,CreatedOn) values(${saveCompany.insertId}, '${item.Name}', '${item.HSNCode}',${item.GSTPercentage}, '${item.GSTType}', 1, 0, now())`)
                     }
-                    if (item.Type === 'DropDown') {
-                        const [saveSpec] = await mysql2.pool.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', ${saveCompany.insertId}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now())`)
-                    } else if (item.Type !== 'DropDown') {
-                        const [saveSpec] = await mysql2.pool.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', ${saveCompany.insertId}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now())`)
-                    }
+
+                    console.log(connected("Product Assign SuccessFully !!!!"));
+
                 }
 
-                console.log(connected("ProductSpec Assign SuccessFully !!!!"));
+                const [productSpec] = await mysql2.pool.query(`select * from productspec where Status = 1 and CompanyID = 0`)
+                let result2 = []
+                if (productSpec) {
+                    result2 = JSON.parse(JSON.stringify(productSpec))
+                }
 
-            }
+                if (result2) {
 
-            const [support_data] = await mysql2.pool.query(`select * from productspec where Status = 1 and CompanyID = 0 and Type = 'DropDown'`)
-            let support_data_result = []
-            if (support_data) {
-                support_data_result = JSON.parse(JSON.stringify(support_data))
-            }
-
-            let complete_data = []
-
-            if (support_data_result) {
-                complete_data = []
-                for (const item of support_data_result) {
-
-                    let [result] = await mysql2.pool.query(`select * from specspttable where Status = 1 and TableName = '${item.SptTableName}'`)
-                    if (result) {
-                        result = JSON.parse(JSON.stringify(result))
-                        for (const item2 of result) {
-                            item2.ProductName = item.ProductName;
-                            item2.Name = item.Name;
-                            complete_data.push(item2)
+                    for (const item of result2) {
+                        if (item.Type === 'DropDown') {
+                            item.SptTableName = item.ProductName + Math.floor(Math.random() * 999999) + 1;
+                        } else {
+                            item.SptTableName = ''
                         }
+                        if (item.Type === 'DropDown') {
+                            const [saveSpec] = await mysql2.pool.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', ${saveCompany.insertId}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now())`)
+                        } else if (item.Type !== 'DropDown') {
+                            const [saveSpec] = await mysql2.pool.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', ${saveCompany.insertId}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now())`)
+                        }
+                    }
 
+                    console.log(connected("ProductSpec Assign SuccessFully !!!!"));
+
+                }
+
+                const [support_data] = await mysql2.pool.query(`select * from productspec where Status = 1 and CompanyID = 0 and Type = 'DropDown'`)
+                let support_data_result = []
+                if (support_data) {
+                    support_data_result = JSON.parse(JSON.stringify(support_data))
+                }
+
+                let complete_data = []
+
+                if (support_data_result) {
+                    complete_data = []
+                    for (const item of support_data_result) {
+
+                        let [result] = await mysql2.pool.query(`select * from specspttable where Status = 1 and TableName = '${item.SptTableName}'`)
+                        if (result) {
+                            result = JSON.parse(JSON.stringify(result))
+                            for (const item2 of result) {
+                                item2.ProductName = item.ProductName;
+                                item2.Name = item.Name;
+                                complete_data.push(item2)
+                            }
+
+                        }
                     }
                 }
-            }
 
-            if (complete_data) {
-                for (const item of complete_data) {
-                    let [TableName] = await mysql2.pool.query(`select * from productspec where Status = 1 and ProductName = '${item.ProductName}' and Type = 'DropDown' and Name = '${item.Name}' and CompanyID = ${saveCompany.insertId}`)
-                    if (TableName) {
-                        TableName = JSON.parse(JSON.stringify(TableName))
+                if (complete_data) {
+                    for (const item of complete_data) {
+                        let [TableName] = await mysql2.pool.query(`select * from productspec where Status = 1 and ProductName = '${item.ProductName}' and Type = 'DropDown' and Name = '${item.Name}' and CompanyID = ${saveCompany.insertId}`)
+                        if (TableName) {
+                            TableName = JSON.parse(JSON.stringify(TableName))
+                        }
+                        item.SptTableName = TableName[0].SptTableName
+
+                        let [saveData] = await mysql2.pool.query(`insert into specspttable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.SptTableName}','${item.RefID}','${item.TableValue}',1,now(),0)`)
                     }
-                    item.SptTableName = TableName[0].SptTableName
 
-                    let [saveData] = await mysql2.pool.query(`insert into specspttable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.SptTableName}','${item.RefID}','${item.TableValue}',1,now(),0)`)
+                    console.log(connected("Spec Data Assign SuccessFully !!!!"));
+
                 }
 
-                console.log(connected("Spec Data Assign SuccessFully !!!!"));
 
-            }
+                let suport_master_table = []
+                let [suport_master_table_data] = await mysql2.pool.query(`select * from supportmaster where Status =1 and CompanyID = 0`)
 
-
-            let suport_master_table = []
-            let [suport_master_table_data] = await mysql2.pool.query(`select * from supportmaster where Status =1 and CompanyID = 0`)
-
-            if (suport_master_table_data) {
-                suport_master_table = JSON.parse(JSON.stringify(suport_master_table_data))
-            }
-
-            if (suport_master_table) {
-                for (const item of suport_master_table) {
-                    let [result] = await mysql2.pool.query(`insert into supportmaster (Name,  TableName,  CompanyID,  Status, UpdatedBy , UpdatedOn ) values ('${item.Name}', '${item.TableName}', '${saveCompany.insertId}', 1, '0', now())`)
+                if (suport_master_table_data) {
+                    suport_master_table = JSON.parse(JSON.stringify(suport_master_table_data))
                 }
 
-                console.log(connected("suport_master_table_data Data Assign SuccessFully !!!!"));
+                if (suport_master_table) {
+                    for (const item of suport_master_table) {
+                        let [result] = await mysql2.pool.query(`insert into supportmaster (Name,  TableName,  CompanyID,  Status, UpdatedBy , UpdatedOn ) values ('${item.Name}', '${item.TableName}', '${saveCompany.insertId}', 1, '0', now())`)
+                    }
+
+                    console.log(connected("suport_master_table_data Data Assign SuccessFully !!!!"));
 
 
+                }
             }
+
+            // support end
 
             // save supplier for preorder
 
@@ -234,9 +241,9 @@ module.exports = {
 
             const invoice = {
                 ShopID: 0,
-                Retail:1,
-                WholeSale:1,
-                Service:1
+                Retail: 1,
+                WholeSale: 1,
+                Service: 1
             }
 
             const [saveinvoice] = await mysql2.pool.query(`insert into invoice(CompanyID, ShopID, Retail, WholeSale, Service)values(${saveCompany.insertId},0,1,1,1)`);
@@ -699,6 +706,188 @@ module.exports = {
             return res.send(response);
         } catch {
             next(err)
+        }
+    },
+
+    processProduct: async (req, res, next) => {
+        try {
+            const response = { data: null, user: null, success: true, message: "" }
+
+            const { productData } = req.body
+
+            if (!productData || !productData.length) return res.send({ message: "Invalid productData Data" })
+
+            if (productData.length) {
+                for (const item of productData) {
+                    if (!item.CompanyID) {
+                        return res.send({ message: "Invalid productData CompanyID Data" })
+                    }
+                    if (!item.Name) {
+                        return res.send({ message: "Invalid productData Name Data" })
+                    }
+                    if (!item.HSNCode) {
+                        return res.send({ message: "Invalid productData HSNCode Data" })
+                    }
+                    if (!item.GSTPercentage) {
+                        return res.send({ message: "Invalid productData GSTPercentage Data" })
+                    }
+                    if (!item.GSTType) {
+                        return res.send({ message: "Invalid productData GSTType Data" })
+                    }
+                }
+            }
+
+            for (const item of productData) {
+
+                const [saveProduct] = await mysql2.pool.query(`insert into product(CompanyID, Name, HSNCode,GSTPercentage,GSTType,Status,CreatedBy,CreatedOn) values(${item.CompanyID}, '${item.Name}', '${item.HSNCode}',${item.GSTPercentage}, '${item.GSTType}', ${item.Status}, 0, now())`)
+            }
+
+            response.message = "Product Assign SuccessFully"
+            response.data = []
+            return res.send(response);
+
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    processProductSpec: async (req, res, next) => {
+        try {
+            const response = { data: null, user: null, success: true, message: "" }
+
+            const { productDataSpec } = req.body
+
+            if (!productDataSpec || !productDataSpec.length) return res.send({ message: "Invalid productDataSpec Data" })
+
+            if (productDataSpec.length) {
+                for (const item of productDataSpec) {
+                    if (!item.ProductName) {
+                        return res.send({ message: "Invalid productData ProductName Data" })
+                    }
+                    if (!item.CompanyID) {
+                        return res.send({ message: "Invalid productData CompanyID Data" })
+                    }
+                    if (!item.HSNCode) {
+                        return res.send({ message: "Invalid productData HSNCode Data" })
+                    }
+                    if (!item.Name) {
+                        return res.send({ message: "Invalid productData Name Data" })
+                    }
+                    if (!item.Seq) {
+                        return res.send({ message: "Invalid productData Seq Data" })
+                    }
+                    if (!item.Type) {
+                        return res.send({ message: "Invalid productData Type Data" })
+                    }
+                    if (!item.Ref) {
+                        return res.send({ message: "Invalid productData Ref Data" })
+                    }
+                    if (!item.SptTableName) {
+                        return res.send({ message: "Invalid productData SptTableName Data" })
+                    }
+                }
+            }
+
+            for (const item of productDataSpec) {
+
+                if (item.Type === 'DropDown') {
+                    item.SptTableName = item.SptTableName + item.CompanyID;
+                } else {
+                    item.SptTableName = ''
+                }
+                if (item.Type === 'DropDown') {
+                    const [saveSpec] = await mysql2.pool.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', ${item.CompanyID}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',${item.Status},0,now())`)
+                } else if (item.Type !== 'DropDown') {
+                    const [saveSpec] = await mysql2.pool.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', ${item.Company}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',${item.Status},0,now())`)
+                }
+            }
+
+            response.message = "Product Spec Assign SuccessFully"
+            response.data = []
+            return res.send(response);
+
+        } catch (error) {
+            next(error)
+        }
+    },
+    processSpecSpt: async (req, res, next) => {
+        try {
+            const response = { data: null, user: null, success: true, message: "" }
+
+            const { productDataSpecSpt } = req.body
+
+            if (!productDataSpecSpt || !productDataSpecSpt.length) return res.send({ message: "Invalid productDataSpecSpt Data" })
+
+            if (productDataSpecSpt.length) {
+                for (const item of productDataSpecSpt) {
+                    if (!item.TableName) {
+                        return res.send({ message: "Invalid productData TableName Data" })
+                    }
+                    if (!item.RefID) {
+                        return res.send({ message: "Invalid productData RefID Data" })
+                    }
+                    if (!item.TableValue) {
+                        return res.send({ message: "Invalid productData TableValue Data" })
+                    }
+                    if (!item.CompanyID) {
+                        return res.send({ message: "Invalid productData CompanyID Data" })
+                    }
+
+                }
+            }
+
+            for (const item of productDataSpecSpt) {
+                item.TableName = item.TableName + item.CompanyID
+
+                let [saveData] = await mysql2.pool.query(`insert into specspttable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.TableName}','${item.RefID}','${item.TableValue}',${item.Status},now(),0)`)
+            }
+
+            response.message = "Product Spec Spt Assign SuccessFully"
+            response.data = []
+            return res.send(response);
+
+        } catch (error) {
+            next(error)
+        }
+    },
+    processSupportData: async (req, res, next) => {
+        try {
+            const response = { data: null, user: null, success: true, message: "" }
+
+            const { supportData } = req.body
+
+            if (!supportData || !supportData.length) return res.send({ message: "Invalid supportData Data" })
+
+            if (supportData.length) {
+                for (const item of supportData) {
+                    if (!item.TableName) {
+                        return res.send({ message: "Invalid productData TableName Data" })
+                    }
+                    if (!item.Name) {
+                        return res.send({ message: "Invalid productData Name Data" })
+                    }
+                    if (!item.Status) {
+                        return res.send({ message: "Invalid productData Status Data" })
+                    }
+                    if (!item.CompanyID) {
+                        return res.send({ message: "Invalid productData CompanyID Data" })
+                    }
+
+                }
+            }
+
+            for (const item of supportData) {
+                item.TableName = item.TableName + item.CompanyID
+
+                let [result] = await mysql2.pool.query(`insert into supportmaster (Name,  TableName,  CompanyID,  Status, UpdatedBy , UpdatedOn ) values ('${item.Name}', '${item.TableName}', '${item.CompanyID}', ${item.Status}, '0', now())`)
+            }
+
+            response.message = "Support Data Assign SuccessFully"
+            response.data = []
+            return res.send(response);
+
+        } catch (error) {
+            next(error)
         }
     },
 
