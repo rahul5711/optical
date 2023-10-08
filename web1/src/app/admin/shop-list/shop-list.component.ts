@@ -171,7 +171,7 @@ export class ShopListComponent implements OnInit {
     this.companyImage = '';
     this.wlcmArray1 = JSON.parse(this.data.WelcomeNote) || []
     this.suBtn = false;
-    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
   }
 
   openModalEdit(content: any, datas: any) {

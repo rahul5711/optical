@@ -105,7 +105,7 @@ export class CashCollectionComponent implements OnInit {
 
     if (this.data.FromDate !== '' && this.data.FromDate !== null){
       let FromDate =  moment(this.data.FromDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and DATE_FORMAT(paymentdetail.CreatedOn, "%Y-%m-%d") between ' +  `'${FromDate}'`;}
+      Parem = Parem + ' and DATE_FORMAT(paymentmaster.PaymentDate, "%Y-%m-%d") between ' +  `'${FromDate}'`;}
 
     if (this.data.ToDate !== '' && this.data.ToDate !== null){
       let ToDate =  moment(this.data.ToDate).format('YYYY-MM-DD')
