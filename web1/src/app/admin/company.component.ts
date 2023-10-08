@@ -113,8 +113,6 @@ data1: any = {
   onsubmit() {
     this.sp.show();
     this.data.User = this.data1
-    console.log(this.data);
-    return
     const subs: Subscription =  this.cs.createCompany(this.data).subscribe({
       next: (res: any) => {
         // this.dataList = res.result;
