@@ -3,7 +3,7 @@ const router = express.Router()
 const Controller = require('../controllers/company.controller')
 const { verifyAccessTokenAdmin } = require('../helpers/jwt_helper');
 
-router.post('/create', Controller.create)
+router.post('/create', verifyAccessTokenAdmin, Controller.create)
 router.post('/getCompanyById', Controller.getCompanyById)
 router.post('/user', Controller.getUser)
 router.post('/updatePassword', Controller.updatePassword)
@@ -29,6 +29,19 @@ router.post('/searchByFeildAdmin', verifyAccessTokenAdmin, Controller.searchByFe
 // bill formate
 router.post('/saveBillFormate', verifyAccessTokenAdmin, Controller.saveBillFormate)
 router.post('/getBillFormateById', verifyAccessTokenAdmin, Controller.getBillFormateById)
+
+
+
+// process product & product spec & specspttable
+
+router.post('/processProduct', verifyAccessTokenAdmin, Controller.processProduct)
+
+router.post('/processProductSpec', verifyAccessTokenAdmin, Controller.processProductSpec)
+
+router.post('/processSpecSpt', verifyAccessTokenAdmin, Controller.processSpecSpt)
+
+router.post('/processSupportData', verifyAccessTokenAdmin, Controller.processSupportData)
+
 
 
 
