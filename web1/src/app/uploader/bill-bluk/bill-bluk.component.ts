@@ -197,6 +197,7 @@ export class BillBlukComponent implements OnInit {
           path: data.path,
           destination: data.destination,
         }
+        this.sp.show();
         const subs: Subscription = this.uploader.processCustomerBillFile(dtm).subscribe({
           next: (res: any) => {
             Swal.fire({
@@ -217,6 +218,7 @@ export class BillBlukComponent implements OnInit {
                 showConfirmButton: false,
               })
             }
+            this.sp.hide();
           },
           error: (err: any) => {
             console.log(err.msg);
