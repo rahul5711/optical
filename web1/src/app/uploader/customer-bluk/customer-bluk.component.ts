@@ -296,6 +296,12 @@ export class CustomerBlukComponent implements OnInit {
              this.updateFileRecord(ID)
             } else {
               this.as.errorToast(res.message )
+              Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: res.message,
+                showConfirmButton: false,
+              })
             }
             this.sp.hide();
           },
@@ -501,6 +507,12 @@ export class CustomerBlukComponent implements OnInit {
              this.updateFileRecordSpec(ID)
             } else {
               this.as.errorToast(res.message )
+              Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: res.message,
+                showConfirmButton: false,
+              })
             }
             this.sp.hide();
           },
@@ -706,6 +718,12 @@ export class CustomerBlukComponent implements OnInit {
              this.updateFileRecordCon(ID)
             } else {
               this.as.errorToast(res.message )
+              Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: res.message,
+                showConfirmButton: false,
+              })
             }
             this.sp.hide();
           },

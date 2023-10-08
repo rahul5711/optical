@@ -210,6 +210,12 @@ export class BillBlukComponent implements OnInit {
               this.updateFileRecord(ID)
             } else {
               this.as.errorToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: res.message,
+                showConfirmButton: false,
+              })
             }
           },
           error: (err: any) => {
@@ -441,6 +447,12 @@ export class BillBlukComponent implements OnInit {
               this.updateFileRecordDetail(ID)
             } else {
               this.as.errorToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: res.message,
+                showConfirmButton: false,
+              })
             }
             this.sp.hide();
           },
