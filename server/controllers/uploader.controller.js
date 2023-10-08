@@ -896,7 +896,7 @@ module.exports = {
                     const [fetchBillMaster] = await mysql2.pool.query(`select * from oldbillmaster where CompanyID = ${CompanyID} and BillNo = '${datum.BillNo}'`)
 
                     if (!fetchBillMaster.length) {
-                        return res.send({ message: "Invalid BillNo, Bill Not Found From Provided Bill No" })
+                        return res.send({ message: `Invalid BillNo, Bill Not Found From Provided Bill No ${datum.BillNo}` })
                     }
 
                     datum.BillMasterID = fetchBillMaster[0].ID
