@@ -201,6 +201,12 @@
                                         </div>
                                         <div class="col-xl-2 col-lg-0 col-md-0 col-sm-0 mb-0">
                                         </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-4 mb-0" *ngIf="this.id == 0">
+                                            <mat-slide-toggle type="button" name="dataAssign" color="primary"
+                                                [(ngModel)]="data.dataAssign" class="example-margin" #dataAssigncontrol >
+                                                Data Assign
+                                            </mat-slide-toggle>
+                                        </div>
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-4 mb-0">
                                             <mat-slide-toggle type="button" name="EmailMsg" color="primary"
                                                 [(ngModel)]="data.EmailMsg" class="example-margin" #EmailMsgcontrol [disabled]="user?.UserGroup !== 'SuperAdmin'">

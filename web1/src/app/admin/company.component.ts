@@ -57,7 +57,7 @@ export class CompanyComponent implements OnInit {
 
 
 data : any = {
-    ID: null, CompanyName: null, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: null, Country: null, State: null, City: null, Email: null, Website: '', GSTNo: '', CINNo: '', LogoURL: null, Remark: '',SRemark:'',CAmount:'', Plan: null, Version: null, NoOfShops: null, EffectiveDate: new Date(), CacellationDate:  null,  WhatsappMsg: false, EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, dataFormat: undefined, User: []
+    ID: null, CompanyName: null, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: null, Country: null, State: null, City: null, Email: null, Website: '', GSTNo: '', CINNo: '', LogoURL: null, Remark: '',SRemark:'',CAmount:'', Plan: null, Version: null, NoOfShops: null, EffectiveDate: new Date(), CacellationDate:  null,  WhatsappMsg: false, EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, dataFormat: undefined, User: [],dataAssign: false, 
 };
 
 data1: any = { 
@@ -113,6 +113,8 @@ data1: any = {
   onsubmit() {
     this.sp.show();
     this.data.User = this.data1
+    console.log(this.data);
+    return
     const subs: Subscription =  this.cs.createCompany(this.data).subscribe({
       next: (res: any) => {
         // this.dataList = res.result;
