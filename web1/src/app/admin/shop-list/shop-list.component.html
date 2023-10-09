@@ -35,14 +35,15 @@
                                             id="form1" class="form-control" />
                                     </div>
                                 </div>
-                                <div class="col-md-1 col-6 order-3 order-md-1 ms-3 ms-md-0" style="width: 70px;padding: 0;">
+                                <div class="col-md-1 col-6 order-3 order-md-1 ms-3 ms-md-0"
+                                    style="width: 70px;padding: 0;">
                                     <button class="bg-none" (click)="openModal(content)" *ngIf="addShopList === true">
                                         <mat-icon class="col-white plus_icon me-1" data-mdb-toggle="modal"
-                                        data-mdb-target="#exampleModal" > add</mat-icon>
+                                            data-mdb-target="#exampleModal"> add</mat-icon>
                                     </button>
                                     <button class="bg-none" (click)="gridview = !gridview">
-                                        <mat-icon class="col-white Grid_icon"
-                                        title="Grid View" style="font-size: 22px;padding: 4px;">grid_on</mat-icon>
+                                        <mat-icon class="col-white Grid_icon" title="Grid View"
+                                            style="font-size: 22px;padding: 4px;">grid_on</mat-icon>
                                     </button>
                                 </div>
                             </div>
@@ -61,11 +62,13 @@
                                         <p class="text-center m-0">{{data.Email}}</p>
                                         <p class="text-center m-0 cardAddress">{{data.Address }}</p>
                                         <div class="text-center mb-3">
-                                            <button *ngIf="editShopList === true" class="bg-none" (click)="openModalEdit(content,data)" >
-                                                <mat-icon class="edit_icon ms-1" >edit</mat-icon>
+                                            <button *ngIf="editShopList === true" class="bg-none"
+                                                (click)="openModalEdit(content,data)">
+                                                <mat-icon class="edit_icon ms-1">edit</mat-icon>
                                             </button>
-                                            <button *ngIf="deleteShopList === true" class="bg-none" (click)="deleteItem(i)">
-                                              <mat-icon class="delete_icon ms-1" >delete_forever</mat-icon>
+                                            <button *ngIf="deleteShopList === true" class="bg-none"
+                                                (click)="deleteItem(i)">
+                                                <mat-icon class="delete_icon ms-1">delete_forever</mat-icon>
                                             </button>
                                         </div>
                                     </div>
@@ -100,31 +103,45 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr   class="text-center" *ngFor="let data of dataList let i = index;"
+                                                <tr class="text-center" *ngFor="let data of dataList let i = index;"
                                                     style="white-space: nowrap;">
                                                     <td style="width: 7%;">
-                                                        <button *ngIf="editShopList === true" class="bg-none" (click)="openModalEdit(content,data)">
+                                                        <button *ngIf="editShopList === true" class="bg-none"
+                                                            (click)="openModalEdit(content,data)">
                                                             <mat-icon class="edit_icon ms-1" data-mdb-toggle="modal"
-                                                            data-mdb-target="#exampleModal">edit</mat-icon>
+                                                                data-mdb-target="#exampleModal">edit</mat-icon>
                                                         </button>
-                                                        <button *ngIf="deleteShopList === true" class="bg-none" (click)="deleteItem(i)">
-                                                            <mat-icon class="delete_icon ms-1" > delete_forever</mat-icon>
+                                                        <button *ngIf="deleteShopList === true" class="bg-none"
+                                                            (click)="deleteItem(i)">
+                                                            <mat-icon class="delete_icon ms-1">
+                                                                delete_forever</mat-icon>
                                                         </button>
                                                     </td>
-                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{dataList.length - i }}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{dataList.length - i
+                                                        }}</td>
                                                     <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.Sno}}</td>
                                                     <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.Name}}</td>
                                                     <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.AreaName}}</td>
-                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.MobileNo1 }}</td>
-                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.MobileNo2 !== 'null')? data.MobileNo2:''}}</td>
-                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.PhoneNo !== 'null')? data.PhoneNo:''}}</td>
-                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.Email !== 'null')? data.Email: ''}} </td>
-                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.Website !== 'null')? data.Website:''}}</td>
-                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.GSTNo !== 'null')? data.GSTNo: ''}}</td>
-                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.CINNo !== 'null')? data.CINNo: ''}}</td>
-                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.ShopTiming}}</td>
-                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.CreatedPerson}}</td>
-                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.UpdatedPerson}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.MobileNo1 }}
+                                                    </td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.MobileNo2 !==
+                                                        'null')? data.MobileNo2:''}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.PhoneNo !==
+                                                        'null')? data.PhoneNo:''}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.Email !==
+                                                        'null')? data.Email: ''}} </td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.Website !==
+                                                        'null')? data.Website:''}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.GSTNo !==
+                                                        'null')? data.GSTNo: ''}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{(data.CINNo !==
+                                                        'null')? data.CINNo: ''}}</td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.ShopTiming}}
+                                                    </td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.CreatedPerson}}
+                                                    </td>
+                                                    <td [ngClass]="{'bcolor': data.Status == 0 }">{{data.UpdatedPerson}}
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -157,7 +174,7 @@
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Shop Name</mat-label>
                                 <input matInput name="Name" [(ngModel)]="data.Name" required #Namecontrol minlength="2">
-                                <mat-error >
+                                <mat-error>
                                     Shop Name is required
                                 </mat-error>
                             </mat-form-field>
@@ -172,9 +189,9 @@
                             </mat-form-field>
                         </div>
                         <div class="col-md-3 mb-0 pt-md-3  ">
-                            <mat-slide-toggle type="ratio" name="Checked" class="example-margin " [(ngModel)]="toggleChecked"
-                                color="primary" (change)="copyData($event.checked)" [disabled]="false"
-                                #CompanyIDcontrol>
+                            <mat-slide-toggle type="ratio" name="Checked" class="example-margin "
+                                [(ngModel)]="toggleChecked" color="primary" (change)="copyData($event.checked)"
+                                [disabled]="false" #CompanyIDcontrol>
                                 Copy Data From Company
                             </mat-slide-toggle>
                         </div>
@@ -217,8 +234,9 @@
                         <div class="col-md-3 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Email</mat-label>
-                                <input matInput name="email" type="email" ngModel [email]="true" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
-                                    [(ngModel)]="data.Email" #Emailcontrol>
+                                <input matInput name="email" type="email" ngModel [email]="true"
+                                    pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" [(ngModel)]="data.Email"
+                                    #Emailcontrol>
                                 <mat-error>
                                     Invalid EmailId.
                                 </mat-error>
@@ -265,7 +283,7 @@
                                 <mat-label>Barcode ShopName</mat-label>
                                 <input matInput name="BarcodeName" min="0" max="15" [(ngModel)]="data.BarcodeName"
                                     #BarcodeNamecontrol>
-                                <mat-error >
+                                <mat-error>
                                     BarcodeName is required
                                 </mat-error>
                             </mat-form-field>
@@ -273,9 +291,8 @@
                         <div class="col-md-3 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>BillName</mat-label>
-                                <input matInput name="BillName"  [(ngModel)]="data.BillName"
-                                    #BillNamecontrol>
-                                <mat-error >
+                                <input matInput name="BillName" [(ngModel)]="data.BillName" #BillNamecontrol>
+                                <mat-error>
                                     BillName is required
                                 </mat-error>
                             </mat-form-field>
@@ -285,12 +302,13 @@
                 <div class="col-md-2 col-11 ">
                     <div class="row">
                         <div class="col-12 mt-1 ">
-                            <img class="fit-picture" width="170" height="170" [src]="companyImage">
+                            <img class="fit-picture" width="170" height="170" [src]="this.env.apiUrl + companyImage"
+                                style="object-fit: contain; border: 1px solid;">
                         </div>
                         <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 " (click)="fileInput.click()"
                             style="cursor: pointer;">
                             <i class="fa-solid fa-cloud-arrow-up upload_icon">
-                                <span style="font-size: 10px;letter-spacing: 2px;"> Shop Image </span>
+                                <span style="font-size: 10px;letter-spacing: 2px;"> Logo Image </span>
                             </i>
                             <input #fileInput id="my-input" name='LogoURL' type="file"
                                 (change)="uploadImage($event, 'company')" style="display:none;">
@@ -299,134 +317,161 @@
                 </div>
             </div>
             <!-- Bill Fromat Options -->
-            <h2 class="header">Bill Format Hide/Show</h2>
-            <div class="row ps-3">
-                <div class="col-md-2 col-sm-6 col-6 p-0" *ngIf="this.company.WholeSale === 'true'">
-                    <mat-slide-toggle type="ratio" name="WholesaleBill" color="primary" [(ngModel)]="data.WholesaleBill" class="example-margin">WholesaleBill
-                    </mat-slide-toggle>
+            <div class="row">
+                <div class="col-10">
+                    <h2 class="header">Bill Format Hide/Show</h2>
+                    <div class="row ps-3">
+                        <div class="col-md-2 col-sm-6 col-6 p-0" *ngIf="this.company.WholeSale === 'true'">
+                            <mat-slide-toggle type="ratio" name="WholesaleBill" color="primary"
+                                [(ngModel)]="data.WholesaleBill" class="example-margin">WholesaleBill
+                            </mat-slide-toggle>
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-6 p-0" *ngIf="this.company.RetailPrice === 'true'">
+                            <mat-slide-toggle type="ratio" name="RetailBill" color="primary"
+                                [(ngModel)]="data.RetailBill" class="example-margin">RetailBill
+                            </mat-slide-toggle>
+                        </div>
+                    </div>
+                    <div class="row ps-3 mt-3">
+                        <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
+                            <mat-slide-toggle type="ratio" name="HSNCode" color="primary" [(ngModel)]="data.HSNCode"
+                                class="example-margin">
+                                HSN</mat-slide-toggle>
+                        </div>
+                        <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
+                            <mat-slide-toggle type="ratio" name="CustGSTNo" color="primary" [(ngModel)]="data.CustGSTNo"
+                                class="example-margin">GST</mat-slide-toggle>
+                        </div>
+                        <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
+                            <mat-slide-toggle type="ratio" name="Rate" color="primary" [(ngModel)]="data.Rate"
+                                class="example-margin">Rate
+                            </mat-slide-toggle>
+                        </div>
+                        <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
+                            <mat-slide-toggle type="ratio" name="Discounts" color="primary" [(ngModel)]="data.Discounts"
+                                class="example-margin">Dis </mat-slide-toggle>
+                        </div>
+                        <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
+                            <mat-slide-toggle type="ratio" name="SubTotal" color="primary" [(ngModel)]="data.SubTotal"
+                                class="example-margin">SubTotal </mat-slide-toggle>
+                        </div>
+                        <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
+                            <mat-slide-toggle type="ratio" name="Tax" color="primary" [(ngModel)]="data.Tax"
+                                class="example-margin">Tax
+                            </mat-slide-toggle>
+                        </div>
+                        <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
+                            <mat-slide-toggle type="ratio" name="Total" color="primary" [(ngModel)]="data.Total"
+                                class="example-margin">Total
+                            </mat-slide-toggle>
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-6 p-0">
+                            <mat-slide-toggle type="ratio" name="BillShopWise" color="primary"
+                                [(ngModel)]="data.BillShopWise" class="example-margin">BillShopWise
+                            </mat-slide-toggle>
+                        </div>
+
+                    </div>
+                    <!-- Software Bill Options Hide/Show -->
+                    <h2 class="header mt-4">Software Bill Hide/Show</h2>
+                    <div class="row ps-3">
+                        <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
+                            <mat-slide-toggle type="ratio" name="Discount" color="primary" class="example-margin"
+                                [(ngModel)]="data.Discount" class="example-margin">Discount</mat-slide-toggle>
+                        </div>
+                        <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
+                            <mat-slide-toggle type="ratio" name="GSTnumber" color="primary" [(ngModel)]="data.GSTnumber"
+                                class="example-margin">GST</mat-slide-toggle>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-6 col-6 p-0">
+                            <mat-slide-toggle type="toggleChecked" name="AdminDiscount" color="primary"
+                                [(ngModel)]="data.AdminDiscount" class="example-margin">Admin
+                                Discount</mat-slide-toggle>
+                        </div>
+                    </div>
+                    <!-- Save/Cancel -->
+                    <div class="row my-4">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
+                            <button type="submit" class="me-3" mat-raised-button color="primary" [disabled]="!f.valid"
+                                *ngIf="suBtn == false">Save</button>
+                            <button class="me-3" type="button" mat-raised-button color="primary"
+                                [disabled]="id == 0 || !f.valid" *ngIf="suBtn == true"
+                                (click)="updateShop()">Update</button>
+                            <button type="button" mat-raised-button (click)="formReset()">Clear</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-2 col-sm-6 col-6 p-0" *ngIf="this.company.RetailPrice === 'true'">
-                    <mat-slide-toggle type="ratio" name="RetailBill" color="primary" [(ngModel)]="data.RetailBill" class="example-margin">RetailBill
-                    </mat-slide-toggle>
-                </div>
-                </div>
-                <div class="row ps-3 mt-3">
-                <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
-                    <mat-slide-toggle type="ratio"  name="HSNCode" color="primary" [(ngModel)]="data.HSNCode" class="example-margin">
-                        HSN</mat-slide-toggle>
-                </div>
-                <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
-                    <mat-slide-toggle type="ratio" name="CustGSTNo" color="primary" [(ngModel)]="data.CustGSTNo"
-                        class="example-margin">GST</mat-slide-toggle>
-                </div>
-                <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
-                    <mat-slide-toggle type="ratio" name="Rate" color="primary" [(ngModel)]="data.Rate" class="example-margin">Rate
-                    </mat-slide-toggle>
-                </div>
-                <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
-                    <mat-slide-toggle type="ratio" name="Discounts" color="primary" [(ngModel)]="data.Discounts"
-                        class="example-margin">Dis </mat-slide-toggle>
-                </div>
-                <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
-                    <mat-slide-toggle type="ratio" name="SubTotal" color="primary" [(ngModel)]="data.SubTotal"
-                        class="example-margin">SubTotal </mat-slide-toggle>
-                </div>
-                <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
-                    <mat-slide-toggle type="ratio" name="Tax" color="primary" [(ngModel)]="data.Tax" class="example-margin">Tax
-                    </mat-slide-toggle>
-                </div>
-                <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
-                    <mat-slide-toggle type="ratio" name="Total" color="primary" [(ngModel)]="data.Total" class="example-margin">Total
-                    </mat-slide-toggle>
-                </div>
-                <div class="col-md-2 col-sm-6 col-6 p-0">
-                    <mat-slide-toggle type="ratio" name="BillShopWise" color="primary" [(ngModel)]="data.BillShopWise" class="example-margin">BillShopWise
-                    </mat-slide-toggle>
-                </div>
-              
-            </div>
-            <!-- Software Bill Options Hide/Show -->
-            <h2 class="header mt-4">Software Bill Hide/Show</h2>
-            <div class="row ps-3">
-                <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
-                    <mat-slide-toggle type="ratio" name="Discount" color="primary" class="example-margin" [(ngModel)]="data.Discount"
-                        class="example-margin">Discount</mat-slide-toggle>
-                </div>
-                <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
-                    <mat-slide-toggle type="ratio" name="GSTnumber" color="primary" [(ngModel)]="data.GSTnumber"
-                        class="example-margin">GST</mat-slide-toggle>
-                </div>
-            </div>
-           
-            <!-- Save/Cancel -->
-            <div class="row my-4">
-                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
-                    <button type="submit" class="me-3" mat-raised-button color="primary" [disabled]="!f.valid"
-                    *ngIf="suBtn == false">Save</button>
-                    <button class="me-3" type="button" mat-raised-button color="primary"
-                        [disabled]="id == 0 || !f.valid" *ngIf="suBtn == true" (click)="updateShop()">Update</button>
-                    <button type="button" mat-raised-button (click)="formReset()">Clear</button>
+                <div class="col-2">
+                    <div class="row">
+                        <div class="col-12 mt-1 ">
+                            <img class="fit-picture" width="170" height="170" [src]="this.env.apiUrl + waterImage"
+                                style="object-fit: contain; border: 1px solid;">
+                        </div>
+                        <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 " (click)="fileInput1.click()"
+                            style="cursor: pointer;">
+                            <i class="fa-solid fa-cloud-arrow-up upload_icon">
+                                <span style="font-size: 10px;letter-spacing: 2px;"> Water Image </span>
+                            </i>
+                            <input #fileInput1 id="my-input" name='WaterMark' type="file"
+                                (change)="uploadImage($event, 'water')" style="display:none;">
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>
-         <!-- Software Bill note  -->
-         <!-- <h2 class="header mt-4">Important Note</h2> -->
-         <div class="row mt-3">
-             <div class="col-sm-12 header">
-                 <h2>Important Note
-                     <button class="bg-none" (click)="addRow()">
-                     <mat-icon class="col-white plus_icon" > add</mat-icon>
-                 </button>
-                 </h2>
-             </div>
-         </div>
-         <div class="row mt-3">
-             <div class="col-sm-12 table-container" style="overflow:auto;height:200px;">
-                 <table class="table">
-                     <thead class="thead-light">
-                         <tr>
-                             <th>S.No.</th>
-                             <th>Note Type</th>
-                             <th>Content</th>
-                             <th>Action</th>
-                         </tr>
-                     </thead>
-                     <tbody>
-                         <tr *ngFor="let data of wlcmArray1; let i = index;" style="height: 20px;">
-                             <td class="text-center">{{i+1}}</td>
-                             <td class="text-center">
-                                 <mat-form-field class="example-full-width"
-                                     appearance="outline" [style.width.px]=150>
-                                     <mat-select [(ngModel)]="data.NoteType"
-                                         name="{{data.NoteType + i}}">
-                                         <mat-option value="retail">Retail</mat-option>
-                                         <mat-option value="wholesale">Wholesale </mat-option>
-                                         <mat-option value="CustomerPower">CustomerPower
-                                         <mat-option value="CustomerCredit"> CustomerCredit</mat-option>
-                                         </mat-option>
-                                     </mat-select>
-                                 </mat-form-field>
-                             </td>
-                             <td class="text-center">
-                                 <mat-form-field class="example-full-width"
-                                     appearance="outline">
-                                     <input matInput [(ngModel)]="data.Content"
-                                         name="{{data.Content + i}}">
-                                 </mat-form-field>
-                             </td>
-                             <td class="text-center">
-                                 <ul class="header-dropdown list-inline-item m-r--5">
-                                     <li class="d-inline"><i (click)="delete(i)"
-                                             class="material-icons"
-                                             style="cursor: pointer;  color:red;">delete</i>
-                                     </li>
-                                 </ul>
-                             </td>
-                         </tr>
-                     </tbody>
-                 </table>
-             </div>
-         </div>
+        <!-- Software Bill note  -->
+        <!-- <h2 class="header mt-4">Important Note</h2> -->
+        <div class="row mt-3">
+            <div class="col-sm-12 header">
+                <h2>Important Note
+                    <button class="bg-none" (click)="addRow()">
+                        <mat-icon class="col-white plus_icon"> add</mat-icon>
+                    </button>
+                </h2>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-sm-12 table-container" style="overflow:auto;height:200px;">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>S.No.</th>
+                            <th>Note Type</th>
+                            <th>Content</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of wlcmArray1; let i = index;" style="height: 20px;">
+                            <td class="text-center">{{i+1}}</td>
+                            <td class="text-center">
+                                <mat-form-field class="example-full-width" appearance="outline" [style.width.px]=150>
+                                    <mat-select [(ngModel)]="data.NoteType" name="{{data.NoteType + i}}">
+                                        <mat-option value="retail">Retail</mat-option>
+                                        <mat-option value="wholesale">Wholesale </mat-option>
+                                        <mat-option value="CustomerPower">CustomerPower
+                                            <mat-option value="CustomerCredit"> CustomerCredit</mat-option>
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </td>
+                            <td class="text-center">
+                                <mat-form-field class="example-full-width" appearance="outline">
+                                    <input matInput [(ngModel)]="data.Content" name="{{data.Content + i}}">
+                                </mat-form-field>
+                            </td>
+                            <td class="text-center">
+                                <ul class="header-dropdown list-inline-item m-r--5">
+                                    <li class="d-inline"><i (click)="delete(i)" class="material-icons"
+                                            style="cursor: pointer;  color:red;">delete</i>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </ng-template>
 <!-- model popup ent -->

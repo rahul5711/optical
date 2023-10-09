@@ -21,10 +21,6 @@
                                             aria-selected="true">Company Setting</a>
                                     </li>
                                     <li class="nav-item" role="presentation">
-                                        <a class="nav-link" id="ex1-tab-2" data-mdb-toggle="tab" href="#ex1-tabs-2"
-                                            role="tab" aria-controls="ex1-tabs-2" aria-selected="false">Bill</a>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
                                         <a class="nav-link" id="ex1-tab-3" data-mdb-toggle="tab" href="#ex1-tabs-3"
                                             role="tab" aria-controls="ex1-tabs-3" aria-selected="false">BillFormat</a>
                                     </li>
@@ -36,8 +32,8 @@
                                     <div class="tab-pane fade show active" id="ex1-tabs-1" role="tabpanel"
                                         aria-labelledby="ex1-tab-1">
                                         <div class="row">
-                                            <div class="col-10">
-                                                <div class="row">
+                                            <div class="col-12">
+                                                <div class="row mb-5">
                                                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Company Language</mat-label>
@@ -71,6 +67,7 @@
                                                                 <mat-option value="USD">USD</mat-option>
                                                                 <mat-option value="CAD">CAD</mat-option>
                                                                 <mat-option value="AED">AED</mat-option>
+                                                                <mat-option value="OMR">OMR</mat-option>
 
                                                             </mat-select>
                                                             <mat-error>Select any currency</mat-error>
@@ -84,13 +81,13 @@
                                                                 <mat-option value="1.0-0">1.0-0 ex 1</mat-option>
                                                                 <mat-option value="1.1-1">1.2-2 ex 1.0</mat-option>
                                                                 <mat-option value="1.2-2">1.2-2 ex 1.00</mat-option>
-                                                                <mat-option value="1.2-3">1.2-3 ex 1.000</mat-option>
+                                                                <mat-option value="1.3-3">1.3-3 ex 1.000</mat-option>
                                                                 <mat-option value="1.2-4">1.2-4 ex 1.0000</mat-option>
                                                                 <mat-option value="4.2-2">4.2-2 ex 001.00</mat-option>
                                                             </mat-select>
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-xl-4 col-lg-4 col-md-3 col-sm-12 mb-0">
+                                                    <div class="col-xl-2 col-lg-4 col-md-3 col-sm-12 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Date Format</mat-label>
                                                             <mat-select name="DateFormat" required
@@ -153,6 +150,13 @@
                                                                 [(ngModel)]="data.ServiceDate" />
                                                         </mat-form-field>
                                                     </div>
+                                                    <div class="col-xl-2 col-lg-2">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Bill Delivery Days</mat-label>
+                                                            <input matInput type="number" min="0" name="DeliveryDay"
+                                                                [(ngModel)]="data.DeliveryDay" />
+                                                        </mat-form-field>
+                                                    </div>
                                                     <div class="col-xl-2 col-lg-2 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>LoginTimeStart</mat-label>
@@ -167,7 +171,7 @@
                                                                 name="LoginTimeEnd" [(ngModel)]="data.LoginTimeEnd">
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-xl-3 col-lg-3 mb-0"
+                                                    <!-- <div class="col-xl-3 col-lg-3 mb-0"
                                                         style="padding: 0;  padding-left: 14px;">
                                                         <b>Report Send To</b>&nbsp;
                                                         <mat-checkbox color="primary" name="EmailReport"
@@ -175,7 +179,7 @@
                                                         <mat-checkbox color="primary" class="example-margin"
                                                             name="MessageReport" [(ngModel)]="data.MessageReport">Text
                                                             Message</mat-checkbox>
-                                                    </div>
+                                                    </div> -->
                                                     <div class="col-md-12 header mt-md-3">
                                                         <h2>Purchase Setting (SecretCode)</h2>
                                                     </div>
@@ -207,199 +211,57 @@
                                                     <div class="col-12 mt-md-2">
                                                         <mat-radio-group aria-label="Select an option" name="BarCode"
                                                             [(ngModel)]="data.BarCode" style="display: inline-flex;">
-                                                            <mat-radio-button value="0" color="primary"><img
-                                                                    src="assets/images/clipart/bar1.jpeg" alt=""
-                                                                    width="80%"></mat-radio-button>
-                                                            <mat-radio-button value="1"><img
-                                                                    src="assets/images/clipart/bar2.jpeg" alt=""
-                                                                    width="80%"></mat-radio-button>
-                                                            <mat-radio-button value="2"><img
-                                                                    src="assets/images/clipart/bar3.jpeg" alt=""
-                                                                    width="80%"></mat-radio-button>
-                                                            <mat-radio-button value="3">Lens/WithOut MRP
-                                                            </mat-radio-button>
-                                                            <mat-radio-button value="4">Lens/With MRP</mat-radio-button>
-                                                            <mat-radio-button value="5"><img
-                                                                    src="assets/images/clipart/bar1.jpeg" alt=""
-                                                                    width="80%">Hv</mat-radio-button>
+                                                            <mat-radio-button value="1" color="primary">1</mat-radio-button>
+                                                            <mat-radio-button value="2" color="primary">2</mat-radio-button> 
+                                                            <mat-radio-button value="3" color="primary">Lens/WithOut MRP</mat-radio-button>
+                                                            <mat-radio-button value="4" color="primary">Lens/With MRP</mat-radio-button>
+                                                            <mat-radio-button value="5" color="primary">Hv</mat-radio-button>
                                                         </mat-radio-group>
+                                                    </div>
+                                                    <div class="col-md-12  header mt-md-4">
+                                                        <h2>Bill Format</h2>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Bill Format</mat-label>
+                                                            <mat-select name="BillFormat" [(ngModel)]="data.BillFormat"
+                                                                required>
+                                                                <mat-option value="Bill">1</mat-option>
+                                                            </mat-select>
+                                                            <mat-error>Bill Format </mat-error>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Company Tagline</mat-label>
+                                                            <input matInput name="CompanyTagline" maxlength="50"
+                                                                [(ngModel)]="data.CompanyTagline" />
+                                                            <mat-error>Company Tagline required</mat-error>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-3 col-sm-12 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Font API</mat-label>
+                                                            <input matInput name="FontApi" [(ngModel)]="data.FontApi" />
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Font Style</mat-label>
+                                                            <input matInput name="FontsStyle" [(ngModel)]="data.FontsStyle">
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-md-3 ">
+                                                        <button mat-raised-button color="primary" [disabled]="!settingForm.valid"
+                                                            (click)="updatecompanysetting()"> Update Company Setting</button>
+                                                        <!-- <button class="ms-3" type="button" mat-raised-button
+                                                            (click)="settingForm.reset()"> Cancel</button> -->
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-2">
-                                                <div class="col-12 ">
-                                                    <img class="fit-picture" width="170" height="170"
-                                                        [src]="companyImage">
-                                                </div>
-                                                <div class="col-xl-11 col-lg-11 col-md-11 col-sm-12 mb-0 "
-                                                    (click)="fileInput.click()" style="cursor: pointer;">
-                                                    <i class="fa-solid fa-cloud-arrow-up upload_icon">
-                                                        <span style="font-size: 10px;letter-spacing: 2px;">Company
-                                                            Logo</span>
-                                                    </i>
-                                                    <input #fileInput id="my-input" name='LogoURL' type="file"
-                                                        (change)="uploadImage($event, 'company')" style="display:none;">
-                                                </div>
-                                                <div class="col-12 mt-1">
-                                                    <img class="fit-picture" width="170" height="170"
-                                                        [src]="companyWatermark">
-                                                </div>
-                                                <div class="col-xl-11 col-lg-11 col-md-11 col-sm-12 mb-0 "
-                                                    (click)="fileInputs.click()" style="cursor: pointer;">
-                                                    <i class="fa-solid fa-cloud-arrow-up upload_icon">
-                                                        <span
-                                                            style="font-size: 10px;letter-spacing: 2px;">WatermarkLogoURL</span>
-                                                    </i>
-                                                    <input #fileInputs id="my-input" name='WatermarkLogoURL' type="file"
-                                                        [(ngModel)]="data.WatermarkLogoURL"
-                                                        (change)="uploadImage($event, '')" accept="/*"
-                                                        style="display:none;">
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="ex1-tabs-2" role="tabpanel"
-                                        aria-labelledby="ex1-tab-2">
-                                        <div class="row ">
-                                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 mb-0">
-                                                <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>Company Tagline</mat-label>
-                                                    <input matInput name="CompanyTagline" maxlength="50"
-                                                        [(ngModel)]="data.CompanyTagline" />
-                                                    <mat-error>Company Tagline required</mat-error>
-                                                </mat-form-field>
-                                            </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
-                                                <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>Bill Format</mat-label>
-                                                    <mat-select name="BillFormat" [(ngModel)]="data.BillFormat"
-                                                        required>
-                                                        <mat-option value="Bill">1</mat-option>
-                                                    </mat-select>
-                                                    <mat-error>Bill Format </mat-error>
-                                                </mat-form-field>
-                                            </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
-                                                <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>Bill Herder </mat-label>
-                                                    <mat-select name="BillHeader" required [(ngModel)]="data.BillHeader"
-                                                        required>
-                                                        <mat-option></mat-option>
-                                                        <mat-option value="0">Center Logo</mat-option>
-                                                        <mat-option value="1">Right Logo</mat-option>
-                                                        <mat-option value="2">Left Logo</mat-option>
-                                                        <mat-option value="3">50-50</mat-option>
-                                                    </mat-select>
-                                                    <mat-error>Select Mobile </mat-error>
-                                                </mat-form-field>
-                                            </div>
-                                            <div class="col-xl-2 col-lg-2">
-                                                <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>Bill Delivery Days</mat-label>
-                                                    <input matInput type="number" min="0" name="DeliveryDay"
-                                                        [(ngModel)]="data.DeliveryDay" />
-                                                </mat-form-field>
-                                            </div>
-                                            <div class="col-xl-2 col-lg-2" style="padding:0; padding-left: 21px;">
-                                                <mat-slide-toggle name="AppliedDiscount" color="primary"
-                                                    #Multiplecontrol [(ngModel)]="data.AppliedDiscount"
-                                                    class="example-margin">Add Discount</mat-slide-toggle>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-xl-12 col-lg-12 header">
-                                                <h2> Bill Color/FontStyle</h2>
-                                            </div>
-                                            <div class="col-xl-3 col-lg-3">
-                                                <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>colorPicker</mat-label>
-                                                    <input matInput name="Color1" [(ngModel)]="data.Color1" />
-                                                </mat-form-field>
-                                            </div>
-                                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 mb-0">
-                                                <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>Font API</mat-label>
-                                                    <input matInput name="FontApi" [(ngModel)]="data.FontApi" />
-                                                </mat-form-field>
-                                            </div>
-                                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 mb-0">
-                                                <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>Font Style</mat-label>
-                                                    <input matInput name="FontsStyle" [(ngModel)]="data.FontsStyle">
-                                                </mat-form-field>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-3">
-                                            <button mat-raised-button color="primary" [disabled]="!settingForm.valid"
-                                                (click)="updatecompanysetting()"> Update</button>
-                                            <button class="ms-3" type="button" mat-raised-button
-                                                (click)="settingForm.reset()"> Cancel</button>
-                                        </div>
-                                        <div class="row mt-3">
-                                            <div class="col-sm-12 header">
-                                                <h2>Welcome Note
-                                                    <mat-icon class="col-white plus_icon" (click)="addRow()"> add
-                                                    </mat-icon>
-                                                </h2>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-3">
-                                            <div class="col-sm-12 table-container" style="overflow:auto;height:300px;">
-                                                <table class="table">
-                                                    <thead class="thead-light">
-                                                        <tr>
-                                                            <th>S.No.</th>
-                                                            <th>Note Type</th>
-                                                            <th>Content</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr *ngFor="let data of wlcmArray1; let i = index;">
-                                                            <td class="text-center">{{i+1}}</td>
-                                                            <td class="text-center">
-                                                                <mat-form-field class="example-full-width"
-                                                                    appearance="outline" [style.width.px]=150>
-                                                                    <mat-select [(ngModel)]="data.NoteType"
-                                                                        name="{{data.NoteType + i}}">
-                                                                        <mat-option value="wholesale">Wholesale
-                                                                        </mat-option>
-                                                                        <mat-option value="retail">Retail</mat-option>
-                                                                        <mat-option value="CustomerCredit">
-                                                                            CustomerCredit</mat-option>
-                                                                        <mat-option value="CustomerPower">CustomerPower
-                                                                        </mat-option>
-                                                                    </mat-select>
-                                                                </mat-form-field>
-                                                            </td>
-                                                            <!-- <td class="text-center">
-                                                                <mat-form-field class="example-full-width" appearance="outline">
-                                                                    <input matInput [(ngModel)]="data.NoteType" #name="ngModel" name="data{{i}}">
-                                                                </mat-form-field>
-                                                            </td> -->
-                                                            <td class="text-center">
-                                                                <mat-form-field class="example-full-width"
-                                                                    appearance="outline">
-                                                                    <input matInput [(ngModel)]="data.Content"
-                                                                        name="{{data.Content + i}}">
-                                                                </mat-form-field>
-                                                            </td>
-                                                            <td class="text-center">
-                                                                <ul class="header-dropdown list-inline-item m-r--5">
-                                                                    <li class="d-inline"><i (click)="delete(i)"
-                                                                            class="material-icons"
-                                                                            style="cursor: pointer;  color:red;">delete</i>
-                                                                    </li>
-                                                                </ul>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   
                                     <div class="tab-pane fade" id="ex1-tabs-3" role="tabpanel"
                                         aria-labelledby="ex1-tab-3">
                                         <div class="row">
@@ -408,7 +270,6 @@
                                                     <div class="row">
                                                         <div class="col-12">
                                                             <div class="row">
-                                                          
                                                         <div class=" col-md-5  mb-0">
                                                             <mat-form-field class="example-full-width mb-0">
                                                                 <mat-label>Bill Herder </mat-label>
@@ -554,10 +415,8 @@
                                                                 </div>
                                                                 <div class="col-md-5 mb-0">
                                                             <button  class="me-3" mat-raised-button color="primary" [disabled]="!fb.valid" (click)="saveBillFormate()">Save</button>
-                                                                   
                                                                 </div>
                                                             </div>
-
                                                         </div>
                                                     </div>
                                                 </form>
@@ -651,7 +510,6 @@
                                                     <!-- 50-50 log -->
                                                     </div>
                                                 </div>
-
                                                 <div class="row">
                                                     <div class="col-12" style="font-size: {{this.bill.CustomerFont}}px; line-height:  {{this.bill.CustomerLineSpace}}px;">
                                                     <div style="width:100vh; padding: 0px 10px; ">
@@ -772,13 +630,11 @@
                                                     
                                                     </div>
                                                 </div>
-                                           
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <!-- Tabs content -->
-
                                 <div class="row">
                                     <div class="col-md-9"></div>
                                 </div>

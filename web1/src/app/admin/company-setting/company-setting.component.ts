@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { CompanyService } from 'src/app/service/company.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-company-setting',
@@ -31,6 +32,7 @@ export class CompanySettingComponent implements OnInit {
     private fu: FileUploadService,
     private cs: CompanyService,
     private sp: NgxSpinnerService,
+    private router: Router,
 
   ) { }
 
@@ -65,12 +67,51 @@ export class CompanySettingComponent implements OnInit {
    [this.shop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));;
   }
 
-  getCompanySetting(){
-    this.data = JSON.parse(localStorage.getItem('companysetting') || '');
-    this.wlcmArray1 = JSON.parse(this.companysetting.WelComeNote) || ''
-    if (this.data.LogoURL === "null" || this.data.LogoURL === "") {
-     this.data.LogoURL = "assets/images/userEmpty.png"
-   } 
+  // getCompanySetting(){
+  //   this.data = JSON.parse(localStorage.getItem('companysetting') || '');
+  //   this.wlcmArray1 = JSON.parse(this.companysetting.WelComeNote) || ''
+  //   if (this.data.LogoURL === "null" || this.data.LogoURL === "") {
+  //    this.data.LogoURL = "assets/images/userEmpty.png"
+  //  } 
+
+  //  if( this.data.year === 'true') {
+  //   this.data.year = true;
+  // } else if ( this.data.year === 'false' ||  this.data.year === null) {
+  //   this.data.year = false;
+  // }
+
+  // if( this.data.month === 'true') {
+  //   this.data.month = true;
+  // } else if ( this.data.month === 'false' ||  this.data.month === null) {
+  //   this.data.month = false;
+  // }
+
+  // if( this.data.partycode === 'true') {
+  //   this.data.partycode = true;
+  // } else if ( this.data.partycode === 'false' ||  this.data.partycode === null) {
+  //   this.data.partycode = false;
+  // }
+
+  // if( this.data.type === 'true') {
+  //   this.data.type = true;
+  // } else if ( this.data.type === 'false' ||  this.data.type === null) {
+  //   this.data.type = false;
+  // }
+  // }
+
+  getCompanySetting() {
+    // Retrieve company settings from local storage
+    const companySettingJson = localStorage.getItem('companysetting') || '{}';
+    this.data = JSON.parse(companySettingJson);
+  
+    // Set default logo URL if it's null or empty
+    this.data.LogoURL = this.data.LogoURL || 'assets/images/userEmpty.png';
+  
+    // Convert string values to booleans
+    this.data.year = this.data.year === 'true';
+    this.data.month = this.data.month === 'true';
+    this.data.partycode = this.data.partycode === 'true';
+    this.data.type = this.data.type === 'true';
   }
 
   uploadImage(e:any, mode:any){
@@ -104,13 +145,22 @@ export class CompanySettingComponent implements OnInit {
     const subs: Subscription =  this.cs.updatecompanysetting( this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'Your Company Setting has been Update.',
-              showConfirmButton: false,
-              timer: 1500
-            })
+          Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, LogOut it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              localStorage.clear();
+              this.router.navigate(['/login']).then(() => {
+                window.location.reload();
+              });
+            }
+          })
         } else {
           this.as.errorToast(res.message)
         }
@@ -129,13 +179,23 @@ export class CompanySettingComponent implements OnInit {
    const subs: Subscription =  this.cs.saveBillFormate(this.bill).subscribe({
     next: (res: any) => {
       if (res.success) {
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Your file has been Update.',
-            showConfirmButton: false,
-            timer: 1500
-          })
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, LogOut it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            localStorage.clear();
+            this.router.navigate(['/login']).then(() => {
+              window.location.reload();
+            });
+          }
+        })
+          this.getBillFormateById()
       } else {
         this.as.errorToast(res.message)
       }
@@ -157,7 +217,9 @@ export class CompanySettingComponent implements OnInit {
     const subs: Subscription =  this.cs.getBillFormateById(dtm).subscribe({
      next: (res: any) => {
        if (res.success) {
-           this.bill = res.data[0]  
+        if(res.data[0] != undefined){
+          this.bill = res.data[0]  
+        }
        } else {
          this.as.errorToast(res.message)
        }

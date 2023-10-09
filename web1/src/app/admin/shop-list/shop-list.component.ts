@@ -33,6 +33,7 @@ export class ShopListComponent implements OnInit {
   reactiveForm!: FormGroup;
   toggleChecked = false
   companyImage: any;
+  waterImage: any;
   img: any;
   id: any;
   dataList: any;
@@ -45,7 +46,7 @@ export class ShopListComponent implements OnInit {
 
   data: any = {
     ID: null, CompanyID: null, Name: '', AreaName: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '',
-    Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: true, GSTnumber: true, LogoURL: null, HSNCode: true, CustGSTNo: true, Rate: true, Discounts: true, Tax: false, SubTotal: true, Total: true, BillShopWise: true, RetailBill:false, WholesaleBill:false, BillName:'InvoiceNo./Total', ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: '[{"NoteType":"retail","Content":"No Return once sold. No Cash Refund."},{"NoteType":"retail","Content":"50% Advance at the time of booking the order."},{"NoteType":"retail","Content":"Please collect your  spects within 15 days from the date of order."},{"NoteType":"retail","Content":"Free Computerized EYES* Testing Facility Available."},{"NoteType":"retail","Content":"Repairing work at customer risk."}]', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
+    Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: true, GSTnumber: true, AdminDiscount:false, LogoURL: null, WaterMark: null, HSNCode: true, CustGSTNo: true, Rate: true, Discounts: true, Tax: false, SubTotal: true, Total: true, BillShopWise: true, RetailBill:false, WholesaleBill:false, BillName:'InvoiceNo./Total', ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: '[{"NoteType":"retail","Content":"No Return once sold. No Cash Refund."},{"NoteType":"retail","Content":"50% Advance at the time of booking the order."},{"NoteType":"retail","Content":"Please collect your  spects within 15 days from the date of order."},{"NoteType":"retail","Content":"Free Computerized EYES* Testing Facility Available."},{"NoteType":"retail","Content":"Repairing work at customer risk."}]', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
   };
 
   constructor(
@@ -102,9 +103,11 @@ export class ShopListComponent implements OnInit {
         if (res.success) {
           this.collectionSize = res.count;
           this.dataList = res.data
-          this.dataList.forEach((element: { LogoURL: any; }) => {
+          this.dataList.forEach((element:any) => {
+            
+            element.WaterMark = (element.WaterMark);
             if (element.LogoURL !== "null" && element.LogoURL !== '') {
-              element.LogoURL = (this.env.apiUrl + element.LogoURL);
+              element.LogoURL = (element.LogoURL);
             } else {
               element.LogoURL = "/assets/images/userEmpty.png"
             }
@@ -169,6 +172,7 @@ export class ShopListComponent implements OnInit {
     //   this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     // }
     this.companyImage = '';
+    this.waterImage = '';
     this.wlcmArray1 = JSON.parse(this.data.WelcomeNote) || []
     this.suBtn = false;
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
@@ -178,6 +182,7 @@ export class ShopListComponent implements OnInit {
     this.suBtn = true;
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, });
     this.companyImage = datas.LogoURL;
+    this.waterImage = datas.WaterMark;
     this.data = datas
     if (datas.length !== 0) {
 
@@ -197,6 +202,7 @@ export class ShopListComponent implements OnInit {
       this.data.BillShopWise = stringToBoolean(datas.BillShopWise);
       this.data.WholesaleBill = stringToBoolean(datas.WholesaleBill);
       this.data.RetailBill = stringToBoolean(datas.RetailBill);
+      this.data.AdminDiscount = stringToBoolean(datas.AdminDiscount);
     }
   }
 
@@ -233,9 +239,8 @@ export class ShopListComponent implements OnInit {
           Swal.fire({
             position: 'center',
             icon: 'success',
-            title: 'Your file has been Save.',
-            showConfirmButton: false,
-            timer: 1200
+            title: 'Data Saved! Please Logout/Login Software.',
+            showConfirmButton: true,
           })
         } else {
           this.as.errorToast(res.message)
@@ -270,6 +275,11 @@ export class ShopListComponent implements OnInit {
           this.data.LogoURL = data.body?.download
           this.as.successToast(data.body?.message)
         }
+        if (data.body !== undefined && mode === 'water') {
+          this.waterImage = this.env.apiUrl + data.body?.download;
+          this.data.WaterMark = data.body?.download
+          this.as.successToast(data.body?.message)
+        }
       });
     })
 
@@ -283,6 +293,7 @@ export class ShopListComponent implements OnInit {
           this.as.successToast(res.message)
           this.data = res.data[0]
           this.companyImage = this.env.apiUrl + res.data[0].LogoURL;
+          this.waterImage = this.env.apiUrl + res.data[0].WaterMark;
         } else {
           this.as.errorToast(res.message)
         }
@@ -308,9 +319,8 @@ export class ShopListComponent implements OnInit {
           Swal.fire({
             position: 'center',
             icon: 'success',
-            title: 'Your file has been Update.',
-            showConfirmButton: false,
-            timer: 1200
+            title: 'Data Updated! Please Logout/Login Software.',
+            showConfirmButton: true,
           })
         } else {
           this.as.errorToast(res.message)
@@ -402,7 +412,7 @@ export class ShopListComponent implements OnInit {
   formReset() {
     this.data = {
       ID: null, CompanyID: null, Name: '', AreaName: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '',
-      Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: false, GSTnumber: false, LogoURL: null, HSNCode: false, CustGSTNo: false, Rate: false, Discounts: false, Tax: false, SubTotal: false, Total: false, BillShopWise: false, RetailBill:false, WholesaleBill:false, BillName:'InvoiceNo./Total', ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: '[{"NoteType":"retail","Content":"No Return once sold. No Cash Refund."},{"NoteType":"retail","Content":"50% Advance at the time of booking the order."},{"NoteType":"retail","Content":"Please collect your  spects within 15 days from the date of order."},{"NoteType":"retail","Content":"Free Computerized EYES* Testing Facility Available."},{"NoteType":"retail","Content":"Repairing work at customer risk."}]', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
+      Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: true, GSTnumber: true, AdminDiscount:false, LogoURL: null, WaterMark: null, HSNCode: true, CustGSTNo: true, Rate: true, Discounts: true, Tax: false, SubTotal: true, Total: true, BillShopWise: true, RetailBill:false, WholesaleBill:false, BillName:'InvoiceNo./Total', ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: '[{"NoteType":"retail","Content":"No Return once sold. No Cash Refund."},{"NoteType":"retail","Content":"50% Advance at the time of booking the order."},{"NoteType":"retail","Content":"Please collect your  spects within 15 days from the date of order."},{"NoteType":"retail","Content":"Free Computerized EYES* Testing Facility Available."},{"NoteType":"retail","Content":"Repairing work at customer risk."}]', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
     };
     this.toggleChecked = false
   }

@@ -1713,8 +1713,8 @@ module.exports = {
                 }
                 return element;
             });
-
-
+                  console.log(printdata.shopdetails.LogoURL);
+             printdata.LogoURL = printdata.shopdetails.LogoURL;
             let fileName = "";
             const file = "invoice.ejs" + ".pdf";
             const formatName = "invoice.ejs";

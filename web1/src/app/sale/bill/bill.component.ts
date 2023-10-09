@@ -178,6 +178,8 @@ export class BillComponent implements OnInit {
     this.BillMaster.BillDate = moment().format('YYYY-MM-DD');
     this.BillMaster.DeliveryDate = moment(new Date()).add(this.companySetting.DeliveryDay, 'days').format('YYYY-MM-DD');
     [this.loginShop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
+    console.log(this.loginShop);
+    
     this.getTrayNo();
     this.getEmployee();
     this.getDoctor();

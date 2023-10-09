@@ -247,15 +247,24 @@ export class ExpenseComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
-
-  onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
+  
+  onChange(event: string) {
+    let modifiedEvent = event; // Create a new variable to store the modified result
     if (this.companySetting?.DataFormat === '1') {
-      event = event.toUpperCase()
-    } else if (this.companySetting?.DataFormat == '2') {
-      event = event.toTitleCase()
+      modifiedEvent = event.toUpperCase();
+    } else if (this.companySetting?.DataFormat === '2') {
+      modifiedEvent = this.toTitleCase(event);
     }
-    return event;
+    return modifiedEvent;
   }
+  
+  toTitleCase(inputString: string) {
+    // Implement a function to convert inputString to title case
+    return inputString.toLowerCase().replace(/^(.)|\s(.)/g, function ($1) {
+      return $1.toUpperCase();
+    });
+  }
+  
 
   openEditModal(content: any, datas: any) {
     this.suBtn = true;

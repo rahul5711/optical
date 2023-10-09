@@ -306,7 +306,7 @@ module.exports = {
 
             const [PurchaseMaster] = await mysql2.pool.query(`select * from purchasemasternew  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
-            const [PurchaseDetail] = await mysql2.pool.query(`select * from purchasedetailnew where  PurchaseID = ${ID} and CompanyID = ${CompanyID}`)
+            const [PurchaseDetail] = await mysql2.pool.query(`select * from purchasedetailnew where  PurchaseID = ${ID} and CompanyID = ${CompanyID}  order by purchasedetailnew.ID desc`)
 
             const [Charge] = await mysql2.pool.query(`select * from purchasecharge where PurchaseID = ${ID} and CompanyID = ${CompanyID}`)
 
