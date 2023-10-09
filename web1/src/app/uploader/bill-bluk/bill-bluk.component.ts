@@ -33,7 +33,7 @@ export class BillBlukComponent implements OnInit {
   tempProcessFile: any;
 
   BillDetailUpload: any;
-  BillDetailList:any
+  BillDetailList: any
   currentPageBillDetail = 1;
   itemsPerPageBillDetail = 10;
   pageSizeBillDetail!: number;
@@ -215,7 +215,7 @@ export class BillBlukComponent implements OnInit {
                 position: 'center',
                 icon: 'error',
                 title: res.message,
-                showConfirmButton: false,
+                showConfirmButton: true,
               })
             }
             this.sp.hide();
@@ -306,6 +306,7 @@ export class BillBlukComponent implements OnInit {
         const subs: Subscription = this.uploader.deleteFileRecord(data.ID).subscribe({
           next: (res: any) => {
             this.dataList.splice(i, 1);
+            this.getList()
             this.as.successToast(res.message)
           },
           error: (err: any) => console.log(err.message),
@@ -453,7 +454,7 @@ export class BillBlukComponent implements OnInit {
                 position: 'center',
                 icon: 'error',
                 title: res.message,
-                showConfirmButton: false,
+                showConfirmButton: true,
               })
             }
             this.sp.hide();
@@ -518,6 +519,7 @@ export class BillBlukComponent implements OnInit {
         const subs: Subscription = this.uploader.deleteFileRecord(data.ID).subscribe({
           next: (res: any) => {
             this.dataList.splice(i, 1);
+            this.getDetailList()
             this.as.successToast(res.message)
           },
           error: (err: any) => console.log(err.message),

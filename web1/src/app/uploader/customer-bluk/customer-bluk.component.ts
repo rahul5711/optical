@@ -300,7 +300,7 @@ export class CustomerBlukComponent implements OnInit {
                 position: 'center',
                 icon: 'error',
                 title: res.message,
-                showConfirmButton: false,
+                showConfirmButton: true,
               })
             }
             this.sp.hide();
@@ -399,7 +399,7 @@ export class CustomerBlukComponent implements OnInit {
   submitSpectacle(frm: NgForm) {
     console.log(frm, 'sun');
     if (frm.valid) {
-      const elem: any = document.getElementById("uploadButton"); 
+      const elem: any = document.getElementById("uploadButton");
       this.uploader.uploadSpectacle(this.SpectacleUpload).subscribe((resp: any) => {
           if (resp.type == HttpEventType.UploadProgress) {
             let uploadProgress = 0;
@@ -511,7 +511,7 @@ export class CustomerBlukComponent implements OnInit {
                 position: 'center',
                 icon: 'error',
                 title: res.message,
-                showConfirmButton: false,
+                showConfirmButton: true,
               })
             }
             this.sp.hide();
@@ -610,7 +610,7 @@ export class CustomerBlukComponent implements OnInit {
   submitCon(frm: NgForm) {
     console.log(frm, 'sun');
     if (frm.valid) {
-      const elem: any = document.getElementById("uploadButton"); 
+      const elem: any = document.getElementById("uploadButton");
       this.uploader.uploadSpectacle(this.ContactUpload).subscribe((resp: any) => {
           if (resp.type == HttpEventType.UploadProgress) {
             let uploadProgress = 0;
@@ -722,7 +722,7 @@ export class CustomerBlukComponent implements OnInit {
                 position: 'center',
                 icon: 'error',
                 title: res.message,
-                showConfirmButton: false,
+                showConfirmButton: true,
               })
             }
             this.sp.hide();
