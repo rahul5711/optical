@@ -717,30 +717,31 @@ module.exports = {
 
             if (!productData || !productData.length || !newCompanyID) return res.send({ message: "Invalid productData Data" })
 
-            if (productData.length) {
-                for (const item of productData) {
-                    if (!item.CompanyID) {
-                        return res.send({ message: "Invalid productData CompanyID Data" })
-                    }
-                    if (!item.Name) {
-                        return res.send({ message: "Invalid productData Name Data" })
-                    }
-                    if (!item.HSNCode) {
-                        return res.send({ message: "Invalid productData HSNCode Data" })
-                    }
-                    if (!item.GSTPercentage) {
-                        return res.send({ message: "Invalid productData GSTPercentage Data" })
-                    }
-                    if (!item.GSTType) {
-                        return res.send({ message: "Invalid productData GSTType Data" })
-                    }
-                }
-            }
+            // if (productData.length) {
+            //     for (const item of productData) {
+            //         console.log(item);
+            //         if (!item.CompanyID) {
+            //             return res.send({ message: "Invalid productData CompanyID Data" })
+            //         }
+            //         if (!item.Name) {
+            //             return res.send({ message: "Invalid productData Name Data" })
+            //         }
+            //         if (!item.HSNCode) {
+            //             return res.send({ message: "Invalid productData HSNCode Data" })
+            //         }
+            //         if (!item.GSTPercentage) {
+            //             return res.send({ message: "Invalid productData GSTPercentage Data" })
+            //         }
+            //         if (!item.GSTType) {
+            //             return res.send({ message: "Invalid productData GSTType Data" })
+            //         }
+            //     }
+            // }
 
-            for (const item of productData) {
+            for (let item of productData) {
                 item.CompanyID = newCompanyID
                 console.log(`insert into product(CompanyID, Name, HSNCode,GSTPercentage,GSTType,Status,CreatedBy,CreatedOn) values(${item.CompanyID}, '${item.Name}', '${item.HSNCode}',${item.GSTPercentage}, '${item.GSTType}', ${item.Status}, 0, now())`);
-                // const [saveProduct] = await mysql2.pool.query(`insert into product(CompanyID, Name, HSNCode,GSTPercentage,GSTType,Status,CreatedBy,CreatedOn) values(${item.CompanyID}, '${item.Name}', '${item.HSNCode}',${item.GSTPercentage}, '${item.GSTType}', ${item.Status}, 0, now())`)
+                const [saveProduct] = await mysql2.pool.query(`insert into product(CompanyID, Name, HSNCode,GSTPercentage,GSTType,Status,CreatedBy,CreatedOn) values(${item.CompanyID}, '${item.Name}', '${item.HSNCode}',${item.GSTPercentage}, '${item.GSTType}', ${item.Status}, 0, now())`)
             }
 
             response.message = "Product Assign SuccessFully"
@@ -768,9 +769,6 @@ module.exports = {
                     if (!item.CompanyID) {
                         return res.send({ message: "Invalid productData CompanyID Data" })
                     }
-                    if (!item.HSNCode) {
-                        return res.send({ message: "Invalid productData HSNCode Data" })
-                    }
                     if (!item.Name) {
                         return res.send({ message: "Invalid productData Name Data" })
                     }
@@ -783,13 +781,13 @@ module.exports = {
                     if (!item.Ref) {
                         return res.send({ message: "Invalid productData Ref Data" })
                     }
-                    if (!item.SptTableName) {
-                        return res.send({ message: "Invalid productData SptTableName Data" })
-                    }
+                    // if (!item.SptTableName) {
+                    //     return res.send({ message: "Invalid productData SptTableName Data" })
+                    // }
                 }
             }
 
-            for (const item of productDataSpec) {
+            for (let item of productDataSpec) {
                 item.CompanyID = newCompanyID
                 if (item.Type === 'DropDown') {
                     item.SptTableName = item.SptTableName + item.CompanyID;
@@ -798,10 +796,10 @@ module.exports = {
                 }
                 if (item.Type === 'DropDown') {
                     console.log(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', ${item.CompanyID}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',${item.Status},0,now())`);
-                    // const [saveSpec] = await mysql2.pool.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', ${item.CompanyID}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',${item.Status},0,now())`)
+                    const [saveSpec] = await mysql2.pool.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', ${item.CompanyID}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',${item.Status},0,now())`)
                 } else if (item.Type !== 'DropDown') {
-                    console.log(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', ${item.Company}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',${item.Status},0,now())`);
-                    // const [saveSpec] = await mysql2.pool.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', ${item.Company}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',${item.Status},0,now())`)
+                    console.log(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', ${item.CompanyID}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',${item.Status},0,now())`);
+                    const [saveSpec] = await mysql2.pool.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', ${item.CompanyID}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',${item.Status},0,now())`)
                 }
             }
 
@@ -821,29 +819,29 @@ module.exports = {
 
             if (!productDataSpecSpt || !productDataSpecSpt.length || !newCompanyID) return res.send({ message: "Invalid productDataSpecSpt Data" })
 
-            if (productDataSpecSpt.length) {
-                for (const item of productDataSpecSpt) {
-                    if (!item.TableName) {
-                        return res.send({ message: "Invalid productData TableName Data" })
-                    }
-                    if (!item.RefID) {
-                        return res.send({ message: "Invalid productData RefID Data" })
-                    }
-                    if (!item.TableValue) {
-                        return res.send({ message: "Invalid productData TableValue Data" })
-                    }
-                    if (!item.CompanyID) {
-                        return res.send({ message: "Invalid productData CompanyID Data" })
-                    }
+            // if (productDataSpecSpt.length) {
+            //     for (const item of productDataSpecSpt) {
+            //         if (!item.TableName) {
+            //             return res.send({ message: "Invalid productData TableName Data" })
+            //         }
+            //         if (!item.RefID) {
+            //             return res.send({ message: "Invalid productData RefID Data" })
+            //         }
+            //         if (!item.TableValue) {
+            //             return res.send({ message: "Invalid productData TableValue Data" })
+            //         }
+            //         if (!item.CompanyID) {
+            //             return res.send({ message: "Invalid productData CompanyID Data" })
+            //         }
 
-                }
-            }
+            //     }
+            // }
 
             for (const item of productDataSpecSpt) {
                 item.CompanyID = newCompanyID
                 item.TableName = item.TableName + item.CompanyID
                 console.log(`insert into specspttable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.TableName}','${item.RefID}','${item.TableValue}',${item.Status},now(),0)`);
-                // let [saveData] = await mysql2.pool.query(`insert into specspttable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.TableName}','${item.RefID}','${item.TableValue}',${item.Status},now(),0)`)
+                let [saveData] = await mysql2.pool.query(`insert into specspttable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.TableName}','${item.RefID}','${item.TableValue}',${item.Status},now(),0)`)
             }
 
             response.message = "Product Spec Spt Assign SuccessFully"
@@ -862,29 +860,28 @@ module.exports = {
 
             if (!supportData || !supportData.length || !newCompanyID) return res.send({ message: "Invalid supportData Data" })
 
-            if (supportData.length) {
-                for (const item of supportData) {
-                    if (!item.TableName) {
-                        return res.send({ message: "Invalid productData TableName Data" })
-                    }
-                    if (!item.Name) {
-                        return res.send({ message: "Invalid productData Name Data" })
-                    }
-                    if (!item.Status) {
-                        return res.send({ message: "Invalid productData Status Data" })
-                    }
-                    if (!item.CompanyID) {
-                        return res.send({ message: "Invalid productData CompanyID Data" })
-                    }
+            // if (supportData.length) {
+            //     for (const item of supportData) {
+            //         if (!item.TableName) {
+            //             return res.send({ message: "Invalid productData TableName Data" })
+            //         }
+            //         if (!item.Name) {
+            //             return res.send({ message: "Invalid productData Name Data" })
+            //         }
+            //         if (!item.Status) {
+            //             return res.send({ message: "Invalid productData Status Data" })
+            //         }
+            //         if (!item.CompanyID) {
+            //             return res.send({ message: "Invalid productData CompanyID Data" })
+            //         }
 
-                }
-            }
+            //     }
+            // }
 
             for (const item of supportData) {
                 item.CompanyID = newCompanyID
-                item.TableName = item.TableName + item.CompanyID
                 console.log(`insert into supportmaster (Name,  TableName,  CompanyID,  Status, UpdatedBy , UpdatedOn ) values ('${item.Name}', '${item.TableName}', '${item.CompanyID}', ${item.Status}, '0', now())`);
-                // let [result] = await mysql2.pool.query(`insert into supportmaster (Name,  TableName,  CompanyID,  Status, UpdatedBy , UpdatedOn ) values ('${item.Name}', '${item.TableName}', '${item.CompanyID}', ${item.Status}, '0', now())`)
+                let [result] = await mysql2.pool.query(`insert into supportmaster (Name,  TableName,  CompanyID,  Status, UpdatedBy , UpdatedOn ) values ('${item.Name}', '${item.TableName}', '${item.CompanyID}', ${item.Status}, '0', now())`)
             }
 
             response.message = "Support Data Assign SuccessFully"
