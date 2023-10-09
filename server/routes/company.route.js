@@ -34,13 +34,13 @@ router.post('/getBillFormateById', verifyAccessTokenAdmin, Controller.getBillFor
 
 // process product & product spec & specspttable
 
-router.post('/processProduct', verifyAccessTokenAdmin, Controller.processProduct)
+router.post('/processProduct', Controller.processProduct)
 
-router.post('/processProductSpec', verifyAccessTokenAdmin, Controller.processProductSpec)
+router.post('/processProductSpec', Controller.processProductSpec)
 
-router.post('/processSpecSpt', verifyAccessTokenAdmin, Controller.processSpecSpt)
+router.post('/processSpecSpt', Controller.processSpecSpt)
 
-router.post('/processSupportData', verifyAccessTokenAdmin, Controller.processSupportData)
+router.post('/processSupportData', Controller.processSupportData)
 
 
 
