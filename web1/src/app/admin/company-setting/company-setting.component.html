@@ -265,12 +265,12 @@
                                     <div class="tab-pane fade" id="ex1-tabs-3" role="tabpanel"
                                         aria-labelledby="ex1-tab-3">
                                         <div class="row">
-                                            <div class="col-md-3">
+                                            <div class="col-md-4">
                                                 <form #fb="ngForm">
                                                     <div class="row">
                                                         <div class="col-12">
                                                             <div class="row">
-                                                        <div class=" col-md-5  mb-0">
+                                                        <div class=" col-md-3 mb-0">
                                                             <mat-form-field class="example-full-width mb-0">
                                                                 <mat-label>Bill Herder </mat-label>
                                                                 <mat-select name="BillHeader"  [(ngModel)]="bill.BillHeader" required >
@@ -283,49 +283,53 @@
                                                                 <mat-error>Select BillHeader  </mat-error>
                                                             </mat-form-field>
                                                         </div>
-                                                                <div class="col-md-5 mb-0">
+                                                                <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
-                                                                        <mat-label>header width</mat-label>
+                                                                        <mat-label>Header width</mat-label>
                                                                         <input matInput name="HeaderWidth"
-                                                                         type="number" min="0"   [(ngModel)]="bill.HeaderWidth">
+                                                                         type="number" min="700" max="1000"  [(ngModel)]="bill.HeaderWidth">
+                                                                         <mat-error>Header width </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
-                                                                <div class="col-md-5 mb-0">
+                                                                <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
-                                                                        <mat-label>header height</mat-label>
+                                                                        <mat-label>Header height</mat-label>
                                                                         <input matInput name="HeaderHeight"
-                                                                        type="number" min="0"  [(ngModel)]="bill.HeaderHeight">
+                                                                        type="number" min="150" max="250" [(ngModel)]="bill.HeaderHeight">
+                                                                        <mat-error>Header height </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
-                                                                <div class="col-md-5 mb-0">
+                                                                <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
-                                                                        <mat-label>header padding</mat-label>
+                                                                        <mat-label>Header padding</mat-label>
                                                                         <input matInput name="HeaderPadding"
-                                                                        type="number" min="0"   [(ngModel)]="bill.HeaderPadding">
+                                                                        type="number" min="5" max="25"  [(ngModel)]="bill.HeaderPadding">
+                                                                        <mat-error>Header padding </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
-                                                                <div class="col-md-5 mb-0">
+                                                                <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>header margin</mat-label>
                                                                         <input matInput name="HeaderMargin"
-                                                                        type="number" min="0"   [(ngModel)]="bill.HeaderMargin">
+                                                                        type="number" min="5" max="25"   [(ngModel)]="bill.HeaderMargin">
+                                                                        <mat-error>Header margin </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
-                                                                <div class="col-md-5 mb-0">
+                                                                <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>image width</mat-label>
                                                                         <input matInput name="ImageWidth"
                                                                         type="number" min="0"    [(ngModel)]="bill.ImageWidth">
                                                                     </mat-form-field>
                                                                 </div>
-                                                                <div class="col-md-5 mb-0">
+                                                                <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>image height</mat-label>
                                                                         <input matInput name="ImageHeight"
                                                                         type="number" min="0"    [(ngModel)]="bill.ImageHeight">
                                                                     </mat-form-field>
                                                                 </div>
-                                                                <div class="col-md-5 mb-0">
+                                                                <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>image align</mat-label>
                                                                         <mat-select name="ImageAlign"  [(ngModel)]="bill.ImageAlign" required >
@@ -336,48 +340,48 @@
                                                                         </mat-select>
                                                                     </mat-form-field>
                                                                 </div>
-                                                                <div class="col-md-5 mb-0">
+                                                                <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>ShopName Font</mat-label>
                                                                         <input matInput name="ShopNameFont"
                                                                         type="number" min="0"  [(ngModel)]="bill.ShopNameFont">
                                                                     </mat-form-field>
                                                                 </div>
-                                                                <div class="col-md-5 mb-0">
+                                                                <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>ShopName Bold</mat-label>
                                                                         <input matInput name="ShopNameBold"
                                                                         type="number" min="0"    [(ngModel)]="bill.ShopNameBold">
                                                                     </mat-form-field>
                                                                 </div>
-                                                                <div class="col-md-5 mb-0">
+                                                                <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Color </mat-label>
                                                                         <input matInput name="Color"
                                                                             [(ngModel)]="bill.Color">
                                                                     </mat-form-field>
                                                                 </div>
-                                                                <div class="col-md-5 mb-0">
+                                                                <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>ShopDateil Font</mat-label>
                                                                         <input matInput name="ShopDetailFont" type="number" min="0"  [(ngModel)]="bill.ShopDetailFont"  >
                                                                     </mat-form-field>
                                                                 </div>
-                                                                <div class="col-md-5 mb-0">
+                                                                <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
-                                                                        <mat-label>line spece </mat-label>
+                                                                        <mat-label>ShopDateil line spece </mat-label>
                                                                         <input matInput name="LineSpace"
                                                                         type="number" min="0"   [(ngModel)]="bill.LineSpace">
                                                                     </mat-form-field>
                                                                 </div>
-                                                                <div class="col-md-5 mb-0">
+                                                                <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Customer Font </mat-label>
                                                                         <input matInput name="CustomerFont"
                                                                         type="number" min="0"   [(ngModel)]="bill.CustomerFont">
                                                                     </mat-form-field>
                                                                 </div>
-                                                                <div class="col-md-5 mb-0">
+                                                                <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Customer LineSpace </mat-label>
                                                                         <input matInput name="CustomerLineSpace"
@@ -385,35 +389,35 @@
                                                                     </mat-form-field>
                                                                 </div>
 
-                                                                <div class="col-md-5 mb-0">
+                                                                <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>table Heading</mat-label>
                                                                         <input matInput name="TableHeading"
                                                                         type="number" min="0"    [(ngModel)]="bill.TableHeading">
                                                                     </mat-form-field>
                                                                 </div>
-                                                                <div class="col-md-5 mb-0">
+                                                                <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>table Body </mat-label>
                                                                         <input matInput name="TableBody"
                                                                         type="number" min="0"    [(ngModel)]="bill.TableBody ">
                                                                     </mat-form-field>
                                                                 </div>
-                                                                <div class="col-md-5 mb-0">
+                                                                <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Note Font </mat-label>
                                                                         <input matInput name="NoteFont "
                                                                         type="number" min="0"   [(ngModel)]="bill.NoteFont  ">
                                                                     </mat-form-field>
                                                                 </div>
-                                                                <div class="col-md-5 mb-0">
+                                                                <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Note LineSpace </mat-label>
                                                                         <input matInput name="NoteLineSpace"
                                                                         type="number" min="0"    [(ngModel)]="bill.NoteLineSpace ">
                                                                     </mat-form-field>
                                                                 </div>
-                                                                <div class="col-md-5 mb-0">
+                                                                <div class="col-md-3 mb-0">
                                                             <button  class="me-3" mat-raised-button color="primary" [disabled]="!fb.valid" (click)="saveBillFormate()">Save</button>
                                                                 </div>
                                                             </div>
@@ -421,9 +425,9 @@
                                                     </div>
                                                 </form>
                                             </div>
-                                            <div class="col-md-9">
+                                            <div class="col-md-8" style="zoom:100%; border:1px solid #000 ; width: 210mm; height: 297mm;" >
                                                 <div class="row">
-                                                    <div class="col-12">
+                                                    <div class="col-12 p-0">
                                                     <!-- center log -->
                                                       <span *ngIf="this.bill.BillHeader == '0'">
                                                         <header style="width:{{this.bill.HeaderWidth}}; height: {{this.bill.HeaderHeight}}; padding: {{this.bill.HeaderPadding}}; margin: {{this.bill.HeaderMargin}};  border: 1px solid #000 ;ltext-align: center;" >
@@ -485,7 +489,7 @@
                                                       <span *ngIf="this.bill.BillHeader == '3'">
                                                         <header  style="width:{{this.bill.HeaderWidth}}px; height: {{this.bill.HeaderHeight}}px; padding: {{this.bill.HeaderPadding}}px; margin: {{this.bill.HeaderMargin}}px;  border: 1px solid #000">
                                                             <span style="width: 50%; float: left; height: 90px; text-align:{{this.bill.ImageAlign}}">
-                                                                <img src="{{this.shop?.LogoURL}}" alt=""
+                                                                <img src="{{this.env.apiUrl + this.company?.LogoURL}}" alt=""
                                                                     style="width:{{this.bill.ImageWidth}}px; height: {{this.bill.ImageHeight}}px;">
                                                             </span>
                                                             <div style="width: 50%; float: right;line-height: {{this.bill.LineSpace}}px; ">
@@ -532,7 +536,7 @@
                                                                 <li>Date</li>
                                                                 <li>Del. Date</li>
                                                                 <li>Rx BY</li>
-                                                                <li>Sale lierson</li>
+                                                                <li>Sale Person</li>
                                                            </ul>
                                                            <ul style="width:70%;float: right;padding: 0 ; list-style: none;">
                                                             <li>xx xx xxxx</li>
@@ -594,9 +598,9 @@
                                                     </table>
                                                 </div>
                                                  
-                                                <div class="row" style="padding: 0px 10px;width:100vh;">
-                                                    <div style="width: 60%; float: left;">
-                                                        <h2>Improt Note</h2>
+                                                <div class="row" style="padding: 0px 10px;width:100%; border-top:1px solid #000; padding-top: 1%;">
+                                                    <div style="width: 70%; float: left;">
+                                                        <h2>important Note</h2>
                                                          <ul style="padding: 0 ; list-style: none; font-size: {{this.bill.NoteFont}}px; line-height:  {{this.bill.NoteLineSpace}}px;">
                                                             <li> WE PREFER 50% ADVANCE AT THE TIME OF ORDER BOOKING</li>
                                                             <li> ANY REPAIRING WORK WILL BE DONE AT CUSTOMERS OWN RISK</li>
@@ -605,7 +609,7 @@
                                                             <li> WE PREFER CHECKING OF THE PRODUCT AT THE TIME OF DELIVERY</li>
                                                          </ul>
                                                     </div>
-                                                    <div style="width: 40%; float: right;font-size: {{this.bill.CustomerFont}}px; line-height:  {{this.bill.CustomerLineSpace}}px;">
+                                                    <div style="width: 30%; float: right;font-size: {{this.bill.CustomerFont}}px; line-height:  {{this.bill.CustomerLineSpace}}px;">
                                                         <ul style="padding: 0 ; list-style: none;  width: 50%; float: left; font-weight: 600;">
                                                             <li>Sub Total</li>
                                                             <li>Discount</li>

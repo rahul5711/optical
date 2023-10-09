@@ -10,6 +10,7 @@ import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { CompanyService } from 'src/app/service/company.service';
 import { Router } from '@angular/router';
 
+
 @Component({
   selector: 'app-company-setting',
   templateUrl: './company-setting.component.html',
@@ -21,6 +22,7 @@ export class CompanySettingComponent implements OnInit {
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
   shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
+  company:any =JSON.parse(localStorage.getItem('company') || '') ;
  
   env = environment;
   img: any;
@@ -42,8 +44,8 @@ export class CompanySettingComponent implements OnInit {
      InvoiceFormat: 'option.ejs', LoginTimeStart: '', LoginTimeEnd: '', year: false, month: false, partycode: false, type: false , BarCode:'', FeedbackDate:'', ServiceDate:'',DeliveryDay:'',UpdatedBy:null
   };
 
-  bill : any ={CompanyID: null,  BillHeader:'3',HeaderWidth:100, HeaderHeight:25, HeaderPadding:5,HeaderMargin:5,ImageWidth:200,ImageHeight:150,ImageAlign:'center',ShopNameFont:25,ShopNameBold:'400', ShopDetailFont:15, Color:'#000000',LineSpace:20, CustomerFont:15, CustomerLineSpace:20,
-  TableBody:12,TableHeading:15, NoteFont:15, NoteLineSpace:20, UpdateBy:null}
+  bill : any ={CompanyID: null,  BillHeader:'3',HeaderWidth:780, HeaderHeight:170, HeaderPadding:5,HeaderMargin:5,ImageWidth:200,ImageHeight:150,ImageAlign:'center',ShopNameFont:25,ShopNameBold:'600', ShopDetailFont:17, Color:'red',LineSpace:25, CustomerFont:16, CustomerLineSpace:22,
+  TableBody:15,TableHeading:17, NoteFont:15.5, NoteLineSpace:25, UpdateBy:null}
 
   companyWatermark: any;
   companyWholeSalePrice: any;

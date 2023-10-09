@@ -1714,7 +1714,7 @@ module.exports = {
                 return element;
             });
                   console.log(printdata.shopdetails.LogoURL);
-             printdata.LogoURL = printdata.shopdetails.LogoURL;
+             printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
             let fileName = "";
             const file = "invoice.ejs" + ".pdf";
             const formatName = "invoice.ejs";
