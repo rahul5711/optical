@@ -881,7 +881,7 @@ module.exports = {
             for (const item of supportData) {
                 item.CompanyID = newCompanyID
                 console.log(`insert into supportmaster (Name,  TableName,  CompanyID,  Status, UpdatedBy , UpdatedOn ) values ('${item.Name}', '${item.TableName}', '${item.CompanyID}', ${item.Status}, '0', now())`);
-                let [result] = await mysql2.pool.query(`insert into supportmaster (Name,  TableName,  CompanyID,  Status, UpdatedBy , UpdatedOn ) values ('${item.Name}', '${item.TableName}', '${item.CompanyID}', ${item.Status}, '0', now())`)
+                let [result] = await mysql2.pool.query(`insert into supportmaster (Name,  TableName,  CompanyID,  Status, UpdatedBy , UpdatedOn ) values ('${item.Name}', '${item.TableName}', ${item.CompanyID}, ${item.Status}, '0', now())`)
             }
 
             response.message = "Support Data Assign SuccessFully"
