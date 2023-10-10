@@ -2246,6 +2246,7 @@ module.exports = {
                     "totalQty": 0,
                     "totalGstAmount": 0,
                     "totalAmount": 0,
+                    "totalAddlDiscount": 0,
                     "totalDiscount": 0,
                     "totalUnitPrice": 0,
                     "totalSubTotalPrice": 0,
@@ -2405,6 +2406,10 @@ module.exports = {
                         }
 
                     }
+
+                    response.calculation[0].totalAmount = response.calculation[0].totalAmount - item.AddlDiscount
+                    response.calculation[0].totalAddlDiscount += item.AddlDiscount
+
                 }
             }
 
