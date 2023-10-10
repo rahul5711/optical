@@ -195,7 +195,11 @@ export class ProductTransferComponent implements OnInit {
 
   dropdownShoplist(){
     this.sp.show()
-    const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
+    const datum = {
+      currentPage: 1,
+      itemsPerPage: 100
+    }
+    const subs: Subscription = this.ss.getList(datum).subscribe({
       next: (res: any) => {
         if(res.success){
           let shop = res.data

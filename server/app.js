@@ -65,7 +65,7 @@ app.use(function(req, res, next) {
       ) {
         next()
       } else {
-        return res.status(999).send({success: false, message: `your session has been expired`})
+        return res.status(200).send({success: false, message: `your session has been expired`})
       }
       } else {
         next()

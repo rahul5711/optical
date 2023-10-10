@@ -229,7 +229,7 @@ module.exports = {
 
             //  barcode initiated for company
 
-            const barcode = { CompanyID: saveCompany.insertId, SB: '10000000', PB: '90000000', MB: '00001000' }
+            const barcode = { CompanyID: `${saveCompany.insertId}`, SB: '10000000', PB: '90000000', MB: '00001000' }
 
             const [savebarcode] = await mysql2.pool.query(`insert into barcode(CompanyID, SB, PB, MB, Status, CreatedBy, CreatedOn)values(${barcode.CompanyID}, '${barcode.SB}', '${barcode.PB}', '${barcode.MB}',1,0,now())`)
 
@@ -450,7 +450,7 @@ module.exports = {
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
 
-            const [Company] = await mysql2.pool.query(`select company.*, company.Name as CompanyName, user.DOB, user.Anniversary, user.LoginName, user.PhotoURL, user.Name  from company left join user on user.CompanyID = company.ID where company.ID = ${Body.ID} and company.Status = 1`)
+            const [Company] = await mysql2.pool.query(`select company.*, company.Name as CompanyName, user.DOB, user.Anniversary, user.LoginName, user.PhotoURL, user.Name  from company left join user on user.CompanyID = company.ID where company.ID = ${Body.ID}`)
 
             const [User] = await mysql2.pool.query(`SELECT * FROM user where companyID = ${Body.ID} and user.Status = 1`)
 
