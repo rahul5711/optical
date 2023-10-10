@@ -505,6 +505,23 @@ export class PurchaseComponent implements OnInit {
         this.GstTypeDis = true
       }
     }
+    if (this.item.GSTType !== 'None') {
+      if (this.item.GSTPercentage == "0") {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Please Select GSTType',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        this.GstTypeDis = true
+      }
+    }
+    if (this.item.GSTType !== 'None') {
+      if (this.item.GSTPercentage !== "0") {
+        this.GstTypeDis = false
+      }
+    }
 
     if (this.charge.GSTPercentage !== 0 && this.charge.GSTPercentage !== "0") {
       if (this.charge.GSTType === 'None') {
@@ -518,6 +535,7 @@ export class PurchaseComponent implements OnInit {
         this.GstTypeDis = true
       }
     }
+
   }
 
   onSumbit() {

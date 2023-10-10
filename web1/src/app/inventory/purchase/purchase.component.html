@@ -279,7 +279,7 @@
                                     <mat-form-field *ngIf="item.GSTPercentage !== 0" class="example-full-width mb-0">
                                         <mat-label>TAX Type</mat-label>
                                         <mat-select name="GSTType" [(ngModel)]="item.GSTType" #GSTTypeacontrol
-                                            (selectionChange)="calculateFields('TotalAmount', 'total')" required>
+                                            (selectionChange)="calculateFields('TotalAmount', 'total');notifyGst();" required>
                                             <span >
                                                 <mat-option [value]="g.Name" *ngFor="let g of gstList">
                                                     {{g.Name}}
@@ -291,7 +291,7 @@
                                     <mat-form-field *ngIf="item.GSTPercentage  === 0" class="example-full-width mb-0">
                                         <mat-label>TAX Type</mat-label>
                                         <mat-select name="GSTType" [(ngModel)]="item.GSTType" #GSTTypeacontrol
-                                            (selectionChange)="calculateFields('TotalAmount', 'total')" required>
+                                            (selectionChange)="calculateFields('TotalAmount', 'total');notifyGst();" required>
                                             <mat-option value="None" >None</mat-option>
                                             <mat-option value="{{this.supplierGSTType}}" *ngIf="this.supplierGSTType !== ''">{{this.supplierGSTType}}</mat-option>
                                         </mat-select>
