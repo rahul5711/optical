@@ -26,7 +26,7 @@ export class CompanyListComponent implements OnInit {
   gridview = true;
   dataList: any;
   currentPage = 1;
-  itemsPerPage = 10;
+  itemsPerPage = 100;
   pageSize!: number;
   collectionSize = 0
   page = 4;

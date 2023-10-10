@@ -53,16 +53,16 @@ module.exports = {
                 let loginCode = 0;
                 const [company] = await mysql2.pool.query(`select * from company where Status = 1 and ID = '${User[0].CompanyID}'`)
                 if (!company.length) {
-                    return res.send({ success: false, message: "Company De-Activate By Admin, Contact OpticalGuru Team" })
+                    return res.send({ success: false, message: "Your Server Plan Expired #!" })
                 }
 
                 const [setting] = await mysql2.pool.query(`select * from companysetting where CompanyID = '${User[0].CompanyID}'`);
 
                 var expDate = new Date(company[0].CancellationDate);
                 var todate = new Date()
-                // if (todate >= expDate) {
-                //   return res.send({message: "Plan Expired"})
-                // }
+                if (todate >= expDate) {
+                  return res.send({message: "Your Server Plan Expired !"})
+                }
 
                 if (User[0].UserGroup === "CompanyAdmin") {
                     console.log("CompanyAdmin==========================>",User);
