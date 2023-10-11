@@ -85,7 +85,7 @@ export class BillingComponent implements OnInit {
     this.id2 = this.route.snapshot.params['billid'];
   }
 
-  data: CustomerModel = {
+  data: any = {
     ID: '', CompanyID: '', Idd: 0, Name: '', Sno: '', TotalCustomer: '', VisitDate: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: null, DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
   };
 
@@ -548,29 +548,32 @@ x:any
       this.data.tablename = 'other_rx'
       this.data.other_rx = this.other
     }
-
-    this.param.Name = this.data.Name
-    const subs1: Subscription = this.cs.customerSearch(this.param).subscribe({
-      next: (res: any) => {
-        if (res) {
-          this.searchList = res.data
-          if(this.searchList.length !== 0){
-            Swal.fire({
-              position: 'center',
-              icon: 'warning',
-              title: 'Duplicate Customer',
-              showConfirmButton: true,
-              backdrop:false
-            })
+    
+    if(this.data.MobileNo1 !== ''){
+      this.param.MobileNo1 = this.data.MobileNo1
+      const subs1: Subscription = this.cs.customerSearch(this.param).subscribe({
+        next: (res: any) => {
+          if (res) {
+            this.searchList = res.data
+            if(this.searchList.length !== 0){
+              Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: 'Duplicate Customer',
+                showConfirmButton: true,
+                backdrop:false
+              })
+            }
+            this.srcBox = true
+          } else {
+            this.as.errorToast(res.message)
           }
-          this.srcBox = true
-        } else {
-          this.as.errorToast(res.message)
-        }
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs1.unsubscribe(),
-    });
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs1.unsubscribe(),
+      });
+    }
+
 
     const subs: Subscription = this.cs.saveCustomer(this.data).subscribe({
       next: (res: any) => {
@@ -716,7 +719,7 @@ x:any
   }
 
   clearFrom() {
-    this.sp.show();
+
     this.data = {
       ID: '', CompanyID: '', Idd: 0, Name: '', Sno: '', TotalCustomer: '', VisitDate: this.data.VisitDate, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: null, DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
     };
@@ -741,14 +744,16 @@ x:any
       R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
     };
 
+    this.sp.show();
     this.Check = { SpectacleCheck: true, ContactCheck: false, OtherCheck: false, };
     this.id = 0;
     this.router.navigate(['/sale/billing', 0, 0]);
-    this.ngOnInit();
     this.spectacleLists = [];
     this.contactList = [];
     this.otherList = [];
     this.sp.hide();
+    this.ngOnInit();
+
   }
 
   NewVisit(mode: any) {
@@ -1058,43 +1063,43 @@ x:any
     return event;
   }
 
-  ngAfterViewInit() {
-    fromEvent(this.UserNamecontrol.nativeElement, 'keyup').pipe(
-      map((event: any) => {
-        return event.target.value;
-      }),
-      debounceTime(1000),
-      distinctUntilChanged(),
+  // ngAfterViewInit() {
+  //   fromEvent(this.UserNamecontrol.nativeElement, 'keyup').pipe(
+  //     map((event: any) => {
+  //       return event.target.value;
+  //     }),
+  //     debounceTime(1000),
+  //     distinctUntilChanged(),
       
-    ).subscribe((text: string) => {
+  //   ).subscribe((text: string) => {
 
-    let data = {
-      searchQuery: text.trim(),
-    }
+  //   let data = {
+  //     searchQuery: text.trim(),
+  //   }
        
-    if(data.searchQuery !== "") {
-      const dtm = {
-        searchQuery: data.searchQuery 
-      }
-      this.sp.show()
-      const subs: Subscription = this.cs.searchByFeild(dtm).subscribe({
-        next: (res: any) => {
-          if(res.success){
-            this.searchList = res.data
-            this.srcBox = true
-            this.as.successToast(res.message)
-          }else{
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-      } 
-    });
-    this.srcBox = false
-  }
+  //   if(data.searchQuery !== "") {
+  //     const dtm = {
+  //       searchQuery: data.searchQuery 
+  //     }
+  //     this.sp.show()
+  //     const subs: Subscription = this.cs.searchByFeild(dtm).subscribe({
+  //       next: (res: any) => {
+  //         if(res.success){
+  //           this.searchList = res.data
+  //           this.srcBox = true
+  //           this.as.successToast(res.message)
+  //         }else{
+  //           this.as.errorToast(res.message)
+  //         }
+  //         this.sp.hide();
+  //       },
+  //       error: (err: any) => console.log(err.message),
+  //       complete: () => subs.unsubscribe(),
+  //     });
+  //     } 
+  //   });
+  //   this.srcBox = false
+  // }
 
 
 

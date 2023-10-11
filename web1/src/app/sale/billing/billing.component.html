@@ -69,7 +69,7 @@
                                                 </mat-select>
                                             </mat-form-field>
                                         </div>
-                                        <!-- <div class="col-xl-3 col-lg-3 col-md-3  col-8 mb-0">
+                                        <div class="col-xl-3 col-lg-3 col-md-3  col-8 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label> Name</mat-label>
                                                 <input matInput min="3" [(ngModel)]="data.Name" name="Name"
@@ -87,8 +87,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                        </div> -->
-                                        <div class="col-xl-3 col-lg-3 col-md-3  col-8 mb-0">
+                                        </div>
+                                        <!-- <div class="col-xl-3 col-lg-3 col-md-3  col-8 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label> Name</mat-label>
                                                 <input matInput min="3" [(ngModel)]="data.Name" name="Name"
@@ -107,7 +107,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                        </div>
+                                        </div> -->
                                         <div class="col-xl-2 col-lg-2 col-md-3  col-4 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Mobile No1</mat-label>
@@ -141,8 +141,8 @@
                                         <div class="col-xl-5 col-lg-5 col-md-3  col-12 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Address</mat-label>
-                                                <input matInput name="Address" minlength="2" [(ngModel)]="data.Address"
-                                                (input)="customerSearch(Addresscontrol.value, 'Address')"  #Addresscontrol />
+                                                <textarea  rows="1" matInput name="Address" minlength="2" [(ngModel)]="data.Address"
+                                                (input)="customerSearch(Addresscontrol.value, 'Address')"  #Addresscontrol ></textarea>
                                                 <mat-error>
                                                     Atleast 2 characters required
                                                 </mat-error>
@@ -161,8 +161,8 @@
                                         <div class="col-xl-5 col-lg-5 col-md-6  col-8 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Remark/TLN </mat-label>
-                                                <input matInput name="Remarks" [(ngModel)]="data.Remarks"
-                                                    #Remarkscontrol />
+                                                <textarea rows="1" matInput name="Remarks" [(ngModel)]="data.Remarks"
+                                                    #Remarkscontrol ></textarea>
                                                 <mat-error>
                                                     Remarks is required
                                                 </mat-error>

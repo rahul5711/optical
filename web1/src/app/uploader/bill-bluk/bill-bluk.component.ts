@@ -216,6 +216,7 @@ export class BillBlukComponent implements OnInit {
                 icon: 'error',
                 title: res.message,
                 showConfirmButton: true,
+                backdrop: false,
               })
             }
             this.sp.hide();
@@ -445,6 +446,7 @@ export class BillBlukComponent implements OnInit {
               showConfirmButton: false,
               timer: 2000
             })
+            this.getDetailList()
             this.sp.show();
             if (res.success) {
               this.updateFileRecordDetail(ID)
@@ -455,6 +457,7 @@ export class BillBlukComponent implements OnInit {
                 icon: 'error',
                 title: res.message,
                 showConfirmButton: true,
+                backdrop: false,
               })
             }
             this.sp.hide();

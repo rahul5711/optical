@@ -174,30 +174,33 @@ export class BillComponent implements OnInit {
         this.deleteCustomerBill = element.Delete;
       }
     });
+    
     this.BillMaster.Employee = this.user.ID
     this.BillMaster.BillDate = moment().format('YYYY-MM-DD');
     this.BillMaster.DeliveryDate = moment(new Date()).add(this.companySetting.DeliveryDay, 'days').format('YYYY-MM-DD');
     [this.loginShop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
-    console.log(this.loginShop);
-    
+    this.currentTime = new Date().toLocaleTimeString('en-IN', { hourCycle: 'h23'})
+
+    if (this.id2 != 0) {
+      this.getCustomerById1()
+      this.getPaymentModesList()
+      this.billByCustomer(this.id)
+      this.paymentHistoryByMasterID(this.id, this.id2)
+    } 
+
     this.getTrayNo();
     this.getEmployee();
     this.getDoctor();
     this.getProductList();
     this.getGSTList();
     this.getService();
-    if (this.id2 != 0) {
-      this.getCustomerById1()
-      this.getPaymentModesList()
-      this.billByCustomer(this.id)
-      this.paymentHistoryByMasterID(this.id, this.id2)
-    }    
-     this.currentTime = new Date().toLocaleTimeString('en-IN', { hourCycle: 'h23'})
+
   }
 
   getCustomerById1() {
-    this.sp.show()
+
     if (this.id != 0) {
+      this.sp.show()
       const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
         next: (res: any) => {
           if (res.success) {

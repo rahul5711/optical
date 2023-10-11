@@ -31,7 +31,7 @@
     margin: 0;
     position: absolute;
     z-index: 99999;
-    top: 64px;
+    top: 200px;
 }
 
 .search1 {
@@ -48,7 +48,9 @@
     top: 150px;
 }
 
-
+textarea.mat-input-element {
+    max-height: 30px !important;
+}
 
 @import "~@ng-select/ng-select/themes/default.theme.css";
 
