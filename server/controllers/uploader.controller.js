@@ -339,8 +339,8 @@ module.exports = {
                         console.log(item.BarcodeExist, 'item.BarcodeExistitem.BarcodeExistitem.BarcodeExist');
                         if (item.BarcodeExist === 1) {
                             barcode = item.BaseBarCode
-                        } else if(item.BarcodeExist === 0) {
-                            barcode =  Number(item.BaseBarCode) * 1000
+                        } else if (item.BarcodeExist === 0) {
+                            barcode = Number(item.BaseBarCode) * 1000
                         }
                         let count = 0;
                         count = item.Quantity;
@@ -473,6 +473,99 @@ module.exports = {
             next(err)
         }
     },
+    processSupplierFile: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const {
+                filename,
+                originalname,
+                path,
+                destination
+            } = req.body
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+
+            filepath = destination + '/' + filename
+
+            const sheets = xlsx.parse(filepath) // parses a file
+            sheets[0].data = sheets[0].data.filter((el) => el.length > 0);
+            let fileData = []
+            let processedFileData = []
+            for (const sheet of sheets) {
+                fileData = [...fileData, ...sheet.data]
+            }
+
+
+            let count = 0
+            for (const fd of fileData) {
+                count += 1
+                console.log(count);
+                let newData = {
+                    "Name": fd[0] ? fd[0] : "",
+                    "MobileNo1": fd[1] ? fd[1] : "",
+                    "MobileNo2": fd[2] ? fd[2] : "",
+                    "PhoneNo": fd[3] ? fd[3] : "",
+                    "Address": fd[4] ? fd[4] : "",
+                    "GSTNo": fd[5] ? fd[5] : "",
+                    "GSTType": fd[6] ? fd[6] : "None",
+                    "Email": fd[7] ? fd[7] : "",
+                    "Website": fd[8] ? fd[8] : "",
+                    "CINNo": fd[9] ? fd[9] : "",
+                    "Fax": fd[10] ? fd[10] : "",
+                    "PhotoURL": fd[11] ? fd[11] : "",
+                    "ContactPerson": fd[12] ? fd[12] : "",
+                    "Remark": fd[13] ? fd[13] : "",
+                    "DOB": fd[14] ? fd[14] : '"0000-00-00"',
+                    "Anniversary": fd[15] ? fd[15] : '"0000-00-00"',
+                    "Gender": fd[16] ? fd[16] : "",
+                    "VisitDate": fd[17] ? fd[17] : '"0000-00-00"'
+                }
+
+                newData.CompanyID = CompanyID
+                const [dataCount] = await mysql2.pool.query(`select * from supplier where CompanyID = ${CompanyID}`)
+                const sno = dataCount.length + 1
+                newData.Sno = sno
+                processedFileData.push(newData)
+            }
+
+            processedFileData.reverse()
+            processedFileData.pop()
+            processedFileData.reverse()
+
+            const body = processedFileData
+
+
+            if (!body.length) {
+                console.log('syncing done....')
+                return
+            } else {
+                const data = body
+                if (!(data && data.length)) {
+                    return next(createError.BadRequest())
+                }
+                for (const datum of data) {
+
+                    let remark = datum.Remark.toString().replace(/[\r\n]/gm, '');
+                    let addr = datum.Address.toString().replace(/[\r\n]/gm, '');
+
+                    const [saveData] = await mysql2.pool.query(`insert into supplier (Sno,Name, CompanyID,  MobileNo1, MobileNo2 , PhoneNo, Address,GSTNo, Email,Website ,CINNo,Fax,PhotoURL,ContactPerson,Remark,GSTType,DOB,Anniversary, Status,CreatedBy,CreatedOn) values ('${datum.Sno}','${datum.Name}', ${datum.CompanyID}, '${datum.MobileNo1}', '${datum.MobileNo2}', '${datum.PhoneNo}','${addr}','${datum.GSTNo}','${datum.Email}','${datum.Website}','${datum.CINNo}','${datum.Fax}','${datum.PhotoURL}','${datum.ContactPerson}','${remark}','${datum.GSTType}','${datum.DOB}','${datum.Anniversary}',1,${LoggedOnUser}, now())`)
+
+                    console.log(connected("Supplier Added SuccessFUlly !!!"));
+                }
+
+            }
+
+            response.message = "data save sucessfully"
+            response.data = []
+            return res.send(response)
+
+        } catch (err) {
+            next(err)
+        }
+    },
     processCusSpectacleFile: async (req, res, next) => {
         try {
 
@@ -540,7 +633,7 @@ module.exports = {
                     "RefferedByDoc": 'Self',
                     "Reminder": '6',
                     "ExpiryDate": fd[32] ? fd[32] : "0000-00-00",
-                    "VisitDate": fd[33] ? fd[33] :"0000-00-00",
+                    "VisitDate": fd[33] ? fd[33] : "0000-00-00",
                 }
                 newData.VisitNo = 1,
                     newData.CompanyID = CompanyID,

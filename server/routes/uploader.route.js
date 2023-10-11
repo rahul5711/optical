@@ -15,6 +15,8 @@ router.post('/processPurchaseFile', verifyAccessTokenAdmin, Controller.processPu
 
 router.post('/processCustomerFile', verifyAccessTokenAdmin, Controller.processCustomerFile)
 
+router.post('/processSupplierFile', verifyAccessTokenAdmin, Controller.processSupplierFile)
+
 router.post('/processCusSpectacleFile', verifyAccessTokenAdmin, Controller.processCusSpectacleFile)
 
 router.post('/processCusContactFile', verifyAccessTokenAdmin, Controller.processCusContactFile)

@@ -53,6 +53,13 @@ module.exports = {
     return Number(barcode[0].MaxBarcode) ? Number(barcode[0].MaxBarcode) : 0
 
   },
+  doesExistProduct2: async (CompanyID, Body) => {
+    let qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = '${CompanyID}'AND purchasedetailnew.Status = 1 and purchasedetailnew.ID != ${Body.ID}`;
+
+    const [barcode] = await mysql2.pool.query(qry)
+    return Number(barcode[0].MaxBarcode) ? Number(barcode[0].MaxBarcode) : 0
+
+  },
   generateUniqueBarcode: async (CompanyID, SupplierID, Body) => {
     const [fetchcompanysetting] = await mysql2.pool.query(`select * from companysetting where Status = 1 and CompanyID = ${CompanyID} `)
 
