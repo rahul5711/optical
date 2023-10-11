@@ -55,11 +55,14 @@ body{
 .CustomerRow .col2 .ul1{
     width:33%; float: left; list-style: none;   padding: 0;margin: 0; 
 }
+.CustomerRow .col2 .ul1 li{
+    height: 22px;
+}
 .CustomerRow .col2 .ul2{
     width:60%; float: right;  list-style: none;   padding: 0;margin: 0; 
 }
 .CustomerRow .col2 .ul2 li{
-   height: 19px;
+   height: 22px;
     width:100%;
 }
 /* Customer Details css  end*/

@@ -929,10 +929,10 @@
                         [disabled]="BillMaster.ID === null" (click)="openModal12(content12)">Lens Order</button>
                     <button type="button" class=" me-3" mat-raised-button color="primary"
                         [disabled]="BillMaster.ID === null" (click)="openModal13(content13)">Fitter Order</button>
-                    <button type="button" mat-raised-button color="primary"
+                    <button type="button"  mat-raised-button color="primary"
                         (click)="billPrint('Receipt')">Receipt</button>
-                    <button type="button" class="me-3 ms-3" mat-raised-button color="primary"
-                        (click)="billPrint('Invoice')">Invoice</button>
+                        <button type="button" class="me-3 ms-3" mat-raised-button color="primary"
+                        (click)="billPrint('Invoice')" > Invoice</button>
                     <button type="button" mat-raised-button color="primary">
                         <mat-slide-toggle name="ShowPower" color="primary" [(ngModel)]="ShowPower"
                             class="example-margin" #ShowPowercontrol>Show Power</mat-slide-toggle>

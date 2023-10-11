@@ -91,9 +91,16 @@
                                     data.CustomerLineSpace %>;">
                                     <li>Date</li>
                                     <li>Del. Date</li>
-                                    <li>Rx BY</li>
-                                    <li>GSTNo</li>
-                                   
+                                    <li>
+                                        <% if (data.customer.GSTNo != ''){%>
+                                        GSTNo
+                                        <%}%>
+                                    </li>
+                                    <li>
+                                        <% if (data.customer.RefferedByDoc != ''){%>
+                                        Rx BY
+                                        <%}%>
+                                    </li>
                         </ul>
                         <ul class="ul2" <% %> style="font-size:<%= data.CustomerFont %> ; line-height:<%=
                                     data.CustomerLineSpace %>;">
@@ -104,10 +111,14 @@
                                         <%=data.billMaster.DeliveryDate%>
                                     </li>
                                     <li>
-                                        <%=data.customer.RefferedByDoc%>
+                                        <% if (data.customer.GSTNo != ''){%>
+                                        <%=data.customer.GSTNo%>
+                                        <%}%>
                                     </li>
                                     <li>
-                                        <%=data.customer.GSTNo%>
+                                        <% if (data.customer.RefferedByDoc != ''){%>
+                                        <%=data.customer.RefferedByDoc%>
+                                        <%}%>
                                     </li>
                                    
 
@@ -465,7 +476,7 @@
                                                                 <% if(data.paidlist.length !==0){
                                                                     data.paidlist.forEach(function (i, index) { %>
                                                                     <% if (i.PaymentMode !=='Payment Initiated' ){%>
-                                                                        <span style="font-size: 8px;">
+                                                                        <span style="font-size: 12px;">
                                                                             <%=i.PaymentMode%>/
                                                                         </span>
                                                                         <%}%>
