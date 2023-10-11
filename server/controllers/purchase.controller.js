@@ -1,6 +1,6 @@
 const createError = require('http-errors')
 const _ = require("lodash")
-const { generateBarcode, generateUniqueBarcode, doesExistProduct, shopID, gstDetail } = require('../helpers/helper_function')
+const { generateBarcode, generateUniqueBarcode, doesExistProduct, shopID, gstDetail, doesExistProduct2 } = require('../helpers/helper_function')
 const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
@@ -529,7 +529,7 @@ module.exports = {
             }
 
             Body.Multiple = 0
-            const doesProduct = await doesExistProduct(CompanyID, Body)
+            const doesProduct = await doesExistProduct2(CompanyID, Body)
 
             if (doesProduct !== 0) {
                 return res.send({message: `Product Already Exist With Same Barcode Number, Please Change Purchase Price OR Retail Price`})
