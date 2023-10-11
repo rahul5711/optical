@@ -271,12 +271,12 @@ export class ShopListComponent implements OnInit {
       // console.log(`Image size after compressed: ${compressedImage.size} bytes.`)
       this.fu.uploadFileComapny(compressedImage).subscribe((data: any) => {
         if (data.body !== undefined && mode === 'company') {
-          this.companyImage = this.env.apiUrl + data.body?.download;
+          this.companyImage =  data.body?.download;
           this.data.LogoURL = data.body?.download
           this.as.successToast(data.body?.message)
         }
         if (data.body !== undefined && mode === 'water') {
-          this.waterImage = this.env.apiUrl + data.body?.download;
+          this.waterImage =  data.body?.download;
           this.data.WaterMark = data.body?.download
           this.as.successToast(data.body?.message)
         }

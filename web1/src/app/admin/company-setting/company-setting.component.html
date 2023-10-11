@@ -425,7 +425,7 @@
                                                     </div>
                                                 </form>
                                             </div>
-                                            <div class="col-md-8" style="zoom:100%; border:1px solid #000 ; width: 210mm; height: 297mm;" >
+                                            <div class="col-md-8" style="zoom:100%; border:1px solid #000 ; width: 265mm; height: 297mm;" >
                                                 <div class="row">
                                                     <div class="col-12 p-0">
                                                     <!-- center log -->
@@ -486,7 +486,7 @@
                                                       </span>
                                                     <!-- right log -->
                                                     <!-- 50-50 log -->
-                                                      <span *ngIf="this.bill.BillHeader == '3'">
+                                                      <span *ngIf="this.bill.BillHeader == '3'" style="width:100%; ">
                                                         <header  style="width:{{this.bill.HeaderWidth}}px; height: {{this.bill.HeaderHeight}}px; padding: {{this.bill.HeaderPadding}}px; margin: {{this.bill.HeaderMargin}}px;  border: 1px solid #000">
                                                             <span style="width: 50%; float: left; height: 90px; text-align:{{this.bill.ImageAlign}}">
                                                                 <img src="{{this.env.apiUrl + this.company?.LogoURL}}" alt=""
@@ -516,8 +516,8 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-12" style="font-size: {{this.bill.CustomerFont}}px; line-height:  {{this.bill.CustomerLineSpace}}px;">
-                                                    <div style="width:100vh; padding: 0px 10px; ">
-                                                        <div style="width:55vh;float: left; ">
+                                                    <div style="width:100%; padding: 0px 10px; ">
+                                                        <div style="width:55%;float: left; ">
                                                            <ul style="width:20%;float: left;padding: 0 ; list-style: none; ">
                                                                 <li>Bill of Supply</li>
                                                                 <li>Cust_ID</li>
@@ -531,7 +531,7 @@
                                                                  <li>xxxxxxxx</li>
                                                            </ul>
                                                         </div>
-                                                        <div style="width:40vh;float: right;">
+                                                        <div style="width:40%;float: right;">
                                                             <ul style="width:25%;float: left;padding: 0 ; list-style: none;">
                                                                 <li>Date</li>
                                                                 <li>Del. Date</li>
@@ -550,7 +550,7 @@
                                                 </div>
                                                 
                                                 <div class="row" style="padding: 0px 20px;">
-                                                    <table style="width:100vh;">
+                                                    <table style="width:100%;">
                                                         <thead style="background-color: rgb(228, 228, 228); text-align: center;">
                                                           <tr style="font-size: {{this.bill.TableHeading}}px ;">
                                                               <th>SNo.</th>

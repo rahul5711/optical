@@ -418,10 +418,6 @@ export class PurchaseReportComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.PurchaseDetailList = res.data
-          this.PurchaseDetailList.forEach((element: any) => {
-            this.TtlR  =+ this.TtlR + element.RetailPrice * element.Quantity
-            this.TtlW  =+ this.TtlW + element.WholeSalePrice * element.Quantity
-           });
           this.DetailtotalQty = res.calculation[0].totalQty;
           this.DetailtotalDiscount = res.calculation[0].totalDiscount.toFixed(2);
           this.DetailtotalUnitPrice = res.calculation[0].totalUnitPrice.toFixed(2);
@@ -429,7 +425,8 @@ export class PurchaseReportComponent implements OnInit {
           this.DetailtotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
           this.DetailtotalAmount = res.calculation[0].totalAmount.toFixed(2);
           this.DetailtotalRetailPrice = res.calculation[0].totalRetailPrice.toFixed(2);
-          this.DetailtotalWholeSalePrice = res.calculation[0].totalWholeSalePrice.toFixed(2);
+          this.TtlR  = res.calculation[0].totalRetailPrice.toFixed(2);
+          this.TtlW = res.calculation[0].totalWholeSalePrice.toFixed(2);
           this.gstdetails = res.calculation[0].gst_details
         }else{
           this.as.errorToast(res.message)

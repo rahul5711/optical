@@ -10,11 +10,11 @@ body{
 /* header css  start*/
 /* company logo */
 .row .col1{
-    width:45%; float: left;  
+    width:50%; float: left;  
 }
 /* company Shop details */
 .row .col2{
-    width:53%;  float: right; 
+    width:50%;  float: right; 
 }
 /* header css  end*/
 
@@ -102,6 +102,7 @@ table  {
 .billTotalRow {
     width:100%;   
     margin-top: 1%;
+    height: 180px;
 }
 
 .billTotalRow .col1 {

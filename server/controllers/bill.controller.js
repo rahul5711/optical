@@ -1669,6 +1669,7 @@ module.exports = {
             printdata.recivePayment = printdata.paidlist.reduce((total, element) => total + element.Amount, 0);
             printdata.CurrentInvoiceBalance = printdata.unpaidlist.length > 0 ? printdata.unpaidlist[0].DueAmount : 0;
             printdata.DueAmount = printdata.unpaidlist.reduce((total, item) => total + item.DueAmount, 0);
+            printdata.SavedDiscount = printdata.billMaster.DiscountAmount + printdata.billMaster.AddlDiscount
 
             printdata.billMaster.PaymentStatus = printdata.mode === "Invoice" ? "Unpaid" : "Paid";
             printdata.bill = printdata.mode === "Invoice" ? "Cash Memo" : "Tax Invoice";

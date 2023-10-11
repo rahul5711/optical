@@ -336,6 +336,8 @@ export class InventoryReportComponent implements OnInit {
           this.DetailtotalAmount = res.calculation[0].totalAmount.toFixed(2);
           this.DetailtotalRetailPrice = res.calculation[0].totalRetailPrice.toFixed(2);
           this.DetailtotalWholeSalePricet = res.calculation[0].totalWholeSalePrice.toFixed(2);
+          this.TtlR = res.calculation[0].totalRetailPrice.toFixed(2);
+          this.TtlW = res.calculation[0].totalWholeSalePrice.toFixed(2);
           this.gstdetails = res.calculation[0].gst_details
         }else{
           this.as.errorToast(res.message)

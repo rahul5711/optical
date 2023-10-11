@@ -138,7 +138,7 @@ export class ProductMasterComponent implements OnInit {
     this.specList[i].DisplayAdd = 0;
     let count = 0;
     this.specList[i].SptTableData.forEach((element: { TableValue: string; }) => {
-      if (element.TableValue.toLowerCase() === this.specList[i].SelectedValue.toLowerCase()) { count = count + 1; }
+      if (element.TableValue.toLowerCase() === this.specList[i].SelectedValue.toLowerCase().trim()) { count = count + 1; }
     });
     if (count !== 0 || this.specList[i].SelectedValue === '') {
       //  alert ("Duplicate or Empty Values are not allowed");
