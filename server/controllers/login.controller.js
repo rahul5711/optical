@@ -52,18 +52,17 @@ module.exports = {
                 let comment = "";
                 let loginCode = 0;
                 const [company] = await mysql2.pool.query(`select * from company where Status = 1 and ID = '${User[0].CompanyID}'`)
-
-                if (!company) {
-                    return res.send({ success: false, message: "Company De-Activate By Admin, Contact OpticalGuru Team" })
+                if (!company.length) {
+                    return res.send({ success: false, message: "Your Server Plan Expired #!" })
                 }
 
                 const [setting] = await mysql2.pool.query(`select * from companysetting where CompanyID = '${User[0].CompanyID}'`);
 
                 var expDate = new Date(company[0].CancellationDate);
                 var todate = new Date()
-                // if (todate >= expDate) {
-                //   return res.send({message: "Plan Expired"})
-                // }
+                if (todate >= expDate) {
+                  return res.send({message: "Your Server Plan Expired !"})
+                }
 
                 if (User[0].UserGroup === "CompanyAdmin") {
                     console.log("CompanyAdmin==========================>",User);
@@ -81,11 +80,11 @@ module.exports = {
                     return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], shop: shop, success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
                 } else {
 
-                    // var currentTime = moment().tz("Asia/Kolkata").format("HH:mm");
+                    var currentTime = moment().tz("Asia/Kolkata").format("HH:mm");
                     if (
-                        true
-                        // currentTime >= setting[0].LoginTimeStart &&
-                        // currentTime < setting[0].LoginTimeEnd
+                        // true
+                        currentTime >= setting[0].LoginTimeStart &&
+                        currentTime < setting[0].LoginTimeEnd
                     ) {
                         comment = "login SuccessFully";
                         loginCode = 1;
@@ -115,6 +114,7 @@ module.exports = {
 
             }
         } catch(err) {
+            console.log(err);
             next(err)
         }
     },
@@ -136,7 +136,7 @@ module.exports = {
 
             let comment = "";
             let loginCode = 0;
-            const [company] = await mysql2.pool.query(`select * from company where Status = 1 and ID = '${User[0].CompanyID}'`)
+            const [company] = await mysql2.pool.query(`select * from company where ID = '${User[0].CompanyID}'`)
 
             const [setting] = await mysql2.pool.query(`select * from companysetting where CompanyID = '${User[0].CompanyID}'`);
 

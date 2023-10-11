@@ -54,6 +54,7 @@
                                             <img [src]="data.PhotoURL " alt="Image" class="mx-auto d-block cardImg" />
                                         </div>
                                         <h2 class="text-center m-0">{{data.Name}}</h2>
+                                        <h2 class="text-center m-0">{{data.ID}}</h2>
                                         <p class="text-center m-0">{{data.OwnerName}}</p>
                                         <p class="text-center m-0">{{data.MobileNo1}}</p>
                                         <p class="text-center m-0">{{data.Email}}</p>
@@ -90,6 +91,7 @@
                                                 <tr>
                                                     <th>Details</th>
                                                     <th class="text-left">S.No</th>
+                                                    <th class="text-left">CompanyID</th>
                                                     <th class="text-left"> Name</th>
                                                     <th class="text-left">OwnerName</th>
                                                     <th class="text-left">Address</th>
@@ -128,6 +130,8 @@
                                                     </td>
                                                     <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">{{
                                                         dataList.length - i }}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">{{
+                                                        data.ID }}</td>
                                                     <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
                                                         {{data.Name}}</td>
                                                     <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">

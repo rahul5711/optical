@@ -1641,12 +1641,14 @@ module.exports = {
             response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount : 0
             response.calculation[0].totalDiscount = datum[0].totalDiscount ? datum[0].totalDiscount : 0
             response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice : 0
-            response.calculation[0].totalRetailPrice = datum[0].totalRetailPrice ? datum[0].totalRetailPrice : 0
-            response.calculation[0].totalWholeSalePrice = datum[0].totalWholeSalePrice ? datum[0].totalWholeSalePrice : 0
+            // response.calculation[0].totalRetailPrice = datum[0].totalRetailPrice ? datum[0].totalRetailPrice : 0
+            // response.calculation[0].totalWholeSalePrice = datum[0].totalWholeSalePrice ? datum[0].totalWholeSalePrice : 0
             response.calculation[0].totalSubTotalPrice = datum[0].totalSubTotalPrice ? datum[0].totalSubTotalPrice : 0
 
             if (data.length && values.length) {
                 for (const item of data) {
+                    response.calculation[0].totalRetailPrice += item.Quantity * item.RetailPrice
+                    response.calculation[0].totalWholeSalePrice += item.Quantity * item.WholeSalePrice
                     values.forEach(e => {
                         if (e.GSTType === item.GSTType) {
                             e.Amount += item.GSTAmount
@@ -2605,8 +2607,8 @@ module.exports = {
                     response.calculation[0].totalDiscount += item.DiscountAmount
                     response.calculation[0].totalUnitPrice += item.UnitPrice
                     response.calculation[0].totalSubTotal += item.SubTotal
-                    response.calculation[0].totalWholeSalePrice += item.WholeSalePrice
-                    response.calculation[0].totalRetailPrice += item.RetailPrice
+                    response.calculation[0].totalRetailPrice += item.Quantity * item.RetailPrice
+                    response.calculation[0].totalWholeSalePrice += item.Quantity * item.WholeSalePrice
 
 
                     if (values) {

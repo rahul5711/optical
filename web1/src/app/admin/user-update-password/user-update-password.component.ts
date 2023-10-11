@@ -23,7 +23,7 @@ export class UserUpdatePasswordComponent implements OnInit {
   stringUrl: string | undefined;
   dataList: any;
   currentPage = 1;
-  itemsPerPage = 10;
+  itemsPerPage = 100;
   pageSize!: number;
   collectionSize = 0
   page = 4;
