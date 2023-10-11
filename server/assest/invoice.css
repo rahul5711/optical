@@ -31,10 +31,16 @@ body{
     width:40%; float: left;  
 }
 .CustomerRow .col1 .ul1{
-    max-width:25%; float: left; list-style: none;  padding: 0;margin: 0; 
+    max-width:28%; float: left; list-style: none;  padding: 0;margin: 0; 
+}
+.CustomerRow .col1 .ul1 li{
+    height: 22px; 
 }
 .CustomerRow .col1 .ul2{
     width:70%; float: right;  list-style: none; text-align: left;  padding: 0;margin: 0; 
+}
+.CustomerRow .col1 .ul2 li{
+    height: 22px; 
 }
 
 /* Customer invoice type  */

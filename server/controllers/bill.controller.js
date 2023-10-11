@@ -1670,13 +1670,13 @@ module.exports = {
             printdata.CurrentInvoiceBalance = printdata.unpaidlist.length > 0 ? printdata.unpaidlist[0].DueAmount : 0;
             printdata.DueAmount = printdata.unpaidlist.reduce((total, item) => total + item.DueAmount, 0);
             printdata.SavedDiscount = printdata.billMaster.DiscountAmount + printdata.billMaster.AddlDiscount
-
+            printdata.billMaster.BillDate = moment(printdata.billMaster.BillDate).format("DD-MM-YYYY")
+            printdata.billMaster.DeliveryDate = moment(printdata.billMaster.DeliveryDate).format("DD-MM-YYYY")
             printdata.billMaster.PaymentStatus = printdata.mode === "Invoice" ? "Unpaid" : "Paid";
             printdata.bill = printdata.mode === "Invoice" ? "Cash Memo" : "Tax Invoice";
 
             printdata.invoiceNo = printdata.shopdetails.BillName.split("/")[0]
             printdata.TotalValue = printdata.shopdetails.BillName.split("/")[1]
-
 
             printdata.welComeNoteShop = printdata.shopWelComeNote.filter((ele) => {
                 if (printdata.shopdetails.WholesaleBill == "true" && ele.NoteType === "wholesale") {
@@ -1714,8 +1714,8 @@ module.exports = {
                 }
                 return element;
             });
-                  console.log(printdata.shopdetails.LogoURL);
-             printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
+
+            printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
             let fileName = "";
             const file = "invoice.ejs" + ".pdf";
             const formatName = "invoice.ejs";
