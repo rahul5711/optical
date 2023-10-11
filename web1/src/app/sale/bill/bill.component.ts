@@ -166,6 +166,8 @@ export class BillComponent implements OnInit {
   editCustomerBill = false
   deleteCustomerBill = false
   currentTime = '';
+  BillLink = '';
+
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'CustomerBill') {
@@ -2000,10 +2002,12 @@ export class BillComponent implements OnInit {
           if (mode === "Invoice") {
             this.BillMaster.Invoice = res;
             const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
+            this.BillLink = url
             window.open(url, "_blank")
           } else if (mode === "Receipt") {
             this.BillMaster.Receipt = res;
             const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt;
+            this.BillLink = url
             window.open(url, "_blank");
           }
 
@@ -2083,5 +2087,21 @@ export class BillComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+  }
+
+  sendWhatsappBill() {
+
+      let Smsw1 = 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again.'
+      var msg = `Hi ${this.customer.Name},%0A` +
+        `${Smsw1}%0A` +
+        `Open Bill :  ${this.BillLink}  %0A` +
+        `${this.shop[0].Name} - (${this.shop[0].AreaName}) %0A` +
+        `${this.shop[0].MobileNo1}%0A` +
+        `${this.shop[0].Website}%0A` +
+        `Type Hii And Download Your Bill`;
+      var mob = "91" + this.customer.MobileNo1;
+      var url = `https://wa.me/${mob}?text=${msg}`;
+      window.open(url, "_blank");
+      console.log(msg, "msgmsgmsgmsg")
   }
 }
