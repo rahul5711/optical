@@ -751,6 +751,7 @@ x:any
     this.spectacleLists = [];
     this.contactList = [];
     this.otherList = [];
+    this.searchList = [];
     this.sp.hide();
     this.ngOnInit();
 
