@@ -39,7 +39,7 @@ export class OldBillListComponent implements OnInit {
   CustomerData: any = [];
   BillMatser: any = [];
   BilldetailList: any = [];
-
+  totalGrandTotal = 0
 
 
   constructor(
@@ -75,7 +75,7 @@ export class OldBillListComponent implements OnInit {
         if (res.success) {
           this.CustomerData = res.data.customerData;
           this.BillMatser = res.data.bill;
-
+          this.totalGrandTotal = res.totalGrandTotal
           console.table(this.CustomerData);
           console.table(this.BillMatser);
           console.table(this.BilldetailList);

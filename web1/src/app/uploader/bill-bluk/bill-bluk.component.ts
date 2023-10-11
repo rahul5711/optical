@@ -68,6 +68,8 @@ export class BillBlukComponent implements OnInit {
       'AdditionalDiscountPercentage': '',
       'AdditionalDiscount': '',
       'GrandTotal': '',
+      'Paid': '',
+      'Balance': '',
     }
   ]
 

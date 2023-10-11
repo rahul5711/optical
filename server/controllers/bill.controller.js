@@ -1095,7 +1095,7 @@ module.exports = {
     },
     billHistoryByCustomerOld: async (req, res, next) => {
         try {
-            const response = { data: { customerData: null, bill: null }, success: true, message: "" }
+            const response = { data: { customerData: null, bill: null }, success: true, message: "", totalGrandTotal : 0 }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -1110,6 +1110,12 @@ module.exports = {
             }
 
             const [billMasterData] = await mysql2.pool.query(`select * from oldbillmaster where CompanyID = ${CompanyID} and CustomerID = ${CustomerID}`)
+
+            const [total] = await mysql2.pool.query(`select SUM(GrandTotal) as totalGrandTotal from oldbillmaster where CompanyID = ${CompanyID} and CustomerID = ${CustomerID}`)
+
+            if (total) {
+                response.totalGrandTotal = total[0].totalGrandTotal
+            }
 
             if (!billMasterData.length) {
                 return res.send({ message: "Bill Not Found" })

@@ -840,6 +840,8 @@ module.exports = {
                     "AdditionalDiscountPercentage": fd[9] || 0,
                     "AdditionalDiscount": fd[10] || 0,
                     "GrandTotal": fd[11] || 0,
+                    "Paid": fd[12] || 0,
+                    "Balance": fd[13] || 0,
 
                 }
                 newData.CompanyID = CompanyID,
@@ -904,7 +906,7 @@ module.exports = {
                 count += 1
 
                 console.log("data saving", count);
-                const [saveData] = await mysql2.pool.query(`insert into oldbillmaster(SystemID, CompanyID, CustomerID, BillNo, SerialNo, BillDate, DeliveryDate, Qty, SubTotal, GSTPercentage, GST, AdditionalDiscountPercentage, AdditionalDiscount, GrandTotal, CreatedBy, CreatedOn) values('${datum.SystemID}', ${datum.CompanyID}, ${datum.CustomerID}, '${datum.BillNo}', '${datum.SerialNo}', ${datum.BillDate} ,${datum.DeliveryDate}, ${datum.Qty}, ${datum.SubTotal}, ${datum.GSTPercentage}, ${datum.GST}, ${datum.AdditionalDiscountPercentage}, ${datum.AdditionalDiscount}, ${datum.GrandTotal}, ${LoggedOnUser}, now())`)
+                const [saveData] = await mysql2.pool.query(`insert into oldbillmaster(SystemID, CompanyID, CustomerID, BillNo, SerialNo, BillDate, DeliveryDate, Qty, SubTotal, GSTPercentage, GST, AdditionalDiscountPercentage, AdditionalDiscount, GrandTotal,Paid,Balance, CreatedBy, CreatedOn) values('${datum.SystemID}', ${datum.CompanyID}, ${datum.CustomerID}, '${datum.BillNo}', '${datum.SerialNo}', ${datum.BillDate} ,${datum.DeliveryDate}, ${datum.Qty}, ${datum.SubTotal}, ${datum.GSTPercentage}, ${datum.GST}, ${datum.AdditionalDiscountPercentage}, ${datum.AdditionalDiscount}, ${datum.GrandTotal},${datum.Paid},${datum.Balance}, ${LoggedOnUser}, now())`)
             }
 
             console.log(connected("Customer Bill Added SuccessFUlly !!!"));
