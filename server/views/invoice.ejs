@@ -4,17 +4,23 @@
     * {
         border-bottom: 1xp solid;
     }
-
-    /* html {
-        zoom: 1;
-    } */
+    .headingName {
+         position: absolute;
+         margin-left: 43%;
+         width: 30%;
+         color: red;
+         margin-top: 0px;
+         font-size: 16px !important;
+      }
+    html body{
+        zoom: 100%;
+    }
 </style>
 
 <body>
     <!-- header section start -->
     <% if (data.billformate.BillHeader==3){%>
-        <header class="headerSize" <% %> style='width:<%= data.HeaderWidth %>; height: <%= data.HeaderHeight %>;
-                    border-bottom: 1px solid <%= data.Color %>'>
+        <header class="headerSize" <% %> style='width:<%= data.HeaderWidth %>; height: <%= data.HeaderHeight %>;'>
                         <div class="row">
                             <div class="col1" <% %> style="text-align: <%= data.ImageAlign %>;">
                                     <img src=<%=data.LogoURL%> alt="LOGO" style='width:<%= data.ImageWidth %>; height:
@@ -52,6 +58,16 @@
         <%}%>
             <!-- header section  end -->
 
+            <!-- heading Bill line  start-->
+              <section>
+                <div style="height: 15px;">
+                    <div <% %>  style="border-bottom: 1px solid <%= data.Color %>; width: 40%; position:absolute; margin-top: 1%;"> </div>
+                    <div <% %> style="border-bottom: 1px solid <%= data.Color %>; width: 40%; float: right; position: relative; margin-top: 1%;"></div>
+                    <span <% %> class="headingName" style="color: <%= data.Color %>;" ><%=data.bill%></span>
+                 </div>
+              </section>
+            <!-- heading Bill line  end-->
+
             <!-- Customer Details start  -->
             <section style="width: 100%;">
                 <div class="CustomerRow">
@@ -82,9 +98,7 @@
                         </ul>
                     </div>
                     <div class="col3">
-                        <h4 <% %> style=" border: 1px solid <%= data.Color %>; padding: 2px; color: <%= data.Color %>;">
-                                    <%=data.bill%>
-                        </h4>
+                       
                     </div>
                     <div class="col2">
                         <ul class="ul1" <% %> style="font-size:<%= data.CustomerFont %> ; line-height:<%=
