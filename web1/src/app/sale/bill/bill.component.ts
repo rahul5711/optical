@@ -24,7 +24,6 @@ import { FitterService } from 'src/app/service/fitter.service';
 import { CalculationService } from 'src/app/service/helpers/calculation.service';
 import { PaymentService } from 'src/app/service/payment.service';
 
-
 @Component({
   selector: 'app-bill',
   templateUrl: './bill.component.html',
@@ -69,6 +68,7 @@ export class BillComponent implements OnInit {
     private fitters: FitterService,
     public cal: CalculationService,
     public pay: PaymentService,
+
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.id2 = this.route.snapshot.params['billid'];
@@ -2090,7 +2090,6 @@ export class BillComponent implements OnInit {
   }
 
   sendWhatsappBill() {
-
       let Smsw1 = 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again.'
       var msg = `Hi ${this.customer.Name},%0A` +
         `${Smsw1}%0A` +
@@ -2104,4 +2103,6 @@ export class BillComponent implements OnInit {
       window.open(url, "_blank");
       console.log(msg, "msgmsgmsgmsg")
   }
+  
+  
 }
