@@ -1095,7 +1095,7 @@ module.exports = {
     },
     billHistoryByCustomerOld: async (req, res, next) => {
         try {
-            const response = { data: { customerData: null, bill: null }, success: true, message: "", totalGrandTotal : 0 }
+            const response = { data: { customerData: null, bill: null }, success: true, message: "", totalGrandTotal: 0 }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -2433,6 +2433,49 @@ module.exports = {
         }
 
     },
+    getOldSalereport: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, calculation: [{
+                    "totalGrandTotal": 0,
+                    "totalPaid": 0,
+                    "totalBalance": 0,
+                    "totalQty": 0
+                }], success: true, message: ""
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            qry = `SELECT oldbillmaster.*, customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo,  oldbillmaster.DeliveryDate AS DeliveryDate FROM oldbillmaster LEFT JOIN customer ON customer.ID = oldbillmaster.CustomerID  WHERE oldbillmaster.CompanyID = ${CompanyID} and oldbillmaster.Status = 1 ` +
+                Parem + " GROUP BY oldbillmaster.ID ORDER BY oldbillmaster.ID DESC"
+
+            let [data] = await mysql2.pool.query(qry);
+
+
+            const [total] = await mysql2.pool.query(`select SUM(GrandTotal) as totalGrandTotal, SUM(Paid) as totalPaid, SUM(qty) as totalQty, SUM(Balance) as totalBalance from oldbillmaster where CompanyID = ${CompanyID}` + Parem)
+
+            if (total) {
+              response.calculation[0].totalBalance =  total[0].totalGrandTotal
+              response.calculation[0].totalGrandTotal = total[0].totalPaid
+              response.calculation[0].totalPaid = total[0].totalPaid
+              response.calculation[0].totalQty = total[0].totalQty
+            }
+
+            response.data = data
+            response.message = "success";
+
+            return res.send(response);
+
+
+
+        } catch (err) {
+            console.log(err)
+            next(err)
+        }
+
+    },
     getSalereportsDetail: async (req, res, next) => {
         try {
             const response = {
@@ -3371,7 +3414,7 @@ module.exports = {
     },
     cashcollectionreport: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "", paymentMode: [], sumOfPaymentMode: 0, AmountReturnByDebit:0, AmountReturnByCredit: 0, totalAmount: 0 }
+            const response = { data: null, success: true, message: "", paymentMode: [], sumOfPaymentMode: 0, AmountReturnByDebit: 0, AmountReturnByCredit: 0, totalAmount: 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
@@ -3417,8 +3460,8 @@ module.exports = {
                 }
             }
 
-            const [debitReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer' and paymentdetail.Credit = 'Debit'` + Date )
-            const [creditReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer Credit' and paymentdetail.Credit = 'Credit'` + Date )
+            const [debitReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer' and paymentdetail.Credit = 'Debit'` + Date)
+            const [creditReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer Credit' and paymentdetail.Credit = 'Credit'` + Date)
 
             if (debitReturn[0].Amount !== null) {
                 response.AmountReturnByDebit = debitReturn[0].Amount
