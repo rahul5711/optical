@@ -205,7 +205,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTcwNDQzOTIsImV4cCI6MTY5NzEzMDc5MiwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.dbT1a3BCSlpxd7ydwv7PyFGXkMQ4u3vxqoPivh8jr6s",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTcxMzA0NzEsImV4cCI6MTY5NzIxNjg3MSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.xTA8vKxoEZFI-BEtPq8uTYaKQ1cxdmy-_mSO7Hg0D50",
 							"type": "string"
 						}
 					]
@@ -313,6 +313,125 @@
 					],
 					"cookie": [],
 					"body": "{\n    \"data\": [\n        {\n            \"ID\": 10,\n            \"SystemID\": \"1-19\",\n            \"CompanyID\": 1,\n            \"CustomerID\": 77,\n            \"BillNo\": \"10\",\n            \"SerialNo\": \"\",\n            \"BillDate\": \"28-05-2016\",\n            \"DeliveryDate\": \"28-05-2016\",\n            \"Qty\": 1,\n            \"SubTotal\": 550,\n            \"GSTPercentage\": 0,\n            \"GST\": 0,\n            \"AdditionalDiscountPercentage\": 0,\n            \"AdditionalDiscount\": 0,\n            \"GrandTotal\": 550,\n            \"Paid\": 50,\n            \"Balance\": 500,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-10-11T18:41:41.000Z\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"CustomerName\": \"RENUKA SHINDE\",\n            \"MobileNo1\": \"7719923101\",\n            \"GSTNo\": \"\"\n        },\n        {\n            \"ID\": 9,\n            \"SystemID\": \"1-18\",\n            \"CompanyID\": 1,\n            \"CustomerID\": 76,\n            \"BillNo\": \"9\",\n            \"SerialNo\": \"\",\n            \"BillDate\": \"28-05-2016\",\n            \"DeliveryDate\": \"28-05-2016\",\n            \"Qty\": 1,\n            \"SubTotal\": 625,\n            \"GSTPercentage\": 0,\n            \"GST\": 0,\n            \"AdditionalDiscountPercentage\": 0,\n            \"AdditionalDiscount\": 0,\n            \"GrandTotal\": 625,\n            \"Paid\": 50,\n            \"Balance\": 575,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-10-11T18:41:41.000Z\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"CustomerName\": \"NITIN NAIK\",\n            \"MobileNo1\": \"9890850630\",\n            \"GSTNo\": \"\"\n        },\n        {\n            \"ID\": 8,\n            \"SystemID\": \"1-12\",\n            \"CompanyID\": 1,\n            \"CustomerID\": 70,\n            \"BillNo\": \"8\",\n            \"SerialNo\": \"\",\n            \"BillDate\": \"27-05-2016\",\n            \"DeliveryDate\": \"27-05-2016\",\n            \"Qty\": 2,\n            \"SubTotal\": 4149,\n            \"GSTPercentage\": 0,\n            \"GST\": 0,\n            \"AdditionalDiscountPercentage\": 0,\n            \"AdditionalDiscount\": 0,\n            \"GrandTotal\": 4149,\n            \"Paid\": 50,\n            \"Balance\": 4099,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-10-11T18:41:40.000Z\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"CustomerName\": \"RAHUL KHATAVKAR\",\n            \"MobileNo1\": \"9850819756\",\n            \"GSTNo\": \"\"\n        },\n        {\n            \"ID\": 7,\n            \"SystemID\": \"1-17\",\n            \"CompanyID\": 1,\n            \"CustomerID\": 75,\n            \"BillNo\": \"7\",\n            \"SerialNo\": \"\",\n            \"BillDate\": \"27-05-2016\",\n            \"DeliveryDate\": \"27-05-2016\",\n            \"Qty\": 1,\n            \"SubTotal\": 110,\n            \"GSTPercentage\": 0,\n            \"GST\": 0,\n            \"AdditionalDiscountPercentage\": 0,\n            \"AdditionalDiscount\": 0,\n            \"GrandTotal\": 110,\n            \"Paid\": 50,\n            \"Balance\": 60,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-10-11T18:41:40.000Z\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"CustomerName\": \"KAUSHIK\",\n            \"MobileNo1\": \"8421623223\",\n            \"GSTNo\": \"\"\n        },\n        {\n            \"ID\": 6,\n            \"SystemID\": \"1-16\",\n            \"CompanyID\": 1,\n            \"CustomerID\": 74,\n            \"BillNo\": \"6\",\n            \"SerialNo\": \"\",\n            \"BillDate\": \"26-05-2016\",\n            \"DeliveryDate\": \"26-05-2016\",\n            \"Qty\": 1,\n            \"SubTotal\": 250,\n            \"GSTPercentage\": 0,\n            \"GST\": 0,\n            \"AdditionalDiscountPercentage\": 0,\n            \"AdditionalDiscount\": 0,\n            \"GrandTotal\": 250,\n            \"Paid\": 50,\n            \"Balance\": 200,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-10-11T18:41:40.000Z\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"CustomerName\": \"PRAMOD BORKAR\",\n            \"MobileNo1\": \"9822067264\",\n            \"GSTNo\": \"\"\n        },\n        {\n            \"ID\": 5,\n            \"SystemID\": \"1-15\",\n            \"CompanyID\": 1,\n            \"CustomerID\": 73,\n            \"BillNo\": \"5\",\n            \"SerialNo\": \"\",\n            \"BillDate\": \"26-05-2016\",\n            \"DeliveryDate\": \"26-05-2016\",\n            \"Qty\": 2,\n            \"SubTotal\": 1100,\n            \"GSTPercentage\": 0,\n            \"GST\": 0,\n            \"AdditionalDiscountPercentage\": 0,\n            \"AdditionalDiscount\": 0,\n            \"GrandTotal\": 1100,\n            \"Paid\": 50,\n            \"Balance\": 1050,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-10-11T18:41:40.000Z\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"CustomerName\": \"CHAITALI PATIL\",\n            \"MobileNo1\": \"9763460152\",\n            \"GSTNo\": \"\"\n        },\n        {\n            \"ID\": 4,\n            \"SystemID\": \"1-14\",\n            \"CompanyID\": 1,\n            \"CustomerID\": 72,\n            \"BillNo\": \"4\",\n            \"SerialNo\": \"\",\n            \"BillDate\": \"26-05-2016\",\n            \"DeliveryDate\": \"26-05-2016\",\n            \"Qty\": 1,\n            \"SubTotal\": 1495,\n            \"GSTPercentage\": 0,\n            \"GST\": 0,\n            \"AdditionalDiscountPercentage\": 12,\n            \"AdditionalDiscount\": 179.4,\n            \"GrandTotal\": 1316,\n            \"Paid\": 50,\n            \"Balance\": 1266,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2023-10-11T18:41:39.000Z\",\n            \"UpdatedBy\": null,\n            \"UpdatedOn\": null,\n            \"CustomerName\": \"DINESH OSWAL\",\n            \"MobileNo1\": \"8087896555\",\n            \"GSTNo\": \"\"\n        }\n    ],\n    \"calculation\": [\n        {\n            \"totalGrandTotal\": 350,\n            \"totalPaid\": 350,\n            \"totalBalance\": 8100,\n            \"totalQty\": \"9\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				}
+			]
+		},
+		{
+			"name": "getOldSaleDetailreport",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTcxMzA0NzEsImV4cCI6MTY5NzIxNjg3MSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.xTA8vKxoEZFI-BEtPq8uTYaKQ1cxdmy-_mSO7Hg0D50",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Selectedshop",
+						"value": "[\"7\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Parem\": \" and oldbillmaster.BillDate between '25-05-2016 00:00:01' and '28-05-2016 23:59:00'\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/bill/getOldSalereport",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"bill",
+						"getOldSalereport"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getOldSaleDetailreport",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Selectedshop",
+								"value": "[\"7\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Parem\": \" and oldbillmaster.BillDate between '25-05-2016 00:00:01' and '28-05-2016 23:59:00'\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/getOldSaleDetailreport",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"getOldSaleDetailreport"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1101"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"44d-DkbmolxtWzK7b8ke4gwzUTRq/Yo\""
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 12 Oct 2023 17:51:53 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"BillNo\": \"5\",\n            \"BillDate\": \"26-05-2016\",\n            \"DeliveryDate\": \"26-05-2016\",\n            \"Paid\": 50,\n            \"Balance\": 500,\n            \"ID\": 2,\n            \"BillMasterID\": 5,\n            \"CompanyID\": 1,\n            \"CustomerID\": 73,\n            \"ProductDescription\": \"FULL FRAME/YEDAOTIAN/YDT*85/SHEET\",\n            \"UnitPrice\": 250,\n            \"Qty\": 1,\n            \"DiscountPercentage\": 0,\n            \"Discount\": 0,\n            \"SubTotal\": 250,\n            \"GSTPercentage\": 0,\n            \"GST\": 0,\n            \"Amount\": 250,\n            \"Status\": 1,\n            \"CreatedOn\": \"2023-10-11T18:43:52.000Z\",\n            \"CreatedBy\": 2,\n            \"UpdatedOn\": null,\n            \"UpdatedBy\": null,\n            \"CustomerName\": \"CHAITALI PATIL\",\n            \"MobileNo1\": \"9763460152\",\n            \"GSTNo\": \"\"\n        },\n        {\n            \"BillNo\": \"10\",\n            \"BillDate\": \"28-05-2016\",\n            \"DeliveryDate\": \"28-05-2016\",\n            \"Paid\": 50,\n            \"Balance\": 500,\n            \"ID\": 3,\n            \"BillMasterID\": 10,\n            \"CompanyID\": 1,\n            \"CustomerID\": 77,\n            \"ProductDescription\": \"FULL FRAME/VISION/M929*180/SHEET\",\n            \"UnitPrice\": 550,\n            \"Qty\": 1,\n            \"DiscountPercentage\": 0,\n            \"Discount\": 0,\n            \"SubTotal\": 550,\n            \"GSTPercentage\": 0,\n            \"GST\": 0,\n            \"Amount\": 550,\n            \"Status\": 1,\n            \"CreatedOn\": \"2023-10-11T18:43:53.000Z\",\n            \"CreatedBy\": 2,\n            \"UpdatedOn\": null,\n            \"UpdatedBy\": null,\n            \"CustomerName\": \"RENUKA SHINDE\",\n            \"MobileNo1\": \"7719923101\",\n            \"GSTNo\": \"\"\n        }\n    ],\n    \"calculation\": [\n        {\n            \"totalGrandTotal\": 1100,\n            \"totalPaid\": 100,\n            \"totalBalance\": 1000,\n            \"totalQty\": \"2\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
 				}
 			]
 		},

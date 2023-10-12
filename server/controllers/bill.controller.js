@@ -2469,8 +2469,47 @@ module.exports = {
             const [total] = await mysql2.pool.query(`select SUM(GrandTotal) as totalGrandTotal, SUM(Paid) as totalPaid, SUM(qty) as totalQty, SUM(Balance) as totalBalance from oldbillmaster where CompanyID = ${CompanyID}` + Parem)
 
             if (total) {
-              response.calculation[0].totalBalance =  total[0].totalGrandTotal
-              response.calculation[0].totalGrandTotal = total[0].totalPaid
+              response.calculation[0].totalBalance =  total[0].totalBalance
+              response.calculation[0].totalGrandTotal = total[0].totalGrandTotal
+              response.calculation[0].totalPaid = total[0].totalPaid
+              response.calculation[0].totalQty = total[0].totalQty
+            }
+
+            response.data = data
+            response.message = "success";
+
+            return res.send(response);
+
+
+
+        } catch (err) {
+            console.log(err)
+            next(err)
+        }
+
+    },
+    getOldSalereDetailport: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, calculation: [{
+                    "totalGrandTotal": 0,
+                    "totalPaid": 0,
+                    "totalBalance": 0,
+                    "totalQty": 0
+                }], success: true, message: ""
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            qry = `SELECT oldbillmaster.BillNo, oldbillmaster.BillDate, oldbillmaster.DeliveryDate, oldbillmaster.Paid, oldbillmaster.Balance, oldbilldetail.*, customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo FROM oldbilldetail left join oldbillmaster on oldbillmaster.ID = oldbilldetail.BillMasterID LEFT JOIN customer ON customer.ID = oldbilldetail.CustomerID WHERE oldbillmaster.CompanyID = ${CompanyID} and oldbillmaster.Status = 1 ` + Parem
+            let [data] = await mysql2.pool.query(qry);
+            const [total] = await mysql2.pool.query(`select SUM(GrandTotal) as totalGrandTotal, SUM(Paid) as totalPaid, SUM(qty) as totalQty, SUM(Balance) as totalBalance from oldbillmaster where CompanyID = ${CompanyID}` + Parem)
+
+            if (total) {
+              response.calculation[0].totalBalance =  total[0].totalBalance
+              response.calculation[0].totalGrandTotal = total[0].totalGrandTotal
               response.calculation[0].totalPaid = total[0].totalPaid
               response.calculation[0].totalQty = total[0].totalQty
             }

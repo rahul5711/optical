@@ -66,11 +66,16 @@ module.exports = {
             }
 
             const [doesExistSupplier] = await mysql2.pool.query(`select * from supplier where MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID} and Status = 1 and ID != ${Body.ID}`)
-            if (doesExistSupplier.length) return res.send({ message: `Supplier Already exist from this MobileNo1 ${Body.MobileNo1}` })
+
+            if (doesExistSupplier.length) {
+                return res.send({ message: `Supplier Already exist from this MobileNo1 ${Body.MobileNo1}` })
+            }
 
             if (Body.Name.trim() === 'PreOrder Supplier') {
                 return res.send({ success: false, message: "you can not add this supplier, it is system generated supplier " })
             }
+
+
 
 
             const [saveData] = await mysql2.pool.query(`update supplier set Name = '${Body.Name}', MobileNo1='${Body.MobileNo1}', MobileNo2='${Body.MobileNo2}', PhoneNo='${Body.PhoneNo}', Address='${Body.Address}', GSTNo='${Body.GSTNo}', Email='${Body.Email}', Website='${Body.Website}', CINNo='${Body.CINNo}', Fax='${Body.Fax}', PhotoURL='${Body.PhotoURL}', ContactPerson='${Body.ContactPerson}', Remark='${Body.Remark}', DOB='${Body.DOB}',GSTType='${Body.GSTType}', Anniversary='${Body.Anniversary}',Status=1,UpdatedBy=${LoggedOnUser},UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)

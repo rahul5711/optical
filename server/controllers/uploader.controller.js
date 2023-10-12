@@ -525,9 +525,7 @@ module.exports = {
                 }
 
                 newData.CompanyID = CompanyID
-                const [dataCount] = await mysql2.pool.query(`select * from supplier where CompanyID = ${CompanyID}`)
-                const sno = dataCount.length + 1
-                newData.Sno = sno
+                newData.Sno = 0
                 processedFileData.push(newData)
             }
 
@@ -551,6 +549,9 @@ module.exports = {
                     let remark = datum.Remark.toString().replace(/[\r\n]/gm, '');
                     let addr = datum.Address.toString().replace(/[\r\n]/gm, '');
 
+                    const [dataCount] = await mysql2.pool.query(`select * from supplier where CompanyID = ${CompanyID}`)
+                    let sno = dataCount.length + 1
+                    datum.Sno = sno
                     const [saveData] = await mysql2.pool.query(`insert into supplier (Sno,Name, CompanyID,  MobileNo1, MobileNo2 , PhoneNo, Address,GSTNo, Email,Website ,CINNo,Fax,PhotoURL,ContactPerson,Remark,GSTType,DOB,Anniversary, Status,CreatedBy,CreatedOn) values ('${datum.Sno}','${datum.Name}', ${datum.CompanyID}, '${datum.MobileNo1}', '${datum.MobileNo2}', '${datum.PhoneNo}','${addr}','${datum.GSTNo}','${datum.Email}','${datum.Website}','${datum.CINNo}','${datum.Fax}','${datum.PhotoURL}','${datum.ContactPerson}','${remark}','${datum.GSTType}','${datum.DOB}','${datum.Anniversary}',1,${LoggedOnUser}, now())`)
 
                     console.log(connected("Supplier Added SuccessFUlly !!!"));
