@@ -165,12 +165,14 @@ export class BillComponent implements OnInit {
   addCustomerBill = false
   editCustomerBill = false
   deleteCustomerBill = false
+  editCustomerView = false
   currentTime = '';
   BillLink = '';
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'CustomerBill') {
+        this.editCustomerView = element.View;
         this.editCustomerBill = element.Edit;
         this.addCustomerBill = element.Add;
         this.deleteCustomerBill = element.Delete;

@@ -742,15 +742,26 @@ module.exports = {
                         res.send(err);
                     } else {
                         let options;
-
-                        if (printdata.CompanyBarcode == 5) {
-                            options = {
-                                "height": "0.70in",
-                                "width": "4.41in",
-                                // "height": "0.90in",
-                                // "width": "6.00in",
-                            };
+                        if(printdata.CompanyID == 1){
+                            if (printdata.CompanyBarcode == 5) {
+                                options = {
+                                    "height": "0.70in",
+                                    "width": "4.90in",
+                                    // "height": "0.90in",
+                                    // "width": "6.00in",
+                                };
+                            }
+                        }else{
+                            if (printdata.CompanyBarcode == 5) {
+                                options = {
+                                    "height": "0.70in",
+                                    "width": "4.41in",
+                                    // "height": "0.90in",
+                                    // "width": "6.00in",
+                                };
+                            }
                         }
+
                         options.timeout = 540000,  // in milliseconds
                             pdf.create(data, options).toFile(fileName, function (err, data) {
                                 if (err) {
@@ -846,13 +857,24 @@ module.exports = {
                     } else {
                         let options;
 
-                        if (printdata.CompanyBarcode == 5) {
-                            options = {
-                                "height": "0.70in",
-                                "width": "4.41in",
-                                // "height": "0.90in",
-                                // "width": "6.00in",
-                            };
+                        if(printdata.CompanyID == 20){
+                            if (printdata.CompanyBarcode == 5) {
+                                options = {
+                                    "height": "0.70in",
+                                    "width": "4.90in",
+                                    // "height": "0.90in",
+                                    // "width": "6.00in",
+                                };
+                            }
+                        }else{
+                            if (printdata.CompanyBarcode == 5) {
+                                options = {
+                                    "height": "0.70in",
+                                    "width": "4.41in",
+                                    // "height": "0.90in",
+                                    // "width": "6.00in",
+                                };
+                            }
                         }
                         options.timeout = 540000,  // in milliseconds
                             pdf.create(data, options).toFile(fileName, function (err, data) {

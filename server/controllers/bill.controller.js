@@ -1782,14 +1782,26 @@ module.exports = {
             printdata.paidlist = PaidList
             printdata.unpaidlist = UnpaidList
             printdata.Measurement = MeasurementID[0]
-            console.log(printdata.Measurement);
             printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
 
-
+            var recivePayment = 0;
+            if (printdata.paidlist) {
+             for(const item of printdata.paidlist) {
+                recivePayment = +recivePayment + item.Amount;
+             }
+            }
+            printdata.recivePayment = recivePayment;
 
             let fileName = "";
-            const file = "OrderForm.ejs" + ".pdf";
-            const formatName = "OrderForm.ejs";
+            let file = "";
+            let formatName = "";
+            if(printdata.company.ID == 20){
+                 file = "billOrder_form.ejs" + ".pdf";
+                 formatName = "billOrder_form.ejs";
+            }else{
+                 file = "OrderForm.ejs" + ".pdf";
+                 formatName = "OrderForm.ejs";
+            }
             fileName = "uploads/" + file;
 
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {

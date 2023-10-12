@@ -29,6 +29,7 @@ import { CustomerBlukComponent } from './customer-bluk/customer-bluk.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { BillBlukComponent } from './bill-bluk/bill-bluk.component';
+import { SupplierBulkComponent } from './supplier-bulk/supplier-bulk.component';
 
 
 
@@ -36,7 +37,8 @@ import { BillBlukComponent } from './bill-bluk/bill-bluk.component';
   declarations: [
     PurchaseBlukComponent,
     CustomerBlukComponent,
-    BillBlukComponent
+    BillBlukComponent,
+    SupplierBulkComponent
   ],
   imports: [
     

@@ -20,6 +20,47 @@
 <body>
     <% if(data.length !==0){ data.forEach(function (i, index) { %>
         <% if (data.CompanyBarcode == 5){%>
+            <% if (data.CompanyID == 1){%>
+                <table style="margin-left: -10px; margin-top: -9px; ">
+                    <tr>
+                        <th  style="width: 140px; padding: 0;">
+                            <div
+                                style="font-size: 16px; font-weight: 600; font-family: verdana;margin-top: 0px; text-align: center; margin-top:6px; padding-bottom:1px; ">
+                                <%=i.BarcodeName%>
+                            </div>
+                            <div>
+                                <svg class="barcode" jsbarcode-format="CODE128" jsbarcode-value="<%=i.Barcode%>"
+                                    jsbarcode-textmargin="0" jsbarcode-height="45" jsbarcode-marginTop="-15"
+                                    jsbarcode-fontSize="15" jsbarcode-marginBottom="0" jsbarcode-width="2"
+                                    jsbarcode-fontoptions="bold">
+                                </svg>
+                                <script>
+                                    JsBarcode(".barcode").init();
+                                </script>
+                            </div>
+                        </th>
+                        <th  style="width: 300px;">
+                            <div
+                                style="text-align: left; font-size: 22px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 130px;">
+                                           ADE  <%=i.RetailPrice%>    
+                                     
+                            </div>
+                            <div
+                                style="text-align: left; font-size: 14px; font-weight: 600;letter-spacing: 0.1px;margin-left: 130px; font-family: verdana ;">
+                                (Inc. of all Taxes) </div>
+                            <div
+                                style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 130px;">
+                                <%=i.ProductBrandName%>
+                            </div>
+                            <div
+                                style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 130px;">
+                                <%=i.ProductModelName%>
+                            </div>
+                        </th>
+                    </tr>
+                </table>
+                 <%}%>
+                 <% if (data.CompanyID !== 1){%> 
             <table style="margin-left: -10px; margin-top: -9px; ">
                 <tr>
                     <th  style="width: 140px; padding: 0;">
@@ -62,6 +103,7 @@
                     </th>
                 </tr>
             </table>
+            <%}%>
             <%}%>
                 <%})}%>
 </body>

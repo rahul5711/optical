@@ -44,7 +44,7 @@ export class SupplierComponent implements OnInit {
   img: any;
   dataList: any = [];
   currentPage = 1;
-  itemsPerPage = 10;
+  itemsPerPage = 50;
   pageSize!: number;
   collectionSize = 0
   page = 4;

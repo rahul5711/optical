@@ -133,6 +133,24 @@ export class UploaderService {
     .pipe(catchError(this.handleError));
   }
 
+  uploadSupplier(file: File) {
+    const fd = new FormData();
+    // fd.append('docname', docname);
+    // fd.append('mobile', mobile);
+    fd.append('file', file, file.name);
+    // console.log(fd);
+
+    return this.httpClient.post(this.url + '/file/supplier', fd, {
+      reportProgress: true,
+      observe: 'events'
+    });
+  }
+
+  processSupplierFile( Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/purchaseUpload/processSupplierFile', Body, httpOptions )
+    .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);
