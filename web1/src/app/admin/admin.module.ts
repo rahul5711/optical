@@ -43,6 +43,7 @@ import { SmsSettingComponent } from './sms-setting/sms-setting.component';
 import { SharedModule } from "../shared/shared.module";
 import { SummaryComponent } from './summary/summary.component';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { ReminderComponent } from './reminder/reminder.component';
 
 
 @NgModule({
@@ -67,6 +68,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
         DeactiveListComponent,
         SmsSettingComponent,
         SummaryComponent,
+        ReminderComponent,
     ],
     exports: [
         FormsModule, ReactiveFormsModule,

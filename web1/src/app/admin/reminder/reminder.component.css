@@ -1,0 +1,90 @@
+table thead tr th {
+    padding: 0 !important;
+    background-color: #1e2672;
+    color: #ffffff !important;
+}
+table tbody tr td {
+    padding: 0 !important;
+    text-align: center;
+}
+
+i{
+cursor: pointer;
+}
+ .mat-ink-bar {
+    background-color: #ff4401 !important;
+}
+
+.crad{
+    background-image: url(../../../assets/images/bdayR.png);
+    background-size: 58%;
+    background-repeat: no-repeat;
+}
+
+.titalName{
+    color: #ff5100;
+    font-weight: 800;
+    border: 2px solid;
+    border-left: none;
+    border-top: none;
+}
+.titalName2{
+    color: #ff5100;
+    font-weight: 800;
+    border: 2px solid;
+    border-right: none;
+    border-top: none;
+    width: 48%;
+
+}
+
+.itme_button {
+    margin: 0;
+    background-color: #fff;
+    color: #000;
+    border: #1e2672 1px solid;
+    border-radius: 2px 2px 0px 0px;
+    font-size: 15px !important;
+    margin-top: 4px;
+    /* border-bottom: none; */
+}
+
+.itme_button1 {
+    margin: 0;
+    background-color: #fff;
+    color: #000;
+    border: #1e2672 1px solid;
+    border-radius: 2px 2px 0px 0px;
+    font-size: 15px !important;
+    /* border-bottom: none; */
+    margin-top: 4px;
+}
+
+.itme_button2 {
+    margin: 0;
+    background-color: #fff;
+    color: #000;
+    border: #1e2672 1px solid;
+    border-radius: 2px 2px 0px 0px;
+    font-size: 15px !important;
+    /* border-bottom: none; */
+    margin-top: 4px;
+}
+
+
+.itme_button:active {
+    border: #ff5100 6px solid;
+}
+.itme_button1:active {
+    border: #ff5100 6px solid;
+}
+.itme_button2:active {
+    border: #ff5100 6px solid;
+}
+
+button:hover {
+    transform: scale(1);
+    transition: 0.5s;
+    background-color: #dfdfdf;
+    color: #202020;
+}

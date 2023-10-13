@@ -51,7 +51,7 @@ export class DashboradComponent implements OnInit {
       {
         "icon" : "assets/images/reminder.png",
         "title": "Reminder",
-        "routersLinks" : "/product/productManage"
+        "routersLinks" : "/admin/reminder"
       },
       {
         "icon" : "assets/images/sms-removebg-preview.png",
@@ -90,7 +90,7 @@ export class DashboradComponent implements OnInit {
       {
         "icon" : "assets/images/reminder.png",
         "title": "Reminder",
-        "routersLinks" : "/product/productManage"
+        "routersLinks" : "/admin/reminder"
       }, 
      ]
    }

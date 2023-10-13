@@ -19,6 +19,7 @@ import { ShopComponent } from './shop/shop.component';
 import { SmsSettingComponent } from './sms-setting/sms-setting.component';
 import { UserUpdatePasswordComponent } from './user-update-password/user-update-password.component';
 import { SummaryComponent } from './summary/summary.component';
+import { ReminderComponent } from './reminder/reminder.component';
 
 
 const routes: Routes = [
@@ -34,6 +35,7 @@ children: [
   { path: 'productMasterAssign', component: ProductMasterComponent },
   { path: 'productManageAssign', component: ProductManageComponent },
   { path: 'deactiveList', component: DeactiveListComponent },
+  { path: 'reminder', component: ReminderComponent },
   // SuperAdmin end routes
   
   // CompanyAdmin start routes

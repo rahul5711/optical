@@ -428,6 +428,8 @@ export class BillingComponent implements OnInit {
   numberList:any=[]
   otherLists:any=[]
 x:any
+
+srcCustomerBox = false
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'Customer') {
@@ -1101,6 +1103,7 @@ x:any
   //   });
   //   this.srcBox = false
   // }
+
 
 
 
