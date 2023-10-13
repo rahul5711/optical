@@ -457,7 +457,7 @@ module.exports = {
                     let remark = datum.Remarks.toString().replace(/[\r\n]/gm, '');
                     let addr = datum.Address.toString().replace(/[\r\n]/gm, '');
 
-                    const [customer] = await mysql2.pool.query(`insert into customer(SystemID,ShopID,Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Category,Status,CreatedBy,CreatedOn,VisitDate) values('${datum.SystemID}',${shopid},'${datum.Idd}', '${datum.Name}','${datum.Sno}',${datum.CompanyID},'${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${addr}','${datum.GSTNo}','${datum.Email}','${datum.PhotoURL}',${datum.DOB},'${datum.RefferedByDoc}','${datum.Age}',${datum.Anniversary},'${datum.ReferenceType}','${datum.Gender}','${datum.Other}','${remark}','${datum.Category}',1,'${LoggedOnUser}',now(),${datum.VisitDate})`);
+                    const [customer] = await mysql2.pool.query(`insert into customer(SystemID,ShopID,Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Category,Status,CreatedBy,CreatedOn,VisitDate) values('${datum.SystemID}',${shopid},'${datum.Idd}', '${datum.Name}','${datum.Sno}',${datum.CompanyID},'${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${addr}','${datum.GSTNo}','${datum.Email}','${datum.PhotoURL}',${datum.DOB},'${datum.RefferedByDoc}','${datum.Age}',${datum.Anniversary},'${datum.ReferenceType}','${datum.Gender}','${datum.Other}',' ${remark.toString()} ','${datum.Category}',1,'${LoggedOnUser}',now(),${datum.VisitDate})`);
 
                     console.log(connected("Customer Added SuccessFUlly !!!"));
                 }
@@ -470,6 +470,7 @@ module.exports = {
             // mysql2.pool.release()
 
         } catch (err) {
+            console.log(err);
             next(err)
         }
     },
