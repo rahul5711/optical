@@ -5,27 +5,27 @@
           <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
             <div class="card p-0">
               <div class="header p-2 py-0 pt-1">
-                <div class="row">
-                  <div class="col-xl-3 col-lg-2 col-md-2 col-6 p-0 ms-md-3 ms-2">
-                    <h2>Old Bill For <b style="color: #000;">{{this.CustomerData.Name}}</b> </h2>
+                <div class="row mb-5">
+                  <div class="col-xl-3 col-lg-3 col-md-6 col-12 p-0 ms-md-3 ms-2 m-0 h3">
+                   Old Bill For <b style="color: #000;">{{this.CustomerData.Name}}</b> 
                   </div>
-                  <div class="col-xl-2 col-lg-2 col-md-2 col-6 p-0 ms-md-3 ms-2">
-                    <h2>SystemID - <b style="color: #000;">{{this.CustomerData.SystemID}}</b> </h2>
+                  <div class="col-xl-2 col-lg-2 col-md-3 col-5 m-0 p-0 ms-md-3 ms-2 h3">
+                    SystemID - <b style="color: #000;">{{this.CustomerData.SystemID}}</b> 
                   </div>
-                  <div class="col-xl-2 col-lg-2 col-md-2 col-6 p-0 ms-md-3 ms-2">
-                    <h2>MobileNo. - <b style="color: #000;">{{this.CustomerData.MobileNo1}}</b> </h2>
+                  <div class="col-xl-2 col-lg-2 col-md-3 col-6 m-0 p-0 ms-md-3 ms-2 h3">
+                    MobileNo. - <b style="color: #000;">{{this.CustomerData.MobileNo1}}</b> 
                   </div>
-                  <div class="col-xl-3 col-lg-2 col-md-2 col-6 p-0 ms-md-3 ms-2">
-                    <h2>Shop Name - <b style="color: #000;">{{this.CustomerData.ShopName}} ({{this.CustomerData.AreaName}})</b> </h2>
+                  <div class="col-xl-3 col-lg-3 col-md-8 col-12 m-0 p-0 ms-md-3 ms-2 h3">
+                    Shop Name - <b style="color: #000;">{{this.CustomerData.ShopName}} ({{this.CustomerData.AreaName}})</b> 
                   </div>
-                  <div class="col-xl-3 col-lg-2 col-md-2 col-6 p-0 ms-md-3 ms-2">
-                    <h2>Total - <b style="color: #000;">{{this.totalGrandTotal}}</b> </h2>
+                  <div class="col-xl-1 col-lg-1 col-md-4 col-6 m-0 p-0 ms-md-3 ms-2 h3">
+                    Total - <b style="color: #000;">{{this.totalGrandTotal}}</b> 
                   </div>
                 </div>
               </div>
 
               <!-- doctor list start -->
-              <div class="body mt-5 mt-md-2  p-2">
+              <div class="body mt-5 mt-md-2 pt-5 pt-lg-0 p-2">
                 <div class="row mb-3"  *ngFor="let data of BillMatser let i = index;">
                   <div class="col-sm-12" style="overflow: auto; height: 150px; ">
                     <div class="table-responsive" style="box-shadow: inset 0px 0px 10px #00000078;">

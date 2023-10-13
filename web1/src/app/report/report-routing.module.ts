@@ -9,6 +9,7 @@ import { SaleReportComponent } from './sale-report/sale-report.component';
 import { ExpenseComponent } from './expense/expense.component';
 import { VendorCreditComponent } from './vendor-credit/vendor-credit.component';
 import { CashCollectionComponent } from './cash-collection/cash-collection.component';
+import { OldSaleComponent } from './old-sale/old-sale.component';
 
 const routes: Routes = [
   { path: '',
@@ -22,6 +23,7 @@ const routes: Routes = [
     { path: 'expenes', component: ExpenseComponent },
     { path: 'supplierCredit', component: VendorCreditComponent },
     { path: 'cashCollection', component: CashCollectionComponent },
+    { path: 'oldSale', component: OldSaleComponent },
   ]}
   ]
 

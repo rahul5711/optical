@@ -34,6 +34,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { ExpenseComponent } from './expense/expense.component';
 import { VendorCreditComponent } from './vendor-credit/vendor-credit.component';
 import { CashCollectionComponent } from './cash-collection/cash-collection.component';
+import { OldSaleComponent } from './old-sale/old-sale.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { CashCollectionComponent } from './cash-collection/cash-collection.compo
     ExpenseComponent,
     VendorCreditComponent,
     CashCollectionComponent,
+    OldSaleComponent,
 
 
   ],
