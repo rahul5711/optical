@@ -2462,13 +2462,13 @@ module.exports = {
 
             qry = `SELECT oldbillmaster.*, customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo,  oldbillmaster.DeliveryDate AS DeliveryDate FROM oldbillmaster LEFT JOIN customer ON customer.ID = oldbillmaster.CustomerID  WHERE oldbillmaster.CompanyID = ${CompanyID} and oldbillmaster.Status = 1 ` +
                 Parem + " GROUP BY oldbillmaster.ID ORDER BY oldbillmaster.ID DESC"
-
+            console.log(qry);
             let [data] = await mysql2.pool.query(qry);
 
 
             const [total] = await mysql2.pool.query(`select SUM(GrandTotal) as totalGrandTotal, SUM(Paid) as totalPaid, SUM(qty) as totalQty, SUM(Balance) as totalBalance from oldbillmaster where CompanyID = ${CompanyID}` + Parem)
 
-            if (total) {
+            if (data.length && total) {
               response.calculation[0].totalBalance =  total[0].totalBalance
               response.calculation[0].totalGrandTotal = total[0].totalGrandTotal
               response.calculation[0].totalPaid = total[0].totalPaid
