@@ -8,6 +8,16 @@ table tbody tr td {
     text-align: center;
 }
 
+.whatsappIocn{
+    color: #ffffff
+}
+.smsIocn{
+    color: #ffffff
+}
+.emailIocn{
+    color: #ffffff
+}
+
 i{
 cursor: pointer;
 }
@@ -15,8 +25,23 @@ cursor: pointer;
     background-color: #ff4401 !important;
 }
 
-.crad{
+.bgmB{
     background-image: url(../../../assets/images/bdayR.png);
+    background-size: 58%;
+    background-repeat: no-repeat;
+}
+.bgmA{
+    background-image: url(../../../assets/images/Anniversary.png);
+    background-size: 58%;
+    background-repeat: no-repeat;
+}
+.bgmO{
+    background-image: url(../../../assets/images/orderp.png); 
+    background-size: 58%;
+    background-repeat: no-repeat;
+}
+.bgmE{
+    background-image: url(../../../assets/images/EyeTesting.png); 
     background-size: 58%;
     background-repeat: no-repeat;
 }
