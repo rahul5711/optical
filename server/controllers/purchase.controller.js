@@ -958,7 +958,7 @@ module.exports = {
 
             if (searchString === "" || searchString === undefined || searchString === null) return res.send({ message: "Invalid Query Data" })
 
-            let SearchString = searchString + "%";
+            let SearchString = searchString.substring(0, searchString.length - 1) + "%";
             let shopMode = ``;
 
             if (ShopMode === "false" || ShopMode === false) {
@@ -970,6 +970,7 @@ module.exports = {
 
             const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, purchasedetailnew.ProductName, barcodemasternew.* FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE purchasedetailnew.ProductTypeName = '${ProductName}' ${shopMode} AND purchasedetailnew.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus = "Available"   AND purchasedetailnew.Status = 1  and shop.Status = 1 and purchasemasternew.PStatus = 0  And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
 
+            console.log(qry);
             let [purchaseData] = await mysql2.pool.query(qry);
             response.data = purchaseData;
             response.message = "Success";
@@ -1341,7 +1342,7 @@ module.exports = {
 
             if (searchString === "" || searchString === undefined || searchString === null) return res.send({ message: "Invalid Query Data" })
 
-            let SearchString = searchString + "%";
+            let SearchString = searchString.substring(0, searchString.length - 1) + "%";
             let shopMode = ``;
 
             if (ShopMode === "false" || ShopMode === false) {
@@ -2903,7 +2904,7 @@ module.exports = {
 
             if (SupplierID === "" || SupplierID === undefined || SupplierID === null) return res.send({ message: "Invalid Query SupplierID Data" })
 
-            let SearchString = searchString + "%";
+            let SearchString = searchString.substring(0, searchString.length - 1) + "%";
             let shopMode = ``;
 
             if (ShopMode === "false" || ShopMode === false) {
