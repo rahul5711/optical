@@ -219,6 +219,43 @@ module.exports = {
             next(err)
         }
     },
+    dropdownlistBySearch: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const Body = req.body;
+            const {Type, Name} = Body
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (_.isEmpty(Body.Name)) return res.send({ message: "Invalid Query Name Data" })
+            if (_.isEmpty(Body.Type)) return res.send({ message: "Invalid Query Type Data" })
+
+            let qry = ``;
+
+            if (Type === "Customer") {
+                qry = `select Name, ID, MobileNo1 from customer where customer.CompanyID = ${CompanyID} and customer.Status = 1 and customer.Name like '%${Name}%'`
+            } else if (Type === "Employee") {
+                qry = `select Name, ID, MobileNo1 from user where user.CompanyID = ${CompanyID} and user.Status = 1 and user.Name like '%${Name}%'`
+            } else if (Type === "Fitter") {
+                qry = `select Name, ID, MobileNo1 from fitter where fitter.CompanyID = ${CompanyID} and fitter.Status = 1 and fitter.Name like '%${Name}%'`
+            } else if (Type === "Doctor") {
+                qry = `select Name, ID, MobileNo1 from doctor where doctor.CompanyID = ${CompanyID} and doctor.Status = 1 and doctor.Name like '%${Name}%'`
+            } else if (Type === "Supplier") {
+                qry = `select Name, ID, MobileNo1 from supplier where supplier.CompanyID = ${CompanyID} and supplier.Status = 1 and supplier.Name != 'PreOrder Supplier' and supplier.Name like '%${Name}%'`
+            } else {
+                return res.send({ message: "Invalid Query Type Data" })
+            }
+
+            const [data] = await mysql2.pool.query(qry)
+            response.data = data || []
+            response.message = "data fetch successfully"
+            return res.send(response);
+        } catch (err) {
+            next(err)
+        }
+    },
 
 
 }

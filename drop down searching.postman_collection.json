@@ -1,0 +1,201 @@
+{
+	"info": {
+		"_postman_id": "f936f214-dfe8-4cb7-90df-0201a9ab774e",
+		"name": "drop down searching",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "dropdownlistBySearch",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTcyODczODksImV4cCI6MTY5NzM3Mzc4OSwiYXVkIjoiJzMnIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.0oNul9ghAh0cq3pWCDEA2tq5MLEJMDJ_oghMsrpk5oM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Selectedshop",
+						"value": "[\"12\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Type\": \"Supplier\",\r\n    \"Name\": \"s\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/support/dropdownlistBySearch",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"support",
+						"dropdownlistBySearch"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Customer",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Selectedshop",
+								"value": "[\"12\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Type\": \"Customer\",\r\n    \"Name\": \"s\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/support/dropdownlistBySearch",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"support",
+								"dropdownlistBySearch"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "394"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"18a-7TH2a5qFdZv7IM6A0cDmaAx3jEk\""
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 14 Oct 2023 12:48:40 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Name\": \"Nishini\",\n            \"ID\": 20,\n            \"MobileNo1\": \"95246353\"\n        },\n        {\n            \"Name\": \"Cynthia monteser\",\n            \"ID\": 84,\n            \"MobileNo1\": \"96493878\"\n        },\n        {\n            \"Name\": \"RELINKSYS SOFTWARE\",\n            \"ID\": 85,\n            \"MobileNo1\": \"9766666248\"\n        },\n        {\n            \"Name\": \"Ishanvi\",\n            \"ID\": 88,\n            \"MobileNo1\": \"79796973\"\n        },\n        {\n            \"Name\": \"Soumia\",\n            \"ID\": 21581,\n            \"MobileNo1\": \"91000900\"\n        },\n        {\n            \"Name\": \"Ghadeer Salim\",\n            \"ID\": 21599,\n            \"MobileNo1\": \"96658522\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch successfully\"\n}"
+				},
+				{
+					"name": "Supplier",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Selectedshop",
+								"value": "[\"12\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Type\": \"Supplier\",\r\n    \"Name\": \"s\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/support/dropdownlistBySearch",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"support",
+								"dropdownlistBySearch"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "405"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"195-tQ/YyKWLOo79SRRr6/KWNj0ThGI\""
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 14 Oct 2023 12:51:13 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Name\": \"LENSBIRD\",\n            \"ID\": 16,\n            \"MobileNo1\": \"97864350\"\n        },\n        {\n            \"Name\": \"MEDICAL INT. (COOPER VISION)\",\n            \"ID\": 17,\n            \"MobileNo1\": \"24484831\"\n        },\n        {\n            \"Name\": \"BELSHALAT TRADING (B & L)\",\n            \"ID\": 19,\n            \"MobileNo1\": \"99353124\"\n        },\n        {\n            \"Name\": \"LENSBIRD (LOCAL)\",\n            \"ID\": 20,\n            \"MobileNo1\": \"0\"\n        },\n        {\n            \"Name\": \"TRIVANI OPTICALS\",\n            \"ID\": 24,\n            \"MobileNo1\": \"1\"\n        },\n        {\n            \"Name\": \"ESSILOR\",\n            \"ID\": 25,\n            \"MobileNo1\": \"91255482\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch successfully\"\n}"
+				}
+			]
+		}
+	]
+}

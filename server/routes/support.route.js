@@ -19,6 +19,10 @@ router.post('/servicesave', verifyAccessTokenAdmin, Controller.servicesave)
 router.post('/servicelist', verifyAccessTokenAdmin, Controller.servicelist)
 router.post('/servicedelete', verifyAccessTokenAdmin, Controller.servicedelete)
 
+// data by search feild
+
+router.post('/dropdownlistBySearch', verifyAccessTokenAdmin, Controller.dropdownlistBySearch)
+
 
 
 module.exports = router
