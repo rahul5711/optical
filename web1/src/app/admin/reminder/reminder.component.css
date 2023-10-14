@@ -45,6 +45,26 @@ cursor: pointer;
     background-size: 58%;
     background-repeat: no-repeat;
 }
+.bgmS{
+    background-image: url(../../../assets/images/eyesol.png); 
+    background-size: 58%;
+    background-repeat: no-repeat;
+}
+.bgmC{
+    background-image: url(../../../assets/images/len.png); 
+    background-size: 58%;
+    background-repeat: no-repeat;
+}
+.bgmCo{
+    background-image: url(../../../assets/images/conFort.png); 
+    background-size: 58%;
+    background-repeat: no-repeat;
+}
+.bgmSM{
+    background-image: url(../../../assets/images/service.png); 
+    background-size: 58%;
+    background-repeat: no-repeat;
+}
 
 .titalName{
     color: #ff5100;

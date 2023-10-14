@@ -35,6 +35,8 @@ import { ExpenseComponent } from './expense/expense.component';
 import { VendorCreditComponent } from './vendor-credit/vendor-credit.component';
 import { CashCollectionComponent } from './cash-collection/cash-collection.component';
 import { OldSaleComponent } from './old-sale/old-sale.component';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+
 
 @NgModule({
   declarations: [
@@ -77,8 +79,8 @@ import { OldSaleComponent } from './old-sale/old-sale.component';
     NgbModule,
     SharedModule,
     NgxPrintModule,
-    NgSelectModule
-
+    NgSelectModule,
+    MatAutocompleteModule
   ]
 })
 export class ReportModule { }

@@ -309,7 +309,7 @@
                 <div class="col-xl-4 col-lg-4 col-md-9 col-8 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Product Name</mat-label>
-                        <input matInput style="color: rgb(255 0 0);" name="ProdName" [(ngModel)]="BillItem.ProductName"
+                        <input matInput style="color: rgb(255 0 0) !important;font-weight: 800;" name="ProdName" [(ngModel)]="BillItem.ProductName"
                             [disabled]=true>
                     </mat-form-field>
                 </div>
@@ -322,7 +322,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Available</mat-label>
-                        <input matInput type="number" min="0" style="color: rgb(255 0 0);" name="BarCodeCount"
+                        <input matInput type="number" min="0" style="color: rgb(255 0 0) !important;font-weight: 800;" name="BarCodeCount"
                             [(ngModel)]="searchList.BarCodeCount" [disabled]=true>
                     </mat-form-field>
                 </div>
@@ -861,7 +861,7 @@
                         <input matInput name="AddlDiscountPercentage"
                             (blur)="AddDiscalculate('AddlDiscountPercentage', 'discount')" type="number" min="0"
                             [(ngModel)]="BillMaster.AddlDiscountPercentage" #AddlDiscountPercentagecontrol
-                            [autocomplete]="false" >
+                            [autocomplete]="false" required>
                         <mat-error>
                             Additional Discount is required
                         </mat-error>
@@ -872,7 +872,7 @@
                         <mat-label>Additional Discount%</mat-label>
                         <input matInput name="AddlDiscountPercentage"
                             (blur)="AddDiscalculate('AddlDiscountPercentage', 'discount')" type="number" min="0"
-                            [(ngModel)]="BillMaster.AddlDiscountPercentage" #AddlDiscountPercentagecontrol
+                            [(ngModel)]="BillMaster.AddlDiscountPercentage" #AddlDiscountPercentagecontrol required
                             [autocomplete]="false" >
                         <mat-error>
                             Additional Discount is required
@@ -884,7 +884,7 @@
                         <mat-label>Additional Discount</mat-label>
                         <input matInput name="AddlDiscount" type="number" min="0"
                             (blur)="AddDiscalculate('AddlDiscount', 'discount')" [(ngModel)]="BillMaster.AddlDiscount"
-                            #AddlDiscounttcontrol [autocomplete]="false" >
+                            #AddlDiscounttcontrol [autocomplete]="false"  required>
                         <mat-error>
                             Additional Discount is required
                         </mat-error>
@@ -895,7 +895,7 @@
                         <mat-label>Additional Discount</mat-label>
                         <input matInput name="AddlDiscount" type="number" min="0"
                             (blur)="AddDiscalculate('AddlDiscount', 'discount')" [(ngModel)]="BillMaster.AddlDiscount"
-                            #AddlDiscounttcontrol [autocomplete]="false" >
+                            #AddlDiscounttcontrol [autocomplete]="false" required>
                         <mat-error>
                             Additional Discount is required
                         </mat-error>
@@ -919,11 +919,10 @@
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-12">
                     <button *ngIf="this.id2 == 0" type="button" class="me-3" mat-raised-button color="primary"
-                        (click)="onSubmit(content1);AddDiscalculate('AddlDiscountPercentage', 'discount')"
+                        (click)="onSubmit(content1)"
                         [disabled]="(billItemList?.length === 0 && serviceLists?.length === 0) || BillMaster.ID !== null">Save</button>
                     <button *ngIf="this.id2 != 0" type="button" class="me-3" mat-raised-button color="primary"
-                        [disabled]="BillMaster.ID === null"
-                        (click)="update();AddDiscalculate('AddlDiscountPercentage', 'discount')">Update</button>
+                        [disabled]="BillMaster.ID === null && !f2.valid" (click)="update()">Update</button>
                     <button type="button" class=" me-3" mat-raised-button color="primary"
                         [disabled]="BillMaster.ID === null" (click)="openModal1(content1)">Payment</button>
                     <button type="button" class=" me-3" mat-raised-button color="primary"

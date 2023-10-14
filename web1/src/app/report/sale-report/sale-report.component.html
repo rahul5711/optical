@@ -79,7 +79,7 @@
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
-                                                <mat-form-field class="example-full-width mb-0">
+                                                <!-- <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Customer</mat-label>
                                                     <mat-select name="CustomerID" [(ngModel)]="BillMaster.CustomerID">
                                                         <mat-option [value]=0>All</mat-option>
@@ -88,7 +88,20 @@
                                                             <span style="float: right;">{{c.MobileNo1}} </span>
                                                         </mat-option>
                                                     </mat-select>
-                                                </mat-form-field>
+                                                </mat-form-field> -->
+                                                <form class="example-form">
+                                                    <mat-form-field class="example-full-width">
+                                                      <mat-label>Customer</mat-label>
+                                                      <input type="text" placeholder="serach customer" aria-label="Text" matInput
+                                                             [formControl]="myControl" [matAutocomplete]="auto" 
+                                                             (input)="customerSearch(myControl.value, 'Name')">
+                                                      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" multi="true">
+                                                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                                                          {{option}}
+                                                        </mat-option>
+                                                      </mat-autocomplete>
+                                                    </mat-form-field>
+                                                </form>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">

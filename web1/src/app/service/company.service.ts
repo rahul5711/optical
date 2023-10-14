@@ -102,6 +102,16 @@ export class CompanyService {
     .pipe(catchError(this.handleError));
   }
 
+  barcodeDetails(CompanyID: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/barcodeDetails', {CompanyID:CompanyID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  invoiceDetails(CompanyID: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/invoiceDetails', {CompanyID:CompanyID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

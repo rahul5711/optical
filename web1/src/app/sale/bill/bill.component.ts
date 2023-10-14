@@ -774,8 +774,6 @@ export class BillComponent implements OnInit {
     this.BillItem.UnitPrice = 0;
     this.BillItem.PurchasePrice = 0;
     this.BillItem.Quantity = 1;
-    this.BillItem.GSTPercentage = 0;
-    this.BillItem.GSTType = 'None';
     let searchString = "";
 
     this.specList.forEach((element: any, i: any) => {

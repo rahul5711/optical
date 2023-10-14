@@ -11,6 +11,7 @@ import { AlertService } from '../service/helpers/alert.service';
 import { AuthServiceService } from '../service/auth-service.service';
 import { ExcelService } from '../service/helpers/excel.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 
 @Component({
@@ -25,12 +26,15 @@ export class CompanyListComponent implements OnInit {
   term = "";
   gridview = true;
   dataList: any;
+  barcodeDetailsList: any;
+  invoiceDetailsList: any;
   currentPage = 1;
   itemsPerPage = 100;
   pageSize!: number;
   collectionSize = 0
   page = 4;
   deactives = 0
+
   moduleList: any = [
     // Administration Permission
     {ModuleName: 'CompanyInfo', MView: true, Edit: true, Add: true, View: true, Delete: true},
@@ -125,6 +129,7 @@ export class CompanyListComponent implements OnInit {
     private auth: AuthServiceService,
     private excelService: ExcelService,
     private sp: NgxSpinnerService,
+    private modalService: NgbModal
   ) { }
 
   ngOnInit(): void {
@@ -407,6 +412,47 @@ export class CompanyListComponent implements OnInit {
 
   exportAsXLSX(): void {
     this.excelService.exportAsExcelFile(this.dataList, 'company_list');
+  }
+
+  openModal(content: any,data:any) {
+    console.log(data);
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'xl'});
+    this.invoiceDetails(data)
+    this.barcodeDetails(data)
+  }
+
+  barcodeDetails(CompanyID:any) {
+    this.sp.show()
+    const subs: Subscription = this.cs.barcodeDetails(CompanyID).subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.barcodeDetailsList = res.data;
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide() 
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  invoiceDetails(CompanyID:any) {
+    this.sp.show()
+    const subs: Subscription = this.cs.invoiceDetails(CompanyID).subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.invoiceDetailsList = res.data;
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide() 
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
 }

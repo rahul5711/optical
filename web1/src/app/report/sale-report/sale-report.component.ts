@@ -3,7 +3,7 @@ import { environment } from 'src/environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { ProductService } from 'src/app/service/product.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription, debounceTime, map, startWith } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { ShopService } from 'src/app/service/shop.service';
@@ -17,6 +17,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EmployeeService } from 'src/app/service/employee.service';
 import { BillService } from 'src/app/service/bill.service';
 import { CustomerService } from 'src/app/service/customer.service';
+import { FormControl } from '@angular/forms';
+
 
 @Component({
   selector: 'app-sale-report',
@@ -30,6 +32,10 @@ export class SaleReportComponent implements OnInit {
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
 
+  myControl = new FormControl('All');
+  options: string[] = ['All'];
+  filteredOptions: Observable<string[]> | undefined;
+ 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -139,6 +145,10 @@ export class SaleReportComponent implements OnInit {
   gstpending:any
 
   ngOnInit(): void {
+    this.filteredOptions = this.myControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value || '')), 
+    );
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'SaleReport') {
         this.viewSaleReport = element.View;
@@ -188,6 +198,8 @@ export class SaleReportComponent implements OnInit {
 
   }
 
+
+  
   getChangeDate() {
     const currentDate = moment().format('YYYY-MM-DD');
     if (this.user.UserGroup !== "CompanyAdmin") {
@@ -1037,4 +1049,21 @@ BillPendingFromReset(){
     return moment(date).format(`${this.companySetting.DateFormat}`);
   }
 
+  customerSearch(searchKey: any, mode: any) {
+    let dtm = {
+      CustomerName: this.BillMaster.CustomerID
+    };
+  
+    if (searchKey.length >= 3) {
+      if (mode === 'Name') {
+        dtm.CustomerName = searchKey;
+      } 
+    }
+    console.log(dtm);
+  }
+
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.options.filter(option => option.toLowerCase().includes(filterValue)) ;
+  }
 }

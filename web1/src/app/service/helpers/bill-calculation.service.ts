@@ -229,7 +229,7 @@ export class BillCalculationService {
     BillMaster.DiscountAmount = 0;
     BillMaster.GSTAmount = 0;
     BillMaster.TotalAmount = 0;
-    BillMaster.DueAmount =  BillMaster.DueAmount
+    BillMaster.DueAmount =  BillMaster.DueAmount + BillMaster.AddlDiscount
 
     billItemList.forEach((element: any) => {
       if (element.Status !== 0) {
@@ -242,15 +242,15 @@ export class BillCalculationService {
 
       if(element.DuaCal === 'yes'){
          element.DuaCal = 'No'
-         BillMaster.DueAmount = +BillMaster.DueAmount +  (element.TotalAmount - BillMaster.AddlDiscount)
+         BillMaster.DueAmount = +BillMaster.DueAmount + element.TotalAmount
       }
 
       if(element.DuaCal === 'delete'){
-        BillMaster.DueAmount = +BillMaster.DueAmount -  (element.TotalAmount - BillMaster.AddlDiscount)
+        BillMaster.DueAmount = +BillMaster.DueAmount -  element.TotalAmount 
      }
      
       if(element.DuaCal === 'delete2'){
-        BillMaster.DueAmount = BillMaster.DueAmount - (element.TotalAmount - BillMaster.AddlDiscount)
+        BillMaster.DueAmount = BillMaster.DueAmount - element.TotalAmount 
      }
 
      BillMaster.SubTotal = this.convertToDecimal(+BillMaster.SubTotal, 2);
@@ -258,6 +258,8 @@ export class BillCalculationService {
      BillMaster.GSTAmount = this.convertToDecimal(+BillMaster.GSTAmount, 2);
      BillMaster.TotalAmount = this.convertToDecimal(+BillMaster.TotalAmount, 2);
      BillMaster.DueAmount = this.convertToDecimal(+BillMaster.DueAmount, 2);
+     BillMaster.AddlDiscount = 0;
+     BillMaster.AddlDiscountPercentage = 0;
      
     });
 
