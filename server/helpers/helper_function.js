@@ -36,13 +36,13 @@ module.exports = {
   generateBarcode: async (CompanyID, BarcodeType) => {
     const [barcode] = await mysql2.pool.query(`select barcode.${BarcodeType} from barcode where Status = 1 and CompanyID=${CompanyID}`);
     if (BarcodeType === 'SB') {
-      const [updateBarcode] = await mysql2.pool.query(`update barcode set ${BarcodeType} = ${Number(barcode[0].SB) + 1} where CompanyID=${CompanyID}`)
+      const [updateBarcode] = await mysql2.pool.query(`update barcode set ${BarcodeType} = ${Number(barcode[0].SB) + 1}, UpdatedOn = now() where CompanyID=${CompanyID}`)
       return Number(barcode[0].SB)
     } else if (BarcodeType === 'PB') {
-      const [updateBarcode] = await mysql2.pool.query(`update barcode set ${BarcodeType} = ${Number(barcode[0].PB) + 1} where CompanyID=${CompanyID}`)
+      const [updateBarcode] = await mysql2.pool.query(`update barcode set ${BarcodeType} = ${Number(barcode[0].PB) + 1}, UpdatedOn = now() where CompanyID=${CompanyID}`)
       return Number(barcode[0].PB)
     } else if (BarcodeType === 'MB') {
-      const [updateBarcode] = await mysql2.pool.query(`update barcode set ${BarcodeType} = ${Number(barcode[0].MB) + 1} where CompanyID=${CompanyID}`)
+      const [updateBarcode] = await mysql2.pool.query(`update barcode set ${BarcodeType} = ${Number(barcode[0].MB) + 1}, UpdatedOn = now() where CompanyID=${CompanyID}`)
       return Number(barcode[0].MB)
     }
   },
@@ -339,7 +339,7 @@ module.exports = {
         WholeSale : rw === "W" ? lastInvoiceID[0].WholeSale + 1 : lastInvoiceID[0].WholeSale,
       }
 
-      const [update] = await mysql2.pool.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale} WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`)
+      const [update] = await mysql2.pool.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, , UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`)
 
     } else {
       [lastInvoiceID] = await mysql2.pool.query(`select * from invoice WHERE CompanyID = '${CompanyID}' and ShopID = 0`);
@@ -349,7 +349,7 @@ module.exports = {
         WholeSale : rw === "W" ? lastInvoiceID[0].WholeSale + 1 : lastInvoiceID[0].WholeSale,
       }
 
-      const [update] = await mysql2.pool.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale} WHERE CompanyID = '${CompanyID}' and ShopID = 0`)
+      const [update] = await mysql2.pool.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = 0`)
     }
 
     const [shopDetails] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
@@ -387,7 +387,7 @@ module.exports = {
         Service :lastInvoiceID[0].Service + 1
       }
 
-      const [update] = await mysql2.pool.query(`update invoice set Service = ${updateDatum.Service} WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`)
+      const [update] = await mysql2.pool.query(`update invoice set Service = ${updateDatum.Service}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`)
 
     } else {
       [lastInvoiceID] = await mysql2.pool.query(`select * from invoice WHERE CompanyID = '${CompanyID}' and ShopID = 0`);
@@ -396,7 +396,7 @@ module.exports = {
         Service :lastInvoiceID[0].Service + 1
       }
 
-      const [update] = await mysql2.pool.query(`update invoice set Service = ${updateDatum.Service} WHERE CompanyID = '${CompanyID}' and ShopID = 0`)
+      const [update] = await mysql2.pool.query(`update invoice set Service = ${updateDatum.Service}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = 0`)
     }
 
     const [shopDetails] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)

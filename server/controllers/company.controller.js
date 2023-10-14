@@ -246,7 +246,7 @@ module.exports = {
                 Service: 1
             }
 
-            const [saveinvoice] = await mysql2.pool.query(`insert into invoice(CompanyID, ShopID, Retail, WholeSale, Service)values(${saveCompany.insertId},0,1,1,1)`);
+            const [saveinvoice] = await mysql2.pool.query(`insert into invoice(CompanyID, ShopID, Retail, WholeSale, Service, CreatedOn)values(${saveCompany.insertId},0,1,1,1, now())`);
 
             console.log(connected("Invoice Number Setting Initiated SuccessFully !!!"));
 
@@ -916,7 +916,7 @@ module.exports = {
 
             if (!CompanyID) return res.send({ message: "Invalid CompanyID Data" })
 
-            const [data] = await mysql2.pool.query(`select CompanyID, company.Name as CompanyName, barcode.SB as StockBarCose, barcode.PB as PreOrderBarcode, barcode.MB as ManualBarCode from barcode left join company on company.ID = barcode.CompanyID where barcode.CompanyID = ${CompanyID}`)
+            const [data] = await mysql2.pool.query(`select CompanyID, company.Name as CompanyName, barcode.SB as StockBarCode, barcode.PB as PreOrderBarCode, barcode.MB as ManualBarCode, barcode.CreatedOn, barcode.UpdatedOn from barcode left join company on company.ID = barcode.CompanyID where barcode.CompanyID = ${CompanyID}`)
 
             response.message = "Data fetch SuccessFully"
             response.data = data || []
@@ -934,7 +934,7 @@ module.exports = {
 
             if (!CompanyID) return res.send({ message: "Invalid CompanyID Data" })
 
-            const [data] = await mysql2.pool.query(`select invoice.CompanyID, company.Name as CompanyName, IFNULL(shop.Name, 'CompanyWise') as ShopName, shop.AreaName, invoice.Retail, invoice.WholeSale, invoice.Service from invoice left join company on company.ID = invoice.CompanyID left join shop on shop.ID = invoice.ShopID where invoice.CompanyID = ${CompanyID}`)
+            const [data] = await mysql2.pool.query(`select invoice.CompanyID, company.Name as CompanyName, IFNULL(shop.Name, 'CompanyWise') as ShopName, shop.AreaName, invoice.Retail, invoice.WholeSale, invoice.Service, invoice.CreatedOn, invoice.UpdatedOn from invoice left join company on company.ID = invoice.CompanyID left join shop on shop.ID = invoice.ShopID where invoice.CompanyID = ${CompanyID}`)
 
             response.message = "Data fetch SuccessFully"
             response.data = data || []
