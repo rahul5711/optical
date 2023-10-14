@@ -1056,20 +1056,27 @@ module.exports = {
             response.data = data
             response.totalPaidAmount = totalPaidAmount
 
+            let totalCreditAmount = 0
             let creditCreditAmount = 0
+            let creditDebitAmount = 0
 
-            const [credit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Debit' and paymentdetail.BillID = '${InvoiceNo}'`);
-
+            const [credit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Credit' and paymentdetail.BillID = '${InvoiceNo}'`);
+            const [debit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Debit'  and paymentdetail.BillID = '${InvoiceNo}'`);
 
             if (credit[0].CreditAmount !== null) {
                 creditCreditAmount = credit[0].CreditAmount
             }
+            if (debit[0].CreditAmount !== null) {
+                creditDebitAmount = debit[0].CreditAmount
+            }
 
 
+            totalCreditAmount = creditDebitAmount - creditCreditAmount
 
 
-            response.totalCreditAmount = creditCreditAmount
-            response.totalPaidAmount -= creditCreditAmount || 0
+            response.totalCreditAmount = totalCreditAmount
+
+            response.totalPaidAmount -= response.totalCreditAmount || 0
 
 
             return res.send(response);
