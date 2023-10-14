@@ -708,7 +708,7 @@ module.exports = {
             const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
             const [companysetting] = await mysql2.pool.query(`select * from companysetting where CompanyID = ${CompanyID}`)
             const [barcode] = await mysql2.pool.query(`select * from barcodemasternew where CompanyID = ${CompanyID} and PurchaseDetailID = ${printdata[0].ID}`)
-            
+
             printdata.shopdetails = shopdetails[0]
             printdata[0].BarcodeName = shopdetails[0].BarcodeName
             printdata[0].Barcode = barcode[0].Barcode
@@ -808,7 +808,7 @@ module.exports = {
             //         let ProductFullName = ele.ProductName
             //         let Barcode = ele.BaseBarCode
             //         let BarcodeName = shopdetails[0].BarcodeName
-    
+
             //         ele.ProductFullName = ProductFullName;
             //         ele.ProductBrandName = ProductBrandName;
             //         ele.ProductModelName = ProductModelName;
@@ -819,13 +819,13 @@ module.exports = {
 
             printdata.forEach(ele => {
                 let ProductBrandName, ProductModelName;
-                
+
                 if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
                   [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(1, 3);
                 } else {
                   [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(0, 2);
                 }
-              
+
                 ele.ProductFullName = ele.ProductName;
                 ele.ProductBrandName = ProductBrandName;
                 ele.ProductModelName = ProductModelName;
@@ -839,7 +839,7 @@ module.exports = {
             var file = "barcode" + CompanyID + ".pdf";
             var formatName = "barcode.ejs";
             var appURL = clientConfig.appURL;
-            
+
             // var appURL = clientConfig.appURL;
             var fileName = "";
             fileName = "uploads/" + file;
