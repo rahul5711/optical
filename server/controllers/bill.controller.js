@@ -1782,7 +1782,7 @@ module.exports = {
             printdata.paidlist = PaidList
             printdata.unpaidlist = UnpaidList
             printdata.Measurement = MeasurementID[0]
-            printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
+            printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
 
             var recivePayment = 0;
             if (printdata.paidlist) {
