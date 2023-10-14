@@ -1,0 +1,282 @@
+{
+	"info": {
+		"_postman_id": "f936f214-dfe8-4cb7-90df-0201a9ab774e",
+		"name": "Super Admin",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "dropdownlist",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/company/dropdownlist",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"company",
+						"dropdownlist"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "dropdownlist",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/company/dropdownlist",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"dropdownlist"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "836"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"344-yQspw794PX9Do82QJMnU9jYcMho\""
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 14 Oct 2023 10:23:54 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 24,\n            \"Name\": \"OSHIN OPTICS\"\n        },\n        {\n            \"ID\": 23,\n            \"Name\": \"JADHAV OPTICAL\"\n        },\n        {\n            \"ID\": 22,\n            \"Name\": \"YUSRA EYE CARE CENTRE\"\n        },\n        {\n            \"ID\": 21,\n            \"Name\": \"CLEARVISION\"\n        },\n        {\n            \"ID\": 20,\n            \"Name\": \"IFRAME OPTICAL\"\n        },\n        {\n            \"ID\": 19,\n            \"Name\": \"EYPIE OPTICS LLC\"\n        },\n        {\n            \"ID\": 18,\n            \"Name\": \"NEW TREND OPTICAL\"\n        },\n        {\n            \"ID\": 17,\n            \"Name\": \"The Optical Studio\"\n        },\n        {\n            \"ID\": 16,\n            \"Name\": \"NETRALI OPTICALS\"\n        },\n        {\n            \"ID\": 15,\n            \"Name\": \"FAMILY SIGHT & SOUND PVT LTD\"\n        },\n        {\n            \"ID\": 12,\n            \"Name\": \"SHREE OPTIC.COM\"\n        },\n        {\n            \"ID\": 11,\n            \"Name\": \"SPECTSVISTA THE OPTICAL STORES\"\n        },\n        {\n            \"ID\": 10,\n            \"Name\": \"PUJA MEDICAL & PUJA OPTICAL\"\n        },\n        {\n            \"ID\": 9,\n            \"Name\": \"RINA OPTICALS\"\n        },\n        {\n            \"ID\": 7,\n            \"Name\": \"VISION\"\n        },\n        {\n            \"ID\": 6,\n            \"Name\": \"STUDIO-OPTIX\"\n        },\n        {\n            \"ID\": 5,\n            \"Name\": \"ASIAN EYE CARE OPTICS\"\n        },\n        {\n            \"ID\": 4,\n            \"Name\": \"DR DUDHBHATE HEALTH CARE PVT. LTD\"\n        },\n        {\n            \"ID\": 3,\n            \"Name\": \"OPTICKS\"\n        },\n        {\n            \"ID\": 2,\n            \"Name\": \"LENSNBIRD BAWSHAR\"\n        },\n        {\n            \"ID\": 1,\n            \"Name\": \"OPTICALGURU BETA\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "barcodeDetails",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"CompanyID\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/company/barcodeDetails",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"company",
+						"barcodeDetails"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "barcodeDetails",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"CompanyID\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/company/barcodeDetails",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"barcodeDetails"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "201"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"c9-NnVTThVd80YPO/vRWj0J9tqsicU\""
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 14 Oct 2023 10:32:51 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"CompanyID\": 2,\n            \"CompanyName\": \"LENSNBIRD BAWSHAR\",\n            \"StockBarCose\": \"10000222\",\n            \"PreOrderBarcode\": \"90000000\",\n            \"ManualBarCode\": \"1012\"\n        }\n    ],\n    \"user\": null,\n    \"success\": true,\n    \"message\": \"Data fetch SuccessFully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "invoiceDetails",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"CompanyID\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/company/invoiceDetails",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"company",
+						"invoiceDetails"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "invoiceDetails",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"CompanyID\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/company/invoiceDetails",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"invoiceDetails"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "742"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"2e6-H6ROub+HFGlFkncp29Vb2KktZq4\""
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 14 Oct 2023 10:47:31 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"CompanyID\": 2,\n            \"CompanyName\": \"LENSNBIRD BAWSHAR\",\n            \"ShopName\": \"CompanyWise\",\n            \"AreaName\": null,\n            \"Retail\": 1,\n            \"WholeSale\": 1,\n            \"Service\": 1\n        },\n        {\n            \"CompanyID\": 2,\n            \"CompanyName\": \"LENSNBIRD BAWSHAR\",\n            \"ShopName\": \"WAREHOUSE\",\n            \"AreaName\": \"OMAN\",\n            \"Retail\": 2,\n            \"WholeSale\": 1,\n            \"Service\": 1\n        },\n        {\n            \"CompanyID\": 2,\n            \"CompanyName\": \"LENSNBIRD BAWSHAR\",\n            \"ShopName\": \"LENSNBIRD AZAIBA\",\n            \"AreaName\": \"AZAIBA\",\n            \"Retail\": 13,\n            \"WholeSale\": 1,\n            \"Service\": 31\n        },\n        {\n            \"CompanyID\": 2,\n            \"CompanyName\": \"LENSNBIRD BAWSHAR\",\n            \"ShopName\": \"LENSNBIRD BAWSHAR\",\n            \"AreaName\": \"BAWSHAR\",\n            \"Retail\": 1,\n            \"WholeSale\": 1,\n            \"Service\": 1\n        },\n        {\n            \"CompanyID\": 2,\n            \"CompanyName\": \"LENSNBIRD BAWSHAR\",\n            \"ShopName\": \"LENSNBIRD QURUM\",\n            \"AreaName\": \"QURUM\",\n            \"Retail\": 1,\n            \"WholeSale\": 1,\n            \"Service\": 1\n        }\n    ],\n    \"user\": null,\n    \"success\": true,\n    \"message\": \"Data fetch SuccessFully\"\n}"
+				}
+			]
+		}
+	]
+}

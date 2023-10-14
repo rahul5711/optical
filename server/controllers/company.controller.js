@@ -382,7 +382,7 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             return res.send(response);
-        } catch {
+        } catch (err) {
             next(err)
         }
     },
@@ -409,7 +409,7 @@ module.exports = {
 
             response.message = "data deactive sucessfully"
             return res.send(response);
-        } catch {
+        } catch (err) {
             next(err)
         }
     },
@@ -436,7 +436,7 @@ module.exports = {
 
             response.message = "data active sucessfully"
             return res.send(response);
-        } catch {
+        } catch (err) {
             next(err)
         }
     },
@@ -481,7 +481,7 @@ module.exports = {
             response.data = Company
             response.user = User
             return res.send(response);
-        } catch {
+        } catch (err) {
             next(err)
         }
     },
@@ -508,7 +508,23 @@ module.exports = {
             response.data = data
             response.count = count.length
             return res.send(response);
-        } catch {
+        } catch (err) {
+            next(err)
+        }
+    },
+    dropdownlist: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            let qry = `select ID, Name from company  order by company.ID desc`
+
+
+            let [data] = await mysql2.pool.query(qry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            return res.send(response);
+        } catch (err) {
             next(err)
         }
     },
@@ -534,7 +550,7 @@ module.exports = {
             response.data = data
             response.count = count.length
             return res.send(response);
-        } catch {
+        } catch (err) {
             next(err)
         }
     },
@@ -562,7 +578,7 @@ module.exports = {
             response.data = data
             response.count = count.length
             return res.send(response);
-        } catch {
+        } catch (err) {
             next(err)
         }
     },
@@ -590,7 +606,7 @@ module.exports = {
             response.data = data
             response.count = count.length
             return res.send(response);
-        } catch {
+        } catch (err) {
             next(err)
         }
     },
@@ -618,7 +634,7 @@ module.exports = {
             response.data = data
 
             return res.send(response);
-        } catch {
+        } catch (err) {
             next(err)
         }
     },
@@ -640,7 +656,7 @@ module.exports = {
             response.count = data.length
             return res.send(response);
 
-        } catch {
+        } catch (err) {
             next(err)
         }
     },
@@ -662,7 +678,7 @@ module.exports = {
             response.count = data.length
             return res.send(response);
 
-        } catch {
+        } catch (err) {
             next(err)
         }
     },
@@ -704,7 +720,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = fetch || []
             return res.send(response);
-        } catch {
+        } catch (err) {
             next(err)
         }
     },
@@ -886,6 +902,42 @@ module.exports = {
 
             response.message = "Support Data Assign SuccessFully"
             response.data = []
+            return res.send(response);
+
+        } catch (error) {
+            next(error)
+        }
+    },
+    barcodeDetails: async (req, res, next) => {
+        try {
+            const response = { data: null, user: null, success: true, message: "" }
+
+            const { CompanyID } = req.body
+
+            if (!CompanyID) return res.send({ message: "Invalid CompanyID Data" })
+
+            const [data] = await mysql2.pool.query(`select CompanyID, company.Name as CompanyName, barcode.SB as StockBarCose, barcode.PB as PreOrderBarcode, barcode.MB as ManualBarCode from barcode left join company on company.ID = barcode.CompanyID where barcode.CompanyID = ${CompanyID}`)
+
+            response.message = "Data fetch SuccessFully"
+            response.data = data || []
+            return res.send(response);
+
+        } catch (error) {
+            next(error)
+        }
+    },
+    invoiceDetails: async (req, res, next) => {
+        try {
+            const response = { data: null, user: null, success: true, message: "" }
+
+            const { CompanyID } = req.body
+
+            if (!CompanyID) return res.send({ message: "Invalid CompanyID Data" })
+
+            const [data] = await mysql2.pool.query(`select invoice.CompanyID, company.Name as CompanyName, IFNULL(shop.Name, 'CompanyWise') as ShopName, shop.AreaName, invoice.Retail, invoice.WholeSale, invoice.Service from invoice left join company on company.ID = invoice.CompanyID left join shop on shop.ID = invoice.ShopID where invoice.CompanyID = ${CompanyID}`)
+
+            response.message = "Data fetch SuccessFully"
+            response.data = data || []
             return res.send(response);
 
         } catch (error) {

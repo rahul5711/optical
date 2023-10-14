@@ -8,6 +8,7 @@ router.post('/getCompanyById', Controller.getCompanyById)
 router.post('/user', Controller.getUser)
 router.post('/updatePassword', Controller.updatePassword)
 router.post('/list', verifyAccessTokenAdmin, Controller.list)
+router.post('/dropdownlist', Controller.dropdownlist)
 router.post('/Deactivelist', verifyAccessTokenAdmin, Controller.Deactivelist)
 router.post('/LoginHistory', verifyAccessTokenAdmin, Controller.LoginHistory)
 router.post('/update', Controller.update)
@@ -43,6 +44,10 @@ router.post('/processSpecSpt', Controller.processSpecSpt)
 router.post('/processSupportData', Controller.processSupportData)
 
 
+// Barcode and Invoice details
+
+router.post('/barcodeDetails', Controller.barcodeDetails)
+router.post('/invoiceDetails', Controller.invoiceDetails)
 
 
 module.exports = router
