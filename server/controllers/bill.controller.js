@@ -1056,6 +1056,22 @@ module.exports = {
             response.data = data
             response.totalPaidAmount = totalPaidAmount
 
+            let creditCreditAmount = 0
+
+            const [credit] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Debit' and paymentdetail.BillID = '${InvoiceNo}'`);
+
+
+            if (credit[0].CreditAmount !== null) {
+                creditCreditAmount = credit[0].CreditAmount
+            }
+
+
+
+
+            response.totalCreditAmount = creditCreditAmount
+            response.totalPaidAmount -= creditCreditAmount || 0
+
+
             return res.send(response);
 
 
@@ -1786,21 +1802,21 @@ module.exports = {
 
             var recivePayment = 0;
             if (printdata.paidlist) {
-             for(const item of printdata.paidlist) {
-                recivePayment = +recivePayment + item.Amount;
-             }
+                for (const item of printdata.paidlist) {
+                    recivePayment = +recivePayment + item.Amount;
+                }
             }
             printdata.recivePayment = recivePayment;
 
             let fileName = "";
             let file = "";
             let formatName = "";
-            if(printdata.company.ID == 20){
-                 file = "billOrder_form.ejs" + ".pdf";
-                 formatName = "billOrder_form.ejs";
-            }else{
-                 file = "OrderForm.ejs" + ".pdf";
-                 formatName = "OrderForm.ejs";
+            if (printdata.company.ID == 20) {
+                file = "billOrder_form.ejs" + ".pdf";
+                formatName = "billOrder_form.ejs";
+            } else {
+                file = "OrderForm.ejs" + ".pdf";
+                formatName = "OrderForm.ejs";
             }
             fileName = "uploads/" + file;
 
@@ -2469,10 +2485,10 @@ module.exports = {
             const [total] = await mysql2.pool.query(`select SUM(GrandTotal) as totalGrandTotal, SUM(Paid) as totalPaid, SUM(qty) as totalQty, SUM(Balance) as totalBalance from oldbillmaster where CompanyID = ${CompanyID}` + Parem)
 
             if (data.length && total) {
-              response.calculation[0].totalBalance =  total[0].totalBalance
-              response.calculation[0].totalGrandTotal = total[0].totalGrandTotal
-              response.calculation[0].totalPaid = total[0].totalPaid
-              response.calculation[0].totalQty = total[0].totalQty
+                response.calculation[0].totalBalance = total[0].totalBalance
+                response.calculation[0].totalGrandTotal = total[0].totalGrandTotal
+                response.calculation[0].totalPaid = total[0].totalPaid
+                response.calculation[0].totalQty = total[0].totalQty
             }
 
             response.data = data
@@ -2508,10 +2524,10 @@ module.exports = {
             const [total] = await mysql2.pool.query(`select SUM(GrandTotal) as totalGrandTotal, SUM(Paid) as totalPaid, SUM(qty) as totalQty, SUM(Balance) as totalBalance from oldbillmaster where CompanyID = ${CompanyID}` + Parem)
 
             if (total) {
-              response.calculation[0].totalBalance =  total[0].totalBalance
-              response.calculation[0].totalGrandTotal = total[0].totalGrandTotal
-              response.calculation[0].totalPaid = total[0].totalPaid
-              response.calculation[0].totalQty = total[0].totalQty
+                response.calculation[0].totalBalance = total[0].totalBalance
+                response.calculation[0].totalGrandTotal = total[0].totalGrandTotal
+                response.calculation[0].totalPaid = total[0].totalPaid
+                response.calculation[0].totalQty = total[0].totalQty
             }
 
             response.data = data
