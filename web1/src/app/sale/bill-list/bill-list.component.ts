@@ -160,6 +160,7 @@ export class BillListComponent implements OnInit {
           // });
           this.paymentHistoryList = res.data;
           this.applyDebitPayment.PayableAmount = res.totalPaidAmount;
+          this.applyPayment.PayableAmount = res.totalCreditAmount;
           this.applyDebitPayment.CustomerID = res.data[0].CustomerID;
           this.applyDebitPayment.ID = res.data[0].BillMasterID;
           this.getPaymentModesList()
@@ -247,6 +248,7 @@ export class BillListComponent implements OnInit {
   openModal12(content: any) {
     this.sp.show();
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
+
     this.sp.hide();
   }
 

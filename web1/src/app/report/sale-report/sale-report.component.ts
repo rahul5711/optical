@@ -33,8 +33,7 @@ export class SaleReportComponent implements OnInit {
   companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
 
   myControl = new FormControl('All');
-  options: string[] = ['All'];
-  filteredOptions: Observable<string[]> | undefined;
+  filteredOptions: any ;
  
   constructor(
     private router: Router,
@@ -85,7 +84,7 @@ export class SaleReportComponent implements OnInit {
   gstService:any
 
   BillMaster: any =  { 
-    FilterTypes:'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,  EmployeeID:0,  CustomerID: 0,  CustomerGSTNo:0, PaymentStatus: 0, ProductStatus:'All',BillType:'All'
+    FilterTypes:'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,  EmployeeID:0,  CustomerID: 0,  CustomerGSTNo:0, PaymentStatus: 0, ProductStatus:'All', BillType:'All'
   };
 
   Billdetail: any =  { 
@@ -145,10 +144,6 @@ export class SaleReportComponent implements OnInit {
   gstpending:any
 
   ngOnInit(): void {
-    this.filteredOptions = this.myControl.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value || '')), 
-    );
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'SaleReport') {
         this.viewSaleReport = element.View;
@@ -317,7 +312,7 @@ export class SaleReportComponent implements OnInit {
     if (this.BillMaster.EmployeeID !== 0){
       Parem = Parem + ' and billmaster.Employee = ' +  this.BillMaster.EmployeeID ; }
 
-    if (this.BillMaster.CustomerID !== 0){
+    if (this.BillMaster.CustomerID != 0){
       Parem = Parem + ' and billmaster.CustomerID = ' +  this.BillMaster.CustomerID ; }
 
     if (this.BillMaster.CustomerGSTNo !== 0){
@@ -1050,20 +1045,41 @@ BillPendingFromReset(){
   }
 
   customerSearch(searchKey: any, mode: any) {
+    this.filteredOptions = []
     let dtm = {
-      CustomerName: this.BillMaster.CustomerID
+      Type: "Customer",
+      Name: this.BillMaster.CustomerID
     };
   
-    if (searchKey.length >= 3) {
+    if (searchKey.length >= 2) {
       if (mode === 'Name') {
-        dtm.CustomerName = searchKey;
+        dtm.Name = searchKey;
       } 
+      const subs: Subscription =  this.supps.dropdownlistBySearch(dtm).subscribe({
+        next: (res: any) => {
+          if(res.success){
+            this.filteredOptions = res.data
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     }
-    console.log(dtm);
+  
   }
 
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.options.filter(option => option.toLowerCase().includes(filterValue)) ;
+  CustomerSelection(mode:any,ID:any){
+    if(mode === 'Value'){
+      this.BillMaster.CustomerID = ID
+    }
+    if(mode === 'All'){
+      this.filteredOptions  = []
+      this.BillMaster.CustomerID = 0
+    }
   }
+ 
+ 
 }

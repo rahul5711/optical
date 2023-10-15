@@ -35,7 +35,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { NameFilterS} from './../filterDropDown/nameFilter';
 import { ProductItemFilterBill} from './../filterDropDown/nameFilter';
 import { OldBillListComponent } from './old-bill-list/old-bill-list.component';
-
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 @NgModule({
   declarations: [
     DoctorComponent,
@@ -76,7 +76,8 @@ import { OldBillListComponent } from './old-bill-list/old-bill-list.component';
     MatTabsModule,
     NgbModule,
     NgSelectModule,
-    NgxMatSelectSearchModule
+    NgxMatSelectSearchModule,
+    MatAutocompleteModule
   ]
 })
 export class SaleModule { }

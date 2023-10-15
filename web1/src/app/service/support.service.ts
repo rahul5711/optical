@@ -73,6 +73,13 @@ export class SupportService {
     .pipe(catchError(this.handleError));
   }
 
+  dropdownlistBySearch( Body:any ): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/dropdownlistBySearch', Body)
+    .pipe(catchError(this.handleError));
+  }
+
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

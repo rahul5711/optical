@@ -44,7 +44,8 @@ export class BillingComponent implements OnInit {
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   env = environment;
-
+  myControl = new FormControl('');
+  filteredOptions: any ;
   id: any = 0;
   id2: any = 0;
   customerImage: any;
@@ -754,6 +755,7 @@ srcCustomerBox = false
     this.contactList = [];
     this.otherList = [];
     this.searchList = [];
+    this.filteredOptions = []
     this.sp.hide();
     this.ngOnInit();
 
@@ -949,30 +951,32 @@ srcCustomerBox = false
   }
   // Billing
 
+  // customer search 
+
+  CustomerSelection(mode:any,ID:any){
+    if(mode === 'Value'){
+      this.getCustomerSearchId(ID)
+    }
+  }
 
   customerSearch(searchKey: any, mode: any) {
 
-    this.searchList = [];
+    this.filteredOptions = [];
     this.param = { Name: '', MobileNo1: '', Address: '', Sno: '' };
     if (searchKey.length >= 3) {
-      if (mode === 'Name' || mode === 'MobileNo1') {
-        const pattern = /[0-9\+\-]/
-        let inputChar = searchKey.toString();
-        if (pattern.test(inputChar)) {
-          this.param.MobileNo1 = searchKey;
-        } else {
-          this.param.Name = searchKey;
-        }
+      if (mode === 'Name') {
+        this.param.Name = searchKey;
       } else if (mode === 'Address') {
         this.param.Address = searchKey;
       } else if (mode === 'Sno') {
         this.param.Sno = searchKey;
+      } else if (mode === 'MobileNo1') {
+        this.param.MobileNo1 = searchKey;
       }
       const subs: Subscription = this.cs.customerSearch(this.param).subscribe({
         next: (res: any) => {
           if (res) {
-            this.searchList = res.data
-            this.srcBox = true
+            this.filteredOptions = res.data
           } else {
             this.as.errorToast(res.message)
           }
@@ -985,11 +989,12 @@ srcCustomerBox = false
 
   getCustomerSearchId(ID: any) {
     this.sp.show()
+    this.filteredOptions = []
     this.id = ID;
     this.router.navigate(['/sale/billing', ID, 0]);
     this.ngOnInit();
     if (this.id !== 0) {
-      this.srcBox = true;
+      this.sp.show()
       const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
         next: (res: any) => {
           if (res.success) {
@@ -1028,7 +1033,6 @@ srcCustomerBox = false
             this.as.errorToast(res.message)
           }
           this.sp.hide()
-          this.srcBox = false;
         },
         error: (err: any) => {
           console.log(err.message);
@@ -1037,21 +1041,7 @@ srcCustomerBox = false
       })
     }
   }
-
-  // customerNumber(parama:any){
-  //   this.param = parama
-  //   const subs: Subscription = this.cs.customerSearch(this.param).subscribe({
-  //     next: (res: any) => {
-  //       if (res) {
-  //         this.numberList = res.data
-  //       } else {
-  //         this.as.errorToast(res.message)
-  //       }
-  //     },
-  //     error: (err: any) => console.log(err.message),
-  //     complete: () => subs.unsubscribe(),
-  //   });
-  // }
+ // customer search 
 
   dateFormat(date:any){
     return moment(date).format(`${this.companySetting.DateFormat}`);
@@ -1065,45 +1055,6 @@ srcCustomerBox = false
     }
     return event;
   }
-
-  // ngAfterViewInit() {
-  //   fromEvent(this.UserNamecontrol.nativeElement, 'keyup').pipe(
-  //     map((event: any) => {
-  //       return event.target.value;
-  //     }),
-  //     debounceTime(1000),
-  //     distinctUntilChanged(),
-      
-  //   ).subscribe((text: string) => {
-
-  //   let data = {
-  //     searchQuery: text.trim(),
-  //   }
-       
-  //   if(data.searchQuery !== "") {
-  //     const dtm = {
-  //       searchQuery: data.searchQuery 
-  //     }
-  //     this.sp.show()
-  //     const subs: Subscription = this.cs.searchByFeild(dtm).subscribe({
-  //       next: (res: any) => {
-  //         if(res.success){
-  //           this.searchList = res.data
-  //           this.srcBox = true
-  //           this.as.successToast(res.message)
-  //         }else{
-  //           this.as.errorToast(res.message)
-  //         }
-  //         this.sp.hide();
-  //       },
-  //       error: (err: any) => console.log(err.message),
-  //       complete: () => subs.unsubscribe(),
-  //     });
-  //     } 
-  //   });
-  //   this.srcBox = false
-  // }
-
 
 
 

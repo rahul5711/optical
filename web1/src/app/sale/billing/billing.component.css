@@ -52,6 +52,37 @@ textarea.mat-input-element {
     max-height: 30px !important;
 }
 
+.customer-option {
+    white-space: unset;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    line-height: 20px;
+    height: auto;
+    padding: 0px 7px;
+    text-align: left;
+    text-decoration: none;
+    max-width: 100%;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+    display: flex;
+    flex-direction: row;
+    max-width: 100%;
+    box-sizing: border-box;
+    align-items: center;
+    -webkit-tap-highlight-color: transparent;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.mat-option:hover:not(.mat-option-disabled), .mat-option:focus:not(.mat-option-disabled) {
+    background: rgb(30 38 114);
+    color: white;
+}
+
+
+
 @import "~@ng-select/ng-select/themes/default.theme.css";
 
 @import "~@ng-select/ng-select/themes/material.theme.css";

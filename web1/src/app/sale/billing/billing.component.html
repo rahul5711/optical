@@ -70,7 +70,7 @@
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-3 col-lg-3 col-md-3  col-8 mb-0">
-                                            <mat-form-field class="example-full-width mb-0">
+                                            <!-- <mat-form-field class="example-full-width mb-0">
                                                 <mat-label> Name</mat-label>
                                                 <input matInput min="3" [(ngModel)]="data.Name" name="Name"
                                                 (input)="customerSearch(UserNamecontrol.value, 'Name')"  required
@@ -86,34 +86,51 @@
                                                             <div class="col-5 p-0">{{data.MobileNo1}}</div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> -->
+                                                <mat-form-field class="example-full-width">
+                                                    <mat-label>Name</mat-label>
+                                                    <input type="text" aria-label="Text" matInput
+                                                    name="Name" [(ngModel)]="data.Name"  [formControl]="myControl" [matAutocomplete]="auto" 
+                                                           (input)="customerSearch(myControl.value, 'Name')" required>
+                                                    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'370px'">
+                                                      <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
+                                                        <table style="width:100%">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td>{{option.Name | uppercase}}</td>
+                                                                    <td style="text-align: right;"> {{option.MobileNo1}}</td>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                      </mat-option>
+                                                    </mat-autocomplete>
+                                                    <mat-error>
+                                                        Name is required
+                                                    </mat-error>
+                                                  </mat-form-field>
                                         </div>
-                                        <!-- <div class="col-xl-3 col-lg-3 col-md-3  col-8 mb-0">
-                                            <mat-form-field class="example-full-width mb-0">
-                                                <mat-label> Name</mat-label>
-                                                <input matInput min="3" [(ngModel)]="data.Name" name="Name"
-                                                 required 
-                                                #UserNamecontrol >
+                                        <div class="col-xl-2 col-lg-2 col-md-3  col-4 mb-0">
+                                            <mat-form-field class="example-full-width">
+                                                <mat-label>Mobile No</mat-label>
+                                                <input type="text" aria-label="Text" matInput
+                                                name="MobileNo1" [(ngModel)]="data.MobileNo1"  [formControl]="myControl" [matAutocomplete]="auto" 
+                                                      (input)="customerSearch(myControl.value, 'MobileNo1')"  required>
+                                                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'370px'">
+                                                  <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
+                                                    <table style="width:100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <td>{{option.Name | uppercase}}</td>
+                                                                <td style="text-align: right;"> {{option.MobileNo1}}</td>
+                                                            </tr>
+                                                        </thead>
+                                                    </table>
+                                                  </mat-option>
+                                                </mat-autocomplete>
                                                 <mat-error>
                                                     Name is required
                                                 </mat-error>
-                                            </mat-form-field>
-                                            <br>
-                                                <div #boxserching class="row  m-0 search mostly-customized-scrollbar" *ngIf="searchList.length !== 0 && srcBox">
-                                                    <div class="col-12" style="cursor: pointer; " *ngFor="let data of searchList" >
-                                                        <div class="row" style="border-bottom: 1px solid #fff ;" (click)="getCustomerSearchId(data.ID);">
-                                                            <div class="col-7 " style="padding: 0 4px;">{{data.Name}}</div>
-                                                            <div class="col-5 p-0">{{data.MobileNo1}}</div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                        </div> -->
-                                        <div class="col-xl-2 col-lg-2 col-md-3  col-4 mb-0">
-                                            <mat-form-field class="example-full-width mb-0">
-                                                <mat-label>Mobile No1</mat-label>
-                                                <input matInput name="MobileNo1" type="number"
-                                                    [(ngModel)]="data.MobileNo1"  (input)="customerSearch(MobileNo1control.value, 'MobileNo1')" #MobileNo1control />
-                                            </mat-form-field> 
+                                              </mat-form-field>
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-3  col-3 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
@@ -181,7 +198,7 @@
                                             <button *ngIf="id != 0" (click)="updateCustomer()" [disabled]="!f.valid"
                                                 mat-raised-button color="primary"
                                                 style="padding: 0px 18px;">update</button>
-                                            <button *ngIf="id == 0" (click)="onsubmit()" [disabled]="!f.valid"
+                                            <button *ngIf="id == 0" (click)="onsubmit()" [disabled]="!f.valid || data.Name == ''"
                                                 mat-raised-button color="primary" style="padding: 0px 22px;">
                                                 Save
                                             </button>
