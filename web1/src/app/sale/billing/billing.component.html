@@ -113,15 +113,15 @@
                                             <mat-form-field class="example-full-width">
                                                 <mat-label>Mobile No</mat-label>
                                                 <input type="text" aria-label="Text" matInput
-                                                name="MobileNo1" [(ngModel)]="data.MobileNo1"  [formControl]="myControl" [matAutocomplete]="auto" 
-                                                      (input)="customerSearch(myControl.value, 'MobileNo1')"  required>
+                                                name="MobileNo1" [(ngModel)]="data.MobileNo1"  [formControl]="myControl1" [matAutocomplete]="auto" 
+                                                      (input)="customerSearch(myControl1.value, 'MobileNo1')"  required>
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'370px'">
-                                                  <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
+                                                  <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option1.ID)" *ngFor="let option1 of filteredOptions" [value]="option1.MobileNo1">
                                                     <table style="width:100%">
                                                         <thead>
                                                             <tr>
-                                                                <td>{{option.Name | uppercase}}</td>
-                                                                <td style="text-align: right;"> {{option.MobileNo1}}</td>
+                                                                <td>{{option1.Name | uppercase}}</td>
+                                                                <td style="text-align: right;"> {{option1.MobileNo1}}</td>
                                                             </tr>
                                                         </thead>
                                                     </table>

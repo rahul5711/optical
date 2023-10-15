@@ -45,6 +45,7 @@ export class BillingComponent implements OnInit {
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   env = environment;
   myControl = new FormControl('');
+  myControl1 = new FormControl('');
   filteredOptions: any ;
   id: any = 0;
   id2: any = 0;
