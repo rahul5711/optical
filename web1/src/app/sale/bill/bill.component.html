@@ -176,8 +176,8 @@
                         <mat-label>Select Barcode</mat-label>
                         <mat-select name="FieldType" [(ngModel)]="Req.SearchBarCode" #Typecontrol
                             (selectionChange)="getSearchByBarcodeNo()">
-                            <mat-option [disabled]="this.loginShop.ID !== bc.ShopID && BarcodeListShow"
-                                [ngClass]="{'otherShopClass': this.loginShop.ID !== bc.ShopID }"
+                            <mat-option [disabled]="this.loginShop?.ID !== bc.ShopID && BarcodeListShow"
+                                [ngClass]="{'otherShopClass': this.loginShop?.ID !== bc.ShopID }"
                                 *ngFor="let bc of BarcodeList ; let i = index;" [value]="bc.Barcode">
                                 {{bc.Barcode}} # {{bc.BarCodeCount }} {{bc.p}}| {{bc.ProductName | uppercase}} |
                                 {{bc.ShopName | titlecase }} <span [style.color]="'blue'"
@@ -558,12 +558,12 @@
                                 <th class="text-center">UnitPrice</th>
                                 <!-- <th class="text-center">PurchasePrice</th> -->
                                 <th class="text-center">Quantity</th>
-                                <th class="text-center" *ngIf="this.loginShop.Discount === 'true'">DiscountPer</th>
-                                <th class="text-center" *ngIf="this.loginShop.Discount === 'true'">DiscountAmt</th>
+                                <th class="text-center" *ngIf="this.loginShop?.Discount === 'true'">DiscountPer</th>
+                                <th class="text-center" *ngIf="this.loginShop?.Discount === 'true'">DiscountAmt</th>
                                 <th class="text-center">SubTotal</th>
-                                <th class="text-center" *ngIf="this.loginShop.GSTnumber === 'true'">GSTPer</th>
-                                <th class="text-center" *ngIf="this.loginShop.GSTnumber === 'true'">GSTAmt</th>
-                                <th class="text-center" *ngIf="this.loginShop.GSTnumber === 'true'">GSTType</th>
+                                <th class="text-center" *ngIf="this.loginShop?.GSTnumber === 'true'">GSTPer</th>
+                                <th class="text-center" *ngIf="this.loginShop?.GSTnumber === 'true'">GSTAmt</th>
+                                <th class="text-center" *ngIf="this.loginShop?.GSTnumber === 'true'">GSTType</th>
                                 <th class="text-center">TotalAmt</th>
                                 <th class="text-center">Remark</th>
                                 <th class="text-center">Warranty</th>
@@ -638,25 +638,25 @@
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     {{data.Quantity}}</td>
 
-                                <td *ngIf="!data.UpdateProduct && this.loginShop.Discount === 'true'"
+                                <td *ngIf="!data.UpdateProduct && this.loginShop?.Discount === 'true'"
                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     {{data.DiscountPercentage}}%
                                 </td>
 
-                                <td *ngIf="data.UpdateProduct && this.loginShop.Discount === 'true'">
+                                <td *ngIf="data.UpdateProduct && this.loginShop?.Discount === 'true'">
                                     <input class="inputWidth" type="number" min="0"
                                         [(ngModel)]="data.DiscountPercentage"
                                         (change)="calculateFields1('DiscountPercentage', 'discount',data)"
                                         #name="ngModel" [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                 </td>
 
-                                <td *ngIf="!data.UpdateProduct && this.loginShop.Discount === 'true'"
+                                <td *ngIf="!data.UpdateProduct && this.loginShop?.Discount === 'true'"
                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     {{data.DiscountAmount |
                                     currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
                                 </td>
 
-                                <td *ngIf="data.UpdateProduct && this.loginShop.Discount === 'true'">
+                                <td *ngIf="data.UpdateProduct && this.loginShop?.Discount === 'true'">
                                     <input class="inputWidth" type="number" min="0" [(ngModel)]="data.DiscountAmount"
                                         (change)="calculateFields1('DiscountAmount', 'discount',data)" #name="ngModel"
                                         [ngModelOptions]="{standalone: true}" name="data{{i}}">
@@ -668,26 +668,26 @@
                                 </td>
 
 
-                                <td *ngIf="!data.UpdateProduct && this.loginShop.GSTnumber === 'true'"
+                                <td *ngIf="!data.UpdateProduct && this.loginShop?.GSTnumber === 'true'"
                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     {{data.GSTPercentage}}%
                                 </td>
 
-                                <td *ngIf="data.UpdateProduct  && this.loginShop.GSTnumber === 'true'">
+                                <td *ngIf="data.UpdateProduct  && this.loginShop?.GSTnumber === 'true'">
                                     <input type="number" min="0" class="inputWidth" [(ngModel)]="data.GSTPercentage"
                                         #name="ngModel" (change)="calculateFields1('GSTPercentage', 'gst',data)"
                                         [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                 </td>
-                                <td *ngIf="this.loginShop.GSTnumber === 'true'"
+                                <td *ngIf="this.loginShop?.GSTnumber === 'true'"
                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     {{data.GSTAmount |
                                     currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
                                 </td>
-                                <td *ngIf="!data.UpdateProduct  && this.loginShop.GSTnumber === 'true'"
+                                <td *ngIf="!data.UpdateProduct  && this.loginShop?.GSTnumber === 'true'"
                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     {{data.GSTType}}</td>
 
-                                <td *ngIf="data.UpdateProduct  && this.loginShop.GSTnumber === 'true'">
+                                <td *ngIf="data.UpdateProduct  && this.loginShop?.GSTnumber === 'true'">
                                     <select *ngIf="data.GSTPercentage == 0 " class="inputselectWidth" name="GSTType"
                                         [(ngModel)]="data.GSTType" #name="ngModel"
                                         (change)="updataEditProdcut('','',data)" [ngModelOptions]="{standalone: true}"
@@ -813,7 +813,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0" *ngIf="this.loginShop.Discount === 'true'">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0" *ngIf="this.loginShop?.Discount === 'true'">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">D.Amount</mat-label>
                         <input matInput class="cust-input" type="number" min="0" name="DiscountAmount"
@@ -824,7 +824,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0" *ngIf="this.loginShop.GSTnumber === 'true'">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0" *ngIf="this.loginShop?.GSTnumber === 'true'">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">GST Amt</mat-label>
                         <input matInput class="cust-input" type="number" min="0" name="GSTAmount"
@@ -855,7 +855,7 @@
                         <input class="cust-input" type="number" matInput name="SGST" [(ngModel)]="sgst" disabled>
                     </mat-form-field>
                 </div> -->
-                <div *ngIf="this.id2 !== 0 && this.loginShop.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin'" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                <div *ngIf="this.id2 !== 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin'" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Additional Discount%</mat-label>
                         <input matInput name="AddlDiscountPercentage"
@@ -867,7 +867,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div *ngIf=" this.id2 == 0 && this.loginShop.AdminDiscount === 'true' && this.user.UserGroup === 'Employee' ||  this.id2 === 0 && this.loginShop.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin'" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                <div *ngIf=" this.id2 == 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'Employee' ||  this.id2 === 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin'" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Additional Discount%</mat-label>
                         <input matInput name="AddlDiscountPercentage"
@@ -879,7 +879,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div *ngIf="this.id2 !== 0 && this.loginShop.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin'" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                <div *ngIf="this.id2 !== 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin'" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Additional Discount</mat-label>
                         <input matInput name="AddlDiscount" type="number" min="0"
@@ -890,7 +890,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div *ngIf=" this.id2 == 0 && this.loginShop.AdminDiscount === 'true' && this.user.UserGroup === 'Employee' ||  this.id2 === 0 && this.loginShop.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin'" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                <div *ngIf=" this.id2 == 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'Employee' ||  this.id2 === 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin'" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Additional Discount</mat-label>
                         <input matInput name="AddlDiscount" type="number" min="0"

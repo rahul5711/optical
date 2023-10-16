@@ -1985,7 +1985,7 @@ module.exports = {
             if (CustomerID === null || CustomerID === undefined || CustomerID == 0 || CustomerID === "") return res.send({ message: "Invalid Query Data" })
             if (BillMasterID === null || BillMasterID === undefined || BillMasterID == 0 || BillMasterID === "") return res.send({ message: "Invalid Query Data" })
 
-            let [data] = await mysql2.pool.query(`select paymentdetail.amount as Amount, paymentmaster.PaymentDate as PaymentDate, paymentmaster.PaymentType AS PaymentType,paymentmaster.PaymentMode as PaymentMode, paymentmaster.CardNo as CardNo, paymentmaster.PaymentReferenceNo as PaymentReferenceNo, paymentdetail.Credit as Type from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentmaster.CustomerID = ${CustomerID} and paymentmaster.ShopID = ${shopid} and paymentmaster.PaymentType = 'Customer' and paymentmaster.Status = 1 and paymentdetail.BillMasterID = ${BillMasterID}`)
+            let [data] = await mysql2.pool.query(`select paymentdetail.amount as Amount, paymentmaster.PaymentDate as PaymentDate, paymentmaster.PaymentType AS PaymentType,paymentmaster.PaymentMode as PaymentMode, paymentmaster.CardNo as CardNo, paymentmaster.PaymentReferenceNo as PaymentReferenceNo, paymentdetail.Credit as Type from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentmaster.CustomerID = ${CustomerID} and paymentmaster.PaymentType = 'Customer' and paymentmaster.Status = 1 and paymentdetail.BillMasterID = ${BillMasterID}`)
 
             response.data = data
             response.message = "success";
@@ -2001,6 +2001,7 @@ module.exports = {
                 data: null, success: true, message: "", calculation: [{
                     "totalGstAmount": 0,
                     "totalAmount": 0,
+                    "totalSubTotal": 0,
                     "gst_details": []
                 }]
             }
@@ -2054,6 +2055,7 @@ module.exports = {
                     item.gst_detail = []
                     response.calculation[0].totalGstAmount += item.GSTAmount
                     response.calculation[0].totalAmount += item.Price
+                    response.calculation[0].totalSubTotal += item.SubTotal
 
                     if (values) {
                         values.forEach(e => {

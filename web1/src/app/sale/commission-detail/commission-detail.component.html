@@ -97,6 +97,7 @@
                                                     <th>PaymentStatus</th>
                                                     <th>BrandedCommissionAmount</th>
                                                     <th>NonBrandedCommissionAmount</th>
+                                                    <th>Bill Wise Commission Amount</th>
                                                     <th>Quantity</th>
                                                     <th>BillAmount</th>
                                                      <th>Shop Name</th>
@@ -112,6 +113,7 @@
                                                     <td>{{item.PaymentStatus}}</td>
                                                     <td>{{item.BrandedCommissionAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                     <td>{{item.NonBrandedCommissionAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                                    <td>{{item.CommissionAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                     <td>{{item.Quantity}}</td>
                                                     <td>{{item.BillAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                     <td>{{item.ShopName}}<span [style.color]="'blue'"
