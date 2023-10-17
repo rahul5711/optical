@@ -222,8 +222,11 @@ module.exports = {
 
             // add new product
 
+            let shouldUpdatePayment = false
+
             for (const item of purchaseDetail) {
                 if (item.ID === null) {
+                    shouldUpdatePayment = true
                     const doesProduct = await doesExistProduct(CompanyID, item)
 
                     // generate unique barcode
@@ -265,22 +268,25 @@ module.exports = {
             if (Charge.length) {
                 for (const c of Charge) {
                     if (c.ID === null) {
+                        shouldUpdatePayment = true
                         const [saveCharge] = await mysql2.pool.query(`insert into purchasecharge (PurchaseID, ChargeType,CompanyID,Description, Amount, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn ) values (${purchase.ID}, '${c.ChargeType}', ${CompanyID}, '${c.Description}', ${c.Price}, ${c.GSTPercentage}, ${c.GSTAmount}, '${c.GSTType}', ${c.TotalAmount}, 1, ${LoggedOnUser}, now())`)
                     }
 
                 }
                 console.log(connected("Charge Data Save SuccessFUlly !!!"));
-
-
             }
 
             //  update payment
 
-            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+            if (shouldUpdatePayment) {
+                const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
 
-            const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set BillID = '${PurchaseMaster.InvoiceNo}', Amount = 0 , DueAmount = ${PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
+                const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set BillID = '${PurchaseMaster.InvoiceNo}', Amount = 0 , DueAmount = ${PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
 
-            console.log(connected("Payment Update SuccessFUlly !!!"));
+                console.log(connected("Payment Update SuccessFUlly !!!"));
+            }
+
+
 
 
             response.message = "data update sucessfully"
@@ -533,7 +539,7 @@ module.exports = {
             const doesProduct = await doesExistProduct2(CompanyID, Body)
 
             if (doesProduct !== 0) {
-                return res.send({message: `Product Already Exist With Same Barcode Number, Please Change Purchase Price OR Retail Price`})
+                return res.send({ message: `Product Already Exist With Same Barcode Number, Please Change Purchase Price OR Retail Price` })
             }
 
             const uniqueBarcode = await generateUniqueBarcode(CompanyID, Body.PurchaseMaster.SupplierID, Body)
@@ -743,7 +749,7 @@ module.exports = {
                         res.send(err);
                     } else {
                         let options;
-                        if(printdata.CompanyID == 1){
+                        if (printdata.CompanyID == 1) {
                             if (printdata.CompanyBarcode == 5) {
                                 options = {
                                     "height": "0.70in",
@@ -752,7 +758,7 @@ module.exports = {
                                     // "width": "6.00in",
                                 };
                             }
-                        }else{
+                        } else {
                             if (printdata.CompanyBarcode == 5) {
                                 options = {
                                     "height": "0.70in",
@@ -822,9 +828,9 @@ module.exports = {
                 let ProductBrandName, ProductModelName;
 
                 if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
-                  [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(1, 3);
+                    [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(1, 3);
                 } else {
-                  [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(0, 2);
+                    [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(0, 2);
                 }
 
                 ele.ProductFullName = ele.ProductName;
@@ -832,65 +838,66 @@ module.exports = {
                 ele.ProductModelName = ProductModelName;
                 ele.Barcode = ele.BaseBarCode;
                 ele.BarcodeName = shopdetails[0].BarcodeName;
-              });
-
-         if (printdata.length > 0) {
-            printdata.CompanyID = CompanyID;
-            printdata.CompanyBarcode = 5
-            var file = "barcode" + CompanyID + ".pdf";
-            var formatName = "barcode.ejs";
-            var appURL = clientConfig.appURL;
-
-            // var appURL = clientConfig.appURL;
-            var fileName = "";
-            fileName = "uploads/" + file;
-            let url = appURL + "/uploads/" + file;
-            let updateUrl = '';
-            TinyURL.shorten(url, function (res) {
-                updateUrl = res;
             });
 
-            ejs.renderFile(
-                path.join(appRoot, "./views/", formatName), { data: printdata },
-                (err, data) => {
-                    if (err) {
-                        res.send(err);
-                    } else {
-                        let options;
+            if (printdata.length > 0) {
+                printdata.CompanyID = CompanyID;
+                printdata.CompanyBarcode = 5
+                var file = "barcode" + CompanyID + ".pdf";
+                var formatName = "barcode.ejs";
+                var appURL = clientConfig.appURL;
 
-                        if(printdata.CompanyID == 20){
-                            if (printdata.CompanyBarcode == 5) {
-                                options = {
-                                    "height": "0.70in",
-                                    "width": "4.90in",
-                                    // "height": "0.90in",
-                                    // "width": "6.00in",
-                                };
-                            }
-                        }else{
-                            if (printdata.CompanyBarcode == 5) {
-                                options = {
-                                    "height": "0.70in",
-                                    "width": "4.41in",
-                                    // "height": "0.90in",
-                                    // "width": "6.00in",
-                                };
-                            }
-                        }
-                        options.timeout = 540000,  // in milliseconds
-                            pdf.create(data, options).toFile(fileName, function (err, data) {
-                                if (err) {
-                                    console.log(err, 'err');
-                                    res.send(err);
-                                } else {
-                                    res.json(updateUrl);
+                // var appURL = clientConfig.appURL;
+                var fileName = "";
+                fileName = "uploads/" + file;
+                let url = appURL + "/uploads/" + file;
+                let updateUrl = '';
+                TinyURL.shorten(url, function (res) {
+                    updateUrl = res;
+                });
+
+                ejs.renderFile(
+                    path.join(appRoot, "./views/", formatName), { data: printdata },
+                    (err, data) => {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            let options;
+
+                            if (printdata.CompanyID == 20) {
+                                if (printdata.CompanyBarcode == 5) {
+                                    options = {
+                                        "height": "0.70in",
+                                        "width": "4.90in",
+                                        // "height": "0.90in",
+                                        // "width": "6.00in",
+                                    };
                                 }
-                            });
+                            } else {
+                                if (printdata.CompanyBarcode == 5) {
+                                    options = {
+                                        "height": "0.70in",
+                                        "width": "4.41in",
+                                        // "height": "0.90in",
+                                        // "width": "6.00in",
+                                    };
+                                }
+                            }
+                            options.timeout = 540000,  // in milliseconds
+                                pdf.create(data, options).toFile(fileName, function (err, data) {
+                                    if (err) {
+                                        console.log(err, 'err');
+                                        res.send(err);
+                                    } else {
+                                        res.json(updateUrl);
+                                    }
+                                });
+                        }
                     }
-                }
-            );
-            return
-        } }catch (err) {
+                );
+                return
+            }
+        } catch (err) {
             next(err)
         }
     },

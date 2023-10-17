@@ -340,7 +340,7 @@ module.exports = {
                         if (item.BarcodeExist === 1) {
                             barcode = item.BaseBarCode
                         } else if (item.BarcodeExist === 0) {
-                            barcode = Number(item.BaseBarCode) * 1000
+                            barcode = Number(item.BaseBarCode)
                         }
                         let count = 0;
                         count = item.Quantity;
@@ -894,7 +894,7 @@ module.exports = {
                     const [fetchBillMaster] = await mysql2.pool.query(`select * from oldbillmaster where CustomerID = ${datum.CustomerID} and CompanyID = ${CompanyID} and BillNo = '${datum.BillNo}'`)
 
                     if (fetchBillMaster.length) {
-                        return res.send({ message: "Invalid BillNo, Bill Already Found From Provided Bill No" })
+                        return res.send({ message: `Invalid BillNo, Bill Already Found From Provided Bill No :- ${datum.BillNo}` })
                     }
                 }
 
