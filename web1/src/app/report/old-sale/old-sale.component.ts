@@ -170,22 +170,22 @@ export class OldSaleComponent implements OnInit {
 
     if (this.BillMaster.FromDate !== '' && this.BillMaster.FromDate !== null && this.BillMaster.FilterTypes === 'BillDate'){
    
-        let FromDate =  moment(this.BillMaster.FromDate).format('DD-MM-YYYY') 
+        let FromDate =  moment(this.BillMaster.FromDate).format('YYYY-MM-DD')
         Parem = Parem + ' and oldbillmaster.BillDate between ' +  `'${FromDate}'` ;
     }
 
     if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null  && this.BillMaster.FilterTypes === 'BillDate'){
-        let ToDate =  moment(this.BillMaster.ToDate).format('DD-MM-YYYY') 
+        let ToDate =  moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
         Parem = Parem + ' and ' + `'${ToDate}'`; 
     }
 
     if (this.BillMaster.FromDate !== '' && this.BillMaster.FromDate !== null && this.BillMaster.FilterTypes === 'DeliveryDate'){
-      let FromDate =  moment(this.BillMaster.FromDate).format('DD-MM-YYYY')
+      let FromDate =  moment(this.BillMaster.FromDate).format('YYYY-MM-DD')
       Parem = Parem + ' and oldbillmaster.DeliveryDate between ' +  `'${FromDate}'`; 
     }
 
     if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null  && this.BillMaster.FilterTypes === 'DeliveryDate'){
-      let ToDate =  moment(this.BillMaster.ToDate).format('DD-MM-YYYY')
+      let ToDate =  moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' + `'${ToDate}'`; 
     }
       
@@ -332,22 +332,22 @@ export class OldSaleComponent implements OnInit {
       let Parem = '';
   
       if (this.Billdetail.FromDate !== '' && this.Billdetail.FromDate !== null && this.Billdetail.FilterTypes === 'BillDate'){
-          let FromDate =  moment(this.Billdetail.FromDate).format('DD-MM-YYYY')
+          let FromDate =  moment(this.Billdetail.FromDate).format('YYYY-MM-DD')
           Parem = Parem + ' and oldbillmaster.BillDate between ' +  `'${FromDate}'`;
       }
   
       if (this.Billdetail.ToDate !== '' && this.Billdetail.ToDate !== null  && this.Billdetail.FilterTypes === 'BillDate'){
-          let ToDate =  moment(this.Billdetail.ToDate).format('DD-MM-YYYY')
+          let ToDate =  moment(this.Billdetail.ToDate).format('YYYY-MM-DD')
           Parem = Parem + ' and ' + `'${ToDate}'`; 
       }
   
       if (this.Billdetail.FromDate !== '' && this.Billdetail.FromDate !== null && this.Billdetail.FilterTypes === 'DeliveryDate'){
-        let FromDate =  moment(this.Billdetail.FromDate).format('DD-MM-YYYY')
+        let FromDate =  moment(this.Billdetail.FromDate).format('YYYY-MM-DD')
         Parem = Parem + ' and oldbillmaster.DeliveryDate between ' +  `'${FromDate}'`; 
       }
   
       if (this.Billdetail.ToDate !== '' && this.Billdetail.ToDate !== null  && this.Billdetail.FilterTypes === 'DeliveryDate'){
-        let ToDate =  moment(this.Billdetail.ToDate).format('DD-MM-YYYY')
+        let ToDate =  moment(this.Billdetail.ToDate).format('YYYY-MM-DD')
         Parem = Parem + ' and ' + `'${ToDate}'`; 
       }
         

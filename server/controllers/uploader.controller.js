@@ -10,7 +10,8 @@ var multer = require("multer")
 var path = require("path")
 var fs = require("fs")
 var xlsx = require('node-xlsx')
-const mysql2 = require('../database')
+const mysql2 = require('../database');
+const { count } = require('console');
 
 module.exports = {
     saveFileRecord: async (req, res, next) => {
@@ -1005,7 +1006,11 @@ module.exports = {
 
 
             // save data
+            count = 0
+
             for (let datum of data) {
+                count += 1
+                console.log(`data  saving :- ${count}`);
                 const [saveData] = await mysql2.pool.query(`insert into oldbilldetail(BillMasterID, CompanyID, CustomerID, ProductDescription, UnitPrice, Qty, DiscountPercentage, Discount, SubTotal, GSTPercentage, GST, Amount, CreatedBy, CreatedOn) values(${datum.BillMasterID}, ${datum.CompanyID}, ${datum.CustomerID}, '${datum.ProductDescription}',${datum.UnitPrice}, ${datum.Qty}, ${datum.DiscountPercentage},${datum.Discount},${datum.SubTotal}, ${datum.GSTPercentage}, ${datum.GST}, ${datum.Amount}, ${LoggedOnUser}, now())`)
             }
 

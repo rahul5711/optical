@@ -679,7 +679,7 @@ module.exports = {
             if (!PurchaseDate || PurchaseDate === undefined) return res.send({ message: "Invalid PurchaseDate Data" })
             if (!Quantity || Quantity === undefined) return res.send({ message: "Invalid Quantity Data" })
 
-            const [doesExistInvoiceNo] = await mysql2.pool.query(`select * from commissionmaster where CompanyID = ${CompanyID} and InvoiceNo = '${InvoiceNo}'`)
+            const [doesExistInvoiceNo] = await mysql2.pool.query(`select * from commissionmaster where CompanyID = ${CompanyID} and InvoiceNo = '${InvoiceNo}' and UserType = '${PaymentType}'`)
 
             if (doesExistInvoiceNo.length !== 0) {
                 return res.send({ message: `InvoiceNo ${InvoiceNo} is already exist` })
