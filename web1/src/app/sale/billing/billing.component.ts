@@ -44,9 +44,12 @@ export class BillingComponent implements OnInit {
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   env = environment;
+  
   myControl = new FormControl('');
   myControl1 = new FormControl('');
+  myControl2 = new FormControl('');
   filteredOptions: any ;
+
   id: any = 0;
   id2: any = 0;
   customerImage: any;
@@ -964,16 +967,20 @@ srcCustomerBox = false
 
     this.filteredOptions = [];
     this.param = { Name: '', MobileNo1: '', Address: '', Sno: '' };
+
     if (searchKey.length >= 3) {
       if (mode === 'Name') {
+        this.filteredOptions = [];
         this.param.Name = searchKey;
-      } else if (mode === 'Address') {
-        this.param.Address = searchKey;
-      } else if (mode === 'Sno') {
-        this.param.Sno = searchKey;
-      } else if (mode === 'MobileNo1') {
+      }else if (mode === 'MobileNo1') {
+        this.filteredOptions = [];
         this.param.MobileNo1 = searchKey;
-      }
+      }else if (mode === 'Address') {
+        this.filteredOptions = [];
+        this.param.Address = searchKey;
+      }else if (mode === 'Sno') {
+        this.param.Sno = searchKey;
+      } 
       const subs: Subscription = this.cs.customerSearch(this.param).subscribe({
         next: (res: any) => {
           if (res) {

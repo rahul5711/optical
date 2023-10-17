@@ -289,7 +289,7 @@
                 Rx ORDER
             </h3>
             <h3 class="col2">
-                J.C. No. <%=data.billMaster.InvoiceNo%>
+                JC No. <%=data.billMaster.InvoiceNo%>
             </h3>
         </div>
     </header>
@@ -303,7 +303,7 @@
                 <p><b style="padding-right: 5px;">Contact No.</b><%=data.customer.MoblieNo1%></p>
             </div>
             <div class="col3">
-                <p><b style="padding-right: 5px;">Dated</b> <%=data.billMaster.billDate%></p>
+                <p><b style="padding-right: 5px;">Dated</b> <%=data.billMaster.BillDate%></p>
             </div>
         </div>
         <div class="row4">
@@ -317,7 +317,7 @@
                     <th>CYL</th>
                     <th>AXIS</th>
                     <th>ADDN.</th>
-                    <th>VISION</th>
+                    <th>PRISM</th>
                 </tr>
                 <tr>
                     <td>Right</td>
@@ -325,7 +325,7 @@
                     <td><%=data.Measurement.REDPCYL%></td>
                     <td><%=data.Measurement.REDPAxis%></td>
                     <td><%=data.Measurement.R_Addition%></td>
-                    <td><%=data.Measurement.REDPVA%></td>
+                    <td><%=data.Measurement.R_Prism%></td>
                 </tr>
                 <tr>
                     <td>Left</td>
@@ -333,7 +333,7 @@
                     <td><%=data.Measurement.LEDPCYL%></td>
                     <td><%=data.Measurement.LEDPAxis%></td>
                     <td><%=data.Measurement.L_Addition%></td>
-                    <td><%=data.Measurement.LEDPVA%></td>
+                    <td><%=data.Measurement.L_Prism%></td>
                 </tr>
             </table>
         </div>
@@ -475,7 +475,7 @@
                 <p><b style="padding-right: 5px;">Contact No.</b> <%=data.customer.MobileNo1%></p>
             </div>
             <div class="col3">
-                <p><b style="padding-right: 5px;">Delivery Date</b> <%=data.billMaster.billDate%></p>
+                <p><b style="padding-right: 5px;">Delivery Date</b> <%=data.billMaster.BillDate%></p>
             </div>
         </div>
         <div class="row3">

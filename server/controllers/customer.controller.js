@@ -763,12 +763,12 @@ module.exports = {
 
             var fileName = "";
 
-            if (!printdata.companysetting.LogoURL) {
-                printdata.LogoURL = clientConfig.appURL + '../assest/no-image.png';
+            if (!printdata.shopdetails.LogoURL) {
+                printdata.LogoURL = clientConfig.appURL + 'assest/no-image.png';
             } else {
-                printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
+                printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
             }
-
+            console.log(printdata.LogoURL);
             var formatName = "customerPowerPDF.ejs";
             var file = formatName + "_" + CompanyID + "-" + customer.ID + ".pdf";
             fileName = "uploads/" + file;

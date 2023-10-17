@@ -785,13 +785,13 @@ export class PurchaseComponent implements OnInit {
     this.calculation.calculateFields(fieldName, mode, data, '')
   }
 
-  updataEditProdcut(fieldName: any, mode: any, data: any) {
 
+
+  updataEditProdcut(fieldName: any, mode: any, data: any) {
+    
       this.calculateFields1(fieldName, mode, data)
       this.calculateGrandTotal();
-
-        data.BrandType = Number(data.BrandType)
-
+      data.BrandType = Number(data.BrandType)
       const dtm = {
         PurchaseMaster: this.selectedPurchaseMaster,
         ...data

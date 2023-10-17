@@ -220,7 +220,7 @@ export class BillListComponent implements OnInit {
       const subs: Subscription = this.pay.updateCustomerPaymentDate(dtm).subscribe({
         next: (res: any) => {
           if (res.success) {
-            this.UpdateMode = false
+            // this.UpdateMode = false
             this.as.successToast(res.message)
           } else {
             this.as.errorToast(res.message)

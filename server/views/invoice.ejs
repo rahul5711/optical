@@ -169,11 +169,11 @@
                           <th> </th> 
                         </tr>
                        <tr>
-                          <th  >SPH</th>
-                          <th  >CYL</th>
+                          <th>SPH</th>
+                          <th>CYL</th>
                           <th>AXIS</th>
-                          <th >VA</th>
-                          <th  >ADD</th>
+                          <th>VA</th>
+                          <th>ADD</th>
                        </tr>
                        <tr>
                          <td class="top_btm"> <%=i.REDPSPH%> </td> 
@@ -251,10 +251,13 @@
                                                                             ) { %>
                                                                             <th>CGST</th>
                                                                             <th>SGST</th>
-                                                                            <%} else { %>
+                                                                            <%} else if (data.GSTTypes == 'IGST') { %>
                                                                                 <th>IGST</th>
+                                                                                <% } else if (data.GSTTypes == 'VAT') { %>
+                                                                                    <th>VAT</th>
+                                                                                    <% } else { %>
+                                                                                    <th>None</th>
                                                                                 <% } %>
-
                                                                                     <%}%>
                                                                                         <% if
                                                                                             (data.shopdetails.Total==="true"

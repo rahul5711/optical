@@ -114,7 +114,7 @@
                                                 <mat-label>Mobile No</mat-label>
                                                 <input type="text" aria-label="Text" matInput
                                                 name="MobileNo1" [(ngModel)]="data.MobileNo1"  [formControl]="myControl1" [matAutocomplete]="auto" 
-                                                      (input)="customerSearch(myControl1.value, 'MobileNo1')"  required>
+                                                      (input)="customerSearch(myControl1.value, 'MobileNo1')" >
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'370px'">
                                                   <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option1.ID)" *ngFor="let option1 of filteredOptions" [value]="option1.MobileNo1">
                                                     <table style="width:100%">
@@ -127,9 +127,6 @@
                                                     </table>
                                                   </mat-option>
                                                 </mat-autocomplete>
-                                                <mat-error>
-                                                    Name is required
-                                                </mat-error>
                                               </mat-form-field>
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-3  col-3 mb-0">
@@ -156,15 +153,32 @@
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-5 col-lg-5 col-md-3  col-12 mb-0">
-                                            <mat-form-field class="example-full-width mb-0">
+                                            <!-- <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Address</mat-label>
                                                 <textarea  rows="1" matInput name="Address" minlength="2" [(ngModel)]="data.Address"
                                                 (input)="customerSearch(Addresscontrol.value, 'Address')"  #Addresscontrol ></textarea>
                                                 <mat-error>
                                                     Atleast 2 characters required
                                                 </mat-error>
-                                            </mat-form-field>
-                                        
+                                            </mat-form-field> -->
+                                            <mat-form-field class="example-full-width">
+                                                <mat-label>Address</mat-label>
+                                                <input type="text" aria-label="Text" matInput
+                                                name="Address" [(ngModel)]="data.Address"  [formControl]="myControl2"  [matAutocomplete]="auto" 
+                                                      (input)="customerSearch(myControl2.value, 'Address')" >
+                                                <mat-autocomplete autoActiveFirstOption2 #auto="matAutocomplete" [panelWidth]="'370px'">
+                                                  <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option2.ID)" *ngFor="let option2 of filteredOptions" [value]="option2.Address">
+                                                    <table style="width:100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <td>{{option2.Name | uppercase}}</td>
+                                                                <td style="text-align: right;"> {{option2.Address}}</td>
+                                                            </tr>
+                                                        </thead>
+                                                    </table>
+                                                  </mat-option>
+                                                </mat-autocomplete>
+                                              </mat-form-field>
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-3  col-4 mb-0">
                                             <mat-form-field class="example-full-width mb-0">

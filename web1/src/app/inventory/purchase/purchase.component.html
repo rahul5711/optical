@@ -508,7 +508,7 @@
                                                         </button>
 
                                                         <button class="bg_none" type="button"
-                                                            (click)="showInput(data) ;updataEditProdcut('','',data)"
+                                                            (click)="showInput(data) ;updataEditProdcut('','',data)" 
                                                             *ngIf="data.Status != 0 && data.ID !== null && data.UpdateProduct">
                                                             <mat-icon class="edit_icon1 ms-1">save </mat-icon>
                                                         </button>
@@ -531,7 +531,7 @@
                                                         <input style=" width:60px;text-align: center;" min="0"
                                                             type="number" [(ngModel)]="data.UnitPrice"
                                                             (ngModelChange)="data.UnitPrice = onChange($event)"
-                                                            (blur)="updataEditProdcut('UnitPrice', 'subTotal',data)"
+                                                            (blur)="calculateFields1('UnitPrice', 'subTotal',data)"
                                                             #name="ngModel" [ngModelOptions]="{standalone: true}"
                                                             name="data{{i}}">
                                                     </td>
@@ -546,7 +546,7 @@
                                                         <input style=" width:60px;text-align: center;" min="0"
                                                             type="number" [(ngModel)]="data.DiscountPercentage"
                                                             (ngModelChange)="data.DiscountPercentage = onChange($event)"
-                                                            (blur)="updataEditProdcut('DiscountPercentage', 'discount',data)"
+                                                            (blur)="calculateFields1('DiscountPercentage', 'discount',data)"
                                                             #name="ngModel" [ngModelOptions]="{standalone: true}"
                                                             name="data{{i}}">
                                                     </td>
@@ -558,7 +558,7 @@
                                                         <input style=" width:60px;text-align: center;" min="0"
                                                             type="number" [(ngModel)]="data.DiscountAmount"
                                                             (ngModelChange)="data.DiscountAmount = onChange($event)"
-                                                            (blur)="updataEditProdcut('DiscountAmount', 'discount',data)"
+                                                            (blur)="calculateFields1('DiscountAmount', 'discount',data)"
                                                             #name="ngModel" [ngModelOptions]="{standalone: true}"
                                                             name="data{{i}}">
                                                     </td>
@@ -574,7 +574,7 @@
                                                             type="number" [(ngModel)]="data.GSTPercentage"
                                                             (ngModelChange)="data.GSTPercentage = onChange($event)"
                                                             #name="ngModel"
-                                                            (blur)="updataEditProdcut('GSTPercentage', 'gst',data)"
+                                                            (blur)="calculateFields1('GSTPercentage', 'gst',data)"
                                                             [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                                     </td>
                                                     <td *ngIf="!data.UpdateProduct" class="text-center"
@@ -586,7 +586,7 @@
                                                             type="number" [(ngModel)]="data.GSTAmount"
                                                             (ngModelChange)="data.GSTAmount = onChange($event)"
                                                             #name="ngModel"
-                                                            (blur)="updataEditProdcut('GSTAmount', 'gst',data)"
+                                                            (blur)="calculateFields1('GSTAmount', 'gst',data)"
                                                             [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                                     </td>
                                                     <td *ngIf="!data.UpdateProduct" class="text-center"
@@ -597,13 +597,13 @@
                                                         style=" width:60px;text-align: center;">
                                                         <select *ngIf="data.GSTPercentage === 0 "  style="height: 26px; width: 60px;" name="BarndTypeUp"
                                                             [(ngModel)]="data.GSTType" #name="ngModel"
-                                                            (blur)="updataEditProdcut('','',data)"
+                                                            (blur)="calculateFields1('','',data)"
                                                             [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                                             <option value='None'>None</option>
                                                         </select>
                                                         <select *ngIf="data.GSTPercentage !== 0 " style="height: 26px; width: 60px;" name="BarndTypeUp"
                                                             [(ngModel)]="data.GSTType" #name="ngModel"
-                                                            (blur)="updataEditProdcut('','',data)"
+                                                            (blur)="calculateFields1('','',data)"
                                                             [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                                             <option [value]="g.Name" *ngFor="let g of gstList"> {{g.Name}} </option>
                                                         </select>
@@ -619,7 +619,7 @@
                                                         <input style=" width:60px;text-align: center;" min="0"
                                                             type="number" [(ngModel)]="data.RetailPrice"
                                                             (ngModelChange)="data.RetailPrice = onChange($event)"
-                                                            (blur)="updataEditProdcut('','',data)" #name="ngModel"
+                                                            (blur)="calculateFields1('','',data)" #name="ngModel"
                                                             [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                                     </td>
                                                     <td *ngIf="!data.UpdateProduct && company.WholeSale === 'true' || shop.WholesaleBill === 'true' " class="text-center"
@@ -630,7 +630,7 @@
                                                         <input style=" width:60px;text-align: center;" min="0"
                                                             type="number" [(ngModel)]="data.WholeSalePrice"
                                                             (ngModelChange)="data.WholeSalePrice = onChange($event)"
-                                                            (blur)="updataEditProdcut('','',data)" #name="ngModel"
+                                                            (blur)="calculateFields1('','',data)" #name="ngModel"
                                                             [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                                     </td>
                                                     <td *ngIf="!data.UpdateProduct" class="text-center"
@@ -642,7 +642,7 @@
                                                     <td *ngIf="data.UpdateProduct" style=" text-align: center;">
                                                         <select style="height: 26px; width: 60px;" name="BrandType"
                                                             [(ngModel)]="data.BrandType" type="number" #name="ngModel"
-                                                            (blur)="updataEditProdcut('','',data)"
+                                                            (blur)="calculateFields1('','',data)"
                                                             [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                                             <option [value]='0'>None</option>
                                                             <option [value]='1'>Brand</option>

@@ -58,6 +58,7 @@ export class SaleReportComponent implements OnInit {
   totalDiscount: any;
   totalUnitPrice: any;
   totalAmount: any;
+  totalAddlDiscount: any;
   totalGstAmount: any;
   totalBalance = 0
   totalPaid = 0
@@ -362,6 +363,7 @@ export class SaleReportComponent implements OnInit {
           this.totalUnitPrice = (parseFloat(res.calculation[0].totalSubTotalPrice)).toFixed(2);
           this.totalGstAmount = (parseFloat(res.calculation[0].totalGstAmount)).toFixed(2);
           this.totalAmount = (parseFloat(res.calculation[0].totalAmount)).toFixed(2);
+          this.totalAddlDiscount = (parseFloat(res.calculation[0].totalAddlDiscount)).toFixed(2);
           this.totalPaid = this.totalAmount - this.totalBalance;
           this.gstMaster = res.calculation[0].gst_details
         }else{

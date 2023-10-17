@@ -19,7 +19,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Invoice No.</mat-label>
                         <input matInput name="InvoiceNo" [(ngModel)]="BillMaster.InvoiceNo"
-                            [disabled]="BillMaster.InvoiceNo === null" #InvoiceNoNocontrol [autocomplete]="false">
+                            [disabled]="BillMaster.InvoiceNo" #InvoiceNoNocontrol [autocomplete]="false">
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
@@ -439,14 +439,14 @@
                 </div>
                 <div *ngIf="addCustomerBill" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 mb-3  ms-auto">
                     <button *ngIf="BillItem.Manual === false &&  BillItem.PreOrder === false" type="submit"
-                        [disabled]="!f1.valid && this.BillItem.Quantity === 0 || this.GstTypeDis || this.BillItem.Barcode === null"
+                        [disabled]="!f1.valid || !fp.valid && this.BillItem.Quantity === 0 || this.GstTypeDis || this.BillItem.Barcode === null"
                         mat-raised-button color="primary"
                         (click)="calculations('GSTPercentage', 'gst');notifyGst();">Add</button>
                     <button *ngIf=" BillItem.PreOrder === true" type="submit"
                         [disabled]="!f1.valid || this.GstTypeDis || !fp.valid" mat-raised-button
                         color="primary">PreOder</button>
                     <button *ngIf="BillItem.Manual" type="submit"
-                        [disabled]="!f1.valid || this.BillItem.Quantity === 0 || this.GstTypeDis " mat-raised-button
+                        [disabled]="!f1.valid || !fp.valid || this.BillItem.Quantity === 0 || this.GstTypeDis " mat-raised-button
                         color="primary">Manual</button>
                 </div>
             </div>
