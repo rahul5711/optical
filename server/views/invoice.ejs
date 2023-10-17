@@ -19,7 +19,9 @@
 
 <body>
     <!-- header section start -->
-    <% if (data.billformate.BillHeader==3){%>
+    <%- include('./header.ejs', {pageNumber: 1}) %>
+
+    <!-- <% if (data.billformate.BillHeader==3){%>
         <header class="headerSize" <% %> style='width:<%= data.HeaderWidth %>; height: <%= data.HeaderHeight %>;'>
                         <div class="row">
                             <div class="col1" <% %> style="text-align: <%= data.ImageAlign %>;">
@@ -55,7 +57,7 @@
                             </div>
                         </div>
         </header>
-        <%}%>
+        <%}%> -->
             <!-- header section  end -->
 
             <!-- heading Bill line  start-->

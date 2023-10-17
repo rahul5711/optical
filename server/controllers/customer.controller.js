@@ -749,9 +749,33 @@ module.exports = {
            
             const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
             const [companysetting] = await mysql2.pool.query(`select * from companysetting where CompanyID = ${CompanyID}`)
-            
+            const [billformate] = await mysql2.pool.query(`select * from billformate where CompanyID = ${CompanyID}`)
+
+            printdata.billformate = billformate[0]
+            printdata.BillHeader = `${Number(printdata.billformate.BillHeader)}`;
+            printdata.Color = printdata.billformate.Color;
+            printdata.ShopNameBold = `${Number(printdata.billformate.ShopNameBold)}`;
+            printdata.HeaderWidth = `${Number(printdata.billformate.HeaderWidth)}px`;
+            printdata.HeaderHeight = `${Number(printdata.billformate.HeaderHeight)}px`;
+            printdata.HeaderPadding = `${Number(printdata.billformate.HeaderPadding)}px`;
+            printdata.HeaderMargin = `${Number(printdata.billformate.HeaderMargin)}px`;
+            printdata.ImageWidth = `${Number(printdata.billformate.ImageWidth)}px`;
+            printdata.ImageHeight = `${Number(printdata.billformate.ImageHeight)}px`;
+            printdata.ImageAlign = printdata.billformate.ImageAlign;
+            printdata.ShopNameFont = `${Number(printdata.billformate.ShopNameFont)}px`;
+            printdata.ShopDetailFont = `${Number(printdata.billformate.ShopDetailFont)}px`;
+            printdata.LineSpace = `${Number(printdata.billformate.LineSpace)}px`;
+            printdata.CustomerFont = `${Number(printdata.billformate.CustomerFont)}px`;
+            printdata.CustomerLineSpace = `${Number(printdata.billformate.CustomerLineSpace)}px`;
+            printdata.TableHeading = `${Number(printdata.billformate.TableHeading)}px`;
+            printdata.TableBody = `${Number(printdata.billformate.TableBody)}px`;
+            printdata.NoteFont = `${Number(printdata.billformate.NoteFont)}px`;
+            printdata.NoteLineSpace = `${Number(printdata.billformate.NoteLineSpace)}px`;
+            printdata.billformate = billformate[0]
             printdata.shopdetails = shopdetails[0]
             printdata.companysetting = companysetting[0]
+
+
             const ShopWelComeNote = JSON.parse(printdata.shopdetails.WelcomeNote);
            
             printdata.powerNoteShop = ShopWelComeNote.filter((ele) => {
@@ -763,12 +787,7 @@ module.exports = {
 
             var fileName = "";
 
-            if (!printdata.shopdetails.LogoURL) {
-                printdata.LogoURL = clientConfig.appURL + 'assest/no-image.png';
-            } else {
-                printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
-            }
-            console.log(printdata.LogoURL);
+            printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
             var formatName = "customerPowerPDF.ejs";
             var file = formatName + "_" + CompanyID + "-" + customer.ID + ".pdf";
             fileName = "uploads/" + file;
@@ -781,17 +800,8 @@ module.exports = {
                     res.send(err);
                 } else {
                     let options = {
-                        "height": "11.25in",
-                        "width": "8.5in",
-                        header: {
-                            height: "0mm"
-                        },
-                        footer: {
-                            height: "0mm",
-                            contents: {
-                                last: ``,
-                            },
-                        },
+                        format: "A4",
+                        orientation: "portrait",
                     };
                     pdf.create(data, options).toFile(fileName, function (err, data) {
                         if (err) {

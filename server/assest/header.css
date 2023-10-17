@@ -5,29 +5,15 @@
 }
 
 body{
-    margin: 10px !important; font-family: 'Roboto', sans-serif;
+    margin: 5px !important; font-family: 'Roboto', sans-serif; display: flex;
 }
-
-.headerSize{
-    width:100wh; height:50vh;  
-}
-
+/* header css  start*/
+/* company logo */
 .row .col1{
-    width:45%; height:50vh; float: left; 
+    width:50%; float: left;  
 }
-
-.row .col1 img{
-    width: 150px; height: 150px; object-fit: cover; 
-}
-
+/* company Shop details */
 .row .col2{
-    width:45%;  height:50vh; float: right; 
+    width:50%;  float: right; 
 }
-
-.row .col2 h5{
-    font-size: 20px !important; padding: 0; margin: 0;
-}
-
-.row .col2 h6{
-    font-size: 16px !important; font-weight: 400; padding: 0; margin: 0; line-height: 25px;
-}
+/* header css  end*/

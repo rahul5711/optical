@@ -3,26 +3,31 @@
 
 <head>
    <style>
-      .headingName {
+     .headingName {
          position: absolute;
-         margin-left: 39.2%;
+         margin-left: 43%;
          width: 30%;
          color: red;
          margin-top: 0px;
-         font-size: 14px !important;
+         font-size: 16px !important;
       }
+    html body{
+        zoom: 100%;
+    }
    </style>
 </head>
 
 <body>
-   <section>
+ 
       <%- include('./header.ejs', {pageNumber: 1}) %>
          <!-- <%=data.customer.Name%> -->
+ 
 
+   <section>
          <div>
-            <div style="border-bottom: 1px solid; width: 38%; position:absolute; margin-top: 1%;"> </div>
-            <div style="border-bottom: 1px solid; width: 38%; float: right; position: relative; margin-top: 1%;"></div>
-            <span class="headingName"> COMPUTERIZED EYE TESTING </span>
+            <div <% %>  style="border-bottom: 1px solid  <%= data.Color %>; width: 38%; position:absolute; margin-top: 1%;"> </div>
+            <div <% %>  style="border-bottom: 1px solid  <%= data.Color %>; width: 38%; float: right; position: relative; margin-top: 1%;"></div>
+            <span class="headingName" <% %> style="color: <%= data.Color %>;"> COMPUTERIZED EYE TESTING </span>
          </div>
    </section>
 
@@ -58,10 +63,10 @@
 
    <section class="titleName">
       <% if (data.mode === 'spectacle') { %>
-      <h6> Spectacle RX</h6>
+      <h6 <% %> style="color: <%= data.Color %>;"> Spectacle RX</h6>
       <%} %>
       <% if (data.mode === 'contact') { %>
-      <h6> Contact RX</h6>
+      <h6 <% %> style="color: <%= data.Color %>;"> Contact RX</h6>
       <%} %>
    </section>
     <!-- power spec -->
@@ -227,7 +232,7 @@
     <!-- footer -->
     <div class="rowFooter">
           <div class="col1">
-             <h3 style="padding: 0;margin: 0;">Note</h3>
+             <h3 <% %> style="padding: 0;margin: 0; color: <%= data.Color %>">Note</h3>
              <% if(data.powerNoteShop.length !==0){ data.powerNoteShop.forEach(function (i, index) { %>
                <p style="padding: 0;">
                  <%=index+1%>. <%=i.Content%>
@@ -235,7 +240,7 @@
                <%})}%>
           </div>
           <div class="col2">
-            <h3 style="padding: 0;margin: 0;">.......................................</h3>
+            <h3 style="padding: 0;margin: 0;">.............................................</h3>
                <p style="padding: 0;margin: 0;">
                   Bring this card on your next visit.
                   CHECK YEARLY, SEE CLEARLY

@@ -54,6 +54,7 @@
                                             <mat-option value="None">None</mat-option>
                                             <mat-option value="IGST">IGST</mat-option>
                                             <mat-option value="CGST-SGST">CGST-SGST</mat-option>
+                                            <mat-option value="VAT">VAT</mat-option>
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
@@ -112,6 +113,7 @@
                                             <mat-select name="NewGSTType" (blur)="gstType()" [(ngModel)]="newProduct.GSTType" #GSTTypecontrol  required>
                                                 <mat-option value="IGST">IGST</mat-option>
                                                 <mat-option value="CGST-SGST">CGST-SGST</mat-option>
+                                                <mat-option value="VAT">VAT</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
@@ -285,6 +287,7 @@
                     <mat-select name="NewGSTType" (blur)="gstType()" [(ngModel)]="newProduct.GSTType" #GSTTypecontrol  required>
                         <mat-option value="IGST">IGST</mat-option>
                         <mat-option value="CGST-SGST">CGST-SGST</mat-option>
+                        <mat-option value="VAT">VAT</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>

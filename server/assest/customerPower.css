@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
 
 * {
-    box-sizing: border-box; font-family: "Arial", sans-serif;
+    box-sizing: border-box;
 }
 
 body{
-    margin: 10px !important; font-family: 'Roboto', sans-serif;
+    margin: 5px !important; font-family: 'Roboto', sans-serif; display: flex;
 }
 
 .customer_details{

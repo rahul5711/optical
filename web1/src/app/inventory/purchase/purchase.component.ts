@@ -384,12 +384,13 @@ export class PurchaseComponent implements OnInit {
           this.item.ProductName = this.item.ProductName + element.SelectedValue + "/";
         }
         if (element.FieldType === "Date") {
-          this.item.ProductExpDate = element.SelectedValue;
+          this.item.ProductExpDate = element.SelectedValue ;
         }
       });
 
       this.item.ProductTypeID = this.item.ProductTypeID
       this.item.ProductTypeName = this.item.ProductTypeName
+      this.item.ProductExpDate = "0000-00-00";
       this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
 
       if (this.item.GSTPercentage === 0 || this.item.GSTAmount === 0) {

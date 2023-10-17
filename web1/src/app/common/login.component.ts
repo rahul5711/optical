@@ -248,6 +248,16 @@ export class LoginComponent implements OnInit {
           }
         }
         else {
+            Swal.fire({
+              icon: 'warning',
+              title: res.message,
+              showClass: {
+                popup: 'animate__animated animate__fadeInDown'
+              },
+              hideClass: {
+                popup: 'animate__animated animate__fadeOutUp'
+              }
+          })
           this.as.errorToast(res.message);
         }
         this.sp.hide()

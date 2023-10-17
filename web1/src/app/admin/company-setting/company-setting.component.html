@@ -287,7 +287,7 @@
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Header width</mat-label>
                                                                         <input matInput name="HeaderWidth"
-                                                                         type="number" min="700" max="1000"  [(ngModel)]="bill.HeaderWidth">
+                                                                         type="number" min="0" [(ngModel)]="bill.HeaderWidth">
                                                                          <mat-error>Header width </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
@@ -295,7 +295,7 @@
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Header height</mat-label>
                                                                         <input matInput name="HeaderHeight"
-                                                                        type="number" min="150" max="250" [(ngModel)]="bill.HeaderHeight">
+                                                                        type="number" min="0"  [(ngModel)]="bill.HeaderHeight">
                                                                         <mat-error>Header height </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
@@ -303,7 +303,7 @@
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Header padding</mat-label>
                                                                         <input matInput name="HeaderPadding"
-                                                                        type="number" min="5" max="25"  [(ngModel)]="bill.HeaderPadding">
+                                                                        type="number" min="0"  [(ngModel)]="bill.HeaderPadding">
                                                                         <mat-error>Header padding </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
@@ -311,7 +311,7 @@
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>header margin</mat-label>
                                                                         <input matInput name="HeaderMargin"
-                                                                        type="number" min="5" max="25"   [(ngModel)]="bill.HeaderMargin">
+                                                                        type="number"  min="0"  [(ngModel)]="bill.HeaderMargin">
                                                                         <mat-error>Header margin </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
@@ -319,7 +319,7 @@
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>image width</mat-label>
                                                                         <input matInput name="ImageWidth"
-                                                                        type="number" min="0"    [(ngModel)]="bill.ImageWidth">
+                                                                        type="number" min="0"  [(ngModel)]="bill.ImageWidth">
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
@@ -489,7 +489,7 @@
                                                       <span *ngIf="this.bill.BillHeader == '3'" style="width:100%; ">
                                                         <header  style="width:{{this.bill.HeaderWidth}}px; height: {{this.bill.HeaderHeight}}px; padding: {{this.bill.HeaderPadding}}px; margin: {{this.bill.HeaderMargin}}px;  border: 1px solid #000">
                                                             <span style="width: 50%; float: left; height: 90px; text-align:{{this.bill.ImageAlign}}">
-                                                                <img src="{{this.env.apiUrl + this.company?.LogoURL}}" alt=""
+                                                                <img src="{{this.env.apiUrl + this.shop.LogoURL}}" alt=""
                                                                     style="width:{{this.bill.ImageWidth}}px; height: {{this.bill.ImageHeight}}px;">
                                                             </span>
                                                             <div style="width: 50%; float: right;line-height: {{this.bill.LineSpace}}px; ">

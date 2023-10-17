@@ -430,6 +430,7 @@ export class BillingComponent implements OnInit {
   editCustomer = false
   addCustomer = false
   deleteCustomer = false
+  CustomerBillView  = false
   numberList:any=[]
   otherLists:any=[]
 x:any
@@ -441,6 +442,8 @@ srcCustomerBox = false
         this.editCustomer = element.Edit;
         this.addCustomer = element.Add;
         this.deleteCustomer = element.Delete;
+      } if (element.ModuleName === 'CustomerBill') {
+        this.CustomerBillView = element.View;
       }
     });
     this.data.VisitDate = moment().format('YYYY-MM-DD');
@@ -555,14 +558,14 @@ srcCustomerBox = false
       this.data.tablename = 'other_rx'
       this.data.other_rx = this.other
     }
-    
+
     if(this.data.MobileNo1 !== ''){
       this.param.MobileNo1 = this.data.MobileNo1
       const subs1: Subscription = this.cs.customerSearch(this.param).subscribe({
         next: (res: any) => {
           if (res) {
-            this.searchList = res.data
-            if(this.searchList.length !== 0){
+            this.filteredOptions = res.data
+            if(this.filteredOptions.length !== 0){
               Swal.fire({
                 position: 'center',
                 icon: 'warning',
@@ -571,10 +574,10 @@ srcCustomerBox = false
                 backdrop:false
               })
             }
-            this.srcBox = true
           } else {
             this.as.errorToast(res.message)
           }
+          this.sp.hide()
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs1.unsubscribe(),
@@ -600,16 +603,6 @@ srcCustomerBox = false
               timer: 1500
             })
           }
-          // this.numberList.forEach((e: any)=>{
-          //   if(e.MobileNo1 === res.data[0].MobileNo1){
-          //     Swal.fire({
-          //       position: 'center',
-          //       icon: 'warning',
-          //       title: 'Has been duplicat moblie number',
-          //       showConfirmButton: true,
-          //     })
-          //   }
-          // })
         } else {
           this.as.errorToast(res.message)
         }
