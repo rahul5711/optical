@@ -81,6 +81,7 @@ export class SaleReportComponent implements OnInit {
   ServiceAmount:any
   ServicetotalAmount: any;
   ServicetotalGstAmount: any;
+  ServicetotalSUBTOTAL: any;
   ServiceGtotalAmount: any;
   gstService:any
 
@@ -629,6 +630,8 @@ export class SaleReportComponent implements OnInit {
           this.BillServiceList = res.data
           this.ServiceAmount = (res.calculation[0].totalAmount).toFixed(2);
           this.ServicetotalGstAmount = (res.calculation[0].totalGstAmount).toFixed(2);
+          this.ServicetotalSUBTOTAL = (res.calculation[0].totalSubTotal
+            ).toFixed(2);
           this.gstService = res.calculation[0].gst_details
         }else{
           this.as.errorToast(res.message)
