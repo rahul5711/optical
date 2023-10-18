@@ -1007,7 +1007,7 @@ module.exports = {
 
 
             // save data
-            count = 0
+           let count = 0
 
             for (let datum of data) {
                 count += 1
