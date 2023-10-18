@@ -1,0 +1,7 @@
+input{
+    border: 2px solid #d1d0d0;height: 32px;
+}
+input:focus{
+    border: 2px solid #ff5500;
+}
+

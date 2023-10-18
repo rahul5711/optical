@@ -230,7 +230,7 @@
               <table class="table table-striped table-hover table-sm table-bordered"
                 style="border: 2px solid #fff !important;">
                 <thead [ngClass]="{'old': UpdateMode, 'new': !UpdateMode}">
-                  <tr (click)="showInput()">
+                  <tr >
                     <th style="text-align: left;">S.No</th>
                     <th>PaymentDate</th>
                     <th>PaymentMode</th>
@@ -239,25 +239,26 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let data of paymentHistoryList  let i = index;">
-                    <td class="ps-3">{{ i + 1 }}</td>
-                    <td *ngIf="!UpdateMode" class="text-center">{{dateFormat(data.PaymentDate)}}</td>
-                    <td *ngIf="UpdateMode" style=" text-align: center;">
+                  <tr *ngFor="let data of paymentHistoryList  let i = index;" >
+                    <td class="ps-3" (click)="showInput(data)">{{ i + 1 }}  
+                    </td>
+                    <td *ngIf="!data.UpdateMode" class="text-center">{{dateFormat(data.PaymentDate)}}</td>
+                    <td *ngIf="data.UpdateMode" style=" text-align: center;">
                       <input name="PaymentDate" type="date" [(ngModel)]="data.PaymentDate"
                         #name="ngModel" [ngModelOptions]="{standalone: true}"
                         name="data.PaymentDate{{i}}" *ngIf='this.user.UserGroup === "CompanyAdmin"'> 
                          <span *ngIf='this.user.UserGroup !== "CompanyAdmin"'>
                           {{dateFormat(data.PaymentDate)}}
                         </span>
-                        <button (click)="updateCustomerPaymentDate(data)"  type="button"  mat-raised-button
-                        color="primary" class="p-0 ms-2" style="height: 32px;">Update</button>
+                        <button (click)="updateCustomerPaymentDate(data)"  type="button"  class="p-0 ms-2" style="height: 32px;border: none;">
+                        <i class="fa-solid fa-square-pen fa-fade fa-2xl" style="color: #2f5fb1;"></i></button>
                     </td>
-                    <td *ngIf="!UpdateMode" class="text-center">{{data.PaymentMode}} </td>
+                    <td *ngIf="!data.UpdateMode" class="text-center">{{data.PaymentMode}} </td>
                     <td
-                      *ngIf="(UpdateMode && data.PaymentMode === 'Customer Credit' )|| (UpdateMode && data.PaymentMode === 'Payment Initiated')|| (UpdateMode && data.PaymentMode === 'Customer Return')"
+                      *ngIf="(data.UpdateMode && data.PaymentMode === 'Customer Credit' )|| (data.UpdateMode && data.PaymentMode === 'Payment Initiated')|| (data.UpdateMode && data.PaymentMode === 'Customer Return')"
                       class="text-center">{{data.PaymentMode}}</td>
                     <td
-                      *ngIf="(UpdateMode && data.PaymentMode !== 'Customer Credit' && data.PaymentMode !== 'Payment Initiated' && data.PaymentMode !== 'Customer Return')"
+                      *ngIf="(data.UpdateMode && data.PaymentMode !== 'Customer Credit' && data.PaymentMode !== 'Payment Initiated' && data.PaymentMode !== 'Customer Return')"
                       style=" text-align: center;">
                       <select style="height: 26px;" name="PaymentMode" [(ngModel)]="data.PaymentMode" #name="ngModel"
                         [ngModelOptions]="{standalone: true}" name="data.PaymentMode{{i}}"

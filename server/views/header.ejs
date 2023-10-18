@@ -12,6 +12,9 @@
 
     <% if (data.billformate.BillHeader==3){%>
         <header class="headerSize" <% %> style='width:<%= data.HeaderWidth %>; height: <%= data.HeaderHeight %>;'>
+            <div class="row" style="text-align: left;">
+                <p style="font-size: 15px; margin: 0; padding: 0;"> <%=data.shopdetails.GSTNo%></p>
+            </div>
                     <div class="row">
                         <div class="col1" <% %> style="text-align: <%= data.ImageAlign %>;">
                                 <img src=<%=data.LogoURL%> alt="LOGO" style='width:<%= data.ImageWidth %>; height:

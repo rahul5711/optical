@@ -56,7 +56,7 @@ export class PurchaseComponent implements OnInit {
 
   item: any = {
     ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, UnitPrice: 0.00,
-    Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: 0.00, WholeSalePrice: 0.00, Ledger: false, WholeSale: false, BaseBarCode: '', NewBarcode: '', Status: 1, BrandType: 0, UpdateProduct: false
+    Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: 0.00, WholeSalePrice: 0.00, Ledger: false, WholeSale: false, BaseBarCode: '', NewBarcode: '', Status: 1, BrandType: 0, ProductExpDate: '0000-00-00', UpdateProduct: false
   };
 
   charge: any = {
@@ -370,8 +370,7 @@ export class PurchaseComponent implements OnInit {
     if (this.category === 'Product') {
       if (this.selectedPurchaseMaster.ID !== null) { this.item.Status = 2; }
       this.item.ProductName = "";
-      this.item.ProductTypeID = "";
-      this.item.ProductExpDate = "0000-00-00";
+      this.item.ProductTypeID = ""
 
       this.specList.forEach((element: any) => {
         this.prodList.forEach((elements: any) => {
@@ -388,9 +387,9 @@ export class PurchaseComponent implements OnInit {
         }
       });
 
+      this.item.ProductExpDate = this.item.ProductExpDate === '' ? "0000-00-00" : this.item.ProductExpDate;
       this.item.ProductTypeID = this.item.ProductTypeID
       this.item.ProductTypeName = this.item.ProductTypeName
-      this.item.ProductExpDate = "0000-00-00";
       this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
 
       if (this.item.GSTPercentage === 0 || this.item.GSTAmount === 0) {

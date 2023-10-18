@@ -218,7 +218,7 @@ export class BillingComponent implements OnInit {
     { Name: '+0.75' },
     { Name: '+0.50' },
     { Name: '+0.25' },
-    { Name: 'PIANO' },
+    { Name: 'PLANO' },
     { Name: '-0.25' },
     { Name: '-0.50' },
     { Name: '-0.75' },

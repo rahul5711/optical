@@ -486,6 +486,7 @@ export class BillComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.prodList = res.data;
+        
           this.BillItem.Quantity = 1
         } else {
           this.as.errorToast(res.message)
@@ -512,6 +513,11 @@ export class BillComponent implements OnInit {
           this.searchList.GSTType = element.GSTType;
         }
       });
+      if(this.selectedProduct == 'CONTACT LENS' || this.selectedProduct == 'SOLUTION'){
+        this.showProductExpDate = true
+      }else{
+        this.showProductExpDate = false
+      }
     }
     const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
       next: (res: any) => {
@@ -666,6 +672,7 @@ export class BillComponent implements OnInit {
             this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
             this.BillItem.BaseBarCode = this.searchList.BaseBarCode;
             this.BillItem.PurchasePrice = this.searchList.UnitPrice;
+            this.BillItem.ProductExpDate = moment(this.searchList.ProductExpDate).format('YYYY-MM-DD') ;
             this.BillItem.Quantity = 0;
 
             if (this.searchList !== undefined || this.searchList.Barcode !== null && this.searchList.BarCodeCount !== 0) {
@@ -1017,7 +1024,11 @@ export class BillComponent implements OnInit {
             if (element.SelectedValue !== '') {
               searchString = searchString.concat(element.SelectedValue, "/");
             }
+            if (element.FieldType === "Date") {
+              this.BillItem.ProductExpDate = element.SelectedValue ;
+            }
           });
+          this.BillItem.ProductExpDate = this.BillItem.ProductExpDate === '' ? "0000-00-00" : this.BillItem.ProductExpDate;
           this.BillItem.ProductTypeName = this.selectedProduct
           this.BillItem.ProductName = searchString
           this.BillItem.Barcode = 'ManualProduct'
@@ -1035,8 +1046,12 @@ export class BillComponent implements OnInit {
             this.specList.forEach((element: any, i: any) => {
               if (element.SelectedValue !== '') {
                 searchString = searchString.concat(element.SelectedValue, "/");
+              } 
+              if (element.FieldType === "Date") {
+                this.BillItem.ProductExpDate = element.SelectedValue ;
               }
             });
+            this.BillItem.ProductExpDate = this.BillItem.ProductExpDate === '' ? "0000-00-00" : this.BillItem.ProductExpDate;
             this.BillItem.ProductTypeName = this.selectedProduct
             this.BillItem.ProductName = searchString
             this.BillItem.Barcode = '0'

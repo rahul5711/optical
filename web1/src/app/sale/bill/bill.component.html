@@ -265,13 +265,13 @@
                                 {{spec.FieldName}}</mat-slide-toggle>
                         </div>
                     </div>
-                    <div *ngIf="!BillItem.PreOrder && showProductExpDate"
+                    <!-- <div *ngIf="!BillItem.PreOrder && showProductExpDate"
                         class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
                         <mat-form-field class="example-full-width mb-0">
                             <mat-label>Product Expiry Date</mat-label>
                             <input matInput type="date" name="ProductExpDate" [(ngModel)]="BillItem.ProductExpDate">
                         </mat-form-field>
-                    </div>
+                    </div> -->
                     <div *ngIf="selectedProduct?.toUpperCase() === 'LENS' || selectedProduct?.toUpperCase() === 'CONTACT LENS'"
                         class="col-xl-1 col-lg-1 col-md-3 col-sm-12 mb-0">
                         <mat-form-field class="example-full-width mb-0">
@@ -324,6 +324,12 @@
                         <mat-label>Available</mat-label>
                         <input matInput type="number" min="0" style="color: rgb(255 0 0) !important;font-weight: 800;" name="BarCodeCount"
                             [(ngModel)]="searchList.BarCodeCount" [disabled]=true>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0" *ngIf="showProductExpDate == true">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>ProductExpDate</mat-label>
+                        <input matInput type="date" name="ProductExpDate" [(ngModel)]="BillItem.ProductExpDate">
                     </mat-form-field>
                 </div>
             </div>

@@ -508,6 +508,7 @@
             <!-- improtant note billtotal end -->
 
             <!-- You've Saved  start -->
+            <% if (data.shopdetails.CompanyID !== 20){%>
             <% if (data.SavedDiscount !== 0){%>
             <div style="width: 100%; height: 400px;">
                 <table style="width:30%; float:right">
@@ -520,6 +521,7 @@
                     </thead>
                 </table>
             </div>
+            <%}%>
             <%}%>
               <!-- You've Saved  end -->
 </body>

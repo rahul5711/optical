@@ -139,11 +139,21 @@ export class BillListComponent implements OnInit {
     });
   }
 
-  showInput() {
-    this.UpdateMode = !this.UpdateMode;
-    this.paymentHistoryList.forEach((ep: any) => {
-      ep.PaymentDate = moment(ep.PaymentDate).format('YYYY-MM-DD')
-    })
+  // showInput(data:any) {
+  //   this.UpdateMode = !this.UpdateMode;
+  //   this.paymentHistoryList.forEach((ep: any) => {
+  //     ep.PaymentDate = moment(ep.PaymentDate).format('YYYY-MM-DD')
+  //   })
+  // }
+
+  showInput(data:any) {
+    // Ensure data has an UpdateMode property
+    if (!data.hasOwnProperty('UpdateMode')) {
+      data.UpdateMode = false;
+    }
+    data.PaymentDate = moment(data.PaymentDate).format('YYYY-MM-DD')
+    data.UpdateMode = !data.UpdateMode;
+    
   }
 
   // payment history 
@@ -196,7 +206,7 @@ export class BillListComponent implements OnInit {
     const subs: Subscription = this.pay.updateCustomerPaymentMode(data).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.UpdateMode = false
+          data.UpdateMode = false
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
@@ -220,6 +230,7 @@ export class BillListComponent implements OnInit {
       const subs: Subscription = this.pay.updateCustomerPaymentDate(dtm).subscribe({
         next: (res: any) => {
           if (res.success) {
+            data.UpdateMode = false
             // this.UpdateMode = false
             this.as.successToast(res.message)
           } else {

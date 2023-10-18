@@ -1,7 +1,5 @@
 table thead tr th {
     padding: 0 !important;
-    background-color: #1e2672;
-    color: #ffffff !important;
 }
 table tbody tr td {
     padding: 0 !important;
@@ -9,13 +7,21 @@ table tbody tr td {
 }
 
 .whatsappIocn{
-    color: #ffffff
+    color: #4ab032;
+    margin: 15px 0px;
+    transition: 0.5s;
 }
 .smsIocn{
-    color: #ffffff
+    color: #1656cc;
+    transition: 0.5s;
 }
 .emailIocn{
-    color: #ffffff
+    color: #ff0303;
+    transition: 0.5s;
+}
+
+.whatsappIocn:hover, .smsIocn:hover, .emailIocn:hover{
+   transform: scale(1.2);
 }
 
 i{
@@ -25,62 +31,28 @@ cursor: pointer;
     background-color: #ff4401 !important;
 }
 
-.bgmB{
-    background-image: url(../../../assets/images/bdayR.png);
-    background-size: 58%;
-    background-repeat: no-repeat;
-}
-.bgmA{
-    background-image: url(../../../assets/images/Anniversary.png);
-    background-size: 58%;
-    background-repeat: no-repeat;
-}
-.bgmO{
-    background-image: url(../../../assets/images/orderp.png); 
-    background-size: 58%;
-    background-repeat: no-repeat;
-}
-.bgmE{
-    background-image: url(../../../assets/images/EyeTesting.png); 
-    background-size: 58%;
-    background-repeat: no-repeat;
-}
-.bgmS{
-    background-image: url(../../../assets/images/eyesol.png); 
-    background-size: 58%;
-    background-repeat: no-repeat;
-}
-.bgmC{
-    background-image: url(../../../assets/images/len.png); 
-    background-size: 58%;
-    background-repeat: no-repeat;
-}
-.bgmCo{
-    background-image: url(../../../assets/images/conFort.png); 
-    background-size: 58%;
-    background-repeat: no-repeat;
-}
-.bgmSM{
-    background-image: url(../../../assets/images/service.png); 
-    background-size: 58%;
-    background-repeat: no-repeat;
-}
+
 
 .titalName{
     color: #ff5100;
-    font-weight: 800;
-    border: 2px solid;
+    font-weight: 500;
+    border: 1px solid;
     border-left: none;
     border-top: none;
+    font-size: 16px;
 }
 .titalName2{
     color: #ff5100;
     font-weight: 800;
-    border: 2px solid;
+    border: 1px solid;
     border-right: none;
     border-top: none;
     width: 48%;
 
+}
+
+.crad{
+    border: 1px solid #1e2672 !important;
 }
 
 .itme_button {
@@ -89,7 +61,7 @@ cursor: pointer;
     color: #000;
     border: #1e2672 1px solid;
     border-radius: 2px 2px 0px 0px;
-    font-size: 15px !important;
+    font-size: 12px !important;
     margin-top: 4px;
     /* border-bottom: none; */
 }
@@ -100,7 +72,7 @@ cursor: pointer;
     color: #000;
     border: #1e2672 1px solid;
     border-radius: 2px 2px 0px 0px;
-    font-size: 15px !important;
+    font-size: 12px !important;
     /* border-bottom: none; */
     margin-top: 4px;
 }
@@ -111,7 +83,7 @@ cursor: pointer;
     color: #000;
     border: #1e2672 1px solid;
     border-radius: 2px 2px 0px 0px;
-    font-size: 15px !important;
+    font-size: 12px !important;
     /* border-bottom: none; */
     margin-top: 4px;
 }

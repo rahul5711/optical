@@ -24,21 +24,34 @@ export class CustomerPowerCalculationService {
         alert("please fill up Number value");
         spectacle.REDPCYL = 0.00;
       }
+      if(spectacle.RENPSPH === 'PLANO') {
+        spectacle.RENPSPH = '+0.00';
+      }
       if(isNaN(Number(spectacle.RENPSPH)) === true) {
         alert("please fill up Number value");
         spectacle.RENPSPH = 0.00;
       }
-      if(isNaN(Number(spectacle.REDPSPH)) === true) {
+      if(spectacle.REDPSPH === 'PLANO') {
+        spectacle.REDPSPH = '+0.00';
+      }
+      if(isNaN(Number(spectacle.REDPSPH)) === true && spectacle.REDPSPH !== 'PLANO') {
         alert("please fill up Number value");
         spectacle.REDPSPH = 0.00;
       }
+   
       if(isNaN(Number(spectacle.L_Addition)) === true) {
         alert("please fill up Number value");
         spectacle.L_Addition = 0.00;
       }
+      if(spectacle.LENPSPH === 'PLANO') {
+        spectacle.LENPSPH = '+0.00';
+      }
       if(isNaN(Number(spectacle.LENPSPH )) === true) {
         alert("please fill up Number value");
         spectacle.LENPSPH  = 0.00;
+      }
+      if(spectacle.LEDPSPH === 'PLANO') {
+        spectacle.LEDPSPH = '+0.00';
       }
       if(isNaN(Number(spectacle.LEDPSPH )) === true) {
         alert("please fill up Number value");

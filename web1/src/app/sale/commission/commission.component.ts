@@ -89,6 +89,7 @@ export class CommissionComponent implements OnInit {
   }
 
   getPayeeList(){
+    this.dataList = []
     if(this.data.PaymentType === 'Employee')
     { 
       const subs: Subscription = this.emp.dropdownUserlist('').subscribe({
