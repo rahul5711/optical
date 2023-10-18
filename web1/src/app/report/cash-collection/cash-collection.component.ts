@@ -19,6 +19,7 @@ export class CashCollectionComponent implements OnInit {
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
 
   constructor(
     private ss: ShopService,
@@ -30,6 +31,7 @@ export class CashCollectionComponent implements OnInit {
   ) { }
 
   shopList:any;
+  selectsShop :any;
   PaymentModesList:any =[];
   dataList:any =[];
 
@@ -88,6 +90,9 @@ export class CashCollectionComponent implements OnInit {
     const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
       next: (res: any) => {
         this.shopList  = res.data
+        let shop = res.data
+        this.selectsShop = shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
+        this.selectsShop =  '/ ' + this.selectsShop[0].Name + ' (' + this.selectsShop[0].AreaName + ')'
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -155,6 +160,14 @@ export class CashCollectionComponent implements OnInit {
         this.oldPayment += Number(data[i].Amount);
       }
     }
+  }
+
+  exportAsXLSX(): void {
+    let element = document.getElementById('CaseConExcel');
+    const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'Cash_Colletion_Report.xlsx');
   }
 
   dateFormat(date:any){
