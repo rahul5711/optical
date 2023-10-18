@@ -10,7 +10,7 @@
                     <div class="body">
                         <mat-tab-group>
                             <mat-tab label="SMS Setting">
-                                <form  #f="ngForm">
+                                <form class="m-3" #f="ngForm">
                                     <div class="body">
                                         <div class="row">
                                             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
@@ -32,12 +32,12 @@
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
-                                                <button type="submit" class="ml-2" mat-raised-button color="primary"> Save</button>
+                                                <button type="submit" class="ml-2" [disabled]="!f.valid" mat-raised-button color="primary"> Save</button>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <h5 style="color: rgb(193, 52, 52); letter-spacing: solid; font-size: 20px;">
+                                                <h5 style="color: rgb(255 81 0); letter-spacing: solid; font-size: 20px;">
                                                     Please use one of the following Keywords to insert Dynamic variables
                                                 </h5>
                                             </div>
@@ -45,7 +45,7 @@
                                                 <h3>
                                                     CustomerName, TotalAmount, BalanceAmount, CustomerOrderNo, ShopName,
                                                     ContactNo, OrderPDFLink, CustomerBillNo,
-                                                    BillPDFLink,CustomerCreditNote, Website
+                                                    BillPDFLink, CustomerCreditNote, Website
                                                 </h3>
                                             </div>
                                         </div>
@@ -61,7 +61,7 @@
                                                                 Message Template ID</th>
                                                             <th style="text-align: left;" width="2%">
                                                                 Enable</th>
-                                                            <th style="text-align: left; padding-left: 10px;" width="60%">
+                                                            <th style="text-align: left; padding-left: 10px;" width="61%">
                                                                 Message Text</th>
                                                         </tr>
                                                     </thead>
@@ -94,16 +94,16 @@
                                 </form>
                             </mat-tab>
                             <mat-tab label="Whatsapp Setting">
-                                <form class="m-4" #f1="ngForm">
+                                <form class="m-3" #f1="ngForm">
                                     <div class="row">
                                         <div class="col-sm-12" style="overflow:auto;height:570px;">
-                                            <table class="table">
+                                            <table class="table" style="width: 100%;">
                                                 <thead class="thead-light">
                                                     <tr>
-                                                        <th style="text-align: left; padding-left: 1%;" width="15%">
+                                                        <th style="text-align: left; padding-left: 10px;" width="15%">
                                                             MessageName</th>
 
-                                                        <th style="text-align: left; padding-left: 2%;" width="65%">
+                                                        <th style="text-align: left; padding-left: 0%;" width="64%">
                                                             Message Text</th>
                                                     </tr>
                                                 </thead>
@@ -116,14 +116,14 @@
                                                             <input  matInput [(ngModel)]="whatsSetting.MessageText1"
                                                                 class="example-margin"
                                                                 [ngModelOptions]="{standalone: true}"
-                                                                autocomplete="off">
+                                                                autocomplete="off" required>
                                                         </td>
                                                     </tr>
                                                 </tbody>
-                                                <footer>
-                                                    <button type="submit" class="ml-2 mt-3" mat-raised-button
+                                                <tfoot>
+                                                    <button  [disabled]="!f1.valid" type="submit" class="ml-2 mt-3" mat-raised-button
                                                         color="primary"> Save</button>
-                                                </footer>
+                                                </tfoot>
                                             </table>
                                         </div>
                                     </div>
