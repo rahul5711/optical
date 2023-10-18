@@ -324,7 +324,7 @@ export class SaleReportComponent implements OnInit {
       Parem = Parem + ' and billmaster.PaymentStatus = '  + `'${this.BillMaster.PaymentStatus}'`; }
 
     if (this.BillMaster.ProductStatus !== '' && this.BillMaster.ProductStatus !== null  && this.BillMaster.ProductStatus !== 'All'){
-      Parem = Parem + ' and BillDetail.ProductStatus = '  + `'${this.BillMaster.ProductStatus}'`; }
+      Parem = Parem + ' and billmaster.ProductStatus = '  + `'${this.BillMaster.ProductStatus}'`; }
 
     if (this.BillMaster.BillType !== '' && this.BillMaster.BillType !== null  && this.BillMaster.BillType !== 'All'){
       Parem = Parem + ' and billmaster.BillType = '  + `'${this.BillMaster.BillType}'`; }
