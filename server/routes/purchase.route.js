@@ -120,6 +120,7 @@ router.post('/supplierCnPR', verifyAccessTokenAdmin, Controller.supplierCnPR)
 router.post('/getPurchasereturnreports', verifyAccessTokenAdmin, Controller.getPurchasereturnreports)
 
 router.post('/getPurchasereturndetailreports', verifyAccessTokenAdmin, Controller.getPurchasereturndetailreports)
+router.post('/setProductExpiryDate',verifyAccessTokenAdmin, Controller.setProductExpiryDate)
 
 
 

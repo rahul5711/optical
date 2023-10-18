@@ -817,6 +817,7 @@ module.exports = {
 
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
 
 
             filepath = destination + '/' + filename
@@ -909,7 +910,7 @@ module.exports = {
                 count += 1
 
                 console.log("data saving", count);
-                const [saveData] = await mysql2.pool.query(`insert into oldbillmaster(SystemID, CompanyID, CustomerID, BillNo, SerialNo, BillDate, DeliveryDate, Qty, SubTotal, GSTPercentage, GST, AdditionalDiscountPercentage, AdditionalDiscount, GrandTotal,Paid,Balance, CreatedBy, CreatedOn) values('${datum.SystemID}', ${datum.CompanyID}, ${datum.CustomerID}, '${datum.BillNo}', '${datum.SerialNo}', ${datum.BillDate} ,${datum.DeliveryDate}, ${datum.Qty}, ${datum.SubTotal}, ${datum.GSTPercentage}, ${datum.GST}, ${datum.AdditionalDiscountPercentage}, ${datum.AdditionalDiscount}, ${datum.GrandTotal},${datum.Paid},${datum.Balance}, ${LoggedOnUser}, now())`)
+                const [saveData] = await mysql2.pool.query(`insert into oldbillmaster(SystemID, CompanyID, ShopID, CustomerID, BillNo, SerialNo, BillDate, DeliveryDate, Qty, SubTotal, GSTPercentage, GST, AdditionalDiscountPercentage, AdditionalDiscount, GrandTotal,Paid,Balance, CreatedBy, CreatedOn) values('${datum.SystemID}', ${datum.CompanyID}, ${shopid} , ${datum.CustomerID}, '${datum.BillNo}', '${datum.SerialNo}', ${datum.BillDate} ,${datum.DeliveryDate}, ${datum.Qty}, ${datum.SubTotal}, ${datum.GSTPercentage}, ${datum.GST}, ${datum.AdditionalDiscountPercentage}, ${datum.AdditionalDiscount}, ${datum.GrandTotal},${datum.Paid},${datum.Balance}, ${LoggedOnUser}, now())`)
             }
 
             console.log(connected("Customer Bill Added SuccessFUlly !!!"));

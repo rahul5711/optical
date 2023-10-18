@@ -12,6 +12,23 @@ const clientConfig = require("../helpers/constants");
 const { log } = require('console')
 const mysql2 = require('../database')
 
+function isValidDate(dateString) {
+    // First check for the pattern
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return false;
+
+    // Parse the date parts to integers
+    var parts = dateString.split("-");
+    var year = parseInt(parts[0], 10);
+    var month = parseInt(parts[1], 10);
+    var day = parseInt(parts[2], 10);
+
+    // Check the ranges of month and year
+    if (year < 1000 || year > 3000 || month == 0 || month > 12) return false;
+
+    var daysInMonth = new Date(year, month, 0).getDate();
+    return day > 0 && day <= daysInMonth;
+}
+
 module.exports = {
     create: async (req, res, next) => {
         try {
@@ -1954,6 +1971,36 @@ module.exports = {
             next(err)
         }
     },
+
+    setProductExpiryDate: async (req, res, next) => {
+        try {
+            return res.send({success: false, message: `it is temp function`})
+            const { CompanyID } = req.body;
+            console.log(`hii setProductExpiryDate`);
+            if (CompanyID === "" || CompanyID === undefined || CompanyID === null) return res.send({ message: "Invalid Query Data" })
+
+            const [data] = await mysql2.pool.query(`select * from purchasedetailnew where CompanyID = ${CompanyID}`)
+
+            if (data) {
+                for(const item of data) {
+                    let pName = item.ProductName.split("/")
+                    console.log(pName[pName.length-1],isValidDate(pName[pName.length-1]));
+
+                    if (isValidDate(pName[pName.length-1])) {
+                       const [update] = await mysql2.pool.query(`update purchasedetailnew set ProductExpDate = '${pName[pName.length-1]}', UpdatedBy = ${item.CreatedBy}, UpdatedOn = now() where ID = ${item.ID}`)
+                    }
+                }
+            }
+
+            return res.send(data)
+
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+        }
+    },
+
 
 
     // pre order
