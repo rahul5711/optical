@@ -92,7 +92,7 @@
                                                     <mat-form-field class="example-full-width">
                                                       <mat-label>Customer</mat-label>
                                                       <input type="text" placeholder="serach customer" aria-label="Text" matInput
-                                                      name="CustomerID"  [formControl]="myControl" [matAutocomplete]="auto" 
+                                                      name="CustomerID"  [formControl]="myControl" [matAutocomplete]="auto"
                                                              (input)="customerSearch(myControl.value, 'Name')">
                                                       <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" >
                                                         <mat-option (click)="CustomerSelection('All','0')" value='All'>All</mat-option>
@@ -203,7 +203,7 @@
                                                                 aria-hidden="true" type="button"
                                                                 (click)="exportAsXLSXMaster()">
                                                             </i>
-                                                           
+
                                                             <button class="bg_none ms-4"
                                                             printTitle="sale Report {{this.shopLists}}"
                                                             printSectionId="PurchasePDF" ngxPrint
@@ -279,7 +279,7 @@
 
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             {{(d.TotalAmount) - d.DueAmount }} </td>
-                                                            
+
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.DueAmount }} </td>
 
@@ -346,7 +346,7 @@
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
-                                         
+
                                                 <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
                                                     <mat-label>Shop Name</mat-label>
                                                     <mat-select name="shopID" [(ngModel)]="Billdetail.ShopID" >
@@ -929,7 +929,7 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                           
+
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Customer GSTNo</mat-label>
@@ -943,8 +943,8 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                          
-                                          
+
+
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Select Product</mat-label>
@@ -1323,7 +1323,7 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                           
+
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Customer GSTNo</mat-label>
@@ -1337,8 +1337,8 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                          
-                                          
+
+
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Select Product</mat-label>
@@ -1456,7 +1456,7 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                           
+
                                             <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-0 ">
                                                 <button class="me-3" type="submit" mat-raised-button color="primary">
                                                     Search
@@ -1622,7 +1622,7 @@
                                                         <td *ngIf="t.ProductStatus === 0"
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
                                                             pending </td>
-                                                      
+
                                                         <td [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
                                                             {{t.GSTNo}}</td>
                                                         <td [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
@@ -1631,7 +1631,7 @@
                                                             <span
                                                                 *ngIf="t.PreOrder === 0 && t.Manual === 0">Stock</span>
                                                         </td>
-                                                     
+
                                                     </tr>
                                                 </tbody>
                                             </table>
