@@ -3508,7 +3508,7 @@ module.exports = {
                 shop = ` and billmaster.ShopID = ${ShopID}`
             }
             if (PaymentMode) {
-                paymentType = ` and paymentmaster.PaymentMode = '${paymentType}'`
+                paymentType = ` and paymentmaster.PaymentMode = '${PaymentMode}' `
             }
             if (PaymentStatus) {
                 paymentStatus = ` and billmaster.PaymentStatus = '${PaymentStatus}'`
@@ -3536,8 +3536,8 @@ module.exports = {
                 }
             }
 
-            const [debitReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer' and paymentdetail.Credit = 'Debit'` + Date)
-            const [creditReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer Credit' and paymentdetail.Credit = 'Credit'` + Date)
+            const [debitReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer' and paymentdetail.Credit = 'Debit' and paymentdetail.CompanyID = ${CompanyID}` + Date)
+            const [creditReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer Credit' and paymentdetail.Credit = 'Credit' and paymentdetail.CompanyID = ${CompanyID} ` + Date)
 
             if (debitReturn[0].Amount !== null) {
                 response.AmountReturnByDebit = debitReturn[0].Amount
