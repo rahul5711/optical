@@ -669,7 +669,7 @@ srcCustomerBox = false
 
             const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL','LEDPSPH','LEDPCYL','LENPSPH','LENPCYL'];
             for (const prop of PLANOCheck) {
-              if (this.spectacle[prop] === '+0.00') {
+              if (this.spectacle[prop] === '+0.00' || this.spectacle[prop] === "0") {
                 this.spectacle[prop] = 'PLANO';
               }
             }
@@ -684,10 +684,10 @@ srcCustomerBox = false
           if (res.contact_lens_rx.length !== 0) {
             this.clens = res.contact_lens_rx[0]
 
-            const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL']
-            for (const prop of PLANOCheck) {
-              if (this.clens[prop] === '+0.00') {
-                this.clens[prop] = 'PLANO';
+            const PLANOCheck1 = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL']
+            for (const prop1 of PLANOCheck1) {
+              if (this.clens[prop1] === '+0.00' || this.spectacle[prop1] === "0") {
+                this.clens[prop1] = 'PLANO';
               }
             }
 
