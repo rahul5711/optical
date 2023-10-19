@@ -3496,10 +3496,6 @@ module.exports = {
 
 
             const { Date, ShopID, PaymentMode, PaymentStatus } = req.body;
-            console.log(Date);
-            console.log(ShopID);
-            console.log(PaymentMode);
-            console.log(PaymentStatus);
             let shop = ``
             let paymentType = ``
             let paymentStatus = ``
