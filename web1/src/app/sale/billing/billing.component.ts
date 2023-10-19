@@ -548,42 +548,48 @@ srcCustomerBox = false
     if (this.Check.SpectacleCheck === true) {
       this.data.tablename = 'spectacle_rx'
       this.data.spectacle_rx = this.spectacle
+
+      const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL','LEDPSPH','LEDPCYL','LENPSPH','LENPCYL']
+
+      for (const prop of PLANOCheck) {
+        if (this.data.spectacle_rx[prop] === 'PLANO') {
+          this.data.spectacle_rx[prop] = '+0.00';
+        }
+      }
+
       this.spectacle.ExpiryDate = moment().add(Number(this.spectacle.Reminder), 'M').format('YYYY-MM-DD');
     }
     if (this.Check.ContactCheck === true) {
       this.data.tablename = 'contact_lens_rx'
       this.data.contact_lens_rx = this.clens
+
+      const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL','LEDPSPH','LEDPCYL','LENPSPH','LENPCYL']
+
+      for (const prop of PLANOCheck) {
+        if (this.data.contact_lens_rx[prop] === 'PLANO') {
+          this.data.contact_lens_rx[prop] = '+0.00';
+        }
+      }
+
     }
     if (this.Check.OtherCheck === true) {
       this.data.tablename = 'other_rx'
       this.data.other_rx = this.other
     }
 
-    if(this.data.MobileNo1 !== ''){
-      this.param.MobileNo1 = this.data.MobileNo1
-      const subs1: Subscription = this.cs.customerSearch(this.param).subscribe({
-        next: (res: any) => {
-          if (res) {
-            this.filteredOptions = res.data
-            if(this.filteredOptions.length !== 0){
-              Swal.fire({
-                position: 'center',
-                icon: 'warning',
-                title: 'Duplicate Customer',
-                showConfirmButton: true,
-                backdrop:false
-              })
-            }
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide()
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs1.unsubscribe(),
-      });
+    if (this.data.MobileNo1 !== '') {
+      this.param.MobileNo1 = this.data.MobileNo1;
+      this.customerSearch(this.param.MobileNo1,'MobileNo1');
+      if(this.filteredOptions.length != 0){
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Duplicate Customer',
+          showConfirmButton: true,
+          backdrop:false
+        })
+      }
     }
-
 
     const subs: Subscription = this.cs.saveCustomer(this.data).subscribe({
       next: (res: any) => {
@@ -660,6 +666,14 @@ srcCustomerBox = false
 
           if (res.spectacle_rx.length !== 0) {
             this.spectacle = res.spectacle_rx[0]
+
+            const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL','LEDPSPH','LEDPCYL','LENPSPH','LENPCYL'];
+            for (const prop of PLANOCheck) {
+              if (this.spectacle[prop] === '+0.00') {
+                this.spectacle[prop] = 'PLANO';
+              }
+            }
+
             if (res.spectacle_rx[0].PhotoURL !== "null" && res.spectacle_rx[0].PhotoURL !== '') {
               this.spectacleImage = this.env.apiUrl + res.spectacle_rx[0].PhotoURL;
             } else {
@@ -669,6 +683,14 @@ srcCustomerBox = false
 
           if (res.contact_lens_rx.length !== 0) {
             this.clens = res.contact_lens_rx[0]
+
+            const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL']
+            for (const prop of PLANOCheck) {
+              if (this.clens[prop] === '+0.00') {
+                this.clens[prop] = 'PLANO';
+              }
+            }
+
             if (res.contact_lens_rx[0].PhotoURL !== "null" && res.contact_lens_rx[0].PhotoURL !== '') {
               this.clensImage = this.env.apiUrl + res.contact_lens_rx[0].PhotoURL;
             } else {
@@ -869,10 +891,24 @@ srcCustomerBox = false
       this.data.tablename = 'spectacle_rx'
       this.spectacle.ExpiryDate = moment().add(Number(this.spectacle.Reminder), 'M').format('YYYY-MM-DD');
       this.data.spectacle_rx = this.spectacle
+
+      const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL']
+      for (const prop of PLANOCheck) {
+        if (this.data.spectacle_rx[prop] === 'PLANO') {
+          this.data.spectacle_rx[prop] = '+0.00';
+        }
+      }
     }
     if (this.Check.ContactCheck === true) {
       this.data.tablename = 'contact_lens_rx'
       this.data.contact_lens_rx = this.clens
+
+      const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL']
+      for (const prop of PLANOCheck) {
+        if (this.data.contact_lens_rx[prop] === 'PLANO') {
+          this.data.contact_lens_rx[prop] = '+0.00';
+        }
+      }
     }
     if (this.Check.OtherCheck === true) {
       this.data.tablename = 'other_rx'
