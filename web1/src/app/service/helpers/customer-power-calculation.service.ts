@@ -24,8 +24,16 @@ export class CustomerPowerCalculationService {
           spectacle[property] = '0.00';
         }
       }
+      function CvalidateAndHandlePLANO(clens:any, property:any) {
+        if (clens[property] === 'PLANO') {
+          clens[property] = 'PLANO';
+        } else if (isNaN(Number(clens[property]))) {
+          alert("Please fill in a valid numeric value.");
+          clens[property] = '0.00';
+        }
+      }
       
-      // Validate and handle properties
+      // Validate and handle properties Spec
       validateAndHandlePLANO(spectacle, 'REDPSPH');
       validateAndHandlePLANO(spectacle, 'REDPCYL');
       validateAndHandlePLANO(spectacle, 'RENPSPH');
@@ -36,6 +44,17 @@ export class CustomerPowerCalculationService {
       validateAndHandlePLANO(spectacle, 'LENPSPH');
       validateAndHandlePLANO(spectacle, 'LENPCYL');
       validateAndHandlePLANO(spectacle, 'L_Addition');
+      // Validate and handle properties clean
+      CvalidateAndHandlePLANO(clens, 'REDPSPH');
+      CvalidateAndHandlePLANO(clens, 'REDPCYL');
+      CvalidateAndHandlePLANO(clens, 'RENPSPH');
+      CvalidateAndHandlePLANO(clens, 'RENPCYL');
+      CvalidateAndHandlePLANO(clens, 'R_Addition');
+      CvalidateAndHandlePLANO(clens, 'LEDPSPH');
+      CvalidateAndHandlePLANO(clens, 'LEDPCYL');
+      CvalidateAndHandlePLANO(clens, 'LENPSPH');
+      CvalidateAndHandlePLANO(clens, 'LENPCYL');
+      CvalidateAndHandlePLANO(clens, 'L_Addition');
 
       // right spectacle calculate start
       if (x === 'CDR') {
