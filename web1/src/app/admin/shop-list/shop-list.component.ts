@@ -422,6 +422,6 @@ export class ShopListComponent implements OnInit {
   }
 
   delete(i: any) {
-    this.wlcmArray1.splice(this.wlcmArray.indexOf(this.wlcmArray[i]), 1);
-  }
+    this.wlcmArray1.splice(i, 1);
+}
 }

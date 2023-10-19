@@ -201,6 +201,23 @@ export class BillComponent implements OnInit {
 
   }
 
+   isValidDate(dateString:any) {
+    // First check for the pattern
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return false;
+
+    // Parse the date parts to integers
+    var parts = dateString.split("-");
+    var year = parseInt(parts[0], 10);
+    var month = parseInt(parts[1], 10);
+    var day = parseInt(parts[2], 10);
+
+    // Check the ranges of month and year
+    if (year < 1000 || year > 3000 || month == 0 || month > 12) return false;
+
+    var daysInMonth = new Date(year, month, 0).getDate();
+    return day > 0 && day <= daysInMonth;
+}
+
   getCustomerById1() {
 
     if (this.id != 0) {
@@ -672,8 +689,20 @@ export class BillComponent implements OnInit {
             this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
             this.BillItem.BaseBarCode = this.searchList.BaseBarCode;
             this.BillItem.PurchasePrice = this.searchList.UnitPrice;
-            this.BillItem.ProductExpDate = moment(this.searchList.ProductExpDate).format('YYYY-MM-DD') ;
             this.BillItem.Quantity = 0;
+
+            if(this.selectedProduct == 'CONTACT LENS' || this.selectedProduct == 'SOLUTION'){
+              this.showProductExpDate = true
+            }else{
+              this.showProductExpDate = false
+            }
+
+            let ProductNameSplitDate = this.searchList.ProductName.split("/")
+            if (this.isValidDate(ProductNameSplitDate[ProductNameSplitDate.length-1])) {
+              this.BillItem.ProductExpDate = ProductNameSplitDate[ProductNameSplitDate.length-1]
+            }else{
+              this.BillItem.ProductExpDate = "0000-00-00"
+            }
 
             if (this.searchList !== undefined || this.searchList.Barcode !== null && this.searchList.BarCodeCount !== 0) {
               if (this.billItemList.length !== 0 && this.BillItem.ProductName !== "") {
@@ -800,6 +829,8 @@ export class BillComponent implements OnInit {
             if (res.success) {
               this.BarcodeList = res.data;
               this.PurchasePriceInput = this.BarcodeList == '' || this.BarcodeList.length == 0 ? true : false;
+              this.showProductExpDate = this.BarcodeList != '' || this.BarcodeList.length != 0 ? true : false;
+
             } else {
               this.as.errorToast(res.message)
             }
