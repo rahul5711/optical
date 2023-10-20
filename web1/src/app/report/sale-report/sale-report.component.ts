@@ -33,7 +33,9 @@ export class SaleReportComponent implements OnInit {
   companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
 
   myControl = new FormControl('All');
+  myControl1 = new FormControl('All');
   filteredOptions: any ;
+  filteredOption2: any ;
  
   constructor(
     private router: Router,
@@ -1049,17 +1051,28 @@ BillPendingFromReset(){
     return moment(date).format(`${this.companySetting.DateFormat}`);
   }
 
-  customerSearch(searchKey: any, mode: any) {
+  customerSearch(searchKey: any, mode: any, type:any) {
     this.filteredOptions = []
-    let dtm = {
-      Type: "Customer",
-      Name: this.BillMaster.CustomerID
-    };
-  
+
+    let dtm = {Type:'',Name:''}
+    if(type === 'Employee'){
+      dtm = {
+        Type: 'Employee',
+        Name: this.BillMaster.EmployeeID
+      };
+    }
+    if(type === 'Customer'){
+      dtm = {
+        Type: 'Customer',
+        Name: this.BillMaster.CustomerID
+      };
+    }
+   
     if (searchKey.length >= 2) {
       if (mode === 'Name') {
         dtm.Name = searchKey;
       } 
+
       const subs: Subscription =  this.supps.dropdownlistBySearch(dtm).subscribe({
         next: (res: any) => {
           if(res.success){
@@ -1080,11 +1093,18 @@ BillPendingFromReset(){
     if(mode === 'Value'){
       this.BillMaster.CustomerID = ID
     }
+    if(mode === 'Billdetail'){
+      this.Billdetail.CustomerID = ID
+    }
+    if(mode === 'emp'){
+      this.Billdetail.EmployeeID = ID
+    }
     if(mode === 'All'){
       this.filteredOptions  = []
       this.BillMaster.CustomerID = 0
+      this.Billdetail.CustomerID = 0
+      this.Billdetail.EmployeeID = 0
     }
   }
- 
- 
+
 }

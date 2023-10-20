@@ -14,6 +14,7 @@ import { jsPDF } from "jspdf";
 import { SupportService } from 'src/app/service/support.service';
 import html2canvas from 'html2canvas';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-purchase-report',
@@ -27,6 +28,9 @@ export class PurchaseReportComponent implements OnInit {
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
 
+  myControl = new FormControl('All');
+  filteredOptions: any ;
+  
   supplierList :any;
   shopList :any;
   selectsShop :any;
@@ -187,6 +191,7 @@ export class PurchaseReportComponent implements OnInit {
         this.shopList  = res.data
         let shop = res.data
         this.selectsShop = shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
+        this.selectsShop =  '/ ' + this.selectsShop[0].Name + ' (' + this.selectsShop[0].AreaName + ')'
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -690,4 +695,72 @@ export class PurchaseReportComponent implements OnInit {
   dateFormat(date:any){
     return moment(date).format(`${this.companySetting.DateFormat}`);
   }
+
+  customerSearch(searchKey: any, mode: any, type:any) {
+    this.filteredOptions = [];
+
+    let supplierID = 0;
+
+    if (type === 'Supplier') {
+        switch(mode) {
+            case 'PurchaseMaster':
+                supplierID = this.PurchaseMaster.SupplierID;
+                break;
+            case 'PurchaseDetail':
+                supplierID = this.PurchaseDetail.SupplierID;
+                break;
+            case 'ProductExpiry':
+                supplierID = this.ProductExpiry.SupplierID;
+                break;
+            default:
+                break;
+        }
+    }
+
+    let dtm = {
+        Type: 'Supplier',
+        Name: supplierID.toString()
+    };
+
+    if (searchKey.length >= 2 && mode === 'Name') {
+        dtm.Name = searchKey;
+    }
+
+    const subs: Subscription = this.supps.dropdownlistBySearch(dtm).subscribe({
+        next: (res: any) => {
+            if(res.success){
+                this.filteredOptions = res.data;
+            } else {
+                this.as.errorToast(res.message);
+            }
+            this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+    });
+}
+
+CustomerSelection(mode: any, ID: any) {
+    switch(mode) {
+        case 'PurchaseMaster':
+            this.PurchaseMaster.SupplierID = ID;
+            break;
+        case 'PurchaseDetail':
+            this.PurchaseDetail.SupplierID = ID;
+            break;
+        case 'ProductExpiry':
+            this.ProductExpiry.SupplierID = ID;
+            break;
+        case 'All':
+            this.filteredOptions = [];
+            this.PurchaseMaster.SupplierID = 0;
+            this.PurchaseDetail.SupplierID = 0;
+            this.ProductExpiry.SupplierID = 0;
+            break;
+        default:
+            break;
+    }
+}
+
+
 }
