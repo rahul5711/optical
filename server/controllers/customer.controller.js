@@ -851,4 +851,45 @@ module.exports = {
             next(err)
         }
     },
+    updateExpiryAndVisitDate: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const [data] = await mysql2.pool.query(`select * from spectacle_rx`)
+
+            if (data) {
+                let count = 0
+               for(let item of data) {
+                count += 1
+                console.log("count ======>",count);
+                let createDate = moment(item.CreatedOn).format("YYYY-MM-DD");
+
+                if (item.VisitDate === "0000-00-00") {
+
+                    const [update] = await mysql2.pool.query(`update spectacle_rx set VisitDate = '${moment(item.CreatedOn).format("YYYY-MM-DD")}', UpdatedBy = '${item.CreatedBy}', UpdatedOn = now() where ID = ${item.ID}`)
+
+                    const [update2] = await mysql2.pool.query(`update spectacle_rx set ExpiryDate = '${moment(item.CreatedOn).add(item.Reminder, "months").format("YYYY-MM-DD")}', UpdatedBy = '${item.CreatedBy}', UpdatedOn = now() where ID = ${item.ID}`)
+
+
+                }
+
+                if (item.VisitDate !== "0000-00-00" && item.ExpiryDate === "0000-00-00") {
+                    const [update2] = await mysql2.pool.query(`update spectacle_rx set ExpiryDate = '${moment(item.VisitDate).add(item.Reminder, "months").format("YYYY-MM-DD")}', UpdatedBy = '${item.CreatedBy}', UpdatedOn = now() where ID = ${item.ID}`)
+
+                }
+
+
+
+               }
+            }
+
+            response.message = "data update sucessfully"
+            response.data = data
+
+
+            return res.send(response);
+        } catch (err) {
+            next(err)
+        }
+    },
 }

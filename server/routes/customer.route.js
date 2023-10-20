@@ -30,5 +30,9 @@ router.post('/customerPowerPDF', verifyAccessTokenAdmin, Controller.customerPowe
 
 router.post('/customerSearch', verifyAccessTokenAdmin, Controller.customerSearch)
 
+// update power expiry date and visitDate
+router.post('/updateExpiryAndVisitDate', verifyAccessTokenAdmin, Controller.updateExpiryAndVisitDate)
+
+
 
 module.exports = router
