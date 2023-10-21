@@ -17,6 +17,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EmployeeService } from 'src/app/service/employee.service';
 import { BillService } from 'src/app/service/bill.service';
 import { CustomerService } from 'src/app/service/customer.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-old-sale',
@@ -43,6 +44,10 @@ export class OldSaleComponent implements OnInit {
     private sp: NgxSpinnerService,
     private customer: CustomerService 
   ) { }
+
+  
+  myControl = new FormControl('All');
+  filteredOptions: any ;
 
   shopList :any = [];
   shopLists :any = [];
@@ -83,7 +88,7 @@ export class OldSaleComponent implements OnInit {
     this.dropdownUserlist()
     this.getProductList();
     this.getGSTList();
-    this.dropdownCustomerlist();
+    // this.dropdownCustomerlist();
     this.dropdownCustomerGSTNo();
 
     if(this.user.UserGroup === 'Employee'){
@@ -430,4 +435,63 @@ export class OldSaleComponent implements OnInit {
     dateFormat(date:any){
       return moment(date).format(`${this.companySetting.DateFormat}`);
     }
+
+    customerSearch(searchKey: any, mode: any, type:any) {
+      this.filteredOptions = [];
+  
+      let customerID = 0;
+  
+      if (type === 'Customer') {
+          switch(mode) {
+              case 'BillMaster':
+                  customerID = this.BillMaster.CustomerID;
+                  break;
+              case 'Billdetail':
+                  customerID = this.Billdetail.CustomerID;
+                  break;
+              default:
+                  break;
+          }
+      }
+  
+      let dtm = {
+          Type: 'Customer',
+          Name: customerID.toString()
+      };
+  
+      if (searchKey.length >= 2 && mode === 'Name') {
+          dtm.Name = searchKey;
+      }
+  
+      const subs: Subscription = this.supps.dropdownlistBySearch(dtm).subscribe({
+          next: (res: any) => {
+              if(res.success){
+                  this.filteredOptions = res.data;
+              } else {
+                  this.as.errorToast(res.message);
+              }
+              this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+      });
+  }
+  
+  CustomerSelection(mode: any, ID: any) {
+      switch(mode) {
+          case 'BillMaster':
+              this.BillMaster.CustomerID = ID;
+              break;
+          case 'Billdetail':
+              this.Billdetail.CustomerID = ID;
+              break;
+          case 'All':
+              this.filteredOptions = [];
+              this.BillMaster.CustomerID = 0;
+              this.Billdetail.CustomerID = 0;
+              break;
+          default:
+              break;
+      }
+  }
 }

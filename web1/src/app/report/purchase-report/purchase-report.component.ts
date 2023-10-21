@@ -164,25 +164,10 @@ export class PurchaseReportComponent implements OnInit {
     }else{
       this.dropdownShoplist()
     }
-    this.dropdownSupplierlist();
+    // this.dropdownSupplierlist();
     this.getProductList();
     this.getGSTList();
-    // PurchaseMaster Today Data
-    // this.PurchaseMaster.FromDate =  moment(this.PurchaseMaster.FromDate).format('YYYY-MM-DD')
-    // this.PurchaseMaster.ToDate = moment(this.PurchaseMaster.ToDate).format('YYYY-MM-DD')
-    // this.getPurchaseMaster();
-    // PurchaseMaster Today Data
-    // this.PurchaseDetail.FromDate = moment().format('YYYY-MM-DD');
-    // this.PurchaseDetail.ToDate = moment().format('YYYY-MM-DD');
-    // this.getPurchaseDetails();
-    // PurchaseMaster Today Data
-    // this.charge.FromDate = moment().format('YYYY-MM-DD');
-    // this.charge.ToDate = moment().format('YYYY-MM-DD');
-    // this.purchaseCharge();
-    // PurchaseMaster Today Data
-    // this.ProductExpiry.FromDate = moment().format('YYYY-MM-DD');
-    // this.ProductExpiry.ToDate = moment().format('YYYY-MM-DD');
-    // this.purchaseProductExpiry();
+
   }
 
   dropdownShoplist(){

@@ -7,8 +7,9 @@ import { PurchaseService } from 'src/app/service/purchase.service';
 import { ShopService } from 'src/app/service/shop.service';
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
-import { FormBuilder,FormGroup } from '@angular/forms';
+import { FormBuilder,FormControl,FormGroup } from '@angular/forms';
 import { SupplierService } from 'src/app/service/supplier.service';
+import { SupportService } from 'src/app/service/support.service';
 
 @Component({
   selector: 'app-vendor-credit',
@@ -23,7 +24,9 @@ export class VendorCreditComponent implements OnInit {
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   form :any | FormGroup;
 
-
+  myControl = new FormControl('All');
+  filteredOptions: any ;
+  
   constructor(
     private purchaseService: PurchaseService,
     private ss: ShopService,
@@ -32,6 +35,8 @@ export class VendorCreditComponent implements OnInit {
     public sp: NgxSpinnerService,
     private fb: FormBuilder,
     private sup: SupplierService,
+    private supps: SupportService,
+
 
   ) {
     this.form = this.fb.group({
@@ -62,7 +67,7 @@ export class VendorCreditComponent implements OnInit {
     }else{
       this.dropdownShoplist()
     }
-    this.dropdownSupplierlist()
+    // this.dropdownSupplierlist()
   }
 
   dropdownShoplist(){
@@ -162,4 +167,56 @@ console.log(Parem);
   dateFormat(date:any){
     return moment(date).format(`${this.companySetting.DateFormat}`);
   }
+
+  customerSearch(searchKey: any, mode: any, type:any) {
+    this.filteredOptions = [];
+
+    let supplierID = 0;
+
+    if (type === 'Supplier') {
+        switch(mode) {
+            case 'data':
+                supplierID = this.data.SupplierID;
+                break;
+            default:
+                break;
+        }
+    }
+
+    let dtm = {
+        Type: 'Supplier',
+        Name: supplierID.toString()
+    };
+
+    if (searchKey.length >= 2 && mode === 'Name') {
+        dtm.Name = searchKey;
+    }
+
+    const subs: Subscription = this.supps.dropdownlistBySearch(dtm).subscribe({
+        next: (res: any) => {
+            if(res.success){
+                this.filteredOptions = res.data;
+            } else {
+                this.as.errorToast(res.message);
+            }
+            this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+    });
+}
+
+CustomerSelection(mode: any, ID: any) {
+    switch(mode) {
+        case 'data':
+            this.data.SupplierID = ID;
+            break;
+        case 'All':
+            this.filteredOptions = [];
+            this.data.SupplierID = 0;
+            break;
+        default:
+            break;
+    }
+}
 }

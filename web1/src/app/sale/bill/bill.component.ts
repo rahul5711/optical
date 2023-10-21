@@ -23,6 +23,8 @@ import { SupplierService } from 'src/app/service/supplier.service';
 import { FitterService } from 'src/app/service/fitter.service';
 import { CalculationService } from 'src/app/service/helpers/calculation.service';
 import { PaymentService } from 'src/app/service/payment.service';
+import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-bill',
@@ -38,6 +40,7 @@ import { PaymentService } from 'src/app/service/payment.service';
   ]
 })
 export class BillComponent implements OnInit {
+  [x: string]: any;
 
   @Input() customerID2: any
   company = JSON.parse(localStorage.getItem('company') || '');
@@ -68,6 +71,7 @@ export class BillComponent implements OnInit {
     private fitters: FitterService,
     public cal: CalculationService,
     public pay: PaymentService,
+    private http: HttpClient
 
   ) {
     this.id = this.route.snapshot.params['customerid'];
@@ -2149,6 +2153,9 @@ export class BillComponent implements OnInit {
       window.open(url, "_blank");
       console.log(msg, "msgmsgmsgmsg")
   }
+  
+
+
   
   
 }

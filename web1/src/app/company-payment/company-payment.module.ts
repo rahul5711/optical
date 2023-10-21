@@ -59,7 +59,9 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     MatCheckboxModule,
     MatTabsModule,
     NgbModule,
-    NgxMatSelectSearchModule
+    NgxMatSelectSearchModule,
+    MatAutocompleteModule
+
   ]
 })
 export class CompanyPaymentModule { }

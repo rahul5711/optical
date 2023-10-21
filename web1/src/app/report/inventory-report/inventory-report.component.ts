@@ -12,6 +12,7 @@ import * as moment from 'moment';
 import * as XLSX from 'xlsx';
 import { SupportService } from 'src/app/service/support.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-inventory-report',
@@ -39,6 +40,9 @@ export class InventoryReportComponent implements OnInit {
     private sp: NgxSpinnerService,
   ) { }
 
+  myControl = new FormControl('All');
+  filteredOptions: any ;
+  
   supplierList :any;
   shopList :any;
   selectsShop :any;
@@ -127,7 +131,7 @@ export class InventoryReportComponent implements OnInit {
       this.dropdownShoplist()
     }
 
-    this.dropdownSupplierlist();
+    // this.dropdownSupplierlist();
     this.getProductList();
     this.getGSTList();
     this.inventory.FromDate = moment().format('YYYY-MM-DD');
@@ -546,4 +550,70 @@ export class InventoryReportComponent implements OnInit {
     dateFormat(date:any){
       return moment(date).format(`${this.companySetting.DateFormat}`);
     }
+
+    customerSearch(searchKey: any, mode: any, type:any) {
+      this.filteredOptions = [];
+  
+      let supplierID = 0;
+  
+      if (type === 'Supplier') {
+          switch(mode) {
+              case 'inventory':
+                  supplierID = this.inventory.SupplierID;
+                  break;
+              case 'data':
+                  supplierID = this.data.SupplierID;
+                  break;
+              case 'ProductExpiry':
+                  supplierID = this.ProductExpiry.SupplierID;
+                  break;
+              default:
+                  break;
+          }
+      }
+  
+      let dtm = {
+          Type: 'Supplier',
+          Name: supplierID.toString()
+      };
+  
+      if (searchKey.length >= 2 && mode === 'Name') {
+          dtm.Name = searchKey;
+      }
+  
+      const subs: Subscription = this.supps.dropdownlistBySearch(dtm).subscribe({
+          next: (res: any) => {
+              if(res.success){
+                  this.filteredOptions = res.data;
+              } else {
+                  this.as.errorToast(res.message);
+              }
+              this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+      });
+  }
+  
+  CustomerSelection(mode: any, ID: any) {
+      switch(mode) {
+          case 'inventory':
+              this.inventory.SupplierID = ID;
+              break;
+          case 'PurchaseDetail':
+              this.data.SupplierID = ID;
+              break;
+          case 'ProductExpiry':
+              this.ProductExpiry.SupplierID = ID;
+              break;
+          case 'All':
+              this.filteredOptions = [];
+              this.inventory.SupplierID = 0;
+              this.data.SupplierID = 0;
+              this.ProductExpiry.SupplierID = 0;
+              break;
+          default:
+              break;
+      }
+  }
 }

@@ -12,6 +12,7 @@ import * as moment from 'moment';
 import * as XLSX from 'xlsx';
 import { SupportService } from 'src/app/service/support.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-product-return',
@@ -26,6 +27,9 @@ export class ProductReturnComponent implements OnInit {
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
 
+  myControl = new FormControl('All');
+  filteredOptions: any ;
+  
   supplierList :any;
   shopList :any;
   selectsShop :any;
@@ -107,7 +111,7 @@ export class ProductReturnComponent implements OnInit {
       this.dropdownShoplist()
     }
 
-    this.dropdownSupplierlist();
+    // this.dropdownSupplierlist();
     this.getProductList();
     this.getGSTList();
     // ReturnMaster Today Data
@@ -419,4 +423,63 @@ export class ProductReturnComponent implements OnInit {
   dateFormat(date:any){
     return moment(date).format(`${this.companySetting.DateFormat}`);
   }
+
+  customerSearch(searchKey: any, mode: any, type:any) {
+    this.filteredOptions = [];
+
+    let supplierID = 0;
+
+    if (type === 'Supplier') {
+        switch(mode) {
+            case 'ReturnMaster':
+                supplierID = this.ReturnMaster.SupplierID;
+                break;
+            case 'ReturnDetail':
+                supplierID = this.ReturnDetail.SupplierID;
+                break;
+            default:
+                break;
+        }
+    }
+
+    let dtm = {
+        Type: 'Supplier',
+        Name: supplierID.toString()
+    };
+
+    if (searchKey.length >= 2 && mode === 'Name') {
+        dtm.Name = searchKey;
+    }
+
+    const subs: Subscription = this.supps.dropdownlistBySearch(dtm).subscribe({
+        next: (res: any) => {
+            if(res.success){
+                this.filteredOptions = res.data;
+            } else {
+                this.as.errorToast(res.message);
+            }
+            this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+    });
+}
+
+CustomerSelection(mode: any, ID: any) {
+    switch(mode) {
+        case 'ReturnMaster':
+            this.ReturnMaster.SupplierID = ID;
+            break;
+        case 'ReturnDetail':
+            this.ReturnDetail.SupplierID = ID;
+            break;
+        case 'All':
+            this.filteredOptions = [];
+            this.ReturnMaster.SupplierID = 0;
+            this.ReturnDetail.SupplierID = 0;
+            break;
+        default:
+            break;
+    }
+}
 }

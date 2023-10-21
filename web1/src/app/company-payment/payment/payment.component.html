@@ -26,7 +26,7 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-12 mb-0">
-                                    <mat-form-field class="example-full-width mb-0">
+                                    <!-- <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Payee Name</mat-label>
                                         <mat-select name="PayeeID" [(ngModel)]=" data.CustomerID"
                                             (selectionChange)="getInvoicePayment(data.PaymentType,data.PayeeName)">
@@ -41,7 +41,19 @@
                                             </mat-option>
                                         </mat-select>
                                         <mat-error>Payee is required</mat-error>
-                                    </mat-form-field>
+                                    </mat-form-field> -->
+                                    <mat-form-field class="example-full-width">
+                                        <mat-label>Payee Name</mat-label>
+                                        <input type="text" placeholder="serach customer" aria-label="Text" matInput
+                                        name="PayeeID"  [formControl]="myControl1" [matAutocomplete]="auto1"
+                                               (input)="customerSearch(myControl1.value, 'Name',data.PaymentType)" required>
+                                        <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete" >
+                                          <mat-option (click)="CustomerSelection('All','0')" value=''></mat-option>
+                                          <mat-option (click)="CustomerSelection('data',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
+                                            {{option.Name}} {{option.MobileNo1}}
+                                          </mat-option>
+                                        </mat-autocomplete>
+                                      </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
@@ -126,7 +138,7 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
-                                    <button [disabled]="!f.valid" type="submit" mat-raised-button color="primary">
+                                    <button [disabled]="!f.valid || myControl1.value == ''" type="submit" mat-raised-button color="primary">
                                         Payment </button>
                                 </div>
                             </div>

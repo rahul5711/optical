@@ -30,7 +30,10 @@ export class PaymentComponent implements OnInit {
   company = JSON.parse(localStorage.getItem('company') || '');
   env = environment;
   myControl: any;
-  
+
+  myControl1 = new FormControl('');
+  filteredOptions: any;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -45,24 +48,24 @@ export class PaymentComponent implements OnInit {
     private customer: CustomerService,
     private doctor: DoctorService,
     private pay: PaymentService,
-    
+
   ) { }
 
   data: any = {
-    ID: null,  CompanyID: null, BillMasterID:null, ShopID: null, PaymentType: null,CustomerID: null, PayableAmount: 0, CustomerCredit: 0, PaidAmount: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '',  CreditType: 'Debit', PaymentDate: null,  Comments: 0, Status: 1, pendingPaymentList: {}, ApplyReturn:false,CreditNumber:''
+    ID: null, CompanyID: null, BillMasterID: null, ShopID: null, PaymentType: null, CustomerID: null, PayableAmount: 0, CustomerCredit: 0, PaidAmount: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', CreditType: 'Debit', PaymentDate: null, Comments: 0, Status: 1, pendingPaymentList: {}, ApplyReturn: false, CreditNumber: ''
   };
 
-  searchValue:any
-  PaymentModesList:any = []
-  creditList:any = []
-  payeeList:any = []
-  invoiceList:any = []
-  vendorCredit:any
-  currentTime:any; 
+  searchValue: any
+  PaymentModesList: any = []
+  creditList: any = []
+  payeeList: any = []
+  invoiceList: any = []
+  vendorCredit: any
+  currentTime: any;
 
   ngOnInit(): void {
-    this.getPaymentModesList() 
-     this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23'})
+    this.getPaymentModesList()
+    this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23' })
   }
 
   getPaymentModesList() {
@@ -79,7 +82,7 @@ export class PaymentComponent implements OnInit {
     });
   }
 
-  getSupplierCreditNote(SupplierID:any) {
+  getSupplierCreditNote(SupplierID: any) {
     this.sp.show()
     const subs: Subscription = this.pay.getSupplierCreditNote(SupplierID).subscribe({
       next: (res: any) => {
@@ -88,16 +91,16 @@ export class PaymentComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
-      this.sp.hide()
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
   }
 
-  vendorCreditValue(){
-   this.data.CustomerCredit = this.vendorCredit.Amount
-   this.data.CreditNumber = this.vendorCredit.CreditNumber
+  vendorCreditValue() {
+    this.data.CustomerCredit = this.vendorCredit.Amount
+    this.data.CreditNumber = this.vendorCredit.CreditNumber
   }
 
   // getPayeeList(){
@@ -171,62 +174,26 @@ export class PaymentComponent implements OnInit {
   //   } 
   //   this.invoiceList = []
   // }
-  
+
   getPayeeList() {
-    this.sp.show()
     this.data.CreditType = 'Debit';
     this.invoiceList = [];
     this.data.CustomerCredit = 0;
     this.data.PayableAmount = 0;
     this.data.PaidAmount = 0;
     this.data.ApplyReturn = false;
-
-    let dropdownObs;
-  
-    switch (this.data.PaymentType) {
-      case 'Supplier':
-        dropdownObs = this.sup.dropdownSupplierlist('');
-        break;
-      case 'Employee':
-        dropdownObs = this.emp.dropdownUserlist('');
-        break;
-      case 'Fitter':
-        dropdownObs = this.fitters.dropdownlist();
-        break;
-      case 'Customer':
-        dropdownObs = this.customer.dropdownlist();
-        this.data.CreditType = 'Credit';
-        break;
-      case 'Doctor':
-        dropdownObs = this.doctor.dropdownDoctorlist();
-        break;
-      default:
-        this.as.errorToast('Invalid Payment Type');
-        return;
-    }
-  
-    const subs: Subscription = dropdownObs.subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.payeeList = res.data;
-        } else {
-          this.as.errorToast(res.message);
-        }
-      this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+    this.data.PaymentMode = '';
+    this.filteredOptions = [];
+    this.myControl1 = new FormControl('');
   }
 
-  getInvoicePayment(PaymentType:any, PayeeName:any) {
+  getInvoicePayment(PaymentType: any, PayeeName: any) {
     this.sp.show()
     PaymentType = this.data.PaymentType
     PayeeName = this.data.CustomerID
-    const subs: Subscription = this.pay.getInvoicePayment(PaymentType,PayeeName).subscribe({
+    const subs: Subscription = this.pay.getInvoicePayment(PaymentType, PayeeName).subscribe({
       next: (res: any) => {
         if (res.success) {
-          // const filteredData = res.data.filter((el: any) => el.DueAmount !== 0);
           this.invoiceList = res.data;
           this.data.BillMasterID = this.invoiceList[0]?.ID
           this.data.PayableAmount = +res.totalDueAmount.toFixed(2)
@@ -241,54 +208,54 @@ export class PaymentComponent implements OnInit {
     });
   }
 
-  onSubmit(){
-    if(this.data.PayableAmount < this.data.PaidAmount ){
+  onSubmit() {
+    if (this.data.PayableAmount < this.data.PaidAmount) {
       Swal.fire({
         position: 'center',
         icon: 'warning',
         title: 'The Paid Amount exceeds the Payable Amount. Please verify the amounts.',
         showConfirmButton: true,
-        backdrop : false,
+        backdrop: false,
       })
       this.data.PaidAmount = 0
     }
-    if(this.data.ApplyReturn == true){
-      if (this.data.CustomerCredit < this.data.PaidAmount){
+    if (this.data.ApplyReturn == true) {
+      if (this.data.CustomerCredit < this.data.PaidAmount) {
         Swal.fire({
           position: 'center',
           icon: 'warning',
           title: 'The Paid Amount exceeds the Customer Credit. Please verify the amounts.',
           showConfirmButton: true,
-          backdrop : false,
+          backdrop: false,
         })
         this.data.PaidAmount = 0
       }
     }
-  
-    if(this.data.PaidAmount !== 0){
+
+    if (this.data.PaidAmount !== 0) {
       this.sp.show()
       this.data.CompanyID = this.company.ID;
       this.data.ShopID = Number(this.selectedShop);
-      this.data.PaymentDate =  moment().format('YYYY-MM-DD') +' '+ this.currentTime;
+      this.data.PaymentDate = moment().format('YYYY-MM-DD') + ' ' + this.currentTime;
       this.data.pendingPaymentList = this.invoiceList;
       const subs: Subscription = this.pay.applyPayment(this.data).subscribe({
         next: (res: any) => {
-            if(res.success ){
-              this.getInvoicePayment(res.data.PaymentType, res.data.PayeeName)
-              this.data.PaidAmount = 0; this.data.PaymentMode = ''; this.data.CardNo = ''; this.data.PaymentReferenceNo = ''; this.data.ApplyReturn = false
-              this.creditList = []
-            
-            }else{
-              this.as.errorToast(res.message)
-              Swal.fire({
-                position: 'center',
-                icon: 'warning',
-                title: 'Opps !!',
-                text: res.message,
-                showConfirmButton: true,
-                backdrop : false,
-              })
-            }
+          if (res.success) {
+            this.getInvoicePayment(res.data.PaymentType, res.data.PayeeName)
+            this.data.PaidAmount = 0; this.data.PaymentMode = ''; this.data.CardNo = ''; this.data.PaymentReferenceNo = ''; this.data.ApplyReturn = false
+            this.creditList = []
+
+          } else {
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: 'Opps !!',
+              text: res.message,
+              showConfirmButton: true,
+              backdrop: false,
+            })
+          }
           this.sp.hide()
         },
         error: (err: any) => console.log(err.message),
@@ -297,9 +264,9 @@ export class PaymentComponent implements OnInit {
     }
   }
 
-  getSupplierCreditNoteByCreditNumber(){
+  getSupplierCreditNoteByCreditNumber() {
     this.sp.show()
-    const subs: Subscription = this.pay.getSupplierCreditNoteByCreditNumber(this.vendorCredit.SupplierID,this.vendorCredit.CreditNumber).subscribe({
+    const subs: Subscription = this.pay.getSupplierCreditNoteByCreditNumber(this.vendorCredit.SupplierID, this.vendorCredit.CreditNumber).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.data.CustomerCredit = res.totalCreditAmount
@@ -322,12 +289,12 @@ export class PaymentComponent implements OnInit {
     return event;
   }
 
-  ApplyReturn(){
-    if(this.data.ApplyReturn === false){
+  ApplyReturn() {
+    if (this.data.ApplyReturn === false) {
       switch (this.data.PaymentType) {
         case 'Supplier':
           this.data.PaymentMode = 'Vendor Credit';
-          this.getSupplierCreditNote(this.data.CustomerID) 
+          this.getSupplierCreditNote(this.data.CustomerID)
           break;
         case 'Employee':
           this.data.PaymentMode = 'Employee Credit';
@@ -345,16 +312,66 @@ export class PaymentComponent implements OnInit {
           this.as.errorToast('Invalid Payment Type');
           return;
       }
-    }else{
+    } else {
       this.creditList = []
       this.data.PaymentMode = ''
       this.data.CustomerCredit = 0
-      this.getInvoicePayment(this.data.PaymentType,this.data.CustomerID)
+      this.getInvoicePayment(this.data.PaymentType, this.data.CustomerID)
     }
-
   }
 
-  dateFormat(date:any){
+  dateFormat(date: any) {
     return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
+
+  customerSearch(searchKey: any, mode: any, type: any) {
+    this.filteredOptions = [];
+    let payeeNames = 0;
+
+    switch (mode) {
+      case 'data':
+        payeeNames = this.data.CustomerID;
+        break;
+      default:
+        break;
+    }
+
+    let dtm = {
+      Type: this.data.PaymentType,
+      Name: payeeNames.toString()
+    };
+
+    dtm.Name = searchKey;
+
+    // Set a timeout of 5000 milliseconds (5 seconds) before calling the subscribe function.
+    setTimeout(() => {
+      const subs: Subscription = this.supps.dropdownlistBySearch(dtm).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.filteredOptions = res.data;
+          } else {
+            this.as.errorToast(res.message);
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }, 2000); // 5000 milliseconds = 5 seconds
+  }
+
+  CustomerSelection(mode: any, ID: any) {
+    switch (mode) {
+      case 'data':
+        this.data.CustomerID = ID;
+        this.getInvoicePayment(this.data.PaymentType, this.data.PayeeName);
+        break;
+      case 'All':
+        this.filteredOptions = [];
+        this.data.CustomerID = 0;
+        break;
+      default:
+        break;
+    }
   }
 }

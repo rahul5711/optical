@@ -31,7 +31,7 @@
                           </mat-form-field>
                         </div>
                         <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
-                          <mat-form-field class="example-full-width mb-0">
+                          <!-- <mat-form-field class="example-full-width mb-0">
                             <mat-label>Supplier Name</mat-label>
                             <mat-select name="Supplier" [(ngModel)]="ReturnMaster.SupplierID" editable="true"
                               #singleSelect>
@@ -44,6 +44,18 @@
                             <mat-error>
                               Select Supplier
                             </mat-error>
+                          </mat-form-field> -->
+                          <mat-form-field class="example-full-width">
+                            <mat-label>Supplier Name</mat-label>
+                            <input type="text" placeholder="serach customer" aria-label="Text" matInput
+                            name="SupplierID"  [formControl]="myControl" [matAutocomplete]="auto"
+                                   (input)="customerSearch(myControl.value, 'Name','Supplier')">
+                            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" >
+                              <mat-option (click)="CustomerSelection('All','0')" value='All'>All</mat-option>
+                              <mat-option (click)="CustomerSelection('ReturnMaster',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
+                                {{option.Name}} {{option.MobileNo1}}
+                              </mat-option>
+                            </mat-autocomplete>
                           </mat-form-field>
                         </div>
                         <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
@@ -169,7 +181,7 @@
                           </mat-form-field>
                         </div>
                         <div class="col-xl-2 col-lg-2 col-md-4 col-6">
-                          <mat-form-field class="example-full-width mb-0">
+                          <!-- <mat-form-field class="example-full-width mb-0">
                             <mat-label>Supplier Name</mat-label>
                             <mat-select name="Supplier" [(ngModel)]="ReturnDetail.SupplierID" editable="true"
                               #singleSelect>
@@ -182,6 +194,18 @@
                             <mat-error>
                               Select Supplier
                             </mat-error>
+                          </mat-form-field> -->
+                          <mat-form-field class="example-full-width">
+                            <mat-label>Supplier Name</mat-label>
+                            <input type="text" placeholder="serach customer" aria-label="Text" matInput
+                            name="SupplierID"  [formControl]="myControl" [matAutocomplete]="auto1"
+                                   (input)="customerSearch(myControl.value, 'Name','Supplier')">
+                            <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete" >
+                              <mat-option (click)="CustomerSelection('All','0')" value='All'>All</mat-option>
+                              <mat-option (click)="CustomerSelection('ReturnDetail',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
+                                {{option.Name}} {{option.MobileNo1}}
+                              </mat-option>
+                            </mat-autocomplete>
                           </mat-form-field>
                         </div>
                         <div class="col-xl-2 col-lg-2 col-md-4 col-6">

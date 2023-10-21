@@ -168,12 +168,12 @@ export class SaleReportComponent implements OnInit {
     });
     // billmaster
    
-    this.dropdownUserlist()
+    // this.dropdownUserlist()
     this.getProductList();
     this.getProductList1();
     this.getProductList2();
     this.getGSTList();
-    this.dropdownCustomerlist();
+    // this.dropdownCustomerlist();
     this.dropdownCustomerGSTNo();
     // this.BillMaster.FromDate = moment().format('YYYY-MM-DD');
     // this.BillMaster.ToDate = moment().format('YYYY-MM-DD');
