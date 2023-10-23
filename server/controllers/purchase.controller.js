@@ -791,7 +791,7 @@ module.exports = {
                         res.send(err);
                     } else {
                         let options;
-                        if (printdata.CompanyID == 1) {
+                        if (printdata.CompanyID == 20 || printdata.CompanyID == 19 ) {
                             if (printdata.CompanyBarcode == 5) {
                                 options = {
                                     "height": "0.70in",

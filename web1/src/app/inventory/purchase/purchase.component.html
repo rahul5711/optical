@@ -354,7 +354,7 @@
                                 </div>
                                 <div *ngIf="addPurchase" class="col-xl-1 col-lg-1 col-md-1 col-4 mb-0 ml-auto">
                                     <button *ngIf="editBtn === false " class="mr-3" type="submit"
-                                        [disabled]="!f1.valid || item.Quantity == 0 || this.GstTypeDis"
+                                        [disabled]="(!f1.valid || item.Quantity == 0 || this.GstTypeDis) || this.specList == ''"
                                         mat-raised-button color="primary" (click)="notifyGst();">Add</button>
                                     <!-- <button *ngIf="editBtn === true" class="mr-3" type="submit" [disabled]=" item.Quantity == 0"
                                         mat-raised-button color="primary" (click)="editUpdate()">Update</button> -->

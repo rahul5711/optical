@@ -10,7 +10,7 @@
                     <div class="body">
                         <mat-tab-group>
                             <mat-tab label="SMS Setting">
-                                <form class="m-3" #f="ngForm">
+                                <form class="m-3" #f="ngForm" >
                                     <div class="body">
                                         <div class="row">
                                             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
@@ -32,7 +32,7 @@
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
-                                                <button type="submit" class="ml-2" [disabled]="!f.valid" mat-raised-button color="primary"> Save</button>
+                                                <button (click)="updateSMSsetting('sms')" type="submit" class="ml-2" [disabled]="!f.valid" mat-raised-button color="primary"> Save</button>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -93,7 +93,7 @@
                                     </div>
                                 </form>
                             </mat-tab>
-                            <mat-tab label="Whatsapp Setting">
+                            <mat-tab label="Whatsapp Setting" >
                                 <form class="m-3" #f1="ngForm">
                                     <div class="row">
                                         <div class="col-sm-12" style="overflow:auto;height:570px;">
@@ -122,7 +122,7 @@
                                                 </tbody>
                                                 <tfoot>
                                                     <button  [disabled]="!f1.valid" type="submit" class="ml-2 mt-3" mat-raised-button
-                                                        color="primary"> Save</button>
+                                                        color="primary" (click)="updateSMSsetting('whatsapp')" > Save</button>
                                                 </tfoot>
                                             </table>
                                         </div>

@@ -132,10 +132,11 @@ thead :not([scope=row]):first-child {
 .content {
     background-image: url(assets/images/SHOP.svg);
     background-size: 100%;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    zoom: 100%;
+    // -webkit-user-select: none;
+    // -moz-user-select: none;
+    // -ms-user-select: none;
+    // user-select: none;
 }
 
 

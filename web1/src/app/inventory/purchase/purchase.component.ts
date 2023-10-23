@@ -202,9 +202,7 @@ export class PurchaseComponent implements OnInit {
     const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.specList = res.data;
-          console.log(this.specList);
-          
+            this.specList = res.data;
           this.getSptTableData();
         } else {
           this.as.errorToast(res.message)
@@ -220,7 +218,7 @@ export class PurchaseComponent implements OnInit {
       if (element.FieldType === 'DropDown' && element.Ref === '0') {
         const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
           next: (res: any) => {
-            if (res.success) {
+            if (res.success ) {
               element.SptTableData = res.data;
               element.SptFilterData = res.data;
             } else {

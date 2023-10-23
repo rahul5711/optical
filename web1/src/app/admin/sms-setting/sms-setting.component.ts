@@ -1,4 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
+import { NgForm } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { NgxSpinner, NgxSpinnerService } from 'ngx-spinner';
+import Swal from 'sweetalert2';
+import { AlertService } from 'src/app/service/helpers/alert.service';
+import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
+import { CompanyService } from 'src/app/service/company.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sms-setting',
@@ -10,7 +20,13 @@ export class SmsSettingComponent implements OnInit {
   company = JSON.parse(localStorage.getItem('company') || '' ).ID;
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '')
   
-  constructor() { }
+  constructor(
+    private formBuilder: FormBuilder,
+    public as: AlertService,
+    private cs: CompanyService,
+    private sp: NgxSpinnerService,
+    private router: Router,
+  ) { }
 
   
   smsSettingList: any = [
@@ -43,18 +59,62 @@ export class SmsSettingComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    let tempSMS = JSON.parse(this.companySetting.SmsSetting) || '';
-    if (tempSMS.length !== 0){
-      this.smsSettingList = tempSMS
-    } 
-    this.getwhst()
+    this.loadSettings();
   }
 
-  getwhst(){
-    let tempwhatsSMS = JSON.parse(this.companySetting.WhatsappSetting) || '';
-    if (tempwhatsSMS.length !== 0 && tempwhatsSMS !== null){
-    this.whatsappSettingList = tempwhatsSMS
+  loadSettings() {
+    const tempSMS = JSON.parse(this.companySetting.SmsSetting || '[]');
+    if (tempSMS.length > 0) {
+      this.smsSettingList = tempSMS;
     }
+    this.getWhatsappSettings();
+  }
+
+  getWhatsappSettings() {
+    const tempWhatsapp = JSON.parse(this.companySetting.WhatsappSetting || '[]');
+    if (tempWhatsapp.length > 0) {
+      this.whatsappSettingList = tempWhatsapp;
+    }
+  }
+
+  updateSMSsetting(settingType:any){
+    this.sp.show();
+
+    if (settingType === 'sms') {
+      this.companySetting.SmsSetting = JSON.stringify(this.smsSettingList);
+    } else if (settingType === 'whatsapp') {
+      this.companySetting.WhatsappSetting = JSON.stringify(this.whatsappSettingList);
+    }
+
+    const subs: Subscription =  this.cs.updatecompanysetting(this.companySetting).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, LogOut it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              localStorage.clear();
+              this.router.navigate(['/login']).then(() => {
+                window.location.reload();
+              });
+            }
+          })
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   onChange(event: string) {

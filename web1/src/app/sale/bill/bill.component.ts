@@ -54,6 +54,10 @@ export class BillComponent implements OnInit {
   id: any = 0
   id2: any = 0
   searchValue:any =''
+
+  myControl = new FormControl('');
+  ProductSrchList: any ;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -664,6 +668,7 @@ export class BillComponent implements OnInit {
   }
 
   getSearchByBarcodeNo() {
+
     if(this.Req.SearchBarCode !== ''){
     this.sp.show();
     if (this.BillItem.Manual == false) {
@@ -694,6 +699,108 @@ export class BillComponent implements OnInit {
             this.BillItem.BaseBarCode = this.searchList.BaseBarCode;
             this.BillItem.PurchasePrice = this.searchList.UnitPrice;
             this.BillItem.Quantity = 0;
+            this.myControl = new FormControl(this.BillItem.ProductName)
+            if(this.selectedProduct == 'CONTACT LENS' || this.selectedProduct == 'SOLUTION'){
+              this.showProductExpDate = true
+            }else{
+              this.showProductExpDate = false
+            }
+
+            let ProductNameSplitDate = this.searchList.ProductName.split("/")
+            if (this.isValidDate(ProductNameSplitDate[ProductNameSplitDate.length-1])) {
+              this.BillItem.ProductExpDate = ProductNameSplitDate[ProductNameSplitDate.length-1]
+            }else{
+              this.BillItem.ProductExpDate = "0000-00-00"
+            }
+
+            if (this.searchList !== undefined || this.searchList.Barcode !== null && this.searchList.BarCodeCount !== 0) {
+              if (this.billItemList.length !== 0 && this.BillItem.ProductName !== "") {
+                let itemCount = 0;
+                this.billItemList.forEach((element: any) => {
+                  if (element.ProductName === this.BillItem.ProductName && element.ID === null) {
+                    itemCount = itemCount + element.Quantity;
+                  }
+                })
+                this.searchList.BarCodeCount = this.searchList.BarCodeCount - itemCount;
+              }
+            }
+
+            this.prodList.forEach((e: any) => {
+              if (e.ID === this.searchList.ProductTypeID) {
+                this.BillItem.ProductTypeID = e.ID;
+                this.BillItem.ProductTypeName = e.Name;
+                this.BillItem.HSNCode = e.HSNCode;
+                this.BillItem.GSTPercentage = e.GSTPercentage;
+                this.BillItem.GSTType = e.GSTType;
+              }
+            })
+
+            if (this.BillItem.WholeSale === true) {
+              this.BillItem.UnitPrice = this.searchList.WholeSalePrice;
+            }
+            else if (this.BillItem.PreOrder === true) {
+              this.BillItem.UnitPrice = this.searchList.RetailPrice;
+            }
+            else {
+              this.BillItem.UnitPrice = this.searchList.RetailPrice;
+            }
+            this.BillItem.Quantity = 1;
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+   
+      });
+    } else {
+      this.sp.hide();
+      Swal.fire({
+        icon: 'warning',
+        title: 'Not Available',
+        text: 'Product Not available in this Shop.',
+        footer: '',
+        backdrop: false,
+      });
+    }
+    }
+  }
+  getSearchByBarcodeNoS(barcode:any) {
+    this.Req.SearchBarCode = barcode
+    if(this.Req.SearchBarCode !== ''){
+    
+    this.sp.show();
+    if (this.BillItem.Manual == false) {
+      if (this.BillItem.PreOrder) {
+        this.PreOrder = "true"
+      } else {
+        this.PreOrder = "false"
+      }
+      const subs: Subscription = this.bill.searchByBarcodeNo(this.Req, this.PreOrder, this.ShopMode).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.searchList = res.data[0];
+            if (this.searchList === undefined || this.searchList.Barcode === null) {
+              this.BarcodeList= res.data[0];
+              Swal.fire({
+                icon: 'warning',
+                title: 'Please Enter Correct Barcode ',
+                text: 'Incorrect Barcode OR Product not available in this Shop.',
+                footer: '',
+                backdrop: false,
+              });
+              this.sp.hide();
+            }
+
+            this.selectedProduct = this.searchList.ProductTypeName;
+            this.BillItem.ProductName = this.searchList.ProductName.toUpperCase();
+            this.BillItem.Barcode = this.searchList.Barcode;
+            this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
+            this.BillItem.BaseBarCode = this.searchList.BaseBarCode;
+            this.BillItem.PurchasePrice = this.searchList.UnitPrice;
+            this.BillItem.Quantity = 0;
+
 
             if(this.selectedProduct == 'CONTACT LENS' || this.selectedProduct == 'SOLUTION'){
               this.showProductExpDate = true
@@ -762,8 +869,9 @@ export class BillComponent implements OnInit {
     }
   }
 
-  getSearchByString() {
-    this.sp.show();
+  getSearchByString(searchKey: any, mode: any,) {
+
+    this.Req.searchString = searchKey;
     if (this.BillItem.Manual === false) {
       if (this.BillItem.PreOrder) {
         // PreOrder product name
@@ -773,6 +881,7 @@ export class BillComponent implements OnInit {
           next: (res: any) => {
             if (res.success) {
               this.BarcodeList = res.data;
+              this.ProductSrchList = this.BarcodeList;
             } else {
               this.as.errorToast(res.message)
             }
@@ -794,7 +903,6 @@ export class BillComponent implements OnInit {
             } else {
               this.as.errorToast(res.message)
             }
-            this.sp.hide();
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
@@ -979,7 +1087,7 @@ export class BillComponent implements OnInit {
       this.billItemList.unshift(this.BillItem);
       this.calculateGrandTotal()
       console.log(this.billItemList);
-    
+      this.myControl = new FormControl('')
       this.BillItem = {
         ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale:  this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal : 'yes', PurchasePrice:0,UpdateProduct: false
       };
