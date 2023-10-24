@@ -19,6 +19,7 @@ app.use('/purchase', require('../routes/purchase.route'));
 app.use('/purchaseUpload', require('../routes/uploader.route'));
 app.use('/bill', require('../routes/bill.route'));
 app.use('/payment', require('../routes/payment.route'));
+app.use('/reminder', require('../routes/reminder.route'));
 }
 
 module.exports = { addRoutes };

@@ -1,0 +1,461 @@
+{
+	"info": {
+		"_postman_id": "eb11c0da-6688-4a65-b504-2c77c1092de3",
+		"name": "Reminder",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "BirthDay Reminder",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTgxNDE4MDMsImV4cCI6MTY5ODIyODIwMywiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.mKid96BGrype5gu6adtID1A0O7oPOgFTNjZqEOYqjzQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"type\": \"Customer\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/reminder/getBirthDayReminder",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"reminder",
+						"getBirthDayReminder"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "BirthDay Reminder",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"Customer\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/reminder/getBirthDayReminder",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"reminder",
+								"getBirthDayReminder"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "167"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"a7-Go7Gg075OR9SxWsSnE6g/MqdakA\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 24 Oct 2023 10:51:18 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Name\": \"vinay\",\n            \"MobileNo1\": \"\",\n            \"DOB\": \"2023-10-24\"\n        },\n        {\n            \"Name\": \"PATIL NEW\",\n            \"MobileNo1\": \"\",\n            \"DOB\": \"2023-10-24\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch successfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "getAnniversaryReminder",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTgxNDE4MDMsImV4cCI6MTY5ODIyODIwMywiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.mKid96BGrype5gu6adtID1A0O7oPOgFTNjZqEOYqjzQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"type\": \"Customer\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/reminder/getAnniversaryReminder",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"reminder",
+						"getAnniversaryReminder"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getAnniversaryReminder",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"Customer\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/reminder/getAnniversaryReminder",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"reminder",
+								"getAnniversaryReminder"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "124"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"7c-gWS2xWBiwah3QbEwb2drAU71sOM\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 24 Oct 2023 10:59:32 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Name\": \"PATIL NEW\",\n            \"MobileNo1\": \"\",\n            \"Anniversary\": \"2023-10-24\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch successfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "getCustomerOrderPending",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTgxNDE4MDMsImV4cCI6MTY5ODIyODIwMywiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.mKid96BGrype5gu6adtID1A0O7oPOgFTNjZqEOYqjzQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedShop",
+						"value": "[\"0\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/reminder/getCustomerOrderPending",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"reminder",
+						"getCustomerOrderPending"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getCustomerOrderPending",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedShop",
+								"value": "[\"0\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/reminder/getCustomerOrderPending",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"reminder",
+								"getCustomerOrderPending"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "161"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"a1-REE+EyPhHLVdDrOUqCvNOvaf1Lo\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 24 Oct 2023 11:45:17 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"InvoiceNo\": \"2310-R1-1-1\",\n            \"Name\": \"vinay\",\n            \"MobileNo1\": \"\",\n            \"DeliveryDate\": \"2023-10-24T04:51:50.000Z\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch successfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "getEyeTestingReminder",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTgxNDE4MDMsImV4cCI6MTY5ODIyODIwMywiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.mKid96BGrype5gu6adtID1A0O7oPOgFTNjZqEOYqjzQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedShop",
+						"value": "[\"0\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/reminder/getEyeTestingReminder",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"reminder",
+						"getEyeTestingReminder"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getEyeTestingReminder",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedShop",
+								"value": "[\"0\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/reminder/getEyeTestingReminder",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"reminder",
+								"getEyeTestingReminder"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "119"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"77-w2bvahHIj/osA1YPZ58/MamVb7c\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 24 Oct 2023 11:53:26 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Name\": \"vinay\",\n            \"MobileNo1\": \"\",\n            \"ExpiryDate\": \"2023-10-24\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch successfully\"\n}"
+				}
+			]
+		}
+	]
+}
