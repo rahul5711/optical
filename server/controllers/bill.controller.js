@@ -1756,9 +1756,12 @@ module.exports = {
             });
 
             printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
+
+            let BillFormat = printdata.CompanySetting.BillFormat;
+            
             let fileName = "";
-            const file = "invoice.ejs" + ".pdf";
-            const formatName = "invoice.ejs";
+            const file = BillFormat + ".pdf";
+            const formatName = BillFormat;
             fileName = "uploads/" + file;
 
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
