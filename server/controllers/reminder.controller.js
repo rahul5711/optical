@@ -13,9 +13,12 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
 
-            const { type } = req.body;
+            const { type, dateType } = req.body;
             if (!type || type === undefined || type === null) {
                 return res.send({ message: "Invalid Query Data" })
+            }
+            if (!dateType || dateType === undefined || dateType === null) {
+                return res.send({ message: "Invalid Query dateType Data" })
             }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -30,6 +33,16 @@ module.exports = {
             }
 
             let date = moment(new Date()).format("YYYY-MM-DD")
+
+            if (dateType === 'today') {
+                date = moment(new Date()).format("YYYY-MM-DD");
+            } else if (dateType === 'tomorrow') {
+                date = moment(new Date()).format("YYYY-MM-DD").add(1,'days');
+            } else if (dateType === 'yesterday') {
+                date = moment(new Date()).format("YYYY-MM-DD").add(-1, 'days');
+            } else {
+                return res.send({ message: "Invalid Query dateType Data" })
+            }
 
             if (type === 'Customer') {
                 qry = `select Name, MobileNo1, DOB from customer where CompanyID = ${CompanyID} and DOB = '${date}' ${shopId}`
@@ -60,9 +73,12 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
 
-            const { type } = req.body;
+            const { type, dateType } = req.body;
             if (!type || type === undefined || type === null) {
                 return res.send({ message: "Invalid Query Data" })
+            }
+            if (!dateType || dateType === undefined || dateType === null) {
+                return res.send({ message: "Invalid Query dateType Data" })
             }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -78,6 +94,16 @@ module.exports = {
             }
 
             let date = moment(new Date()).format("YYYY-MM-DD")
+
+            if (dateType === 'today') {
+                date = moment(new Date()).format("YYYY-MM-DD");
+            } else if (dateType === 'tomorrow') {
+                date = moment(new Date()).format("YYYY-MM-DD").add(1,'days');
+            } else if (dateType === 'yesterday') {
+                date = moment(new Date()).format("YYYY-MM-DD").add(-1, 'days');
+            } else {
+                return res.send({ message: "Invalid Query dateType Data" })
+            }
 
             if (type === 'Customer') {
                 qry = `select Name, MobileNo1, Anniversary from customer where CompanyID = ${CompanyID} and Anniversary = '${date}'  ${shopId}`
@@ -108,6 +134,11 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
 
+            const { dateType } = req.body;
+
+            if (!dateType || dateType === undefined || dateType === null) {
+                return res.send({ message: "Invalid Query dateType Data" })
+            }
 
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -122,6 +153,16 @@ module.exports = {
             }
 
             let date = moment(new Date()).format("YYYY-MM-DD")
+
+            if (dateType === 'today') {
+                date = moment(new Date()).format("YYYY-MM-DD");
+            } else if (dateType === 'tomorrow') {
+                date = moment(new Date()).format("YYYY-MM-DD").add(1,'days');
+            } else if (dateType === 'yesterday') {
+                date = moment(new Date()).format("YYYY-MM-DD").add(-1, 'days');
+            } else {
+                return res.send({ message: "Invalid Query dateType Data" })
+            }
 
             let qry = `select billmaster.InvoiceNo, customer.Name, customer.MobileNo1, DeliveryDate  from billmaster left join customer on customer.ID = billmaster.CustomerID where billmaster.CompanyID = ${CompanyID} ${shopId} and DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') = '${date}'`
 
@@ -141,6 +182,11 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
 
+            const { dateType } = req.body;
+
+            if (!dateType || dateType === undefined || dateType === null) {
+                return res.send({ message: "Invalid Query dateType Data" })
+            }
 
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -155,6 +201,16 @@ module.exports = {
             }
 
             let date = moment(new Date()).format("YYYY-MM-DD")
+
+            if (dateType === 'today') {
+                date = moment(new Date()).format("YYYY-MM-DD");
+            } else if (dateType === 'tomorrow') {
+                date = moment(new Date()).format("YYYY-MM-DD").add(1,'days');
+            } else if (dateType === 'yesterday') {
+                date = moment(new Date()).format("YYYY-MM-DD").add(-1, 'days');
+            } else {
+                return res.send({ message: "Invalid Query dateType Data" })
+            }
 
             let qry = `select customer.Name, customer.MobileNo1, ExpiryDate  from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID where spectacle_rx.CompanyID = ${CompanyID} ${shopId} and DATE_FORMAT(spectacle_rx.ExpiryDate, '%Y-%m-%d') = '${date}'`
 
