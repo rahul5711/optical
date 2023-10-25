@@ -226,6 +226,112 @@ module.exports = {
             next(error)
         }
     },
+    getFeedBackReminder: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const { dateType } = req.body;
+
+            if (!dateType || dateType === undefined || dateType === null) {
+                return res.send({ message: "Invalid Query dateType Data" })
+            }
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            const shopid = await shopID(req.headers) || 0;
+
+            const [companysetting] = await mysql2.pool.query(`select * from companysetting where ID = ${CompanyID}`)
+
+
+            let feedbackDays = Number(companysetting[0].feedbackDate) || 0
+            let shopId = ``
+
+            if (shopid !== 0) {
+                shopId = `and customer.ShopID = ${shopid}`
+            }
+
+            let date = moment(new Date()).format("YYYY-MM-DD")
+
+            if (dateType === 'today') {
+                date = moment(new Date()).format("YYYY-MM-DD").add(feedbackDays, 'days');
+            } else if (dateType === 'tomorrow') {
+                feedbackDays += 1
+                date = moment(new Date()).format("YYYY-MM-DD").add(feedbackDays, 'days');
+            } else if (dateType === 'yesterday') {
+                feedbackDays -= 1
+                date = moment(new Date()).format("YYYY-MM-DD").add(feedbackDays, 'days');
+            } else {
+                return res.send({ message: "Invalid Query dateType Data" })
+            }
+
+            let qry = `select customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') and billmaster.ShopID = ${shopId} and DATE_FORMAT(billmaster.BillDate, '%Y-%m-%d') = '${date}'`
+
+
+            const [datum] = await mysql2.pool.query(qry)
+
+            response.data = datum || []
+            response.message = "data fetch successfully"
+            return res.send(response)
+
+
+        } catch (error) {
+            next(error)
+        }
+    },
+    getServiceMessageReminder: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const { dateType } = req.body;
+
+            if (!dateType || dateType === undefined || dateType === null) {
+                return res.send({ message: "Invalid Query dateType Data" })
+            }
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            const shopid = await shopID(req.headers) || 0;
+
+            const [companysetting] = await mysql2.pool.query(`select * from companysetting where ID = ${CompanyID}`)
+
+
+            let serviceDays = Number(companysetting[0].serviceDate) || 0
+            let shopId = ``
+
+            if (shopid !== 0) {
+                shopId = `and customer.ShopID = ${shopid}`
+            }
+
+            let date = moment(new Date()).format("YYYY-MM-DD")
+
+            if (dateType === 'today') {
+                date = moment(new Date()).format("YYYY-MM-DD").add(serviceDays, 'days');
+            } else if (dateType === 'tomorrow') {
+                serviceDays += 1
+                date = moment(new Date()).format("YYYY-MM-DD").add(serviceDays, 'days');
+            } else if (dateType === 'yesterday') {
+                serviceDays -= 1
+                date = moment(new Date()).format("YYYY-MM-DD").add(serviceDays, 'days');
+            } else {
+                return res.send({ message: "Invalid Query dateType Data" })
+            }
+
+            let qry = `select customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') and billmaster.ShopID = ${shopId} and DATE_FORMAT(billmaster.BillDate, '%Y-%m-%d') = '${date}'`
+
+
+            const [datum] = await mysql2.pool.query(qry)
+
+            response.data = datum || []
+            response.message = "data fetch successfully"
+            return res.send(response)
+
+
+        } catch (error) {
+            next(error)
+        }
+    },
     getSolutionExpiryReminder: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }

@@ -7,6 +7,8 @@ _router.post("/getBirthDayReminder", verifyAccessTokenAdmin, Controller.getBirth
 _router.post("/getAnniversaryReminder", verifyAccessTokenAdmin, Controller.getAnniversaryReminder);
 _router.post("/getCustomerOrderPending", verifyAccessTokenAdmin, Controller.getCustomerOrderPending);
 _router.post("/getEyeTestingReminder", verifyAccessTokenAdmin, Controller.getEyeTestingReminder);
+_router.post("/getFeedBackReminder", verifyAccessTokenAdmin, Controller.getFeedBackReminder);
+_router.post("/getServiceMessageReminder", verifyAccessTokenAdmin, Controller.getServiceMessageReminder);
 _router.post("/getSolutionExpiryReminder", verifyAccessTokenAdmin, Controller.getSolutionExpiryReminder);
 _router.post("/getContactLensExpiryReminder", verifyAccessTokenAdmin, Controller.getContactLensExpiryReminder);
 
