@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Form</title>
     <style>
-
+      html body {
+ zoom:100%;
+}
         .row1 {
             width: 100%;
             height: 30px;
@@ -30,7 +32,7 @@
         .row3 {
             border-bottom: 1px solid #000;
             width: 100%;
-            height: 30px;
+            height: 50px;
         }
         .row3 .col1 {
             width: 44%;
@@ -247,7 +249,7 @@
 
         .row11{
             width: 100%;
-            height: 80px;
+            height: 100px;
             padding-top: 5px;
         }
         .row11 .col1{
@@ -277,13 +279,13 @@
 </head>
 
 <body>
-    <header style="height: 85px;">
+    <header style="height: 120px;">
         <div class="row1">
             <h3>
                 <img src=<%=data.LogoURL%> width="15%" height="15%"> <br>
-                <%=data.shopdetails.Name%> 
+                <%=data.shopdetails.Name%> <br>  <spna style="font-size: 15px;padding: 0;margin: 0; font-weight: 500;"><%=data.shopdetails.Address%></spna>
             </h3>
-            <h6 style="font-size: 12px;padding: 0;margin: 0;"><%=data.shopdetails.Address%></h6>
+
         </div>
         <div class="row2">
             <h3 class="col1">
@@ -295,13 +297,13 @@
         </div>
     </header>
 
-    <section style="border: 1px solid #000; height: 950px; ">
+    <section style="border: 1px solid #000; height: 1150px; ">
         <div class="row3">
             <div class="col1">
                 <p><b style="padding-right: 5px;">Name:</b> <%=data.customer.Name%></p>
             </div>
             <div class="col2">
-                <p><b style="padding-right: 5px;">Contact No.</b> <%=data.customer.MobileNo1%></p>
+                <p><b style="padding-right: 5px;">Contact No.</b><%=data.customer.MobileNo1%></p>
             </div>
             <div class="col3">
                 <p><b style="padding-right: 5px;">Dated</b> <%=data.billMaster.BillDate%></p>
@@ -450,59 +452,59 @@
     </div>
         <div class="row3" style=" border-bottom: 1px solid #000; border-bottom-style: dashed; ">
             <div class="col3" style="text-align: right;">
-                <p>
+                <p >
                     <b>FOR iFrame</b></p>
             </div>
         </div>
         <div class="row11">
             <div class="col1">
-                <p><img src=<%=data.LogoURL%> width="15%" height="15%"> <br>  <%=data.shopdetails.Name%></p>
-                <!-- <p style="font-size: 9px;">BRANCH LOCATION : <%=data.Shop.Address%></p> -->
+                <p style="font-size:20px !important;"><img src=<%=data.LogoURL%> width="20%" height="15%"> <br>  <%=data.shopdetails.Name%></p>
+                <!-- <p style="font-size: 12px;">BRANCH LOCATION : <%=data.Shop.Address%></p> -->
                 <p >BRANCH LOCATION : <%=data.shopdetails.Address%></p>
             </div>
             <div class="col2" style="padding-top: 10px;">
-                <p>Rx ORDER SLIP</p>
+                <p style="font-size:20px !important">Rx ORDER SLIP</p>
             </div>
             <div class="col3" style="text-align: right;">
-                <P>Job No. <%=data.billMaster.InvoiceNo%></P>
-                <P>Order Dated <%=data.billMaster.DeliveryDate%></P>
+                <P style="font-size:20px !important">Job No. <%=data.billMaster.InvoiceNo%></P>
+                <P style="font-size:20px !important">Order Dated <%=data.billMaster.DeliveryDate%></P>
             </div>
         </div>
         <div class="row3">
             <div class="col1">
-                <p><b style="padding-right: 5px;">Name:</b> <%=data.customer.Name%></p>
+                <p style="font-size:20px !important"><b style="padding-right: 5px;">Name:</b> <%=data.customer.Name%></p>
             </div>
             <div class="col2">
-                <p><b style="padding-right: 5px;">Contact No.</b> <%=data.customer.MobileNo1%></p>
+                <p style="font-size:20px !important"><b style="padding-right: 5px;">Contact No.</b> <%=data.customer.MobileNo1%></p>
             </div>
             <div class="col3">
-                <p><b style="padding-right: 5px;">Delivery Date</b> <%=data.billMaster.BillDate%></p>
+                <p style="font-size:20px !important"><b style="padding-right: 5px;">Delivery Date</b> <%=data.billMaster.BillDate%></p>
             </div>
         </div>
         <div class="row3">
             <div class="col1">
-                <p><b>Total Amount </b> <%=data.billMaster.TotalAmount%></p>
+                <p style="font-size:20px !important"><b>Total Amount </b> <%=data.billMaster.TotalAmount%></p>
             </div>
             <div class="col2">
-                <p><b>Paid Amount </b> <%=data.recivePayment%></p>
+                <p style="font-size:20px !important"><b>Paid Amount </b> <%=data.recivePayment%></p>
             </div>
             <div class="col3">
-                <p><b>Balance Amount </b> <%=data.billMaster.DueAmount%></p>
+                <p style="font-size:20px !important"><b>Balance Amount </b> <%=data.billMaster.DueAmount%></p>
             </div>
         </div>
         <div class="row3" style="border: none;">
             <div class="col1">
-                <p><b>Remark</b></p>
+                <p style="font-size:20px !important"><b>Remark</b></p>
             </div>
         </div>
         <div class="row3" >
             <div class="col3" style="text-align: right;">
-                <p><b>FOR iFrame</b></p>
+                <p style="font-size:20px !important"><b>FOR iFrame</b></p>
             </div>
         </div>
         <div class="row3" style="border: none;">
             <div>
-                <p>*Goods must be claimed within 3 months offer which the company will not be responsible for the same.</p>
+                <p style="font-size:20px !important">*Goods must be claimed within 3 months offer which the company will not be responsible for the same.</p>
             </div>
         </div>
     </section>
