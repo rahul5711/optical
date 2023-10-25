@@ -726,7 +726,7 @@ export class BillComponent implements OnInit {
             }
 
             this.prodList.forEach((e: any) => {
-              if (e.ID === this.searchList.ProductTypeID) {
+              if (e.Name === this.searchList.ProductTypeName) {
                 this.BillItem.ProductTypeID = e.ID;
                 this.BillItem.ProductTypeName = e.Name;
                 this.BillItem.HSNCode = e.HSNCode;
