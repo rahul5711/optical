@@ -57,10 +57,7 @@ export class CustomerPowerCalculationService {
       CvalidateAndHandlePLANO(clens, 'L_Addition');
 
       // right spectacle calculate start
-      if (x === 'CDR') {
-        spectacle.RENPCYL = spectacle.REDPCYL;
-        spectacle.RENPAxis = spectacle.REDPAxis;
-      }
+
       if (x === 'RD') {
         if (spectacle.R_Addition !== '') {
 
@@ -121,6 +118,12 @@ export class CustomerPowerCalculationService {
           spectacle.R_Addition = ''
         }
       }
+      // copy cyl or axis 
+      if (x === 'CDR') {
+        spectacle.RENPCYL = spectacle.REDPCYL;
+        spectacle.RENPAxis = spectacle.REDPAxis;
+      }
+      // copy cyl or axis 
       // right spectacle calculate end
       // left spectacle calculate start
       if (x === 'LD') {
@@ -183,8 +186,13 @@ export class CustomerPowerCalculationService {
           spectacle.L_Addition = ''
         }
       }
+      // copy cyl or axis 
+      if (x === 'CDL') {
+        spectacle.LENPCYL = spectacle.LEDPCYL;
+        spectacle.LENPAxis = spectacle.LEDPAxis;
+      }
+      // copy cyl or axis 
       // left spectacle calculate end
-
     }
     else {
       // right contact calculate end
@@ -248,6 +256,12 @@ export class CustomerPowerCalculationService {
           clens.R_Addition = ''
         }
       }
+      // copy cyl or axis 
+      if (x === 'CoDL') {
+        clens.RENPCYL = clens.REDPCYL;
+        clens.RENPAxis = clens.REDPAxis;
+      }
+      // copy cyl or axis      
       // right contact calculate end
       // left contact calculate start
       if (x === 'CLD' && y === 0) {
@@ -311,6 +325,12 @@ export class CustomerPowerCalculationService {
           clens.L_Addition = ''
         }
       }
+      // copy cyl or axis 
+      if (x === 'CoDR') {
+        clens.LENPCYL = clens.LEDPCYL;
+        clens.LENPAxis = clens.LEDPAxis;
+      }
+      // copy cyl or axis        
       // left contact calculate end
     }
   }

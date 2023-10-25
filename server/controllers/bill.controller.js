@@ -1640,7 +1640,12 @@ module.exports = {
             const User = req.body.User;
             const Customer = req.body.customer;
             const BillMaster = req.body.billMaster;
+
             req.body.billItemList = req.body.billItemList.filter((element) => {
+                return element.Status !== 0;
+            });
+
+            req.body.serviceList = req.body.serviceList.filter((element) => {
                 return element.Status !== 0;
             });
 
@@ -1651,7 +1656,6 @@ module.exports = {
                 }
             });
             printdata.EyeMeasurement = x[0];
-            console.log(printdata.EyeMeasurement);
             const BillItemList = req.body.billItemList;
             const ServiceList = req.body.serviceList;
             const PaidList = req.body.paidList;
@@ -1695,7 +1699,14 @@ module.exports = {
             printdata.employee = Employee[0].Name
             printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
             // printdata.welcomeNoteCompany = printdata.companyWelComeNote.filter(ele => ele.NoteType === "retail");
-            printdata.recivePayment = printdata.paidlist.reduce((total, element) => total + element.Amount, 0);
+            printdata.recivePayment = printdata.paidlist.reduce((total, e) => {
+                if (e.Type === 'Credit') {
+                    return total + e.Amount;
+                } else {
+                    return total - e.Amount;
+                }
+            }, 0);
+
             printdata.CurrentInvoiceBalance = printdata.unpaidlist.length > 0 ? printdata.unpaidlist[0].DueAmount : 0;
             printdata.DueAmount = printdata.unpaidlist.reduce((total, item) => total + item.DueAmount, 0);
             printdata.SavedDiscount = printdata.billMaster.DiscountAmount + printdata.billMaster.AddlDiscount
@@ -1792,6 +1803,29 @@ module.exports = {
             const BillItemList = req.body.billItemList;
             const PaidList = req.body.paidList;
             const UnpaidList = req.body.unpaidList;
+            
+            const [billformate] = await mysql2.pool.query(`select * from billformate where CompanyID = ${CompanyID}`)
+            printdata.billformate = billformate[0]
+            printdata.BillHeader = `${Number(printdata.billformate.BillHeader)}`;
+            printdata.Color = printdata.billformate.Color;
+            printdata.ShopNameBold = `${Number(printdata.billformate.ShopNameBold)}`;
+            printdata.HeaderWidth = `${Number(printdata.billformate.HeaderWidth)}px`;
+            printdata.HeaderHeight = `${Number(printdata.billformate.HeaderHeight)}px`;
+            printdata.HeaderPadding = `${Number(printdata.billformate.HeaderPadding)}px`;
+            printdata.HeaderMargin = `${Number(printdata.billformate.HeaderMargin)}px`;
+            printdata.ImageWidth = `${Number(printdata.billformate.ImageWidth)}px`;
+            printdata.ImageHeight = `${Number(printdata.billformate.ImageHeight)}px`;
+            printdata.ImageAlign = printdata.billformate.ImageAlign;
+            printdata.ShopNameFont = `${Number(printdata.billformate.ShopNameFont)}px`;
+            printdata.ShopDetailFont = `${Number(printdata.billformate.ShopDetailFont)}px`;
+            printdata.LineSpace = `${Number(printdata.billformate.LineSpace)}px`;
+            printdata.CustomerFont = `${Number(printdata.billformate.CustomerFont)}px`;
+            printdata.CustomerLineSpace = `${Number(printdata.billformate.CustomerLineSpace)}px`;
+            printdata.TableHeading = `${Number(printdata.billformate.TableHeading)}px`;
+            printdata.TableBody = `${Number(printdata.billformate.TableBody)}px`;
+            printdata.NoteFont = `${Number(printdata.billformate.NoteFont)}px`;
+            printdata.NoteLineSpace = `${Number(printdata.billformate.NoteLineSpace)}px`;
+            printdata.billformate = billformate[0]
 
             printdata.company = Company
             printdata.companysetting = CompanySetting
@@ -1883,6 +1917,29 @@ module.exports = {
             printdata.paidlist = PaidList
             printdata.unpaidlist = UnpaidList
             printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
+
+            const [billformate] = await mysql2.pool.query(`select * from billformate where CompanyID = ${CompanyID}`)
+            printdata.billformate = billformate[0]
+            printdata.BillHeader = `${Number(printdata.billformate.BillHeader)}`;
+            printdata.Color = printdata.billformate.Color;
+            printdata.ShopNameBold = `${Number(printdata.billformate.ShopNameBold)}`;
+            printdata.HeaderWidth = `${Number(printdata.billformate.HeaderWidth)}px`;
+            printdata.HeaderHeight = `${Number(printdata.billformate.HeaderHeight)}px`;
+            printdata.HeaderPadding = `${Number(printdata.billformate.HeaderPadding)}px`;
+            printdata.HeaderMargin = `${Number(printdata.billformate.HeaderMargin)}px`;
+            printdata.ImageWidth = `${Number(printdata.billformate.ImageWidth)}px`;
+            printdata.ImageHeight = `${Number(printdata.billformate.ImageHeight)}px`;
+            printdata.ImageAlign = printdata.billformate.ImageAlign;
+            printdata.ShopNameFont = `${Number(printdata.billformate.ShopNameFont)}px`;
+            printdata.ShopDetailFont = `${Number(printdata.billformate.ShopDetailFont)}px`;
+            printdata.LineSpace = `${Number(printdata.billformate.LineSpace)}px`;
+            printdata.CustomerFont = `${Number(printdata.billformate.CustomerFont)}px`;
+            printdata.CustomerLineSpace = `${Number(printdata.billformate.CustomerLineSpace)}px`;
+            printdata.TableHeading = `${Number(printdata.billformate.TableHeading)}px`;
+            printdata.TableBody = `${Number(printdata.billformate.TableBody)}px`;
+            printdata.NoteFont = `${Number(printdata.billformate.NoteFont)}px`;
+            printdata.NoteLineSpace = `${Number(printdata.billformate.NoteLineSpace)}px`;
+            printdata.billformate = billformate[0]
 
             let total = 0;
             printdata.paidlist.forEach(ee => {

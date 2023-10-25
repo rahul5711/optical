@@ -121,7 +121,7 @@ export class PurchaseComponent implements OnInit {
     this.sp.show();
     const subs: Subscription = this.purchaseService.getPurchaseById(this.id).subscribe({
       next: (res: any) => {
-        if (res.success) {
+        if (res.success === true) {
           this.selectedPurchaseMaster = res.result.PurchaseMaster[0]
           this.selectedPurchaseMaster.PurchaseDate = moment(res.result.PurchaseMaster[0].PurchaseDate).format('YYYY-MM-DD')
           this.itemList = res.result.PurchaseDetail
@@ -758,37 +758,22 @@ export class PurchaseComponent implements OnInit {
   }
 
   calculateFields1(fieldName: any, mode: any, data: any) {
-    if(data.GSTType === 'None'){
-      if(data.GSTPercentage != 0){
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: 'Without GSTType the selected value will not be saved ',
-          showConfirmButton: true,
-          backdrop: false,
-        })
-        data.UpdateProduct = true
-      }
-    } 
-    if(data.GSTPercentage === 0){
-      if(data.GSTType != 'None'){
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: 'Without GSTType the selected value will not be saved ',
-          showConfirmButton: true,
-          backdrop: false,
-        })
-        data.UpdateProduct = true
-      }
-    }
     this.calculation.calculateFields(fieldName, mode, data, '')
   }
 
-
-
   updataEditProdcut(fieldName: any, mode: any, data: any) {
-    
+
+    if ((data.GSTType === 'None' && data.GSTPercentage !== 0) || (data.GSTPercentage === 0 && data.GSTType !== 'None')) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Without GSTType, the selected value will not be saved',
+        showConfirmButton: true,
+        backdrop: false,
+      })
+      data.UpdateProduct = true
+    }else{
+      this.sp.show()
       this.calculateFields1(fieldName, mode, data)
       this.calculateGrandTotal();
       data.BrandType = Number(data.BrandType)
@@ -815,10 +800,13 @@ export class PurchaseComponent implements OnInit {
               this.getPurchaseById()
           }
           this.disbaleupdate = false
+          this.sp.hide()
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
+    }
+
   }
 
   PurchaseDetailPDF() {

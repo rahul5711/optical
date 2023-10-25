@@ -281,8 +281,9 @@
         <div class="row1">
             <h3>
                 <img src=<%=data.LogoURL%> width="15%" height="15%"> <br>
-                <%=data.shopdetails.Name%>
+                <%=data.shopdetails.Name%> 
             </h3>
+            <h6 style="font-size: 12px;padding: 0;margin: 0;"><%=data.shopdetails.Address%></h6>
         </div>
         <div class="row2">
             <h3 class="col1">
@@ -457,7 +458,7 @@
             <div class="col1">
                 <p><img src=<%=data.LogoURL%> width="15%" height="15%"> <br>  <%=data.shopdetails.Name%></p>
                 <!-- <p style="font-size: 9px;">BRANCH LOCATION : <%=data.Shop.Address%></p> -->
-                <p >BRANCH LOCATION : ABCDZXYK</p>
+                <p >BRANCH LOCATION : <%=data.shopdetails.Address%></p>
             </div>
             <div class="col2" style="padding-top: 10px;">
                 <p>Rx ORDER SLIP</p>

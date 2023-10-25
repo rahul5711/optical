@@ -105,3 +105,8 @@ button:hover {
     background-color: #dfdfdf;
     color: #202020;
 }
+
+.my_class {
+    background-color: #1e2672;
+    color: #fff;
+}

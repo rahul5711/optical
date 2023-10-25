@@ -708,7 +708,7 @@
                                     {{data.GSTType}}</td>
 
                                 <td *ngIf="data.UpdateProduct  && this.loginShop?.GSTnumber === 'true'">
-                                    <select *ngIf="data.GSTPercentage == 0 " class="inputselectWidth" name="GSTType"
+                                    <select *ngIf="data.GSTPercentage === 0 " class="inputselectWidth" name="GSTType"
                                         [(ngModel)]="data.GSTType" #name="ngModel"
                                         (change)="updataEditProdcut('','',data)" [ngModelOptions]="{standalone: true}"
                                         name="data{{i}}">

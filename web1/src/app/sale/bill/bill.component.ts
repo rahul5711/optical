@@ -2076,35 +2076,21 @@ export class BillComponent implements OnInit {
   }
 
   calculateFields1(fieldName: any, mode: any, data: any) {
-  
    this.billCalculation.calculations(fieldName, mode, data, '')
   }
 
   updataEditProdcut(fieldName: any, mode: any, data: any){
-    if(data.GSTType === 'None'){
-      if(data.GSTPercentage != 0){
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: 'Without GSTType the selected value will not be saved ',
-          showConfirmButton: true,
-          backdrop: false,
-        })
-        data.UpdateProduct = true
-      }
-    } 
-   if(data.GSTPercentage === 0){
-      if(data.GSTType != 'None'){
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: 'Without GSTType the selected value will not be saved ',
-          showConfirmButton: true,
-          backdrop: false,
-        })
-        data.UpdateProduct = true
-      }
-    }
+
+    if ((data.GSTType === 'None' && data.GSTPercentage !== 0) || (data.GSTPercentage === 0 && data.GSTType !== 'None')) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Without GSTType, the selected value will not be saved',
+        showConfirmButton: true,
+        backdrop: false,
+      })
+      data.UpdateProduct = true
+    }else{
       this.sp.show()
       this.calculateFields1(fieldName, mode, data)
       let totalPaid = 0
@@ -2128,6 +2114,9 @@ export class BillComponent implements OnInit {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
+    }
+
+
   }
   
   dateFormat(date:any){

@@ -20,9 +20,9 @@
     <section >
         <%- include('./header.ejs', {pageNumber: 1}) %>
         <div style="height: 10px;">
-            <div style="border-bottom: 1px solid; width: 38%; position:absolute; margin-top: 1%;"> </div>
-            <div style="border-bottom: 1px solid; width: 38%; float: right; position: relative; margin-top: 1%;"></div>
-            <span class="headingName">Order Form</span>
+            <div <% %> style="border-bottom: 1px solid <%= data.Color %>; width: 38%; position:absolute; margin-top: 1%;"> </div>
+            <div <% %> style="border-bottom: 1px solid <%= data.Color %>; width: 38%; float: right; position: relative; margin-top: 1%;"></div>
+            <span class="headingName" <% %> style="color: <%= data.Color %>;">Order Form</span>
          </div>
     </section>
  
