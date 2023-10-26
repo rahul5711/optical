@@ -55,6 +55,7 @@ export class PreOrderComponent implements OnInit {
   };
 
   data:any = { PurchaseMaster: null,  PurchaseDetail: null };
+  GstTypeDis = false
 
   id: any;
   supplierList:any;
@@ -330,6 +331,20 @@ export class PreOrderComponent implements OnInit {
 
   addItem(){
     if (this.category === 'Product'){
+
+      if ((this.item.GSTType === 'None' && this.item.GSTPercentage !== 0) || (this.item.GSTPercentage === 0 && this.item.GSTType !== 'None') || (this.item.GSTPercentage === null && this.item.GSTType !== 'None')) {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Without GSTType, the selected value will not be saved',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        this.GstTypeDis = true
+      }else{
+
+     
+
       if (this.selectedPurchaseMaster.ID !== null){this.item.Status = 2; }
         this.item.ProductName = "";
         this.item.ProductTypeID = "";
@@ -395,6 +410,7 @@ export class PreOrderComponent implements OnInit {
     }
     this.calculateGrandTotal();
   }
+}
 
   notifyGst() {
     if(this.item.GSTPercentage !== 0 && this.item.GSTPercentage !== "0") {

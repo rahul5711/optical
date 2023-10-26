@@ -257,47 +257,16 @@ export class AddManageComponent implements OnInit {
   }
 
   chargesave(){
-    if(this.selectedRow.GSTPercentage !== 0){
-       if(this.selectedRow.GSTType === 'None'){
-        Swal.fire({
-          icon: 'warning',
-          title: `Pls Select GSTType.`,
-          text: ``,
-          footer: '',
-          backdrop: false,
-        });
-        this.showAddCharge = true
-       }else{
-        this.sp.show()
-        const subs: Subscription =  this.supps.chargesave( this.selectedRow).subscribe({
-          next: (res: any) => {
-            if (res.success) {
-              this.resetData();
-              this.chargelist();
-              Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'Your file has been Save.',
-                showConfirmButton: false,
-                timer: 1200
-              }) 
-            } else {
-              Swal.fire({
-                icon: 'error',
-                title: 'Duplicate or Empty Values are not allowed',
-                text: '',
-                footer: ''
-              }); 
-              this.as.errorToast(res.message)
-            }
-            this.sp.hide()
-          },
-          error: (err: any) => {
-            console.log(err.msg);
-          },
-          complete: () => subs.unsubscribe(),
-        });
-       }
+
+    if ((this.selectedRow.GSTType === 'None' && this.selectedRow.GSTPercentage !== 0) || (this.selectedRow.GSTPercentage === 0 && this.selectedRow.GSTType !== 'None') || (this.selectedRow.GSTPercentage === null && this.selectedRow.GSTType !== 'None')) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Without GSTType, the selected value will not be saved',
+        showConfirmButton: true,
+        backdrop: false,
+      })
+      this.showAddCharge = true
      }else{
       this.sp.show()
       const subs: Subscription =  this.supps.chargesave( this.selectedRow).subscribe({
@@ -463,48 +432,16 @@ export class AddManageComponent implements OnInit {
   }
 
   servicesave(){
-    if(this.Service.GSTPercentage !== 0){
-       if(this.Service.GSTType === 'None'){
-        Swal.fire({
-          icon: 'warning',
-          title: `Pls Select GSTType.`,
-          text: ``,
-          footer: '',
-          backdrop: false,
-        });
-        this.showAddService = true
-       }else{
-        this.sp.show();
-        const subs: Subscription =  this.supps.servicesave(this.Service).subscribe({
-          next: (res: any) => {
-            // this.serviceList = res.result;
-            if (res.success) {
-              this.serviceresetData();
-              this.servicelist();
-              Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'Your file has been Save.',
-                showConfirmButton: false,
-                timer: 1200
-              }) 
-            } else {
-              Swal.fire({
-                icon: 'error',
-                title: 'Duplicate or Empty Values are not allowed',
-                text: '',
-                footer: ''
-              }); 
-              this.as.errorToast(res.message)
-            }
-            this.sp.hide()
-          },
-          error: (err: any) => {
-            console.log(err.msg);
-          },
-          complete: () => subs.unsubscribe(),
-        });
-      }
+
+    if ((this.Service.GSTType === 'None' && this.Service.GSTPercentage !== 0) || (this.Service.GSTPercentage === 0 && this.Service.GSTType !== 'None') || (this.Service.GSTPercentage == null && this.Service.GSTType !== 'None')) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Without GSTType, the selected value will not be saved',
+        showConfirmButton: true,
+        backdrop: false,
+      })
+      this.showAddService = true
     }else{
       this.sp.show();
       const subs: Subscription =  this.supps.servicesave(this.Service).subscribe({

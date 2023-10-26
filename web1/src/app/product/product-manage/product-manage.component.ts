@@ -69,93 +69,73 @@ export class ProductManageComponent implements OnInit {
     this.getProductList();
   }
 
-  gstType() {
-    if (this.newProduct.GSTPercentage !== 0 ) {
-      if (this.newProduct.GSTType === 'None') {
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: 'Please Select GSTType',
-          showConfirmButton: true,
-          backdrop: false,
-        })
-        this.GstTypeDis = true
-      }else{
-       this.GstTypeDis = false
-      }
-    }
-
-  else if (this.newProduct.GSTType !== 'None') {
-      if (this.newProduct.GSTPercentage === 0) {
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: 'Please Select GSTType',
-          showConfirmButton: true,
-          backdrop: false,
-        })
-        this.GstTypeDis = true
-      }else{
-       this.GstTypeDis = false
-      }
-    }
-    else{
-      this.GstTypeDis = false
-    }
-  }
+  
 
   saveProduct() {
-    this.sp.show()
-    let count = 0;
-    this.prodList.forEach((element: { Name: string; }) => {
-      if (element.Name.toLowerCase() === this.newProduct.Name.toLowerCase().trim()) { count = count + 1; }
-    });
-
-    if (this.newProduct.Name !== '') {
-      const subs: Subscription = this.ps.productSave(this.newProduct).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.ps.getList().subscribe(data => {
-              this.prodList = data.data;
-              if (this.selectedProduct !== null || this.selectedProduct !== '') {
-                this.ps.getSpec(this.selectedProduct).subscribe(data => {
-                  this.specList = data.data;
-                });
-              }
-              Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'Your file has been Save.',
-                showConfirmButton: false,
-                timer: 1200
-              })
-            });
-           
-          } else {
-            this.as.errorToast(res.message)
-            Swal.fire({
-              icon: 'error',
-              title: res.message,
-              showConfirmButton: true,
-              backdrop: false
-            });
-          }
-          this.sp.hide()
-        },
-        error: (err: any) => {
-          console.log(err.msg);
-        },
-        complete: () => subs.unsubscribe(),
-      });
-    } else {
-      this.sp.hide()
+    if ((this.newProduct.GSTType === 'None' && this.newProduct.GSTPercentage !== 0) || (this.newProduct.GSTPercentage === 0 && this.newProduct.GSTType !== 'None') || (this.newProduct.GSTPercentage === null && this.newProduct.GSTType !== 'None')) {
       Swal.fire({
-        icon: 'error',
-        title: ' Empty Values are not allowed',
-        backdrop: false
+        position: 'center',
+        icon: 'warning',
+        title: 'Without GSTType, the selected value will not be saved',
+        showConfirmButton: true,
+        backdrop: false,
+      })
+      this.GstTypeDis = false
+      this.showAdd = true
+    }else{
+      this.sp.show()
+      let count = 0;
+      this.prodList.forEach((element: { Name: string; }) => {
+        if (element.Name.toLowerCase() === this.newProduct.Name.toLowerCase().trim()) { count = count + 1; }
       });
-      this.newProduct.Name = "";
+  
+      if (this.newProduct.Name !== '') {
+        const subs: Subscription = this.ps.productSave(this.newProduct).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.ps.getList().subscribe(data => {
+                this.prodList = data.data;
+                if (this.selectedProduct !== null || this.selectedProduct !== '') {
+                  this.ps.getSpec(this.selectedProduct).subscribe(data => {
+                    this.specList = data.data;
+                  });
+                }
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Your file has been Save.',
+                  showConfirmButton: false,
+                  timer: 1200
+                })
+              });
+             
+            } else {
+              this.as.errorToast(res.message)
+              Swal.fire({
+                icon: 'error',
+                title: res.message,
+                showConfirmButton: true,
+                backdrop: false
+              });
+            }
+            this.sp.hide()
+          },
+          error: (err: any) => {
+            console.log(err.msg);
+          },
+          complete: () => subs.unsubscribe(),
+        });
+      } else {
+        this.sp.hide()
+        Swal.fire({
+          icon: 'error',
+          title: ' Empty Values are not allowed',
+          backdrop: false
+        });
+        this.newProduct.Name = "";
+      }
     }
+ 
 
   }
 
@@ -252,35 +232,47 @@ export class ProductManageComponent implements OnInit {
 
 
   updateProductType() {
-    this.sp.show()
-    this.newProduct.ID = this.selectedProductID
-    const subs: Subscription = this.ps.updateProduct(this.newProduct).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.getProductList();
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Your file has been update Product.',
-            showConfirmButton: false,
-            timer: 1200
-          })
-          this.specList = []
-          this.selectedProduct = '';
-          this.selectedHSNCode = '';
-          this.selectedGSTPercentage = 0;
-          this.selectedGSTType = '';
-          this.modalService.dismissAll()
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => {
-        console.log(err.msg);
-      },
-      complete: () => subs.unsubscribe(),
-    });
+    if ((this.newProduct.GSTType === 'None' && this.newProduct.GSTPercentage !== 0) || (this.newProduct.GSTPercentage === 0 && this.newProduct.GSTType !== 'None') || (this.newProduct.GSTPercentage === null && this.newProduct.GSTType !== 'None')) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Without GSTType, the selected value will not be saved',
+        showConfirmButton: true,
+        backdrop: false,
+      })
+      this.GstTypeDis = false
+    }else{
+      this.sp.show()
+      this.newProduct.ID = this.selectedProductID
+      const subs: Subscription = this.ps.updateProduct(this.newProduct).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.getProductList();
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been update Product.',
+              showConfirmButton: false,
+              timer: 1200
+            })
+            this.specList = []
+            this.selectedProduct = '';
+            this.selectedHSNCode = '';
+            this.selectedGSTPercentage = 0;
+            this.selectedGSTType = '';
+            this.modalService.dismissAll()
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => {
+          console.log(err.msg);
+        },
+        complete: () => subs.unsubscribe(),
+      });
+    }
+ 
   }
 
   saveSpec() {

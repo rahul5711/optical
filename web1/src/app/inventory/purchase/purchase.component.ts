@@ -366,6 +366,18 @@ export class PurchaseComponent implements OnInit {
   addItem() {
 
     if (this.category === 'Product') {
+      if ((this.item.GSTType === 'None' && this.item.GSTPercentage !== 0) || (this.item.GSTPercentage === 0 && this.item.GSTType !== 'None') || (this.item.GSTPercentage === null && this.item.GSTType !== 'None')) {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Without GSTType, the selected value will not be saved',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        this.GstTypeDis = true
+      }else{
+
+   
       if (this.selectedPurchaseMaster.ID !== null) { this.item.Status = 2; }
       this.item.ProductName = "";
       this.item.ProductTypeID = ""
@@ -458,30 +470,28 @@ export class PurchaseComponent implements OnInit {
         }
       });
 
+      }
     }
     if (this.category === 'Charges') {
+
+      if ((this.charge.GSTType === 'None' && this.charge.GSTPercentage !== 0) || (this.charge.GSTPercentage === 0 && this.charge.GSTType !== 'None') || (this.charge.GSTPercentage === null && this.charge.GSTType !== 'None')) {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Without GSTType, the selected value will not be saved',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        this.GstTypeDis = true
+      }else{
       if (this.selectedPurchaseMaster.ID !== null) { this.charge.Status = 2; }
       this.charge.ID = null;
-
 
       this.chargeOptions.forEach((ele: any) => {
         if (ele.ID !== null) {
           this.charge.ChargeType = ele.Name
         }
       });
-
-      if (this.charge.GSTPercentage === 0 || this.charge.GSTAmount === 0) {
-        this.charge.GSTType = 'None'
-        this.GstTypeDis = false
-      } else if (this.charge.GSTType !== 'None') {
-        if (this.charge.GSTPercentage === 0 || this.charge.GSTAmount === 0) {
-          this.GstTypeDis = false
-        } 
-      }else if (this.charge.GSTType === 'None') {
-        if (this.charge.GSTPercentage !== 0 || this.charge.GSTAmount !== 0) {
-          this.GstTypeDis = false
-        }
-      }
 
       this.chargeList.push(this.charge);
       this.charge = {
@@ -491,7 +501,7 @@ export class PurchaseComponent implements OnInit {
     }
     this.calculateGrandTotal();
   }
-
+}
   notifyGst() {
     if (this.item.GSTPercentage !== 0 && this.item.GSTPercentage !== "0") {
       if (this.item.GSTType === 'None') {
