@@ -2144,18 +2144,18 @@ export class BillComponent implements OnInit {
 
     
     const subs: Subscription = this.bill.billPrint(this.body).subscribe({
-      next: (res: any) => {
+      next: async (res: any) => {
         if(res){
           if (mode === "Invoice") {
             this.BillMaster.Invoice = res;
-            const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
-            this.BillLink = url
-            window.open(url, "_blank")
+            // const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
+            this.BillLink = this.BillMaster.Invoice
+            window.open(this.BillLink, "_blank")
           } else if (mode === "Receipt") {
             this.BillMaster.Receipt = res;
-            const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt;
-            this.BillLink = url
-            window.open(url, "_blank");
+            // const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt;
+            this.BillLink =  this.BillMaster.Receipt
+            window.open(this.BillLink, "_blank");
           }
 
         }else{

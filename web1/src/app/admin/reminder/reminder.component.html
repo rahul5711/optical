@@ -29,7 +29,7 @@
 
                                     <mat-tab label="Customer" >
                                         <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
-                                            <table class="table  ">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
                                                 <thead class="thead-light">
                                                     <tr>
                                                         <th>Action</th>
@@ -42,14 +42,14 @@
                                                 <tbody>
                                                     <tr *ngFor=" let c of bdayList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i class="fa-brands fa-whatsapp fa-2xl whatsappIocn"></i> 
-                                                            <i class="fa-solid fa-comment-sms fa-2xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
-                                                            <i class="fa-regular fa-envelope fa-2xl emailIocn"></i>
+                                                            <i class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
                                                         <td>{{bdayList.length - i }}</td>
                                                         <td>{{c.Name}}</td>
                                                         <td>{{c.MobileNo1}}</td>
-                                                        <td>{{c.DOB}}</td>
+                                                        <td>{{dateFormat(c.DOB)}}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -58,7 +58,7 @@
                                     </mat-tab>
                                     <mat-tab label="Supplier">
                                         <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
-                                            <table class="table  ">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
                                                 <thead class="thead-light">
                                                     <tr>
                                                         <th>Action</th>
@@ -71,14 +71,14 @@
                                                 <tbody>
                                                     <tr *ngFor=" let s of bdayList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i class="fa-brands fa-whatsapp fa-2xl whatsappIocn"></i> 
-                                                            <i class="fa-solid fa-comment-sms fa-2xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
-                                                            <i class="fa-regular fa-envelope fa-2xl emailIocn"></i>
+                                                            <i class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
                                                         <td>{{bdayList.length - i }}</td>
                                                         <td>{{s.Name}}</td>
                                                         <td>{{s.MobileNo1}}</td>
-                                                        <td>{{s.DOB}}</td>
+                                                        <td>{{dateFormat(s.DOB)}}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -86,7 +86,7 @@
                                     </mat-tab>
                                     <mat-tab label="Employee">
                                         <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
-                                            <table class="table  ">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
                                                 <thead class="thead-light">
                                                     <tr>
                                                         <th>Action</th>
@@ -99,14 +99,14 @@
                                                 <tbody>
                                                     <tr *ngFor=" let e of bdayList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i class="fa-brands fa-whatsapp fa-2xl whatsappIocn"></i> 
-                                                            <i class="fa-solid fa-comment-sms fa-2xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
-                                                            <i class="fa-regular fa-envelope fa-2xl emailIocn"></i>
+                                                            <i class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
                                                         <td>{{bdayList.length - i }}</td>
                                                         <td>{{e.Name}}</td>
                                                         <td>{{e.MobileNo1}}</td>
-                                                        <td>{{e.DOB}}</td>
+                                                        <td>{{dateFormat(e.DOB)}}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -114,7 +114,7 @@
                                     </mat-tab>
                                     <mat-tab label="Fitter">
                                         <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
-                                            <table class="table  ">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
                                                 <thead class="thead-light">
                                                     <tr>
                                                         <th>Action</th>
@@ -127,14 +127,14 @@
                                                 <tbody>
                                                     <tr *ngFor=" let f of bdayList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i class="fa-brands fa-whatsapp fa-2xl whatsappIocn"></i> 
-                                                            <i class="fa-solid fa-comment-sms fa-2xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
-                                                            <i class="fa-regular fa-envelope fa-2xl emailIocn"></i>
+                                                            <i class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
                                                         <td>{{bdayList.length - i }}</td>
                                                         <td>{{f.Name}}</td>
                                                         <td>{{f.MobileNo1}}</td>
-                                                        <td>{{f.DOB}}</td>
+                                                        <td>{{dateFormat(f.DOB)}}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -142,7 +142,7 @@
                                     </mat-tab>
                                     <mat-tab label="Doctor">
                                         <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
-                                            <table class="table  ">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
                                                 <thead class="thead-light">
                                                     <tr>
                                                         <th>Action</th>
@@ -155,14 +155,14 @@
                                                 <tbody>
                                                     <tr *ngFor=" let d of bdayList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i class="fa-brands fa-whatsapp fa-2xl whatsappIocn"></i> 
-                                                            <i class="fa-solid fa-comment-sms fa-2xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
-                                                            <i class="fa-regular fa-envelope fa-2xl emailIocn"></i>
+                                                            <i class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
                                                         <td>{{bdayList.length - i }}</td>
                                                         <td>{{d.Name}}</td>
                                                         <td>{{d.MobileNo1}}</td>
-                                                        <td>{{d.DOB}}</td>
+                                                        <td>{{dateFormat(d.DOB)}}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -188,7 +188,7 @@
 
                                     <mat-tab label="Customer" >
                                         <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
-                                            <table class="table  ">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
                                                 <thead class="thead-light">
                                                     <tr>
                                                         <th>Action</th>
@@ -201,14 +201,14 @@
                                                 <tbody>
                                                     <tr *ngFor=" let c of AnniversaryList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i class="fa-brands fa-whatsapp fa-2xl whatsappIocn"></i> 
-                                                            <i class="fa-solid fa-comment-sms fa-2xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
-                                                            <i class="fa-regular fa-envelope fa-2xl emailIocn"></i>
+                                                            <i class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
                                                         <td>{{AnniversaryList.length - i }}</td>
                                                         <td>{{c.Name}}</td>
                                                         <td>{{c.MobileNo1}}</td>
-                                                        <td>{{c.Anniversary}}</td>
+                                                        <td>{{dateFormat(c.Anniversary)}}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -217,7 +217,7 @@
                                     </mat-tab>
                                     <mat-tab label="Supplier">
                                         <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
-                                            <table class="table  ">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
                                                 <thead class="thead-light">
                                                     <tr>
                                                         <th>Action</th>
@@ -230,14 +230,14 @@
                                                 <tbody>
                                                     <tr *ngFor=" let s of AnniversaryList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i class="fa-brands fa-whatsapp fa-2xl whatsappIocn"></i> 
-                                                            <i class="fa-solid fa-comment-sms fa-2xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
-                                                            <i class="fa-regular fa-envelope fa-2xl emailIocn"></i>
+                                                            <i class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
                                                         <td>{{AnniversaryList.length - i }}</td>
                                                         <td>{{s.Name}}</td>
                                                         <td>{{s.MobileNo1}}</td>
-                                                        <td>{{s.Anniversary}}</td>
+                                                        <td>{{dateFormat(s.Anniversary)}}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -245,7 +245,7 @@
                                     </mat-tab>
                                     <mat-tab label="Employee">
                                         <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
-                                            <table class="table  ">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
                                                 <thead class="thead-light">
                                                     <tr>
                                                         <th>Action</th>
@@ -258,14 +258,14 @@
                                                 <tbody>
                                                     <tr *ngFor=" let e of AnniversaryList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i class="fa-brands fa-whatsapp fa-2xl whatsappIocn"></i> 
-                                                            <i class="fa-solid fa-comment-sms fa-2xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
-                                                            <i class="fa-regular fa-envelope fa-2xl emailIocn"></i>
+                                                            <i class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
                                                         <td>{{AnniversaryList.length - i }}</td>
                                                         <td>{{e.Name}}</td>
                                                         <td>{{e.MobileNo1}}</td>
-                                                        <td>{{e.Anniversary}}</td>
+                                                        <td>{{dateFormat(e.Anniversary)}}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -273,7 +273,7 @@
                                     </mat-tab>
                                     <mat-tab label="Fitter">
                                         <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
-                                            <table class="table  ">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
                                                 <thead class="thead-light">
                                                     <tr>
                                                         <th>Action</th>
@@ -286,14 +286,14 @@
                                                 <tbody>
                                                     <tr *ngFor=" let f of AnniversaryList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i class="fa-brands fa-whatsapp fa-2xl whatsappIocn"></i> 
-                                                            <i class="fa-solid fa-comment-sms fa-2xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
-                                                            <i class="fa-regular fa-envelope fa-2xl emailIocn"></i>
+                                                            <i class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
                                                         <td>{{AnniversaryList.length - i }}</td>
                                                         <td>{{f.Name}}</td>
                                                         <td>{{f.MobileNo1}}</td>
-                                                        <td>{{f.Anniversary}}</td>
+                                                        <td>{{dateFormat(f.Anniversary)}}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -301,7 +301,7 @@
                                     </mat-tab>
                                     <mat-tab label="Doctor">
                                         <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
-                                            <table class="table  ">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
                                                 <thead class="thead-light">
                                                     <tr>
                                                         <th>Action</th>
@@ -314,14 +314,14 @@
                                                 <tbody>
                                                     <tr *ngFor=" let d of AnniversaryList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i class="fa-brands fa-whatsapp fa-2xl whatsappIocn"></i> 
-                                                            <i class="fa-solid fa-comment-sms fa-2xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
-                                                            <i class="fa-regular fa-envelope fa-2xl emailIocn"></i>
+                                                            <i class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
                                                         <td>{{AnniversaryList.length - i }}</td>
                                                         <td>{{d.Name}}</td>
                                                         <td>{{d.MobileNo1}}</td>
-                                                        <td>{{d.Anniversary}}</td>
+                                                        <td> {{dateFormat(d.Anniversary)}}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -344,7 +344,7 @@
                                     </div>
                                 </div>
                                 <div class="col-12 " style="overflow: auto; height: 203px; margin-top: 15px;">
-                                <table class="table  ">
+                                <table class="table table-striped table-hover table-sm table-bordered">
                                     <thead class="thead-light">
                                         <tr>
                                             <th>Action</th>
@@ -358,15 +358,15 @@
                                     <tbody>
                                         <tr *ngFor=" let o of OrderPendingList; let i = index;">
                                             <td style=" width:25%;">
-                                                <i class="fa-brands fa-whatsapp fa-2xl whatsappIocn"></i> 
-                                                <i class="fa-solid fa-comment-sms fa-2xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
-                                                <i class="fa-regular fa-envelope fa-2xl emailIocn"></i>
+                                                <i class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                             </td>
                                             <td>{{OrderPendingList.length - i }}</td>
                                             <td>{{o.InvoiceNo}}</td>
                                             <td>{{o.Name}}</td>
                                             <td>{{o.MobileNo1}}</td>
-                                            <td>{{o.DeliveryDate}}</td>
+                                            <td>{{dateFormat(o.DeliveryDate)}}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -385,10 +385,11 @@
                                     <button (click)="EyeRange = 'Yesterday';getEyeTestingReminder()" [ngClass]="{'my_class': EyeRange === 'Yesterday'}" class="itme_button">Yesterday</button>
                                     <button (click)="EyeRange = 'Today';getEyeTestingReminder()" [ngClass]="{'my_class': EyeRange === 'Today'}" class="itme_button1 ms-2 me-2">Today</button>
                                     <button (click)="EyeRange = 'Tomorrow';getEyeTestingReminder()" [ngClass]="{'my_class': EyeRange === 'Tomorrow'}" class="itme_button2">Tomorrow</button>
-                                  </div>
+                                  
+                                </div>
                               </div>
                               <div class="col-12 " style="overflow: auto; height: 203px; margin-top: 15px;"> 
-                              <table class="table  ">
+                              <table class="table table-striped table-hover table-sm table-bordered">
                                   <thead class="thead-light">
                                       <tr>
                                           <th>Action</th>
@@ -401,14 +402,14 @@
                                   <tbody>
                                       <tr *ngFor=" let eye of EyeTestingList; let i = index;">
                                         <td style=" width:25%;">
-                                            <i class="fa-brands fa-whatsapp fa-2xl whatsappIocn"></i> 
-                                            <i class="fa-solid fa-comment-sms fa-2xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
-                                            <i class="fa-regular fa-envelope fa-2xl emailIocn"></i>
+                                            <i class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                         </td>
                                         <td>{{EyeTestingList.length - i }}</td>
                                         <td>{{eye.Name}}</td>
                                         <td>{{eye.MobileNo1}}</td>
-                                        <td>{{eye.DeliveryDate}}</td>
+                                        <td>{{dateFormat(eye.ExpiryDate)}}</td>
                                     </tr>
                                   </tbody>
                               </table>
@@ -422,16 +423,16 @@
                                 <div class="row">
                                     <div class="col-6"> <h1 class="text-center m-0 titalName" >   <img src="../../../assets/images/eyeSolIcon.png" alt="" srcset="" width="10%"> Solution Expiry</h1></div>
                                     <div class="col-6 text-center titalName2">
-                                        <button class="itme_button">Yestreday</button>
-                                        <button class="itme_button1 ms-2 me-2">Today</button>
-                                        <button class="itme_button2">Tomorrow</button> 
+                                        <button (click)="SolutionRange = 'Yesterday';getSolutionExpiryReminder()" [ngClass]="{'my_class': SolutionRange === 'Yesterday'}" class="itme_button">Yesterday</button>
+                                        <button (click)="SolutionRange = 'Today';getSolutionExpiryReminder()" [ngClass]="{'my_class': SolutionRange === 'Today'}" class="itme_button1 ms-2 me-2">Today</button>
+                                        <button (click)="SolutionRange = 'Tomorrow';getSolutionExpiryReminder()" [ngClass]="{'my_class': SolutionRange === 'Tomorrow'}" class="itme_button2">Tomorrow</button>
                                     </div>
                                 </div>
-                                <mat-tab-group>
+                                <mat-tab-group (selectedTabChange)="tabClickSolution($event)">
 
                                     <mat-tab label="Customer" >
                                         <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
-                                            <table class="table  ">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
                                                 <thead class="thead-light">
                                                     <tr>
                                                         <th>Action</th>
@@ -442,16 +443,16 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
+                                                    <tr *ngFor=" let cs of SolutionList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i class="fa-brands fa-whatsapp fa-2xl whatsappIocn"></i> 
-                                                            <i class="fa-solid fa-comment-sms fa-2xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
-                                                            <i class="fa-regular fa-envelope fa-2xl emailIocn"></i>
+                                                            <i class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
-                                                        <td>SNo</td>
-                                                        <td>Name</td>
-                                                        <td>Mobile</td>
-                                                        <td>Date</td>
+                                                        <td>{{SolutionList.length - i }}</td>
+                                                        <td>{{cs.Name}}</td>
+                                                        <td>{{cs.MobileNo1}}</td>
+                                                        <td> {{dateFormat(cs.ProductExpDate)}}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -460,7 +461,7 @@
                                     </mat-tab>
                                     <mat-tab label="Supplier">
                                         <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
-                                            <table class="table  ">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
                                                 <thead class="thead-light">
                                                     <tr>
                                                         <th>Action</th>
@@ -471,7 +472,17 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                
+                                                    <tr *ngFor=" let ss of SolutionList; let i = index;">
+                                                        <td style=" width:25%;">
+                                                            <i class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                                        </td>
+                                                        <td>{{SolutionList.length - i }}</td>
+                                                        <td>{{ss.Name}}</td>
+                                                        <td>{{ss.MobileNo1}}</td>
+                                                        <td>{{dateFormat(ss.ProductExpDate)}}</td>
+                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -486,16 +497,16 @@
                                 <div class="row">
                                     <div class="col-6"> <h1 class="text-center m-0 titalName" >   <img src="../../../assets/images/lensIonc.png" alt="" srcset="" width="10%"> Contact Lens Expiry</h1></div>
                                     <div class="col-6 text-center titalName2">
-                                        <button class="itme_button">Yestreday</button>
-                                        <button class="itme_button1 ms-2 me-2">Today</button>
-                                        <button class="itme_button2">Tomorrow</button> 
+                                        <button (click)="ContactLensRange = 'Yesterday';getContactLensExpiryReminder()" [ngClass]="{'my_class': ContactLensRange === 'Yesterday'}" class="itme_button">Yesterday</button>
+                                        <button (click)="ContactLensRange = 'Today';getContactLensExpiryReminder()" [ngClass]="{'my_class': ContactLensRange === 'Today'}" class="itme_button1 ms-2 me-2">Today</button>
+                                        <button (click)="ContactLensRange = 'Tomorrow';getContactLensExpiryReminder()" [ngClass]="{'my_class': ContactLensRange === 'Tomorrow'}" class="itme_button2">Tomorrow</button>
                                     </div>
                                 </div>
-                                <mat-tab-group>
+                                <mat-tab-group (selectedTabChange)="tabClickContactLens($event)">
 
                                     <mat-tab label="Customer" >
                                         <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
-                                            <table class="table  ">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
                                                 <thead class="thead-light">
                                                     <tr>
                                                         <th>Action</th>
@@ -506,16 +517,16 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
+                                                    <tr *ngFor=" let cc of ContactLensList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i class="fa-brands fa-whatsapp fa-2xl whatsappIocn"></i> 
-                                                            <i class="fa-solid fa-comment-sms fa-2xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
-                                                            <i class="fa-regular fa-envelope fa-2xl emailIocn"></i>
+                                                            <i class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
-                                                        <td>SNo</td>
-                                                        <td>Name</td>
-                                                        <td>Mobile</td>
-                                                        <td>Date</td>
+                                                        <td>{{ContactLensList.length - i }}</td>
+                                                        <td>{{cc.Name}}</td>
+                                                        <td>{{cc.MobileNo1}}</td>
+                                                        <td> {{dateFormat(cc.ProductExpDate)}}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -524,7 +535,7 @@
                                     </mat-tab>
                                     <mat-tab label="Supplier">
                                         <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
-                                            <table class="table  ">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
                                                 <thead class="thead-light">
                                                     <tr>
                                                         <th>Action</th>
@@ -535,7 +546,17 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                
+                                                    <tr *ngFor=" let sc of ContactLensList; let i = index;">
+                                                        <td style=" width:25%;">
+                                                            <i class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                                        </td>
+                                                        <td>{{ContactLensList.length - i }}</td>
+                                                        <td>{{sc.Name}}</td>
+                                                        <td>{{sc.MobileNo1}}</td>
+                                                        <td> {{dateFormat(sc.ProductExpDate)}}</td>
+                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -552,13 +573,14 @@
                                 <div class="row">
                                     <div class="col-6"> <h1 class="text-center m-0 titalName" >   <img src="../../../assets/images/conFortIcon.png" alt="" srcset="" width="10%"> Comfort Feedback</h1></div>
                                     <div class="col-6 text-center titalName2">
-                                        <button class="itme_button">Yestreday</button>
-                                        <button class="itme_button1 ms-2 me-2">Today</button>
-                                        <button class="itme_button2">Tomorrow</button> 
+                                        <button (click)="FeedBackRange = 'Yesterday';getFeedBackReminder()" [ngClass]="{'my_class': FeedBackRange === 'Yesterday'}" class="itme_button">Yesterday</button>
+                                        <button (click)="FeedBackRange = 'Today';getFeedBackReminder()" [ngClass]="{'my_class': FeedBackRange === 'Today'}" class="itme_button1 ms-2 me-2">Today</button>
+                                        <button (click)="FeedBackRange = 'Tomorrow';getFeedBackReminder()" [ngClass]="{'my_class': FeedBackRange === 'Tomorrow'}" class="itme_button2">Tomorrow</button>
+                                      
                                     </div>
                                 </div>
                                 <div class="col-12 " style="overflow: auto; height: 203px; margin-top: 15px;"> 
-                                <table class="table  ">
+                                <table class="table table-striped table-hover table-sm table-bordered">
                                     <thead class="thead-light">
                                         <tr>
                                             <th>Action</th>
@@ -569,16 +591,16 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
+                                        <tr *ngFor=" let Feed of FeedBackList; let i = index;">
                                             <td style=" width:25%;">
-                                                <i class="fa-brands fa-whatsapp fa-2xl whatsappIocn"></i> 
-                                                <i class="fa-solid fa-comment-sms fa-2xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
-                                                <i class="fa-regular fa-envelope fa-2xl emailIocn"></i>
+                                                <i class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                             </td>
-                                            <td>i</td>
-                                            <td>vinay</td>
-                                            <td>8770303677</td>
-                                            <td>02-02-2020</td>
+                                            <td>{{FeedBackList.length - i }}</td>
+                                            <td>{{Feed.Name}}</td>
+                                            <td>{{Feed.MobileNo1}}</td>
+                                            <td>{{dateFormat(Feed.BillDate)}}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -592,13 +614,14 @@
                                 <div class="row">
                                     <div class="col-6"> <h1 class="text-center m-0 titalName" >   <img src="../../../assets/images/serviceIcon.png" alt="" srcset="" width="10%"> Service Msg</h1></div>
                                     <div class="col-6 text-center titalName2">
-                                        <button class="itme_button">Yestreday</button>
-                                        <button class="itme_button1 ms-2 me-2">Today</button>
-                                        <button class="itme_button2">Tomorrow</button> 
+                                        <button (click)="ServiceRange = 'Yesterday';getServiceMessageReminder()" [ngClass]="{'my_class': ServiceRange === 'Yesterday'}" class="itme_button">Yesterday</button>
+                                        <button (click)="ServiceRange = 'Today';getServiceMessageReminder()" [ngClass]="{'my_class': ServiceRange === 'Today'}" class="itme_button1 ms-2 me-2">Today</button>
+                                        <button (click)="ServiceRange = 'Tomorrow';getServiceMessageReminder()" [ngClass]="{'my_class': ServiceRange === 'Tomorrow'}" class="itme_button2">Tomorrow</button>
+                                      
                                     </div>
                                 </div>
                                 <div class="col-12 " style="overflow: auto; height: 203px; margin-top: 15px;"> 
-                                <table class="table  ">
+                                <table class="table table-striped table-hover table-sm table-bordered">
                                     <thead class="thead-light">
                                         <tr>
                                             <th>Action</th>
@@ -609,16 +632,16 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
+                                        <tr *ngFor=" let S of ServiceList; let i = index;">
                                             <td style=" width:25%;">
-                                                <i class="fa-brands fa-whatsapp fa-2xl whatsappIocn"></i> 
-                                                <i class="fa-solid fa-comment-sms fa-2xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
-                                                <i class="fa-regular fa-envelope fa-2xl emailIocn"></i>
+                                                <i class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                             </td>
-                                            <td>i</td>
-                                            <td>vinay</td>
-                                            <td>8770303677</td>
-                                            <td>02-02-2020</td>
+                                            <td>{{ServiceList.length - i }}</td>
+                                            <td>{{S.Name}}</td>
+                                            <td>{{S.MobileNo1}}</td>
+                                            <td>{{dateFormat(S.BillDate)}}</td>
                                         </tr>
                                     </tbody>
                                 </table>

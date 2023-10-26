@@ -21,6 +21,7 @@ import * as moment from 'moment';
 export class ReminderComponent implements OnInit {
 
   user = JSON.parse(localStorage.getItem('user') || '');
+  companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
 
   bdayList: any = [];
   bdayRange = 'Today';
@@ -32,6 +33,16 @@ export class ReminderComponent implements OnInit {
   OrderPendingList: any = [];
   EyeRange = 'Today';
   EyeTestingList: any = [];
+  FeedBackRange = 'Today';
+  FeedBackList: any = [];
+  ServiceRange = 'Today';
+  ServiceList: any = [];
+  SolutionTbl = 'Customer';
+  SolutionRange = 'Today';
+  SolutionList: any = [];
+  ContactLensTbl = 'Customer';
+  ContactLensRange = 'Today';
+  ContactLensList: any = [];
 
   constructor(
     private router: Router,
@@ -47,8 +58,12 @@ export class ReminderComponent implements OnInit {
     this.getAnniversaryReminder()
     this.getCustomerOrderPending()
     this.getEyeTestingReminder()
+    this.getFeedBackReminder()
+    this.getServiceMessageReminder()
+    this.getSolutionExpiryReminder()
+    this.getContactLensExpiryReminder()
   }
- 
+
   // bday msg start
   tabClickBday(event: any) {
     this.bdayTbl = event.tab.textLabel;
@@ -56,17 +71,15 @@ export class ReminderComponent implements OnInit {
   }
 
   getBirthDayReminder() {
-    var BDate = '';
-    if (this.bdayRange === 'Today') { BDate = moment().format('YYYY-MM-DD'); }
+    let dateType = '';
+    if (this.bdayRange === 'Today') { dateType = 'today' }
     else if (this.bdayRange === 'Tomorrow') {
-      BDate = moment().add(1, 'days').format('YYYY-MM-DD');
+      dateType = 'tomorrow'
+    } else if (this.bdayRange === 'Yesterday') {
+      dateType = 'yesterday';
     }
-    else if (this.bdayRange === 'Yesterday') {
-      BDate = moment().subtract(1, 'days').format('YYYY-MM-DD');
-    }
-    console.log(BDate, this.bdayTbl);
 
-    const subs: Subscription = this.rs.getBirthDayReminder(this.bdayTbl).subscribe({
+    const subs: Subscription = this.rs.getBirthDayReminder(this.bdayTbl, dateType).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.bdayList = res.data;
@@ -86,17 +99,15 @@ export class ReminderComponent implements OnInit {
   }
 
   getAnniversaryReminder() {
-    var ADate = '';
-    if (this.AnniversaryRange === 'Today') { ADate = moment().format('YYYY-MM-DD'); }
+    let dateType = '';
+    if (this.AnniversaryRange === 'Today') { dateType = 'today'; }
     else if (this.AnniversaryRange === 'Tomorrow') {
-      ADate = moment().add(1, 'days').format('YYYY-MM-DD');
+      dateType = 'tomorrow';
+    } else if (this.AnniversaryRange === 'Yesterday') {
+      dateType = 'yesterday';
     }
-    else if (this.AnniversaryRange === 'Yesterday') {
-      ADate = moment().subtract(1, 'days').format('YYYY-MM-DD');
-    }
-    console.log(ADate, this.AnniversaryTbl);
 
-    const subs: Subscription = this.rs.getAnniversaryReminder(this.AnniversaryTbl).subscribe({
+    const subs: Subscription = this.rs.getAnniversaryReminder(this.AnniversaryTbl, dateType).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.AnniversaryList = res.data;
@@ -111,17 +122,15 @@ export class ReminderComponent implements OnInit {
   // Anniversary msg end
   // Order Pending msg start
   getCustomerOrderPending() {
-    var ODate = '';
-    if (this.OrderRange === 'Today') { ODate = moment().format('YYYY-MM-DD'); }
+    let dateType = '';
+    if (this.OrderRange === 'Today') { dateType = 'today' }
     else if (this.OrderRange === 'Tomorrow') {
-      ODate = moment().add(1, 'days').format('YYYY-MM-DD');
+      dateType = 'tomorrow'
+    } else if (this.OrderRange === 'Yesterday') {
+      dateType = 'yesterday'
     }
-    else if (this.OrderRange === 'Yesterday') {
-      ODate = moment().subtract(1, 'days').format('YYYY-MM-DD');
-    }
-    console.log(ODate, this.OrderRange);
 
-    const subs: Subscription = this.rs.getCustomerOrderPending(ODate).subscribe({
+    const subs: Subscription = this.rs.getCustomerOrderPending(dateType).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.OrderPendingList = res.data;
@@ -136,17 +145,15 @@ export class ReminderComponent implements OnInit {
   // Order Pending msg end
   // EyeTesting msg start
   getEyeTestingReminder() {
-    var EDate = '';
-    if (this.EyeRange === 'Today') { EDate = moment().format('YYYY-MM-DD'); }
+    let dateType = '';
+    if (this.EyeRange === 'Today') { dateType = 'today'; }
     else if (this.EyeRange === 'Tomorrow') {
-      EDate = moment().add(1, 'days').format('YYYY-MM-DD');
+      dateType = 'tomorrow';
+    } else if (this.EyeRange === 'Yesterday') {
+      dateType = 'yesterday'
     }
-    else if (this.EyeRange === 'Yesterday') {
-      EDate = moment().subtract(1, 'days').format('YYYY-MM-DD');
-    }
-    console.log(EDate, this.EyeRange);
 
-    const subs: Subscription = this.rs.getEyeTestingReminder(EDate).subscribe({
+    const subs: Subscription = this.rs.getEyeTestingReminder(dateType).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.EyeTestingList = res.data;
@@ -159,4 +166,110 @@ export class ReminderComponent implements OnInit {
     });
   }
   // EyeTesting msg end
+  // FeedBackReminder  start
+  getFeedBackReminder() {
+    let dateType = '';
+    if (this.FeedBackRange === 'Today') { dateType = 'today'; }
+    else if (this.FeedBackRange === 'Tomorrow') {
+      dateType = 'tomorrow';
+    } else if (this.FeedBackRange === 'Yesterday') {
+      dateType = 'yesterday'
+    }
+
+    const subs: Subscription = this.rs.getFeedBackReminder(dateType).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.FeedBackList = res.data;
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+  // FeedBackReminder  end
+  // getServiceMessageReminder  start
+  getServiceMessageReminder() {
+    let dateType = '';
+    if (this.ServiceRange === 'Today') { dateType = 'today'; }
+    else if (this.ServiceRange === 'Tomorrow') {
+      dateType = 'tomorrow';
+    } else if (this.ServiceRange === 'Yesterday') {
+      dateType = 'yesterday'
+    }
+
+    const subs: Subscription = this.rs.getServiceMessageReminder(dateType).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.ServiceList = res.data;
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+  // getServiceMessageReminder  end
+  // getSolutionExpiryReminder  start
+  tabClickSolution(event: any) {
+    this.SolutionTbl = event.tab.textLabel;
+    this.getSolutionExpiryReminder();
+  }
+
+  getSolutionExpiryReminder() {
+    let dateType = '';
+    if (this.SolutionRange === 'Today') { dateType = 'today' }
+    else if (this.SolutionRange === 'Tomorrow') {
+      dateType = 'tomorrow'
+    } else if (this.SolutionRange === 'Yesterday') {
+      dateType = 'yesterday';
+    }
+
+    const subs: Subscription = this.rs.getSolutionExpiryReminder(this.SolutionTbl, dateType).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.SolutionList = res.data;
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+  // getSolutionExpiryReminder msg end
+  // getSolutionExpiryReminder  start
+  tabClickContactLens(event: any) {
+    this.ContactLensTbl = event.tab.textLabel;
+    this.getContactLensExpiryReminder();
+  }
+
+  getContactLensExpiryReminder() {
+    let dateType = '';
+    if (this.ContactLensRange === 'Today') { dateType = 'today' }
+    else if (this.ContactLensRange === 'Tomorrow') {
+      dateType = 'tomorrow'
+    } else if (this.ContactLensRange === 'Yesterday') {
+      dateType = 'yesterday';
+    }
+
+    const subs: Subscription = this.rs.getContactLensExpiryReminder(this.ContactLensTbl, dateType).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.ContactLensList = res.data;
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+  // getSolutionExpiryReminder msg end
+
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
 }

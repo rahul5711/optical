@@ -18,23 +18,43 @@ export class ReminderService {
   private url = environment.apiUrl + '/reminder';
   constructor(private httpClient: HttpClient) { }
 
-  getBirthDayReminder(type:any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getBirthDayReminder', {type:type}, httpOptions)
+  getBirthDayReminder(type:any,dateType:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getBirthDayReminder', {type:type,dateType:dateType}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
-  getAnniversaryReminder(type:any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getAnniversaryReminder', {type:type}, httpOptions)
+  getAnniversaryReminder(type:any,dateType:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getAnniversaryReminder', {type:type,dateType:dateType}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
-  getCustomerOrderPending(type:any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getCustomerOrderPending', {type:type}, httpOptions)
+  getCustomerOrderPending(dateType:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getCustomerOrderPending', {dateType:dateType}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
-  getEyeTestingReminder(type:any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getEyeTestingReminder', {type:type}, httpOptions)
+  getEyeTestingReminder(dateType:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getEyeTestingReminder', {dateType:dateType}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getFeedBackReminder(dateType:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getFeedBackReminder', {dateType:dateType}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getServiceMessageReminder(dateType:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getServiceMessageReminder', {dateType:dateType}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getSolutionExpiryReminder(type:any,dateType:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getSolutionExpiryReminder', {type:type,dateType:dateType}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getContactLensExpiryReminder(type:any,dateType:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getContactLensExpiryReminder', {type:type,dateType:dateType}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 

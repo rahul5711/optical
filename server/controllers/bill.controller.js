@@ -1762,8 +1762,13 @@ module.exports = {
             let fileName = "";
             const file = BillFormat + ".pdf";
             const formatName = BillFormat;
-            fileName = "uploads/" + file;
+            fileName = clientConfig.appURL + "uploads/" + file;
 
+            let updateUrl = '';
+            TinyURL.shorten(fileName, function(res) {
+                updateUrl = res;
+            });
+            
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
                 if (err) {
                     res.send(err);
@@ -1776,7 +1781,8 @@ module.exports = {
                         if (err) {
                             res.send(err);
                         } else {
-                            res.json(file);
+                            // res.json(file);
+                            res.json(updateUrl);
                         }
                     });
                 }

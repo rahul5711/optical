@@ -37,9 +37,9 @@ module.exports = {
             if (dateType === 'today') {
                 date = moment(new Date()).format("YYYY-MM-DD");
             } else if (dateType === 'tomorrow') {
-                date = moment(new Date()).format("YYYY-MM-DD").add(1, 'days');
+                date = moment(new Date()).add(1, "days").format("YYYY-MM-DD");
             } else if (dateType === 'yesterday') {
-                date = moment(new Date()).format("YYYY-MM-DD").add(-1, 'days');
+                date = moment(new Date()).add(-1, 'days').format("YYYY-MM-DD");
             } else {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
@@ -98,9 +98,9 @@ module.exports = {
             if (dateType === 'today') {
                 date = moment(new Date()).format("YYYY-MM-DD");
             } else if (dateType === 'tomorrow') {
-                date = moment(new Date()).format("YYYY-MM-DD").add(1, 'days');
+                date = moment(new Date()).add(1, "days").format("YYYY-MM-DD");
             } else if (dateType === 'yesterday') {
-                date = moment(new Date()).format("YYYY-MM-DD").add(-1, 'days');
+                date = moment(new Date()).add(-1, 'days').format("YYYY-MM-DD");
             } else {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
@@ -157,9 +157,9 @@ module.exports = {
             if (dateType === 'today') {
                 date = moment(new Date()).format("YYYY-MM-DD");
             } else if (dateType === 'tomorrow') {
-                date = moment(new Date()).format("YYYY-MM-DD").add(1, 'days');
+                date = moment(new Date()).add(1, "days").format("YYYY-MM-DD");
             } else if (dateType === 'yesterday') {
-                date = moment(new Date()).format("YYYY-MM-DD").add(-1, 'days');
+                date = moment(new Date()).add(-1, 'days').format("YYYY-MM-DD");
             } else {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
@@ -205,9 +205,9 @@ module.exports = {
             if (dateType === 'today') {
                 date = moment(new Date()).format("YYYY-MM-DD");
             } else if (dateType === 'tomorrow') {
-                date = moment(new Date()).format("YYYY-MM-DD").add(1, 'days');
+                date = moment(new Date()).add(1, "days").format("YYYY-MM-DD");
             } else if (dateType === 'yesterday') {
-                date = moment(new Date()).format("YYYY-MM-DD").add(-1, 'days');
+                date = moment(new Date()).add(-1, 'days').format("YYYY-MM-DD");
             } else {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
@@ -254,19 +254,17 @@ module.exports = {
             let date = moment(new Date()).format("YYYY-MM-DD")
 
             if (dateType === 'today') {
-                date = moment(new Date()).format("YYYY-MM-DD").add(feedbackDays, 'days');
+                date = moment(new Date()).format("YYYY-MM-DD");
             } else if (dateType === 'tomorrow') {
-                feedbackDays += 1
-                date = moment(new Date()).format("YYYY-MM-DD").add(feedbackDays, 'days');
+                date = moment(new Date()).add(1, "days").format("YYYY-MM-DD");
             } else if (dateType === 'yesterday') {
-                feedbackDays -= 1
-                date = moment(new Date()).format("YYYY-MM-DD").add(feedbackDays, 'days');
+                date = moment(new Date()).add(-1, 'days').format("YYYY-MM-DD");
             } else {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
 
-            let qry = `select customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') and billmaster.ShopID = ${shopId} and DATE_FORMAT(billmaster.BillDate, '%Y-%m-%d') = '${date}'`
-
+            let qry = `select customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') ${shopId} and DATE_FORMAT(billmaster.BillDate, '%Y-%m-%d') = '${date}'`
+console.log(qry);
 
             const [datum] = await mysql2.pool.query(qry)
 
@@ -307,18 +305,16 @@ module.exports = {
             let date = moment(new Date()).format("YYYY-MM-DD")
 
             if (dateType === 'today') {
-                date = moment(new Date()).format("YYYY-MM-DD").add(serviceDays, 'days');
+                date = moment(new Date()).format("YYYY-MM-DD");
             } else if (dateType === 'tomorrow') {
-                serviceDays += 1
-                date = moment(new Date()).format("YYYY-MM-DD").add(serviceDays, 'days');
+                date = moment(new Date()).add(1, "days").format("YYYY-MM-DD");
             } else if (dateType === 'yesterday') {
-                serviceDays -= 1
-                date = moment(new Date()).format("YYYY-MM-DD").add(serviceDays, 'days');
+                date = moment(new Date()).add(-1, 'days').format("YYYY-MM-DD");
             } else {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
 
-            let qry = `select customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') and billmaster.ShopID = ${shopId} and DATE_FORMAT(billmaster.BillDate, '%Y-%m-%d') = '${date}'`
+            let qry = `select customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  ${shopId} and DATE_FORMAT(billmaster.BillDate, '%Y-%m-%d') = '${date}'`
 
 
             const [datum] = await mysql2.pool.query(qry)
@@ -363,9 +359,9 @@ module.exports = {
             if (dateType === 'today') {
                 date = moment(new Date()).format("YYYY-MM-DD");
             } else if (dateType === 'tomorrow') {
-                date = moment(new Date()).format("YYYY-MM-DD").add(1, 'days');
+                date = moment(new Date()).add(1, "days").format("YYYY-MM-DD");
             } else if (dateType === 'yesterday') {
-                date = moment(new Date()).format("YYYY-MM-DD").add(-1, 'days');
+                date = moment(new Date()).add(-1, 'days').format("YYYY-MM-DD");
             } else {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
@@ -424,9 +420,9 @@ module.exports = {
             if (dateType === 'today') {
                 date = moment(new Date()).format("YYYY-MM-DD");
             } else if (dateType === 'tomorrow') {
-                date = moment(new Date()).format("YYYY-MM-DD").add(1, 'days');
+                date = moment(new Date()).add(1, "days").format("YYYY-MM-DD");
             } else if (dateType === 'yesterday') {
-                date = moment(new Date()).format("YYYY-MM-DD").add(-1, 'days');
+                date = moment(new Date()).add(-1, 'days').format("YYYY-MM-DD");
             } else {
                 return res.send({ message: "Invalid Query dateType Data" })
             }

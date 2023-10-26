@@ -63,6 +63,7 @@
                                                 <mat-label>Select Position </mat-label>
                                                 <mat-select name="Position" [(ngModel)]="data.Gender" #Gendercontrol>
                                                     <mat-option value="MR">Mr.</mat-option>
+                                                    <mat-option value="DR">Mrs.</mat-option>
                                                     <mat-option value="Miss">Miss.</mat-option>
                                                     <mat-option value="DR">Dr.</mat-option>
                                                     <mat-option value="ADV">ADV.</mat-option>
@@ -340,7 +341,7 @@
                                                     <div class="col-1">
                                                         <input class="inputWidth box " type="text" name="REDPCYL"
                                                             [(ngModel)]="spectacle.REDPCYL" id="REDPCYL"
-                                                            list="dpcylList" (change)="calculate('Lens', 'CDR', 0.00)">
+                                                            list="dpcylList" >
                                                         <datalist id="dpcylList">
                                                             <option [value]="c.Name" *ngFor="let c of dataCYL">
                                                                 {{c.Name}} </option>
@@ -348,7 +349,7 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="number" name="REDPAxis"
-                                                            [(ngModel)]="spectacle.REDPAxis" (change)="calculate('Lens', 'CDR', 0.00)">
+                                                            [(ngModel)]="spectacle.REDPAxis" >
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box"  name="REDPVA"
@@ -376,7 +377,7 @@
                                                     <div class="col-1">
                                                         <input class="inputWidth box " type="text" name="LEDPCYL"
                                                             [(ngModel)]="spectacle.LEDPCYL" id="LEDPCYL"
-                                                            list="dpcylList" (change)="calculate('Lens', 'CDL', 0.00)">
+                                                            list="dpcylList" >
                                                         <datalist id="dpcylList">
                                                             <option [value]="c.Name" *ngFor="let c of dataCYL">
                                                                 {{c.Name}} </option>
@@ -384,7 +385,7 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="number" name="LEDPAxis"
-                                                            [(ngModel)]="spectacle.LEDPAxis" (change)="calculate('Lens', 'CDL', 0.00)">
+                                                            [(ngModel)]="spectacle.LEDPAxis" >
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="LEDPVA"
@@ -715,7 +716,7 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box " type="text" name="CREDPCYL"
-                                                            [(ngModel)]="clens.REDPCYL" id="CREDPCYL" list="CdpcylList" (change)="calculate('', 'CoDL', 0.00)">
+                                                            [(ngModel)]="clens.REDPCYL" id="CREDPCYL" list="CdpcylList" >
                                                         <datalist id="CdpcylList" >
                                                             <option [value]="c.Name" *ngFor="let c of dataCYL">
                                                                 {{c.Name}} </option>
@@ -723,7 +724,7 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="CREDPAxis"
-                                                            [(ngModel)]="clens.REDPAxis" (change)="calculate('', 'CoDL', 0.00)">
+                                                            [(ngModel)]="clens.REDPAxis" >
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="CREDPVA"
@@ -749,7 +750,7 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box " type="text" name="CLEDPCYL"
-                                                            [(ngModel)]="clens.LEDPCYL" id="CLEDPCYL" list="CdpcylList" (change)="calculate('', 'CoDR', 0.00)"> 
+                                                            [(ngModel)]="clens.LEDPCYL" id="CLEDPCYL" list="CdpcylList" > 
                                                         <datalist id="CdpcylList" >
                                                             <option [value]="c.Name" *ngFor="let c of dataCYL">
                                                                 {{c.Name}} </option>
@@ -757,7 +758,7 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="CLEDPAxis"
-                                                            [(ngModel)]="clens.LEDPAxis" (change)="calculate('', 'CoDR', 0.00)">
+                                                            [(ngModel)]="clens.LEDPAxis" >
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="CLEDPVA"
