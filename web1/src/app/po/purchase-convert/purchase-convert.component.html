@@ -136,9 +136,9 @@
                                                     <th>DiscountPer</th>
                                                     <th>DiscountAmt</th>
                                                     <th>SubTotal</th>
-                                                    <th>GSTPer</th>
-                                                    <th>GSTAmt</th>
-                                                    <th>GSTType</th>
+                                                    <th>TAXPer</th>
+                                                    <th>TAXAmt</th>
+                                                    <th>TAXType</th>
                                                     <th>TotalAmt</th>
                                                     <th *ngIf="dataList[0]?.WholeSale == 0">RetailPrice</th>
                                                     <th *ngIf="dataList[0]?.WholeSale == 1">WholeSale</th>
@@ -277,7 +277,7 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>GST Amt</mat-label>
+                                        <mat-label>TAX Amt</mat-label>
                                         <input matInput name="GSTAmtt" type="number" min="0"
                                             [(ngModel)]="PurchaseMaster.GSTAmount" disabled #GSTAmttcontrol
                                             [autocomplete]="false">

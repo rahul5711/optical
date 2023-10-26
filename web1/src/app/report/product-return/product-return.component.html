@@ -103,12 +103,12 @@
                               <th>Quantity</th>
                               <!-- <th>Discount </th> -->
                               <th>SubTotal</th>
-                              <th>GST Amount </th>
+                              <th>TAX Amount </th>
                               <th>IGST</th>
                               <th>SGST</th>
                               <th>CGST</th>
                               <th>Grand Total</th>
-                              <th>SupplierGSTNo</th>
+                              <th>SupplierTAXNo</th>
                             </tr>
                             <tr class="totolRow" *ngIf="this.totalQty != null && this.totalQty != '' ">
                               <td>
@@ -310,7 +310,7 @@
                               <th>SystemCn</th>
                               <th>SupplierCn</th>
                               <th>Supplier</th>
-                              <th>GSTNo</th>
+                              <th>TAXNo</th>
                               <th>Product Type</th>
                               <th>HSNCode</th>
                               <th>Product</th>
@@ -318,9 +318,9 @@
                               <th>Unit Price</th>
                               <th>Dis</th>
                               <th>SubTotal <span style="font-size: 8px;">(PriceBeforeTax)</span> </th>
-                              <th>GST Type</th>
-                              <th>GST%</th>
-                              <th>GSTAmt</th>
+                              <th>TAX Type</th>
+                              <th>TAX%</th>
+                              <th>TAXAmt</th>
                               <th style="display: none;"> CGST%</th>
                               <th style="display: none;"> CGSTAmt</th>
                               <th style="display: none;"> SGST%</th>
@@ -409,7 +409,7 @@
 <!-- model detail-->
 <ng-template #content3 role="document" let-modal>
     <div class="modal-header" style="height: 50px;">
-      <h3 class="modal-title header pt-2" id="exampleModalLabel">GST Amount List</h3>
+      <h3 class="modal-title header pt-2" id="exampleModalLabel">TAX Amount List</h3>
       <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
@@ -418,8 +418,8 @@
               style="border: 2px solid #fff !important;">
               <thead>
                 <tr>
-                  <th>GSTType</th>
-                  <th>GSTAmount</th>
+                  <th>TAXType</th>
+                  <th>TAXAmount</th>
                 </tr>
               </thead>
               <tbody>
@@ -442,7 +442,7 @@
 <!-- model detail-->
 <ng-template #content role="document" let-modal>
     <div class="modal-header" style="height: 50px;">
-      <h3 class="modal-title header pt-2" id="exampleModalLabel">GST Amount List</h3>
+      <h3 class="modal-title header pt-2" id="exampleModalLabel">TAX Amount List</h3>
       <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
@@ -451,8 +451,8 @@
               style="border: 2px solid #fff !important;">
               <thead>
                 <tr>
-                  <th>GSTType</th>
-                  <th>GSTAmount</th>
+                  <th>TAXType</th>
+                  <th>TAXAmount</th>
                 </tr>
               </thead>
               <tbody>

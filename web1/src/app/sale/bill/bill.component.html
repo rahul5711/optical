@@ -3,7 +3,7 @@
     <div class="header">
         <div class="row">
             <div class="col-lg-1 col-md-2 col-6">
-                <h4 style="font-weight: 800;">Bill Info </h4>
+                <h4 style="font-weight: 800;">New Bill </h4>
             </div>
             <div class="col-lg-1 col-md-2 p-0 col-4 ms-auto">
                 <mat-slide-toggle name="Multiple" color="primary" [(ngModel)]="disableAddButtons" class="example-margin"
@@ -413,11 +413,11 @@
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
-                        <mat-label>(GST/VAT)%</mat-label>
+                        <mat-label>TAX%</mat-label>
                         <input matInput type="number" min="0" name="GST" [(ngModel)]="BillItem.GSTPercentage" required
                             (blur)="calculations('GSTPercentage', 'gst')" #GSTcontrol [autocomplete]="false">
                         <mat-error>
-                            GST is required
+                            TAX is required
                         </mat-error>
                     </mat-form-field>
                 </div>
@@ -434,7 +434,7 @@
                             </span>
                         </mat-select>
                         <mat-error>
-                            GSTType is required
+                            TAXType is required
                         </mat-error>
                     </mat-form-field>
                 </div>
@@ -511,12 +511,12 @@
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
-                        <mat-label>(GST/VAT)%</mat-label>
+                        <mat-label>TAX%</mat-label>
                         <input matInput name="GST" type="number" min="0" [(ngModel)]="Service.GSTPercentage"
                             (blur)="calculations('GSTPercentageSer', 'serviceGst')" required #GSTcontrol
                             [autocomplete]="false">
                         <mat-error>
-                            GST is required
+                            TAX is required
                         </mat-error>
                     </mat-form-field>
                 </div>
@@ -581,9 +581,9 @@
                                 <th class="text-center" *ngIf="this.loginShop?.Discount === 'true'">DiscountPer</th>
                                 <th class="text-center" *ngIf="this.loginShop?.Discount === 'true'">DiscountAmt</th>
                                 <th class="text-center">SubTotal</th>
-                                <th class="text-center" *ngIf="this.loginShop?.GSTnumber === 'true'">GSTPer</th>
-                                <th class="text-center" *ngIf="this.loginShop?.GSTnumber === 'true'">GSTAmt</th>
-                                <th class="text-center" *ngIf="this.loginShop?.GSTnumber === 'true'">GSTType</th>
+                                <th class="text-center" *ngIf="this.loginShop?.GSTnumber === 'true'">TAXPer</th>
+                                <th class="text-center" *ngIf="this.loginShop?.GSTnumber === 'true'">TAXAmt</th>
+                                <th class="text-center" *ngIf="this.loginShop?.GSTnumber === 'true'">TAXType</th>
                                 <th class="text-center">TotalAmt</th>
                                 <th class="text-center">Remark</th>
                                 <th class="text-center">Warranty</th>
@@ -846,7 +846,7 @@
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0" *ngIf="this.loginShop?.GSTnumber === 'true'">
                     <mat-form-field class="example-full-width mb-0">
-                        <mat-label class="cus-label">GST Amt</mat-label>
+                        <mat-label class="cus-label">TAX Amt</mat-label>
                         <input matInput class="cust-input" type="number" min="0" name="GSTAmount"
                             [(ngModel)]="BillMaster.GSTAmount" required #GSTAmountcontrol [autocomplete]="false"
                             disabled>
@@ -858,7 +858,7 @@
                         <mat-label>{{gst.GSTType}}</mat-label>
                         <input matInput name="igstAmt" value="{{gst.Amount | number:'1.0-2'}}" disabled>
                         <mat-error>
-                            GST Amt is required
+                            TAX Amt is required
                         </mat-error>
                     </mat-form-field>
                 </div>

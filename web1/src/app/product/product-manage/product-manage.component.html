@@ -41,14 +41,14 @@
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>GST Percentage</mat-label>
+                                        <mat-label>TAX Percentage</mat-label>
                                         <input matInput name="GSTPercentage" [(ngModel)]="selectedGSTPercentage"
                                             #GSTPercentagecontrol [disabled]="disbleProduct">
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>GST Type</mat-label>
+                                        <mat-label>TAX Type</mat-label>
                                         <mat-select name="GSTType" [(ngModel)]="selectedGSTType"
                                             [disabled]="disbleProduct" #GSTTypecontrol>
                                             <mat-option value="None">None</mat-option>
@@ -94,14 +94,14 @@
                                     </div>
                                     <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                         <mat-form-field class="example-full-width mb-0">
-                                            <mat-label>GST Percentage</mat-label>
+                                            <mat-label>TAX Percentage </mat-label>
                                             <input matInput type="number" required="true" name="NewGSTPercentage"  [(ngModel)]="newProduct.GSTPercentage"
                                                #GSTPercentagecontrol>
                                         </mat-form-field>
                                     </div>
                                     <div *ngIf="newProduct.GSTPercentage === 0" class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                         <mat-form-field class="example-full-width mb-0">
-                                            <mat-label>GST Type</mat-label>
+                                            <mat-label>TAX Type</mat-label>
                                             <mat-select name="NewGSTType"  [(ngModel)]="newProduct.GSTType" #GSTTypecontrol  required>
                                                 <mat-option value="None">None</mat-option>
                                             </mat-select>

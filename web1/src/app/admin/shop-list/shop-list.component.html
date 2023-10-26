@@ -253,7 +253,7 @@
                         </div>
                         <div class="col-md-3 mb-0">
                             <mat-form-field class="example-full-width mb-0">
-                                <mat-label>GST No</mat-label>
+                                <mat-label>GST/VAT No</mat-label>
                                 <input matInput name="GSTNo" [(ngModel)]="data.GSTNo" #GSTNocontrol>
                                 <mat-error *ngIf="GSTNocontrol.required">
                                     GST No is required
@@ -340,7 +340,7 @@
                         </div>
                         <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
                             <mat-slide-toggle type="ratio" name="CustGSTNo" color="primary" [(ngModel)]="data.CustGSTNo"
-                                class="example-margin">GST</mat-slide-toggle>
+                                class="example-margin">GST/VAT</mat-slide-toggle>
                         </div>
                         <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
                             <mat-slide-toggle type="ratio" name="Rate" color="primary" [(ngModel)]="data.Rate"
@@ -381,7 +381,7 @@
                         </div>
                         <div class="col-lg-1 col-md-2 col-sm-6 col-6 p-0">
                             <mat-slide-toggle type="ratio" name="GSTnumber" color="primary" [(ngModel)]="data.GSTnumber"
-                                class="example-margin">GST</mat-slide-toggle>
+                                class="example-margin">GST/VAT</mat-slide-toggle>
                         </div>
                         <div class="col-lg-2 col-md-2 col-sm-6 col-6 p-0">
                             <mat-slide-toggle type="toggleChecked" name="AdminDiscount" color="primary"

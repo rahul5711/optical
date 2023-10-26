@@ -112,7 +112,7 @@
                                                     <th>MobileNo</th>
                                                     <th>Qty</th>
                                                     <th>SubTotal</th>
-                                                    <th>GSTAmount</th>
+                                                    <th>TAXAmount</th>
                                                     <th>AddDiscount%</th>
                                                     <th>AddDiscount</th>
                                                     <th>GrandTotal</th>
@@ -248,7 +248,7 @@
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                             <mat-form-field class="example-full-width mb-0">
-                                                <mat-label>Customer GSTNo</mat-label>
+                                                <mat-label>Customer TAXNo</mat-label>
                                                 <mat-select name="CustomerGSTNo"
                                                     [(ngModel)]="Billdetail.CustomerGSTNo">
                                                     <mat-option [value]=0>All</mat-option>
@@ -346,7 +346,7 @@
                                         <!--  spec end -->
                                         <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
-                                                <mat-label>GST Type</mat-label>
+                                                <mat-label>TAX Type</mat-label>
                                                 <mat-select name="GSTType" [(ngModel)]="Billdetail.GSTType"
                                                     #singleSelect>
                                                     <mat-option [value]=0>All</mat-option>
@@ -358,7 +358,7 @@
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
-                                                <mat-label>GSTPercentage</mat-label>
+                                                <mat-label>TAXPercentage</mat-label>
                                                 <mat-select name="GSTPercentage"
                                                     [(ngModel)]="Billdetail.GSTPercentage">
                                                     <mat-option [value]=0>All</mat-option>
@@ -415,8 +415,8 @@
                                                     <th>Discount Amount</th>
                                                     <th>Discount%</th>
                                                     <th>Sub Total</th>
-                                                    <th>GST%</th>
-                                                    <th>GST Amount</th>
+                                                    <th>TAX%</th>
+                                                    <th>TAX Amount</th>
                                                     <th>Grand Total</th>
                                                     <th>Paid</th>
                                                     <th>Balance</th>

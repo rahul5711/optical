@@ -248,7 +248,7 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 d-flex">
                                     <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>(TAX/VAT)% / Amt </mat-label>
+                                        <mat-label>TAX% / TAX Amt </mat-label>
                                         <div class="d-flex">
                                             <div class="d-flex">
                                                 <input matInput name="GST" type="number" min="0"
@@ -264,7 +264,7 @@
                                                 [(ngModel)]="gstperLock"></mat-checkbox>
                                         </div>
                                         <mat-error>
-                                            GST is required
+                                            TAX is required
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
@@ -502,7 +502,7 @@
                                             [(ngModel)]="selectedPurchaseMaster.GSTAmount" disabled #GSTAmttcontrol
                                             [autocomplete]="false">
                                         <mat-error>
-                                            GST Amt is required
+                                            TAX Amt is required
                                         </mat-error>
                                     </mat-form-field>
                                 </div>

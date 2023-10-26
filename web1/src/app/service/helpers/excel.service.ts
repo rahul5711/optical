@@ -15,7 +15,6 @@ export class ExcelService {
   constructor(private http: HttpClient) { }
 
   public exportAsExcelFile(json: any[], excelFileName: string): void {
-    json[0].A1 = { t: 's', v: 'Custom Text', s: { fill: { fgColor: { rgb: '458f37' } } } };
     const myworksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json);
     const myworkbook: XLSX.WorkBook = { Sheets: { 'data': myworksheet }, SheetNames: ['data'] };
     const excelBuffer: any = XLSX.write(myworkbook, { bookType: 'xlsx', type: 'array' });

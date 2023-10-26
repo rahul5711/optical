@@ -106,7 +106,7 @@
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>Customer GSTNo</mat-label>
+                                                    <mat-label>Customer TAXNo</mat-label>
                                                     <mat-select name="CustomerGSTNo"
                                                         [(ngModel)]="BillMaster.CustomerGSTNo">
                                                         <mat-option [value]=0>All</mat-option>
@@ -185,8 +185,8 @@
                                                         <th>Qty</th>
                                                         <th>Discount</th>
                                                         <th>SubTotal</th>
-                                                        <th>GSTType</th>
-                                                        <th>GSTAmount</th>
+                                                        <th>TAXType</th>
+                                                        <th>TAXAmount</th>
                                                         <th>CGSTAmt</th>
                                                         <th>SGSTAmt</th>
                                                         <th>IGSTAmt</th>
@@ -386,7 +386,7 @@
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>Customer GSTNo</mat-label>
+                                                    <mat-label>Customer TAXNo</mat-label>
                                                     <mat-select name="CustomerGSTNo"
                                                         [(ngModel)]="Billdetail.CustomerGSTNo">
                                                         <mat-option [value]=0>All</mat-option>
@@ -504,7 +504,7 @@
                                             <!--  spec end -->
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>GST Type</mat-label>
+                                                    <mat-label>TAX Type</mat-label>
                                                     <mat-select name="GSTType" [(ngModel)]="Billdetail.GSTType"
                                                         #singleSelect>
                                                         <mat-option [value]=0>All</mat-option>
@@ -516,7 +516,7 @@
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>GSTPercentage</mat-label>
+                                                    <mat-label>TAX Percentage</mat-label>
                                                     <mat-select name="GSTPercentage"
                                                         [(ngModel)]="Billdetail.GSTPercentage">
                                                         <mat-option [value]=0>All</mat-option>
@@ -575,9 +575,9 @@
                                                         <th>Quantity</th>
                                                         <th>Discount Amount</th>
                                                         <th>Sub Total</th>
-                                                        <th>GST Type</th>
-                                                        <th>GST%</th>
-                                                        <th>GST Amount</th>
+                                                        <th>TAX Type</th>
+                                                        <th>TAX%</th>
+                                                        <th>TAX Amount</th>
                                                         <th style="display: none;"> CGST%</th>
                                                         <th style="display: none;"> CGSTAmt</th>
                                                         <th style="display: none;"> SGST%</th>
@@ -589,7 +589,7 @@
                                                         <th>Payment Status</th>
                                                         <th>Product Status</th>
                                                         <th>Product DeliveryDate</th>
-                                                        <th>Cust_GSTNo</th>
+                                                        <th>Cust_TAXNo</th>
                                                         <th>Status</th>
                                                         <th>Shop Name</th>
                                                         <th *ngIf="user.UserGroup === 'CompanyAdmin'">PurchasePrice</th>
@@ -823,15 +823,15 @@
                                                         <th>InvoiceNo</th>
                                                         <th>Description</th>
                                                         <th>SubTotal</th>
-                                                        <th>GST Type</th>
-                                                        <th>GST%</th>
+                                                        <th>TAX Type</th>
+                                                        <th>TAX%</th>
                                                         <th style="display:none">IGST%</th>
                                                         <th style="display:none">IGSTAmt</th>
                                                         <th style="display:none">CGST%</th>
                                                         <th style="display:none">CGSTAmt</th>
                                                         <th style="display:none">SGST%</th>
                                                         <th style="display:none">SGSTAmt</th>
-                                                        <th>GST Amount</th>
+                                                        <th>TAX Amount</th>
                                                         <th>GrandTotal</th>
                                                     </tr>
                                                     <tr class="totolRow text-center">
@@ -946,7 +946,7 @@
 
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>Customer GSTNo</mat-label>
+                                                    <mat-label>Customer TAXNo</mat-label>
                                                     <mat-select name="CustomerGSTNo"
                                                         [(ngModel)]="cancel.CustomerGSTNo">
                                                         <mat-option [value]=0>All</mat-option>
@@ -1044,7 +1044,7 @@
                                             <!--  spec end -->
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>GST Type</mat-label>
+                                                    <mat-label>TAX Type</mat-label>
                                                     <mat-select name="GSTType" [(ngModel)]="cancel.GSTType"
                                                         #singleSelect>
                                                         <mat-option [value]=0>All</mat-option>
@@ -1056,7 +1056,7 @@
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>GSTPercentage</mat-label>
+                                                    <mat-label>TAX Percentage</mat-label>
                                                     <mat-select name="GSTPercentage"
                                                         [(ngModel)]="cancel.GSTPercentage">
                                                         <mat-option [value]=0>All</mat-option>
@@ -1125,9 +1125,9 @@
                                                         <th>Quantity</th>
                                                         <th>Discount Amount</th>
                                                         <th>Sub Total</th>
-                                                        <th>GST Type</th>
-                                                        <th>GST%</th>
-                                                        <th>GST Amount</th>
+                                                        <th>TAX Type</th>
+                                                        <th>TAX%</th>
+                                                        <th>TAX Amount</th>
                                                         <th style="display: none;"> CGST%</th>
                                                         <th style="display: none;"> CGSTAmt</th>
                                                         <th style="display: none;"> SGST%</th>
@@ -1139,7 +1139,7 @@
                                                         <th>Payment Status</th>
                                                         <th>Product Status</th>
                                                         <th>Product DeliveryDate</th>
-                                                        <th>Cust_GSTNo</th>
+                                                        <th>Cust_TAX No</th>
                                                         <th>Status</th>
                                                         <th>Cancel Status</th>
                                                     </tr>
@@ -1340,7 +1340,7 @@
 
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>Customer GSTNo</mat-label>
+                                                    <mat-label>Customer TAXNo</mat-label>
                                                     <mat-select name="CustomerGSTNo"
                                                         [(ngModel)]="pending.CustomerGSTNo">
                                                         <mat-option [value]=0>All</mat-option>
@@ -1438,7 +1438,7 @@
                                             <!--  spec end -->
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>GST Type</mat-label>
+                                                    <mat-label>TAX Type</mat-label>
                                                     <mat-select name="GSTType" [(ngModel)]="pending.GSTType"
                                                         #singleSelect>
                                                         <mat-option [value]=0>All</mat-option>
@@ -1450,7 +1450,7 @@
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>GSTPercentage</mat-label>
+                                                    <mat-label>TAX Percentage</mat-label>
                                                     <mat-select name="GSTPercentage"
                                                         [(ngModel)]="pending.GSTPercentage">
                                                         <mat-option [value]=0>All</mat-option>
@@ -1510,9 +1510,9 @@
                                                         <th>Quantity</th>
                                                         <th>Discount Amount</th>
                                                         <th>Sub Total</th>
-                                                        <th>GST Type</th>
-                                                        <th>GST%</th>
-                                                        <th>GST Amount</th>
+                                                        <th>TAX Type</th>
+                                                        <th>TAX%</th>
+                                                        <th>TAX Amount</th>
                                                         <th style="display: none;"> CGST%</th>
                                                         <th style="display: none;"> CGSTAmt</th>
                                                         <th style="display: none;"> SGST%</th>
@@ -1664,7 +1664,7 @@
 <!-- model Master-->
 <ng-template #content3 role="document" let-modal>
     <div class="modal-header" style="height: 50px;">
-        <h3 class="modal-title header pt-2" id="exampleModalLabel">GST Amount List</h3>
+        <h3 class="modal-title header pt-2" id="exampleModalLabel">TAX Amount List</h3>
         <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
@@ -1673,8 +1673,8 @@
                 style="border: 2px solid #fff !important;">
                 <thead>
                     <tr>
-                        <th>GSTType</th>
-                        <th>GSTAmount</th>
+                        <th>TAXType</th>
+                        <th>TAXAmount</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1697,7 +1697,7 @@
 <!-- model detail-->
 <ng-template #content role="document" let-modal>
     <div class="modal-header" style="height: 50px;">
-        <h3 class="modal-title header pt-2" id="exampleModalLabel">GST Amount List</h3>
+        <h3 class="modal-title header pt-2" id="exampleModalLabel">TAX Amount List</h3>
         <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
@@ -1706,8 +1706,8 @@
                 style="border: 2px solid #fff !important;">
                 <thead>
                     <tr>
-                        <th>GSTType</th>
-                        <th>GSTAmount</th>
+                        <th>TAXType</th>
+                        <th>TAXAmount</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1730,7 +1730,7 @@
 <!--Service model -->
 <ng-template #content1 role="document" let-modal>
     <div class="modal-header" style="height: 50px;">
-        <h3 class="modal-title header pt-2" id="exampleModalLabel">GST Amount List</h3>
+        <h3 class="modal-title header pt-2" id="exampleModalLabel">TAX Amount List</h3>
         <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
@@ -1739,8 +1739,8 @@
                 style="border: 2px solid #fff !important;">
                 <thead>
                     <tr>
-                        <th>GSTType</th>
-                        <th>GSTAmount</th>
+                        <th>TAXType</th>
+                        <th>TAXAmount</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1763,7 +1763,7 @@
 <!--cancel model -->
 <ng-template #content4 role="document" let-modal>
     <div class="modal-header" style="height: 50px;">
-        <h3 class="modal-title header pt-2" id="exampleModalLabel">GST Amount List</h3>
+        <h3 class="modal-title header pt-2" id="exampleModalLabel">TAX Amount List</h3>
         <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
@@ -1772,8 +1772,8 @@
                 style="border: 2px solid #fff !important;">
                 <thead>
                     <tr>
-                        <th>GSTType</th>
-                        <th>GSTAmount</th>
+                        <th>TAXType</th>
+                        <th>TAXAmount</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1796,7 +1796,7 @@
 <!--pending model -->
 <ng-template #content5 role="document" let-modal>
     <div class="modal-header" style="height: 50px;">
-        <h3 class="modal-title header pt-2" id="exampleModalLabel">GST Amount List</h3>
+        <h3 class="modal-title header pt-2" id="exampleModalLabel">TAX Amount List</h3>
         <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
@@ -1805,8 +1805,8 @@
                 style="border: 2px solid #fff !important;">
                 <thead>
                     <tr>
-                        <th>GSTType</th>
-                        <th>GSTAmount</th>
+                        <th>TAXType</th>
+                        <th>TAXAmount</th>
                     </tr>
                 </thead>
                 <tbody>

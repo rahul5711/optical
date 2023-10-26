@@ -255,7 +255,7 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 d-flex">
                                     <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>(TAX/VAT)% / Amt </mat-label>
+                                        <mat-label>TAX% / TAX Amt </mat-label>
                                         <div class="d-flex">
                                             <div class="d-flex">
                                                 <input matInput name="GSTPercentage" min="0" type="number"
@@ -394,7 +394,7 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>GST%</mat-label>
+                                        <mat-label>TAX%</mat-label>
                                         <input matInput type="number" min="0" name="GSTPercentage"
                                             [(ngModel)]="charge.GSTPercentage" required #GSTPercentagecontrol
                                             [autocomplete]="false" (blur)="calculateFields('GSTPercentage', 'chgst')">
@@ -405,7 +405,7 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>GST Amt</mat-label>
+                                        <mat-label>TAX Amt</mat-label>
                                         <input matInput type="number" min="0" name="GSTAmount"
                                             [(ngModel)]="charge.GSTAmount" required #GSTAmountcontrol disabled
                                             [autocomplete]="false" (blur)="calculateFields('GSTAmount', 'chgst')">
@@ -413,7 +413,7 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>GST Type</mat-label>
+                                        <mat-label>TAX Type</mat-label>
                                         <mat-select name="GSTType" [(ngModel)]="charge.GSTType" required
                                             #GSTTypecontrol1 (selectionChange)="calculateFields('TAmount', 'chtotal')">
                                             <mat-option

@@ -301,7 +301,7 @@
                                     <mat-label>{{gst.GSTType}}</mat-label>
                                     <input matInput name="igstAmt"   value="{{gst.Amount | number:'1.0-2'}}" disabled>
                                       <mat-error>
-                                         GST Amt is required
+                                        TAX Amt is required
                                       </mat-error>
                                 </mat-form-field>
                                 </div>
@@ -311,7 +311,7 @@
                                         <input matInput name="GSTAmtt" type="number" min="0" [(ngModel)]="selectedPurchaseMaster.GSTAmount"
                                             disabled #GSTAmttcontrol [autocomplete]="false">
                                         <mat-error>
-                                            GST Amt is required
+                                            TAX Amt is required
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
