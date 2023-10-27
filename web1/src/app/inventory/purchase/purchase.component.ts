@@ -363,6 +363,8 @@ export class PurchaseComponent implements OnInit {
     this.calculation.calculateGrandTotal(this.selectedPurchaseMaster, this.itemList, this.chargeList)
   }
 
+
+
   addItem() {
 
     if (this.category === 'Product') {
@@ -401,15 +403,6 @@ export class PurchaseComponent implements OnInit {
       this.item.ProductTypeID = this.item.ProductTypeID
       this.item.ProductTypeName = this.item.ProductTypeName
       this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
-
-      if (this.item.GSTPercentage === 0 || this.item.GSTAmount === 0) {
-        this.item.GSTType = 'None'
-        this.GstTypeDis = false
-      } else if (this.item.GSTType !== 'None') {
-        if (this.item.GSTPercentage === 0) {
-          this.GstTypeDis = false
-        }
-      }
 
       let AddQty = 0;
       if (this.item.Quantity !== 0 && this.item.Quantity !== "0") {
@@ -499,9 +492,11 @@ export class PurchaseComponent implements OnInit {
         GSTType: '', TotalAmount: 0.00, Status: 1
       };
     }
-    this.calculateGrandTotal();
+    
   }
+  this.calculateGrandTotal();
 }
+
   notifyGst() {
     if (this.item.GSTPercentage !== 0 && this.item.GSTPercentage !== "0") {
       if (this.item.GSTType === 'None') {

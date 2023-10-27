@@ -1,5 +1,5 @@
 
-<div class="card" *ngIf="this.CustomerView == true">
+<div style="zoom:100% !important" class="card" *ngIf="this.CustomerView == true">
     <div class="header">
         <div class="row">
             <div class="col-lg-1 col-md-2 col-6">
@@ -635,7 +635,7 @@
                                     </button>
                                 </td>
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                    {{data.HSNCode}}</td>
+                                     {{(data.HSNCode !== 'null')? data.HSNCode: ''}}</td>
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     {{data.Barcode}}</td>
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
@@ -964,7 +964,7 @@
                     <button type="button" class="me-3 ms-3" mat-raised-button color="primary">Invoice +
                         Power</button> -->
                         <!-- [disabled]="this.BillLink == ''" -->
-                    <button type="button"  mat-raised-button color="primary" class="me-3 ms-3"  (click)="sendWhatsappBill()"> 
+                    <button type="button" [disabled]="this.BillLink == ''" mat-raised-button color="primary" class="me-3 ms-3"  (click)="sendWhatsapp('bill')"> 
                          Whatsapp</button>
                     <button type="button" mat-raised-button color="primary">Email</button>
                 </div>
@@ -1305,7 +1305,7 @@
                         mat-raised-button color="primary">
                         Credit Note
                     </button>
-                    <button class="whatsapp ms-lg-4 me-lg-4 ms-3 me-3"><i class="fa-brands fa-whatsapp"></i></button>
+                    <button [disabled]="CreditPDF == ''" (click)="sendWhatsapp('credit')" class="whatsapp ms-lg-4 me-lg-4 ms-3 me-3"><i class="fa-brands fa-whatsapp"></i></button>
                     <button class="email"><i class="fa-solid fa-envelope"></i></button>
                 </div>
             </div>

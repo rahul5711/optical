@@ -24,7 +24,7 @@ import { FitterService } from 'src/app/service/fitter.service';
 import { CalculationService } from 'src/app/service/helpers/calculation.service';
 import { PaymentService } from 'src/app/service/payment.service';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
-
+import { NgTinyUrlService } from 'ng-tiny-url';
 
 @Component({
   selector: 'app-bill',
@@ -53,10 +53,10 @@ export class BillComponent implements OnInit {
   env = environment;
   id: any = 0
   id2: any = 0
-  searchValue:any =''
+  searchValue: any = ''
 
   myControl = new FormControl('');
-  ProductSrchList: any ;
+  ProductSrchList: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -75,7 +75,7 @@ export class BillComponent implements OnInit {
     private fitters: FitterService,
     public cal: CalculationService,
     public pay: PaymentService,
-    private http: HttpClient
+    private tinyUrlService: NgTinyUrlService,
 
   ) {
     this.id = this.route.snapshot.params['customerid'];
@@ -83,38 +83,38 @@ export class BillComponent implements OnInit {
   }
 
   BillMaster: any = {
-    ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, GSTNo: '', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null, 
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, GSTNo: '', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
   }
 
   BillItem: any = {
-    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal : 'yes', PurchasePrice:0,UpdateProduct: false
+    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false
   };
 
   Service: any = {
-    ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal:0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, DuaCal : 'yes',
+    ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, DuaCal: 'yes',
   };
 
   customer: any = {
     ID: null, CompanyID: '', Idd: 0, Name: '', Sno: '', TotalCustomer: '', VisitDate: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: '', DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
   };
 
-  applyPayment:any = {
-    ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0, 
-    CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1, 
+  applyPayment: any = {
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
+    CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
     pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
   };
 
   customerPower: any = []
-  data:any = { billMaseterData: null, billDetailData: null, service: null };
-  data1:any = { billMaseterData: null, billDetailData: [] };
+  data: any = { billMaseterData: null, billDetailData: null, service: null };
+  data1: any = { billMaseterData: null, billDetailData: [] };
 
   body = {
     customer: null, billMaster: null, billItemList: null, serviceList: null, employeeList: null, paidList: null, unpaidList: null, Shop: null,
-    Company: null, CompanySetting: null, User: null,mode:null,ShowPower:false
+    Company: null, CompanySetting: null, User: null, mode: null, ShowPower: false
   };
   ShowPower = false
-  billItemCheckList:any
-  checked :any= false;
+  billItemCheckList: any
+  checked: any = false;
 
   category = 'Product';
   employeeList: any;
@@ -145,30 +145,30 @@ export class BillComponent implements OnInit {
   GstTypeDis = false
   multiCheck = false
 
-  PowerSelect :any
-  PowerByRow:any = []
-  ProductDetails:any
-  UpdatePowerID:any
-  customerVisiList:any = []
-  customerPowerLists:any = []
+  PowerSelect: any
+  PowerByRow: any = []
+  ProductDetails: any
+  UpdatePowerID: any
+  customerVisiList: any = []
+  customerPowerLists: any = []
 
-  invoiceList:any = []
-  paidList:any = []
-  paidListPDF:any = []
+  invoiceList: any = []
+  paidList: any = []
+  paidListPDF: any = []
   totalBalance = 0
-  orderList:any = []
-  filtersList:any = []
-  supplierList:any = []
-  supplierID : any
+  orderList: any = []
+  filtersList: any = []
+  supplierList: any = []
+  supplierID: any
 
-  fitterList:any = []
-  lensList:any = []
-  rateCardList:any = []
+  fitterList: any = []
+  lensList: any = []
+  rateCardList: any = []
 
-  PaymentModesList:any=[]
+  PaymentModesList: any = []
   disbaleupdate = false
 
-  totalpaid  = 0
+  totalpaid = 0
 
   addCustomerBill = false
   editCustomerBill = false
@@ -176,6 +176,7 @@ export class BillComponent implements OnInit {
   CustomerView = false
   currentTime = '';
   BillLink = '';
+  CreditPDF = '';
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
@@ -186,20 +187,20 @@ export class BillComponent implements OnInit {
         this.deleteCustomerBill = element.Delete;
       }
     });
-    
+
     this.BillMaster.Employee = this.user.ID
     this.BillMaster.BillDate = moment().format('YYYY-MM-DD');
     this.BillMaster.DeliveryDate = moment(new Date()).add(this.companySetting.DeliveryDay, 'days').format('YYYY-MM-DD');
-    [this.loginShop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
-    this.currentTime = new Date().toLocaleTimeString('en-IN', { hourCycle: 'h23'})
+    [this.loginShop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+    this.currentTime = new Date().toLocaleTimeString('en-IN', { hourCycle: 'h23' })
 
     if (this.id2 != 0) {
-      this.getCustomerById1()
       this.getPaymentModesList()
       this.billByCustomer(this.id)
       this.paymentHistoryByMasterID(this.id, this.id2)
-    } 
+    }
 
+    this.getCustomerById1()
     this.getTrayNo();
     this.getEmployee();
     this.getDoctor();
@@ -209,7 +210,7 @@ export class BillComponent implements OnInit {
 
   }
 
-   isValidDate(dateString:any) {
+  isValidDate(dateString: any) {
     // First check for the pattern
     if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return false;
 
@@ -224,7 +225,7 @@ export class BillComponent implements OnInit {
 
     var daysInMonth = new Date(year, month, 0).getDate();
     return day > 0 && day <= daysInMonth;
-}
+  }
 
   getCustomerById1() {
 
@@ -260,15 +261,15 @@ export class BillComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.BillMaster = res.result.billMaster[0]
-          this.BillMaster.BillDate = moment(res.result.billMaster[0].BillDate).format('YYYY-MM-DD') 
-          this.BillMaster.DeliveryDate =  moment(res.result.billMaster[0].DeliveryDate).format('YYYY-MM-DD') 
+          this.BillMaster.BillDate = moment(res.result.billMaster[0].BillDate).format('YYYY-MM-DD')
+          this.BillMaster.DeliveryDate = moment(res.result.billMaster[0].DeliveryDate).format('YYYY-MM-DD')
           this.gst_detail = this.BillMaster.gst_detail
-          res.result.billDetail.forEach((e: any) =>{
-             if(e.ProductStatus == 0){
-               this.checked = false;
-             }else{
-               this.checked = true;
-             }
+          res.result.billDetail.forEach((e: any) => {
+            if (e.ProductStatus == 0) {
+              this.checked = false;
+            } else {
+              this.checked = true;
+            }
           })
           this.billItemList = res.result.billDetail
           this.serviceLists = res.result.service
@@ -279,7 +280,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
- 
+
     })
   }
 
@@ -297,7 +298,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
- 
+
     });
   }
 
@@ -318,35 +319,35 @@ export class BillComponent implements OnInit {
   }
 
   changeEmployee() {
-    if(this.id2 != 0){
-    this.sp.show();
-    const dtm = {
-      BillMasterID: Number(this.id2),
-      UserID:this.BillMaster.Employee
+    if (this.id2 != 0) {
+      this.sp.show();
+      const dtm = {
+        BillMasterID: Number(this.id2),
+        UserID: this.BillMaster.Employee
+      }
+      const subs: Subscription = this.bill.changeEmployee(dtm).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     }
-    const subs: Subscription = this.bill.changeEmployee(dtm).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-         this.as.successToast(res.message)
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
   }
 
-  changeProductStatus(i:any){
+  changeProductStatus(i: any) {
     this.sp.show()
     const newStatus = this.billItemList[i].ProductStatus === 1 ? 0 : 1;
     this.billItemList[i].ProductStatus = newStatus;
 
     const dtm = {
       BillMasterID: Number(this.id2),
-      billDetailData:this.billItemList
+      billDetailData: this.billItemList
     }
     const subs: Subscription = this.bill.changeProductStatus(dtm).subscribe({
       next: (res: any) => {
@@ -361,8 +362,8 @@ export class BillComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
-  
-  changeProductStatusAll(){
+
+  changeProductStatusAll() {
     this.sp.show()
     this.billItemCheckList = [];
     const isChecked = !this.checked;
@@ -377,14 +378,14 @@ export class BillComponent implements OnInit {
 
     const dtm = {
       BillMasterID: Number(this.id2),
-      billDetailData:this.billItemCheckList
+      billDetailData: this.billItemCheckList
     }
     const subs: Subscription = this.bill.changeProductStatus(dtm).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.getBillById(this.id2)
-          console.log(this.checked,'==========statuschange');
-          
+          console.log(this.checked, '==========statuschange');
+
         } else {
           this.as.errorToast(res.message)
         }
@@ -408,7 +409,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
- 
+
     });
   }
 
@@ -433,7 +434,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
- 
+
     });
     this.sp.hide();
   }
@@ -466,7 +467,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
- 
+
     });
   }
 
@@ -483,7 +484,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
- 
+
     });
   }
 
@@ -511,7 +512,7 @@ export class BillComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.prodList = res.data;
-        
+
           this.BillItem.Quantity = 1
         } else {
           this.as.errorToast(res.message)
@@ -538,9 +539,9 @@ export class BillComponent implements OnInit {
           this.searchList.GSTType = element.GSTType;
         }
       });
-      if(this.selectedProduct == 'CONTACT LENS' || this.selectedProduct == 'SOLUTION'){
+      if (this.selectedProduct == 'CONTACT LENS' || this.selectedProduct == 'SOLUTION') {
         this.showProductExpDate = true
-      }else{
+      } else {
         this.showProductExpDate = false
       }
     }
@@ -574,9 +575,9 @@ export class BillComponent implements OnInit {
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
-     
+
         });
-      } 
+      }
     });
   }
 
@@ -611,7 +612,7 @@ export class BillComponent implements OnInit {
     this.specList[i].SptTableData.forEach((element: { TableValue: string; }) => {
       if (element.TableValue.toLowerCase() === this.specList[i].SelectedValue.toLowerCase().trim()) { count = count + 1; }
     });
-    if (count !== 0 || this.specList[i].SelectedValue === '' ) {
+    if (count !== 0 || this.specList[i].SelectedValue === '') {
       //  alert ("Duplicate or Empty Values are not allowed");
       Swal.fire({
         icon: 'error',
@@ -663,209 +664,212 @@ export class BillComponent implements OnInit {
     return event;
   }
 
-  shopAll(){
+  shopAll() {
     this.getBarCodeList('')
   }
 
   getSearchByBarcodeNo() {
 
-    if(this.Req.SearchBarCode !== ''){
-    this.sp.show();
-    if (this.BillItem.Manual == false) {
-      if (this.BillItem.PreOrder) {
-        this.PreOrder = "true"
+    if (this.Req.SearchBarCode !== '') {
+      this.sp.show();
+      if (this.BillItem.Manual == false) {
+        if (this.BillItem.PreOrder) {
+          this.PreOrder = "true"
+        } else {
+          this.PreOrder = "false"
+        }
+        const subs: Subscription = this.bill.searchByBarcodeNo(this.Req, this.PreOrder, this.ShopMode).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.searchList = res.data[0];
+              if (this.searchList === undefined || this.searchList.Barcode === null || this.searchList.length === 0) {
+                Swal.fire({
+                  icon: 'warning',
+                  title: 'Please Enter Correct Barcode ',
+                  text: 'Incorrect Barcode OR Product not available in this Shop.',
+                  footer: '',
+                  backdrop: false,
+                });
+                this.sp.hide();
+              }
+
+              this.selectedProduct = this.searchList.ProductTypeName;
+              this.BillItem.ProductName = this.searchList.ProductName.toUpperCase();
+              this.BillItem.Barcode = this.searchList.Barcode;
+              this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
+              this.BillItem.BaseBarCode = this.searchList.BaseBarCode;
+              this.BillItem.PurchasePrice = this.searchList.UnitPrice;
+              this.BillItem.Quantity = 0;
+              this.myControl = new FormControl(this.BillItem.ProductName)
+              if (this.selectedProduct == 'CONTACT LENS' || this.selectedProduct == 'SOLUTION') {
+                this.showProductExpDate = true
+              } else {
+                this.showProductExpDate = false
+              }
+
+              let ProductNameSplitDate = this.searchList.ProductName.split("/")
+              if (this.isValidDate(ProductNameSplitDate[ProductNameSplitDate.length - 1])) {
+                this.BillItem.ProductExpDate = ProductNameSplitDate[ProductNameSplitDate.length - 1]
+              } else {
+                this.BillItem.ProductExpDate = "0000-00-00"
+              }
+
+              if (this.searchList !== undefined || this.searchList.Barcode !== null && this.searchList.BarCodeCount !== 0) {
+                if (this.billItemList.length !== 0 && this.BillItem.ProductName !== "") {
+                  let itemCount = 0;
+                  this.billItemList.forEach((element: any) => {
+                    if (element.ProductName === this.BillItem.ProductName && element.ID === null) {
+                      itemCount = itemCount + element.Quantity;
+                    }
+                  })
+                  this.searchList.BarCodeCount = this.searchList.BarCodeCount - itemCount;
+                }
+              }
+
+              this.prodList.forEach((e: any) => {
+                if (e.Name === this.searchList.ProductTypeName) {
+                  this.BillItem.ProductTypeID = e.ID;
+                  this.BillItem.ProductTypeName = e.Name;
+                  this.BillItem.HSNCode = e.HSNCode;
+                  this.BillItem.GSTPercentage = e.GSTPercentage;
+                  this.BillItem.GSTType = e.GSTType;
+                }
+              })
+
+              if (this.BillItem.WholeSale === true) {
+                this.BillItem.UnitPrice = this.searchList.WholeSalePrice;
+              }
+              else if (this.BillItem.PreOrder === true) {
+                this.BillItem.UnitPrice = this.searchList.RetailPrice;
+              }
+              else {
+                this.BillItem.UnitPrice = this.searchList.RetailPrice;
+              }
+              this.BillItem.Quantity = 1;
+            } else {
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+
+        });
       } else {
-        this.PreOrder = "false"
+        this.sp.hide();
+        Swal.fire({
+          icon: 'warning',
+          title: 'Not Available',
+          text: 'Product Not available in this Shop.',
+          footer: '',
+          backdrop: false,
+        });
       }
-      const subs: Subscription = this.bill.searchByBarcodeNo(this.Req, this.PreOrder, this.ShopMode).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.searchList = res.data[0];
-            if (this.searchList === undefined || this.searchList.Barcode === null || this.searchList.length === 0) {
-              Swal.fire({
-                icon: 'warning',
-                title: 'Please Enter Correct Barcode ',
-                text: 'Incorrect Barcode OR Product not available in this Shop.',
-                footer: '',
-                backdrop: false,
-              });
-              this.sp.hide();
-            }
-
-            this.selectedProduct = this.searchList.ProductTypeName;
-            this.BillItem.ProductName = this.searchList.ProductName.toUpperCase();
-            this.BillItem.Barcode = this.searchList.Barcode;
-            this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
-            this.BillItem.BaseBarCode = this.searchList.BaseBarCode;
-            this.BillItem.PurchasePrice = this.searchList.UnitPrice;
-            this.BillItem.Quantity = 0;
-            this.myControl = new FormControl(this.BillItem.ProductName)
-            if(this.selectedProduct == 'CONTACT LENS' || this.selectedProduct == 'SOLUTION'){
-              this.showProductExpDate = true
-            }else{
-              this.showProductExpDate = false
-            }
-
-            let ProductNameSplitDate = this.searchList.ProductName.split("/")
-            if (this.isValidDate(ProductNameSplitDate[ProductNameSplitDate.length-1])) {
-              this.BillItem.ProductExpDate = ProductNameSplitDate[ProductNameSplitDate.length-1]
-            }else{
-              this.BillItem.ProductExpDate = "0000-00-00"
-            }
-
-            if (this.searchList !== undefined || this.searchList.Barcode !== null && this.searchList.BarCodeCount !== 0) {
-              if (this.billItemList.length !== 0 && this.BillItem.ProductName !== "") {
-                let itemCount = 0;
-                this.billItemList.forEach((element: any) => {
-                  if (element.ProductName === this.BillItem.ProductName && element.ID === null) {
-                    itemCount = itemCount + element.Quantity;
-                  }
-                })
-                this.searchList.BarCodeCount = this.searchList.BarCodeCount - itemCount;
-              }
-            }
-
-            this.prodList.forEach((e: any) => {
-              if (e.Name === this.searchList.ProductTypeName) {
-                this.BillItem.ProductTypeID = e.ID;
-                this.BillItem.ProductTypeName = e.Name;
-                this.BillItem.HSNCode = e.HSNCode;
-                this.BillItem.GSTPercentage = e.GSTPercentage;
-                this.BillItem.GSTType = e.GSTType;
-              }
-            })
-
-            if (this.BillItem.WholeSale === true) {
-              this.BillItem.UnitPrice = this.searchList.WholeSalePrice;
-            }
-            else if (this.BillItem.PreOrder === true) {
-              this.BillItem.UnitPrice = this.searchList.RetailPrice;
-            }
-            else {
-              this.BillItem.UnitPrice = this.searchList.RetailPrice;
-            }
-            this.BillItem.Quantity = 1;
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-   
-      });
-    } else {
-      this.sp.hide();
-      Swal.fire({
-        icon: 'warning',
-        title: 'Not Available',
-        text: 'Product Not available in this Shop.',
-        footer: '',
-        backdrop: false,
-      });
-    }
     }
   }
-  getSearchByBarcodeNoS(barcode:any) {
+
+  getSearchByBarcodeNoS(barcode: any) {
     this.Req.SearchBarCode = barcode
-    if(this.Req.SearchBarCode !== ''){
-    
-    this.sp.show();
-    if (this.BillItem.Manual == false) {
-      if (this.BillItem.PreOrder) {
-        this.PreOrder = "true"
+    if (this.Req.SearchBarCode !== '') {
+
+      this.sp.show();
+      if (this.BillItem.Manual == false) {
+        if (this.BillItem.PreOrder) {
+          this.PreOrder = "true"
+        } else {
+          this.PreOrder = "false"
+        }
+        const subs: Subscription = this.bill.searchByBarcodeNo(this.Req, this.PreOrder, this.ShopMode).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.searchList = res.data[0];
+              if (this.searchList === undefined || this.searchList.Barcode === null) {
+                this.BarcodeList = res.data[0];
+                Swal.fire({
+                  icon: 'warning',
+                  title: 'Please Enter Correct Barcode ',
+                  text: 'Incorrect Barcode OR Product not available in this Shop.',
+                  footer: '',
+                  backdrop: false,
+                });
+                this.sp.hide();
+              }
+
+              this.selectedProduct = this.searchList.ProductTypeName;
+              this.BillItem.ProductTypeName = this.searchList.ProductTypeName;
+              this.BillItem.ProductTypeID = this.searchList.ProductTypeID;
+              this.BillItem.ProductName = this.searchList.ProductName.toUpperCase();
+              this.BillItem.Barcode = this.searchList.Barcode;
+              this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
+              this.BillItem.BaseBarCode = this.searchList.BaseBarCode;
+              this.BillItem.PurchasePrice = this.searchList.UnitPrice;
+              this.BillItem.Quantity = 0;
+
+
+              if (this.selectedProduct == 'CONTACT LENS' || this.selectedProduct == 'SOLUTION') {
+                this.showProductExpDate = true
+              } else {
+                this.showProductExpDate = false
+              }
+
+              let ProductNameSplitDate = this.searchList.ProductName.split("/")
+              if (this.isValidDate(ProductNameSplitDate[ProductNameSplitDate.length - 1])) {
+                this.BillItem.ProductExpDate = ProductNameSplitDate[ProductNameSplitDate.length - 1]
+              } else {
+                this.BillItem.ProductExpDate = "0000-00-00"
+              }
+
+              if (this.searchList !== undefined || this.searchList.Barcode !== null && this.searchList.BarCodeCount !== 0) {
+                if (this.billItemList.length !== 0 && this.BillItem.ProductName !== "") {
+                  let itemCount = 0;
+                  this.billItemList.forEach((element: any) => {
+                    if (element.ProductName === this.BillItem.ProductName && element.ID === null) {
+                      itemCount = itemCount + element.Quantity;
+                    }
+                  })
+                  this.searchList.BarCodeCount = this.searchList.BarCodeCount - itemCount;
+                }
+              }
+
+              this.prodList.forEach((e: any) => {
+                if (e.Name === this.searchList.ProductTypeName) {
+                  this.BillItem.ProductTypeID = e.ID;
+                  this.BillItem.ProductTypeName = e.Name;
+                  this.BillItem.HSNCode = e.HSNCode;
+                  this.BillItem.GSTPercentage = e.GSTPercentage;
+                  this.BillItem.GSTType = e.GSTType;
+                }
+              })
+
+              if (this.BillItem.WholeSale === true) {
+                this.BillItem.UnitPrice = this.searchList.WholeSalePrice;
+              }
+              else if (this.BillItem.PreOrder === true) {
+                this.BillItem.UnitPrice = this.searchList.RetailPrice;
+              }
+              else {
+                this.BillItem.UnitPrice = this.searchList.RetailPrice;
+              }
+              this.BillItem.Quantity = 1;
+            } else {
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+
+        });
       } else {
-        this.PreOrder = "false"
+        this.sp.hide();
+        Swal.fire({
+          icon: 'warning',
+          title: 'Not Available',
+          text: 'Product Not available in this Shop.',
+          footer: '',
+          backdrop: false,
+        });
       }
-      const subs: Subscription = this.bill.searchByBarcodeNo(this.Req, this.PreOrder, this.ShopMode).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.searchList = res.data[0];
-            if (this.searchList === undefined || this.searchList.Barcode === null) {
-              this.BarcodeList= res.data[0];
-              Swal.fire({
-                icon: 'warning',
-                title: 'Please Enter Correct Barcode ',
-                text: 'Incorrect Barcode OR Product not available in this Shop.',
-                footer: '',
-                backdrop: false,
-              });
-              this.sp.hide();
-            }
-
-            this.selectedProduct = this.searchList.ProductTypeName;
-            this.BillItem.ProductName = this.searchList.ProductName.toUpperCase();
-            this.BillItem.Barcode = this.searchList.Barcode;
-            this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
-            this.BillItem.BaseBarCode = this.searchList.BaseBarCode;
-            this.BillItem.PurchasePrice = this.searchList.UnitPrice;
-            this.BillItem.Quantity = 0;
-
-
-            if(this.selectedProduct == 'CONTACT LENS' || this.selectedProduct == 'SOLUTION'){
-              this.showProductExpDate = true
-            }else{
-              this.showProductExpDate = false
-            }
-
-            let ProductNameSplitDate = this.searchList.ProductName.split("/")
-            if (this.isValidDate(ProductNameSplitDate[ProductNameSplitDate.length-1])) {
-              this.BillItem.ProductExpDate = ProductNameSplitDate[ProductNameSplitDate.length-1]
-            }else{
-              this.BillItem.ProductExpDate = "0000-00-00"
-            }
-
-            if (this.searchList !== undefined || this.searchList.Barcode !== null && this.searchList.BarCodeCount !== 0) {
-              if (this.billItemList.length !== 0 && this.BillItem.ProductName !== "") {
-                let itemCount = 0;
-                this.billItemList.forEach((element: any) => {
-                  if (element.ProductName === this.BillItem.ProductName && element.ID === null) {
-                    itemCount = itemCount + element.Quantity;
-                  }
-                })
-                this.searchList.BarCodeCount = this.searchList.BarCodeCount - itemCount;
-              }
-            }
-
-            this.prodList.forEach((e: any) => {
-              if (e.ID === this.searchList.ProductTypeID) {
-                this.BillItem.ProductTypeID = e.ID;
-                this.BillItem.ProductTypeName = e.Name;
-                this.BillItem.HSNCode = e.HSNCode;
-                this.BillItem.GSTPercentage = e.GSTPercentage;
-                this.BillItem.GSTType = e.GSTType;
-              }
-            })
-
-            if (this.BillItem.WholeSale === true) {
-              this.BillItem.UnitPrice = this.searchList.WholeSalePrice;
-            }
-            else if (this.BillItem.PreOrder === true) {
-              this.BillItem.UnitPrice = this.searchList.RetailPrice;
-            }
-            else {
-              this.BillItem.UnitPrice = this.searchList.RetailPrice;
-            }
-            this.BillItem.Quantity = 1;
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-   
-      });
-    } else {
-      this.sp.hide();
-      Swal.fire({
-        icon: 'warning',
-        title: 'Not Available',
-        text: 'Product Not available in this Shop.',
-        footer: '',
-        backdrop: false,
-      });
-    }
     }
   }
 
@@ -889,7 +893,7 @@ export class BillComponent implements OnInit {
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
-     
+
         });
       } else {
         // stock product name
@@ -906,7 +910,7 @@ export class BillComponent implements OnInit {
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
-     
+
         });
       }
     } else {
@@ -949,7 +953,7 @@ export class BillComponent implements OnInit {
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
-     
+
         });
       }
       else {
@@ -966,7 +970,7 @@ export class BillComponent implements OnInit {
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
-     
+
         });
       }
     } else {
@@ -1035,19 +1039,19 @@ export class BillComponent implements OnInit {
   AddDiscalculate(fieldName: any, mode: any) {
     let PaidAmount = 0
 
-    if(this.id2 == 0){
-      this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)  
-    }else{
-      if(this.BillMaster.DueAmount >= this.BillMaster.AddlDiscount && this.BillMaster.DueAmount >= this.BillMaster.AddlDiscountPercentage ){
-        PaidAmount =  this.BillMaster.TotalAmount - this.BillMaster.DueAmount
-        this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)  
-        this.BillMaster.DueAmount =+ this.BillMaster.TotalAmount - PaidAmount
-      }else{
+    if (this.id2 == 0) {
+      this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
+    } else {
+      if (this.BillMaster.DueAmount >= this.BillMaster.AddlDiscount && this.BillMaster.DueAmount >= this.BillMaster.AddlDiscountPercentage) {
+        PaidAmount = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
+        this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
+        this.BillMaster.DueAmount = + this.BillMaster.TotalAmount - PaidAmount
+      } else {
         this.BillMaster.AddlDiscount = 0
         this.BillMaster.AddlDiscountPercentage = 0
-        PaidAmount =  this.BillMaster.TotalAmount - this.BillMaster.DueAmount
-        this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)  
-        this.BillMaster.DueAmount =+ this.BillMaster.TotalAmount - PaidAmount
+        PaidAmount = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
+        this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
+        this.BillMaster.DueAmount = + this.BillMaster.TotalAmount - PaidAmount
         Swal.fire({
           icon: 'warning',
           title: 'You cannot give an additional discount greater than the due amount (0).',
@@ -1057,7 +1061,7 @@ export class BillComponent implements OnInit {
         });
       }
     }
-   
+
 
   }
 
@@ -1065,7 +1069,7 @@ export class BillComponent implements OnInit {
     if (this.BillMaster.ID !== null) {
       this.BillItem.Status = 2;
       this.BillItem.DuaCal = 'yes';
-    }else{
+    } else {
       this.BillItem.DuaCal = 'yes'
     }
 
@@ -1089,7 +1093,7 @@ export class BillComponent implements OnInit {
       console.log(this.billItemList);
       this.myControl = new FormControl('')
       this.BillItem = {
-        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale:  this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal : 'yes', PurchasePrice:0,UpdateProduct: false
+        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false
       };
 
       this.searchList.BarCodeCount = 0;
@@ -1103,8 +1107,7 @@ export class BillComponent implements OnInit {
   addItem() {
     // additem Services
     if (this.category === 'Services') {
-      if (this.BillMaster.ID !== null) 
-      { this.Service.Status = 2; this.Service.DuaCal = 'yes'}else{
+      if (this.BillMaster.ID !== null) { this.Service.Status = 2; this.Service.DuaCal = 'yes' } else {
         this.Service.DuaCal = 'yes'
       }
 
@@ -1126,36 +1129,60 @@ export class BillComponent implements OnInit {
       this.serviceLists.push(this.Service);
       this.calculateGrandTotal()
       this.Service = {
-        ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal:0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1
+        ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1
       };
-      
+
     }
 
     // additem Product
     if (this.category === 'Product' && this.BillItem.ProductTypeID !== '') {
 
-        // GSTType disable condition
-        if (this.BillItem.GSTPercentage === 0 || this.BillItem.GSTAmount === 0) {
-          this.BillItem.GSTType = 'None'
+      // GSTType disable condition
+      if (this.BillItem.GSTPercentage === 0 || this.BillItem.GSTAmount === 0) {
+        this.BillItem.GSTType = 'None'
+        this.GstTypeDis = false
+      }
+
+      else if (this.BillItem.GSTType !== 'None') {
+        if (this.BillItem.GSTPercentage === 0) {
           this.GstTypeDis = false
         }
+      }
 
-        else if (this.BillItem.GSTType !== 'None') {
-          if (this.BillItem.GSTPercentage === 0) {
-            this.GstTypeDis = false
-          }
+      else if (this.BillItem.GSTType === 'None') {
+        if (this.BillItem.GSTPercentage !== 0 || this.BillItem.GSTAmount !== 0) {
+          this.GstTypeDis = false
         }
+      }
+      // GSTType disable condition
 
-        else if (this.BillItem.GSTType === 'None') {
-          if (this.BillItem.GSTPercentage !== 0 || this.BillItem.GSTAmount !== 0) {
-            this.GstTypeDis = false
+      // additem Manual
+      if (this.BillItem.Manual) {
+
+        let searchString = "";
+        this.prodList.forEach((e: any) => {
+          if (e.Name === this.selectedProduct) {
+            this.BillItem.ProductTypeID = e.ID;
+            this.BillItem.ProductTypeName = e.ProductTypeName;
+            this.BillItem.HSNCode = e.HSNCode;
           }
-        }
-        // GSTType disable condition
-
-        // additem Manual
-        if (this.BillItem.Manual) {
-
+        })
+        this.specList.forEach((element: any, i: any) => {
+          if (element.SelectedValue !== '') {
+            searchString = searchString.concat(element.SelectedValue, "/");
+          }
+          if (element.FieldType === "Date") {
+            this.BillItem.ProductExpDate = element.SelectedValue;
+          }
+        });
+        this.BillItem.ProductExpDate = this.BillItem.ProductExpDate === '' ? "0000-00-00" : this.BillItem.ProductExpDate;
+        this.BillItem.ProductTypeName = this.selectedProduct
+        this.BillItem.ProductName = searchString
+        this.BillItem.Barcode = 'ManualProduct'
+      }
+      // additem Pre order
+      if (this.BillItem.Barcode === null || this.BillItem.Barcode === '') {
+        if (this.BillItem.PreOrder) {
           let searchString = "";
           this.prodList.forEach((e: any) => {
             if (e.Name === this.selectedProduct) {
@@ -1168,89 +1195,66 @@ export class BillComponent implements OnInit {
               searchString = searchString.concat(element.SelectedValue, "/");
             }
             if (element.FieldType === "Date") {
-              this.BillItem.ProductExpDate = element.SelectedValue ;
+              this.BillItem.ProductExpDate = element.SelectedValue;
             }
           });
           this.BillItem.ProductExpDate = this.BillItem.ProductExpDate === '' ? "0000-00-00" : this.BillItem.ProductExpDate;
           this.BillItem.ProductTypeName = this.selectedProduct
           this.BillItem.ProductName = searchString
-          this.BillItem.Barcode = 'ManualProduct'
-        }
-        // additem Pre order
-        if (this.BillItem.Barcode === null || this.BillItem.Barcode === '') {
-          if (this.BillItem.PreOrder) {
-            let searchString = "";
-            this.prodList.forEach((e: any) => {
-              if (e.Name === this.selectedProduct) {
-                this.BillItem.ProductTypeID = e.ID;
-                this.BillItem.HSNCode = e.HSNCode;
-              }
-            })
-            this.specList.forEach((element: any, i: any) => {
-              if (element.SelectedValue !== '') {
-                searchString = searchString.concat(element.SelectedValue, "/");
-              } 
-              if (element.FieldType === "Date") {
-                this.BillItem.ProductExpDate = element.SelectedValue ;
-              }
-            });
-            this.BillItem.ProductExpDate = this.BillItem.ProductExpDate === '' ? "0000-00-00" : this.BillItem.ProductExpDate;
-            this.BillItem.ProductTypeName = this.selectedProduct
-            this.BillItem.ProductName = searchString
-            this.BillItem.Barcode = '0'
-            this.BillItem.BaseBarCode = '0'
-            
+          this.BillItem.Barcode = '0'
+          this.BillItem.BaseBarCode = '0'
 
-            if (this.BillItem.WholeSale === true) {
-              this.BillItem.WholeSalePrice = this.BillItem.UnitPrice
-            } else if(this.BillItem.Barcode === 0) {
-              this.BillItem.PurchasePrice = this.BillItem.PurchasePrice
-            }else{
-              this.BillItem.RetailPrice = this.BillItem.UnitPrice
-            }
+
+          if (this.BillItem.WholeSale === true) {
+            this.BillItem.WholeSalePrice = this.BillItem.UnitPrice
+          } else if (this.BillItem.Barcode === 0) {
+            this.BillItem.PurchasePrice = this.BillItem.PurchasePrice
+          } else {
+            this.BillItem.RetailPrice = this.BillItem.UnitPrice
           }
         }
+      }
 
-        if(this.BillItem.ProductTypeName){
-          let type = ''
-           if(this.BillItem.ProductTypeName !== 'CONTACT LENS'){
-              type = 'Lens'
-           }else {
-            type = 'ContactLens'
-           }
-           this.sp.show()
-          const subs: Subscription = this.cs.getMeasurementByCustomer(this.id , type).subscribe({
-            next: (res: any) => {
-              console.log(res);
-              if (res.data.length !== 0) {
-                if(res.success ){
-                  this.BillItem.MeasurementID = JSON.stringify(res.data) ;
-                  this.addProductItem();
-                }else{
-                  this.as.errorToast(res.message)
-                  Swal.fire({
-                    position: 'center',
-                    icon: 'warning',
-                    title: 'Opps !!',
-                    text: res.message,
-                    showConfirmButton: true,
-                    backdrop : false,
-                  })
-                }
-              } else {
-                this.BillItem.MeasurementID = []
-                this.addProductItem();
-              }
-              this.sp.hide()
-            },
-            error: (err: any) => console.log(err.message),
-            complete: () => subs.unsubscribe(),
-       
-          });
-        }else{
-          this.addProductItem();
+      if (this.BillItem.ProductTypeName) {
+        let type = ''
+        if (this.BillItem.ProductTypeName !== 'CONTACT LENS') {
+          type = 'Lens'
+        } else {
+          type = 'ContactLens'
         }
-  }
+        this.sp.show()
+        const subs: Subscription = this.cs.getMeasurementByCustomer(this.id, type).subscribe({
+          next: (res: any) => {
+            console.log(res);
+            if (res.data.length !== 0) {
+              if (res.success) {
+                this.BillItem.MeasurementID = JSON.stringify(res.data);
+                this.addProductItem();
+              } else {
+                this.as.errorToast(res.message)
+                Swal.fire({
+                  position: 'center',
+                  icon: 'warning',
+                  title: 'Opps !!',
+                  text: res.message,
+                  showConfirmButton: true,
+                  backdrop: false,
+                })
+              }
+            } else {
+              this.BillItem.MeasurementID = []
+              this.addProductItem();
+            }
+            this.sp.hide()
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+
+        });
+      } else {
+        this.addProductItem();
+      }
+    }
 
     // this.BillMaster.Quantity = 0;
     // this.BillMaster.SubTotal = 0;
@@ -1291,7 +1295,7 @@ export class BillComponent implements OnInit {
           //   timer: 1000
           // })
           this.as.successToast(res.message)
-          this. openModal1(content1)
+          this.openModal1(content1)
         } else {
           this.as.errorToast(res.message)
         }
@@ -1299,7 +1303,7 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
- 
+
     });
   }
 
@@ -1310,7 +1314,7 @@ export class BillComponent implements OnInit {
     this.BillMaster.BillDate = this.BillMaster.BillDate + ' ' + this.currentTime;
     this.BillMaster.DeliveryDate = this.BillMaster.DeliveryDate + ' ' + this.currentTime;
 
-    if(this.BillMaster.DueAmount !== 0){
+    if (this.BillMaster.DueAmount !== 0) {
       this.BillMaster.PaymentStatus = 'Unpaid'
     }
     this.data.billMaseterData = this.BillMaster;
@@ -1356,14 +1360,14 @@ export class BillComponent implements OnInit {
   }
 
   deleteItem(category: any, i: any) {
-    if (category === "Product" ) {
+    if (category === "Product") {
       if (this.billItemList[i].ID === null) {
         this.billItemList[i].DuaCal = 'delete';
         this.calculateGrandTotal();
         this.billItemList.splice(i, 1);
         this.calculateGrandTotal();
-        
-      }  else {
+
+      } else {
         Swal.fire({
           title: 'Are you sure?',
           text: "You won't be able to revert this!",
@@ -1377,28 +1381,28 @@ export class BillComponent implements OnInit {
           if (result.isConfirmed) {
             let billlIst: any[] = this.billItemList
             this.billItemList.forEach((ele: any) => {
-               if(ele.Status === 2){
-                 ele.Status = 0;
-                 ele.DuaCal = 'delete2';
-               }
-            })
-            this.serviceLists.forEach((ele: any) => {
-              if(ele.Status === 2){
+              if (ele.Status === 2) {
                 ele.Status = 0;
                 ele.DuaCal = 'delete2';
               }
-           })
+            })
+            this.serviceLists.forEach((ele: any) => {
+              if (ele.Status === 2) {
+                ele.Status = 0;
+                ele.DuaCal = 'delete2';
+              }
+            })
             this.billItemList = billlIst
             this.billItemList[i].Status = 0;
             this.billItemList[i].DuaCal = 'delete';
-          
+
             this.data.billMaseterData = this.BillMaster;
             this.data.billDetailData = this.billItemList[i];
             this.calculateGrandTotal();
-            if(this.data.billMaseterData.TotalAmount === 0 ){
+            if (this.data.billMaseterData.TotalAmount === 0) {
               this.data.billMaseterData.AddlDiscountPercentage = 0
               this.data.billMaseterData.AddlDiscount = 0
-            }else{
+            } else {
               this.AddDiscalculate('AddlDiscountPercentage', 'discount')
             }
             delete this.data.service
@@ -1415,7 +1419,7 @@ export class BillComponent implements OnInit {
               },
               error: (err: any) => console.log(err.message),
               complete: () => subs.unsubscribe(),
-         
+
             });
           }
         })
@@ -1442,17 +1446,17 @@ export class BillComponent implements OnInit {
             this.sp.show();
             let billlIst: any[] = this.serviceLists
             this.serviceLists.forEach((ele: any) => {
-               if(ele.Status === 2){
-                 ele.Status = 0;
-                 ele.DuaCal = 'delete2';
-               }
-            })
-            this.billItemList.forEach((ele: any) => {
-              if(ele.Status === 2){
+              if (ele.Status === 2) {
                 ele.Status = 0;
                 ele.DuaCal = 'delete2';
               }
-           })
+            })
+            this.billItemList.forEach((ele: any) => {
+              if (ele.Status === 2) {
+                ele.Status = 0;
+                ele.DuaCal = 'delete2';
+              }
+            })
             this.serviceLists = billlIst
             this.serviceLists[i].Status = 0;
             this.serviceLists[i].DuaCal = 'delete';
@@ -1471,7 +1475,7 @@ export class BillComponent implements OnInit {
               },
               error: (err: any) => console.log(err.message),
               complete: () => subs.unsubscribe(),
-         
+
             });
           }
         })
@@ -1482,13 +1486,13 @@ export class BillComponent implements OnInit {
   }
 
   cancelProduct(category: any, i: any) {
-    if (category === "Product" ) {
+    if (category === "Product") {
       if (this.billItemList[i].ID === null) {
         this.billItemList[i].DuaCal = 'delete';
         this.calculateGrandTotal();
         this.billItemList.splice(i, 1);
         this.calculateGrandTotal();
-      }  else {
+      } else {
         Swal.fire({
           title: 'Are you sure?',
           text: "You won't be able to revert this!",
@@ -1520,7 +1524,7 @@ export class BillComponent implements OnInit {
               },
               error: (err: any) => console.log(err.message),
               complete: () => subs.unsubscribe(),
-         
+
             });
           }
         })
@@ -1529,79 +1533,79 @@ export class BillComponent implements OnInit {
   }
 
   // update power 
-  openModal(content: any, data:any){
+  openModal(content: any, data: any) {
     this.sp.show()
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.PowerByRow = []
     this.customerPowerLists = []
-    if(data.MeasurementID !== ''){
+    if (data.MeasurementID !== '') {
       this.PowerByRow = JSON.parse(data.MeasurementID)
     }
-    this.ProductDetails =  data.ProductTypeName + '/' + data.ProductName
+    this.ProductDetails = data.ProductTypeName + '/' + data.ProductName
     this.UpdatePowerID = data
     let type = '';
-    if(data.ProductTypeName.toUpperCase() !== 'CONTACT LENS'){
-       type = 'Lens'
-    }else{
+    if (data.ProductTypeName.toUpperCase() !== 'CONTACT LENS') {
+      type = 'Lens'
+    } else {
       type = 'ContactLens'
     }
 
-    const subs: Subscription = this.cs.getMeasurementByCustomerForDropDown(this.id , type).subscribe({
+    const subs: Subscription = this.cs.getMeasurementByCustomerForDropDown(this.id, type).subscribe({
       next: (res: any) => {
-          if(res.success ){
-             this.customerVisiList = res.data
-          }else{
-            this.as.errorToast(res.message)
-            Swal.fire({
-              position: 'center',
-              icon: 'warning',
-              title: 'Opps !!',
-              text: res.message,
-              showConfirmButton: true,
-              backdrop : false,
-            })
-          }
+        if (res.success) {
+          this.customerVisiList = res.data
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Opps !!',
+            text: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
+        }
         this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
- 
+
     });
   }
 
-  customerPowerDropdown(){
-      let VisitNumber =   this.customerVisiList
-      this.customerPowerLists = VisitNumber.filter((s:any) => s.VisitNo === this.PowerSelect);
-      console.log(this.customerPowerLists);
+  customerPowerDropdown() {
+    let VisitNumber = this.customerVisiList
+    this.customerPowerLists = VisitNumber.filter((s: any) => s.VisitNo === this.PowerSelect);
+    console.log(this.customerPowerLists);
   }
 
-  updatePower(){
+  updatePower() {
     this.sp.show()
-   let ID = this.UpdatePowerID.ID
-   let MeasurementID = JSON.stringify(this.customerPowerLists)
-    const subs: Subscription = this.bill.updatePower(ID , MeasurementID).subscribe({
+    let ID = this.UpdatePowerID.ID
+    let MeasurementID = JSON.stringify(this.customerPowerLists)
+    const subs: Subscription = this.bill.updatePower(ID, MeasurementID).subscribe({
       next: (res: any) => {
-          if(res.success ){
-            this.getBillById(this.id2)
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'Your Customer Power has been update.',
-              showConfirmButton: false,
-              timer: 1000
-            })
-          }else{
-            this.as.errorToast(res.message)
-            Swal.fire({
-              position: 'center',
-              icon: 'warning',
-              title: 'Opps !!',
-              text: res.message,
-              showConfirmButton: true,
-              backdrop : false,
-            })
-          }
-          this.modalService.dismissAll()
+        if (res.success) {
+          this.getBillById(this.id2)
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your Customer Power has been update.',
+            showConfirmButton: false,
+            timer: 1000
+          })
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Opps !!',
+            text: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
+        }
+        this.modalService.dismissAll()
         this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
@@ -1611,8 +1615,8 @@ export class BillComponent implements OnInit {
 
   // update payment 
 
-  openModal1(content1: any){
-    this.modalService.open(content1, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
+  openModal1(content1: any) {
+    this.modalService.open(content1, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.getPaymentModesList()
     this.billByCustomer(this.id)
     this.paymentHistoryByMasterID(this.id, this.id2)
@@ -1631,147 +1635,23 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
- 
+
     });
   }
 
-  billByCustomer(CustomerID:any){
+  billByCustomer(CustomerID: any) {
     this.sp.show()
-     CustomerID = Number(this.id)
+    CustomerID = Number(this.id)
     const subs: Subscription = this.bill.billByCustomer(CustomerID).subscribe({
       next: (res: any) => {
-          if(res.success ){
-             this.invoiceList = res.data
-              if (this.invoiceList.length === 0) {
-                 this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
-              }
-             this.applyPayment.PayableAmount =  res.totalDueAmount ? res.totalDueAmount: 0;
-             this.applyPayment.CustomerCredit = res.creditAmount ? res.creditAmount : 0
-          }else{
-            this.as.errorToast(res.message)
-            Swal.fire({
-              position: 'center',
-              icon: 'warning',
-              title: 'Opps !!',
-              text: res.message,
-              showConfirmButton: true,
-              backdrop : false,
-            })
+        if (res.success) {
+          this.invoiceList = res.data
+          if (this.invoiceList.length === 0) {
+            this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
           }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
- 
-    });
-  }
-
-  paymentHistoryByMasterID(CustomerID:any,BillMasterID:any){
-    this.sp.show()
-    this.totalpaid = 0
-    CustomerID = Number(this.id)
-    BillMasterID = Number(this.id2)
-    const subs: Subscription = this.bill.paymentHistoryByMasterID(CustomerID,BillMasterID).subscribe({
-      next: (res: any) => {
-          if(res.success ){
-            this.paidListPDF = res.data
-             this.paidList = this.paidListPDF
-            //  this.paidListPDF.forEach((ele: any) => {
-            //   ele.Amount = ele.Type === 'Debit' ? '-' + ele.Amount : '+' + ele.Amount;
-            // });
-             this.paidList.forEach((e: any) => {
-              this.totalpaid =+ this.totalpaid + e.Amount
-             });             
-          }else{
-            this.as.errorToast(res.message)
-            Swal.fire({
-              position: 'center',
-              icon: 'warning',
-              title: 'Opps !!',
-              text: res.message,
-              showConfirmButton: true,
-              backdrop : false,
-            })
-          }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
-
-  onPaymentSubmit(){
-    if(this.applyPayment.PayableAmount < this.applyPayment.PaidAmount ){
-      Swal.fire({
-        position: 'center',
-        icon: 'warning',
-        title: 'Opps !!',
-        showConfirmButton: true,
-        backdrop : false,
-      })
-      this.applyPayment.PaidAmount = 0
-    }
-    if(this.applyPayment.ApplyReturn === true){
-      if (this.applyPayment.CustomerCredit < this.applyPayment.PaidAmount){
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: 'Opps !!',
-          showConfirmButton: true,
-          backdrop : false,
-        })
-        this.applyPayment.PaidAmount = 0
-      }
-    }
-    if(this.applyPayment.PaidAmount !== 0){
-      this.sp.show()
-      this.applyPayment.CustomerID = this.BillMaster.CustomerID;
-
-      this.applyPayment.CompanyID = this.company.ID;
-      this.applyPayment.ShopID = Number(this.selectedShop);
-      this.applyPayment.PaymentDate =  moment().format('YYYY-MM-DD') +  ' ' + this.currentTime;
-      this.applyPayment.pendingPaymentList = this.invoiceList;
-      const subs: Subscription = this.pay.customerPayment(this.applyPayment).subscribe({
-        next: (res: any) => {
-            if(res.success ){
-               this.paymentHistoryByMasterID(this.id,this.id2)
-               this.billByCustomer(this.id)
-               this.getBillById(this.id2)
-               this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
-            }else{
-              this.as.errorToast(res.message)
-              Swal.fire({
-                position: 'center',
-                icon: 'warning',
-                title: 'Opps !!',
-                text: res.message,
-                showConfirmButton: true,
-                backdrop : false,
-              })
-            }
-          this.sp.hide()
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-   
-      });
-    }
-  }
-
-  // order supplier 
-  openModal12(content12: any){
-    this.sp.show()
-    this.modalService.open(content12, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
-    this.getSupplierPo()
-    this.dropdownSupplierlist()
-  }
-
-  getSupplierPo(){
-  const subs: Subscription = this.bill.getSupplierPo(this.id2,'' ).subscribe({
-    next: (res: any) => {
-        if(res.success ){
-           this.orderList = res.data
-        }else{
+          this.applyPayment.PayableAmount = res.totalDueAmount ? res.totalDueAmount : 0;
+          this.applyPayment.CustomerCredit = res.creditAmount ? res.creditAmount : 0
+        } else {
           this.as.errorToast(res.message)
           Swal.fire({
             position: 'center',
@@ -1779,21 +1659,145 @@ export class BillComponent implements OnInit {
             title: 'Opps !!',
             text: res.message,
             showConfirmButton: true,
-            backdrop : false,
+            backdrop: false,
           })
         }
-      this.sp.hide()
-    },
-    error: (err: any) => console.log(err.message),
-    complete: () => subs.unsubscribe(),
-  });
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+
+    });
+  }
+
+  paymentHistoryByMasterID(CustomerID: any, BillMasterID: any) {
+    this.sp.show()
+    this.totalpaid = 0
+    CustomerID = Number(this.id)
+    BillMasterID = Number(this.id2)
+    const subs: Subscription = this.bill.paymentHistoryByMasterID(CustomerID, BillMasterID).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.paidListPDF = res.data
+          this.paidList = this.paidListPDF
+          //  this.paidListPDF.forEach((ele: any) => {
+          //   ele.Amount = ele.Type === 'Debit' ? '-' + ele.Amount : '+' + ele.Amount;
+          // });
+          this.paidList.forEach((e: any) => {
+            this.totalpaid = + this.totalpaid + e.Amount
+          });
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Opps !!',
+            text: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  onPaymentSubmit() {
+    if (this.applyPayment.PayableAmount < this.applyPayment.PaidAmount) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Opps !!',
+        showConfirmButton: true,
+        backdrop: false,
+      })
+      this.applyPayment.PaidAmount = 0
+    }
+    if (this.applyPayment.ApplyReturn === true) {
+      if (this.applyPayment.CustomerCredit < this.applyPayment.PaidAmount) {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Opps !!',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        this.applyPayment.PaidAmount = 0
+      }
+    }
+    if (this.applyPayment.PaidAmount !== 0) {
+      this.sp.show()
+      this.applyPayment.CustomerID = this.BillMaster.CustomerID;
+
+      this.applyPayment.CompanyID = this.company.ID;
+      this.applyPayment.ShopID = Number(this.selectedShop);
+      this.applyPayment.PaymentDate = moment().format('YYYY-MM-DD') + ' ' + this.currentTime;
+      this.applyPayment.pendingPaymentList = this.invoiceList;
+      const subs: Subscription = this.pay.customerPayment(this.applyPayment).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.paymentHistoryByMasterID(this.id, this.id2)
+            this.billByCustomer(this.id)
+            this.getBillById(this.id2)
+            this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
+          } else {
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: 'Opps !!',
+              text: res.message,
+              showConfirmButton: true,
+              backdrop: false,
+            })
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+
+      });
+    }
+  }
+
+  // order supplier 
+  openModal12(content12: any) {
+    this.sp.show()
+    this.modalService.open(content12, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+    this.getSupplierPo()
+    this.dropdownSupplierlist()
+  }
+
+  getSupplierPo() {
+    const subs: Subscription = this.bill.getSupplierPo(this.id2, '').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.orderList = res.data
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Opps !!',
+            text: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   validate(v: { Sel: number | null; }, event: any) {
     if (v.Sel === 0 || v.Sel === null) {
-        v.Sel = 1;
+      v.Sel = 1;
     } else {
-        v.Sel = 0;
+      v.Sel = 0;
     }
   }
 
@@ -1808,56 +1812,56 @@ export class BillComponent implements OnInit {
     }
   }
 
-  dropdownSupplierlist(){
+  dropdownSupplierlist() {
     const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
       next: (res: any) => {
-        this.supplierList  = res.data
+        this.supplierList = res.data
       },
       error: (err: any) => console.log(err.message),
- 
+
     });
   }
 
-  assignSupplierPo(){
+  assignSupplierPo() {
     this.sp.show()
     this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
     if (this.filtersList.length > 0) {
-    this.filtersList.forEach((element: any) => {
-      element.SupplierID = Number(this.supplierID) ;
-    });
+      this.filtersList.forEach((element: any) => {
+        element.SupplierID = Number(this.supplierID);
+      });
 
-    let Body = this.filtersList
-    const subs: Subscription =  this.bill.assignSupplierPo(Body).subscribe({
-      next: (res: any) => {
-        if(res.success){
-          this.getSupplierPo()
-          this.supplierID = ''
-          this.modalService.dismissAll()
-          // this.getList()
-          this.as.successToast(res.message)
-        }else{
-          this.as.errorToast(res.message)
-          Swal.fire({
-            position: 'center',
-            icon: 'warning',
-            title: res.message,
-            showConfirmButton: true,
-            backdrop : false,
-          })
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-    }else{
+      let Body = this.filtersList
+      const subs: Subscription = this.bill.assignSupplierPo(Body).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.getSupplierPo()
+            this.supplierID = ''
+            this.modalService.dismissAll()
+            // this.getList()
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: res.message,
+              showConfirmButton: true,
+              backdrop: false,
+            })
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    } else {
       this.sp.hide()
       Swal.fire({
         position: 'center',
         icon: 'warning',
         title: 'Opps !! <br> Select the check box !!',
         showConfirmButton: true,
-        backdrop : false,
+        backdrop: false,
       })
     }
   }
@@ -1865,30 +1869,30 @@ export class BillComponent implements OnInit {
   assignSupplierDoc() {
     this.sp.show()
     this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
-          this.filtersList.forEach((element: any) => {
-            this.data.ID = element.BillID 
-            this.data.SupplierID =  element.SupplierID 
-            element.Sel = element.Sel;
-            if(element.SupplierDocNo === '' || element.SupplierDocNo === null || element.SupplierDocNo === undefined){
-              element.SupplierDocNo = 'NA'
-            }else{
-              element.SupplierDocNo = element.SupplierDocNo;
-            }
-          });
-      let Body = this.filtersList;
+    this.filtersList.forEach((element: any) => {
+      this.data.ID = element.BillID
+      this.data.SupplierID = element.SupplierID
+      element.Sel = element.Sel;
+      if (element.SupplierDocNo === '' || element.SupplierDocNo === null || element.SupplierDocNo === undefined) {
+        element.SupplierDocNo = 'NA'
+      } else {
+        element.SupplierDocNo = element.SupplierDocNo;
+      }
+    });
+    let Body = this.filtersList;
 
-      const subs: Subscription = this.bill.assignSupplierDoc(Body).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            // this.as.successToast(res.message)
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide()
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(), 
-      });
+    const subs: Subscription = this.bill.assignSupplierDoc(Body).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          // this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   // fitter order
@@ -1898,7 +1902,7 @@ export class BillComponent implements OnInit {
         this.fitterList = res.data
       },
       error: (err: any) => console.log(err.message),
- 
+
     });
   }
 
@@ -1907,7 +1911,7 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.fitters.getRateCard(FitterID).subscribe({
       next: (res: any) => {
         this.rateCardList = res.data
-        if(this.rateCardList.length === 0){
+        if (this.rateCardList.length === 0) {
           this.data.FitterID = ''
           Swal.fire({
             icon: 'error',
@@ -1935,119 +1939,80 @@ export class BillComponent implements OnInit {
         this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(), 
+      complete: () => subs.unsubscribe(),
     });
   }
 
-  openModal13(content12: any){
+  openModal13(content12: any) {
     this.dropdownfitterlist()
     this.getLensTypeList()
     this.getFitterPo()
-    this.modalService.open(content12, { centered: true , backdrop : 'static', keyboard: false,size: 'md'});
+    this.modalService.open(content12, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
 
   }
 
-  getFitterPo(){
+  getFitterPo() {
     this.sp.show()
-    const subs: Subscription = this.bill.getFitterPo(this.id2,'' ).subscribe({
+    const subs: Subscription = this.bill.getFitterPo(this.id2, '').subscribe({
       next: (res: any) => {
-          if(res.success ){
-             this.orderList = res.data
-             this.orderList.forEach((element: any) => {
-              if(element.LensType !== null || element.ProductTypeName === 'LENS'){
-                element.LensType = '';
-              }else{
-                element.LensType = 'NO';
-              }
-            });
-          }else{
-            this.as.errorToast(res.message)
-            Swal.fire({
-              position: 'center',
-              icon: 'warning',
-              title: 'Opps !!',
-              text: res.message,
-              showConfirmButton: true,
-              backdrop : false,
-            })
-          }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(), 
-    });
-  }
-
-  assignFitterPo(){
-    let missingType = '';
-    this.sp.show()
-    this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
-    if (this.filtersList.length > 0 ) {
-    this.filtersList.forEach((element: any) => {
-      element.FitterID = Number(this.data.FitterID);
-      element.FitterStatus = "assign fitter"
-      element.Remark = element.Remark ? element.Remark : ''
-
-      const i = this.rateCardList.findIndex((ele: any, i: any) => {
-        return ele.LensType === element.LensType
-      })
-      if (i === -1) {
-        missingType = missingType + element.LensType + " ";
-      }
-      else {
-        element.FitterCost = this.rateCardList[i].Rate;
-      }
-
-    });
-
-    let Body = this.filtersList
-    const subs: Subscription =  this.bill.assignFitterPo(Body).subscribe({
-      next: (res: any) => {
-        if(res.success){
-          this.getFitterPo()
-          this.data.FitterID = ''
-          this.modalService.dismissAll()
-          // this.getList()
-          this.as.successToast(res.message)
-        }else{
+        if (res.success) {
+          this.orderList = res.data
+          this.orderList.forEach((element: any) => {
+            if (element.LensType !== null || element.ProductTypeName === 'LENS') {
+              element.LensType = '';
+            } else {
+              element.LensType = 'NO';
+            }
+          });
+        } else {
           this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Opps !!',
+            text: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
         }
         this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    }else{
-      this.sp.hide()
-      Swal.fire({
-        position: 'center',
-        icon: 'warning',
-        title: 'Opps !! <br> Select the check box !!',
-        showConfirmButton: true,
-        backdrop : false,
-      })
-    }
   }
 
-  assignFitterDoc() {
+  assignFitterPo() {
+    let missingType = '';
     this.sp.show()
     this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
-          this.filtersList.forEach((element: any) => {
-            this.data.ID = element.BillID 
-            this.data.FitterID =  element.FitterID 
-            element.Sel = element.Sel;
-            if(element.FitterDocNo === '' || element.FitterDocNo === null || element.FitterDocNo === undefined){
-              element.FitterDocNo = 'NA'
-            }else{
-              element.FitterDocNo = element.FitterDocNo;
-            }
-          });
-      let Body = this.filtersList;
+    if (this.filtersList.length > 0) {
+      this.filtersList.forEach((element: any) => {
+        element.FitterID = Number(this.data.FitterID);
+        element.FitterStatus = "assign fitter"
+        element.Remark = element.Remark ? element.Remark : ''
 
-      const subs: Subscription = this.bill.assignFitterDoc(Body).subscribe({
+        const i = this.rateCardList.findIndex((ele: any, i: any) => {
+          return ele.LensType === element.LensType
+        })
+        if (i === -1) {
+          missingType = missingType + element.LensType + " ";
+        }
+        else {
+          element.FitterCost = this.rateCardList[i].Rate;
+        }
+
+      });
+
+      let Body = this.filtersList
+      const subs: Subscription = this.bill.assignFitterPo(Body).subscribe({
         next: (res: any) => {
           if (res.success) {
-            // this.as.successToast(res.message)
+            this.getFitterPo()
+            this.data.FitterID = ''
+            this.modalService.dismissAll()
+            // this.getList()
+            this.as.successToast(res.message)
           } else {
             this.as.errorToast(res.message)
           }
@@ -2056,30 +2021,69 @@ export class BillComponent implements OnInit {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
+    } else {
+      this.sp.hide()
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Opps !! <br> Select the check box !!',
+        showConfirmButton: true,
+        backdrop: false,
+      })
+    }
+  }
+
+  assignFitterDoc() {
+    this.sp.show()
+    this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
+    this.filtersList.forEach((element: any) => {
+      this.data.ID = element.BillID
+      this.data.FitterID = element.FitterID
+      element.Sel = element.Sel;
+      if (element.FitterDocNo === '' || element.FitterDocNo === null || element.FitterDocNo === undefined) {
+        element.FitterDocNo = 'NA'
+      } else {
+        element.FitterDocNo = element.FitterDocNo;
+      }
+    });
+    let Body = this.filtersList;
+
+    const subs: Subscription = this.bill.assignFitterDoc(Body).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          // this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   // product edit 
 
   showInput(data: any) {
-    if(this.BillMaster.DueAmount === 0){
+    if (this.BillMaster.DueAmount === 0) {
       Swal.fire({
         position: 'center',
         icon: 'warning',
         title: 'Opps !! <br> Balance ',
         showConfirmButton: true,
-        backdrop : false,
+        backdrop: false,
       })
-    }else{
+    } else {
       data.UpdateProduct = !data.UpdateProduct
       this.disbaleupdate = true
     }
   }
 
   calculateFields1(fieldName: any, mode: any, data: any) {
-   this.billCalculation.calculations(fieldName, mode, data, '')
+    this.billCalculation.calculations(fieldName, mode, data, '')
   }
 
-  updataEditProdcut(fieldName: any, mode: any, data: any){
+  updataEditProdcut(fieldName: any, mode: any, data: any) {
 
     if ((data.GSTType === 'None' && data.GSTPercentage !== 0) || (data.GSTPercentage === 0 && data.GSTType !== 'None')) {
       Swal.fire({
@@ -2090,16 +2094,16 @@ export class BillComponent implements OnInit {
         backdrop: false,
       })
       data.UpdateProduct = true
-    }else{
+    } else {
       this.sp.show()
       this.calculateFields1(fieldName, mode, data)
       let totalPaid = 0
       totalPaid = +this.BillMaster.TotalAmount - this.BillMaster.DueAmount
       this.calculateGrandTotal();
-      this.BillMaster.DueAmount = this.BillMaster.TotalAmount - totalPaid 
+      this.BillMaster.DueAmount = this.BillMaster.TotalAmount - totalPaid
       this.data1.billMaseterData = this.BillMaster
       this.data1.billDetailData.push(data)
- 
+
       const subs: Subscription = this.bill.updateProduct(this.data1).subscribe({
         next: (res: any) => {
           if (res.success) {
@@ -2118,13 +2122,12 @@ export class BillComponent implements OnInit {
 
 
   }
-  
-  dateFormat(date:any){
+
+  dateFormat(date: any) {
     return moment(date).format(`${this.companySetting.DateFormat}`);
   }
 
-
-  billPrint(mode:any){
+  billPrint(mode: any) {
     this.sp.show()
     this.body.customer = this.customer;
     this.body.billMaster = this.BillMaster;
@@ -2133,32 +2136,32 @@ export class BillComponent implements OnInit {
     this.body.employeeList = this.employeeList;
     this.body.paidList = this.paidListPDF;
     this.body.unpaidList = this.invoiceList;
-    [this.body.Shop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));;
+    [this.body.Shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));;
     this.body.Company = this.company;
     this.body.CompanySetting = this.companySetting;
     this.body.User = this.user;
     this.body.mode = mode
     this.body.ShowPower = this.ShowPower
-    
+
     // this.body.billMaster.showPower = this.showPower;
 
-    
+
     const subs: Subscription = this.bill.billPrint(this.body).subscribe({
       next: async (res: any) => {
-        if(res){
+        if (res) {
           if (mode === "Invoice") {
             this.BillMaster.Invoice = res;
-            // const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
-            this.BillLink = this.BillMaster.Invoice
-            window.open(this.BillLink, "_blank")
+            const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
+            this.BillLink = url
+            window.open(url, "_blank")
           } else if (mode === "Receipt") {
             this.BillMaster.Receipt = res;
-            // const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt;
-            this.BillLink =  this.BillMaster.Receipt
-            window.open(this.BillLink, "_blank");
+            const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt;
+            this.BillLink = url
+            window.open(url, "_blank");
           }
 
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -2166,13 +2169,12 @@ export class BillComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-
   }
 
-  OrderPrint(data:any){
+  OrderPrint(data: any) {
     this.sp.show()
-    let Body:any = {
-      data:data 
+    let Body: any = {
+      data: data
     }
     this.body = Body
     this.body.customer = this.customer;
@@ -2182,21 +2184,21 @@ export class BillComponent implements OnInit {
     this.body.employeeList = this.employeeList;
     this.body.paidList = this.paidListPDF;
     this.body.unpaidList = this.invoiceList;
-    [this.body.Shop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));;
+    [this.body.Shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));;
     this.body.Company = this.company;
     this.body.CompanySetting = this.companySetting;
     this.body.User = this.user;
 
     // this.body.billMaster.showPower = this.showPower;
 
-    
+
     const subs: Subscription = this.bill.orderFormPrint(this.body).subscribe({
       next: (res: any) => {
-        if(res){
-            this.BillMaster.Invoice = res;
-            const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
-            window.open(url, "_blank")
-        }else{
+        if (res) {
+          this.BillMaster.Invoice = res;
+          const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
+          window.open(url, "_blank")
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -2206,7 +2208,7 @@ export class BillComponent implements OnInit {
     });
   }
 
-  CreditNotePdf(){
+  CreditNotePdf() {
     this.sp.show()
     this.body.customer = this.customer;
     this.body.billMaster = this.BillMaster;
@@ -2215,18 +2217,19 @@ export class BillComponent implements OnInit {
     this.body.employeeList = this.employeeList;
     this.body.paidList = this.paidListPDF;
     this.body.unpaidList = this.invoiceList;
-    [this.body.Shop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));;
+    [this.body.Shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));;
     this.body.Company = this.company;
     this.body.CompanySetting = this.companySetting;
     this.body.User = this.user;
 
     const subs: Subscription = this.bill.creditNotePrint(this.body).subscribe({
       next: (res: any) => {
-        if(res){
-            this.BillMaster.Invoice = res;
-            const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
-            window.open(url, "_blank")
-        }else{
+        if (res) {
+          this.BillMaster.Invoice = res;
+          const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
+          this.CreditPDF = url
+          window.open(url, "_blank")
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -2236,23 +2239,59 @@ export class BillComponent implements OnInit {
     });
   }
 
-  sendWhatsappBill() {
-      let Smsw1 = 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again.'
+  // sendWhatsappBill() {
+  //     const temp = JSON.parse(this.companySetting.WhatsappSetting);
+  //     console.log(temp);
+  //     let Smsw1 = 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again.'
+  //     var msg = `Hi ${this.customer.Name},%0A` +
+  //       `${Smsw1}%0A` +
+  //       `Open Bill :  ${this.BillLink}  %0A` +
+  //       `${this.shop[0].Name} - (${this.shop[0].AreaName}) %0A` +
+  //       `${this.shop[0].MobileNo1}%0A` +
+  //       `${this.shop[0].Website}%0A` +
+  //       `Type Hii And Download Your Bill`;
+  //     var mob = "91" + this.customer.MobileNo1;
+  //     var url = `https://wa.me/${mob}?text=${msg}`;
+  //     window.open(url, "_blank");
+  //     console.log(msg, "msgmsgmsgmsg")
+  // }
+
+  sendWhatsapp(mode: any) {
+    let temp = JSON.parse(this.companySetting.WhatsappSetting);
+    let WhatsappMsg = '';
+
+    if (mode === 'credit') {
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Credit Note') || 'Save Your Credit note copy';
       var msg = `Hi ${this.customer.Name},%0A` +
-        `${Smsw1}%0A` +
-        `Open Bill :  ${this.BillLink}  %0A` +
-        `${this.shop[0].Name} - (${this.shop[0].AreaName}) %0A` +
-        `${this.shop[0].MobileNo1}%0A` +
-        `${this.shop[0].Website}%0A` +
+        `${WhatsappMsg}%0A` +
+        `Save your Credit note link: ${this.CreditPDF}%0A` +
+        `${this.loginShop.Name}- ${this.loginShop.AreaName}%0A${this.loginShop.MobileNo1}%0A${this.loginShop.Website}`;
+    } else {
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill FinalDelivery') || 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again';
+      var msg = `Hi ${this.customer.Name},%0A` +
+        `${WhatsappMsg}%0A` +
+        `Open Bill : ${this.BillLink}%0A` +
+        `${this.loginShop.Name} - ${this.loginShop.AreaName}%0A` +
+        `${this.loginShop.MobileNo1}%0A` +
+        `${this.loginShop.Website}%0A` +
         `Type Hii And Download Your Bill`;
-      var mob = "91" + this.customer.MobileNo1;
-      var url = `https://wa.me/${mob}?text=${msg}`;
-      window.open(url, "_blank");
-      console.log(msg, "msgmsgmsgmsg")
+    }
+
+    var mob = "91" + this.customer.MobileNo1;
+    var url = `https://wa.me/${mob}?text=${msg}`;
+    window.open(url, "_blank");
+    console.log(msg, "msgmsgmsgmsg");
   }
-  
+
+  getWhatsAppMessage(temp: any, messageName: any) {
+    if (temp && temp !== 'null') {
+      const foundElement = temp.find((element: { MessageName1: any; }) => element.MessageName1 === messageName);
+      return foundElement ? foundElement.MessageText1 : '';
+    }
+    return '';
+  }
 
 
-  
-  
+
+
 }

@@ -281,16 +281,25 @@ input::-webkit-inner-spin-button {
     margin: 0;
 }
 
-.pdfpower{
-    color: #f7f7f7;
-    cursor: pointer;
-    font-size: 14px;
-    margin: 0px 5px;
-    /* background: red; */
-    padding: 6px 8px;
-    border-radius: 22px;
-    height: 26px;
-    box-shadow: 3px 4px 5px #a3a3a3;
-    background: #0070ff;
 
+
+.pdfpower{
+    font-size: 17px;
+    background: #0070ff;
+    border: none;
+    border-radius: 19px;
+    padding: 2px 5px;
+    color: #fff;
+    box-shadow: 1px 1px 10px #0003;
+
+}
+
+.whatsapp {
+    font-size: 17px;
+    background: #3ce31a;
+    border: none;
+    border-radius: 19px;
+    padding: 2px 5px;
+    color: #fff;
+    box-shadow: 1px 1px 10px #0003;
 }

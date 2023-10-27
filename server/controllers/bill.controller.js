@@ -1757,18 +1757,15 @@ module.exports = {
 
             printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
 
-            let BillFormat = printdata.CompanySetting.BillFormat;
-            
+            let BillFormat = ''
+            BillFormat = printdata.CompanySetting.BillFormat;
+ 
             let fileName = "";
-            const file = BillFormat + ".pdf";
+            const file = BillFormat + '-' + CompanyID + ".pdf";
             const formatName = BillFormat;
-            fileName = clientConfig.appURL + "uploads/" + file;
+            fileName = "uploads/" + file;
 
-            let updateUrl = '';
-            TinyURL.shorten(fileName, function(res) {
-                updateUrl = res;
-            });
-            
+  
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
                 if (err) {
                     res.send(err);
@@ -1781,8 +1778,10 @@ module.exports = {
                         if (err) {
                             res.send(err);
                         } else {
-                            // res.json(file);
-                            res.json(updateUrl);
+                            console.log(file,'file');
+                            res.json(file);
+
+                            // res.json(updateUrl);
                         }
                     });
                 }

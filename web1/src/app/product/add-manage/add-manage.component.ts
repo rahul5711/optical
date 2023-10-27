@@ -49,7 +49,7 @@ export class AddManageComponent implements OnInit {
     {Name: 'Expense Type',value:'ExpenseType'},
     {Name: 'Location Master',value:'LocationMaster'},
     {Name: 'Other',value:'Other'},
-    {Name: 'Lens Type',value:'LensType'},
+
   ]
 
   data1: any = { ID : null, CompanyID : null,  Name:'', Category : null, Status : 1, CreatedBy: null, UpdatedBy: null,};

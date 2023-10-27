@@ -103,6 +103,15 @@
                       </div>
                       <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
                         <mat-form-field class="example-full-width mb-0">
+                          <mat-label>StringProductName</mat-label>
+                          <input matInput name="StringProductName" [(ngModel)]="inventory.StringProductName" #StringProductNamecontrol>
+                          <mat-error>
+                            StringProductName required
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
                           <mat-label>TAX Type</mat-label>
                           <mat-select name="GSTType" [(ngModel)]="inventory.GSTType" #singleSelect>
                             <mat-option [value]="0">All</mat-option>
@@ -203,22 +212,22 @@
                         <thead>
                           <tr class="torw1" style="white-space: nowrap;">
                             <th>S.No</th>
-                            <th>InvoiceNo</th>
-                            <th>Invoice Date</th>
+                            <th *ngIf="user.UserGroup === 'CompanyAdmin'">InvoiceNo</th>
+                            <th *ngIf="user.UserGroup === 'CompanyAdmin'">Invoice Date</th>
                             <th>Current Shop</th>
-                            <th>Supplier</th>
+                            <th *ngIf="user.UserGroup === 'CompanyAdmin'">Supplier</th>
                             <th>Product Category</th>
                             <th>Product Name</th>
                             <th>Status</th>
                             <th>Barcode</th>
                             <th>Quantity</th>
-                            <th>Unit Price</th>
-                            <th>Discount</th>
-                            <th>Sub Total</th>
-                            <th>TAX Type</th>
-                            <th>TAX%</th>
-                            <th>TAX Amount</th>
-                            <th>Grand Total</th>
+                            <th *ngIf="user.UserGroup === 'CompanyAdmin'">Unit Price</th>
+                            <th *ngIf="user.UserGroup === 'CompanyAdmin'">Discount</th>
+                            <th *ngIf="user.UserGroup === 'CompanyAdmin'">Sub Total</th>
+                            <th *ngIf="user.UserGroup === 'CompanyAdmin'">TAX Type</th>
+                            <th *ngIf="user.UserGroup === 'CompanyAdmin'">TAX%</th>
+                            <th *ngIf="user.UserGroup === 'CompanyAdmin'">TAX Amount</th>
+                            <th *ngIf="user.UserGroup === 'CompanyAdmin'">Grand Total</th>
                             <th>Retail Per_Pc Price</th>
                             <th>Retail Total Price</th>
                             <th>WholeSale Per_Pc Price</th>
@@ -236,25 +245,25 @@
                                     style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
                             </button>
                             </td>
+                            <td *ngIf="user.UserGroup === 'CompanyAdmin'"></td>
+                            <td *ngIf="user.UserGroup === 'CompanyAdmin'"></td>
                             <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td *ngIf="user.UserGroup === 'CompanyAdmin'"></td>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td>{{this.DetailtotalQty}}</td>
-                            <td>{{this.DetailtotalUnitPrice}}</td>
-                            <td>{{this.DetailtotalDiscount}}</td>
-                            <td>{{this.DetailtotalSubTotal}}</td>
-                            <td></td>
-                            <td></td>
-                            <td data-mdb-toggle="modal" data-mdb-target="#exampleModal" (click)="openModal(content)">
+                            <td *ngIf="user.UserGroup === 'CompanyAdmin'">{{this.DetailtotalUnitPrice}}</td>
+                            <td *ngIf="user.UserGroup === 'CompanyAdmin'">{{this.DetailtotalDiscount}}</td>
+                            <td *ngIf="user.UserGroup === 'CompanyAdmin'">{{this.DetailtotalSubTotal}}</td>
+                            <td *ngIf="user.UserGroup === 'CompanyAdmin'"></td>
+                            <td *ngIf="user.UserGroup === 'CompanyAdmin'"></td>
+                            <td *ngIf="user.UserGroup === 'CompanyAdmin'" data-mdb-toggle="modal" data-mdb-target="#exampleModal" (click)="openModal(content)">
                               {{this.DetailtotalGstAmount}}</td>
-                            <td>{{this.DetailtotalAmount}}</td>
+                            <td *ngIf="user.UserGroup === 'CompanyAdmin'">{{this.DetailtotalAmount}}</td>
                             <!-- <td>{{this.DetailtotalRetailPrice}}</td> -->
-                            <td></td>
+                            <td ></td>
                             <td>{{this.TtlR}}</td>
                             <!-- <td>{{this.DetailtotalWholeSalePricet}}</td> -->
                             <td></td>
@@ -264,23 +273,23 @@
                         <tbody class="text-center">
                           <tr *ngFor="let s of inventoryList; let i = index" text="left">
                             <td>{{ i+1 }} </td>
-                            <td>{{s.InvoiceNo}}</td>
-                            <td>{{dateFormat(s.PurchaseDate)}}</td>
+                            <td *ngIf="user.UserGroup === 'CompanyAdmin'">{{s.InvoiceNo}}</td>
+                            <td *ngIf="user.UserGroup === 'CompanyAdmin'">{{dateFormat(s.PurchaseDate)}}</td>
                             <td>{{s.ShopName}}<span [style.color]="'blue'"
                                 *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></td>
-                            <td>{{s.SupplierName}}</td>
+                            <td *ngIf="user.UserGroup === 'CompanyAdmin'">{{s.SupplierName}}</td>
                             <td>{{s.ProductTypeName}}</td>
                             <td>{{s.ProductName}}</td>
                             <td>{{s.CurrentStatus}}</td>
                             <td>{{s.Barcode}}</td>
                             <td>{{s.Count}}</td>
-                            <td>{{s.UnitPrice }}</td>
-                            <td>{{s.DiscountAmount }}</td>
-                            <td>{{s.SubTotal }}</td>
-                            <td>{{s.GSTType}}</td>
-                            <td>{{s.GSTPercentage}}%</td>
-                            <td>{{s.GSTAmount }}</td>
-                            <td>{{s.TotalAmount }}</td>
+                            <td *ngIf="user.UserGroup === 'CompanyAdmin'">{{s.UnitPrice }}</td>
+                            <td *ngIf="user.UserGroup === 'CompanyAdmin'">{{s.DiscountAmount }}</td>
+                            <td *ngIf="user.UserGroup === 'CompanyAdmin'">{{s.SubTotal }}</td>
+                            <td *ngIf="user.UserGroup === 'CompanyAdmin'">{{s.GSTType}}</td>
+                            <td *ngIf="user.UserGroup === 'CompanyAdmin'">{{s.GSTPercentage}}%</td>
+                            <td *ngIf="user.UserGroup === 'CompanyAdmin'">{{s.GSTAmount }}</td>
+                            <td *ngIf="user.UserGroup === 'CompanyAdmin'">{{s.TotalAmount }}</td>
                             <td>{{s.RetailPrice }}</td>
                             <td>{{s.RetailPrice * s.Count}}</td>
                             <td>{{s.WholeSalePrice }}</td>

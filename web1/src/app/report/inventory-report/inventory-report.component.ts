@@ -75,7 +75,7 @@ export class InventoryReportComponent implements OnInit {
 
 
   inventory: any =  {
-    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0, Barcode:'', CurrentStatus:'Available', PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0, Barcode:'', CurrentStatus:'Available', PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0,StringProductName:''
   };
 
   data: any =  {
@@ -304,7 +304,10 @@ export class InventoryReportComponent implements OnInit {
 
     if (this.inventory.Barcode !== '') {
       Parem = Parem + ' and barcodemasternew.Barcode Like ' + '"' + this.inventory.Barcode + '%"';}
-
+      
+      // if (this.inventory.StringProductName !== '' ) {
+      //   Parem = Parem + ' and purchasedetailnew.ProductName LIKE ' + "'" + this.inventory.StringProductName + "%'"; }
+  
     if (this.inventory.CurrentStatus !== 0) {
       Parem = Parem + ' and barcodemasternew.CurrentStatus = ' + '"' + this.inventory.CurrentStatus + '"';}
 
@@ -320,6 +323,7 @@ export class InventoryReportComponent implements OnInit {
 
     if (this.inventory.ProductName !== '' ) {
       Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.inventory.ProductName + "%'"; }
+
 
     const subs: Subscription =  this.purchaseService.getProductInventoryReport(Parem).subscribe({
       next: (res: any) => {
@@ -463,6 +467,8 @@ export class InventoryReportComponent implements OnInit {
     }
   
     purchaseProductExpiry(){
+
+      return
       this.sp.show()
       this.todaydate = moment(new Date()).format('YYYY-MM-DD');
       let Parem = '';
