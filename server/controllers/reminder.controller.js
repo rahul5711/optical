@@ -348,10 +348,10 @@ console.log(qry);
             const shopid = await shopID(req.headers) || 0;
 
 
-            let shopId = ``
+            let shopId = 0
 
             if (shopid !== 0) {
-                shopId = `${shopid}`
+                shopId = shopid
             }
 
             let date = moment(new Date()).format("YYYY-MM-DD")
@@ -409,10 +409,10 @@ console.log(qry);
             const shopid = await shopID(req.headers) || 0;
 
 
-            let shopId = ``
+            let shopId = 0
 
             if (shopid !== 0) {
-                shopId = `${shopid}`
+                shopId = shopid
             }
 
             let date = moment(new Date()).format("YYYY-MM-DD")
