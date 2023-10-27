@@ -1314,9 +1314,8 @@ export class BillComponent implements OnInit {
     this.BillMaster.BillDate = this.BillMaster.BillDate + ' ' + this.currentTime;
     this.BillMaster.DeliveryDate = this.BillMaster.DeliveryDate + ' ' + this.currentTime;
 
-    if (this.BillMaster.DueAmount !== 0) {
-      this.BillMaster.PaymentStatus = 'Unpaid'
-    }
+    this.BillMaster.PaymentStatus = this.BillMaster.DueAmount !== 0 ? 'Unpaid' : 'Paid';
+
     this.data.billMaseterData = this.BillMaster;
     let items: any = [];
     this.billItemList.forEach((ele: any) => {
