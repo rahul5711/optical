@@ -158,7 +158,7 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
 
 
-            let [data] = await mysql2.pool.query(`select fitter.ID, fitter.Name from fitter left join fitterassignedshop on fitterassignedshop.FitterID = fitter.ID where fitter.Status = 1 and fitter.CompanyID = ${CompanyID} and fitterassignedshop.ShopID = ${shopid}`);
+            let [data] = await mysql2.pool.query(`select fitter.ID, fitter.Name, fitter.MobileNo1 from fitter left join fitterassignedshop on fitterassignedshop.FitterID = fitter.ID where fitter.Status = 1 and fitter.CompanyID = ${CompanyID} and fitterassignedshop.ShopID = ${shopid}`);
             response.message = "data fetch sucessfully"
             response.data = data
             return res.send(response);

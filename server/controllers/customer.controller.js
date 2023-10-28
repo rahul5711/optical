@@ -610,7 +610,7 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
-            let qry = `select customer.ID as ID, customer.Name as Name from customer where customer.Status = 1 and customer.CompanyID = '${CompanyID}'  order by customer.ID desc`
+            let qry = `select customer.ID as ID, customer.Name as Name, customer.MobileNo1 from customer where customer.Status = 1 and customer.CompanyID = '${CompanyID}'  order by customer.ID desc limit 100`
 
 
             let finalQuery = qry;
