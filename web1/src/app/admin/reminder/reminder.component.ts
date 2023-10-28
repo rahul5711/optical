@@ -276,6 +276,7 @@ export class ReminderComponent implements OnInit {
     return moment(date).format(`${this.companySetting.DateFormat}`);
   }
 
+  // WhatsappSetting in CompnaySetting foundElement(MessageName1) Check then respones messageName
   getWhatsAppMessage(temp: any, messageName: any) {
     if (temp && temp !== 'null') {
       const foundElement = temp.find((element: { MessageName1: any; }) => element.MessageName1 === messageName);
@@ -328,7 +329,7 @@ export class ReminderComponent implements OnInit {
     if (mode === 'Service') {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Service');
     }
-    
+
     const msg = `*Hi ${data.Name},*%0A` +
       `${WhatsappMsg}%0A` +
       `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}`;
