@@ -1154,6 +1154,17 @@ export class BillComponent implements OnInit {
           this.GstTypeDis = false
         }
       }
+
+      if ((this.BillItem.GSTType === 'None' && this.BillItem.GSTPercentage !== 0) || (this.BillItem.GSTPercentage === 0 && this.BillItem.GSTType !== 'None')) {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Without GSTType, the selected value will not be saved',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        this.GstTypeDis = false
+      }
       // GSTType disable condition
 
       // additem Manual
@@ -2260,26 +2271,33 @@ export class BillComponent implements OnInit {
     let WhatsappMsg = '';
 
     if (mode === 'credit') {
-      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Credit Note') || 'Save Your Credit note copy';
-      var msg = `Hi ${this.customer.Name},%0A` +
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Credit Note') || 'Save Your Credit note ';
+      var msg = `*Hi ${this.customer.Name},*%0A` +
         `${WhatsappMsg}%0A` +
-        `Save your Credit note link: ${this.CreditPDF}%0A` +
-        `${this.loginShop.Name}- ${this.loginShop.AreaName}%0A${this.loginShop.MobileNo1}%0A${this.loginShop.Website}`;
+        `*Save your Credit note*: ${this.CreditPDF}%0A` +
+        `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A${this.loginShop.MobileNo1}%0A${this.loginShop.Website}`;
     } else {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill FinalDelivery') || 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again';
-      var msg = `Hi ${this.customer.Name},%0A` +
+      var msg = `*Hi ${this.customer.Name},*%0A` +
         `${WhatsappMsg}%0A` +
-        `Open Bill : ${this.BillLink}%0A` +
-        `${this.loginShop.Name} - ${this.loginShop.AreaName}%0A` +
+        `*Open Bill* : ${this.BillLink}%0A` +
+        `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A` +
         `${this.loginShop.MobileNo1}%0A` +
-        `${this.loginShop.Website}%0A` +
-        `Type Hii And Download Your Bill`;
+        `${this.loginShop.Website}%0A` 
     }
 
-    var mob = "91" + this.customer.MobileNo1;
-    var url = `https://wa.me/${mob}?text=${msg}`;
-    window.open(url, "_blank");
-    console.log(msg, "msgmsgmsgmsg");
+    if(this.customer.MobileNo1 != '' && Number(this.customer.MobileNo1) == this.data.MobileNo1){
+      var mob = "91" + this.customer.MobileNo1;
+      var url = `https://wa.me/${mob}?text=${msg}`;
+      window.open(url, "_blank");
+    }else{
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: '<b>' + this.customer.Name + '</b>' + ' Mobile number is not available.',
+        showConfirmButton: true,
+      })
+    }
   }
 
   getWhatsAppMessage(temp: any, messageName: any) {

@@ -607,12 +607,14 @@
                                                                                 class="edits_icon ms-1"
                                                                                 (click)="edits(s,'spectacle_rx')">
                                                                                 edit</mat-icon>
+                                                                                
                                                                             <mat-icon *ngIf="editCustomer"
                                                                                 class="deletes_icon ms-1"
                                                                                 (click)="deleteSpec(i,'spectacle_rx')">delete_forever</mat-icon>
+
                                                                                 <button (click)="customerPowerPDF(i,'spectacle')"  class="pdfpower  me-1 ms-1"><i class="fa fa-file-pdf"></i></button>
                                                                                 
-                                                                                <button  class="whatsapp  "><i class="fa-brands fa-whatsapp"></i></button>
+                                                                                <button (click)="sendWhatsappPower(i,'spectacle')" class="whatsapp  "><i class="fa-brands fa-whatsapp"></i></button>
                                                                         </td>
                                                                         <td class="text-left">{{spectacleLists.length -
                                                                             i }}</td>
@@ -987,7 +989,10 @@
                                                                             <mat-icon *ngIf="deleteCustomer"
                                                                                 class="deletes_icon ms-1"
                                                                                 (click)="deleteSpec(i,'contact')">delete_forever</mat-icon>
-                                                                                <i  (click)="customerPowerPDF(i,'contact')" class="fa fa-file-pdf pdfpower"></i>
+                                                                                
+                                                                                <button (click)="customerPowerPDF(i,'contact')"  class="pdfpower  me-1 ms-1"><i class="fa fa-file-pdf"></i></button>
+                                                                                
+                                                                                <button (click)="sendWhatsappPower(i,'contact')" class="whatsapp  "><i class="fa-brands fa-whatsapp"></i></button>
                                                                         </td>
                                                                         <td class="text-left">{{contactList.length - i
                                                                             }}</td>

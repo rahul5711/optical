@@ -205,11 +205,10 @@ textarea.mat-input-element {
     padding: 2px;
     border-radius: 24px;
     font-size: 16px;
-    height: 23px !important;
-    width: 23px !important;
+    height: 24px !important;
+    width: 24px !important;
     transition: 0.5s;
     cursor: pointer;
-    box-shadow: 2px 2px 6px #9c9795fa;
 
 }
 
@@ -223,7 +222,6 @@ textarea.mat-input-element {
     width: 24px !important;
     cursor: pointer;
     transition: 0.5s;
-    box-shadow: 2px 2px 6px #9c9795fa;
 }
 
 .ng-select .ng-select-container {
@@ -284,14 +282,12 @@ input::-webkit-inner-spin-button {
 
 
 .pdfpower{
-    font-size: 17px;
+    font-size: 16px;
     background: #0070ff;
     border: none;
     border-radius: 19px;
-    padding: 2px 5px;
+    padding: 2px 6px;
     color: #fff;
-    box-shadow: 1px 1px 10px #0003;
-
 }
 
 .whatsapp {
@@ -301,5 +297,4 @@ input::-webkit-inner-spin-button {
     border-radius: 19px;
     padding: 2px 5px;
     color: #fff;
-    box-shadow: 1px 1px 10px #0003;
 }

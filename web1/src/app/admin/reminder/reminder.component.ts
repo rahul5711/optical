@@ -272,4 +272,6 @@ export class ReminderComponent implements OnInit {
   dateFormat(date:any){
     return moment(date).format(`${this.companySetting.DateFormat}`);
   }
+
+  // whatsapp all msg send 
 }

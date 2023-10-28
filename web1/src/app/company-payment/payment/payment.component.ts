@@ -103,89 +103,104 @@ export class PaymentComponent implements OnInit {
     this.data.CreditNumber = this.vendorCredit.CreditNumber
   }
 
-  // getPayeeList(){
-  //   this.data.CreditType = 'Debit'
-  //   if (this.data.PaymentType === 'Supplier')
-  //   {
-  //     const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
-  //       next: (res: any) => {
-  //         if (res.success) {
-  //           this.payeeList = res.data;
-  //         } else {
-  //           this.as.errorToast(res.message)
-  //         }
-  //       },
-  //       error: (err: any) => console.log(err.message),
-  //       complete: () => subs.unsubscribe(),
-  //     });
-  //   } 
-  //   else if(this.data.PaymentType === 'Employee')
-  //   { 
-  //     const subs: Subscription = this.emp.dropdownUserlist('').subscribe({
-  //       next: (res: any) => {
-  //         if (res.success) {
-  //           this.payeeList = res.data
-  //         } else {
-  //           this.as.errorToast(res.message)
-  //         }
-  //       },
-  //       error: (err: any) => console.log(err.message),
-  //       complete: () => subs.unsubscribe(),
-  //     });
-  //   }
-  //   else if(this.data.PaymentType === 'Fitter')
-  //   { 
-  //     const subs: Subscription = this.fitters.dropdownlist().subscribe({
-  //       next: (res: any) => {
-  //         this.payeeList = res.data
-  //       },
-  //       error: (err: any) => console.log(err.message),
-  //       complete: () => subs.unsubscribe(),
-  //     });
-  //   }  
-  //   else if(this.data.PaymentType === 'Customer')
-  //   { 
-  //     const subs: Subscription = this.customer.dropdownlist().subscribe({
-  //       next: (res: any) => {
-  //         if(res.success){
-  //           this.payeeList  = res.data
-  //           this.data.CreditType = 'Credit'
-  //         }else{
-  //           this.as.errorToast(res.message)
-  //         }
-  //       },
-  //       error: (err: any) => console.log(err.message),
-  //       complete: () => subs.unsubscribe(),
-  //     });
-  //   }  
-  //   else if(this.data.PaymentType === 'Doctor')
-  //   { 
-  //     const subs: Subscription = this.doctor.dropdownDoctorlist().subscribe({
-  //       next: (res: any) => {
-  //         if(res.success){
-  //           this.payeeList  = res.data
-  //         }else{
-  //           this.as.errorToast(res.message)
-  //         }
-  //       },
-  //       error: (err: any) => console.log(err.message),
-  //       complete: () => subs.unsubscribe(),
-  //     });
-  //   } 
-  //   this.invoiceList = []
-  // }
-
-  getPayeeList() {
-    this.data.CreditType = 'Debit';
+  getPayeeList(){
+    this.data.CreditType = 'Debit'
     this.invoiceList = [];
     this.data.CustomerCredit = 0;
     this.data.PayableAmount = 0;
     this.data.PaidAmount = 0;
     this.data.ApplyReturn = false;
     this.data.PaymentMode = '';
+    this.payeeList = [];
     this.filteredOptions = [];
     this.myControl1 = new FormControl('');
+
+    if (this.data.PaymentType === 'Supplier')
+    {
+      const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.payeeList = res.data;
+            this.filteredOptions = this.payeeList;
+          } else {
+            this.as.errorToast(res.message)
+          }
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    } 
+    else if(this.data.PaymentType === 'Employee')
+    { 
+      const subs: Subscription = this.emp.dropdownUserlist('').subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.payeeList = res.data
+            this.filteredOptions = this.payeeList;
+          } else {
+            this.as.errorToast(res.message)
+          }
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+    else if(this.data.PaymentType === 'Fitter')
+    { 
+      const subs: Subscription = this.fitters.dropdownlist().subscribe({
+        next: (res: any) => {
+          this.payeeList = res.data
+          this.filteredOptions = this.payeeList;
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }  
+    else if(this.data.PaymentType === 'Customer')
+    { 
+      const subs: Subscription = this.customer.dropdownlist().subscribe({
+        next: (res: any) => {
+          if(res.success){
+            this.payeeList  = res.data
+            this.filteredOptions = this.payeeList;
+            this.data.CreditType = 'Credit'
+          }else{
+            this.as.errorToast(res.message)
+          }
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }  
+    else if(this.data.PaymentType === 'Doctor')
+    { 
+      const subs: Subscription = this.doctor.dropdownDoctorlist().subscribe({
+        next: (res: any) => {
+          if(res.success){
+            this.payeeList  = res.data
+            this.filteredOptions = this.payeeList;
+          }else{
+            this.as.errorToast(res.message)
+          }
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    } 
+    this.invoiceList = []
   }
+
+  // getPayeeList() {
+  //   this.data.CreditType = 'Debit';
+  //   this.invoiceList = [];
+  //   this.data.CustomerCredit = 0;
+  //   this.data.PayableAmount = 0;
+  //   this.data.PaidAmount = 0;
+  //   this.data.ApplyReturn = false;
+  //   this.data.PaymentMode = '';
+  //   this.filteredOptions = [];
+  //   this.myControl1 = new FormControl('');
+  // }
 
   getInvoicePayment(PaymentType: any, PayeeName: any) {
     this.sp.show()

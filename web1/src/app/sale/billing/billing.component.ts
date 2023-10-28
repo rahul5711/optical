@@ -42,6 +42,8 @@ export class BillingComponent implements OnInit {
   @ViewChild('UserNamecontrol') UserNamecontrol: ElementRef | any;
   user = JSON.parse(localStorage.getItem('user') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  shop = JSON.parse(localStorage.getItem('shop') || '');
+  selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   env = environment;
   
@@ -452,6 +454,7 @@ srcCustomerBox = false
     }
     this.doctorList()
     this.srcBox = true;
+    [this.shop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
   }
 
  
@@ -945,43 +948,7 @@ srcCustomerBox = false
     this.calculation.calculate(mode, x, y, this.spectacle, this.clens)
   }
 
-  customerPowerPDF(i:any,mode:any) {
-    if(mode === 'spectacle'){
 
-      let body = { customer: this.data, spectacle: this.spectacleLists[i], contact: this.contactList[i], other: this.other[i], mode }
-      this.sp.show();
-      const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
-        next: (res: any) => {
-          if (res) {
-            const url = this.env.apiUrl + "/uploads/" + res;
-            window.open(url, "_blank");
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    }
-    if(mode === 'contact'){
-      let body = { customer: this.data, spectacle: this.spectacle, contact: this.clens, other: this.other, mode }
-      this.sp.show();
-      const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
-        next: (res: any) => {
-          if (res) {
-            const url = this.env.apiUrl + "/uploads/" + res;
-            window.open(url, "_blank");
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    }
-  }
   // Billing
 
   // customer search 
@@ -1093,6 +1060,88 @@ srcCustomerBox = false
     return event;
   }
 
+  customerPowerPDF(i:any,mode:any) {
+    if(mode === 'spectacle'){
 
+      let body = { customer: this.data, spectacle: this.spectacleLists[i], contact: this.contactList[i], other: this.other[i], mode }
+      this.sp.show();
+      const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
+        next: (res: any) => {
+          if (res) {
+            this.spectacle.FileURL = this.env.apiUrl + "/uploads/" + res;
+            const url = this.spectacle.FileURL
+            window.open(url, "_blank");
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+    if(mode === 'contact'){
+      let body = { customer: this.data, spectacle: this.spectacle, contact: this.clens, other: this.other, mode }
+      this.sp.show();
+      const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
+        next: (res: any) => {
+          if (res) {
+            this.clens.FileURL = this.env.apiUrl + "/uploads/" + res; 
+            const url = this.clens.FileURL;
+            window.open(url, "_blank");
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+  }
+
+ 
+  sendWhatsappPower(i:any,mode: any) {
+    let temp = JSON.parse(this.companySetting.WhatsappSetting);
+    let WhatsappMsg = '';
+
+    if (mode === 'spectacle') {
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Eye Prescription');
+      var msg = `*Hi ${this.data.Name},*%0A` +
+        `${WhatsappMsg}%0A` +
+        `*Open Prescription* : ${this.spectacle.FileURL}%0A` +
+        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}`;
+    } else {
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Eye Prescription');
+      var msg = `*Hi ${this.data.Name},*%0A` +
+        `${WhatsappMsg}%0A` +
+        `*Open Prescription*  : ${this.clens.FileURL}%0A` +
+        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` 
+    }
+
+  
+    if(this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1){
+      var mob = "91" + this.data.MobileNo1;
+      var url = `https://wa.me/${mob}?text=${msg}`;
+      window.open(url, "_blank");
+    }else{
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: '<b>' + this.data.Name + '</b>' + ' Mobile number is not available.',
+        showConfirmButton: true,
+      })
+    }
+
+
+  }
+
+  getWhatsAppMessage(temp: any, messageName: any) {
+    if (temp && temp !== 'null') {
+      const foundElement = temp.find((element: { MessageName1: any; }) => element.MessageName1 === messageName);
+      return foundElement ? foundElement.MessageText1 : '';
+    }
+    return '';
+  }
 
 }
