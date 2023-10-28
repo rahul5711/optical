@@ -22,6 +22,8 @@ export class ReminderComponent implements OnInit {
 
   user = JSON.parse(localStorage.getItem('user') || '');
   companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
+  shop:any = JSON.parse(localStorage.getItem('shop') || '');
+  selectedShop:any = JSON.parse(localStorage.getItem('selectedShop') || '');
 
   bdayList: any = [];
   bdayRange = 'Today';
@@ -54,6 +56,7 @@ export class ReminderComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    [this.shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
     this.getBirthDayReminder()
     this.getAnniversaryReminder()
     this.getCustomerOrderPending()
@@ -273,5 +276,66 @@ export class ReminderComponent implements OnInit {
     return moment(date).format(`${this.companySetting.DateFormat}`);
   }
 
-  // whatsapp all msg send 
+  getWhatsAppMessage(temp: any, messageName: any) {
+    if (temp && temp !== 'null') {
+      const foundElement = temp.find((element: { MessageName1: any; }) => element.MessageName1 === messageName);
+      return foundElement ? foundElement.MessageText1 : '';
+    }
+    return '';
+  }
+
+  // Whatsapp All Message Send 
+  WhatsappSend(data: any, mode: any) {
+    let temp = JSON.parse(this.companySetting.WhatsappSetting);
+    let WhatsappMsg = '';
+  
+    // Customer_Birthday Condition`s  
+    if (mode === 'CustomerBday' || mode === 'SupplierBday' || mode === 'EmployeeBday' || mode === 'FitterBday' || mode === 'DoctorBday') {
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Birthday');
+    }
+
+    // Customer_Anniversary Condition`s 
+    if (mode === 'CustomerAnniversary' || mode === 'SupplierAnniversary' || mode === 'EmployeeAnniversary' || mode === 'FitterAnniversary' || mode === 'DoctorAnniversary') {
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Anniversary');
+    }
+
+    // Customer_Order Pending Condition 
+    if (mode === 'OrderPending') {
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill OrderReady');
+    }
+
+    // Customer_Eye Testing Condition 
+    if (mode === 'EyeTesting') {
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Eye Testing');
+    }
+
+    // Solution Expiry Condition 
+    if (mode === 'CustomerSolution' || mode === 'SupplierSolution' ) {
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Solution Expiry');
+    }
+
+    // Contactlens Expiry Condition 
+    if (mode === 'CustomerContactlens' || mode === 'SupplierContactlens' ) {
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Contactlens Expiry');
+    }
+  
+    // Customer_Comfort Feedback Condition 
+    if (mode === 'Comfort') {
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Comfort Feedback');
+    }
+
+    // Customer_Service Condition 
+    if (mode === 'Service') {
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Service');
+    }
+    
+    const msg = `*Hi ${data.Name},*%0A` +
+      `${WhatsappMsg}%0A` +
+      `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}`;
+  
+    const mob = "91" + data.MobileNo1;
+    const url = `https://wa.me/${mob}?text=${msg}`;
+    window.open(url, "_blank");
+  }
+  
 }
