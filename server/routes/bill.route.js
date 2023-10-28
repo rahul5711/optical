@@ -69,5 +69,9 @@ router.post('/AssignFitterPDF', verifyAccessTokenAdmin, Controller.AssignFitterP
 // report
 router.post('/cashcollectionreport', verifyAccessTokenAdmin, Controller.cashcollectionreport)
 
+// update product type id and name and hsn code
+
+router.post('/updateProductTypeNameOnBill', Controller.updateProductTypeNameOnBill)
+
 
 module.exports = router

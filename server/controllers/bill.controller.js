@@ -1759,13 +1759,13 @@ module.exports = {
 
             let BillFormat = ''
             BillFormat = printdata.CompanySetting.BillFormat;
- 
+
             let fileName = "";
             const file = BillFormat + '-' + CompanyID + ".pdf";
             const formatName = BillFormat;
             fileName = "uploads/" + file;
 
-  
+
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
                 if (err) {
                     res.send(err);
@@ -1811,7 +1811,7 @@ module.exports = {
             const BillItemList = req.body.billItemList;
             const PaidList = req.body.paidList;
             const UnpaidList = req.body.unpaidList;
-            
+
             const [billformate] = await mysql2.pool.query(`select * from billformate where CompanyID = ${CompanyID}`)
             printdata.billformate = billformate[0]
             printdata.BillHeader = `${Number(printdata.billformate.BillHeader)}`;
@@ -2766,7 +2766,7 @@ module.exports = {
                     item.Profit = item.SubTotal - (item.PurchasePrice  * item.Quantity)
 
                     response.calculation[0].totalPurchasePrice += item.ModifyPurchasePrice
-                    response.calculation[0].totalProfit += item.Profit 
+                    response.calculation[0].totalProfit += item.Profit
                 }
 
 
@@ -3627,4 +3627,45 @@ module.exports = {
             next(err)
         }
     },
+    updateProductTypeNameOnBill: async (req, res, next) => {
+        try {
+
+            return
+
+            const response = { data: null, success: true, message: "" }
+
+            const [data] = await mysql2.pool.query(`select ID, ProductTypeID, ProductTypeName, BaseBarCode,HSNCode, CompanyID  from billdetail where ProductTypeName = "null" and Manual = 0 and PreOrder = 0`)
+
+            let count = 0
+            if (data.length) {
+                for(let item of data) {
+                    count += 1
+                    console.log(count);
+                    const [fetch] = await mysql2.pool.query(`select ProductTypeID, ProductTypeName, product.HSNCode from purchasedetailnew left join product on product.ID = purchasedetailnew.ProductTypeID where purchasedetailnew.BaseBarCode = '${item.BaseBarCode}' and purchasedetailnew.CompanyID = ${item.CompanyID} limit 1`)
+
+                    item.ProductTypeID = fetch[0].ProductTypeID
+                    item.ProductTypeName = fetch[0].ProductTypeName
+                    item.HSNCode = fetch[0].HSNCode
+
+                    if (!fetch.length) {
+                       console.log(item.BaseBarCode , "item.BaseBarCode");
+                       return
+                    }
+
+
+                    const [update] = await mysql2.pool.query(`update billdetail set ProductTypeID = ${item.ProductTypeID}, ProductTypeName = '${item.ProductTypeName}', HSNCode = '${item.HSNCode}' where CompanyID = ${item.CompanyID} and ID = ${item.ID} and BaseBarCode = '${item.BaseBarCode}'`)
+
+                }
+
+            }
+
+            console.log(data.length);
+
+            response.message = "Updated"
+            return res.send(response)
+        } catch (error) {
+            console.log(error);
+            next(error)
+        }
+    }
 }
