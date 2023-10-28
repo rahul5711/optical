@@ -622,33 +622,32 @@ export class PurchaseReportComponent implements OnInit {
     if (this.ProductExpiry.GSTType !== 0){
       Parem = Parem + ' and purchasedetailnew.GSTType = '  + `'${this.ProductExpiry.GSTType}'`; }
 
-    // const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem).subscribe({
-    //   next: (res: any) => {
-    //     if(res.success){
-    //       this.ProductExpiryList = res.data
-    //       this.ProductExpiryList.forEach((element: any) => {
-    //         if(element.ProductExpDate < this.todaydate) {
-    //           element.Color = true;
-    //           console.log( element.Color);
-              
-    //         } else {
-    //           element.Color = false;
-    //         }
-    //       });
-    //       this.ExpirytotalQty = res.calculation[0].totalQty;
-    //       this.ExpirytotalDiscount = res.calculation[0].totalDiscount.toFixed(2);
-    //       this.ExpirytotalUnitPrice = res.calculation[0].totalUnitPrice.toFixed(2);
-    //       this.ExpirytotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
-    //       this.ExpirytotalAmount = res.calculation[0].totalAmount.toFixed(2);
-    //       this.gstExpirys = res.calculation[0].gst_details
-    //     }else{
-    //       this.as.errorToast(res.message)
-    //     }
-    //     this.sp.hide()
-    //   },
-    //   error: (err: any) => console.log(err.message),
-    //   complete: () => subs.unsubscribe(),
-    // });
+    const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem).subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.ProductExpiryList = res.data
+          this.ProductExpiryList.forEach((element: any) => {
+            if(element.ProductExpDate < this.todaydate) {
+              element.Color = true;
+              console.log( element.Color);
+            } else {
+              element.Color = false;
+            }
+          });
+          this.ExpirytotalQty = res.calculation[0].totalQty;
+          this.ExpirytotalDiscount = res.calculation[0].totalDiscount.toFixed(2);
+          this.ExpirytotalUnitPrice = res.calculation[0].totalUnitPrice.toFixed(2);
+          this.ExpirytotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
+          this.ExpirytotalAmount = res.calculation[0].totalAmount.toFixed(2);
+          this.gstExpirys = res.calculation[0].gst_details
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   openModal2(content2: any) {

@@ -468,7 +468,6 @@ export class InventoryReportComponent implements OnInit {
   
     purchaseProductExpiry(){
 
-      return
       this.sp.show()
       this.todaydate = moment(new Date()).format('YYYY-MM-DD');
       let Parem = '';

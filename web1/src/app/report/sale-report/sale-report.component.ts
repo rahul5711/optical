@@ -109,6 +109,10 @@ export class SaleReportComponent implements OnInit {
     FilterTypes:'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,  CustomerGSTNo:0,  ProductCategory:0, ProductName: '', GSTType:0, GSTPercentage:0, Status:0, Option:0, ProductStatus:'pending'
   };
 
+  BillExpiry: any =  { 
+FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID: 0,  CustomerGSTNo:0, PaymentStatus: 0, ProductStatus:'All', ProductCategory:0, ProductName: '', GSTType:0, GSTPercentage:0, Status:0, Option:0, 
+  };
+
   shopLists:any =[]
   serviceType :any =[]
 
@@ -149,6 +153,18 @@ export class SaleReportComponent implements OnInit {
   pendingtotalGstAmount: any;
   gstpending:any
 
+  ExpiryList:any = [];
+  prodList3:any;
+  specList3:any =[];
+  ExpirytotalQty: any;
+  ExpirytotalDiscount: any;
+  ExpirytotalUnitPrice: any;
+  ExpirytotalAmount: any;
+  ExpirytotalGstAmount: any;
+  gstExpiry:any
+  todaydate: any;
+  
+
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'SaleReport') {
@@ -174,6 +190,7 @@ export class SaleReportComponent implements OnInit {
     this.getProductList();
     this.getProductList1();
     this.getProductList2();
+    this.getProductList3();
     this.getGSTList();
     // this.dropdownCustomerlist();
     this.dropdownCustomerGSTNo();
@@ -1051,7 +1068,7 @@ BillPendingFromReset(){
   this.gstpending = [];
 }
 
-
+// customer search 
   dateFormat(date:any){
     return moment(date).format(`${this.companySetting.DateFormat}`);
   }
@@ -1111,5 +1128,182 @@ BillPendingFromReset(){
       this.Billdetail.EmployeeID = 0
     }
   }
+// customer search 
+
+// sale prodcut Expiry 
+getProductList3(){
+  const subs: Subscription =  this.ps.getList().subscribe({
+    next: (res: any) => {
+      this.prodList3 = res.data;
+    },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+  });
+}
+
+getFieldList3(){
+  if(this.BillExpiry.ProductCategory !== 0){
+    this.prodList3.forEach((element: any) => {
+      if (element.ID === this.BillExpiry.ProductCategory) {
+        this.selectedProduct = element.Name;
+      }
+    })
+    const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
+      next: (res: any) => {
+      this.specList3 = res.data;
+      this.getSptTableData3();
+     },
+     error: (err: any) => console.log(err.message),
+     complete: () => subs.unsubscribe(),
+   });
+  }
+  else {
+    this.specList3 = [];
+    this.BillExpiry.ProductName = '';
+    this.BillExpiry.ProductCategory = 0;
+  }
+}
+
+getSptTableData3() { 
+  this.specList3.forEach((element: any) => {
+   if (element.FieldType === 'DropDown' && element.Ref === '0') {
+     const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
+       next: (res: any) => {
+         element.SptTableData = res.data;   
+         element.SptFilterData = res.data;  
+       },
+       error: (err: any) => console.log(err.message),
+       complete: () => subs.unsubscribe(),
+     });
+   }
+  });
+}
+
+getFieldSupportData3(index:any) {
+  this.specList3.forEach((element: any) => {
+   if (element.Ref === this.specList3[index].FieldName.toString() ) {
+     const subs: Subscription =  this.ps.getProductSupportData( this.specList3[index].SelectedValue,element.SptTableName).subscribe({
+       next: (res: any) => {
+         element.SptTableData = res.data; 
+         element.SptFilterData = res.data;   
+       },
+       error: (err: any) => console.log(err.message),
+       complete: () => subs.unsubscribe(),
+     });
+    }
+   });
+}
+
+
+filter3() {
+  let productName = '';
+  this.specList3.forEach((element: any) => {
+   if (productName === '') {
+      productName = element.SelectedValue;
+   } else if (element.SelectedValue !== '') {
+      productName += '/' + element.SelectedValue;
+   }
+  });
+  this.BillExpiry.ProductName = productName;
+}
+
+getBillExpiry(){
+  this.sp.show()
+  let Parem = '';
+  this.todaydate = moment(new Date()).format('YYYY-MM-DD');
+  if (this.BillExpiry.FromDate !== '' && this.BillExpiry.FromDate !== null){
+    let FromDate =  moment(this.BillExpiry.FromDate).format('YYYY-MM-DD')
+    Parem = Parem + ' and DATE_FORMAT(billdetail.ProductExpDate, "%Y-%m-%d") between ' +  `'${FromDate}'`; }
+
+  if (this.BillExpiry.ToDate !== '' && this.BillExpiry.ToDate !== null){
+    let ToDate =  moment(this.BillExpiry.ToDate).format('YYYY-MM-DD')
+    Parem = Parem + ' and ' +  `'${ToDate}'`; }
+    
+  if (this.BillExpiry.ShopID != 0 ){
+    Parem = Parem + ' and billmaster.ShopID IN ' +  `(${this.BillExpiry.ShopID})`;}
+
+  if (this.BillExpiry.CustomerID !== 0){
+    Parem = Parem + ' and billmaster.CustomerID = ' +  this.BillExpiry.CustomerID ; }
+
+  if (this.BillExpiry.CustomerGSTNo !== 0){
+    Parem = Parem + ' and billmaster.GSTNo = ' +  this.BillExpiry.CustomerGSTNo ; }
+
+  if (this.BillExpiry.PaymentStatus !== 0 && this.BillExpiry.PaymentStatus !== null &&  this.BillExpiry.PaymentStatus !== 'All'){
+    Parem = Parem + ' and billmaster.PaymentStatus = '  + `'${this.BillExpiry.PaymentStatus}'`; }
+
+  if (this.BillExpiry.ProductStatus !== '' && this.BillExpiry.ProductStatus !== null  && this.BillExpiry.ProductStatus !== 'All'){
+    Parem = Parem + ' and billdetail.ProductStatus = '  + `'${this.BillExpiry.ProductStatus}'`; }
+
+  if (this.BillExpiry.ProductCategory  !== 0){
+    Parem = Parem + ' and billdetail.ProductTypeID = ' +  this.BillExpiry.ProductCategory;
+    this.filter3();}
+
+  if (this.BillExpiry.ProductName !== '' ) {
+    Parem = Parem + ' and billdetail.ProductName Like ' + "'" + this.BillExpiry.ProductName + "%'"; }
+
+  if (this.BillExpiry.Option !== '' && this.BillExpiry.Option !== null && this.BillExpiry.Option !== 0) {
+    Parem = Parem + ' and barcodemasternew.Option = ' + `'${this.BillExpiry.Option}'`;
+  }
+
+  if (this.BillExpiry.GSTPercentage !== 0){
+    Parem = Parem + ' and billdetail.GSTPercentage = '  + `'${this.BillExpiry.GSTPercentage}'`; }
+
+  if (this.BillExpiry.GSTType !== 0){
+    Parem = Parem + ' and billdetail.GSTType = '  + `'${this.BillExpiry.GSTType}'`; }
+
+  
+  const subs: Subscription =  this.bill.getSalereportsDetail(Parem).subscribe({
+    next: (res: any) => {
+      if(res.success){
+        this.as.successToast(res.message)
+        this.ExpiryList = res.data
+        this.ExpiryList.forEach((element: any) => {
+          if(element.ProductExpDate < this.todaydate) {
+            element.Color = true;
+          } else {
+            element.Color = false;
+          }
+        });
+        this.ExpirytotalQty = res.calculation[0].totalQty;
+        this.ExpirytotalDiscount = res.calculation[0].totalDiscount;
+        this.ExpirytotalUnitPrice = res.calculation[0].totalUnitPrice;
+        this.ExpirytotalGstAmount = res.calculation[0].totalGstAmount;
+        this.ExpirytotalAmount = res.calculation[0].totalAmount;
+        this.gstExpiry = res.calculation[0].gst_details
+      }else{
+        this.as.errorToast(res.message)
+      }
+      this.sp.hide()
+    },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+  });
+}
+
+exportAsXLSXExpiry(): void {
+  let element = document.getElementById('saleExpiryExcel');
+  const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+  const wb: XLSX.WorkBook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  XLSX.writeFile(wb, 'Sale Product Expiry Report.xlsx');
+}
+
+openModalExpiry(content: any) {
+  this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+}
+
+BillExpirysFromReset(){
+  this.BillExpiry =  { 
+  FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID: 0,  CustomerGSTNo:0, PaymentStatus: 0, ProductStatus:'All', ProductCategory:0, ProductName: '', GSTType:0, GSTPercentage:0, Status:0, Option:0, 
+  };
+  this.ExpiryList = [];
+  this.ExpirytotalQty = 0;
+  this.ExpirytotalDiscount = 0;
+  this.ExpirytotalUnitPrice = 0;
+  this.ExpirytotalGstAmount = 0;
+  this.ExpirytotalAmount = 0;
+  this.specList3 = [];
+}
+
 
 }
