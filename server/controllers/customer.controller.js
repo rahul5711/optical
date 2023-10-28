@@ -792,7 +792,7 @@ module.exports = {
 
             printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
             var formatName = "customerPowerPDF.ejs";
-            var file = formatName + "_" + CompanyID + "-" + customer.ID + ".pdf";
+            var file =  printdata.mode + "-" + 'Power' + "_" + CompanyID + "-" + customer.ID + ".pdf";
             fileName = "uploads/" + file;
 
             console.log(fileName);

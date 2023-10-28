@@ -572,12 +572,8 @@ export class SaleReportComponent implements OnInit {
           this.DetailtotalGstAmount = res.calculation[0].totalGstAmount;
           this.DetailtotalAmount = res.calculation[0].totalAmount;
           this.gstdetails = res.calculation[0].gst_details
-          this.BillDetailList.forEach((e: any)=>{
-            this.DetailtotalPrice += e.PurchasePrice * e.Quantity
-            this.DetailtotalPorfit += e.SubTotal - e.PurchasePrice * e.Quantity
-          })
-          this.DetailtotalPrice = this.DetailtotalPrice.toFixed(2)
-          this.DetailtotalPorfit = this.DetailtotalPorfit.toFixed(2)
+          this.DetailtotalPrice = res.calculation[0].totalPurchasePrice;
+          this.DetailtotalPorfit = res.calculation[0].totalProfit;
         }else{
           this.as.errorToast(res.message)
         }

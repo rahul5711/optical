@@ -2626,6 +2626,8 @@ module.exports = {
                     "totalAmount": 0,
                     "totalDiscount": 0,
                     "totalUnitPrice": 0,
+                    "totalPurchasePrice": 0,
+                    "totalProfit": 0,
                     "gst_details": []
                 }], success: true, message: ""
             }
@@ -2636,7 +2638,7 @@ module.exports = {
 
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
-            qry = `SELECT billdetail.*, customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName, shop.Name as ShopName, shop.AreaName FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.Status = 1 AND billdetail.CompanyID = '${CompanyID}' AND billdetail.Quantity != 0 AND shop.Status = 1 ` + Parem
+            qry = `SELECT billdetail.*, customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName, shop.Name as ShopName, shop.AreaName,0 AS Profit , 0 AS ModifyPurchasePrice  FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.Status = 1 AND billdetail.CompanyID = '${CompanyID}' AND billdetail.Quantity != 0 AND shop.Status = 1 ` + Parem
 
             let [datum] = await mysql2.pool.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
             left join user on user.ID = billmaster.Employee
@@ -2724,7 +2726,7 @@ module.exports = {
             }
 
             if (data.length && values2.length) {
-                for (const item of data) {
+                for (let item of data) {
                     item.gst_details = []
                     values2.forEach(e => {
                         if (e.GSTType === item.GSTType) {
@@ -2758,13 +2760,21 @@ module.exports = {
                             }
                         }
                     })
+
+                    // profit calculation
+                    item.ModifyPurchasePrice = item.PurchasePrice * item.Quantity;
+                    item.Profit = item.SubTotal - (item.PurchasePrice  * item.Quantity)
+
+                    response.calculation[0].totalPurchasePrice += item.ModifyPurchasePrice
+                    response.calculation[0].totalProfit += item.Profit 
                 }
 
 
 
             }
-
             response.calculation[0].gst_details = values2;
+            response.calculation[0].totalPurchasePrice = response.calculation[0].totalPurchasePrice.toFixed(2) || 0
+            response.calculation[0].totalProfit = response.calculation[0].totalProfit.toFixed(2) || 0
             response.calculation[0].totalQty = datum[0].totalQty ? datum[0].totalQty : 0
             response.calculation[0].totalGstAmount = datum[0].totalGstAmount ? datum[0].totalGstAmount.toFixed(2) : 0
             response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount.toFixed(2) : 0
