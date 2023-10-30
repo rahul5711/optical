@@ -251,7 +251,9 @@ export class BillComponent implements OnInit {
     }
 
     if (this.id2 != 0) {
+      this.sp.show()
       this.getBillById(this.id2)
+      this.sp.hide()
     }
   }
 
@@ -1388,6 +1390,7 @@ export class BillComponent implements OnInit {
           confirmButtonText: 'Yes, delete it!',
           backdrop: false,
         }).then((result) => {
+          this.sp.show();
           if (result.isConfirmed) {
             let billlIst: any[] = this.billItemList
             this.billItemList.forEach((ele: any) => {
@@ -1514,7 +1517,7 @@ export class BillComponent implements OnInit {
           backdrop: false,
         }).then((result) => {
           if (result.isConfirmed) {
-            // this.sp.show();
+            this.sp.show();
             this.billItemList[i].Status = 0;
             this.billItemList[i].CancelStatus = 0;
             this.billItemList[i].DuaCal = 'delete';
