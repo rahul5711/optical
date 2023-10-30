@@ -104,16 +104,17 @@
                                                 <th>DeliveryDate</th>
                                                 <th>ShopName</th>
                                             </tr>
-                                            <tr class="totolRow" >
+                                            <tr class="totolRow">
                                                 <td>
                                                     <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                         aria-hidden="true" type="button" (click)="exportAsXLSX()"> </i>
-                                                        <button class="bg_none ms-4"
+                                                    <button class="bg_none ms-4"
                                                         printTitle="Cash_Collection Report {{this.selectsShop}}"
-                                                        printSectionId="PurchasePDF" ngxPrint
-                                                        ngxPrint [printStyle]="{th : {'color': '#000','border': '1px solid #000','font-Size':'17px'},td : {'color': '#000','border': '1px solid #000','text-align':'center'}, thead : {'background': '#e2e2e2'}, table:{'zoom': '80%','border-collapse': 'collapse','margin': '0', 'panding':'0', 'font-family': 'Arial, Helvetica, sans-serif'} }">
+                                                        printSectionId="PurchasePDF" ngxPrint ngxPrint
+                                                        [printStyle]="{th : {'color': '#000','border': '1px solid #000','font-Size':'17px'},td : {'color': '#000','border': '1px solid #000','text-align':'center'}, thead : {'background': '#e2e2e2'}, table:{'zoom': '80%','border-collapse': 'collapse','margin': '0', 'panding':'0', 'font-family': 'Arial, Helvetica, sans-serif'} }">
                                                         <i class="far fa-file-pdf "
-                                                            style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
+                                                            style="color: #1a1e90;font-size: 22px;cursor: pointer;">
+                                                        </i>
                                                     </button>
                                                 </td>
                                                 <td></td>
@@ -153,51 +154,32 @@
                                             </tr>
                                         </tbody>
                                         <tfoot style="display: none;">
-                                            <tr  *ngFor="let p of paymentMode">
-                                                <th colspan="4" style="background-color: red ;">{{p.Name}} - {{p.Amount}}</th>        
+                                            <tr style=" background-color: red; color:#fff">
+                                                <th colspan="2" *ngFor="let p of paymentMode">{{p.Name | uppercase}} - {{p.Amount}}</th>
+                                                <th colspan="2"> AMTRETURNByCREDIT - {{this.AmountReturnByCredit}}</th>
+                                                <th colspan="2"> AMTRETURNByDEBIT - {{this.AmountReturnByDebit}}</th>
+                                                <th colspan="2"> TOTALAMOUNT - {{this.totalAmount}}</th>
+                                                <th colspan="2"> OLD AMOUNT - {{this.oldPayment}}</th>
+                                                <th colspan="2"> ADVANCE AMOUNT - {{this.newPayment}}</th>
                                             </tr>
                                         </tfoot>
                                     </table>
                                 </div>
-
-                               <div class="row">
-                                <div class="col-1" *ngFor="let p of paymentMode">
-                                        <fieldset style="border: 1px solid #000;">
-                                            <legend> {{p.Name}}</legend>  <legend>{{p.Amount}}</legend> 
-                                        </fieldset>
-                                </div>
-                                <!-- <div class="col-1" >
-                                        <fieldset style="border: 1px solid #000;">
-                                            <legend> SumOfPaymentMode </legend>  <legend>{{this.sumOfPaymentMode}}</legend> 
-                                        </fieldset>
-                                </div> -->
-                                <div class="col-2" >
-                                        <fieldset style="border: 1px solid #000;">
-                                            <legend>AmountReturnByCredit </legend>  <legend> - {{this.AmountReturnByCredit}}</legend> 
-                                        </fieldset>
-                                </div>
-                                <div class="col-2" >
-                                        <fieldset style="border: 1px solid #000;">
-                                            <legend> AmountReturnByDebit</legend>  <legend> - {{this.AmountReturnByDebit}}</legend> 
-                                        </fieldset>
-                                </div>
-                                <div class="col-2" >
-                                        <fieldset style="border: 1px solid #000;">
-                                            <legend>TotalAmount </legend>  <legend>{{this.totalAmount}}</legend> 
-                                        </fieldset>
-                                </div>
-                                <div class="col-1" >
-                                        <fieldset style="border: 1px solid #000;">
-                                            <legend>OLD</legend>  <legend>{{this.oldPayment}}</legend> 
-                                        </fieldset>
-                                </div>
-                                <div class="col-1" >
-                                        <fieldset style="border: 1px solid #000;">
-                                            <legend>AVN</legend>  <legend>{{this.newPayment}}</legend> 
-                                        </fieldset>
-                                </div>
-                            
-                               </div>
+                                <div id="PurchasePDF" class="col-sm-12" *ngIf="dataList.length != 0">
+                                <table class="table table-striped table-hover table-sm table-bordered"
+                                    style="border: 2px solid #ff1d1d !important; width: 100%;" id="CaseConExcel">
+                                    <thead >
+                                        <tr>
+                                            <th *ngFor="let p of paymentMode">{{p.Name | uppercase}} - {{p.Amount}}</th>
+                                            <th> AMTRETURNByCREDIT - {{this.AmountReturnByCredit}}</th>
+                                            <th> AMTRETURNByDEBIT - {{this.AmountReturnByDebit}}</th>
+                                            <th> TOTALAMOUNT - {{this.totalAmount}}</th>
+                                            <th> OLD AMOUNT - {{this.oldPayment}}</th>
+                                            <th> ADVANCE AMOUNT - {{this.newPayment}}</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                                 </div>
                             </div>
                         </div>
                     </div>
