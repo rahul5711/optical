@@ -1076,10 +1076,7 @@ module.exports = {
 
 
             response.totalCreditAmount = totalCreditAmount
-
             response.totalPaidAmount -= response.totalCreditAmount || 0
-
-
             return res.send(response);
 
 
@@ -3680,11 +3677,13 @@ module.exports = {
 
             const { Date, ShopID, PaymentMode, PaymentStatus } = req.body;
             let shop = ``
+            let shop2 = ``
             let paymentType = ``
             let paymentStatus = ``
 
             if (ShopID) {
                 shop = ` and billmaster.ShopID = ${ShopID}`
+                shop2 = ` and paymentmaster.ShopID = ${ShopID}`
             }
             if (PaymentMode) {
                 paymentType = ` and paymentmaster.PaymentMode = '${PaymentMode}' `
@@ -3715,8 +3714,8 @@ module.exports = {
                 }
             }
 
-            const [debitReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer' and paymentdetail.Credit = 'Debit' and paymentdetail.CompanyID = ${CompanyID}` + Date)
-            const [creditReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer Credit' and paymentdetail.Credit = 'Credit' and paymentdetail.CompanyID = ${CompanyID} ` + Date)
+            const [debitReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer' and paymentdetail.Credit = 'Debit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date)
+            const [creditReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer Credit' and paymentdetail.Credit = 'Credit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date)
 
             if (debitReturn[0].Amount !== null) {
                 response.AmountReturnByDebit = debitReturn[0].Amount
