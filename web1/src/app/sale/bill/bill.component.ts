@@ -1779,8 +1779,8 @@ export class BillComponent implements OnInit {
   openModal12(content12: any) {
     this.sp.show()
     this.modalService.open(content12, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
-    this.getSupplierPo()
     this.dropdownSupplierlist()
+    this.getSupplierPo()
   }
 
   getSupplierPo() {

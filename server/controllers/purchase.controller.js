@@ -709,7 +709,95 @@ module.exports = {
             }
 
             var formatName = "PurchasePDF.ejs";
-            var file = formatName + "_" + CompanyID + ".pdf";
+            var file = 'Supplier_Purchase' + "_" + CompanyID + ".pdf";
+            fileName = "uploads/" + file;
+
+            console.log(fileName);
+
+            ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    res.send(err);
+                } else {
+                    let options = {
+                        format: 'A4',
+                        orientation: 'portrait',
+                        type: "pdf"
+                    };
+                    pdf.create(data, options).toFile(fileName, function (err, data) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            res.json(file);
+                        }
+                    });
+                }
+            });
+            return
+        } catch (err) {
+            next(err)
+        }
+
+    },
+
+    purchaseRetrunPDF: async (req, res, next) => {
+        try {
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const printdata = req.body
+            const PurchaseMasters = req.body.PurchaseMaster;
+            const PurchaseDetail = req.body.PurchaseDetails;
+            const PurchaseCharges = req.body.PurchaseCharge;
+
+            printdata.PurchaseMaster = PurchaseMasters
+            printdata.PurchaseDetails = PurchaseDetail
+            console.log(printdata.PurchaseDetails);
+            printdata.PurchaseCharge = PurchaseCharges
+
+            const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
+            const [companysetting] = await mysql2.pool.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+            const [supplier] = await mysql2.pool.query(`select * from supplier where CompanyID = ${CompanyID} and ID = ${PurchaseMasters.SupplierID}`)
+            const [billformate] = await mysql2.pool.query(`select * from billformate where CompanyID = ${CompanyID}`)
+
+            printdata.billformate = billformate[0]
+            printdata.BillHeader = `${Number(printdata.billformate.BillHeader)}`;
+            printdata.Color = printdata.billformate.Color;
+            printdata.ShopNameBold = `${Number(printdata.billformate.ShopNameBold)}`;
+            printdata.HeaderWidth = `${Number(printdata.billformate.HeaderWidth)}px`;
+            printdata.HeaderHeight = `${Number(printdata.billformate.HeaderHeight)}px`;
+            printdata.HeaderPadding = `${Number(printdata.billformate.HeaderPadding)}px`;
+            printdata.HeaderMargin = `${Number(printdata.billformate.HeaderMargin)}px`;
+            printdata.ImageWidth = `${Number(printdata.billformate.ImageWidth)}px`;
+            printdata.ImageHeight = `${Number(printdata.billformate.ImageHeight)}px`;
+            printdata.ImageAlign = printdata.billformate.ImageAlign;
+            printdata.ShopNameFont = `${Number(printdata.billformate.ShopNameFont)}px`;
+            printdata.ShopDetailFont = `${Number(printdata.billformate.ShopDetailFont)}px`;
+            printdata.LineSpace = `${Number(printdata.billformate.LineSpace)}px`;
+            printdata.CustomerFont = `${Number(printdata.billformate.CustomerFont)}px`;
+            printdata.CustomerLineSpace = `${Number(printdata.billformate.CustomerLineSpace)}px`;
+            printdata.TableHeading = `${Number(printdata.billformate.TableHeading)}px`;
+            printdata.TableBody = `${Number(printdata.billformate.TableBody)}px`;
+            printdata.NoteFont = `${Number(printdata.billformate.NoteFont)}px`;
+            printdata.NoteLineSpace = `${Number(printdata.billformate.NoteLineSpace)}px`;
+            printdata.billformate = billformate[0]
+            printdata.shopdetails = shopdetails[0]
+            printdata.companysetting = companysetting[0]
+
+
+            printdata.shopdetails = shopdetails[0]
+            printdata.supplier = supplier[0]
+            printdata.companysetting = companysetting[0]
+
+            var fileName = "";
+            if (!printdata.companysetting.LogoURL) {
+                printdata.LogoURL = clientConfig.appURL + '../assest/no-image.png';
+            } else {
+                printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
+            }
+
+            var formatName = "PurchaseRetrunPDF.ejs";
+            var file = 'ProductReturn' + "_" + CompanyID + ".pdf";
             fileName = "uploads/" + file;
 
             console.log(fileName);

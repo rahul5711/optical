@@ -22,9 +22,10 @@ import { SupportService } from 'src/app/service/support.service';
   styleUrls: ['./fitter-po.component.css']
 })
 export class FitterPoComponent implements OnInit {
-  shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
-  user:any =JSON.parse(localStorage.getItem('user') || '') ;
-  companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
+  shop: any = JSON.parse(localStorage.getItem('shop') || '');
+  selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '');
+  user: any = JSON.parse(localStorage.getItem('user') || '');
+  companySetting: any = JSON.parse(localStorage.getItem('companysetting') || '[]');
   env = environment;
 
   constructor(
@@ -52,7 +53,7 @@ export class FitterPoComponent implements OnInit {
   fitterList: any = []
   orderList: any = []
   filtersList: any = [];
-  lensList: any ;
+  lensList: any;
   rateCardList: any = [];
 
   fitter: any = '';
@@ -70,21 +71,21 @@ export class FitterPoComponent implements OnInit {
   orderFitterbtn = true
   orderComplete = false
   Orderpower: any = []
-  multiCheck: any
-
+  multiCheck: any;
+  supllierPDF= ''
   // call Api ngOnInit start 
   ngOnInit(): void {
     this.sp.show()
-    if(this.user.UserGroup === 'Employee'){
-      this.shopList  = this.shop;
+    if (this.user.UserGroup === 'Employee') {
+      this.shopList = this.shop;
       this.data.ShopID = this.shopList[0].ShopID
-    }else{
+    } else {
       this.dropdownShoplist();
       this.getFitterPo();
     }
     this.dropdownfitterlist();
     this.getLensTypeList();
-    this.sp.hide(); 
+    this.sp.hide();
   }
 
   dropdownShoplist() {
@@ -148,9 +149,9 @@ export class FitterPoComponent implements OnInit {
     this.sp.show()
     let Parem = '';
     this.orderFitter = true
-    if(this.user.UserGroup === 'Employee'){
+    if (this.user.UserGroup === 'Employee') {
       Parem = Parem + ' and barcodemasternew.ShopID = ' + this.data.ShopID;
-    }else{
+    } else {
       Parem = '';
     }
     const subs: Subscription = this.bill.getFitterPo(this.ID, Parem).subscribe({
@@ -158,9 +159,9 @@ export class FitterPoComponent implements OnInit {
         if (res.success) {
           this.orderList = res.data
           this.orderList.forEach((element: any) => {
-            if(element.LensType !== null || element.ProductTypeName === 'LENS'){
+            if (element.LensType !== null || element.ProductTypeName === 'LENS') {
               element.LensType = '';
-            }else{
+            } else {
               element.LensType = 'NO';
             }
           });
@@ -208,7 +209,7 @@ export class FitterPoComponent implements OnInit {
     const subs: Subscription = this.fitters.getRateCard(FitterID).subscribe({
       next: (res: any) => {
         this.rateCardList = res.data
-        if(this.rateCardList.length === 0){
+        if (this.rateCardList.length === 0) {
           this.fitter = ''
           Swal.fire({
             icon: 'error',
@@ -484,9 +485,9 @@ export class FitterPoComponent implements OnInit {
     this.orderComplete = true
     this.orderFitterbtn = true
     this.getList();
-    if(this.user.UserGroup === 'Employee'){
+    if (this.user.UserGroup === 'Employee') {
       this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: this.data.ShopID, stringProductName: '' }
-    }else{
+    } else {
       this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '' }
     }
   }
@@ -496,9 +497,9 @@ export class FitterPoComponent implements OnInit {
     this.getFitterPo()
     this.orderFitter = true
     this.orderComplete = false
-    if(this.user.UserGroup === 'Employee'){
+    if (this.user.UserGroup === 'Employee') {
       this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: this.data.ShopID, stringProductName: '' }
-    }else{
+    } else {
       this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '' }
     }
 
@@ -603,28 +604,64 @@ export class FitterPoComponent implements OnInit {
 
   }
 
-  AssignFitterPDF(){
+  AssignFitterPDF() {
     this.sp.show();
     this.filtersList = this.orderList.filter((d: any) => d.Sel === 1);
-    if(this.filtersList.length > 0){
+    if (this.filtersList.length > 0) {
       let body: any = { productList: this.filtersList }
-       const subs: Subscription = this.bill.AssignFitterPDF(body).subscribe({
-         next: (res: any) => {
-           if (res) {
-             const url = this.env.apiUrl + "/uploads/" + res;
-             window.open(url, "_blank");
-           } else {
-             this.as.errorToast(res.message)
-           }
-           this.sp.hide();
-         },
-         error: (err: any) => console.log(err.message),
-         complete: () => subs.unsubscribe(),
-       });
+      const subs: Subscription = this.bill.AssignFitterPDF(body).subscribe({
+        next: (res: any) => {
+          if (res) {
+            const url = this.env.apiUrl + "/uploads/" + res;
+            this.supllierPDF = url
+            window.open(url, "_blank");
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     }
   }
 
-  dateFormat(date:any){
+  dateFormat(date: any) {
     return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
+
+  sendWhatsapp(mode: any) {
+    let temp = JSON.parse(this.companySetting.WhatsappSetting);
+    let s: any = []
+
+    this.fitterList.forEach((sk: any) => {
+      if (this.filtersList[0].FitterID === sk.ID) {
+        s.push(sk)
+      }
+    })
+
+    this.shop = this.shop.filter((sh: any) => sh.ID === Number(this.selectedShop[0]));
+
+    let WhatsappMsg = '';
+
+    WhatsappMsg = 'Fitting details ';
+    var msg = `*Hi ${s[0].Name},*%0A` +
+      `${WhatsappMsg}%0A` +
+      `*Customer Fitting details PDF*: ${this.supllierPDF}%0A` +
+      `*${this.shop[0].Name}* - ${this.shop[0].AreaName}%0A${this.shop[0].MobileNo1}%0A${this.shop[0].Website}`;
+
+
+    if (s[0].MobileNo1 != '') {
+      var mob = "91" + s[0].MobileNo1;
+      var url = `https://wa.me/${mob}?text=${msg}`;
+      window.open(url, "_blank");
+    } else {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: '<b>' + s[0].Name + '</b>' + ' Mobile number is not available.',
+        showConfirmButton: true,
+      })
+    }
   }
 }

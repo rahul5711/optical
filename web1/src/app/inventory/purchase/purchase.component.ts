@@ -363,8 +363,6 @@ export class PurchaseComponent implements OnInit {
     this.calculation.calculateGrandTotal(this.selectedPurchaseMaster, this.itemList, this.chargeList)
   }
 
-
-
   addItem() {
 
     if (this.category === 'Product') {

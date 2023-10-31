@@ -343,8 +343,8 @@
                                         color="primary">Update</button>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-2 col-6  mb-0 ml-auto">
-                                    <button  class="shopPdf" type="button" ><i class="fa-sharp fa-solid fa-file-pdf"></i></button>
-                                    <button class="whatsapp ms-1 me-1"><i class="fa-brands fa-whatsapp" ></i> </button>
+                                    <button (click)="PurchaseDetailPDF()" class="shopPdf" type="button" ><i class="fa-sharp fa-solid fa-file-pdf"></i></button>
+                                    <button (click)="sendWhatsapp('')" [disabled]="this.ReturnPDF == ''" class="whatsapp ms-1 me-1"><i class="fa-brands fa-whatsapp" ></i> </button>
                                     <button class="email"> <i class="fa-solid fa-envelope"></i></button>
                                 </div>
                             </div>

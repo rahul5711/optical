@@ -22,7 +22,7 @@
                     <p>PurchaseDate </p>
                 </div>
                 <div class="col-2">
-                    <p> : <%=data.productList[0].SupplierName%>
+                    <p> : <%=data.productListHVD[0].SupplierName%>
                     </p>
                     <p> : <%=data.shopdetails.Name%> (<%=data.shopdetails.AreaName%>)
                     </p>
@@ -50,7 +50,7 @@
                 </tr>
             </thead>
             <tbody>
-                <% if(data.productList.length !==0 ){ data.productList.forEach(function (i, index) { %>
+                <% if(data.productListHVD.length !==0 ){ data.productListHVD.forEach(function (i, index) { %>
                     <tr>
                         <td>
                             <%= index+1 %>

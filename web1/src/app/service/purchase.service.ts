@@ -271,6 +271,11 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+  purchaseRetrunPDF(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/purchaseRetrunPDF',Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   PrintBarcode(Body:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/PrintBarcode',Body, httpOptions)
     .pipe(catchError(this.handleError));

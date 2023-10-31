@@ -13,6 +13,7 @@ var moment = require("moment");
 const clientConfig = require("../helpers/constants");
 const mysql2 = require('../database');
 const { log } = require('winston');
+const { json } = require('express');
 
 function discountAmount(item) {
     let discountAmount = 0
@@ -3120,14 +3121,64 @@ module.exports = {
 
             const printdata = req.body
             const productList = req.body.productList;
+            printdata.productListHVD = req.body.productList;
             printdata.todaydate = moment().format("DD/MM/YYYY");
-            printdata.productList = productList
+
+            let modifyList = [];
+            let invoiceNos = [];
+
+            productList.forEach(ell => {
+                ell.InvoiceDate = moment(ell.InvoiceDate).format("DD-MM-YYYY")
+                ell.DeliveryDate = moment(ell.DeliveryDate).format("DD-MM-YYYY")
+                ell.s =  [ ell.ProductName]; 
+                ell.R = [ ell.Remark ];  
+               
+              if (!invoiceNos.includes(ell.InvoiceNo)) {
+                invoiceNos.push(ell.InvoiceNo);
+                modifyList.push(ell);
+              } else {
+                const existingItem = modifyList.find(item => item.InvoiceNo === ell.InvoiceNo);
+
+                 if (!existingItem.s.some(obj => obj.ProductName === ell.ProductName)) {
+                existingItem.s.push(ell.ProductName);
+                }
+                 if (!existingItem.R.some(obj => obj.Remark === ell.Remark)) {
+                existingItem.R.push(ell.Remark );
+                }
+              }
+
+            });
+            
+            printdata.productList = modifyList
 
             const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
             const [companysetting] = await mysql2.pool.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+            const [billformate] = await mysql2.pool.query(`select * from billformate where CompanyID = ${CompanyID}`)
 
             printdata.shopdetails = shopdetails[0]
             printdata.companysetting = companysetting[0]
+            printdata.billformate = billformate[0]
+
+            printdata.BillHeader = `${Number(printdata.billformate.BillHeader)}`;
+            printdata.Color = printdata.billformate.Color;
+            printdata.ShopNameBold = `${Number(printdata.billformate.ShopNameBold)}`;
+            printdata.HeaderWidth = `${Number(printdata.billformate.HeaderWidth)}px`;
+            printdata.HeaderHeight = `${Number(printdata.billformate.HeaderHeight)}px`;
+            printdata.HeaderPadding = `${Number(printdata.billformate.HeaderPadding)}px`;
+            printdata.HeaderMargin = `${Number(printdata.billformate.HeaderMargin)}px`;
+            printdata.ImageWidth = `${Number(printdata.billformate.ImageWidth)}px`;
+            printdata.ImageHeight = `${Number(printdata.billformate.ImageHeight)}px`;
+            printdata.ImageAlign = printdata.billformate.ImageAlign;
+            printdata.ShopNameFont = `${Number(printdata.billformate.ShopNameFont)}px`;
+            printdata.ShopDetailFont = `${Number(printdata.billformate.ShopDetailFont)}px`;
+            printdata.LineSpace = `${Number(printdata.billformate.LineSpace)}px`;
+            printdata.CustomerFont = `${Number(printdata.billformate.CustomerFont)}px`;
+            printdata.CustomerLineSpace = `${Number(printdata.billformate.CustomerLineSpace)}px`;
+            printdata.TableHeading = `${Number(printdata.billformate.TableHeading)}px`;
+            printdata.TableBody = `${Number(printdata.billformate.TableBody)}px`;
+            printdata.NoteFont = `${Number(printdata.billformate.NoteFont)}px`;
+            printdata.NoteLineSpace = `${Number(printdata.billformate.NoteLineSpace)}px`;
+
 
             var fileName = "";
 
@@ -3137,8 +3188,13 @@ module.exports = {
                 printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
             }
 
-            var formatName = "AssignSupplierPDF.ejs";
-            var file = formatName + "_" + CompanyID + ".pdf";
+            if(CompanyID === 1){
+                var formatName = "AssignSupplierPDF.ejs"
+            }else{
+                var formatName = "AssignLensPDF.ejs";
+            }
+ 
+            var file = 'Supplier' + "_" + CompanyID + ".pdf";
             fileName = "uploads/" + file;
 
             console.log(fileName);
@@ -3436,14 +3492,66 @@ module.exports = {
 
             // const MeasurementID = JSON.parse(req.body.productList.MeasurementID) ;
             const productList = req.body.productList
-            productList.forEach(e => {
-                e.InvoiceDate = moment(e.InvoiceDate).format("DD-MM-YYYY")
-                e.DeliveryDate = moment(e.DeliveryDate).format("DD-MM-YYYY")
-            })
-            printdata.productList = productList
+       
+            let modifyList = [];
+            let invoiceNos = [];
+            
+            productList.forEach(ell => {
+                ell.InvoiceDate = moment(ell.InvoiceDate).format("DD-MM-YYYY")
+                ell.DeliveryDate = moment(ell.DeliveryDate).format("DD-MM-YYYY")
+                ell.s =  [ ell.ProductName];  // Initialize 'ell.s' as an array with the current ProductName.
+                ell.R = [ ell.Remark ];  // Initialize 'ell.s' as an array with the current ProductName.
+               
+              if (!invoiceNos.includes(ell.InvoiceNo)) {
+                invoiceNos.push(ell.InvoiceNo);
+                modifyList.push(ell);
+              } else {
+                // Find the corresponding item in 'v' to update its 's' array.
+                const existingItem = modifyList.find(item => item.InvoiceNo === ell.InvoiceNo);
 
+                // Check if ProductName and Remark are not already in the 's' array.
+                
+                
+                 if (!existingItem.s.some(obj => obj.ProductName === ell.ProductName)) {
+                existingItem.s.push(ell.ProductName);
+                }
+                 if (!existingItem.R.some(obj => obj.Remark === ell.Remark)) {
+                existingItem.R.push(ell.Remark );
+                }
+              }
+
+            });
+            
+    
+           printdata.productList = modifyList
+            
+
+            console.log(printdata.productList);
+        
             const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
             const [companysetting] = await mysql2.pool.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+            const [billformate] = await mysql2.pool.query(`select * from billformate where CompanyID = ${CompanyID}`)
+
+            printdata.billformate = billformate[0]
+            printdata.BillHeader = `${Number(printdata.billformate.BillHeader)}`;
+            printdata.Color = printdata.billformate.Color;
+            printdata.ShopNameBold = `${Number(printdata.billformate.ShopNameBold)}`;
+            printdata.HeaderWidth = `${Number(printdata.billformate.HeaderWidth)}px`;
+            printdata.HeaderHeight = `${Number(printdata.billformate.HeaderHeight)}px`;
+            printdata.HeaderPadding = `${Number(printdata.billformate.HeaderPadding)}px`;
+            printdata.HeaderMargin = `${Number(printdata.billformate.HeaderMargin)}px`;
+            printdata.ImageWidth = `${Number(printdata.billformate.ImageWidth)}px`;
+            printdata.ImageHeight = `${Number(printdata.billformate.ImageHeight)}px`;
+            printdata.ImageAlign = printdata.billformate.ImageAlign;
+            printdata.ShopNameFont = `${Number(printdata.billformate.ShopNameFont)}px`;
+            printdata.ShopDetailFont = `${Number(printdata.billformate.ShopDetailFont)}px`;
+            printdata.LineSpace = `${Number(printdata.billformate.LineSpace)}px`;
+            printdata.CustomerFont = `${Number(printdata.billformate.CustomerFont)}px`;
+            printdata.CustomerLineSpace = `${Number(printdata.billformate.CustomerLineSpace)}px`;
+            printdata.TableHeading = `${Number(printdata.billformate.TableHeading)}px`;
+            printdata.TableBody = `${Number(printdata.billformate.TableBody)}px`;
+            printdata.NoteFont = `${Number(printdata.billformate.NoteFont)}px`;
+            printdata.NoteLineSpace = `${Number(printdata.billformate.NoteLineSpace)}px`;
 
             printdata.shopdetails = shopdetails[0]
             printdata.companysetting = companysetting[0]
@@ -3457,7 +3565,7 @@ module.exports = {
             }
 
             var formatName = "AssignFitterPDF.ejs";
-            var file = formatName + "_" + CompanyID + ".pdf";
+            var file = 'Fitter' + "_" + CompanyID + ".pdf";
             fileName = "uploads/" + file;
 
             console.log(fileName);

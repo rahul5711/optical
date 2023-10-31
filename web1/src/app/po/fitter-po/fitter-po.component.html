@@ -69,15 +69,18 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div> -->
-                                <div class="col-md-2">
+                                <div class="col-md-4">
                                     <button (click)="Search(mode)" type="button" mat-raised-button color="primary">
                                         Search
                                     </button>
                                     <button (click)="Reset()" class="ms-2" type="button" mat-raised-button color="warn">
                                         Reset
                                     </button>
-                                    <button *ngIf="this.orderComplete  == true"  (click)="AssignFitterPDF()" class="ms-2" type="button" mat-raised-button color="warn">
+                                    <button *ngIf="this.orderComplete  == true"  (click)="AssignFitterPDF()" class="ms-2" type="button" mat-raised-button color="primary">
                                         PDF
+                                    </button>
+                                    <button *ngIf="this.orderComplete  == true" [disabled]="this.supllierPDF == ''"  (click)="sendWhatsapp('')" class="ms-2" type="button" mat-raised-button color="primary">
+                                        Whatsapp
                                     </button>
                                 </div>
                             </div>

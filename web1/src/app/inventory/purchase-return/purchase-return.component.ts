@@ -20,7 +20,7 @@ import * as moment from 'moment';
 })
 export class PurchaseReturnComponent implements OnInit {
 
-  evn = environment;
+  env = environment;
   user = JSON.parse(localStorage.getItem('user') || '');
   company = JSON.parse(localStorage.getItem('company') || '');
   shop = JSON.parse(localStorage.getItem('shop') || '');
@@ -45,6 +45,7 @@ export class PurchaseReturnComponent implements OnInit {
   Req :any= {SearchBarCode : ''} 
   gst_detail:any = [];
   gstList:any
+  ReturnPDF = '';
 
   constructor(
     private router: Router,
@@ -539,4 +540,64 @@ export class PurchaseReturnComponent implements OnInit {
     }
   }
 
+
+  PurchaseDetailPDF() {
+    let itemList2:any = []
+    this.itemList.forEach((ele: any) => {
+      if(ele.Status === 1){
+        itemList2.push(ele)
+      }
+    });
+    let body = { PurchaseMaster: this.selectedPurchaseMaster, PurchaseDetails: itemList2, }
+    this.sp.show();
+    const subs: Subscription = this.purchaseService.purchaseRetrunPDF(body).subscribe({
+      next: (res: any) => {
+        if (res) {
+          const url = this.env.apiUrl + "/uploads/" + res;
+          this.ReturnPDF = url
+          window.open(url, "_blank");
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  sendWhatsapp(mode: any) {
+    let temp = JSON.parse(this.companySetting.WhatsappSetting);
+    let s: any = []
+
+    this.supplierList.forEach((sk: any) => {
+      if (this.selectedPurchaseMaster.SupplierID === sk.ID) {
+        s.push(sk)
+      }
+    })
+
+    this.shop = this.shop.filter((sh: any) => sh.ID === Number(this.selectedShop[0]));
+
+    let WhatsappMsg = '';
+
+    WhatsappMsg = 'Product are return';
+    var msg = `*Hi ${s[0].Name},*%0A` +
+      `${WhatsappMsg}%0A` +
+      `*Product Return Detail*: ${this.ReturnPDF}%0A` +
+      `*${this.shop[0].Name}* - ${this.shop[0].AreaName}%0A${this.shop[0].MobileNo1}%0A${this.shop[0].Website}`;
+
+
+    if (s[0].MobileNo1 != '') {
+      var mob = "91" + s[0].MobileNo1;
+      var url = `https://wa.me/${mob}?text=${msg}`;
+      window.open(url, "_blank");
+    } else {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: '<b>' + s[0].Name + '</b>' + ' Mobile number is not available.',
+        showConfirmButton: true,
+      })
+    }
+  }
 }

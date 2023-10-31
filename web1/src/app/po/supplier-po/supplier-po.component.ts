@@ -23,6 +23,7 @@ import { ShopService } from 'src/app/service/shop.service';
 })
 export class SupplierPoComponent implements OnInit {
   shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
+  selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
 
@@ -66,6 +67,7 @@ export class SupplierPoComponent implements OnInit {
   orderComplete = false
   Orderpower: any = []
   multiCheck: any 
+  supllierPDF = ''
 
   ngOnInit(): void {
     this.sp.show()
@@ -428,6 +430,7 @@ export class SupplierPoComponent implements OnInit {
            next: (res: any) => {
              if (res) {
                const url = this.env.apiUrl + "/uploads/" + res;
+               this.supllierPDF = url
                window.open(url, "_blank");
              } else {
                this.as.errorToast(res.message)
@@ -447,5 +450,40 @@ export class SupplierPoComponent implements OnInit {
       event = event.toTitleCase()
     }
     return event;
+  }
+
+  sendWhatsapp(mode: any) {
+    let temp = JSON.parse(this.companySetting.WhatsappSetting);
+    let s: any = []
+
+    this.supplierList.forEach((sk: any) => {
+      if (this.filtersList[0].SupplierID === sk.ID) {
+        s.push(sk)
+      }
+    })
+
+    this.shop = this.shop.filter((sh: any) => sh.ID === Number(this.selectedShop[0]));
+
+    let WhatsappMsg = '';
+
+    WhatsappMsg = 'Lens Detail';
+    var msg = `*Hi ${s[0].Name},*%0A` +
+      `${WhatsappMsg}%0A` +
+      `*Customer Lens PDF*: ${this.supllierPDF}%0A` +
+      `*${this.shop[0].Name}* - ${this.shop[0].AreaName}%0A${this.shop[0].MobileNo1}%0A${this.shop[0].Website}`;
+
+
+    if (s[0].MobileNo1 != '') {
+      var mob = "91" + s[0].MobileNo1;
+      var url = `https://wa.me/${mob}?text=${msg}`;
+      window.open(url, "_blank");
+    } else {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: '<b>' + s[0].Name + '</b>' + ' Mobile number is not available.',
+        showConfirmButton: true,
+      })
+    }
   }
 }
