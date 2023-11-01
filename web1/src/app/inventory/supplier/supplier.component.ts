@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -17,7 +17,6 @@ import { SupportService } from 'src/app/service/support.service';
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { ShopService } from 'src/app/service/shop.service';
-import { content } from 'html2canvas/dist/types/css/property-descriptors/content';
 
 
 @Component({
@@ -28,7 +27,13 @@ import { content } from 'html2canvas/dist/types/css/property-descriptors/content
 })
 
 export class SupplierComponent implements OnInit {
-
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.ctrlKey && event.key === 's') {
+      this.onsubmit();
+      event.preventDefault();
+    }
+  }
   @ViewChild('searching') searching: ElementRef | any;
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
@@ -68,7 +73,7 @@ export class SupplierComponent implements OnInit {
     private shop: ShopService,
   ) {
     this.id = this.route.snapshot.params['id'];
-    this.env = environment
+    this.env = environment;
   }
 
   data: any = {
@@ -299,7 +304,7 @@ export class SupplierComponent implements OnInit {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit($event:any) {
 
     fromEvent(this.searching.nativeElement, 'keyup').pipe(
       map((event: any) => {

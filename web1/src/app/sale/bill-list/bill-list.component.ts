@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -26,6 +26,14 @@ import * as moment from 'moment';
 })
 export class BillListComponent implements OnInit {
 
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === '+') {
+      this.router.navigate(['/sale/billing',0,0]);
+      event.preventDefault();
+    }
+  }
+  
   @ViewChild('searching') searching: ElementRef | any;
   company = JSON.parse(localStorage.getItem('company') || '');
   user = JSON.parse(localStorage.getItem('user') || '');

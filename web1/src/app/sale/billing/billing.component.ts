@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -39,6 +39,17 @@ import { SupportService } from 'src/app/service/support.service';
 })
 
 export class BillingComponent implements OnInit {
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.ctrlKey && event.key === 's') {
+      this.onsubmit();
+      event.preventDefault();
+    }
+    if (event.ctrlKey && event.key === 'q') {
+      this.clearFrom();
+      event.preventDefault();
+    }
+  }
   @ViewChild('UserNamecontrol') UserNamecontrol: ElementRef | any;
   user = JSON.parse(localStorage.getItem('user') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');

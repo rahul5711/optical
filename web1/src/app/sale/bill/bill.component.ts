@@ -40,6 +40,14 @@ import { NgTinyUrlService } from 'ng-tiny-url';
   ]
 })
 export class BillComponent implements OnInit {
+
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.ctrlKey && event.key === 's') {
+      this.onSubmit('');
+      event.preventDefault();
+    }
+  }
+
   [x: string]: any;
 
   @Input() customerID2: any

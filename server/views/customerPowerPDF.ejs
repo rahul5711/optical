@@ -27,7 +27,7 @@
          <div>
             <div <% %>  style="border-bottom: 1px solid  <%= data.Color %>; width: 38%; position:absolute; margin-top: 1%;"> </div>
             <div <% %>  style="border-bottom: 1px solid  <%= data.Color %>; width: 38%; float: right; position: relative; margin-top: 1%;"></div>
-            <span class="headingName" <% %> style="color: <%= data.Color %>;"> COMPUTERIZED EYE TESTING </span>
+            <span class="headingName" <% %> style="color: <%= data.Color %>;"> Eye-Sight Prescription </span>
          </div>
    </section>
 
@@ -35,27 +35,27 @@
    <section class="customer_details">
       <div class="row1">
          <div class="col-1">
-            <p class="cus_p">Cust_ID</p>
             <p class="cus_p">Name </p>
-            <p class="cus_p">Rx_By </p>
+            <p class="cus_p">MoblieNo </p>
+            <p class="cus_p">Address </p>
          </div>
          <div class="col-2">
-            <p class="cus_p"> : <%=data.customer.Idd%></p>
             <p class="cus_p"> : <%=data.customer.Name%> </p>
-            <p class="cus_p"> : <%=data.spectacle.RefferedByDoc%></p>
+            <p class="cus_p"> : <%=data.customer.MobileNo1%> </p>
+            <p class="cus_p"> : <%=data.customer.Address%></p>
+     
          </div>
       </div>
       <div class="row2">
          <div class="col-1">
             <p class="cus_p">VistingDate</p>
-            <p class="cus_p">MoblieNo </p>
             <p class="cus_p">PhoneNo </p>
+            <p class="cus_p">Rx_By </p>
          </div>
          <div class="col-2">
             <p class="cus_p"> : <%=data.customer.VisitDate%> </p>
-            <p class="cus_p"> : <%=data.customer.MobileNo1%> </p>
-            <p class="cus_p"> : <%=data.customer.PhoneNo%>
-            </p>
+            <p class="cus_p"> : <%=data.customer.PhoneNo%> </p>
+            <p class="cus_p"> : <%=data.spectacle.RefferedByDoc%></p>
          </div>
       </div>
    </section>
@@ -232,7 +232,7 @@
     <!-- footer -->
     <div class="rowFooter">
           <div class="col1">
-             <h3 <% %> style="padding: 0;margin: 0; color: <%= data.Color %>">Note</h3>
+             <h3 <% %> style="padding: 0;margin: 0; color: <%= data.Color %>"></h3>
              <% if(data.powerNoteShop.length !==0){ data.powerNoteShop.forEach(function (i, index) { %>
                <p style="padding: 0;">
                  <%=index+1%>. <%=i.Content%>
