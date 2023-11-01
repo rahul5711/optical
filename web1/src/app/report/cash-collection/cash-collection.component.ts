@@ -159,6 +159,7 @@ export class CashCollectionComponent implements OnInit {
       } else {
         this.oldPayment += Number(data[i].Amount);
       }
+      
     }
   }
 

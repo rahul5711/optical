@@ -634,4 +634,7 @@ export class CommonComponent implements OnInit {
     }
   }
   
+  ComingSoon(){
+    alert('This report is coming soon...')
+  }
 }

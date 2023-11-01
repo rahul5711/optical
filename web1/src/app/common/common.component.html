@@ -149,16 +149,16 @@
               <a *ngIf="viewFlag.viewPurchaseReport" href="javascript:void(0)" [routerLink]="['/report/purchase']" id="collapseExample7">Purchase</a>
               <a *ngIf="viewFlag.viewEyeTestReport" href="javascript:void(0)" [routerLink]="['/report/expenes']" id="collapseExample7">Expenses </a>
               <a *ngIf="viewFlag.viewInventoryReport" href="javascript:void(0)" [routerLink]="['/report/inventory']" id="collapseExample7">Inventory</a>
-              <a *ngIf="viewFlag.viewInventoryReport" href="javascript:void(0)" [routerLink]="['/report/inventory']" id="collapseExample7">Reminder </a>
-              <a *ngIf="viewFlag.viewInventoryReport" href="javascript:void(0)" [routerLink]="['/report/inventory']" id="collapseExample7">Sale Profit </a>
-              <a *ngIf="viewFlag.viewInventoryReport" href="javascript:void(0)" [routerLink]="['/report/inventory']" id="collapseExample7">Sale Payment </a>
-              <a *ngIf="viewFlag.viewInventoryReport" href="javascript:void(0)" [routerLink]="['/report/inventory']" id="collapseExample7">Customer </a>
-              <a *ngIf="viewFlag.viewInventoryReport" href="javascript:void(0)" [routerLink]="['/report/inventory']" id="collapseExample7">Ledger </a>
+              <a *ngIf="viewFlag.viewInventoryReport" href="javascript:void(0)" (click)="ComingSoon()"  id="collapseExample7">Reminder </a>
+              <!-- <a *ngIf="viewFlag.viewInventoryReport" href="javascript:void(0)" [routerLink]="['/report/inventory']" id="collapseExample7">Sale Profit </a> -->
+              <a *ngIf="viewFlag.viewInventoryReport" href="javascript:void(0)" (click)="ComingSoon()"  id="collapseExample7">Sale Payment </a>
+              <a *ngIf="viewFlag.viewInventoryReport" href="javascript:void(0)" (click)="ComingSoon()"  id="collapseExample7">Customer </a>
+              <a *ngIf="viewFlag.viewInventoryReport" href="javascript:void(0)"  (click)="ComingSoon()"  id="collapseExample7">Ledger </a>
               <a *ngIf="viewFlag.viewProductTransferReport" href="javascript:void(0)" [routerLink]="['/report/product-transfer']" id="collapseExample7">Product Transfer</a>
               <a *ngIf="viewFlag.viewProductReturnReport" href="javascript:void(0)" [routerLink]="['/report/product-return']" id="collapseExample7">Product Return</a>
               <a *ngIf="viewFlag.viewEyeTestReport" href="javascript:void(0)" [routerLink]="['/report/supplierCredit']" id="collapseExample7">Supplier Credit</a>
-              <a *ngIf="viewFlag.viewEyeTestReport" href="javascript:void(0)" [routerLink]="['/report/eyetest']" id="collapseExample7">Eye Test</a>
-              <a *ngIf="viewFlag.viewEyeTestReport" href="javascript:void(0)" [routerLink]="['/report/eyetest']" id="collapseExample7">Loyalty </a>
+              <a *ngIf="viewFlag.viewEyeTestReport" href="javascript:void(0)" (click)="ComingSoon()"  id="collapseExample7">Eye Test</a>
+              <a *ngIf="viewFlag.viewEyeTestReport" href="javascript:void(0)" (click)="ComingSoon()"  id="collapseExample7">Loyalty </a>
               <a *ngIf="viewFlag.viewEyeTestReport" href="javascript:void(0)" [routerLink]="['/report/oldSale']" id="collapseExample7">Old Sale </a>
             </div>
           </div>

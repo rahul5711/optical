@@ -1,5 +1,5 @@
 
-<div style="zoom:100% !important" class="card" *ngIf="this.CustomerView == true">
+<div  class="card billCrad" *ngIf="this.CustomerView == true">
     <div class="header">
         <div class="row">
             <div class="col-lg-1 col-md-2 col-6">
@@ -126,7 +126,7 @@
                         WholeSale</mat-slide-toggle>
                 </div>
             </div>
-            <div class="row" *ngIf="category !== 'Services'">
+            <div class="row rowModify" *ngIf="category !== 'Services'">
                 <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>BarCode</mat-label>
@@ -206,7 +206,7 @@
             </div>
             <!-- save product spec start -->
             <form #fp="ngForm">
-                <div class="row" *ngIf="category !== 'Services'">
+                <div class="row rowModify" *ngIf="category !== 'Services'">
                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0"
                         *ngFor="let spec of specList ; let i = index;">
                         <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
@@ -319,7 +319,7 @@
         </form>
 
         <form #f1="ngForm" (ngSubmit)="addItem()">
-            <div class="row" *ngIf="category !== 'Services' && BillItem.Manual === false">
+            <div class="row row rowModify" *ngIf="category !== 'Services' && BillItem.Manual === false">
                 <div class="col-xl-4 col-lg-4 col-md-9 col-8 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Product Name</mat-label>
@@ -348,7 +348,7 @@
                 </div>
             </div>
             <div class="row" *ngIf="category !== 'Services'">
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Unit Price</mat-label>
                         <input matInput type="number" min="0" name="UnitPrice" [(ngModel)]="BillItem.UnitPrice" required
@@ -358,7 +358,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0" *ngIf="this.PurchasePriceInput">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify" *ngIf="this.PurchasePriceInput">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>PurchasePrice</mat-label>
                         <input matInput type="number" min="0" name="PurchasePrice" [(ngModel)]="BillItem.PurchasePrice"
@@ -369,7 +369,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Quantity</mat-label>
                         <input matInput name="Quantity" type="number" min="1" [(ngModel)]="BillItem.Quantity"
@@ -381,7 +381,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Discount%</mat-label>
                         <input matInput type="number" min="0" name="Discount" [(ngModel)]="BillItem.DiscountPercentage"
@@ -392,7 +392,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Discount amt</mat-label>
                         <input matInput type="number" min="0" name="DiscountAmt" [(ngModel)]="BillItem.DiscountAmount"
@@ -400,7 +400,7 @@
                             [autocomplete]="false">
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Sub Total</mat-label>
                         <input type="number" min="0" matInput name="SubTotal" [(ngModel)]="BillItem.SubTotal"
@@ -411,7 +411,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify" >
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX%</mat-label>
                         <input matInput type="number" min="0" name="GST" [(ngModel)]="BillItem.GSTPercentage" required
@@ -421,7 +421,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX Type</mat-label>
                         <mat-select name="GSTType" [(ngModel)]="BillItem.GSTType"
@@ -438,26 +438,26 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Total Amount</mat-label>
                         <input matInput type="number" min="0" name="TotalAmount" [(ngModel)]="BillItem.TotalAmount"
                             disabled required #TotalAmountcontrol>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Remark</mat-label>
                         <input matInput name="Remark" [(ngModel)]="BillItem.Remark">
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Warranty</mat-label>
                         <input matInput name="Warranty" [(ngModel)]="BillItem.Warranty">
                     </mat-form-field>
                 </div>
-                <div *ngIf="addCustomerBill" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 mb-3  ms-auto">
+                <div *ngIf="addCustomerBill" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 mb-3  ms-auto ">
                     <button *ngIf="BillItem.Manual === false &&  BillItem.PreOrder === false" type="submit"
                         [disabled]="!f1.valid || !fp.valid && this.BillItem.Quantity === 0 || this.GstTypeDis || this.BillItem.Barcode === null"
                         mat-raised-button color="primary"
@@ -563,10 +563,10 @@
         <!-- temp table  -->
         <form #f2="ngForm">
 
-            <div class="row mt-0">
-                <div class="col-sm-12" style="overflow-y: scroll; max-height: 150px; margin: 0;">
-                    <table class="table">
-                        <thead class="thead-light">
+            <div class="row mt-3 mb-0">
+                <div class="col-sm-12 mostly-customized-scrollbar" style="overflow-y: scroll; max-height: 150px; margin: 0; padding: 0;">
+                    <table class="table" style="background: rgb(255, 255, 255);">
+                        <thead class="thead-light" style="background: #c1c1c1a6;">
                             <tr>
                                 <th> <mat-checkbox type="checkbox" name="checked" (click)="changeProductStatusAll()"
                                         [(ngModel)]="checked"></mat-checkbox> </th>
@@ -811,8 +811,8 @@
                     </table>
                 </div>
             </div>
-            <div class="row pt-3 mb-3" style="border: 2px solid #0000005c;">
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 ">
+            <div class="row mt-0 mb-2 pt-3" style=" background: #c1c1c1a6;">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">Quantity</mat-label>
                         <input matInput class="cust-input" type="number" min="0" name="Quantity"
@@ -822,7 +822,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">Sub Total</mat-label>
                         <input style=" color: red !important;" matInput class="cust-input redclass" type="number"
@@ -833,7 +833,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0" *ngIf="this.loginShop?.Discount === 'true'">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB" *ngIf="this.loginShop?.Discount === 'true'">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">D.Amount</mat-label>
                         <input matInput class="cust-input" type="number" min="0" name="DiscountAmount"
@@ -844,7 +844,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0" *ngIf="this.loginShop?.GSTnumber === 'true'">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB" *ngIf="this.loginShop?.GSTnumber === 'true'">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">TAX Amt</mat-label>
                         <input matInput class="cust-input" type="number" min="0" name="GSTAmount"
@@ -853,9 +853,9 @@
                     </mat-form-field>
                 </div>
 
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4  mb-0" *ngFor="let gst of gst_detail">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4  mb-0 col-1ModifyB" *ngFor="let gst of gst_detail">
                     <mat-form-field class="example-full-width mb-0">
-                        <mat-label>{{gst.GSTType}}</mat-label>
+                        <mat-label class="cus-label">{{gst.GSTType}}</mat-label>
                         <input matInput name="igstAmt" value="{{gst.Amount | number:'1.0-2'}}" disabled>
                         <mat-error>
                             TAX Amt is required
@@ -875,9 +875,9 @@
                         <input class="cust-input" type="number" matInput name="SGST" [(ngModel)]="sgst" disabled>
                     </mat-form-field>
                 </div> -->
-                <div *ngIf="this.id2 !== 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin'" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                <div *ngIf="this.id2 !== 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin'" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 col-1ModifyB">
                     <mat-form-field class="example-full-width mb-0">
-                        <mat-label>Additional Discount%</mat-label>
+                        <mat-label class="cus-label">Additional Discount%</mat-label>
                         <input matInput name="AddlDiscountPercentage"
                             (blur)="AddDiscalculate('AddlDiscountPercentage', 'discount')" type="number" min="0"
                             [(ngModel)]="BillMaster.AddlDiscountPercentage" #AddlDiscountPercentagecontrol
@@ -887,9 +887,9 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div *ngIf=" this.id2 == 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'Employee' ||  this.id2 === 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin'" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                <div *ngIf=" this.id2 == 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'Employee' ||  this.id2 === 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin'" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0 col-1ModifyB">
                     <mat-form-field class="example-full-width mb-0">
-                        <mat-label>Additional Discount%</mat-label>
+                        <mat-label class="cus-label">Additional Discount%</mat-label>
                         <input matInput name="AddlDiscountPercentage"
                             (blur)="AddDiscalculate('AddlDiscountPercentage', 'discount')" type="number" min="0"
                             [(ngModel)]="BillMaster.AddlDiscountPercentage" #AddlDiscountPercentagecontrol required
@@ -899,9 +899,9 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div *ngIf="this.id2 !== 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin'" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                <div *ngIf="this.id2 !== 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin'" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
                     <mat-form-field class="example-full-width mb-0">
-                        <mat-label>Additional Discount</mat-label>
+                        <mat-label class="cus-label">Additional Discount</mat-label>
                         <input matInput name="AddlDiscount" type="number" min="0"
                             (blur)="AddDiscalculate('AddlDiscount', 'discount')" [(ngModel)]="BillMaster.AddlDiscount"
                             #AddlDiscounttcontrol [autocomplete]="false"  required>
@@ -910,9 +910,9 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div *ngIf=" this.id2 == 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'Employee' ||  this.id2 === 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin'" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                <div *ngIf=" this.id2 == 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'Employee' ||  this.id2 === 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin'" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
                     <mat-form-field class="example-full-width mb-0">
-                        <mat-label>Additional Discount</mat-label>
+                        <mat-label class="cus-label">Additional Discount</mat-label>
                         <input matInput name="AddlDiscount" type="number" min="0"
                             (blur)="AddDiscalculate('AddlDiscount', 'discount')" [(ngModel)]="BillMaster.AddlDiscount"
                             #AddlDiscounttcontrol [autocomplete]="false" required>
@@ -921,16 +921,16 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
                     <mat-form-field class="example-full-width mb-0">
-                        <mat-label>Grand Amount</mat-label>
+                        <mat-label class="cus-label">Grand Amount</mat-label>
                         <input class="redclass" style="color: red !important;" matInput name="TotalAmount" type="number"
                             min="0" [(ngModel)]="BillMaster.TotalAmount" disabled>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
                     <mat-form-field class="example-full-width mb-0">
-                        <mat-label>Round Off</mat-label>
+                        <mat-label class="cus-label">Round Off</mat-label>
                         <input class="redclass" style="color: red !important;" matInput name="RoundOff" type="number"
                             min="0" [(ngModel)]="BillMaster.RoundOff" disabled>
                     </mat-form-field>
@@ -964,9 +964,10 @@
                     <button type="button" class="me-3 ms-3" mat-raised-button color="primary">Invoice +
                         Power</button> -->
                         <!-- [disabled]="this.BillLink == ''" -->
-                    <button type="button" [disabled]="this.BillLink == ''" mat-raised-button color="primary" class="me-3 ms-3"  (click)="sendWhatsapp('bill')"> 
-                         Whatsapp</button>
-                    <button type="button" mat-raised-button color="primary">Email</button>
+                   
+
+                    <button [disabled]="this.BillLink == ''" (click)="sendWhatsapp('bill')" class="bgRemove ms-lg-2 me-lg-1 ms-3 me-3"><i class="fa-brands fa-whatsapp whatsappBill"></i></button>
+                    <button class="bgRemove"><i class="fa-solid fa-envelope EmailBill"></i></button>
                 </div>
             </div>
         </form>

@@ -183,3 +183,80 @@ button:disabled .deletes_icon{
     letter-spacing: .5px !important;
 }
 
+.billCrad{
+    zoom: 100% !important;
+}
+
+.cus-label{
+font-size: 16px;
+font-weight: 500;
+}
+
+.visible-scrollbar,
+.invisible-scrollbar,
+.mostly-customized-scrollbar {
+    display: block;
+    overflow: auto;
+
+}
+
+.invisible-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.mostly-customized-scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 8px;
+    background-color: #aaa;
+    /* or add it to the track */
+}
+
+/* Add a thumb */
+.mostly-customized-scrollbar::-webkit-scrollbar-thumb {
+    background: rgb(62, 79, 173);
+}
+
+
+/* .rowModify{
+    background: antiquewhite;
+}
+
+.col-1Modify{
+  border: 1px solid ;
+  padding-top: 3px;
+}
+.col-1ModifyB{
+  border-left: 1px solid ;
+  padding-top: 3px;
+} */
+
+
+.whatsappBill {
+    font-size: 21px;
+    background: #55c13e;
+    border: none;
+    border-radius: 5px;
+    padding: 7px 10px;
+    color: #fff;
+    height: 38px;
+    width: 50px;
+    box-shadow: 1px 1px 10px #0003;
+}
+.EmailBill {
+    font-size: 21px;
+    background: #b71e13;
+    border: none;
+    border-radius: 5px;
+    padding: 7px 10px;
+    color: #fff;
+    height: 38px;
+    width: 50px;
+    box-shadow: 1px 1px 10px #0003;
+}
+
+
+@media screen and (min-width: 768px) and (max-width: 1300px) {
+  .card  {
+    zoom:70% !important
+  }
+}
