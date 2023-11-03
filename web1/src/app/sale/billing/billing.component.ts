@@ -63,6 +63,9 @@ export class BillingComponent implements OnInit {
   myControl2 = new FormControl('');
   filteredOptions: any ;
 
+  otherSpec = false
+  otherContant = false
+
   id: any = 0;
   id2: any = 0;
   customerImage: any;
@@ -447,8 +450,9 @@ export class BillingComponent implements OnInit {
   numberList:any=[]
   otherLists:any=[]
 x:any
-
+currentTime:any
 srcCustomerBox = false
+
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'Customer') {
@@ -460,6 +464,7 @@ srcCustomerBox = false
       }
     });
     this.data.VisitDate = moment().format('YYYY-MM-DD');
+    this.currentTime = new Date().toLocaleTimeString('en-IN', { hourCycle: 'h23' })
     if (this.id != 0) {
       this.getCustomerById();
     }
@@ -559,6 +564,7 @@ srcCustomerBox = false
 
   onsubmit() {
     this.sp.show()
+    this.data.VisitDate = this.data.VisitDate + ' ' + this.currentTime;
     if (this.Check.SpectacleCheck === true) {
       this.data.tablename = 'spectacle_rx'
       this.data.spectacle_rx = this.spectacle
@@ -643,6 +649,7 @@ srcCustomerBox = false
 
           this.data = res.data[0]
           this.data.Idd = res.data[0].Idd
+          this.data.VisitDate = moment(res.data[0].VisitDate).format('YYYY-MM-DD');
           if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
             this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
           } else {
@@ -672,6 +679,7 @@ srcCustomerBox = false
 
           this.data = res.data[0]
           this.data.Idd = res.data[0].Idd
+          this.data.VisitDate = moment(res.data[0].VisitDate).format('YYYY-MM-DD');
           if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
             this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
           } else {
@@ -1072,6 +1080,7 @@ srcCustomerBox = false
   }
 
   customerPowerPDF(i:any,mode:any) {
+
     if(mode === 'spectacle'){
 
       let body = { customer: this.data, spectacle: this.spectacleLists[i], contact: this.contactList[i], other: this.other[i], mode }
@@ -1092,6 +1101,27 @@ srcCustomerBox = false
       });
     }
     if(mode === 'contact'){
+      let body = { customer: this.data, spectacle: this.spectacle, contact: this.clens, other: this.other, mode }
+      this.sp.show();
+      const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
+        next: (res: any) => {
+          if (res) {
+            this.clens.FileURL = this.env.apiUrl + "/uploads/" + res; 
+            const url = this.clens.FileURL;
+            window.open(url, "_blank");
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+    if(mode === 'other'){
+
+
+
       let body = { customer: this.data, spectacle: this.spectacle, contact: this.clens, other: this.other, mode }
       this.sp.show();
       const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
@@ -1155,4 +1185,10 @@ srcCustomerBox = false
     return '';
   }
 
+  otherOpne(content: any, data:any) {
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
+
+  }
+
+ 
 }

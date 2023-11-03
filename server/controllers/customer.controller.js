@@ -795,7 +795,10 @@ module.exports = {
             var file =  printdata.mode + "-" + 'Power' + "_" + CompanyID + "-" + customer.ID + ".pdf";
             fileName = "uploads/" + file;
 
-            console.log(fileName);
+            console.log(printdata.spectacle);
+            console.log(printdata.contact);
+            console.log(printdata.other);
+            console.log(printdata.mode);
 
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
                 if (err) {
