@@ -245,7 +245,7 @@ module.exports = {
           } else if (value[0].Amount !== null) {
             values.push({
               GSTType: `${item.Name}`,
-              Amount: Number(value[0].Amount)
+              Amount: Number(value[0].Amount).toFixed(2)
             })
           } else if (value[0].Amount === null) {
             values.push({
