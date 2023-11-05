@@ -140,7 +140,7 @@
                                                 <td> {{dateFormat(d.PaymentDate) }}</td>
                                                 <td> {{ d.CustomerName }} </td>
                                                 <td> {{ d.MobileNo }} </td>
-                                                <td> {{ d.PaymentMode }} </td>
+                                                <td> {{ d.PaymentMode }} {{d.CreditType === 'Debit' ? '(' + d.CreditType + ')' : ''}} </td>
                                                 <td> {{ d.Amount }} </td>
                                                 <td> {{ d.DueAmount }} </td>
                                                 <td> {{ d.PayableAmount }} </td>
