@@ -888,7 +888,7 @@ module.exports = {
                     const [fetchCustomer] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
 
                     if (fetchCustomer.length === 0) {
-                        return res.send({ message: `Invalid SystemID, Customer Not Found From ${datum.SystemID}` })
+                        return res.send({ message: `Invalid SystemID, Customer Not Found From ${datum.SystemID}, Line no ${count}` })
                     }
 
                     datum.CustomerID = fetchCustomer[0].ID
