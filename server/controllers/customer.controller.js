@@ -748,6 +748,17 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
 
             const printdata = req.body
+            let powerList = []
+            if(printdata.otherSpec === true){
+                powerList = printdata.spectacle
+            } if (printdata.otherContant === true){
+                powerList = printdata.contact
+            } if (printdata.otherNoPower === true){
+                powerList = []
+            }
+            printdata.powerList = powerList
+            console.log(printdata.powerList);
+
             const customer = req.body.customer
            
             const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
@@ -795,10 +806,7 @@ module.exports = {
             var file =  printdata.mode + "-" + 'Power' + "_" + CompanyID + "-" + customer.ID + ".pdf";
             fileName = "uploads/" + file;
 
-            console.log(printdata.spectacle);
-            console.log(printdata.contact);
-            console.log(printdata.other);
-            console.log(printdata.mode);
+           
 
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
                 if (err) {

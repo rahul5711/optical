@@ -65,6 +65,7 @@ export class BillingComponent implements OnInit {
 
   otherSpec = false
   otherContant = false
+  otherNoPower = false
 
   id: any = 0;
   id2: any = 0;
@@ -85,6 +86,7 @@ export class BillingComponent implements OnInit {
   srcBox = true;
   customerSearchBillPageHide = true;
   searchValue:any =''
+  otherselect:any
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -1141,7 +1143,6 @@ srcCustomerBox = false
     }
   }
 
- 
   sendWhatsappPower(i:any,mode: any) {
     let temp = JSON.parse(this.companySetting.WhatsappSetting);
     let WhatsappMsg = '';
@@ -1185,10 +1186,53 @@ srcCustomerBox = false
     return '';
   }
 
-  otherOpne(content: any, data:any) {
+  otherOpne(content: any, i:any,mode:any) {
+    this.otherselect = { customer: this.data, spectacle: this.spectacleLists[i], contact: this.contactList[i], other: this.otherList[i], mode, otherSpec:this.otherSpec, otherContant:this.otherContant, otherNoPower:this.otherNoPower }
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
-
   }
 
+  selectOtherOption(mode:any){
+      let body = ''
+
+    if(mode === 'sepc'){
+      body = this.otherselect
+      this.otherSpec = true
+      this.otherselect.otherSpec = true
+       delete this.otherselect.contact
+    }
+    if(mode === 'con'){
+      body = this.otherselect
+      this.otherContant = true
+      this.otherselect.otherContant = true
+      delete this.otherselect.spectacle
+    }
+    if(mode === 'nop'){
+      body = this.otherselect
+      this.otherNoPower = true
+      this.otherselect.otherNoPower = true
+      delete this.otherselect.contact
+      delete this.otherselect.spectacle
+    }
+    this.sp.show();
+    const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
+      next: (res: any) => {
+        if (res) {
+          this.otherSpec = false
+          this.otherContant = false
+          this.otherNoPower = false
+          this.modalService.dismissAll()
+          this.spectacle.FileURL = this.env.apiUrl + "/uploads/" + res;
+          const url = this.spectacle.FileURL
+          window.open(url, "_blank");
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+ 
  
 }

@@ -1210,7 +1210,7 @@
                                                                             <mat-icon *ngIf="deleteCustomer"
                                                                                 class="deletes_icon ms-1"
                                                                                 (click)="deleteSpec(i,'other')">delete_forever</mat-icon>
-                                                                                <button (click)="otherOpne(Other,other)"  class="pdfpower  me-1 ms-1"><i class="fa fa-file-pdf"></i></button>
+                                                                                <button (click)="otherOpne(Other,i,'other')"  class="pdfpower  me-1 ms-1"><i class="fa fa-file-pdf"></i></button>
                                                                         </td>
                                                                         <td class="text-left">{{otherList.length - i }}
                                                                         </td>
@@ -1596,13 +1596,15 @@
                                 <div class="modal-body">
                                     <div class="row mt-3 mt-md-0">
                                        <div class="col-12">
-                                        <mat-checkbox   class="example-margin ps-1" color="primary" name="otherSpec" [(ngModel)]="otherSpec"> Spec</mat-checkbox>
+                                        <button style="line-height: 31px;" (click)="selectOtherOption('sepc')" type="button" mat-raised-button color="primary" [disabled]="this.otherContant || this.otherNoPower">Other With Spectacle Power</button>
+                                       </div>
+                                       <div class="col-12 mt-3  mb-3">
+                                        <button style="line-height: 31px;"  (click)="selectOtherOption('con')" type="button" mat-raised-button color="primary" [disabled]="this.otherSpec || this.otherNoPower"> Other With Contact Power</button>
+                                       
                                        </div>
                                        <div class="col-12">
-                                        <mat-checkbox  class="example-margin ps-1" color="primary" name="otherContant" [(ngModel)]="otherContant"> otherContant</mat-checkbox>
-                                       </div>
-                                       <div class="col-12">
-                                        <mat-checkbox  class="example-margin ps-1" color="primary" name="otherContant" [(ngModel)]="otherContant"> No Power</mat-checkbox>
+                                        <button style="line-height: 31px;"  (click)="selectOtherOption('nop')" type="button" mat-raised-button color="primary" [disabled]="this.otherContant || this.otherSpec"> Other With out Power </button>
+                                        
                                        </div>
                                      
                                     </div>

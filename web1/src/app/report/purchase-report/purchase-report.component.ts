@@ -390,7 +390,7 @@ export class PurchaseReportComponent implements OnInit {
       this.filter();}
 
     if (this.PurchaseDetail.ProductName !== '' ) {
-      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.PurchaseDetail.ProductName + "%'"; }
+      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.PurchaseDetail.ProductName.trim() + "%'"; }
 
     if (this.PurchaseDetail.ShopID != 0){
       Parem = Parem + ' and purchasemasternew.ShopID IN ' +  `(${this.PurchaseDetail.ShopID})`;}
@@ -608,7 +608,7 @@ export class PurchaseReportComponent implements OnInit {
       this.filter1();}
 
     if (this.ProductExpiry.ProductName !== '' ) {
-      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.ProductExpiry.ProductName + "%'"; }
+      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.ProductExpiry.ProductName.trim() + "%'"; }
 
     if (this.ProductExpiry.ShopID != 0){
       Parem = Parem + ' and purchasemasternew.ShopID IN ' +  `(${this.ProductExpiry.ShopID})`;}

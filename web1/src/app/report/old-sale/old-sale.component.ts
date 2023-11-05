@@ -370,7 +370,7 @@ export class OldSaleComponent implements OnInit {
         this.filter();}
     
       if (this.Billdetail.ProductName !== '' ) {
-        Parem = Parem + ' and oldbilldetail.ProductName Like ' + "'" + this.Billdetail.ProductName + "%'"; }
+        Parem = Parem + ' and oldbilldetail.ProductName Like ' + "'" + this.Billdetail.ProductName.trim() + "%'"; }
   
       if (this.Billdetail.GSTPercentage !== 0){
         Parem = Parem + ' and oldbilldetail.GSTPercentage = '  + `${this.Billdetail.GSTPercentage}`; }

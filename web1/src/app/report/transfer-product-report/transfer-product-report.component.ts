@@ -225,7 +225,7 @@ export class TransferProductReportComponent implements OnInit {
       this.filter();}
 
     if (this.data.ProductName !== '' ){
-      Parem = Parem + ' and transfermaster.ProductName Like ' + "'" + this.data.ProductName + "%'";}
+      Parem = Parem + ' and transfermaster.ProductName Like ' + "'" + this.data.ProductName.trim() + "%'";}
 
     const subs: Subscription =  this.purchaseService.getproductTransferReport(Parem).subscribe({
       next: (res: any) => {

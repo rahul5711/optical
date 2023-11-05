@@ -362,7 +362,7 @@ export class ProductReturnComponent implements OnInit {
       this.filter();}
 
     if (this.ReturnDetail.ProductName !== '' ) {
-      Parem = Parem + ' and purchasereturndetail.ProductName Like ' + "'" + this.ReturnDetail.ProductName + "%'"; }
+      Parem = Parem + ' and purchasereturndetail.ProductName Like ' + "'" + this.ReturnDetail.ProductName.trim() + "%'"; }
 
     if (this.ReturnDetail.ShopID != 0){
       Parem = Parem + ' and purchasereturn.ShopID IN ' +  `(${this.ReturnDetail.ShopID})`;}

@@ -555,7 +555,7 @@ FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format(
       this.filter();}
   
     if (this.Billdetail.ProductName !== '' ) {
-      Parem = Parem + ' and billdetail.ProductName Like ' + "'" + this.Billdetail.ProductName + "%'"; }
+      Parem = Parem + ' and billdetail.ProductName Like ' + "'" + this.Billdetail.ProductName.trim() + "%'"; }
 
     if (this.Billdetail.Option !== '' && this.Billdetail.Option !== null && this.Billdetail.Option !== 0) {
       Parem = Parem + ' and barcodemasternew.Option = ' + `'${this.Billdetail.Option}'`;
@@ -801,7 +801,7 @@ FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format(
       this.filter1();}
   
     if (this.cancel.ProductName !== '' ) {
-      Parem = Parem + ' and billdetail.ProductName Like ' + "'" + this.cancel.ProductName + "%'"; }
+      Parem = Parem + ' and billdetail.ProductName Like ' + "'" + this.cancel.ProductName.trim() + "%'"; }
 
     if (this.cancel.Option !== '' && this.cancel.Option !== null && this.cancel.Option !== 0) {
       Parem = Parem + ' and barcodemasternew.Option = ' + `'${this.cancel.Option}'`;
@@ -993,7 +993,7 @@ getProductPending(){
     this.filter1();}
 
   if (this.pending.ProductName !== '' ) {
-    Parem = Parem + ' and billdetail.ProductName Like ' + "'" + this.pending.ProductName + "%'"; }
+    Parem = Parem + ' and billdetail.ProductName Like ' + "'" + this.pending.ProductName.trim() + "%'"; }
 
   if (this.pending.Option !== '' && this.pending.Option !== null && this.pending.Option !== 0) {
     Parem = Parem + ' and barcodemasternew.Option = ' + `'${this.pending.Option}'`;
@@ -1239,7 +1239,7 @@ getBillExpiry(){
     this.filter3();}
 
   if (this.BillExpiry.ProductName !== '' ) {
-    Parem = Parem + ' and billdetail.ProductName Like ' + "'" + this.BillExpiry.ProductName + "%'"; }
+    Parem = Parem + ' and billdetail.ProductName Like ' + "'" + this.BillExpiry.ProductName.trim() + "%'"; }
 
   if (this.BillExpiry.Option !== '' && this.BillExpiry.Option !== null && this.BillExpiry.Option !== 0) {
     Parem = Parem + ' and barcodemasternew.Option = ' + `'${this.BillExpiry.Option}'`;

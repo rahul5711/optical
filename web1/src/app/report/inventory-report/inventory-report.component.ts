@@ -322,7 +322,7 @@ export class InventoryReportComponent implements OnInit {
       this.filter();}
 
     if (this.inventory.ProductName !== '' ) {
-      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.inventory.ProductName + "%'"; }
+      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.inventory.ProductName.trim() + "%'"; }
 
 
     const subs: Subscription =  this.purchaseService.getProductInventoryReport(Parem).subscribe({
@@ -485,7 +485,7 @@ export class InventoryReportComponent implements OnInit {
         this.filter1();}
   
       if (this.ProductExpiry.ProductName !== '' ) {
-        Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.ProductExpiry.ProductName + "%'"; }
+        Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.ProductExpiry.ProductName.trim() + "%'"; }
   
       if (this.ProductExpiry.ShopID != 0){
         Parem = Parem + ' and purchasemasternew.ShopID IN ' +  `(${this.ProductExpiry.ShopID})`;}
