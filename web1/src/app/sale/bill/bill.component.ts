@@ -711,7 +711,7 @@ export class BillComponent implements OnInit {
               this.BillItem.PurchasePrice = this.searchList.UnitPrice;
               this.BillItem.Quantity = 0;
               this.myControl = new FormControl(this.BillItem.ProductName)
-              if (this.selectedProduct == 'CONTACT LENS' || this.selectedProduct == 'SOLUTION') {
+              if (this.selectedProduct == 'CONTACT LENS' || this.selectedProduct == 'SOLUTION' ) {
                 this.showProductExpDate = true
               } else {
                 this.showProductExpDate = false
@@ -720,6 +720,7 @@ export class BillComponent implements OnInit {
               let ProductNameSplitDate = this.searchList.ProductName.split("/")
               if (this.isValidDate(ProductNameSplitDate[ProductNameSplitDate.length - 1])) {
                 this.BillItem.ProductExpDate = ProductNameSplitDate[ProductNameSplitDate.length - 1]
+                this.showProductExpDate = true
               } else {
                 this.BillItem.ProductExpDate = "0000-00-00"
               }
@@ -825,6 +826,7 @@ export class BillComponent implements OnInit {
               let ProductNameSplitDate = this.searchList.ProductName.split("/")
               if (this.isValidDate(ProductNameSplitDate[ProductNameSplitDate.length - 1])) {
                 this.BillItem.ProductExpDate = ProductNameSplitDate[ProductNameSplitDate.length - 1]
+                this.showProductExpDate = true
               } else {
                 this.BillItem.ProductExpDate = "0000-00-00"
               }
@@ -940,7 +942,7 @@ export class BillComponent implements OnInit {
 
     this.specList.forEach((element: any, i: any) => {
       if (element.SelectedValue !== '') {
-        searchString = searchString.concat("/", element.SelectedValue);
+        searchString = searchString.concat("/", element.SelectedValue.trim());
       }
     });
     this.Req.searchString = this.selectedProduct + searchString

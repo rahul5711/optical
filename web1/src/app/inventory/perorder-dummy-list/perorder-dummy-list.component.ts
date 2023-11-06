@@ -233,7 +233,7 @@ export class PerorderDummyListComponent implements OnInit {
     }
 
     if (this.data1.ProductName !== '') {
-      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + '"' + this.data1.ProductName + '%"';
+      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + '"' + this.data1.ProductName.trim()+ '%"';
     }
 
     const dtm = {

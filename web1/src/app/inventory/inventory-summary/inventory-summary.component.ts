@@ -212,7 +212,7 @@ export class InventorySummaryComponent implements OnInit {
       this.filter();}
 
     if (this.data.ProductName !== '') {
-      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + '"' + this.data.ProductName + '%"';}
+      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + '"' + this.data.ProductName.trim() + '%"';}
 
     if (this.data.CurrentStatus !== ''){
       Parem = Parem + ' and barcodemasternew.CurrentStatus = ' + '"' + this.data.CurrentStatus + '"';}

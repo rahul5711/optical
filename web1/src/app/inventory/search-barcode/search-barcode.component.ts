@@ -134,7 +134,7 @@ export class SearchBarcodeComponent implements OnInit {
     let searchString = "";
     this.specList.forEach((element: any, i: any) => {
       if (i <= index) {
-        searchString = searchString + element.SelectedValue + "/" ;
+        searchString = searchString + element.SelectedValue.trim() + "/" ;
       }
     });
     const subs: Subscription =  this.purchaseService.barCodeListBySearchString(this.ShopMode, this.selectedProduct, searchString).subscribe({

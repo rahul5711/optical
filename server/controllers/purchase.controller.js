@@ -857,7 +857,7 @@ module.exports = {
             printdata[0].ProductBrandName = ProductBrandName;
             printdata[0].ProductModelName = ProductModelName;
             printdata[0].ProductFullName = ProductFullName;
-
+            printdata.CompanyID = CompanyID;
             printdata.CompanyBarcode = 5
             var file = "barcode" + CompanyID + ".pdf";
             var formatName = "barcode.ejs";
@@ -866,7 +866,7 @@ module.exports = {
             // var appURL = clientConfig.appURL;
             var fileName = "";
             fileName = "uploads/" + file;
-            let url = appURL + "uploads/" + file;
+            let url = appURL + "/uploads/" + file;
             let updateUrl = '';
             TinyURL.shorten(url, function (res) {
                 updateUrl = res;
