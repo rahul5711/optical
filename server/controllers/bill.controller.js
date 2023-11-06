@@ -1051,7 +1051,11 @@ module.exports = {
                 totalDeb = sumPaidDeb[0].PaidAmount
             }
 
-            totalPaidAmount = totalCred - totalDeb
+            // console.log(totalCred - totalDeb, 'totalCred - totalDeb');
+
+            // if (sumPaidDeb.length === 0) {
+            //     totalPaidAmount = totalCred - totalDeb
+            // }
 
             response.message = "data fetch sucessfully"
             response.data = data
@@ -1776,7 +1780,7 @@ module.exports = {
                         if (err) {
                             res.send(err);
                         } else {
-                            console.log(file,'file');
+                            console.log(file, 'file');
                             res.json(file);
 
                             // res.json(updateUrl);
@@ -2761,7 +2765,7 @@ module.exports = {
 
                     // profit calculation
                     item.ModifyPurchasePrice = item.PurchasePrice * item.Quantity;
-                    item.Profit = item.SubTotal - (item.PurchasePrice  * item.Quantity)
+                    item.Profit = item.SubTotal - (item.PurchasePrice * item.Quantity)
 
                     response.calculation[0].totalPurchasePrice += item.ModifyPurchasePrice
                     response.calculation[0].totalProfit += item.Profit
@@ -3127,25 +3131,25 @@ module.exports = {
             productList.forEach(ell => {
                 ell.InvoiceDate = moment(ell.InvoiceDate).format("DD-MM-YYYY")
                 ell.DeliveryDate = moment(ell.DeliveryDate).format("DD-MM-YYYY")
-                ell.s =  [ ell.ProductName]; 
-                ell.R = [ ell.Remark ];  
-               
-              if (!invoiceNos.includes(ell.InvoiceNo)) {
-                invoiceNos.push(ell.InvoiceNo);
-                modifyList.push(ell);
-              } else {
-                const existingItem = modifyList.find(item => item.InvoiceNo === ell.InvoiceNo);
+                ell.s = [ell.ProductName];
+                ell.R = [ell.Remark];
 
-                 if (!existingItem.s.some(obj => obj.ProductName === ell.ProductName)) {
-                existingItem.s.push(ell.ProductName);
+                if (!invoiceNos.includes(ell.InvoiceNo)) {
+                    invoiceNos.push(ell.InvoiceNo);
+                    modifyList.push(ell);
+                } else {
+                    const existingItem = modifyList.find(item => item.InvoiceNo === ell.InvoiceNo);
+
+                    if (!existingItem.s.some(obj => obj.ProductName === ell.ProductName)) {
+                        existingItem.s.push(ell.ProductName);
+                    }
+                    if (!existingItem.R.some(obj => obj.Remark === ell.Remark)) {
+                        existingItem.R.push(ell.Remark);
+                    }
                 }
-                 if (!existingItem.R.some(obj => obj.Remark === ell.Remark)) {
-                existingItem.R.push(ell.Remark );
-                }
-              }
 
             });
-            
+
             printdata.productList = modifyList
 
             const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
@@ -3185,12 +3189,12 @@ module.exports = {
                 printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
             }
 
-            if(CompanyID === 1){
+            if (CompanyID === 1) {
                 var formatName = "AssignSupplierPDF.ejs"
-            }else{
+            } else {
                 var formatName = "AssignLensPDF.ejs";
             }
- 
+
             var file = 'Supplier' + "_" + CompanyID + ".pdf";
             fileName = "uploads/" + file;
 
@@ -3489,42 +3493,42 @@ module.exports = {
 
             // const MeasurementID = JSON.parse(req.body.productList.MeasurementID) ;
             const productList = req.body.productList
-       
+
             let modifyList = [];
             let invoiceNos = [];
-            
+
             productList.forEach(ell => {
                 ell.InvoiceDate = moment(ell.InvoiceDate).format("DD-MM-YYYY")
                 ell.DeliveryDate = moment(ell.DeliveryDate).format("DD-MM-YYYY")
-                ell.s =  [ ell.ProductName];  // Initialize 'ell.s' as an array with the current ProductName.
-                ell.R = [ ell.Remark ];  // Initialize 'ell.s' as an array with the current ProductName.
-               
-              if (!invoiceNos.includes(ell.InvoiceNo)) {
-                invoiceNos.push(ell.InvoiceNo);
-                modifyList.push(ell);
-              } else {
-                // Find the corresponding item in 'v' to update its 's' array.
-                const existingItem = modifyList.find(item => item.InvoiceNo === ell.InvoiceNo);
+                ell.s = [ell.ProductName];  // Initialize 'ell.s' as an array with the current ProductName.
+                ell.R = [ell.Remark];  // Initialize 'ell.s' as an array with the current ProductName.
 
-                // Check if ProductName and Remark are not already in the 's' array.
-                
-                
-                 if (!existingItem.s.some(obj => obj.ProductName === ell.ProductName)) {
-                existingItem.s.push(ell.ProductName);
+                if (!invoiceNos.includes(ell.InvoiceNo)) {
+                    invoiceNos.push(ell.InvoiceNo);
+                    modifyList.push(ell);
+                } else {
+                    // Find the corresponding item in 'v' to update its 's' array.
+                    const existingItem = modifyList.find(item => item.InvoiceNo === ell.InvoiceNo);
+
+                    // Check if ProductName and Remark are not already in the 's' array.
+
+
+                    if (!existingItem.s.some(obj => obj.ProductName === ell.ProductName)) {
+                        existingItem.s.push(ell.ProductName);
+                    }
+                    if (!existingItem.R.some(obj => obj.Remark === ell.Remark)) {
+                        existingItem.R.push(ell.Remark);
+                    }
                 }
-                 if (!existingItem.R.some(obj => obj.Remark === ell.Remark)) {
-                existingItem.R.push(ell.Remark );
-                }
-              }
 
             });
-            
-    
-           printdata.productList = modifyList
-            
+
+
+            printdata.productList = modifyList
+
 
             console.log(printdata.productList);
-        
+
             const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
             const [companysetting] = await mysql2.pool.query(`select * from companysetting where CompanyID = ${CompanyID}`)
             const [billformate] = await mysql2.pool.query(`select * from billformate where CompanyID = ${CompanyID}`)
@@ -3693,7 +3697,7 @@ module.exports = {
             }
 
 
-            let qry = `select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, billmaster.BillDate,billmaster.DeliveryDate, billmaster.PaymentStatus, billmaster.TotalAmount, shop.Name as ShopName, shop.AreaName, customer.Name as CustomerName, customer.MobileNo1 from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID left join shop on shop.ID = paymentmaster.ShopID left join customer on customer.ID = paymentmaster.CustomerID where  paymentmaster.CompanyID = '${CompanyID}' and paymentmaster.PaymentType = 'Customer' and paymentmaster.PaymentMode != 'Payment Initiated' and paymentmaster.CreditType = 'Credit' ${shop} ${paymentStatus} ${paymentType} ` + Date + ` order by paymentdetail.BillMasterID desc`
+            let qry = `select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, billmaster.BillDate,billmaster.DeliveryDate, billmaster.PaymentStatus, billmaster.TotalAmount, shop.Name as ShopName, shop.AreaName, customer.Name as CustomerName, customer.MobileNo1, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID left join shop on shop.ID = paymentmaster.ShopID left join customer on customer.ID = paymentmaster.CustomerID where  paymentmaster.CompanyID = '${CompanyID}' and paymentdetail.PaymentType = 'Customer' and paymentmaster.PaymentMode != 'Payment Initiated'  ${shop} ${paymentStatus} ${paymentType} ` + Date + ` order by paymentdetail.BillMasterID desc`
 
 
             const [data] = await mysql2.pool.query(qry)
@@ -3705,7 +3709,7 @@ module.exports = {
             if (data) {
                 for (const item of data) {
                     response.paymentMode.forEach(x => {
-                        if (item.PaymentMode === x.Name) {
+                        if (item.PaymentMode === x.Name && item.CreditType === 'Credit') {
                             x.Amount += item.Amount
                             response.sumOfPaymentMode += item.Amount
                         }
@@ -3745,7 +3749,7 @@ module.exports = {
 
             let count = 0
             if (data.length) {
-                for(let item of data) {
+                for (let item of data) {
                     count += 1
                     console.log(count);
                     const [fetch] = await mysql2.pool.query(`select ProductTypeID, ProductTypeName, product.HSNCode from purchasedetailnew left join product on product.ID = purchasedetailnew.ProductTypeID where purchasedetailnew.BaseBarCode = '${item.BaseBarCode}' and purchasedetailnew.CompanyID = ${item.CompanyID} limit 1`)
@@ -3755,8 +3759,8 @@ module.exports = {
                     item.HSNCode = fetch[0].HSNCode
 
                     if (!fetch.length) {
-                       console.log(item.BaseBarCode , "item.BaseBarCode");
-                       return
+                        console.log(item.BaseBarCode, "item.BaseBarCode");
+                        return
                     }
 
 
