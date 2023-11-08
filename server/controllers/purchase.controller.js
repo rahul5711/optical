@@ -2088,7 +2088,7 @@ module.exports = {
 
     setProductExpiryDate: async (req, res, next) => {
         try {
-            return res.send({success: false, message: `it is temp function`})
+            // return res.send({success: false, message: `it is temp function`})
             const { CompanyID } = req.body;
             console.log(`hii setProductExpiryDate`);
             if (CompanyID === "" || CompanyID === undefined || CompanyID === null) return res.send({ message: "Invalid Query Data" })
