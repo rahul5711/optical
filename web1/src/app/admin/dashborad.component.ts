@@ -19,7 +19,7 @@ export class DashboradComponent implements OnInit {
   Expenseview = false;
   Transferview = false;
   smsSettingview = false;
-  reminderview = false;
+  reminderview = true;
 
   ngOnInit(): void {
     this.permission.forEach((e: any) => {

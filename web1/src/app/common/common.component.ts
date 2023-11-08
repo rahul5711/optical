@@ -126,7 +126,6 @@ export class CommonComponent implements OnInit {
         const viewFlags = this.viewFlag[`view${element.ModuleName}`];
         if (viewFlags !== undefined) {
           this.viewFlag[`view${element.ModuleName}`] = element.MView;
-          console.log(this.viewFlag[`view${element.ModuleName}`]);
         }
       });
     }
@@ -619,7 +618,7 @@ export class CommonComponent implements OnInit {
   refresh(mode: any) {
     if (mode === 'purchaseList') {
       this.router.navigateByUrl('/inventory/purchaseList', { skipLocationChange: true }).then(() => {
-        this.router.navigate(['/inventory/purchaseList', 0]);
+        this.router.navigate(['/inventory/purchaseList', 0]); 
       });
 
     } else if (mode === 'fitterInvoiceList') {

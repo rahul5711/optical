@@ -2321,6 +2321,4 @@ export class BillComponent implements OnInit {
   }
 
 
-
-
 }

@@ -10,6 +10,7 @@ export class SummaryComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    alert('This report is coming soon...')
   }
 
 }
