@@ -111,7 +111,7 @@ export class ProductTransferComponent implements OnInit {
     const subs: Subscription =  this.ps.getList().subscribe({
       next: (res: any) => {
         if(res.success){
-          this.prodList = res.data;
+          this.prodList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
         }else{
           this.as.errorToast(res.message)
         }
@@ -146,8 +146,8 @@ export class ProductTransferComponent implements OnInit {
        const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
          next: (res: any) => {
           if(res.success){
-            element.SptTableData = res.data;   
-            element.SptFilterData = res.data;
+            element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+            element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
           }else{
             this.as.errorToast(res.message)
           }
@@ -167,8 +167,8 @@ export class ProductTransferComponent implements OnInit {
        const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
          next: (res: any) => {
           if(res.success){
-            element.SptTableData = res.data; 
-            element.SptFilterData = res.data;   
+            element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+            element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
           }else{
             this.as.errorToast(res.message)
           }

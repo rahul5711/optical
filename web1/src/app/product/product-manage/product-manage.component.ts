@@ -144,7 +144,7 @@ export class ProductManageComponent implements OnInit {
     const subs: Subscription = this.ps.getList().subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.prodList = res.data;
+          this.prodList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)

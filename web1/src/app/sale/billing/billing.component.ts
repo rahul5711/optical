@@ -492,7 +492,7 @@ srcCustomerBox = false
     const subs: Subscription = this.dc.dropdownDoctorlist().subscribe({
       next: (res: any) => {
         if (res.success) {
-           this.docList = res.data
+           this.docList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
         } else {
           this.as.errorToast(res.message)
         }
@@ -537,7 +537,7 @@ srcCustomerBox = false
     const subs: Subscription = this.supps.getList('Other').subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.otherLists = res.data
+          this.otherLists = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
         } else {
           this.as.errorToast(res.message)
         }
@@ -553,7 +553,7 @@ srcCustomerBox = false
     const subs: Subscription = this.supps.getList('ReferenceBy').subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.ReferenceList = res.data
+          this.ReferenceList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
         } else {
           this.as.errorToast(res.message)
         }
@@ -1001,7 +1001,7 @@ srcCustomerBox = false
       const subs: Subscription = this.cs.customerSearch(this.param).subscribe({
         next: (res: any) => {
           if (res) {
-            this.filteredOptions = res.data
+            this.filteredOptions = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
           } else {
             this.as.errorToast(res.message)
           }

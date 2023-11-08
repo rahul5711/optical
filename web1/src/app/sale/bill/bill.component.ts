@@ -299,7 +299,7 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.bill.getDoctor().subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.doctorList = res.data
+          this.doctorList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
           this.sp.hide();
         } else {
           this.as.errorToast(res.message)
@@ -317,7 +317,7 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.bill.getEmployee().subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.employeeList = res.data
+          this.employeeList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
         } else {
           this.as.errorToast(res.message)
         }
@@ -393,9 +393,7 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.bill.changeProductStatus(dtm).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.getBillById(this.id2)
-          console.log(this.checked, '==========statuschange');
-
+          this.getBillById(this.id2);
         } else {
           this.as.errorToast(res.message)
         }
@@ -411,7 +409,7 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.bill.getTrayNo().subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.trayNoList = res.data
+          this.trayNoList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
         } else {
           this.as.errorToast(res.message)
         }
@@ -486,7 +484,7 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.supps.servicelist(this.Service).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.serviceType = res.data
+          this.serviceType = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
         } else {
           this.as.errorToast(res.message)
         }
@@ -521,7 +519,7 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.ps.getList().subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.prodList = res.data;
+          this.prodList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
 
           this.BillItem.Quantity = 1
         } else {
@@ -577,8 +575,8 @@ export class BillComponent implements OnInit {
         const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
           next: (res: any) => {
             if (res.success) {
-              element.SptTableData = res.data;
-              element.SptFilterData = res.data;
+              element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+              element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));  
             } else {
               this.as.errorToast(res.message)
             }
@@ -597,8 +595,8 @@ export class BillComponent implements OnInit {
         const subs: Subscription = this.ps.getProductSupportData(this.specList[index].SelectedValue, element.SptTableName).subscribe({
           next: (res: any) => {
             if (res.success) {
-              element.SptTableData = res.data;
-              element.SptFilterData = res.data;
+              element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+              element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
             } else {
               this.as.errorToast(res.message)
             }
@@ -1651,7 +1649,7 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.supps.getList('PaymentModeType').subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.PaymentModesList = res.data
+          this.PaymentModesList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
         } else {
           this.as.errorToast(res.message)
         }
