@@ -1726,9 +1726,9 @@ module.exports = {
             printdata.bill = printdata.mode === "Invoice" ? "Cash Memo" : printdata.BillValue;
 
             printdata.welComeNoteShop = printdata.shopWelComeNote.filter((ele) => {
-                if (printdata.shopdetails.WholesaleBill == "true" || ele.NoteType === "wholesale") {
+                if (printdata.shopdetails.WholesaleBill == "true" && ele.NoteType === "wholesale") {
                     return true;
-                } else if (printdata.shopdetails.RetailBill == "true" || ele.NoteType === "retail") {
+                } else if (printdata.shopdetails.RetailBill == "true" &&  ele.NoteType === "retail") {
                     return true;
                 }
                 return false;
