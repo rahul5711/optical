@@ -1211,6 +1211,8 @@
                                                                                 class="deletes_icon ms-1"
                                                                                 (click)="deleteSpec(i,'other')">delete_forever</mat-icon>
                                                                                 <button (click)="otherOpne(Other,i,'other')"  class="pdfpower  me-1 ms-1"><i class="fa fa-file-pdf"></i></button>
+                                                                                <button  (click)="sendWhatsappPower(i,'other')" class="whatsapp  "><i class="fa-brands fa-whatsapp"></i></button>
+
                                                                         </td>
                                                                         <td class="text-left">{{otherList.length - i }}
                                                                         </td>
@@ -1603,7 +1605,7 @@
                                        
                                        </div>
                                        <div class="col-12">
-                                        <button style="line-height: 31px;"  (click)="selectOtherOption('nop')" type="button" mat-raised-button color="primary" [disabled]="this.otherContant || this.otherSpec"> Other With out Power </button>
+                                        <button style="line-height: 31px;"  (click)="selectOtherOption('nop')" type="button" mat-raised-button color="primary" [disabled]="this.otherContant || this.otherSpec"> Without Power </button>
                                         
                                        </div>
                                      

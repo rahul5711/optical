@@ -1715,15 +1715,20 @@ module.exports = {
             printdata.billMaster.BillDate = moment(printdata.billMaster.BillDate).format("DD-MM-YYYY")
             printdata.billMaster.DeliveryDate = moment(printdata.billMaster.DeliveryDate).format("DD-MM-YYYY")
             printdata.billMaster.PaymentStatus = printdata.mode === "Invoice" ? "Unpaid" : "Paid";
-            printdata.bill = printdata.mode === "Invoice" ? "Cash Memo" : "Tax Invoice";
 
             printdata.invoiceNo = printdata.shopdetails.BillName.split("/")[0]
             printdata.TotalValue = printdata.shopdetails.BillName.split("/")[1]
+            printdata.BillValue = printdata.shopdetails.BillName.split("/")[2]
+            if(printdata.BillValue === '' || printdata.BillValue == undefined){
+                printdata.BillValue = 'Tax Invoice'
+            }
+
+            printdata.bill = printdata.mode === "Invoice" ? "Cash Memo" : printdata.BillValue;
 
             printdata.welComeNoteShop = printdata.shopWelComeNote.filter((ele) => {
-                if (printdata.shopdetails.WholesaleBill == "true" && ele.NoteType === "wholesale") {
+                if (printdata.shopdetails.WholesaleBill == "true" || ele.NoteType === "wholesale") {
                     return true;
-                } else if (printdata.shopdetails.RetailBill == "true" && ele.NoteType === "retail") {
+                } else if (printdata.shopdetails.RetailBill == "true" || ele.NoteType === "retail") {
                     return true;
                 }
                 return false;
@@ -1763,7 +1768,7 @@ module.exports = {
             BillFormat = printdata.CompanySetting.BillFormat;
 
             let fileName = "";
-            const file = BillFormat + '-' + CompanyID + ".pdf";
+            const file = 'Bill' + '-' + printdata.customer.ID + '-'  + CompanyID + ".pdf";
             const formatName = BillFormat;
             fileName = "uploads/" + file;
 

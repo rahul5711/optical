@@ -1400,8 +1400,9 @@ export class BillComponent implements OnInit {
           confirmButtonText: 'Yes, delete it!',
           backdrop: false,
         }).then((result) => {
-          this.sp.show();
+          
           if (result.isConfirmed) {
+            this.sp.show();
             let billlIst: any[] = this.billItemList
             this.billItemList.forEach((ele: any) => {
               if (ele.Status === 2) {

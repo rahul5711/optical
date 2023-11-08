@@ -1153,7 +1153,13 @@ srcCustomerBox = false
         `${WhatsappMsg}%0A` +
         `*Open Prescription* : ${this.spectacle.FileURL}%0A` +
         `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}`;
-    } else {
+    } else if(mode === 'other') {
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Eye Prescription');
+      var msg = `*Hi ${this.data.Name},*%0A` +
+        `${WhatsappMsg}%0A` +
+        `*Open Prescription*  : ${this.other.FileURL}%0A` +
+        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` 
+    }else {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Eye Prescription');
       var msg = `*Hi ${this.data.Name},*%0A` +
         `${WhatsappMsg}%0A` +
@@ -1189,9 +1195,10 @@ srcCustomerBox = false
   otherOpne(content: any, i:any,mode:any) {
     this.otherselect = { customer: this.data, spectacle: this.spectacleLists[i], contact: this.contactList[i], other: this.otherList[i], mode, otherSpec:this.otherSpec, otherContant:this.otherContant, otherNoPower:this.otherNoPower }
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
+
   }
 
-  selectOtherOption(mode:any){
+  selectOtherOption(mode:any ){
       let body = ''
 
     if(mode === 'sepc'){
@@ -1221,8 +1228,8 @@ srcCustomerBox = false
           this.otherContant = false
           this.otherNoPower = false
           this.modalService.dismissAll()
-          this.spectacle.FileURL = this.env.apiUrl + "/uploads/" + res;
-          const url = this.spectacle.FileURL
+          this.otherselect.FileURL = this.env.apiUrl + "/uploads/" + res;
+          const url = this.otherselect.FileURL
           window.open(url, "_blank");
         } else {
           this.as.errorToast(res.message)

@@ -242,6 +242,12 @@ font-weight: 500;
     width: 50px;
     box-shadow: 1px 1px 10px #0003;
 }
+
+button:disabled.whatsappBill {
+    background-color: #bdbdbd !important;
+    color: #878787 !important;
+}
+
 .EmailBill {
     font-size: 21px;
     background: #b71e13;
