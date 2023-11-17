@@ -988,7 +988,7 @@ srcCustomerBox = false
     if (searchKey.length >= 3) {
       if (mode === 'Name') {
         this.filteredOptions = [];
-        this.param.Name = searchKey;
+        this.param.Name = searchKey.trim();
       }else if (mode === 'MobileNo1') {
         this.filteredOptions = [];
         this.param.MobileNo1 = searchKey;
@@ -1001,7 +1001,7 @@ srcCustomerBox = false
       const subs: Subscription = this.cs.customerSearch(this.param).subscribe({
         next: (res: any) => {
           if (res) {
-            this.filteredOptions = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+            this.filteredOptions = res.data;
           } else {
             this.as.errorToast(res.message)
           }

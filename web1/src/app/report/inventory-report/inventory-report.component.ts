@@ -504,6 +504,7 @@ export class InventoryReportComponent implements OnInit {
           if(res.success){
             this.ProductExpiryList = res.data
             this.ProductExpiryList.forEach((element: any) => {
+              element.ProductName = element.ProductName.trim()
               if(element.ProductExpDate < this.todaydate) {
                 element.Color = true;
               } else {

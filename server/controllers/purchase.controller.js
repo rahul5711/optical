@@ -879,7 +879,7 @@ module.exports = {
                         res.send(err);
                     } else {
                         let options;
-                        if (printdata.CompanyID == 20 || printdata.CompanyID == 19 ) {
+                        if (printdata.CompanyID == 20 || printdata.CompanyID == 19 || printdata.CompanyID == 64 ) {
                             if (printdata.CompanyBarcode == 5) {
                                 options = {
                                     "height": "0.70in",
@@ -994,11 +994,17 @@ module.exports = {
                         } else {
                             let options;
 
-                            if (printdata.CompanyID == 20) {
+                            if (printdata.CompanyID == 20 || printdata.CompanyID == 19 || printdata.CompanyID == 64) {
                                 if (printdata.CompanyBarcode == 5) {
                                     options = {
-                                        "height": "0.70in",
-                                        "width": "4.90in",
+                                       height: "0.70in",
+                                        width: "5.00in",
+                                        margin: {
+                                            top: "0in",
+                                            right: "0in",
+                                            bottom: "0in",
+                                            left: "0in"
+                                        },
                                         // "height": "0.90in",
                                         // "width": "6.00in",
                                     };
