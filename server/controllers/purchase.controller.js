@@ -997,7 +997,7 @@ module.exports = {
                             if (printdata.CompanyID == 20 || printdata.CompanyID == 19 || printdata.CompanyID == 64) {
                                 if (printdata.CompanyBarcode == 5) {
                                     options = {
-                                       height: "0.70in",
+                                       height: "1.00in",
                                         width: "5.00in",
                                         margin: {
                                             top: "0in",
@@ -1005,8 +1005,8 @@ module.exports = {
                                             bottom: "0in",
                                             left: "0in"
                                         },
-                                        // "height": "0.90in",
-                                        // "width": "6.00in",
+                                    // "height": "0.70in",
+                                    // "width": "4.90in",
                                     };
                                 }
                             } else {
@@ -1019,6 +1019,8 @@ module.exports = {
                                     };
                                 }
                             }
+
+                            
                             options.timeout = 540000,  // in milliseconds
                                 pdf.create(data, options).toFile(fileName, function (err, data) {
                                     if (err) {

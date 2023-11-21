@@ -263,7 +263,7 @@
                                                     <td>{{data.TransferStatus}}</td>
                                                     <td>{{data.CreatedByUser}}</td>
                                                     <td>
-                                                        <b style="color: red;" *ngIf="data.TransferToShop == this.selectedShop[0]">
+                                                        <b style="color: red;" *ngIf="data.FromShop == this.selectedShop[0]">
                                                             {{data.AcceptanceCode}}
                                                         </b>
                                                     </td>
