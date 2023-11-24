@@ -87,7 +87,7 @@ export class FitterComponent implements OnInit {
     const subs: Subscription = this.supps.getList('LensType').subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.LensTypeList = res.data
+        this.LensTypeList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
         } else {
           this.as.errorToast(res.message)
         }

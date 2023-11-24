@@ -103,7 +103,7 @@ export class FitterPoComponent implements OnInit {
     const subs: Subscription = this.supps.getList('LensType').subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.lensList = res.data
+          this.lensList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
         } else {
           this.as.errorToast(res.message)
         }
@@ -196,7 +196,7 @@ export class FitterPoComponent implements OnInit {
   dropdownfitterlist() {
     const subs: Subscription = this.fitters.dropdownlist().subscribe({
       next: (res: any) => {
-        this.fitterList = res.data
+        this.fitterList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),

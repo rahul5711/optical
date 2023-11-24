@@ -68,7 +68,7 @@ export class FitterInvoiceComponent implements OnInit {
   dropdownfitterlist() {
     const subs: Subscription = this.fitters.dropdownlist().subscribe({
       next: (res: any) => {
-        this.fitterList = res.data
+        this.fitterList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),

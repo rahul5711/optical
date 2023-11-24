@@ -81,7 +81,7 @@ export class CommissionComponent implements OnInit {
   dropdownShoplist(){
     const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
       next: (res: any) => {
-        this.shopList  = res.data
+        this.shopList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -95,7 +95,7 @@ export class CommissionComponent implements OnInit {
       const subs: Subscription = this.emp.dropdownUserlist('').subscribe({
         next: (res: any) => {
           if (res.success) {
-            this.payeeList = res.data
+            this.payeeList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
           } else {
             this.as.errorToast(res.message)
           }
@@ -108,7 +108,7 @@ export class CommissionComponent implements OnInit {
     { 
       const subs: Subscription = this.doc.dropdownDoctorlist().subscribe({
         next: (res: any) => {
-          this.payeeList = res.data
+          this.payeeList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),

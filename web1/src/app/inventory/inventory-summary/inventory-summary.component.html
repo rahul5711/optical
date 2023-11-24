@@ -127,12 +127,12 @@
                                                 (selectionChange)="getFieldSupportData(i)" editable="true"
                                                 [required]="spec.Required === 1" #singleSelect>
                                                 <mat-option>
-                                                    <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                    <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue" (ngModelChange)="spec.EnteredValue = onChange($event)" [ngModelOptions]="{standalone: true}">
                                                     </ngx-mat-select-search>
                                                 </mat-option>
                                                 <mat-option>
                                                 </mat-option>
-                                                <mat-option *ngFor="let val of spec.SptFilterData | proditemfilterPurchase: searchValue  "
+                                                <mat-option *ngFor="let val of spec.SptFilterData | proditemfilterPurchase: spec.EnteredValue  "
                                                     [value]="val.TableValue">
                                                     {{val.TableValue}}
                                                 </mat-option>

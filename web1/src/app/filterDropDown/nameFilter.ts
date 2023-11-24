@@ -117,3 +117,32 @@ export class PoNameFilter implements PipeTransform {
         return items.filter(item => item.Name.toLowerCase().includes(filter.toLowerCase()));
     }
 }
+
+// SALE REPORT IN SALE PRODCUT REPORT Page use this fillter
+@Pipe({
+    name: 'prodtypename',
+    pure: false
+})
+export class ProductTypeName implements PipeTransform {
+    transform(items: any[], filter: any): any {
+        if (!items || !filter) {
+            return items;
+        }
+        return items.filter(item => item.Name.toLowerCase().includes(filter.toLowerCase()));
+    }
+}
+
+@Pipe({
+    name: 'productitemfilter',
+    pure: false
+})
+export class ProductItemFilter implements PipeTransform {
+    transform(items: any[], filter: any): any {
+        if (!items || !filter) {
+            return items;
+        }
+        // filter items array, items which match and return true will be
+        // kept, false will be filtered out
+        return items.filter(item => item.TableValue.toLowerCase().includes(filter.toLowerCase()));
+    }
+}

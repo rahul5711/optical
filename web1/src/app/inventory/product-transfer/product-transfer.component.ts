@@ -107,7 +107,6 @@ export class ProductTransferComponent implements OnInit {
   }
 
   getProductList(){
-    this.sp.show()
     const subs: Subscription =  this.ps.getList().subscribe({
       next: (res: any) => {
         if(res.success){
@@ -115,7 +114,6 @@ export class ProductTransferComponent implements OnInit {
         }else{
           this.as.errorToast(res.message)
         }
-        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -123,7 +121,6 @@ export class ProductTransferComponent implements OnInit {
   }
 
   getFieldList(){
-    this.sp.show()
     const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
        next: (res: any) => {
         if(res.success){
@@ -132,7 +129,6 @@ export class ProductTransferComponent implements OnInit {
         }else{
           this.as.errorToast(res.message)
         }
-        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -140,7 +136,6 @@ export class ProductTransferComponent implements OnInit {
   }
 
   getSptTableData() {
-    this.sp.show()
     this.specList.forEach((element: any) => {
      if (element.FieldType === 'DropDown' && element.Ref === '0') {
        const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
@@ -151,7 +146,6 @@ export class ProductTransferComponent implements OnInit {
           }else{
             this.as.errorToast(res.message)
           }
-          this.sp.hide()
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
@@ -161,7 +155,6 @@ export class ProductTransferComponent implements OnInit {
   }
 
   getFieldSupportData(index:any) {
-    this.sp.show()
     this.specList.forEach((element: any) => {
      if (element.Ref === this.specList[index].FieldName.toString() ) {
        const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
@@ -172,7 +165,6 @@ export class ProductTransferComponent implements OnInit {
           }else{
             this.as.errorToast(res.message)
           }
-          this.sp.hide()
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
@@ -249,7 +241,6 @@ export class ProductTransferComponent implements OnInit {
   }
 
   getBarCodeList(index:any) {
-    this.sp.show()
     let searchString = "";
     this.specList.forEach((element: any, i: any) => {
       if (i <= index) {
@@ -263,7 +254,6 @@ export class ProductTransferComponent implements OnInit {
         }else{
           this.as.errorToast(res.message)
         }
-        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),

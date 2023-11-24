@@ -216,14 +216,14 @@
                                     (selectionChange)="getFieldSupportData(i);getBarCodeList(i)" editable="true"
                                     [required]="spec.Required === 1" #singleSelect>
                                     <mat-option>
-                                        <ngx-mat-select-search matInput [(ngModel)]="searchValue"
-                                            (ngModelChange)="searchValue = onChange($event)"
+                                        <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue"
+                                            (ngModelChange)="spec.EnteredValue = onChange($event)"
                                             [ngModelOptions]="{standalone: true}">
                                         </ngx-mat-select-search>
                                     </mat-option>
                                     <mat-option value=""> </mat-option>
                                     <mat-option
-                                        *ngFor="let val of spec.SptFilterData | proditemfilterbill: searchValue "
+                                        *ngFor="let val of spec.SptFilterData | proditemfilterbill: spec.EnteredValue "
                                         [value]="val.TableValue">
                                         {{val.TableValue}}
                                     </mat-option>

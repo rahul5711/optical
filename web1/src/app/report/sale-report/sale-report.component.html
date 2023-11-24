@@ -425,8 +425,12 @@
                                                     <mat-select name="FieldType"
                                                         [(ngModel)]="Billdetail.ProductCategory"
                                                         (selectionChange)="getFieldList()" required #Typecontrol>
+                                                        <mat-option>
+                                                            <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                            </ngx-mat-select-search>
+                                                        </mat-option>
                                                         <mat-option [value]=0>All</mat-option>
-                                                        <mat-option *ngFor="let prod of prodList   let i = index;"
+                                                        <mat-option *ngFor="let prod of prodList | prodtypename: searchValue  let i = index;"
                                                             [value]="prod.ID">
                                                             {{prod.Name | uppercase}}
                                                         </mat-option>
@@ -447,8 +451,12 @@
                                                             (selectionChange)="getFieldSupportData(i)" editable="true"
                                                             [required]="spec.Required === 1" #singleSelect>
                                                             <mat-option>
+                                                                <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue" (ngModelChange)="spec.EnteredValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                                </ngx-mat-select-search>
                                                             </mat-option>
-                                                            <mat-option *ngFor="let val of spec.SptFilterData"
+                                                            <mat-option>
+                                                            </mat-option>
+                                                            <mat-option *ngFor="let val of spec.SptFilterData | productitemfilter: spec.EnteredValue"
                                                                 [value]="val.TableValue">
                                                                 {{val.TableValue}}
                                                             </mat-option>
@@ -965,8 +973,12 @@
                                                     <mat-select name="FieldType"
                                                         [(ngModel)]="cancel.ProductCategory"
                                                         (selectionChange)="getFieldList1()" required #Typecontrol>
+                                                        <mat-option>
+                                                            <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                            </ngx-mat-select-search>
+                                                        </mat-option>
                                                         <mat-option [value]=0>All</mat-option>
-                                                        <mat-option *ngFor="let prod of prodList1   let i = index;"
+                                                        <mat-option *ngFor="let prod of prodList1 | prodtypename: searchValue  let i = index;"
                                                             [value]="prod.ID">
                                                             {{prod.Name | uppercase}}
                                                         </mat-option>
@@ -987,8 +999,12 @@
                                                             (selectionChange)="getFieldSupportData1(i)" editable="true"
                                                             [required]="spec.Required === 1" #singleSelect>
                                                             <mat-option>
+                                                                <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue" (ngModelChange)="spec.EnteredValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                                </ngx-mat-select-search>
                                                             </mat-option>
-                                                            <mat-option *ngFor="let val of spec.SptFilterData"
+                                                            <mat-option>
+                                                            </mat-option>
+                                                            <mat-option *ngFor="let val of spec.SptFilterData | productitemfilter: spec.EnteredValue"
                                                                 [value]="val.TableValue">
                                                                 {{val.TableValue}}
                                                             </mat-option>
@@ -1359,8 +1375,12 @@
                                                     <mat-select name="FieldType"
                                                         [(ngModel)]="pending.ProductCategory"
                                                         (selectionChange)="getFieldList2()" required #Typecontrol>
+                                                        <mat-option>
+                                                            <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                            </ngx-mat-select-search>
+                                                        </mat-option>
                                                         <mat-option [value]=0>All</mat-option>
-                                                        <mat-option *ngFor="let prod of prodList2   let i = index;"
+                                                        <mat-option *ngFor="let prod of prodList2 | prodtypename: searchValue  let i = index;"
                                                             [value]="prod.ID">
                                                             {{prod.Name | uppercase}}
                                                         </mat-option>
@@ -1381,8 +1401,12 @@
                                                             (selectionChange)="getFieldSupportData2(i)" editable="true"
                                                             [required]="spec.Required === 1" #singleSelect>
                                                             <mat-option>
+                                                                <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue" (ngModelChange)="spec.EnteredValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                                </ngx-mat-select-search>
                                                             </mat-option>
-                                                            <mat-option *ngFor="let val of spec.SptFilterData"
+                                                            <mat-option>
+                                                            </mat-option>
+                                                            <mat-option *ngFor="let val of spec.SptFilterData | productitemfilter: spec.EnteredValue"
                                                                 [value]="val.TableValue">
                                                                 {{val.TableValue}}
                                                             </mat-option>
@@ -1763,8 +1787,12 @@
                                                     <mat-select name="FieldType"
                                                         [(ngModel)]="BillExpiry.ProductCategory"
                                                         (selectionChange)="getFieldList3()" required #Typecontrol>
+                                                        <mat-option>
+                                                            <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                            </ngx-mat-select-search>
+                                                        </mat-option>
                                                         <mat-option [value]=0>All</mat-option>
-                                                        <mat-option *ngFor="let prod of prodList3   let i = index;"
+                                                        <mat-option *ngFor="let prod of prodList3 | prodtypename: searchValue let i = index;"
                                                             [value]="prod.ID">
                                                             {{prod.Name | uppercase}}
                                                         </mat-option>
@@ -1785,8 +1813,12 @@
                                                             (selectionChange)="getFieldSupportData3(i)" editable="true"
                                                             [required]="spec.Required === 1" #singleSelect>
                                                             <mat-option>
+                                                                <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue" (ngModelChange)="spec.EnteredValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                                </ngx-mat-select-search>
                                                             </mat-option>
-                                                            <mat-option *ngFor="let val of spec.SptFilterData"
+                                                            <mat-option>
+                                                            </mat-option>
+                                                            <mat-option *ngFor="let val of spec.SptFilterData | productitemfilter: spec.EnteredValue"
                                                                 [value]="val.TableValue">
                                                                 {{val.TableValue}}
                                                             </mat-option>

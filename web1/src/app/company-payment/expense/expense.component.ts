@@ -104,7 +104,7 @@ export class ExpenseComponent implements OnInit {
     const subs: Subscription = this.supps.getList('ExpenseType').subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.ExpenseTypeList = res.data
+          this.ExpenseTypeList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
         } else {
           this.as.errorToast(res.message)
         }
@@ -119,7 +119,7 @@ export class ExpenseComponent implements OnInit {
     const subs: Subscription = this.supps.getList('PaymentModeType').subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.PaymentModesList = res.data
+          this.PaymentModesList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
         } else {
           this.as.errorToast(res.message)
         }

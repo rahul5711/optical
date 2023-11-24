@@ -77,7 +77,7 @@ export class PettyCashComponent implements OnInit {
     const subs: Subscription = this.es.dropdownUserlist('').subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.dropUserlist = res.data
+          this.dropUserlist = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
         } else {
           this.as.errorToast(res.message)
         }

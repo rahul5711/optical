@@ -36,7 +36,9 @@ import { VendorCreditComponent } from './vendor-credit/vendor-credit.component';
 import { CashCollectionComponent } from './cash-collection/cash-collection.component';
 import { OldSaleComponent } from './old-sale/old-sale.component';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
-
+import {ProductTypeName} from './../filterDropDown/nameFilter';
+import {ProductItemFilter} from './../filterDropDown/nameFilter';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 @NgModule({
   declarations: [
@@ -50,8 +52,8 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     VendorCreditComponent,
     CashCollectionComponent,
     OldSaleComponent,
-
-
+    ProductTypeName,
+    ProductItemFilter
   ],
   imports: [
     CommonModule,
@@ -80,7 +82,8 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     SharedModule,
     NgxPrintModule,
     NgSelectModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    NgxMatSelectSearchModule
   ]
 })
 export class ReportModule { }

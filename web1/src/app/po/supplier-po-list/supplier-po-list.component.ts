@@ -82,7 +82,7 @@ export class SupplierPoListComponent implements OnInit {
   dropdownSupplierlist() {
     const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
       next: (res: any) => {
-        this.supplierList = res.data
+        this.supplierList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),

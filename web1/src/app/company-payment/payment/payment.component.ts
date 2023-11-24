@@ -72,7 +72,7 @@ export class PaymentComponent implements OnInit {
     const subs: Subscription = this.supps.getList('PaymentModeType').subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.PaymentModesList = res.data
+          this.PaymentModesList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
         } else {
           this.as.errorToast(res.message)
         }
@@ -120,7 +120,7 @@ export class PaymentComponent implements OnInit {
       const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
         next: (res: any) => {
           if (res.success) {
-            this.payeeList = res.data;
+            this.payeeList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
             this.filteredOptions = this.payeeList;
           } else {
             this.as.errorToast(res.message)
@@ -135,7 +135,7 @@ export class PaymentComponent implements OnInit {
       const subs: Subscription = this.emp.dropdownUserlist('').subscribe({
         next: (res: any) => {
           if (res.success) {
-            this.payeeList = res.data
+            this.payeeList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
             this.filteredOptions = this.payeeList;
           } else {
             this.as.errorToast(res.message)
@@ -149,7 +149,7 @@ export class PaymentComponent implements OnInit {
     { 
       const subs: Subscription = this.fitters.dropdownlist().subscribe({
         next: (res: any) => {
-          this.payeeList = res.data
+          this.payeeList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
           this.filteredOptions = this.payeeList;
         },
         error: (err: any) => console.log(err.message),
@@ -161,7 +161,7 @@ export class PaymentComponent implements OnInit {
       const subs: Subscription = this.customer.dropdownlist().subscribe({
         next: (res: any) => {
           if(res.success){
-            this.payeeList  = res.data
+            this.payeeList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
             this.filteredOptions = this.payeeList;
             this.data.CreditType = 'Credit'
           }else{
@@ -177,7 +177,7 @@ export class PaymentComponent implements OnInit {
       const subs: Subscription = this.doctor.dropdownDoctorlist().subscribe({
         next: (res: any) => {
           if(res.success){
-            this.payeeList  = res.data
+            this.payeeList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
             this.filteredOptions = this.payeeList;
           }else{
             this.as.errorToast(res.message)
