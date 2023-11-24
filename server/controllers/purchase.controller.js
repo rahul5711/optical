@@ -1409,6 +1409,12 @@ module.exports = {
             printdata.TXdata = printdata;
             var PassNo = Math.trunc(Math.random() * 10000).toString();
             printdata.PassNo = PassNo;
+            console.log(printdata);
+            printdata.forEach(e => {
+                let pro = e.ProductName.replace(/\//g, " ");
+                e.ProductName = pro;
+                console.log(pro);
+            });
             var fileName = "";
             var file = "TransferProduct" + "_" + printdata[0].CompanyID + ".pdf";
             var formatName = "TransferProduct.ejs";

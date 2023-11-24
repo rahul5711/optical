@@ -42,7 +42,7 @@
                 <thead>
                     <tr>
                         <th>S.No</th>
-                        <th style="width: 5%;">Item</th>
+                        <th style="width: 10px !important;">Item</th>
                         <th>Barcode</th>
                         <th>Quantity</th>
                         <th>From Shop</th>
@@ -54,11 +54,11 @@
                 </thead>
                 <tbody>
                     <% if(data.TXdata.length !==0 ){ data.TXdata.forEach(function (i, index) { %>
-                        <tr>
+                        <tr >
                             <td>
                                 <%= index+1 %>
                             </td>
-                            <td >
+                            <td style="font-size: 10px;">
                                 <%=i.ProductName%>
                             </td>
                             <td>
