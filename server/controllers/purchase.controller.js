@@ -1413,7 +1413,6 @@ module.exports = {
             printdata.forEach(e => {
                 let pro = e.ProductName.replace(/\//g, " ");
                 e.ProductName = pro;
-                console.log(pro);
             });
             var fileName = "";
             var file = "TransferProduct" + "_" + printdata[0].CompanyID + ".pdf";

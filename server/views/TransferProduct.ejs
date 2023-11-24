@@ -42,7 +42,7 @@
                 <thead>
                     <tr>
                         <th>S.No</th>
-                        <th style="width: 10px !important;">Item</th>
+                        <th>Item</th>
                         <th>Barcode</th>
                         <th>Quantity</th>
                         <th>From Shop</th>
@@ -58,7 +58,7 @@
                             <td>
                                 <%= index+1 %>
                             </td>
-                            <td style="font-size: 10px;">
+                            <td>
                                 <%=i.ProductName%>
                             </td>
                             <td>
@@ -79,9 +79,9 @@
                             <td>
                                 <%=i.CreatedByUser%>
                             </td>
-                            <td>
+                            <th style="color:red;">
                                 <%=i.AcceptanceCode%>
-                            </td>
+                            </th>
                         </tr>
                         <%})}%>
                 </tbody>
