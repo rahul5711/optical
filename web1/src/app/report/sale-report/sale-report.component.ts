@@ -187,7 +187,7 @@ FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format(
     });
     // billmaster
    
-    // this.dropdownUserlist()
+    this.dropdownUserlist()
     this.getProductList();
     this.getProductList1();
     this.getProductList2();

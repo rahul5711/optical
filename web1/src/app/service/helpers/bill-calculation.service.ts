@@ -55,7 +55,8 @@ export class BillCalculationService {
           }
         }
         if (fieldName === 'DiscountAmount') {
-          if (Number(BillItem.DiscountAmount) > BillItem.SubTotal) {
+          BillItem.DiscountPercentage = 100 * +BillItem.DiscountAmount / (+BillItem.Quantity * +BillItem.UnitPrice);
+          if (Number(BillItem.DiscountPercentage) > 100) {
             Swal.fire({
               icon: 'warning',
               title: `You can't give discount amount more than sub total`,
@@ -64,9 +65,8 @@ export class BillCalculationService {
               backdrop: false,
             });
             BillItem.DiscountAmount = 0
-          } else {
-            BillItem.DiscountPercentage = 100 * +BillItem.DiscountAmount / (+BillItem.Quantity * +BillItem.UnitPrice);
-          }
+            BillItem.DiscountPercentage = 0
+          } 
         }
         break;
 

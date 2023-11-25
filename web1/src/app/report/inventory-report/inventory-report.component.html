@@ -135,8 +135,12 @@
                           <mat-label>Select Product</mat-label>
                           <mat-select name="FieldType" [(ngModel)]="inventory.ProductCategory"
                             (selectionChange)="getFieldList()" required #Typecontrol>
+                            <mat-option>
+                              <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                              </ngx-mat-select-search>
+                          </mat-option>
                             <mat-option [value]=0>All</mat-option>
-                            <mat-option *ngFor="let prod of prodList   let i = index;" [value]="prod.ID">
+                            <mat-option *ngFor="let prod of prodList | prodtypename: searchValue   let i = index;" [value]="prod.ID">
                               {{prod.Name | uppercase}}
                             </mat-option>
                           </mat-select>
@@ -155,8 +159,12 @@
                               (selectionChange)="getFieldSupportData(i)" editable="true"
                               [required]="spec.Required === 1" #singleSelect>
                               <mat-option>
+                                <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue" (ngModelChange)="spec.EnteredValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                </ngx-mat-select-search>
+                            </mat-option>
+                              <mat-option>
                               </mat-option>
-                              <mat-option *ngFor="let val of spec.SptFilterData" [value]="val.TableValue">
+                              <mat-option *ngFor="let val of spec.SptFilterData | productitemfilter: spec.EnteredValue" [value]="val.TableValue">
                                 {{val.TableValue}}
                               </mat-option>
                             </mat-select>
@@ -492,8 +500,12 @@
                           <mat-label>Select Product</mat-label>
                           <mat-select name="FieldType" [(ngModel)]="ProductExpiry.ProductCategory"
                             (selectionChange)="getFieldList1()" required #Typecontrol>
+                            <mat-option>
+                              <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                              </ngx-mat-select-search>
+                          </mat-option>
                             <mat-option [value]=0>All</mat-option>
-                            <mat-option *ngFor="let prod of prodList   let i = index;" [value]="prod.ID">
+                            <mat-option *ngFor="let prod of prodList | prodtypename: searchValue   let i = index;" [value]="prod.ID">
                               {{prod.Name | uppercase}}
                             </mat-option>
                           </mat-select>
@@ -512,8 +524,12 @@
                               (selectionChange)="getFieldSupportData1(i)" editable="true"
                               [required]="spec.Required === 1" #singleSelect>
                               <mat-option>
+                                <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue" (ngModelChange)="spec.EnteredValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                </ngx-mat-select-search>
+                            </mat-option>
+                              <mat-option>
                               </mat-option>
-                              <mat-option *ngFor="let val of spec.SptFilterData" [value]="val.TableValue">
+                              <mat-option *ngFor="let val of spec.SptFilterData | productitemfilter: spec.EnteredValue" [value]="val.TableValue">
                                 {{val.TableValue}}
                               </mat-option>
                             </mat-select>

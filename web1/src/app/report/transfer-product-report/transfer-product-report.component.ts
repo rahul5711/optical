@@ -20,7 +20,7 @@ export class TransferProductReportComponent implements OnInit {
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
-
+ searchValue :any = '';
    form :any | FormGroup;
 
   constructor(
@@ -113,7 +113,7 @@ export class TransferProductReportComponent implements OnInit {
     const subs: Subscription =  this.ps.getList().subscribe({
       next: (res: any) => {
         if(res.success){
-          this.prodList = res.data;
+        this.prodList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
         }else{
           this.as.errorToast(res.message)
         }
@@ -156,9 +156,9 @@ export class TransferProductReportComponent implements OnInit {
        const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
          next: (res: any) => {
           if(res.success){
-            element.SptTableData = res.data;   
-            element.SptFilterData = res.data; 
-          }else{
+            element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+            element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));       
+           }else{
             this.as.errorToast(res.message)
           }
          },
@@ -175,9 +175,9 @@ export class TransferProductReportComponent implements OnInit {
        const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
          next: (res: any) => {
           if(res.success){
-            element.SptTableData = res.data; 
-            element.SptFilterData = res.data; 
-          }else{
+            element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+            element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));       
+           }else{
             this.as.errorToast(res.message)
           }
          },
@@ -273,5 +273,14 @@ export class TransferProductReportComponent implements OnInit {
 
 dateFormat(date:any){
   return moment(date).format(`${this.companySetting.DateFormat}`);
+}
+
+onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
+  if (this.companySetting.DataFormat === '1') {
+    event = event.toUpperCase()
+  } else if (this.companySetting.DataFormat == '2') {
+    event = event.toTitleCase()
+  }
+  return event;
 }
 }
