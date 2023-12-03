@@ -8,6 +8,12 @@ module.exports = {
         acquireTimeout: 100000,
         connectTimeout: 100000  
     },
+    old_db: {
+        uri: `mysql://OTPG:Mehul@91303@184.174.37.138/OTPGPRODDEMO`,
+        connectionLimit: 100,
+        acquireTimeout: 100000,
+        connectTimeout: 100000
+    },
     secret: 'asc-256-OTPG', 
     algorithm: "HS512"
 } 
