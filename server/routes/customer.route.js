@@ -35,5 +35,9 @@ router.post('/updateExpiryAndVisitDate', verifyAccessTokenAdmin, Controller.upda
 router.post('/updateVisitDateInContactLenRx', verifyAccessTokenAdmin, Controller.updateVisitDateInContactLenRx)
 
 
+// eye report
+router.post('/getEyeTestingReport', verifyAccessTokenAdmin, Controller.getEyeTestingReport)
+
+
 
 module.exports = router

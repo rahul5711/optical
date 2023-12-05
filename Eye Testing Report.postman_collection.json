@@ -1,0 +1,116 @@
+{
+	"info": {
+		"_postman_id": "e151b169-b555-443e-9718-4663e5021dab",
+		"name": "Eye Testing Report",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getEyeTestingReport",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDE4MDAwMjcsImV4cCI6MTcwMTg4NjQyNywiYXVkIjoiJzEzOSciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.8y9n3TiRXVU2qUcf9sisISKosUWYizF2biqtRB7pI8E",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"From\": \"2020-12-02\",\r\n    \"To\": \"2025-12-30\",\r\n    \"Employee\": \"All\",\r\n    \"ShopID\": \"All\",\r\n    \"Type\": \"contact_lens_rx\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/customer/getEyeTestingReport",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"customer",
+						"getEyeTestingReport"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getEyeTestingReport",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"From\": \"2020-12-02\",\r\n    \"To\": \"2025-12-30\",\r\n    \"Employee\": \"All\",\r\n    \"ShopID\": \"All\",\r\n    \"Type\": \"contact_lens_rx\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/customer/getEyeTestingReport",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"customer",
+								"getEyeTestingReport"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "905"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"389-3XSV77U+y+b1iSTjFHiVmYXn+Hk\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 05 Dec 2023 18:16:41 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 7578,\n            \"VisitNo\": 1,\n            \"CompanyID\": 73,\n            \"CustomerID\": 134989,\n            \"REDPSPH\": \"\",\n            \"REDPCYL\": \"\",\n            \"REDPAxis\": \"\",\n            \"REDPVA\": \"\",\n            \"LEDPSPH\": \"\",\n            \"LEDPCYL\": \"\",\n            \"LEDPAxis\": \"\",\n            \"LEDPVA\": \"\",\n            \"RENPSPH\": \"\",\n            \"RENPCYL\": \"\",\n            \"RENPAxis\": \"\",\n            \"RENPVA\": \"\",\n            \"LENPSPH\": \"\",\n            \"LENPCYL\": \"\",\n            \"LENPAxis\": \"\",\n            \"LENPVA\": \"\",\n            \"REPD\": \"\",\n            \"LEPD\": \"\",\n            \"R_Addition\": \"\",\n            \"L_Addition\": \"\",\n            \"R_KR\": \"\",\n            \"L_KR\": \"\",\n            \"R_HVID\": \"\",\n            \"L_HVID\": \"\",\n            \"R_CS\": \"\",\n            \"L_CS\": \"\",\n            \"R_BC\": \"\",\n            \"L_BC\": \"\",\n            \"R_Diameter\": \"\",\n            \"L_Diameter\": \"\",\n            \"BR\": \"\",\n            \"Material\": \"\",\n            \"Modality\": \"\",\n            \"Other\": \"\",\n            \"ConstantUse\": 0,\n            \"NearWork\": 0,\n            \"DistanceWork\": 0,\n            \"Multifocal\": 0,\n            \"PhotoURL\": \"\",\n            \"Status\": 1,\n            \"CreatedBy\": 139,\n            \"CreatedOn\": \"2023-12-02T05:39:23.000Z\",\n            \"UpdatedBy\": 139,\n            \"UpdatedOn\": \"2023-12-05T17:45:31.000Z\",\n            \"FileURL\": \"\",\n            \"Family\": \"Self\",\n            \"RefferedByDoc\": \"Self\",\n            \"ExpiryDate\": null,\n            \"VisitDate\": \"2023-12-02\",\n            \"CustomerName\": \"Santosh pail\",\n            \"ShopName\": \"TUKASHI OPTICS\",\n            \"AreaName\": \"\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\"\n}"
+				}
+			]
+		}
+	]
+}
