@@ -144,10 +144,11 @@ module.exports = {
                     PhotoURL: contact.PhotoURL ? contact.PhotoURL : '',
                     FileURL: contact.FileURL ? contact.FileURL : '',
                     Family: contact.Family ? contact.Family : '',
-                    RefferedByDoc: contact.RefferedByDoc ? contact.RefferedByDoc : ''
+                    RefferedByDoc: contact.RefferedByDoc ? contact.RefferedByDoc : '',
+                    VisitDate: moment(new Date()).format("YYYY-MM-DD")
                 }
 
-                const [saveContact] = await mysql2.pool.query(`insert into contact_lens_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_KR,L_KR,R_HVID,L_HVID,R_CS,L_CS,R_BC,L_BC,R_Diameter,L_Diameter,BR,Material,Modality,Other,ConstantUse,NearWork,DistanceWork,Multifocal,PhotoURL,FileURL,Family,RefferedByDoc,Status,CreatedBy,CreatedOn) values (${contactDatum.VisitNo}, ${CompanyID}, ${contactDatum.CustomerID},'${contactDatum.REDPSPH}','${contactDatum.REDPCYL}','${contactDatum.REDPAxis}','${contactDatum.REDPVA}','${contactDatum.LEDPSPH}','${contactDatum.LEDPCYL}','${contactDatum.LEDPAxis}','${contactDatum.LEDPVA}','${contactDatum.RENPSPH}','${contactDatum.RENPCYL}','${contactDatum.RENPAxis}','${contactDatum.RENPVA}','${contactDatum.LENPSPH}','${contactDatum.LENPCYL}','${contactDatum.LENPAxis}','${contactDatum.LENPVA}','${contactDatum.REPD}','${contactDatum.LEPD}','${contactDatum.R_Addition}','${contactDatum.L_Addition}','${contactDatum.R_KR}','${contactDatum.L_KR}','${contactDatum.R_HVID}','${contactDatum.L_HVID}','${contactDatum.R_CS}','${contactDatum.L_CS}','${contactDatum.R_BC}','${contactDatum.L_BC}','${contactDatum.R_Diameter}','${contactDatum.L_Diameter}','${contactDatum.BR}','${contactDatum.Material}','${contactDatum.Modality}','${contactDatum.Other}',${contactDatum.ConstantUse},${contactDatum.NearWork},${contactDatum.DistanceWork},${contactDatum.Multifocal},'${contactDatum.PhotoURL}','${contactDatum.FileURL}','${contactDatum.Family}','${contactDatum.RefferedByDoc}',1,${LoggedOnUser},now())`)
+                const [saveContact] = await mysql2.pool.query(`insert into contact_lens_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_KR,L_KR,R_HVID,L_HVID,R_CS,L_CS,R_BC,L_BC,R_Diameter,L_Diameter,BR,Material,Modality,Other,ConstantUse,NearWork,DistanceWork,Multifocal,PhotoURL,FileURL,Family,RefferedByDoc,Status,CreatedBy,CreatedOn, VisitDate) values (${contactDatum.VisitNo}, ${CompanyID}, ${contactDatum.CustomerID},'${contactDatum.REDPSPH}','${contactDatum.REDPCYL}','${contactDatum.REDPAxis}','${contactDatum.REDPVA}','${contactDatum.LEDPSPH}','${contactDatum.LEDPCYL}','${contactDatum.LEDPAxis}','${contactDatum.LEDPVA}','${contactDatum.RENPSPH}','${contactDatum.RENPCYL}','${contactDatum.RENPAxis}','${contactDatum.RENPVA}','${contactDatum.LENPSPH}','${contactDatum.LENPCYL}','${contactDatum.LENPAxis}','${contactDatum.LENPVA}','${contactDatum.REPD}','${contactDatum.LEPD}','${contactDatum.R_Addition}','${contactDatum.L_Addition}','${contactDatum.R_KR}','${contactDatum.L_KR}','${contactDatum.R_HVID}','${contactDatum.L_HVID}','${contactDatum.R_CS}','${contactDatum.L_CS}','${contactDatum.R_BC}','${contactDatum.L_BC}','${contactDatum.R_Diameter}','${contactDatum.L_Diameter}','${contactDatum.BR}','${contactDatum.Material}','${contactDatum.Modality}','${contactDatum.Other}',${contactDatum.ConstantUse},${contactDatum.NearWork},${contactDatum.DistanceWork},${contactDatum.Multifocal},'${contactDatum.PhotoURL}','${contactDatum.FileURL}','${contactDatum.Family}','${contactDatum.RefferedByDoc}',1,${LoggedOnUser},now(),'${contactDatum.VisitDate}')`)
 
                 console.log(connected("Customer Contact Added SuccessFUlly !!!"));
 
@@ -190,10 +191,10 @@ module.exports = {
 
             }
 
-               response.CustomerID = customer.insertId,
+            response.CustomerID = customer.insertId,
                 response.message = "data save sucessfully",
                 [data] = await mysql2.pool.query(`select customer.*, shop.Name as ShopName, shop.AreaName as AreaName from customer left join shop on shop.ID = customer.ShopID where customer.CompanyID = ${CompanyID} and customer.ID = ${customer.insertId}`)
-               response.data = data
+            response.data = data
 
             return res.send(response);
         } catch (err) {
@@ -749,18 +750,18 @@ module.exports = {
 
             const printdata = req.body
             let powerList = []
-            if(printdata.otherSpec === true){
+            if (printdata.otherSpec === true) {
                 powerList = printdata.spectacle
-            } if (printdata.otherContant === true){
+            } if (printdata.otherContant === true) {
                 powerList = printdata.contact
-            } if (printdata.otherNoPower === true){
+            } if (printdata.otherNoPower === true) {
                 powerList = []
             }
             printdata.powerList = powerList
             console.log(printdata.powerList);
 
             const customer = req.body.customer
-           
+
             const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
             const [companysetting] = await mysql2.pool.query(`select * from companysetting where CompanyID = ${CompanyID}`)
             const [billformate] = await mysql2.pool.query(`select * from billformate where CompanyID = ${CompanyID}`)
@@ -791,7 +792,7 @@ module.exports = {
 
 
             const ShopWelComeNote = JSON.parse(printdata.shopdetails.WelcomeNote);
-           
+
             printdata.powerNoteShop = ShopWelComeNote.filter((ele) => {
                 if (ele.NoteType === "CustomerPower") {
                     return true;
@@ -803,10 +804,10 @@ module.exports = {
 
             printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
             var formatName = "customerPowerPDF.ejs";
-            var file =  printdata.mode + "-" + 'Power' + "_" + CompanyID + "-" + customer.ID + ".pdf";
+            var file = printdata.mode + "-" + 'Power' + "_" + CompanyID + "-" + customer.ID + ".pdf";
             fileName = "uploads/" + file;
 
-           
+
 
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
                 if (err) {
@@ -870,28 +871,56 @@ module.exports = {
 
             if (data) {
                 let count = 0
-               for(let item of data) {
-                count += 1
-                console.log("count ======>",count);
-                let createDate = moment(item.CreatedOn).format("YYYY-MM-DD");
+                for (let item of data) {
+                    count += 1
+                    console.log("count ======>", count);
+                    let createDate = moment(item.CreatedOn).format("YYYY-MM-DD");
 
-                if (item.VisitDate === "0000-00-00") {
+                    if (item.VisitDate === "0000-00-00") {
 
-                    const [update] = await mysql2.pool.query(`update spectacle_rx set VisitDate = '${moment(item.CreatedOn).format("YYYY-MM-DD")}', UpdatedBy = '${item.CreatedBy}', UpdatedOn = now() where ID = ${item.ID}`)
+                        const [update] = await mysql2.pool.query(`update spectacle_rx set VisitDate = '${moment(item.CreatedOn).format("YYYY-MM-DD")}', UpdatedBy = '${item.CreatedBy}', UpdatedOn = now() where ID = ${item.ID}`)
 
-                    const [update2] = await mysql2.pool.query(`update spectacle_rx set ExpiryDate = '${moment(item.CreatedOn).add(item.Reminder, "months").format("YYYY-MM-DD")}', UpdatedBy = '${item.CreatedBy}', UpdatedOn = now() where ID = ${item.ID}`)
+                        const [update2] = await mysql2.pool.query(`update spectacle_rx set ExpiryDate = '${moment(item.CreatedOn).add(item.Reminder, "months").format("YYYY-MM-DD")}', UpdatedBy = '${item.CreatedBy}', UpdatedOn = now() where ID = ${item.ID}`)
+
+
+                    }
+
+                    if (item.VisitDate !== "0000-00-00" && item.ExpiryDate === "0000-00-00") {
+                        const [update2] = await mysql2.pool.query(`update spectacle_rx set ExpiryDate = '${moment(item.VisitDate).add(item.Reminder, "months").format("YYYY-MM-DD")}', UpdatedBy = '${item.CreatedBy}', UpdatedOn = now() where ID = ${item.ID}`)
+
+                    }
+
 
 
                 }
+            }
 
-                if (item.VisitDate !== "0000-00-00" && item.ExpiryDate === "0000-00-00") {
-                    const [update2] = await mysql2.pool.query(`update spectacle_rx set ExpiryDate = '${moment(item.VisitDate).add(item.Reminder, "months").format("YYYY-MM-DD")}', UpdatedBy = '${item.CreatedBy}', UpdatedOn = now() where ID = ${item.ID}`)
+            response.message = "data update sucessfully"
+            response.data = data
+
+
+            return res.send(response);
+        } catch (err) {
+            next(err)
+        }
+    },
+    updateVisitDateInContactLenRx: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const [data] = await mysql2.pool.query(`select * from contact_lens_rx`)
+
+            if (data) {
+                let count = 0
+                for (let item of data) {
+                    count += 1
+                    console.log("count ======>", count);
+                    let createDate = moment(item.CreatedOn).format("YYYY-MM-DD");
+
+
+                    const [update] = await mysql2.pool.query(`update contact_lens_rx set VisitDate = '${moment(item.CreatedOn).format("YYYY-MM-DD")}', UpdatedBy = '${item.CreatedBy}', UpdatedOn = now() where ID = ${item.ID}`)
 
                 }
-
-
-
-               }
             }
 
             response.message = "data update sucessfully"

@@ -32,6 +32,7 @@ router.post('/customerSearch', verifyAccessTokenAdmin, Controller.customerSearch
 
 // update power expiry date and visitDate
 router.post('/updateExpiryAndVisitDate', verifyAccessTokenAdmin, Controller.updateExpiryAndVisitDate)
+router.post('/updateVisitDateInContactLenRx', verifyAccessTokenAdmin, Controller.updateVisitDateInContactLenRx)
 
 
 
