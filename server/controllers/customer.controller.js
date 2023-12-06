@@ -810,10 +810,10 @@ module.exports = {
                 if(printdata.mode === 'other'){
                     formatName = "NavjyotiOther.ejs";
                 }else{
-                    formatName = "customerPowerPDF.ejs" 
+                    formatName = "customerPowerPDF.ejs"
                 }
             }
-  
+
             var file =  printdata.mode + "-" + 'Power' + "_" + CompanyID + "-" + customer.ID + ".pdf";
             fileName = "uploads/" + file;
 
@@ -907,6 +907,90 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = data
+
+
+            return res.send(response);
+        } catch (err) {
+            next(err)
+        }
+    },
+    updateVisitDateInContactLenRx: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const [data] = await mysql2.pool.query(`select * from contact_lens_rx`)
+
+            if (data) {
+                let count = 0
+                for (let item of data) {
+                    count += 1
+                    console.log("count ======>", count);
+                    let createDate = moment(item.CreatedOn).format("YYYY-MM-DD");
+
+
+                    const [update] = await mysql2.pool.query(`update contact_lens_rx set VisitDate = '${moment(item.CreatedOn).format("YYYY-MM-DD")}', UpdatedBy = '${item.CreatedBy}', UpdatedOn = now() where ID = ${item.ID}`)
+
+                }
+            }
+
+            response.message = "data update sucessfully"
+            response.data = data
+
+
+            return res.send(response);
+        } catch (err) {
+            next(err)
+        }
+    },
+    getEyeTestingReport: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            const { From, To, Type, Employee, ShopID } = req.body;
+
+            if (From === "" || From === undefined || From === null) return res.send({ message: "Invalid Query Data" })
+            if (To === "" || To === undefined || To === null) return res.send({ message: "Invalid Query Data" })
+            if (Employee === "" || Employee === undefined || Employee === null) return res.send({ message: "Invalid Query Data" })
+            if (ShopID === "" || ShopID === undefined || ShopID === null) return res.send({ message: "Invalid Query Data" })
+
+            let qry = ``;
+            let shopFilter = ``
+            let employeeFilter = ``
+            if (ShopID === 'All') {
+                shopFilter = ``
+            } else {
+                shopFilter = ` and customer.ShopID = ${ShopID}`
+            }
+
+            // spectacle_rx , contact_lens_rx
+            if (Type === 'spectacle_rx') {
+                if (Employee === 'All') {
+                    employeeFilter = ``
+                } else {
+                    employeeFilter = `and spectacle_rx.CreatedBy = ${Employee}`
+                }
+
+                qry = `select spectacle_rx.*, customer.Name as CustomerName, shop.Name as ShopName, shop.AreaName from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID left join shop on shop.ID = customer.ShopID where spectacle_rx.Status = 1 and spectacle_rx.CompanyID = ${CompanyID} ${shopFilter}  ${employeeFilter} and spectacle_rx.VisitDate between '${From}' and '${To}'`;
+
+            } else if (Type === 'contact_lens_rx') {
+                if (Employee === 'All') {
+                    employeeFilter = ``
+                } else {
+                    employeeFilter = `contact_lens_rx.CreatedBy = ${Employee}`
+                }
+
+                qry = `select contact_lens_rx.*, customer.Name as CustomerName, shop.Name as ShopName, shop.AreaName from contact_lens_rx left join customer on customer.ID = contact_lens_rx.CustomerID left join shop on shop.ID = customer.ShopID where contact_lens_rx.Status = 1 and contact_lens_rx.CompanyID = ${CompanyID} ${shopFilter}  ${employeeFilter} and contact_lens_rx.VisitDate between '${From}' and '${To}'`;
+
+            } else {
+                return res.send({ message: "Invalid Type Data" })
+            }
+
+            console.log(qry);
+            const [datum] = await mysql2.pool.query(qry);
+            response.message = "data fetch sucessfully"
+            response.data = datum
 
 
             return res.send(response);
