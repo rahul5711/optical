@@ -996,23 +996,23 @@ module.exports = {
 
                             if (printdata.CompanyID == 20 || printdata.CompanyID == 19 || printdata.CompanyID == 64) {
                                 if (printdata.CompanyBarcode == 5) {
-                                    // options = {
-                                      //  printdata.CompanyID == 64 only this company ke liye option he
-                                    //    height: "1.00in",
-                                    //     width: "5.00in",
-                                    //     margin: {
-                                    //         top: "0in",
-                                    //         right: "0in",
-                                    //         bottom: "0in",
-                                    //         left: "0in"
-                                    //     },
-                                    // // "height": "0.70in",
-                                    // // "width": "4.90in",
-                                    // };
-                                       options = {
-                                       height: "0.70in",
-                                       width: "4.90in",
+                                    options = {
+                                    //    printdata.CompanyID == 64 only this company ke liye option he
+                                       height: "1.00in",
+                                        width: "5.00in",
+                                        margin: {
+                                            top: "0in",
+                                            right: "0in",
+                                            bottom: "0in",
+                                            left: "0in"
+                                        },
+                                    // "height": "0.70in",
+                                    // "width": "4.90in",
                                     };
+                                    //    options = {
+                                    //    height: "0.70in",
+                                    //    width: "4.90in",
+                                    // };
                                 }
                             } else {
                                 if (printdata.CompanyBarcode == 5) {

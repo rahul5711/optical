@@ -757,7 +757,6 @@ module.exports = {
                 powerList = []
             }
             printdata.powerList = powerList
-            console.log(printdata.powerList);
 
             const customer = req.body.customer
            
@@ -802,7 +801,17 @@ module.exports = {
             var fileName = "";
 
             printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
+            printdata.PmLogo = clientConfig.appURL + '../assest/pm.png';
+
             var formatName = "customerPowerPDF.ejs";
+            if(CompanyID === 1){
+                if(printdata.mode === 'other'){
+                    formatName = "NavjyotiOther.ejs";
+                }else{
+                    formatName = "customerPowerPDF.ejs" 
+                }
+            }
+  
             var file =  printdata.mode + "-" + 'Power' + "_" + CompanyID + "-" + customer.ID + ".pdf";
             fileName = "uploads/" + file;
 
