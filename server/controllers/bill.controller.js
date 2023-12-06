@@ -1724,7 +1724,7 @@ module.exports = {
             }
 
             printdata.bill = printdata.mode === "Invoice" ? "Cash Memo" : printdata.BillValue;
-
+            console.log(printdata.bill);
             printdata.welComeNoteShop = printdata.shopWelComeNote.filter((ele) => {
                 if (printdata.shopdetails.WholesaleBill == "true" && ele.NoteType === "wholesale") {
                     return true;
