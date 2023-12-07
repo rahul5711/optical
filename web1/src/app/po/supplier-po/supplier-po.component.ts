@@ -425,6 +425,9 @@ export class SupplierPoComponent implements OnInit {
     this.sp.show();
     this.filtersList = this.orderList.filter((d: any) => d.Sel === 1);
       if(this.filtersList.length > 0){
+        this.filtersList.forEach((e: any) => {
+          e.Remark = e.Remark === undefined ? '' : e.Remark;
+      });
         let body: any = { productList: this.filtersList }
          const subs: Subscription = this.bill.AssignSupplierPDF(body).subscribe({
            next: (res: any) => {

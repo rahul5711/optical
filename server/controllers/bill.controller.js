@@ -3194,7 +3194,7 @@ module.exports = {
                 printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
             }
 
-            if (CompanyID === 1) {
+            if (CompanyID !== 1) {
                 var formatName = "AssignSupplierPDF.ejs"
             } else {
                 var formatName = "AssignLensPDF.ejs";

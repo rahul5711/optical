@@ -5,6 +5,8 @@ import { ShopService } from 'src/app/service/shop.service';
 import * as moment from 'moment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import * as XLSX from 'xlsx';
+import { EmployeeService } from 'src/app/service/employee.service';
+import { CustomerService } from 'src/app/service/customer.service';
 
 @Component({
   selector: 'app-eyetest-report',
@@ -15,16 +17,24 @@ export class EyetestReportComponent implements OnInit {
   shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
 
   constructor(
     private ss: ShopService,
     public as: AlertService,
+    private emp: EmployeeService,
+    private sp: NgxSpinnerService,
+    private cs: CustomerService,
+
   ) { }
 
   shopList:any;
+  employeeList:any;
+  eyeList:any;
 
   data: any =  { 
-    FilterTypes:'CreatedOn', FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0
+    FilterTypes:'CreatedOn', FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,EmployeeID:'All',
+    Type:'spectacle_rx'
   };
 
   viewEyeTestReport = false
@@ -48,7 +58,7 @@ export class EyetestReportComponent implements OnInit {
     }else{
       this.dropdownShoplist();
     }
-
+    this.dropdownUserlist()
   }
 
   dropdownShoplist(){
@@ -61,4 +71,51 @@ export class EyetestReportComponent implements OnInit {
     });
   }
 
+  dropdownUserlist(){
+    this.sp.show()
+    const subs: Subscription = this.emp.dropdownUserlist('').subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.employeeList  = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  searchData(){
+    this.sp.show()
+
+    this.data.ShopID = this.data.ShopID === 0 ? 'All' : this.data.ShopID;
+
+    let body = {
+      From:this.data.FromDate,
+      To:this.data.ToDate,
+      Employee:this.data.EmployeeID,
+      ShopID:this.data.ShopID,
+      Type:this.data.Type,
+    }
+
+    const subs: Subscription =  this.cs.getEyeTestingReport(body).subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.as.successToast(res.message)
+          this.eyeList = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  dateFormat(date:any){
+    return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
 }

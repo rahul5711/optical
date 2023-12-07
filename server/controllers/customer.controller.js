@@ -947,7 +947,7 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-
+                 
             const { From, To, Type, Employee, ShopID } = req.body;
 
             if (From === "" || From === undefined || From === null) return res.send({ message: "Invalid Query Data" })
