@@ -142,4 +142,11 @@ export class ExpenseComponent implements OnInit {
   dateFormat(date:any){
     return moment(date).format(`${this.companySetting.DateFormat}`);
   }
+
+  FromReset(){
+    this.data =  { 
+      FromDate: moment().format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, PaymentMode: 'All', CashType: 'All'
+   };
+    this.ExpenseList = [];
+  }
 }

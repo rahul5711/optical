@@ -174,4 +174,12 @@ export class CashCollectionComponent implements OnInit {
   dateFormat(date:any){
     return moment(date).format(`${this.companySetting.DateFormat}`);
   }
+
+  FromReset(){
+    this.data = { 
+      FilterTypes:'CreatedOn', FromDate: moment().format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,PaymentStatus:0,
+      PaymentMode:0
+    };
+    this.dataList = [];
+  }
 }

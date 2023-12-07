@@ -33,7 +33,7 @@ export class EyetestReportComponent implements OnInit {
   eyeList:any;
 
   data: any =  { 
-    FilterTypes:'CreatedOn', FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,EmployeeID:'All',
+    FilterTypes:'CreatedOn', FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 'All',EmployeeID:'All',
     Type:'spectacle_rx'
   };
 
@@ -89,9 +89,6 @@ export class EyetestReportComponent implements OnInit {
 
   searchData(){
     this.sp.show()
-
-    this.data.ShopID = this.data.ShopID === 0 ? 'All' : this.data.ShopID;
-
     let body = {
       From:this.data.FromDate,
       To:this.data.ToDate,
@@ -117,5 +114,13 @@ export class EyetestReportComponent implements OnInit {
 
   dateFormat(date:any){
     return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
+
+  FromReset(){
+    this.data =  { 
+      FilterTypes:'CreatedOn', FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 'All',EmployeeID:'All',
+      Type:'spectacle_rx'
+    };
+    this.eyeList = [];
   }
 }
