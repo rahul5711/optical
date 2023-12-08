@@ -3,7 +3,7 @@ const _ = require("lodash")
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const mysql2 = require('../database')
-
+const { shopID } = require('../helpers/helper_function')
 
 module.exports = {
     save: async (req, res, next) => {
@@ -72,13 +72,20 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
             let page = Body.currentPage;
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select expense.*, shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from expense left join user as users1 on users1.ID = expense.CreatedBy left join user as users on users.ID = expense.UpdatedBy left join shop on shop.ID = expense.ShopID where expense.Status = 1 and expense.CompanyID = '${CompanyID}'  order by expense.ID desc`
+            let shopId = ``
+
+            if (shopid !== 0) {
+                shopId = `and expense.ShopID = ${shopid}`
+            }
+
+            let qry = `select expense.*, shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from expense left join user as users1 on users1.ID = expense.CreatedBy left join user as users on users.ID = expense.UpdatedBy left join shop on shop.ID = expense.ShopID where expense.Status = 1 and expense.CompanyID = '${CompanyID}' ${shopId}   order by expense.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 

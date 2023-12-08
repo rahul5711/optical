@@ -1652,11 +1652,18 @@ module.exports = {
             });
 
             const x = [];
+
+            // lensbird subtotal 
+            let subtotals = 0
+
             req.body.billItemList.forEach((element) => {
                 if (element.MeasurementID !== "null" && element.MeasurementID !== "undefined" && element.MeasurementID !== undefined && element.MeasurementID !== '' && x.length === 0) {
                     x.push(JSON.parse(element.MeasurementID));
                 }
+                subtotals += element.UnitPrice * element.Quantity
             });
+
+            printdata.subtotals = subtotals
             printdata.EyeMeasurement = x[0];
             const BillItemList = req.body.billItemList;
             const ServiceList = req.body.serviceList;
@@ -1724,7 +1731,6 @@ module.exports = {
             }
 
             printdata.bill = printdata.mode === "Invoice" ? "Cash Memo" : printdata.BillValue;
-            console.log(printdata.bill);
             printdata.welComeNoteShop = printdata.shopWelComeNote.filter((ele) => {
                 if (printdata.shopdetails.WholesaleBill == "true" && ele.NoteType === "wholesale") {
                     return true;
@@ -1734,6 +1740,7 @@ module.exports = {
                 return false;
             });
 
+         
             printdata.billItemList = printdata.billItemList.map((element) => {
                 if (element.Status === 1) {
                     printdata.GSTTypes = element.GSTType;

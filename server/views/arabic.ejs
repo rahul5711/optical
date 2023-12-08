@@ -609,7 +609,7 @@
             <tr>
               <th> Amount المبلغ</th>
               <td>
-                <%=data.billMaster.SubTotal%>
+                <%=data.subtotals%>
               </td>
             </tr>
             <tr>
@@ -623,7 +623,7 @@
             <tr>
               <th>Discount التخفيض</th>
               <td>
-                <%=data.billMaster.AddlDiscount%>
+                <%=data.billMaster.AddlDiscount + data.billMaster.DiscountAmount%>
               </td>
             </tr>
             <tr>
