@@ -644,6 +644,19 @@
                 <%=data.DueAmount%>
               </td>
             </tr>
+            <tr>
+              <th>PaymentMode </th>
+              <td>
+                <% if(data.paidlist.length !==0){
+                  data.paidlist.forEach(function (i, index) { %>
+                  <% if (i.PaymentMode !=='Payment Initiated' ){%>
+                      <span style="font-size: 10px;">
+                          <%=i.PaymentMode%>/
+                      </span>
+                      <%}%>
+                          <%})}%>
+              </td>
+            </tr>
           </table>
         </div>
       </div>

@@ -1651,10 +1651,10 @@ module.exports = {
                 return element.Status !== 0;
             });
 
-            const x = [];
-
+            
             // lensbird subtotal 
             let subtotals = 0
+            const x = [];
 
             req.body.billItemList.forEach((element) => {
                 if (element.MeasurementID !== "null" && element.MeasurementID !== "undefined" && element.MeasurementID !== undefined && element.MeasurementID !== '' && x.length === 0) {
