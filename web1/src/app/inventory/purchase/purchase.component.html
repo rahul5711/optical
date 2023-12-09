@@ -653,12 +653,13 @@
                                                 <tr *ngFor="let data of chargeList ; let i = index;">
                                                     <td></td>
                                                     <td class="text-center">
-                                                        <button class="bg_none"
+                                                        <button class="bg_none" type="button"
                                                             *ngIf="data.Status !== 0 && deletePurchase"
                                                             (click)="deleteCharge('Charges',i)">
                                                             <mat-icon
                                                                 class="delete_icons ms-1">delete_forever</mat-icon>
                                                         </button>
+                                                        
                                                     </td>
                                                     <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
                                                         class="text-center">--</td>

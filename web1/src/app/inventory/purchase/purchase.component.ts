@@ -89,12 +89,12 @@ export class PurchaseComponent implements OnInit {
   BarcodeData: any = {};
 
   disbaleupdate = false;
-  
+
   editPurchase = false
   addPurchase = false
   deletePurchase = false
   supplierGSTType = '';
-  currentTime ='';
+  currentTime = '';
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'Purchase') {
@@ -112,9 +112,9 @@ export class PurchaseComponent implements OnInit {
     } else {
       this.selectedPurchaseMaster.PurchaseDate = moment().format('yyyy-MM-DD');
     }
-    this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23'})
-  
-    
+    this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23' })
+
+
   }
 
   getPurchaseById() {
@@ -201,7 +201,7 @@ export class PurchaseComponent implements OnInit {
     const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
       next: (res: any) => {
         if (res.success) {
-            this.specList = res.data;
+          this.specList = res.data;
           this.getSptTableData();
         } else {
           this.as.errorToast(res.message)
@@ -217,10 +217,10 @@ export class PurchaseComponent implements OnInit {
       if (element.FieldType === 'DropDown' && element.Ref === '0') {
         const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
           next: (res: any) => {
-            if (res.success ) {
+            if (res.success) {
               element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
               element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-             
+
             } else {
               this.as.errorToast(res.message)
             }
@@ -312,7 +312,7 @@ export class PurchaseComponent implements OnInit {
     this.selectedPurchaseMaster.SupplierID = this.supplierList[index].ID;
     this.selectedPurchaseMaster.SupplierName = this.supplierList[index].Name;
     this.item.GSTType = this.supplierList[index].GSTType;
-    if(this.item.GSTType !== 'None'){
+    if (this.item.GSTType !== 'None') {
       this.supplierGSTType = this.item.GSTType
     }
   }
@@ -375,91 +375,91 @@ export class PurchaseComponent implements OnInit {
           backdrop: false,
         })
         this.GstTypeDis = true
-      }else{
+      } else {
 
-   
-      if (this.selectedPurchaseMaster.ID !== null) { this.item.Status = 2; }
-      this.item.ProductName = "";
-      this.item.ProductTypeID = ""
 
-      this.specList.forEach((element: any) => {
-        this.prodList.forEach((elements: any) => {
-          if (elements.Name === element.ProductName) {
-            this.item.ProductTypeID = elements.ID
-            this.item.ProductTypeName = elements.Name
+        if (this.selectedPurchaseMaster.ID !== null) { this.item.Status = 2; }
+        this.item.ProductName = "";
+        this.item.ProductTypeID = ""
+
+        this.specList.forEach((element: any) => {
+          this.prodList.forEach((elements: any) => {
+            if (elements.Name === element.ProductName) {
+              this.item.ProductTypeID = elements.ID
+              this.item.ProductTypeName = elements.Name
+            }
+          });
+          if (element.SelectedValue !== "") {
+            this.item.ProductName = this.item.ProductName + element.SelectedValue + "/";
+          }
+          if (element.FieldType === "Date") {
+            this.item.ProductExpDate = element.SelectedValue;
           }
         });
-        if (element.SelectedValue !== "") {
-          this.item.ProductName = this.item.ProductName + element.SelectedValue + "/";
-        }
-        if (element.FieldType === "Date") {
-          this.item.ProductExpDate = element.SelectedValue ;
-        }
-      });
 
-      this.item.ProductExpDate = this.item.ProductExpDate === '' ? "0000-00-00" : this.item.ProductExpDate;
-      this.item.ProductTypeID = this.item.ProductTypeID
-      this.item.ProductTypeName = this.item.ProductTypeName
-      this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
+        this.item.ProductExpDate = this.item.ProductExpDate === '' ? "0000-00-00" : this.item.ProductExpDate;
+        this.item.ProductTypeID = this.item.ProductTypeID
+        this.item.ProductTypeName = this.item.ProductTypeName
+        this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
 
-      let AddQty = 0;
-      if (this.item.Quantity !== 0 && this.item.Quantity !== "0") {
-        this.itemList.forEach((ele: any) => {
-          if (ele.ID === null) {
-            if (ele.ProductName === this.item.ProductName && Number(ele.RetailPrice) === Number(this.item.RetailPrice) && ele.UnitPrice === this.item.UnitPrice) {
-              ele.Quantity = Number(ele.Quantity) + Number(this.item.Quantity);
-              ele.SubTotal = Number(ele.SubTotal) + Number(this.item.SubTotal);
-              ele.TotalAmount = Number(ele.TotalAmount) + Number(this.item.TotalAmount);
-              ele.GSTAmount = Number(ele.GSTAmount) + Number(this.item.GSTAmount);
-              ele.DiscountAmount = Number(ele.DiscountAmount) + Number(this.item.DiscountAmount);
-              AddQty = 1;
+        let AddQty = 0;
+        if (this.item.Quantity !== 0 && this.item.Quantity !== "0") {
+          this.itemList.forEach((ele: any) => {
+            if (ele.ID === null) {
+              if (ele.ProductName === this.item.ProductName && Number(ele.RetailPrice) === Number(this.item.RetailPrice) && ele.UnitPrice === this.item.UnitPrice) {
+                ele.Quantity = Number(ele.Quantity) + Number(this.item.Quantity);
+                ele.SubTotal = Number(ele.SubTotal) + Number(this.item.SubTotal);
+                ele.TotalAmount = Number(ele.TotalAmount) + Number(this.item.TotalAmount);
+                ele.GSTAmount = Number(ele.GSTAmount) + Number(this.item.GSTAmount);
+                ele.DiscountAmount = Number(ele.DiscountAmount) + Number(this.item.DiscountAmount);
+                AddQty = 1;
+              }
             }
+          })
+          if (AddQty === 0) {
+            this.itemList.unshift(this.item);
+            console.log(this.itemList);
+
           }
-        })
-        if (AddQty === 0) {
-          this.itemList.unshift(this.item);
-          console.log(this.itemList);
-          
         }
-      }
 
-      this.tempItem = { Item: null, Spec: null };
+        this.tempItem = { Item: null, Spec: null };
 
-      if (this.gstLock === false && this.gstperLock === false) {
-        this.item = {
-          ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType,ProductExpDate: '0000-00-00', UniqueBarcode: ''
-        };
-      } else if (this.gstLock === true && this.gstperLock === false) {
-        this.item = {
-          ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: ''
-        };
-      } else if (this.gstLock === false && this.gstperLock === true) {
-        this.item = {
-          ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: ''
-        };
-      } else {
-        this.item = {
-          ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: ''
-        }
-      }
-
-      if (this.BrandLock === true) {
-        this.item = {
-          ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: ''
-        }
-      } else {
-        this.item = {
-          ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: 0, ProductExpDate: '0000-00-00', UniqueBarcode: ''
-        }
-      }
-
-      this.specList.forEach((element: any) => {
-        if (element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
-          element.SelectedValue = '';
+        if (this.gstLock === false && this.gstperLock === false) {
+          this.item = {
+            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: ''
+          };
+        } else if (this.gstLock === true && this.gstperLock === false) {
+          this.item = {
+            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: ''
+          };
+        } else if (this.gstLock === false && this.gstperLock === true) {
+          this.item = {
+            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: ''
+          };
         } else {
-          element.SelectedValue = element.SelectedValue;
+          this.item = {
+            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: ''
+          }
         }
-      });
+
+        if (this.BrandLock === true) {
+          this.item = {
+            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: ''
+          }
+        } else {
+          this.item = {
+            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: 0, ProductExpDate: '0000-00-00', UniqueBarcode: ''
+          }
+        }
+
+        this.specList.forEach((element: any) => {
+          if (element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
+            element.SelectedValue = '';
+          } else {
+            element.SelectedValue = element.SelectedValue;
+          }
+        });
 
       }
     }
@@ -474,26 +474,26 @@ export class PurchaseComponent implements OnInit {
           backdrop: false,
         })
         this.GstTypeDis = true
-      }else{
-      if (this.selectedPurchaseMaster.ID !== null) { this.charge.Status = 2; }
-      this.charge.ID = null;
+      } else {
+        if (this.selectedPurchaseMaster.ID !== null) { this.charge.Status = 2; }
+        this.charge.ID = null;
 
-      this.chargeOptions.forEach((ele: any) => {
-        if (ele.ID !== null) {
-          this.charge.ChargeType = ele.Name
-        }
-      });
+        this.chargeOptions.forEach((ele: any) => {
+          if (ele.ID !== null) {
+            this.charge.ChargeType = ele.Name
+          }
+        });
 
-      this.chargeList.push(this.charge);
-      this.charge = {
-        ID: null, ChargeType: null, CompanyID: null, Description: '', Amount: 0.00, Price: 0.00, GSTPercentage: 0, GSTAmount: 0.00,
-        GSTType: '', TotalAmount: 0.00, Status: 1
-      };
+        this.chargeList.push(this.charge);
+        this.charge = {
+          ID: null, ChargeType: null, CompanyID: null, Description: '', Amount: 0.00, Price: 0.00, GSTPercentage: 0, GSTAmount: 0.00,
+          GSTType: '', TotalAmount: 0.00, Status: 1
+        };
+      }
+
     }
-    
+    this.calculateGrandTotal();
   }
-  this.calculateGrandTotal();
-}
 
   notifyGst() {
     if (this.item.GSTPercentage !== 0 && this.item.GSTPercentage !== "0") {
@@ -571,7 +571,7 @@ export class PurchaseComponent implements OnInit {
           Swal.fire({
             position: 'center',
             icon: 'warning',
-            title: res.message ,
+            title: res.message,
             showConfirmButton: true,
             backdrop: false,
           })
@@ -603,22 +603,22 @@ export class PurchaseComponent implements OnInit {
         }).then((result) => {
           if (result.isConfirmed) {
             this.sp.show();
-            if(this.itemList[i].ID !== null || this.itemList[i].Status === 1){
+            if (this.itemList[i].ID !== null || this.itemList[i].Status === 1) {
               this.itemList[i].Status = 0;
               this.calculateGrandTotal();
             }
             const subs: Subscription = this.purchaseService.deleteProduct(this.itemList[i].ID, this.selectedPurchaseMaster).subscribe({
               next: (res: any) => {
                 if (res.success) {
-                    this.itemList[i].Status = 0;
-                    this.getPurchaseById()
-                    Swal.fire({
-                      position: 'center',
-                      icon: 'success',
-                      title: 'Your file has been deleted.',
-                      showConfirmButton: false,
-                      timer: 1000
-                    })
+                  this.itemList[i].Status = 0;
+                  this.getPurchaseById()
+                  Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Your file has been deleted.',
+                    showConfirmButton: false,
+                    timer: 1000
+                  })
                 } else {
                   this.as.errorToast(res.message)
                   this.itemList[i].Status = 1;
@@ -626,7 +626,7 @@ export class PurchaseComponent implements OnInit {
                   Swal.fire({
                     position: 'center',
                     icon: 'warning',
-                    title: res.message ,
+                    title: res.message,
                     showConfirmButton: true,
                     backdrop: false,
                   })
@@ -640,44 +640,63 @@ export class PurchaseComponent implements OnInit {
         })
       }
     }
+    
   }
 
   deleteCharge(Category: any, i: any) {
     if (Category === 'Charges') {
-      Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.sp.show()
-          const subs: Subscription = this.purchaseService.deleteCharge(this.chargeList[i].ID, this.selectedPurchaseMaster).subscribe({
-            next: (res: any) => {
-              if (res.success) {
-                this.chargeList[i].Status = 0;
-                this.getPurchaseById()
-                Swal.fire({
-                  position: 'center',
-                  icon: 'success',
-                  title: 'Your file has been deleted.',
-                  showConfirmButton: false,
-                  timer: 1000
-                })
-                this.as.successToast(res.message)
-              } else {
-                this.as.errorToast(res.message)
-              }
-              this.sp.hide()
-            },
-            error: (err: any) => console.log(err.message),
-            complete: () => subs.unsubscribe(),
-          });
-        }
-      })
+      if (this.chargeList[i].ID === null) {
+        this.chargeList.splice(i, 1);
+        this.calculateGrandTotal();
+      } else {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!',
+          backdrop: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.sp.show();
+            if (this.chargeList[i].ID !== null || this.chargeList[i].Status === 1) {
+              this.chargeList[i].Status = 0;
+              this.calculateGrandTotal();
+            }
+            const subs: Subscription = this.purchaseService.deleteCharge(this.chargeList[i].ID, this.selectedPurchaseMaster).subscribe({
+              next: (res: any) => {
+                if (res.success) {
+                  this.chargeList[i].Status = 0;
+                  this.getPurchaseById()
+                  Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Your file has been deleted.',
+                    showConfirmButton: false,
+                    timer: 1000
+                  })
+                } else {
+                  this.as.errorToast(res.message)
+                  this.chargeList[i].Status = 1;
+                  this.calculateGrandTotal();
+                  Swal.fire({
+                    position: 'center',
+                    icon: 'warning',
+                    title: res.message,
+                    showConfirmButton: true,
+                    backdrop: false,
+                  })
+                }
+                this.sp.hide();
+              },
+              error: (err: any) => console.log(err.message),
+              complete: () => subs.unsubscribe(),
+            });
+          }
+        })
+      }
     }
   }
 
@@ -710,7 +729,7 @@ export class PurchaseComponent implements OnInit {
     this.sp.show()
     this.data.UpdateProduct = true
     this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
-    this.selectedPurchaseMaster.PurchaseDate = this.selectedPurchaseMaster.PurchaseDate + ' ' + this.currentTime;  
+    this.selectedPurchaseMaster.PurchaseDate = this.selectedPurchaseMaster.PurchaseDate + ' ' + this.currentTime;
     this.data.PurchaseMaster = this.selectedPurchaseMaster;
     this.data.Charge = this.chargeList;
     let items: any = [];
@@ -741,7 +760,7 @@ export class PurchaseComponent implements OnInit {
           Swal.fire({
             position: 'center',
             icon: 'warning',
-            title: res.message ,
+            title: res.message,
             showConfirmButton: true,
             backdrop: false,
           })
@@ -775,7 +794,7 @@ export class PurchaseComponent implements OnInit {
         backdrop: false,
       })
       data.UpdateProduct = true
-    }else{
+    } else {
       this.sp.show()
       this.calculateFields1(fieldName, mode, data)
       this.calculateGrandTotal();
@@ -799,8 +818,8 @@ export class PurchaseComponent implements OnInit {
               showConfirmButton: true,
               backdrop: false,
             })
-              this.showInput(data)
-              this.getPurchaseById()
+            this.showInput(data)
+            this.getPurchaseById()
           }
           this.disbaleupdate = false
           this.sp.hide()
@@ -813,9 +832,9 @@ export class PurchaseComponent implements OnInit {
   }
 
   PurchaseDetailPDF() {
-    let itemList2:any = []
+    let itemList2: any = []
     this.itemList.forEach((ele: any) => {
-      if(ele.Status === 1){
+      if (ele.Status === 1) {
         itemList2.push(ele)
       }
     });
@@ -839,9 +858,9 @@ export class PurchaseComponent implements OnInit {
   openModal(content: any, data: any) {
     this.BarcodeQuantity = 0
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
-    let bs =  this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
-    this.BarcodeData = data 
-    
+    let bs = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+    this.BarcodeData = data
+
   }
 
   BarcodeQty() {
@@ -862,7 +881,7 @@ export class PurchaseComponent implements OnInit {
     });
   }
 
-  selectBarcode(type:any) {
+  selectBarcode(type: any) {
     if (type === 'all') {
       // Toggle the checked property
       this.checked = !this.checked;
@@ -884,10 +903,10 @@ export class PurchaseComponent implements OnInit {
       this.sp.hide();
     }
   }
-  
-  singleSelectBarcode(i:any) {
+
+  singleSelectBarcode(i: any) {
     const currentItem = this.itemList[i];
-  
+
     if (currentItem.Checked === false || currentItem.Checked === 0) {
       currentItem.index = i;
       this.barcodeListt.push(currentItem);
@@ -896,34 +915,34 @@ export class PurchaseComponent implements OnInit {
       this.barcodeListt = this.barcodeListt.filter((el: any) => el.index !== i);
     }
   }
-  
+
   barcodePrintAll() {
     if (this.barcodeListt.length != 0) {
-    this.sp.show();
-    let tempItem: any = [];
-    let Qty = 0;
-  
-    this.barcodeListt.forEach((ele: any) => {
-      if (ele.Status !== 0) {
-        Qty += ele.Quantity;
-        // Create a copy of 'ele' for each quantity and push it to 'tempItem'
-        for (let i = 0; i < ele.Quantity; i++) {
-          tempItem.push({ ...ele }); // Copy 'ele' using the spread operator
+      this.sp.show();
+      let tempItem: any = [];
+      let Qty = 0;
+
+      this.barcodeListt.forEach((ele: any) => {
+        if (ele.Status !== 0) {
+          Qty += ele.Quantity;
+          // Create a copy of 'ele' for each quantity and push it to 'tempItem'
+          for (let i = 0; i < ele.Quantity; i++) {
+            tempItem.push({ ...ele }); // Copy 'ele' using the spread operator
+          }
         }
-      }
-    });
-    const subs: Subscription = this.purchaseService.AllPrintBarcode(tempItem).subscribe({
-      next: (res: any) => {
-        if (res != '') {
-          window.open(res, "_blank");
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+      });
+      const subs: Subscription = this.purchaseService.AllPrintBarcode(tempItem).subscribe({
+        next: (res: any) => {
+          if (res != '') {
+            window.open(res, "_blank");
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     } else {
       Swal.fire({
         position: 'center',
@@ -934,5 +953,5 @@ export class PurchaseComponent implements OnInit {
       })
     }
   }
-  
+
 }

@@ -1380,6 +1380,7 @@ export class BillComponent implements OnInit {
   }
 
   deleteItem(category: any, i: any) {
+
     if (category === "Product") {
       if (this.billItemList[i].ID === null) {
         this.billItemList[i].DuaCal = 'delete';
