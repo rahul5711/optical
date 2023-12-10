@@ -30,6 +30,7 @@ function isValidDate(dateString) {
 }
 
 module.exports = {
+
     create: async (req, res, next) => {
         try {
 
@@ -3704,5 +3705,88 @@ module.exports = {
             next(err)
         }
     },
+    setbarcodemaster: async (req, res, next) => {
+        try {
+            return
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const currentStatus = "Available";
 
+           
+            //  save barcode
+
+            let [detailDataForBarCode] = await mysql2.pool.query(`SELECT * FROM purchasedetailnew WHERE CompanyID = ${CompanyID} AND BaseBarCode IN (
+                '10000351',
+                '10000352',
+                '10000353',
+                '10000354',
+                '10000355',
+                '10000356',
+                '10000357',
+                '10000358',
+                '10000359',
+                '10000360',
+                '10000361',
+                '10000362',
+                '10000363',
+                '10000364',
+                '10000365',
+                '10000366',
+                '10000367',
+                '10000368',
+                '10000369',
+                '10000370',
+                '10000371',
+                '10000372',
+                '10000373',
+                '10000374',
+                '10000375',
+                '10000376',
+                '10000377',
+                '10000378',
+                '10000379',
+                '10000380',
+                '10000381',
+                '10000382',
+                '10000383',
+                '10000384',
+                '10000385',
+                '10000386',
+                '10000387',
+                '10000388',
+                '10000389',
+                '10000390',
+                '10000391',
+                '10000392',
+                '10000393',
+                '10000394'
+                )`)
+
+
+            if (detailDataForBarCode.length) {
+                for (const item of detailDataForBarCode) {
+                    const barcode = Number(item.BaseBarCode)
+                    let count = 0;
+                    count = item.Quantity;
+                    for (j = 0; j < count; j++) {
+                        const [saveBarcode] = await mysql2.pool.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}','2023-12-06 16:08:59','${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, '2023-12-06 16:08:59')`)
+                    }
+                }
+            }
+
+            console.log(connected("Barcode Data Save SuccessFUlly !!!"));
+
+          
+
+            response.message = "data save sucessfully"
+            return res.send(response);
+
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
 }

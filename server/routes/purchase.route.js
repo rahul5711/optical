@@ -123,6 +123,8 @@ router.post('/getPurchasereturnreports', verifyAccessTokenAdmin, Controller.getP
 router.post('/getPurchasereturndetailreports', verifyAccessTokenAdmin, Controller.getPurchasereturndetailreports)
 router.post('/setProductExpiryDate',verifyAccessTokenAdmin, Controller.setProductExpiryDate)
 
+router.post('/setbarcodemaster',verifyAccessTokenAdmin, Controller.setbarcodemaster)
+
 
 
 module.exports = router
