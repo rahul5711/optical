@@ -802,13 +802,13 @@ module.exports = {
             var fileName = "";
 
             printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
-            printdata.PmLogo = clientConfig.appURL + '../assest/pm.png';
+            printdata.PmLogo = clientConfig.appURL + '/assest/pm.png';
 
             var formatName = "customerPowerPDF.ejs";
             var file = printdata.mode + "-" + 'Power' + "_" + CompanyID + "-" + customer.ID + ".pdf";
-            if(CompanyID === 1){
+            if(CompanyID === 78){
                 if(printdata.mode === 'other'){
-                    formatName = "ShriRamOther.ejs";
+                    formatName = "NavjyotiOther.ejs";
                 }else{
                     formatName = "customerPowerPDF.ejs"
                 }
