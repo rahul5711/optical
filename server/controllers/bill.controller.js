@@ -1716,7 +1716,13 @@ module.exports = {
                 }
             }, 0);
 
-            printdata.CurrentInvoiceBalance = printdata.unpaidlist.length > 0 ? printdata.unpaidlist[0].DueAmount : 0;
+            printdata.CurrentInvoiceBalance = printdata.unpaidlist.reduce((total, em) => {
+                if (printdata.billMaster.InvoiceNo === em.InvoiceNo) {
+                    return total + em.DueAmount;
+                }
+                return total;
+            }, 0);
+            
             printdata.DueAmount = printdata.unpaidlist.reduce((total, item) => total + item.DueAmount, 0);
             printdata.SavedDiscount = printdata.billMaster.DiscountAmount + printdata.billMaster.AddlDiscount
             printdata.billMaster.BillDate = moment(printdata.billMaster.BillDate).format("DD-MM-YYYY")

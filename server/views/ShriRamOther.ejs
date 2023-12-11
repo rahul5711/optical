@@ -1,0 +1,251 @@
+<html>
+
+<head>
+   <style>
+      .headingName {
+         position: absolute;
+         margin-left: 43%;
+         width: 30%;
+         color: red;
+         margin-top: 0px;
+         font-size: 16px !important;
+      }
+
+      html body {
+         zoom: 100%;
+      }
+
+      #table2 {
+  border-collapse: collapse;
+}
+
+#table2 th,
+#table2 td {
+  border: solid 1px;
+}
+   </style>
+</head>
+
+<body>
+   <section style="width: 100%; padding-bottom: 2%;">
+      <header>
+         <table style="width: 100%;">
+            <thead>
+               <tr style="text-align: center;">
+                  <th>
+                     <h1 style="font-size: 40px;margin: 0;font-weight: 500;color: red;">Shri Ram Eye Care Center</h1>
+                  </th>
+               </tr>
+               <tr>
+                  <th>
+                     <h4 style="font-size: 20px;margin: 0;font-weight: 500;">(MANAGED BY- JANKI VIDYA SEWA TRUST)</h4>
+                  </th>
+               </tr>
+               <tr>
+                  <th>
+                     <h4 style="font-size: 20px;margin: 0;font-weight: 500;">Near Geeta Honda Agency, Sultanpur Road, Faizabad, Ayodhya</h4>
+                  </th>
+               </tr>
+            </thead>
+         </table>
+         <table style="width: 100%; padding-top: 1%;">
+            <thead>
+               <tr style="text-align: left;">
+                  <td>
+                     <span style="font-size: 18px;"><b>Moblie:</b> 9918095888/945321655</span>
+                  </td>
+                  <td>
+                     <span style="font-size: 18px;"><b>Phone:</b> </span>
+                  </td>
+                  <td style="text-align: right;">
+                     <span style="font-size: 18px;"><b>E-Mail:</b> shrirameyecare229@gmail.com</span>
+                  </td>
+               </tr>
+
+           
+            </thead>
+
+         </table>
+        
+      </header>
+   </section>
+
+   <section style="width: 100%; border-top: 1px solid #000; ">
+      <!-- left side -->
+      <div style="width: 29%; float: left; height: 800px; padding-top: 2%;">
+         <div style="font-size: 15px; width: 90%; height: 150px;">
+            <h4 style="margin: 0;">OPD FACILITIES</h4>
+               <li>Computer Assisted Refraction</li>
+               <li>Slit Lamp Biomicroscopy </li>
+               <li>Indirect Ophthalmoscopy </li>
+               <li>A and B Sacn </li>
+               <li>Contact Lens </li>
+               <li>Keratometry </li>
+         </div>
+         <div style="font-size: 15px; width: 90%; height: 250px;">
+            <h4 style="margin: 0;">SURGERY FACILITIES</h4>
+            <li>ECCE, SICS <br> (Small Incision Cataract Surgery) </li>
+            <li>Phocoemulsification </li>
+            <li>Glaucoma Surgery </li>
+            <li>Oculoplasty Surgery </li>
+            <li>DCR Surgery</li>
+            <li>LID Surgery </li>
+            <li>Oculr Trauma Management </li>
+         </div>
+      </div>
+     
+      <!-- right side  -->
+      <div style="width: 70%; float: right; border-left: 1px solid #000; height: 920px; padding-top: 2%;">
+         <table style="width: 60%; float: left; line-height: 17px; font-size: 16px;">
+            <thead >
+               <tr>
+                  <th style="text-align: left; width: 20%;">Cust_ID</th>
+                  <td>: <%=data.customer.Idd%> </td>
+               </tr>
+               <tr>
+                  <th style="text-align: left; width: 20%;"> Name </th>
+                  <td>: <%=data.customer.Name%></td>
+               </tr>
+               <tr>
+                  <th style="text-align: left; width: 20%;"> Age </th>
+                  <td>: <%=data.customer.MobileNo1%></td>
+               </tr>
+               <tr>
+                  <th style="text-align: left; width: 20%;">Address</th>
+                  <td>: <%=data.customer.Age%></td>
+               </tr>
+            </thead>
+         </table>
+         <table style="width: 40%; float: right; font-size: 16px;">
+            <thead>
+               <tr>
+                  <th style="text-align: left;">Vising Date <br> Moblie No. <br> Gender </th>
+                  <td>: <%=data.customer.VisitDate%><br>: <%=data.customer.MobileNo1%> <br>: <%=data.customer.Gender%></td>
+               </tr>
+            </thead>
+         </table>
+
+      <!-- power spec -->
+      <% if (data.mode === 'other') { %>
+         <section>
+            <table style="width: 50%;  font-size: 15px; text-align: left; padding-left: 5%; padding-top: 5%;">
+   
+               <tr>
+                   <th rowspan="2" >VN : --</th>
+                   <td style="text-align: left;">R - <%=data.other.R_VN%></td>
+               </tr>
+               <tr>
+                   <td>L - <%=data.other.L_VN%></td>
+               </tr>
+               <tr>
+                   <th rowspan="2">TN : --</th>
+                   <td>R - <%=data.other.R_TN%></td>
+               </tr>
+               <tr>
+                   <td>L - <%=data.other.L_TN%></td>
+               </tr>
+               <tr>
+                   <th rowspan="2">SY/KR : --</th>
+                   <td>R - <%=data.other.R_KR%></td>
+               </tr>
+               <tr>
+                   <td>L - <%=data.other.L_KR%></td>
+               </tr>
+   
+               <tr >
+                   <th style="padding-top: 20px;">IOL Power:</th>
+                   <td style="padding-top: 20px;"><%=data.other.IOL_Power%></td>
+               </tr>
+               <tr>
+                   <th style="padding-top: 20px;">Operation:</th>
+                   <td style="padding-top: 20px;"><%=data.other.Operation%></td>
+               </tr>
+   
+               <tr>
+                   <th style="padding-top: 20px;">Sugar:</th>
+                   <td style="padding-top: 20px;"><%=data.other.Sugar%></td>
+               </tr>
+               <tr>
+                   <th style="padding-top: 20px;">B.P.:</th>
+                   <td style="padding-top: 20px;"><%=data.other.BP%></td>
+               </tr>
+             
+   
+           </table>
+           <table style="width: 100%;  font-size: 15px; text-align: left; padding-left: 5%;">
+            <tr>
+                <th style="padding-top: 20px;">Diagnosis:</th>
+                <td style="padding-top: 20px;"><%=data.other.Diagnosis%></td>
+            </tr>
+            <tr>
+                <th style="width: 20px; padding-top: 30px;">Treatment:</th>
+                <td style="padding-top: 30px;"><%=data.other.Treatment%></td>
+            </tr>
+
+        </table>
+         </section>
+         <section style="width: 100%; padding-left: 5%;margin-top: 5%; height: 200px;">
+         <% if (data.otherNoPower === false) { %>
+               <table  id="table2" style="width: 90%;">
+                  <thead>
+                     <tr>
+                        <th colspan="1"></th>
+                        <th colspan="4">Right</th>
+                        <th colspan="4">Left</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr>
+                        <td></td>
+                        <td>SPH</td>
+                        <td>CYL</td>
+                        <td>AXIS</td>
+                        <td>VP</td>
+                        <td>SPH</td>
+                        <td>CYL</td>
+                        <td>AXIS</td>
+                        <td>VP</td>
+                     </tr>
+                     <tr>
+                        <td>Distance</td>
+                        <td> <%=data.powerList.REDPSPH%> </td> 
+                        <td> <%=data.powerList.REDPCYL%> </td> 
+                        <td> <%=data.powerList.REDPAxis%> </td> 
+                        <td> <%=data.powerList.REDPVA%> </td> 
+                        <td> <%=data.powerList.LEDPSPH%> </td> 
+                        <td> <%=data.powerList.LEDPCYL%> </td> 
+                        <td> <%=data.powerList.LEDPAxis%> </td> 
+                        <td> <%=data.powerList.LEDPVA%> </td>
+                     </tr>
+                     <tr>
+                        <td>Near</td>
+                        <td> <%=data.powerList.RENPSPH%> </td> 
+                        <td> <%=data.powerList.RENPCYL%> </td> 
+                        <td> <%=data.powerList.RENPAxis%> </td> 
+                        <td> <%=data.powerList.RENPVA%> </td> 
+                        <td > <%=data.powerList.LENPSPH%> </td> 
+                         <td > <%=data.powerList.LENPCYL%> </td> 
+                         <td > <%=data.powerList.LENPAxis%> </td> 
+                         <td > <%=data.powerList.LENPVA%> </td> 
+                     </tr>
+                  </tbody>
+               </table>
+         <%} %>
+      </section>
+      <%} %>
+
+      <div style="width: 50%; text-align: center; padding-left: 30%; ">
+        <h2 style="border-bottom: 2px solid #000;"> SIGNATURE </h2>
+        <h4> Thanks For Visting !!!</h4>
+      </div>
+
+      <div style="width: 80%; text-align: center; padding-left: 10%; margin-top: 5%; ">
+        <h2 style="font-weight: 500;"> Timing: 9.30 AM To 8.30 PM All Days Open</h2>
+      </div>
+     
+      </div>
+   </section>
+
+</body>
+
+</html>

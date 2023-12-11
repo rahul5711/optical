@@ -121,9 +121,11 @@
                         [disabled]="BillItem.PreOrder === true">Manual</mat-slide-toggle>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 p-0 pt-3">
+                    <span *ngIf="company.WholeSale === 'true' || shop.WholesaleBill === 'true'">
                     <mat-slide-toggle name="WholeSale" color="primary" [(ngModel)]="BillItem.WholeSale"
                         class="example-margin" #WholeSalecontrol style="color:#ff651e;">
                         WholeSale</mat-slide-toggle>
+                    </span>
                 </div>
             </div>
             <div class="row rowModify" *ngIf="category !== 'Services'">

@@ -808,7 +808,7 @@ module.exports = {
             var file = printdata.mode + "-" + 'Power' + "_" + CompanyID + "-" + customer.ID + ".pdf";
             if(CompanyID === 1){
                 if(printdata.mode === 'other'){
-                    formatName = "NavjyotiOther.ejs";
+                    formatName = "ShriRamOther.ejs";
                 }else{
                     formatName = "customerPowerPDF.ejs"
                 }
