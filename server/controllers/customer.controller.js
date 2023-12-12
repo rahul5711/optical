@@ -813,6 +813,13 @@ module.exports = {
                     formatName = "customerPowerPDF.ejs"
                 }
             }
+            if(CompanyID === 55){
+                if(printdata.mode === 'other'){
+                    formatName = "ShriRamOther.ejs";
+                }else{
+                    formatName = "customerPowerPDF.ejs"
+                }
+            }
 
             var file =  printdata.mode + "-" + 'Power' + "_" + CompanyID + "-" + customer.ID + ".pdf";
             fileName = "uploads/" + file;
