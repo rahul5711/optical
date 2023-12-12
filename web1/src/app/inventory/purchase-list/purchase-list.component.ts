@@ -34,7 +34,7 @@ export class PurchaseListComponent implements OnInit {
   term:any;
   dataList: any = [];
   currentPage = 1;
-  itemsPerPage = 50;
+  itemsPerPage = 10;
   pageSize!: number;
   collectionSize = 0
   page = 4;
