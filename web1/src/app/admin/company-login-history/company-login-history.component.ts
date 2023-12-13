@@ -25,20 +25,27 @@ export class CompanyLoginHistoryComponent implements OnInit {
   evn = environment;
   stringUrl: string | undefined;
   dataList: any;
+  userList: any;
   currentPage = 1;
   itemsPerPage = 10;
   pageSize!: number;
   collectionSize = 0
   page = 4;
 
+  filter: any =  {PaymentStatus: '', date1: moment().startOf('month').format('YYYY-MM-DD'),
+  date2: moment().add( 2 , 'days').format('YYYY-MM-DD'), UserID: 0,  };
+
   constructor(
     private es: EmployeeService,
     private sp: NgxSpinnerService,
     public as: AlertService,
+    private emp: EmployeeService,
+
   ) { }
 
   ngOnInit(): void {
     this.getList()
+    this.dropdownUserlist()
   }
 
   onPageChange(pageNum: number): void {
@@ -47,6 +54,22 @@ export class CompanyLoginHistoryComponent implements OnInit {
 
   changePagesize(num: number): void {
     this.itemsPerPage = this.pageSize + num;
+  }
+
+  dropdownUserlist(){
+    this.sp.show()
+    const subs: Subscription = this.emp.dropdownUserlist('').subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.userList  = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   getList() {
