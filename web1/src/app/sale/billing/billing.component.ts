@@ -441,8 +441,18 @@ export class BillingComponent implements OnInit {
     { Name: '6/36 P' },
     { Name: '6/60' },
     { Name: '6/60 P' },
-
   ];
+
+  dataPNVA: any = [
+    { Name: 'N5' },
+    { Name: 'N6' },
+    { Name: 'N8' },
+    { Name: 'N10' },
+    { Name: 'N12' },
+    { Name: 'N18' },
+    { Name: 'N36' },
+  ];
+
   // dropdown values in satics 
   showDoctorAdd = false;
   editCustomer = false

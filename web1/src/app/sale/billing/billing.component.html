@@ -431,9 +431,9 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="RENPVA"
-                                                            [(ngModel)]="spectacle.RENPVA" id="RENPVA" list="dpvaList">
-                                                        <datalist id="dpvaList">
-                                                            <option [value]="d.Name" *ngFor="let d of dataPVA">
+                                                            [(ngModel)]="spectacle.RENPVA" id="RENPVA" list="dpNvaList">
+                                                        <datalist id="dpNvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPNVA">
                                                                 {{d.Name}} </option>
                                                         </datalist>
                                                     </div>
@@ -466,9 +466,9 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="LENPVA"
-                                                            [(ngModel)]="spectacle.LENPVA" id="LENPVA" list="dpvaList">
-                                                        <datalist id="dpvaList">
-                                                            <option [value]="d.Name" *ngFor="let d of dataPVA">
+                                                            [(ngModel)]="spectacle.LENPVA" id="LENPVA" list="dpNvaList">
+                                                        <datalist id="dpNvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPNVA">
                                                                 {{d.Name}} </option>
                                                         </datalist>
                                                     </div>
@@ -766,8 +766,8 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="CLEDPVA"
-                                                            [(ngModel)]="clens.LEDPVA" id="CLEDPVA" list="CdpvaList">
-                                                        <datalist id="CdpvaList" >
+                                                            [(ngModel)]="clens.LEDPVA" id="CLEDPVA" list="CdpNvaList">
+                                                        <datalist id="CdpNvaList" >
                                                             <option [value]="d.Name" *ngFor="let d of dataPVA">
                                                                 {{d.Name}} </option>
                                                         </datalist>
@@ -807,9 +807,9 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="CRENPVA"
-                                                            [(ngModel)]="clens.RENPVA" id="CRENPVA" list="CdpvaList">
-                                                        <datalist id="CdpvaList">
-                                                            <option [value]="d.Name" *ngFor="let d of dataPVA">
+                                                            [(ngModel)]="clens.RENPVA" id="CRENPVA" list="CdpNSvaList">
+                                                        <datalist id="CdpNSvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPNVA">
                                                                 {{d.Name}} </option>
                                                         </datalist>
                                                     </div>
@@ -841,9 +841,9 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="CLENPVA"
-                                                            [(ngModel)]="clens.LENPVA" id="CLENPVA" list="CdpvaList">
-                                                        <datalist id="CdpvaList">
-                                                            <option [value]="d.Name" *ngFor="let d of dataPVA">
+                                                            [(ngModel)]="clens.LENPVA" id="CLENPVA" list="CdpNSvaList">
+                                                        <datalist id="CdpNSvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPNVA">
                                                                 {{d.Name}} </option>
                                                         </datalist>
                                                     </div>
