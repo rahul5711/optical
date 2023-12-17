@@ -200,6 +200,10 @@ module.exports = {
                 return res.send({ message: `Purchase Already exist from this InvoiceNo ${PurchaseMaster.InvoiceNo}` })
             }
 
+            if (doesExistInvoiceNo[0].SystemID !== 0) {
+                return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
+            }
+
             const purchaseDetail = JSON.parse(PurchaseDetail);
 
             if (purchaseDetail.length === 0) {
@@ -430,6 +434,10 @@ module.exports = {
                 return res.send({ message: "purchase doesnot exist from this id " })
             }
 
+            if (doesExist[0].SystemID !== 0) {
+                return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
+            }
+
 
             const [doesExistProduct] = await mysql2.pool.query(`select * from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and PurchaseID = '${Body.ID}'`)
 
@@ -469,6 +477,11 @@ module.exports = {
 
             if (!doesExist.length) {
                 return res.send({ message: "product doesnot exist from this id " })
+            }
+
+            // old software condition
+            if (doesExist[0].SystemID !== 0) {
+                return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
             }
 
             const [doesExistProductQty] = await mysql2.pool.query(`select * from barcodemasternew where Status = 1 and CompanyID = '${CompanyID}' and PurchaseDetailID = '${Body.ID}' and CurrentStatus = 'Available'`)
@@ -537,6 +550,10 @@ module.exports = {
 
             if (!doesExist.length) {
                 return res.send({ message: "product doesnot exist from this id " })
+            }
+
+            if (doesExist[0].SystemID !== 0) {
+                return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
             }
 
             const [doesCheckPayment] = await mysql2.pool.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${Body.PurchaseMaster.InvoiceNo}' and BillMasterID = ${Body.PurchaseMaster.ID}`)
@@ -616,6 +633,18 @@ module.exports = {
             }
 
             if (Body.PurchaseMaster.ID === null || Body.PurchaseMaster.InvoiceNo.trim() === '' || !Body.PurchaseMaster) return res.send({ message: "Invalid Query Data" })
+
+
+            const [doesExistPurchaseMaster] = await mysql2.pool.query(`select * from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and ID = ${Body.PurchaseMaster.ID}`)
+
+            if (!doesExistPurchaseMaster.length) {
+                return res.send({ message: "purchasemaster doesnot exist from this id " })
+            }
+
+            // old software condition
+            if (doesExistPurchaseMaster[0].SystemID !== 0) {
+                return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
+            }
 
             const [doesCheckPayment] = await mysql2.pool.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${Body.PurchaseMaster.InvoiceNo}' and BillMasterID = ${Body.PurchaseMaster.ID}`)
 

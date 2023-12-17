@@ -467,6 +467,11 @@ module.exports = {
 
             const [fetchBill] = await mysql2.pool.query(`select * from billmaster where CompanyID = ${CompanyID} and ID = ${bMasterID} and Status = 1 `)
 
+            // old software condition
+            if (fetchBill[0].SystemID !== 0) {
+                return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
+            }
+
             if (billDetailData.length && fetchBill[0].BillType === 0) {
                 return res.send({ success: false, message: "You can not add product in this invoice, because it is service invoice only" })
             }
@@ -1183,6 +1188,11 @@ module.exports = {
                 return res.send({ message: "bill doesnot exist from this id " })
             }
 
+            // old software condition
+            if (doesExist[0].SystemID !== 0) {
+                return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
+            }
+
             const [doesCheckLen] = await mysql2.pool.query(`select * from billdetail where CompanyID = ${CompanyID} and Status = 1 and BillID = ${ID}`)
 
             console.log(doesCheckLen.length, 'doesCheckLen')
@@ -1257,6 +1267,14 @@ module.exports = {
             if (billMaseterData.ShopID === null || billMaseterData.ShopID === undefined || billMaseterData.ShopID == 0 || billMaseterData.ShopID === "") return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.InvoiceNo === null || billMaseterData.InvoiceNo === undefined || billMaseterData.InvoiceNo == 0 || billMaseterData.InvoiceNo === "") return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.CustomerID === null || billMaseterData.CustomerID === undefined) return res.send({ message: "Invalid Query Data" })
+
+
+            const [fetchBill] = await mysql2.pool.query(`select * from billmaster where CompanyID = ${CompanyID} and ID = ${billMaseterData.ID} and Status = 1 `)
+
+            // old software condition
+            if (fetchBill[0].SystemID !== 0) {
+                return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
+            }
 
 
             let bMaster = {
@@ -1419,6 +1437,13 @@ module.exports = {
             if (billMaseterData.InvoiceNo === null || billMaseterData.InvoiceNo === undefined || billMaseterData.InvoiceNo == 0 || billMaseterData.InvoiceNo === "") return res.send({ message: "Invalid Query Data4" })
             if (billMaseterData.CustomerID === null || billMaseterData.CustomerID === undefined) return res.send({ message: "Invalid Query Data5" })
 
+
+            const [fetchBill] = await mysql2.pool.query(`select * from billmaster where CompanyID = ${CompanyID} and ID = ${billMaseterData.ID} and Status = 1 `)
+
+            // old software condition
+            if (fetchBill[0].SystemID !== 0) {
+                return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
+            }
 
             let bMaster = {
                 ID: billMaseterData.ID,
@@ -1584,6 +1609,12 @@ module.exports = {
 
             let bMasterID = billMaseterData.ID;
 
+            const [fetchBill] = await mysql2.pool.query(`select * from billmaster where CompanyID = ${CompanyID} and ID = ${bMasterID} and Status = 1 `)
+
+            // old software condition
+            if (fetchBill[0].SystemID !== 0) {
+                return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
+            }
 
             const [fetchComm] = await mysql2.pool.query(`select * from commissiondetail where BillMasterID = ${bMasterID} and CommissionMasterID != 0`)
 
