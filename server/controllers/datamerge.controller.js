@@ -1,11 +1,15 @@
 const createError = require('http-errors')
 const mysql2 = require('../database')
-
+const mysql = require('../olddb')
+var moment = require("moment");
+const { shopID, generateInvoiceNo, generateBillSno, generateCommission, updateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder, gstDetailBill, generateUniqueBarcode, generateInvoiceNoForService } = require('../helpers/helper_function')
 module.exports = {
     fetchSupplier: async (req, res, next) => {
+        const connection = await mysql.connection();
+
         try {
             const response = { data: null, success: true, message: "" }
-            const { newId, oldId } = req.body;
+            let { newId, oldId } = req.body;
 
             if (!newId || newId === undefined || newId === null) {
                 return res.send({ message: "Invalid Query Data" })
@@ -14,16 +18,20 @@ module.exports = {
                 return res.send({ message: "Invalid Query Data" })
             }
 
-            const LoggedOnUser = 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
-            const [datum] = await mysql2.old_pool.query(`select * from Supplier where CompanyID = ${oldId}`)
+            if (!CompanyID || CompanyID === 0 || CompanyID === undefined) return res.send({ message: "Invalid CompanyID Data" })
+            if (!LoggedOnUser || LoggedOnUser === 0 || LoggedOnUser === undefined) return res.send({ message: "Invalid LoggedOnUser Data" })
+
+            const datum = await connection.query(`select * from Supplier where CompanyID = ${oldId}`)
 
             if (datum) {
                 for (const data of datum) {
 
                     const [fetchNew] = await mysql2.pool.query(`select * from supplier where SystemID = '${oldId}-${data.ID}'`);
                     if (!fetchNew.length) {
-                        const [save] = await mysql2.pool.query(`insert into supplier (SystemID,Sno,Name, CompanyID,  MobileNo1, MobileNo2 , PhoneNo, Address,GSTNo, Email,Website ,CINNo,Fax,PhotoURL,ContactPerson,Remark,GSTType,DOB,Anniversary, Status,CreatedBy,CreatedOn) values ('${oldId}-${data.ID}','${data.Sno}','${data.Name}', ${newId}, '${data.MobileNo1}', '${data.MobileNo2}', '${data.PhoneNo}','${data.Address}','${data.GSTNo}','${data.Email}','${data.Website}','${data.CINNo}','${data.Fax}','${data.PhotoURL}','${data.ContactPerson}','${data.Remark}','','${data.DOB}','${data.Anniversary}',${data.Status},${LoggedOnUser}, now())`)
+                        const [save] = await mysql2.pool.query(`insert into supplier (SystemID,Sno,Name, CompanyID,  MobileNo1, MobileNo2 , PhoneNo, Address,GSTNo, Email,Website ,CINNo,Fax,PhotoURL,ContactPerson,Remark,GSTType,DOB,Anniversary, Status,CreatedBy,CreatedOn) values ('${oldId}-${data.ID}','${data.Sno}','${data.Name}', ${newId}, '${data.MobileNo1}', '${data.MobileNo2}', '${data.PhoneNo}','${data.Address}','${data.GSTNo}','${data.Email}','${data.Website}','${data.CINNo}','${data.Fax}','${data.PhotoURL}','${data.ContactPerson}','${data.Remark}','','${data.DOB}','${data.Anniversary}',${data.Status},${LoggedOnUser}, '${data.CreatedOn}')`)
                     }
                 }
 
@@ -36,20 +44,27 @@ module.exports = {
         }
     },
     fetchShop: async (req, res, next) => {
+        const connection = await mysql.connection();
+
         try {
             const response = { data: null, success: true, message: "" }
-            const { newId, oldId } = req.body;
+            let { newId, oldId } = req.body;
 
-            if (!newId || newId === undefined || newId === null) {
-                return res.send({ message: "Invalid Query Data" })
-            }
+
             if (!oldId || oldId === undefined || oldId === null) {
                 return res.send({ message: "Invalid Query Data" })
             }
 
-            const LoggedOnUser = 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
-            const [datum] = await mysql2.old_pool.query(`select * from Shop where CompanyID = ${oldId}`)
+            if (!CompanyID || CompanyID === 0 || CompanyID === undefined) return res.send({ message: "Invalid CompanyID Data" })
+            if (!LoggedOnUser || LoggedOnUser === 0 || LoggedOnUser === undefined) return res.send({ message: "Invalid LoggedOnUser Data" })
+            newId = CompanyID;
+            if (!newId || newId === undefined || newId === null) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+            const datum = await connection.query(`select * from Shop where CompanyID = ${oldId}`)
 
             if (datum) {
                 for (const data of datum) {
@@ -57,7 +72,7 @@ module.exports = {
                     const [fetchNew] = await mysql2.pool.query(`select * from shop where SystemID = '${oldId}-${data.ID}'`);
 
                     if (!fetchNew.length) {
-                        const [save] = await mysql2.pool.query(`insert into shop (SystemID,Sno,CompanyID,Name, AreaName,  Address,  MobileNo1, MobileNo2 , PhoneNo, Email, Website, GSTNo,CINNo, BarcodeName, Discount, GSTnumber, LogoURL, ShopTiming, WelcomeNote, Status,CreatedBy,CreatedOn,HSNCode,CustGSTNo,Rate,Discounts,Tax, SubTotal,Total,BillShopWise,RetailBill,WholesaleBill,BillName,AdminDiscount,WaterMark,ShopStatus ) values ('${oldId}-${data.ID}',${data.Sno},${newId},'${data.Name}', '${data.AreaName}', '${data.Address}', '${data.MobileNo1}','${data.MobileNo1}','${data.PhoneNo}','${data.Email}','${data.Website}','${data.GSTNo}','${data.CINNo}','${data.BarcodeName}','${data.Discount}','${data.GSTnumber}','${data.LogoURL}','${data.ShopTiming}','${data.WelcomeNote}',${data.Status},${LoggedOnUser}, now(),'${data.HSNCode}','${data.CustGSTNo}','${data.Rate}','${data.Discounts}','${data.Tax}','${data.SubTotal}','${data.Total}','${data.BillShopWise}','${data.RetailBill}','${data.WholesaleBill}','${data.BillName}','${data.AdminDiscount}','${data.WaterMark}',${data.ShopStatus})`)
+                        const [save] = await mysql2.pool.query(`insert into shop (SystemID,Sno,CompanyID,Name, AreaName,  Address,  MobileNo1, MobileNo2 , PhoneNo, Email, Website, GSTNo,CINNo, BarcodeName, Discount, GSTnumber, LogoURL, ShopTiming, WelcomeNote, Status,CreatedBy,CreatedOn,HSNCode,CustGSTNo,Rate,Discounts,Tax, SubTotal,Total,BillShopWise,RetailBill,WholesaleBill,BillName,AdminDiscount,WaterMark,ShopStatus ) values ('${oldId}-${data.ID}',${data.Sno},${newId},'${data.Name}', '${data.AreaName}', '${data.Address}', '${data.MobileNo1}','${data.MobileNo1}','${data.PhoneNo}','${data.Email}','${data.Website}','${data.GSTNo}','${data.CINNo}','${data.BarcodeName}','${data.Discount}','${data.GSTnumber}','${data.LogoURL}','${data.ShopTiming}','${data.WelcomeNote}',${data.Status},${LoggedOnUser}, '${data.CreatedOn}','${data.HSNCode}','${data.CustGSTNo}','${data.Rate}','${data.Discounts}','${data.Tax}','${data.SubTotal}','${data.Total}','${data.BillShopWise}','${data.RetailBill}','${data.WholesaleBill}','${data.BillName}','${data.AdminDiscount}','${data.WaterMark}',${data.ShopStatus})`)
                     }
                 }
 
@@ -65,29 +80,36 @@ module.exports = {
             response.message = "shop fetch sucessfully"
             return res.send(response);
         } catch (err) {
+            console.log(err);
             next(err)
         }
     },
     fetchMaster: async (req, res, next) => {
+        const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
-            const { newId, oldId } = req.body;
+            let { newId, oldId } = req.body;
 
-            if (!newId || newId === undefined || newId === null) {
-                return res.send({ message: "Invalid Query Data" })
-            }
+
             if (!oldId || oldId === undefined || oldId === null) {
                 return res.send({ message: "Invalid Query Data" })
             }
 
-            const LoggedOnUser = 0;
+            console.log(req.user, 'user');
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
-            const [datum] = await mysql2.old_pool.query(`select * from PurchaseMaster where CompanyID = ${oldId} and Status = 1 and PStatus = 1`)
+            if (!CompanyID || CompanyID === 0 || CompanyID === undefined) return res.send({ message: "Invalid CompanyID Data" })
+            newId = CompanyID;
+            if (!newId || newId === undefined || newId === null) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+            if (!LoggedOnUser || LoggedOnUser === 0 || LoggedOnUser === undefined) return res.send({ message: "Invalid LoggedOnUser Data" })
+            const datum = await connection.query(`select * from PurchaseMaster where CompanyID = ${oldId} and Status = 1`)
 
             if (datum) {
                 for (const data of datum) {
-
-                    const [fetchNew] = await mysql2.pool.query(`select * from purchasemasternew where SystemID = '${oldId}-${data.ID}'`);
+                    const [fetchNew] = await mysql2.pool.query(`select * from purchasemasternew where SystemID = '${oldId}-${data.ID}' and CompanyID = ${newId}`);
 
                     const [fetchNewSupp] = await mysql2.pool.query(`select * from supplier where SystemID = '${oldId}-${data.SupplierID}'`);
 
@@ -103,16 +125,19 @@ module.exports = {
 
                     if (!fetchNew.length) {
 
-                        const [save] = await mysql2.pool.query(`insert into purchasemasternew(SystemID, SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values('${oldId}-${data.ID}',${fetchNewSupp[0].ID},${newId},${fetchNewShop[0].ID},'${data.PurchaseDate}','${data.PaymentStatus}','${data.InvoiceNo}','${data.GSTNo}',${data.Quantity},${data.SubTotal},${data.DiscountAmount},${data.GSTAmount},${data.TotalAmount},1,0,${data.DueAmount}, ${LoggedOnUser}, now())`);
+                        const [save] = await mysql2.pool.query(`insert into purchasemasternew(SystemID, SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values('${oldId}-${data.ID}',${fetchNewSupp[0].ID},${newId},${fetchNewShop[0].ID},'${moment(data.PurchaseDate).format('YYYY-MM-DD')}','${data.PaymentStatus}','${data.InvoiceNo}','${data.GSTNo}',${data.Quantity},${data.SubTotal},${data.DiscountAmount},${data.GSTAmount},${data.TotalAmount},1,0,${data.DueAmount}, ${LoggedOnUser}, '${data.CreatedOn}')`);
 
 
-                        const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${fetchNewSupp[0].ID}, ${newId}, ${fetchNewShop[0].ID}, 'Supplier','Debit',now(), 'Payment Initiated', '', '', ${data.TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
+                        const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${fetchNewSupp[0].ID}, ${newId}, ${fetchNewShop[0].ID}, 'Supplier','Debit','${data.CreatedOn}', 'Payment Initiated', '', '', ${data.TotalAmount}, 0, '',1,${LoggedOnUser}, '${data.CreatedOn}')`)
 
-                        const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${data.InvoiceNo}',${save.insertId},${fetchNewSupp[0].ID},${newId},0,${data.TotalAmount},'Vendor','Debit',1,${LoggedOnUser}, now())`)
+                        const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${data.InvoiceNo}',${save.insertId},${fetchNewSupp[0].ID},${newId},0,${data.TotalAmount},'Vendor','Debit',1,${LoggedOnUser}, '${data.CreatedOn}')`)
 
-                        const [savePaymentMaster1] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${fetchNewSupp[0].ID}, ${newId}, ${fetchNewShop[0].ID}, 'Supplier','Debit',now(), 'Old Software Payment', '', '', ${data.TotalAmount}, ${data.TotalAmount - data.DueAmount}, '',1,${LoggedOnUser}, now())`)
+                        if (data.TotalAmount - data.DueAmount > 0) {
+                            const [savePaymentMaster1] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${fetchNewSupp[0].ID}, ${newId}, ${fetchNewShop[0].ID}, 'Supplier','Debit','${data.CreatedOn}', 'Old Software Payment', '', '', ${data.TotalAmount}, ${data.TotalAmount - data.DueAmount}, '',1,${LoggedOnUser}, '${data.CreatedOn}')`)
 
-                        const [savePaymentDetail1] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster1.insertId},'${data.InvoiceNo}',${save.insertId},${fetchNewSupp[0].ID},${newId},${data.TotalAmount - data.DueAmount},${data.DueAmount},'Vendor','Debit',1,${LoggedOnUser}, now())`)
+                            const [savePaymentDetail1] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster1.insertId},'${data.InvoiceNo}',${save.insertId},${fetchNewSupp[0].ID},${newId},${data.TotalAmount - data.DueAmount},${data.DueAmount},'Vendor','Debit',1,${LoggedOnUser}, '${data.CreatedOn}')`)
+                        }
+
                     }
                 }
 
@@ -120,6 +145,326 @@ module.exports = {
             response.message = "purchase master fetch sucessfully"
             return res.send(response);
         } catch (err) {
+            next(err)
+        }
+    },
+    fetchPurchaseDetail: async (req, res, next) => {
+        const connection = await mysql.connection();
+
+        try {
+            const response = { data: null, success: true, message: "" }
+            let { newId, oldId } = req.body;
+
+
+            if (!oldId || oldId === undefined || oldId === null) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (!CompanyID || CompanyID === 0 || CompanyID === undefined) return res.send({ message: "Invalid CompanyID Data" })
+            newId = CompanyID;
+            if (!newId || newId === undefined || newId === null) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+            if (!LoggedOnUser || LoggedOnUser === 0 || LoggedOnUser === undefined) return res.send({ message: "Invalid LoggedOnUser Data" })
+            const datum = await connection.query(`select * from PurchaseDetail where CompanyID = ${oldId} and PurchaseID != '-1' and PurchaseID != '0' and Status = 1`)
+
+            console.log(datum);
+
+            if (datum) {
+                for (const item of datum) {
+                    const systemID = `${item.CompanyID}-${item.PurchaseID}`
+                    let productTypeID = 0
+
+                    if (item.ProductTypeID !== 0 && item.ProductTypeID !== undefined && item.ProductTypeID !== null) {
+                        const [fetchProductTypeID] = await mysql2.pool.query(`select * from product where CompanyID = ${newId} and SystemID = '${oldId}-${item.ProductTypeID}'`)
+
+                        productTypeID = fetchProductTypeID[0].ID
+                    } else {
+                        const [fetchProductTypeID] = await mysql2.pool.query(`select * from product where CompanyID = ${newId} and Name = '${data.ProductTypeName}'`)
+
+                        if (fetchProductTypeID.length) {
+                            console.log("fetchProductTypeID", fetchProductTypeID);
+                            productTypeID = fetchProductTypeID[0].ID
+                        } else {
+                            productTypeID = 0
+                        }
+                    }
+
+                    const [fetch] = await mysql2.pool.query(`select * from purchasemasternew where CompanyID = ${newId} and SystemID = '${systemID}'`)
+
+
+                    const [savePurchaseDetail] = await mysql2.pool.query(`insert into purchasedetailnew(SystemID,PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values('${systemID}',${fetch[0].ID},${newId},'${item.ProductName}',${productTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.MultipleBarCode},${item.WholeSale},'${Number(item.BaseBarCode) * 1000}',${item.Ledger},1,'${Number(item.BaseBarCode) * 1000}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},'${item.CreatedOn}')`)
+
+
+                    //  save barcode
+
+                    const createDate = item.CreatedOn
+
+                    let [detailDataForBarCode] = await mysql2.pool.query(`select * from purchasedetailnew where Status = 1 and ID = ${savePurchaseDetail.insertId}`)
+
+                    if (detailDataForBarCode.length) {
+                        for (const item of detailDataForBarCode) {
+                            const barcode = Number(item.BaseBarCode)
+                            let count = 0;
+                            count = item.Quantity;
+                            for (j = 0; j < count; j++) {
+                                const [saveBarcode] = await mysql2.pool.query(`insert into barcodemasternew(SystemID,CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn, FitterStatus)values('${systemID}',${newId},${fetch[0].ShopID},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}','${createDate}','Available', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, '${createDate}', 'None')`)
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            response.message = "purchase detail fetch sucessfully"
+            return res.send(response);
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
+    fetchBillMaster: async (req, res, next) => {
+        const connection = await mysql.connection();
+
+        try {
+            const response = { data: null, success: true, message: "" }
+            let { newId, oldId } = req.body;
+
+
+            if (!oldId || oldId === undefined || oldId === null) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (!CompanyID || CompanyID === 0 || CompanyID === undefined) return res.send({ message: "Invalid CompanyID Data" })
+            newId = CompanyID;
+            if (!newId || newId === undefined || newId === null) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+            if (!LoggedOnUser || LoggedOnUser === 0 || LoggedOnUser === undefined) return res.send({ message: "Invalid LoggedOnUser Data" })
+            const datum = await connection.query(`select * from BillMaster where CompanyID = ${oldId} and Status = 1`)
+
+            console.log(datum);
+
+            if (datum) {
+                for (const data of datum) {
+                    const [fetchNew] = await mysql2.pool.query(`select * from billmaster where SystemID = '${oldId}-${data.ID}' and CompanyID = ${newId}`);
+
+                    const [fetchNewShop] = await mysql2.pool.query(`select * from shop where SystemID = '${oldId}-${data.ShopID}'`);
+
+                    if (!fetchNewShop.length) {
+                        return res.send({ message: `Shop Not Found From ID ${oldId}-${data.ShopID}` })
+                    }
+
+                    let [fetchNewCustomer] = await mysql2.pool.query(`select * from customer where SystemID = '${newId}-${data.CustomerID}' and CompanyID = ${newId}`);
+
+                    if (!fetchNewCustomer.length) {
+
+                        const customer_old_db = await connection.query(`select * from Customer where ID = ${data.CustomerID}`);
+                        const cus = customer_old_db[0]
+
+                        if (cus) {
+                            for (const datum of customer_old_db) {
+
+                                const [customerCount] = await mysql2.pool.query(`select * from customer where CompanyID = ${newId}`)
+
+                                let Idd = customerCount.length
+
+                                let Id = Idd + 1
+                                datum.Idd = Id
+
+                                let remark = datum.Remarks.toString().replace(/[\r\n]/gm, '');
+                                let addr = datum.Address.toString().replace(/[\r\n]/gm, '');
+
+                                const [customer] = await mysql2.pool.query(`insert into customer(SystemID,ShopID,Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Category,Status,CreatedBy,CreatedOn,VisitDate) values('${newId}-${datum.ID}',${fetchNewShop[0].ID},'${datum.Idd}', '${datum.Name}','${newId}-${datum.ID}',${newId},'${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${addr}','${datum.GSTNo}','${datum.Email}','${datum.PhotoURL}',${datum.DOB},'${datum.RefferedByDoc}','${datum.Age}',${datum.Anniversary},'${datum.ReferenceType}','${datum.Gender}','${datum.Other}',' ${remark.toString()} ','${datum.Category}',1,'${LoggedOnUser}','${datum.CreatedOn}',${datum.VisitDate})`);
+
+                            }
+
+                           [fetchNewCustomer] = await mysql2.pool.query(`select * from customer where SystemID = '${newId}-${data.CustomerID}' and CompanyID = ${newId}`);
+                        } else {
+                            return res.send({ message: `Customer Not Found From ID ${newId}-${data.CustomerID}` })
+                        }
+
+
+                    }
+
+
+
+                    if (!fetchNew.length) {
+                        // save Bill master data
+
+                        const systemID = `${data.CompanyID}-${data.ID}`
+
+                        data.Sno = await generateBillSno(newId, fetchNewShop[0].ID,)
+
+                        let [bMaster] = await mysql2.pool.query(
+                            `insert into billmaster (SystemID,CustomerID,CompanyID, Sno,ShopID,BillDate, DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee, BillType, RoundOff, AddlDiscountPercentage, ProductStatus) values ('${systemID}',${fetchNewCustomer[0].ID}, ${newId},'${data.Sno}', ${fetchNewShop[0].ID}, '${data.BillDate}','${data.DeliveryDate}', '${data.PaymentStatus}',  '${data.InvoiceNo}', '${data.GSTNo}', ${data.Quantity}, ${data.SubTotal}, ${data.DiscountAmount}, ${data.GSTAmount}, ${data.AddlDiscount}, ${data.TotalAmount - data.AddlDiscount}, ${data.DueAmount}, 1, ${LoggedOnUser}, '${data.CreatedOn}' , '${data.CreatedOn}', 0, '${data.TrayNo}', ${LoggedOnUser}, 1, ${data.RoundOff ? Number(data.RoundOff) : 0}, ${data.AddlDiscountPercentage ? Number(data.AddlDiscountPercentage) : 0}, '${data.ProductStatus}')`
+                        );
+
+
+                        // payment inititated
+
+            const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${fetchNewCustomer[0].ID}, ${newId}, ${fetchNewShop[0].ID}, 'Customer','Credit','${data.CreatedOn}', 'Payment Initiated', '', '', ${data.TotalAmount - data.AddlDiscount}, 0, '',1,${LoggedOnUser}, '${data.CreatedOn}')`)
+
+            const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${data.InvoiceNo}',${bMaster.insertId},${fetchNewCustomer[0].ID},${newId},0,${data.TotalAmount - data.AddlDiscount},'Customer','Credit',1,${LoggedOnUser}, '${data.CreatedOn}')`)
+
+            if (data.TotalAmount - data.AddlDiscount - data.DueAmount > 0) {
+            const [savePaymentMaster1] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${fetchNewCustomer[0].ID}, ${newId}, ${fetchNewShop[0].ID}, 'Customer','Credit','${data.CreatedOn}', 'Old Software Payment', '', '', ${data.TotalAmount - data.AddlDiscount}, ${data.TotalAmount - data.AddlDiscount - data.DueAmount}, '',1,${LoggedOnUser}, '${data.CreatedOn}')`)
+
+            const [savePaymentDetail1] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster1.insertId},'${data.InvoiceNo}',${bMaster.insertId},${fetchNewCustomer[0].ID},${newId},${data.TotalAmount - data.AddlDiscount - data.DueAmount},${data.DueAmount},'Customer','Credit',1,${LoggedOnUser}, '${data.CreatedOn}')`)
+
+            }
+
+
+                    }
+                }
+
+            }
+
+            response.message = "billmaster fetch sucessfully"
+            return res.send(response);
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
+    fetchBillDetail: async (req, res, next) => {
+        const connection = await mysql.connection();
+
+        try {
+            const response = { data: null, success: true, message: "" }
+            let { newId, oldId } = req.body;
+
+
+            if (!oldId || oldId === undefined || oldId === null) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (!CompanyID || CompanyID === 0 || CompanyID === undefined) return res.send({ message: "Invalid CompanyID Data" })
+            newId = CompanyID;
+            if (!newId || newId === undefined || newId === null) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+            if (!LoggedOnUser || LoggedOnUser === 0 || LoggedOnUser === undefined) return res.send({ message: "Invalid LoggedOnUser Data" })
+            const datum = await connection.query(`select * from BillDetail where CompanyID = ${oldId} and PreOrder = 0 and Status = 1 and Quantity != 0`)
+
+            console.log(datum);
+
+            if (datum) {
+                for (let data of datum) {
+
+                    if (data.MeasurementID === null || data.MeasurementID === undefined || data.MeasurementID === "null" || data.MeasurementID === "undefined") {
+                        data.MeasurementID = ''
+                    }
+                    if (data.Option === null || data.Option === undefined || data.Option === "null" || data.Option === "undefined") {
+                        data.Option = ''
+                    }
+                    if (data.Family === null || data.Family === undefined || data.Family === "null" || data.Family === "undefined") {
+                        data.Family = ''
+                    }
+                    let billID = 0
+                    let productTypeID = 0
+                    let purchasePrice = 0
+                    const systemID = `${data.CompanyID}-${data.BillID}`
+                    const [fetchBillMaster] = await mysql2.pool.query(`select * from billmaster where CompanyID = ${newId} and SystemID = '${oldId}-${data.BillID}'`)
+
+                    if (!fetchBillMaster.length) {
+                        console.log("Bill Master Not Found From ID ========>", data);
+                        return res.send({ message: `Bill Master Not Found From ID ${oldId}-${data.BillID}` })
+                    }
+
+                    billID = fetchBillMaster[0].ID
+
+                    if (data.ProductTypeID !== 0 && data.ProductTypeID !== undefined && data.ProductTypeID !== null) {
+                        const [fetchProductTypeID] = await mysql2.pool.query(`select * from product where CompanyID = ${newId} and SystemID = '${oldId}-${data.ProductTypeID}'`)
+
+                        productTypeID = fetchProductTypeID[0].ID
+                    } else {
+                        const [fetchProductTypeID] = await mysql2.pool.query(`select * from product where CompanyID = ${newId} and Name = '${data.ProductTypeName}'`)
+
+                        if (fetchProductTypeID.length) {
+                            console.log("fetchProductTypeID", fetchProductTypeID);
+                            productTypeID = fetchProductTypeID[0].ID
+                        } else {
+                            productTypeID = 0
+                        }
+                    }
+
+
+                    if (data.Manual === 0 && data.PreOrder === 0) {
+                        // stock
+
+                        const [fetchPurchaseDetail] = await mysql2.pool.query(`select * from purchasedetailnew where CompanyID = ${newId} and BaseBarCode = '${data.Barcode}' limit 1`)
+
+                        if (!fetchPurchaseDetail.length) {
+                            console.log("Purchase Detail Not Found From BaseBarCode ===>",data);
+                            return res.send({ message: `Purchase Detail Not Found From BaseBarCode ${data.Barcode}` })
+                        }
+
+                        purchasePrice = fetchPurchaseDetail[0].RetailPrice
+
+                        let [result] = await mysql2.pool.query(
+                            `insert into billdetail (SystemID,BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values ('${systemID}',${billID}, ${newId}, ${productTypeID},'${data.ProductTypeName}','${data.ProductName}', '${data.HSNCode}',${data.UnitPrice},${purchasePrice},${data.Quantity},${data.SubTotal}, ${data.DiscountPercentage},${data.DiscountAmount},${data.GSTPercentage},${data.GSTAmount},'${data.GSTType}',${data.TotalAmount},${data.WholeSale},0, 0, '${data.Barcode}' ,'${data.Barcode}',1,'${data.MeasurementID ? data.MeasurementID : ''}','${data.Option ? data.Option : ''}','${data.Family ? data.Family : ''}', ${LoggedOnUser}, '${data.CreatedOn}' , 0 , '${data.Remark}', '${data.Warranty ? data.Warranty : ''}', '${data.ProductExpDate}')`
+                        );
+
+                        const bMasterID = result.insertId;
+                        let [detailDataForBarCode] = await mysql2.pool.query(
+                            `select * from billdetail where ID = ${bMasterID} and CompanyID = ${newId}`
+                        );
+
+                        let [selectRows1] = await mysql2.pool.query(`SELECT * FROM barcodemasternew WHERE CompanyID = ${newId} AND ShopID = ${fetchBillMaster[0].ShopID} AND CurrentStatus = "Available" AND Status = 1 AND Barcode = '${detailDataForBarCode[0].Barcode}' LIMIT ${detailDataForBarCode[0].Quantity}`);
+                        for(const ele1 of selectRows1) {
+                            let [resultn] = await mysql2.pool.query(`Update barcodemasternew set CurrentStatus = "Sold" , MeasurementID = '${data.MeasurementID}', Family = '${data.Family}',Optionsss = '${data.Optionsss}', BillDetailID = ${bMasterID}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${data.CreatedOn}' Where ID = ${ele1.ID}`);
+                        }
+                        // await Promise.all(
+                        //     selectRows1.map(async (ele1) => {
+                        //         let [resultn] = await mysql2.pool.query(`Update barcodemasternew set CurrentStatus = "Sold" , MeasurementID = '${data.MeasurementID}', Family = '${data.Family}',Optionsss = '${data.Optionsss}', BillDetailID = ${bMasterID}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${data.CreatedOn}' Where ID = ${ele1.ID}`);
+                        //     })
+                        // );
+
+                    } else if(data.Manual === 1 && data.PreOrder === 0) {
+                        // manual
+                        purchasePrice = 0
+
+                        data.BaseBarCode = await generateBarcode(newId, 'MB')
+                        data.Barcode = Number(data.BaseBarCode)
+                        let [result] = await mysql2.pool.query(
+                            `insert into billdetail (SystemID,BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values ('${systemID}',${billID}, ${newId}, ${productTypeID},'${data.ProductTypeName}','${data.ProductName}', '${data.HSNCode}',${data.UnitPrice},${purchasePrice},${data.Quantity},${data.SubTotal}, ${data.DiscountPercentage},${data.DiscountAmount},${data.GSTPercentage},${data.GSTAmount},'${data.GSTType}',${data.TotalAmount},${data.WholeSale},1, 0, '${data.BaseBarCode}' ,'${data.Barcode}',1,'${data.MeasurementID ? data.MeasurementID : ''}','${data.Option ? data.Option : ''}','${data.Family ? data.Family : ''}', ${LoggedOnUser}, '${data.CreatedOn}' , 0, '${data.Remark ? data.Remark : ''}', '${data.Warranty ? data.Warranty : ''}', '${data.ProductExpDate}')`
+                        );
+
+
+                        const bMasterID = result.insertId;
+                        let [detailDataForBarCode] = await mysql2.pool.query(
+                            `select * from billdetail where BillID = ${billID} and CompanyID = ${newId}`
+                        );
+
+                        console.log("detailDataForBarCode =======>",detailDataForBarCode);
+
+                        let count = detailDataForBarCode[0].Quantity;
+                        let j = 0;
+                        for (j = 0; j < count; j++) {
+                            let systemID = `${data.CompanyID}-${bMasterID}`
+                            const [result] = await mysql2.pool.query(`INSERT INTO barcodemasternew (SystemID,CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn, AvailableDate, GSTType, GSTPercentage, PurchaseDetailID,RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,PreOrder, TransferStatus, TransferToShop, FitterStatus) VALUES ('${systemID}',${newId}, ${fetchBillMaster[0].ShopID},${bMasterID},${data.BaseBarCode}, 'Not Available','${data.MeasurementID ? data.MeasurementID : ''}','${data.Option ? data.Option : ''}','${data.Family ? data.Family : ''}', 1,${LoggedOnUser}, '${data.CreatedOn}' , '${data.CreatedOn}', '${detailDataForBarCode[0].GSTType}',${detailDataForBarCode[0].GSTPercentage}, 0, 0, 0, 0, ${detailDataForBarCode[0].WholeSale}, 0,0,0,'',0, 'None')`);
+                        }
+
+                    }
+
+                }
+
+            }
+
+            response.message = "bill detail fetch sucessfully"
+            return res.send(response);
+        } catch (err) {
+            console.log(err);
             next(err)
         }
     },
