@@ -388,7 +388,7 @@ module.exports = {
 
                         productTypeID = fetchProductTypeID[0].ID
                     } else {
-                        const [fetchProductTypeID] = await mysql2.pool.query(`select * from product where CompanyID = ${newId} and Name = '${data.ProductTypeName}'`)
+                        const [fetchProductTypeID] = await mysql2.pool.query(`select * from product where Status = 1 and CompanyID = ${newId} and Name = '${data.ProductTypeName}'`)
 
                         if (fetchProductTypeID.length) {
                             console.log("fetchProductTypeID", fetchProductTypeID);
