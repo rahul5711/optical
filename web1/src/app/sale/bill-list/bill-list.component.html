@@ -255,10 +255,10 @@
                     </td>
                     <td *ngIf="!data.UpdateMode" class="text-center">{{data.PaymentMode}} </td>
                     <td
-                      *ngIf="(data.UpdateMode && data.PaymentMode === 'Customer Credit' )|| (data.UpdateMode && data.PaymentMode === 'Payment Initiated')|| (data.UpdateMode && data.PaymentMode === 'Customer Return')"
+                      *ngIf="(data.UpdateMode && data.PaymentMode === 'Customer Credit' )|| (data.UpdateMode && data.PaymentMode === 'Payment Initiated') || (data.UpdateMode && data.PaymentMode === 'Old Software Payment') || (data.UpdateMode && data.PaymentMode === 'Customer Return')"
                       class="text-center">{{data.PaymentMode}}</td>
                     <td
-                      *ngIf="(data.UpdateMode && data.PaymentMode !== 'Customer Credit' && data.PaymentMode !== 'Payment Initiated' && data.PaymentMode !== 'Customer Return')"
+                      *ngIf="(data.UpdateMode && data.PaymentMode !== 'Customer Credit' && data.PaymentMode !== 'Payment Initiated' && data.PaymentMode !== 'Old Software Payment' && data.PaymentMode !== 'Customer Return')"
                       style=" text-align: center;">
                       <select style="height: 26px;" name="PaymentMode" [(ngModel)]="data.PaymentMode" #name="ngModel"
                         [ngModelOptions]="{standalone: true}" name="data.PaymentMode{{i}}"
