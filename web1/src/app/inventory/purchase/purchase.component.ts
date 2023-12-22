@@ -923,14 +923,17 @@ export class PurchaseComponent implements OnInit {
       let Qty = 0;
 
       this.barcodeListt.forEach((ele: any) => {
-        if (ele.Status !== 0) {
+        if (ele.Status !== 0 && ele.ID != null && ele.BaseBarCode != null) {
           Qty += ele.Quantity;
           // Create a copy of 'ele' for each quantity and push it to 'tempItem'
           for (let i = 0; i < ele.Quantity; i++) {
             tempItem.push({ ...ele }); // Copy 'ele' using the spread operator
           }
+        }else{
+            alert('This Page Refresh.')
         }
       });
+
       const subs: Subscription = this.purchaseService.AllPrintBarcode(tempItem).subscribe({
         next: (res: any) => {
           if (res != '') {
