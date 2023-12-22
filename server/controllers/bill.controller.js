@@ -1810,9 +1810,8 @@ module.exports = {
 
             let BillFormat = ''
             BillFormat = printdata.CompanySetting.BillFormat;
-
             let fileName = "";
-            const file = 'Bill' + '-' + printdata.customer.ID + '-'  + CompanyID + ".pdf";
+            const file = 'Bill' + '-' + printdata.billMaster.ID + '-'  + CompanyID + ".pdf";
             const formatName = BillFormat;
             fileName = "uploads/" + file;
 
