@@ -474,25 +474,26 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
             let { newId, oldId } = req.body;
-
-            if (!newId || newId === undefined || newId === null) {
-                return res.send({ message: "Invalid Query Data" })
-            }
             if (!oldId || oldId === undefined || oldId === null) {
                 return res.send({ message: "Invalid Query Data" })
             }
-
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
             if (!CompanyID || CompanyID === 0 || CompanyID === undefined) return res.send({ message: "Invalid CompanyID Data" })
+
+            newId = CompanyID;
+
+            if (!newId || newId === undefined || newId === null) {
+                return res.send({ message: "Invalid Query Data" })
+            }
             if (!LoggedOnUser || LoggedOnUser === 0 || LoggedOnUser === undefined) return res.send({ message: "Invalid LoggedOnUser Data" })
 
-            const datum = await connection.query(`select * from ChargeMaster where CompanyID = ${oldId}`)
+            const datum = await connection.query(`select * from ChargerMaster where CompanyID = ${oldId}`)
 
             if (datum) {
                 for (const Body of datum) {
-                    const [saveData] = await mysql2.pool.query(`insert into chargermaster (SystemID,CompanyID, Name, Description, Price,  GSTPercentage, GSTAmount, GSTType, TotalAmount, Status, CreatedBy , CreatedOn ) values ('${oldId}-${Body.ID}',${newId},'${Body.Name}','${Body.Description}', ${Body.Price}, ${Body.GSTPercentage},${Body.GSTAmount},'${Body.GSTType}',${Body.TotalAmount}, ${data.Status}, ${LoggedOnUser}, '${data.CreatedOn}')`)
+                    const [saveData] = await mysql2.pool.query(`insert into chargermaster (SystemID,CompanyID, Name, Description, Price,  GSTPercentage, GSTAmount, GSTType, TotalAmount, Status, CreatedBy , CreatedOn ) values ('${oldId}-${Body.ID}',${newId},'${Body.Name}','${Body.Description}', ${Body.Price}, ${Body.GSTPercentage},${Body.GSTAmount},'${Body.GSTType}',${Body.TotalAmount}, ${Body.Status}, ${LoggedOnUser}, '${Body.CreatedOn}')`)
                 }
 
             }
@@ -539,13 +540,13 @@ module.exports = {
                        return res.send({success: false, message: `purchase master not found from '${item.CompanyID}'-'${item.PurchaseID}'`})
                     }
 
-                    const [fetchChargeType] = await mysql2.pool.query(`select * from chargemaster where CompanyID = ${newId} and SystemID = '${item.CompanyID}-${item.ChargeType}'`)
+                    const [fetchChargeType] = await mysql2.pool.query(`select * from chargermaster where CompanyID = ${newId} and SystemID = '${item.CompanyID}-${item.ChargeType}'`)
 
                     if (!fetchChargeType.length) {
                         return res.send({success: false, message: `charge master not found from '${item.CompanyID}'-'${item.ChargeType}'`})
                     }
 
-                    const [saveCharge] = await mysql2.pool.query(`insert into purchasecharge (SystemID,PurchaseID, ChargeType,CompanyID,Description, Amount, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn ) values ('${oldId}-${item.ID}',${fetch[0].ID}, '${fetchChargeType[0].ID}', ${CompanyID}, '${item.Description}', ${item.Price}, ${item.GSTPercentage}, ${item.GSTAmount}, '${item.GSTType}', ${item.TotalAmount},${item.Status}, ${LoggedOnUser}, '${item.CreatedOn}')`)
+                    const [saveCharge] = await mysql2.pool.query(`insert into purchasecharge (SystemID,PurchaseID, ChargeType,CompanyID,Description, Amount, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn ) values ('${oldId}-${item.ID}',${fetch[0].ID}, '${fetchChargeType[0].ID}', ${CompanyID}, '${item.Description}', ${item.Amount}, ${item.GSTPercentage}, ${item.GSTAmount}, '${item.GSTType}', ${item.TotalAmount},${item.Status}, ${LoggedOnUser}, '${item.CreatedOn}')`)
                 }
 
             }
@@ -563,9 +564,6 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             let { newId, oldId } = req.body;
 
-            if (!newId || newId === undefined || newId === null) {
-                return res.send({ message: "Invalid Query Data" })
-            }
             if (!oldId || oldId === undefined || oldId === null) {
                 return res.send({ message: "Invalid Query Data" })
             }
@@ -574,13 +572,20 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
             if (!CompanyID || CompanyID === 0 || CompanyID === undefined) return res.send({ message: "Invalid CompanyID Data" })
+
+            newId = CompanyID;
+
+            if (!newId || newId === undefined || newId === null) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+
             if (!LoggedOnUser || LoggedOnUser === 0 || LoggedOnUser === undefined) return res.send({ message: "Invalid LoggedOnUser Data" })
 
             const datum = await connection.query(`select * from ServiceMaster where CompanyID = ${oldId}`)
 
             if (datum) {
                 for (const Body of datum) {
-                    const [saveData] = await mysql2.pool.query(`insert into servicemaster (SystemID, CompanyID, Name, Description,Cost, Price, SubTotal,  GSTPercentage, GSTAmount, GSTType, TotalAmount, Status, CreatedBy , CreatedOn ) values ('${oldId}-${Body.ID}',${newId},'${Body.Name}','${Body.Description}', ${Body.Cost},${Body.Price},${Body.SubTotal},${Body.GSTPercentage},${Body.GSTAmount},'${Body.GSTType}',${Body.TotalAmount},${data.Status}, ${LoggedOnUser}, '${data.CreatedOn}')`)
+                    const [saveData] = await mysql2.pool.query(`insert into servicemaster (SystemID, CompanyID, Name, Description,Cost, Price, SubTotal,  GSTPercentage, GSTAmount, GSTType, TotalAmount, Status, CreatedBy , CreatedOn ) values ('${oldId}-${Body.ID}',${newId},'${Body.Name}','${Body.Description}', ${Body.Cost},${Body.Price},${Body.TotalAmount},${Body.GSTPercentage},${Body.GSTAmount},'${Body.GSTType}',${Body.TotalAmount},${Body.Status}, ${LoggedOnUser}, '${Body.CreatedOn}')`)
                 }
 
             }
@@ -618,15 +623,16 @@ module.exports = {
             if (datum) {
                 for (const item of datum) {
                     let servicetype = item.ServiceType == null ? 0 : item.ServiceType;
-                    const [fetchBillMaster] = await mysql2.pool.query(`select * from billmaster where CompanyID = ${newId} and SystemID = '${oldId}-${data.BillID}'`)
+                    const [fetchBillMaster] = await mysql2.pool.query(`select * from billmaster where CompanyID = ${newId} and SystemID = '${oldId}-${item.BillID}'`)
 
                     if (!fetchBillMaster.length) {
-                        console.log("Bill Master Not Found From ID ========>", data);
-                        return res.send({ message: `Bill Master Not Found From ID ${oldId}-${data.BillID}` })
+                        console.log("Bill Master Not Found From ID ========>", item);
+                        return res.send({ message: `Bill Master Not Found From ID ${oldId}-${item.BillID}` })
                     }
 
+                    let fetchServiceType = []
                     if (servicetype !== 0 && servicetype !== null && servicetype !== 'null') {
-                        const [fetchServiceType] = await mysql2.pool.query(`select * from servicemaster where CompanyID = ${newId} and SystemID = '${item.CompanyID}-${servicetype}'`)
+                         [fetchServiceType] = await mysql2.pool.query(`select * from servicemaster where CompanyID = ${newId} and SystemID = '${item.CompanyID}-${servicetype}'`)
 
                         if (!fetchServiceType.length) {
                             return res.send({ message: `Service Master Not Found From ID '${item.CompanyID}'-'${servicetype}'` })
@@ -635,7 +641,7 @@ module.exports = {
 
                     // save
                     let [result1] = await mysql2.pool.query(
-                        `insert into billservice (SystemID, BillID, ServiceType ,CompanyID,Description, Price,SubTotal, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn ) values ('${oldId}-${item.ID}',${fetchBillMaster[0].ID}, '${fetchServiceType[0].ID}', ${CompanyID},  '${item.Description}', ${item.Price},  ${item.SubTotal}, ${item.GSTPercentage}, ${item.GSTAmount}, '${item.GSTType}', ${item.TotalAmount},${item.Status},${LoggedOnUser}, '${item.CreatedOn}')`
+                        `insert into billservice (SystemID, BillID, ServiceType ,CompanyID,Description, Price,SubTotal, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn ) values ('${oldId}-${item.ID}',${fetchBillMaster[0].ID}, '${fetchServiceType[0].ID}', ${CompanyID},  '${item.Description}', ${item.Price},  ${item.TotalAmount}, ${item.GSTPercentage}, ${item.GSTAmount}, '${item.GSTType}', ${item.TotalAmount},${item.Status},${LoggedOnUser}, '${item.CreatedOn}')`
                     );
                 }
 
