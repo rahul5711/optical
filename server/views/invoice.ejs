@@ -418,6 +418,12 @@
                                         <%=index+1%>. <%=i.Content%>
                             </p>
                             <%})}%>
+
+                            <% if (data.shopdetails.Tax==="false" && data.bill ==='Bill Of Supply' ){%>
+                                <p>
+                                 <b <% %> style="color: red; font-size:<%= data.NoteFont %>">Note -</b>   Composition Taxable person, Not eligible to collect tax on supplies.
+                                </p>
+                             <%}%>
                     </div>
                     <div class="col2">
                         <ul class="ul1" <% %> style="font-size:<%= data.CustomerFont %> ; line-height:<%=

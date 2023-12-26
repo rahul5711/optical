@@ -11,11 +11,15 @@
     <script src="JsBarcode.all.min.js"></script>
 </head>
 <style>
-
+@import url('https://fonts.googleapis.com/css2?family=Readex+Pro:wght@600&display=swap');
     html body {
         /* zoom: 95%; */
-        zoom: 70%;
+        zoom: 75%;
+        font-family: 'Readex Pro', sans-serif !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
+    
 </style>
 <body>
     <% if(data.length !==0){ data.forEach(function (i, index) { %>
@@ -25,7 +29,7 @@
                     <tr>
                         <th  style="width: 140px; padding: 0;">
                             <div
-                                style="font-size: 16px; font-weight: 600; font-family: verdana;margin-top: 0px; text-align: center; margin-top:6px; padding-bottom:1px; ">
+                                style="font-size: 16px; font-weight: 600;margin-top: 0px; text-align: center; margin-top:6px; padding-bottom:1px; ">
                                 <%=i.BarcodeName%>
                             </div>
                             <div>
@@ -41,19 +45,19 @@
                         </th>
                         <th  style="width: 300px;">
                             <div
-                                style="text-align: left; font-size: 22px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 130px;">
+                                style="text-align: left; font-size: 22px; font-weight: 600;  letter-spacing: 0px; margin-left: 130px;">
                                            ADE  <%=i.RetailPrice%>    
                                      
                             </div>
                             <div
-                                style="text-align: left; font-size: 14px; font-weight: 600;letter-spacing: 0.1px;margin-left: 130px; font-family: verdana ;">
+                                style="text-align: left; font-size: 14px; font-weight: 600;letter-spacing: 0.1px;margin-left: 130px; ">
                                 (Inc. of all Taxes) </div>
                             <div
-                                style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 130px;">
+                                style="text-align: left; font-size: 16px; font-weight: 600; margin-left: 130px;">
                                 <%=i.ProductBrandName%>
                             </div>
                             <div
-                                style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 130px;">
+                                style="text-align: left; font-size: 16px; font-weight: 600; margin-left: 130px;">
                                 <%=i.ProductModelName%>
                             </div>
                         </th>
@@ -69,7 +73,7 @@
 
                                
                                 <div
-                                    style=" font-size: 18px; font-weight: 600; font-family: verdana;margin-top: 0px; text-align: center; margin-top:6px; padding-bottom:1px; ">
+                                    style=" font-size: 18px; font-weight: 600; margin-top: 0px; text-align: center; margin-top:6px; padding-bottom:1px; ">
                                     <%=i.BarcodeName%>
                                 </div>
                                 <div>
@@ -87,19 +91,19 @@
                             <th  style="width:800px;  padding: 0 !important; margin: 0 !important; ">
                                 <div style="padding-left: 280px; height: 125px; padding-top: 2px;">
                                 <div
-                                    style="text-align: left; font-size: 26px; font-weight: 600; font-family: verdana; letter-spacing: 0px; ">
+                                    style="text-align: left; font-size: 26px; font-weight: 600;  letter-spacing: 0px; ">
                                                MRP  <%=i.RetailPrice%>    
                                          
                                 </div>
                                 <div
-                                    style="text-align: left; font-size: 14px; font-weight: 600;letter-spacing: 0.1px; font-family: verdana ;">
+                                    style="text-align: left; font-size: 14px; font-weight: 600;letter-spacing: 0.1px; ">
                                     (Inc. of all Taxes) </div>
                                 <div
-                                    style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;">
+                                    style="text-align: left; font-size: 16px; font-weight: 600; ">
                                     <%=i.ProductBrandName%>
                                 </div>
                                 <div
-                                    style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;">
+                                    style="text-align: left; font-size: 16px; font-weight: 600; ">
                                     <%=i.ProductModelName%>
                                 </div>
                             </div>
@@ -113,7 +117,7 @@
                 <tr>
                     <th  style="width: 140px; padding: 0;">
                         <div
-                            style="font-size: 16px; font-weight: 600; font-family: verdana;margin-top: 0px; text-align: center; margin-top:6px; padding-bottom:1px; ">
+                            style="font-size: 16px; font-weight: 600; margin-top: 0px; text-align: center; margin-top:6px; padding-bottom:1px; ">
                             <%=i.BarcodeName%>
                         </div>
                         <div>
@@ -129,7 +133,7 @@
                     </th>
                     <th  style="width: 200px;">
                         <div
-                            style="text-align: left; font-size: 22px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 18px;">
+                            style="text-align: left; font-size: 22px; font-weight: 600;  letter-spacing: 0px; margin-left: 18px;">
                             <% if (data.CompanyID !== 2){%>
                                        MRP  <%=i.RetailPrice%>    
                               <%}%>
@@ -138,14 +142,14 @@
                               <%}%>            
                         </div>
                         <div
-                            style="text-align: left; font-size: 14px; font-weight: 600;letter-spacing: 0.1px;margin-left: 18px; font-family: verdana ;">
+                            style="text-align: left; font-size: 14px; font-weight: 600;letter-spacing: 0.1px;margin-left: 18px; ">
                             (Inc. of all Taxes) </div>
                         <div
-                            style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 18px;">
+                            style="text-align: left; font-size: 16px; font-weight: 600; margin-left: 18px;">
                             <%=i.ProductBrandName%>
                         </div>
                         <div
-                            style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 18px;">
+                            style="text-align: left; font-size: 16px; font-weight: 600; margin-left: 18px;">
                             <%=i.ProductModelName%>
                         </div>
                     </th>
