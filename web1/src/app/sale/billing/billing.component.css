@@ -304,8 +304,51 @@ button:disabled.whatsapp {
     color: #878787 !important;
 }
 
+.tab-content{
+    overflow: auto; 
+    height: 163px;
+    border: 1px solid #0027ff
+}
+
+
+
+
 @media screen and (min-width: 768px) and (max-width: 1300px) {
    .card  {
       zoom:70% !important
     }
+  }
+
+@media screen and (max-width: 1050px) and (min-width: 992px) {
+   .tab-content  {
+      zoom:90% !important;
+      font-size: 15px !important;
+    }
+  }
+@media screen and (max-width: 1600px) and (min-width: 1301px) {
+   .tab-content  {
+      zoom:85% !important;
+    }
+  }
+
+
+@media screen and (max-width: 425px) and (min-width: 320px) {
+    .tab-content{
+       height:100%;
+    
+    }
+
+    .box{
+        width: 45px !important;
+        font-weight: 600;
+        color: red;
+        font-size: 12px !important;
+        font-weight: 500 !important;
+    }
+
+    .nav-tabs .nav-link {
+        font-size: 13px !important;
+        color: #0000008c;
+        padding: 5px 4px 2px 20px !important;
+        background: #2200ff74;}
   }
