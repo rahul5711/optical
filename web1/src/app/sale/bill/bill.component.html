@@ -129,7 +129,7 @@
                 </div>
             </div>
             <div class="row rowModify" *ngIf="category !== 'Services'">
-                <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
+                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>BarCode</mat-label>
                         <input matInput name="SearchBarCode" [(ngModel)]="Req.SearchBarCode"
@@ -137,7 +137,7 @@
                             appAutoFoucsDirectives>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0">
+                <div class="col-xl-2 col-lg-2 col-md-6 col-8 mb-0">
                     <!-- <mat-form-field class="example-full-width mb-0">
                         <mat-label>Search By Product Name</mat-label>
                         <input matInput name="searchString" [(ngModel)]="Req.searchString" #SearchStringNamecontrol
@@ -350,7 +350,7 @@
                 </div>
             </div>
             <div class="row" *ngIf="category !== 'Services'">
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Unit Price</mat-label>
                         <input matInput type="number" min="0" name="UnitPrice" [(ngModel)]="BillItem.UnitPrice" required
@@ -360,7 +360,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify" *ngIf="this.PurchasePriceInput">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify" *ngIf="this.PurchasePriceInput">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>PurchasePrice</mat-label>
                         <input matInput type="number" min="0" name="PurchasePrice" [(ngModel)]="BillItem.PurchasePrice"
@@ -371,7 +371,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Quantity</mat-label>
                         <input matInput name="Quantity" type="number" min="1" [(ngModel)]="BillItem.Quantity"
@@ -383,7 +383,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Discount%</mat-label>
                         <input matInput type="number" min="0" name="Discount" [(ngModel)]="BillItem.DiscountPercentage"
@@ -394,7 +394,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Discount amt</mat-label>
                         <input matInput type="number" min="0" name="DiscountAmt" [(ngModel)]="BillItem.DiscountAmount"
@@ -402,7 +402,7 @@
                             [autocomplete]="false">
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Sub Total</mat-label>
                         <input type="number" min="0" matInput name="SubTotal" [(ngModel)]="BillItem.SubTotal"
@@ -413,7 +413,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify" >
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify" >
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX%</mat-label>
                         <input matInput type="number" min="0" name="GST" [(ngModel)]="BillItem.GSTPercentage" required
@@ -423,7 +423,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX Type</mat-label>
                         <mat-select name="GSTType" [(ngModel)]="BillItem.GSTType"
@@ -440,26 +440,26 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Total Amount</mat-label>
                         <input matInput type="number" min="0" name="TotalAmount" [(ngModel)]="BillItem.TotalAmount"
                             disabled required #TotalAmountcontrol>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-6 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Remark</mat-label>
                         <input matInput name="Remark" [(ngModel)]="BillItem.Remark">
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1Modify">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Warranty</mat-label>
                         <input matInput name="Warranty" [(ngModel)]="BillItem.Warranty">
                     </mat-form-field>
                 </div>
-                <div *ngIf="addCustomerBill" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 mb-3  ms-auto ">
+                <div *ngIf="addCustomerBill" class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 mb-3  ms-auto ">
                     <button *ngIf="BillItem.Manual === false &&  BillItem.PreOrder === false" type="submit"
                         [disabled]="!f1.valid || !fp.valid && this.BillItem.Quantity === 0 || this.GstTypeDis || this.BillItem.Barcode === null"
                         mat-raised-button color="primary"
