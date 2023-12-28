@@ -10,6 +10,8 @@ router.post('/fetchPurchaseDetail', verifyAccessTokenAdmin, Controller.fetchPurc
 
 router.post('/fetchBillMaster', verifyAccessTokenAdmin, Controller.fetchBillMaster)
 router.post('/fetchBillDetail', verifyAccessTokenAdmin, Controller.fetchBillDetail)
+router.post('/fetchBillDetailPreOrder', verifyAccessTokenAdmin, Controller.fetchBillDetailPreOrder)
+router.post('/fetchBillDetailManual', verifyAccessTokenAdmin, Controller.fetchBillDetailManual)
 
 router.post('/fetchChargeMaster', verifyAccessTokenAdmin, Controller.fetchChargeMaster)
 router.post('/savePurchaseCharge', verifyAccessTokenAdmin, Controller.saveChargeMaster)

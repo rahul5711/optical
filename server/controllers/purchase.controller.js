@@ -484,9 +484,9 @@ module.exports = {
             }
 
             // old software condition
-            if (doesExist[0].SystemID !== "0") {
-                return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
-            }
+            // if (doesExist[0].SystemID !== "0") {
+            //     return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
+            // }
 
             const [doesExistProductQty] = await mysql2.pool.query(`select * from barcodemasternew where Status = 1 and CompanyID = '${CompanyID}' and PurchaseDetailID = '${Body.ID}' and CurrentStatus = 'Available'`)
 
