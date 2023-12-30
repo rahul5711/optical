@@ -458,7 +458,11 @@ module.exports = {
                     let remark = datum.Remarks.toString().replace(/[\r\n]/gm, '');
                     let addr = datum.Address.toString().replace(/[\r\n]/gm, '');
 
-                    const [customer] = await mysql2.pool.query(`insert into customer(SystemID,ShopID,Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Category,Status,CreatedBy,CreatedOn,VisitDate) values('${datum.SystemID}',${shopid},'${datum.Idd}', '${datum.Name}','${datum.Sno}',${datum.CompanyID},'${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${addr}','${datum.GSTNo}','${datum.Email}','${datum.PhotoURL}',${datum.DOB},'${datum.RefferedByDoc}','${datum.Age}',${datum.Anniversary},'${datum.ReferenceType}','${datum.Gender}','${datum.Other}',' ${remark.toString()} ','${datum.Category}',1,'${LoggedOnUser}',now(),${datum.VisitDate})`);
+                    const [fetchCustomer] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
+
+                    if (fetchCustomer.length === 0) {
+                        const [customer] = await mysql2.pool.query(`insert into customer(SystemID,ShopID,Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Category,Status,CreatedBy,CreatedOn,VisitDate) values('${datum.SystemID}',${shopid},'${datum.Idd}', '${datum.Name}','${datum.Sno}',${datum.CompanyID},'${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${addr}','${datum.GSTNo}','${datum.Email}','${datum.PhotoURL}',${datum.DOB},'${datum.RefferedByDoc}','${datum.Age}',${datum.Anniversary},'${datum.ReferenceType}','${datum.Gender}','${datum.Other}',' ${remark.toString()} ','${datum.Category}',1,'${LoggedOnUser}',now(),${datum.VisitDate})`);
+                    }
 
                     console.log(connected("Customer Added SuccessFUlly !!!"));
                 }
@@ -755,8 +759,8 @@ module.exports = {
                     "Family": 'Self',
                     "RefferedByDoc": 'Self',
                     "Reminder": '6',
-                    "ExpiryDate": fd[39] || "0000-00-00",
-                    "VisitDate": fd[40] || "0000-00-00",
+                    "ExpiryDate": fd[39] ? fd[39] : "0000-00-00",
+                    "VisitDate": fd[40] ? fd[40] : "0000-00-00",
                 }
                 newData.VisitNo = 1,
                     newData.CompanyID = CompanyID,
