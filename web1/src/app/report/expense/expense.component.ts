@@ -44,6 +44,7 @@ export class ExpenseComponent implements OnInit {
   addEyeTestReport = false
   deleteEyeTestReport = false
 
+  searchby = true;
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'EyeTestReport') {
@@ -119,6 +120,7 @@ export class ExpenseComponent implements OnInit {
     const subs: Subscription =  this.expen.getExpenseReport(Parem).subscribe({
       next: (res: any) => {
         if(res.success){
+          this.searchby = false
           this.as.successToast(res.message)
           this.ExpenseList = res.data
         }else{
@@ -149,4 +151,8 @@ export class ExpenseComponent implements OnInit {
    };
     this.ExpenseList = [];
   }
+
+  showFitter(){
+    this.searchby = true
+   }
 }

@@ -130,6 +130,7 @@ export class PurchaseReportComponent implements OnInit {
   editPurchaseProductExpiryReport = false
   deletePurchaseProductExpiryReport = false
 
+  searchby = true;
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'PurchaseReport') {
@@ -221,6 +222,7 @@ export class PurchaseReportComponent implements OnInit {
           // res.data.forEach((el: any) =>{
             
           // })
+          this.searchby = false
           this.PurchaseMasterList = res.data;
  
           this.PurchaseMasterList.forEach((e: any) => {
@@ -407,6 +409,7 @@ export class PurchaseReportComponent implements OnInit {
     const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem).subscribe({
       next: (res: any) => {
         if(res.success){
+          this.searchby = false
           this.PurchaseDetailList = res.data
           this.DetailtotalQty = res.calculation[0].totalQty;
           this.DetailtotalDiscount = res.calculation[0].totalDiscount.toFixed(2);
@@ -487,6 +490,7 @@ export class PurchaseReportComponent implements OnInit {
     const subs: Subscription =  this.purchaseService.getPurchaseChargeReport(Parem).subscribe({
       next: (res: any) => {
         if(res.success){
+          this.searchby = false
           this.PurchaseChargeList = res.data
           this.ChargeAmount = res.calculation[0].totalAmount.toFixed(2);
           this.ChargetotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
@@ -625,6 +629,7 @@ export class PurchaseReportComponent implements OnInit {
     const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem).subscribe({
       next: (res: any) => {
         if(res.success){
+          this.searchby = false
           this.ProductExpiryList = res.data
           this.ProductExpiryList.forEach((element: any) => {
             if(element.ProductExpDate < this.todaydate) {
@@ -755,4 +760,7 @@ onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
   return event;
 }
 
+showFitter(){
+  this.searchby = true
+ }
 }

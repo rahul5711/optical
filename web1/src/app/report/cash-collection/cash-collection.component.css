@@ -26,3 +26,18 @@
     padding: 0;
     cursor: pointer;
 }
+
+@media print {
+    .content {
+      page-break-before: always; /* Optional: Add page break before each content when printing */
+    }
+  
+    .print-logo {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto; /* Center the logo on the printed page */
+    }
+  
+    /* Add other print styles as needed */
+  }

@@ -32,6 +32,7 @@ export class CashCollectionComponent implements OnInit {
 
   shopList:any;
   selectsShop :any;
+  selectsShopimg :any;
   PaymentModesList:any =[];
   dataList:any =[];
 
@@ -93,6 +94,7 @@ export class CashCollectionComponent implements OnInit {
         let shop = res.data
         this.selectsShop = shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
         this.selectsShop =  '/ ' + this.selectsShop[0].Name + ' (' + this.selectsShop[0].AreaName + ')'
+        this.selectsShopimg =  '/ ' + this.selectsShop[0].LogoURL
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),

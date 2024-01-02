@@ -6,8 +6,13 @@
           <div class="card p-0">
             <div class="header p-2 py-0 pt-1">
               <div class="row">
-                <div class="col-md-4 col-8 p-0 ms-3">
+                <div class="col-md-2 col-8 p-0 ms-3">
                   <h2>Inventory Report </h2>
+                </div>
+                <div class="col-md-1 col-4 ">
+                  <button (click)="showFitter()"  mat-raised-button color="primary">
+                    Show
+                  </button>
                 </div>
               </div>
             </div>
@@ -16,7 +21,7 @@
               <mat-tab *ngIf="viewInventoryReport" label="Inventory">
                 <div class="body">
                   <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getInventory()">
-                    <div class="row">
+                    <div class="row" *ngIf="this.searchby == true">
                       <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>From</mat-label>
@@ -313,7 +318,7 @@
               <mat-tab *ngIf="viewProductSummaryReport" label="Product Summary">
                 <div class="body">
                   <form class="p-3 pb-0" #f1="ngForm">
-                    <div class="row">
+                    <div class="row" *ngIf="this.searchby == true">
                       <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>From</mat-label>
@@ -434,7 +439,7 @@
               <mat-tab *ngIf="viewPurchaseProductExpiryReport" label="Purchase (Product Expiry)">
                 <div class="body">
                   <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="purchaseProductExpiry()">
-                    <div class="row">
+                    <div class="row" *ngIf="this.searchby == true">
                       <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>From</mat-label>

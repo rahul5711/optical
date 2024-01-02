@@ -81,6 +81,7 @@ export class OldSaleComponent implements OnInit {
     FilterTypes:'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID: 0,  CustomerGSTNo:0, PaymentStatus: 0, ProductStatus:'All', ProductCategory:0, ProductName: '', GSTType:0, GSTPercentage:0, Status:0, Option:0, 
   };
 
+  searchby = true;
 
  ngOnInit(): void {
 
@@ -204,6 +205,7 @@ export class OldSaleComponent implements OnInit {
     const subs: Subscription =  this.bill.getOldSalereport(Parem).subscribe({
       next: (res: any) => {
         if(res.success){
+          this.searchby = false
           this.as.successToast(res.message)
           this.BillMasterList = res.data;
 
@@ -392,6 +394,7 @@ export class OldSaleComponent implements OnInit {
       const subs: Subscription =  this.bill.getOldSaleDetailreport(Parem).subscribe({
         next: (res: any) => {
           if(res.success){
+            this.searchby = false
             this.as.successToast(res.message)
             this.BillDetailList = res.data
             this.DetailtotalQty = res.calculation[0].totalQty;
@@ -504,4 +507,8 @@ export class OldSaleComponent implements OnInit {
     }
     return event;
   }
+
+  showFitter(){
+    this.searchby = true
+   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -18,6 +18,7 @@ import { Router } from '@angular/router';
 })
 export class CompanySettingComponent implements OnInit {
 
+  @ViewChild('barcode') barcodeElement: ElementRef | any;
   companysetting:any = JSON.parse(localStorage.getItem('companysetting') || '');
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
   shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
@@ -47,6 +48,8 @@ export class CompanySettingComponent implements OnInit {
   bill : any ={CompanyID: null,  BillHeader:'3',HeaderWidth:780, HeaderHeight:170, HeaderPadding:5,HeaderMargin:5,ImageWidth:200,ImageHeight:150,ImageAlign:'center',ShopNameFont:25,ShopNameBold:'600', ShopDetailFont:17, Color:'red',LineSpace:25, CustomerFont:16, CustomerLineSpace:22,
   TableBody:15,TableHeading:17, NoteFont:15.5, NoteLineSpace:25, UpdateBy:null}
 
+  barcode : any ={CompanyID: null,  BillHeader:'0',BarcodeWidth:425, BarcodeHeight:70, Rightwidth:50, Leftwidth:50,  BarcodePadding:0,BarcodeMargin:0,BarcodeNameFontSize:10,MRPFontSize:16,IncTaxFontSize:10,ProductBrandFontSize:10,ProductModelFontSize:10,MRPLineHeight:15, PaddingTop:0,PaddingBotton:0,PaddingLeft:0,PaddingRight:0,MarginTop:0,MarginBotton:0,MarginLeft:0,MarginRight:0,FloatLeftSide : 'Left', FloatRightSide:'Right', UpdateBy:null}
+
   companyWatermark: any;
   companyWholeSalePrice: any;
   billFormatList: any;
@@ -69,6 +72,7 @@ export class CompanySettingComponent implements OnInit {
    [this.shop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));;
   }
 
+  
   // getCompanySetting(){
   //   this.data = JSON.parse(localStorage.getItem('companysetting') || '');
   //   this.wlcmArray1 = JSON.parse(this.companysetting.WelComeNote) || ''
@@ -232,6 +236,11 @@ export class CompanySettingComponent implements OnInit {
      },
      complete: () => subs.unsubscribe(),
    });
+   }
+
+   saveBarcodeFormate(){
+    console.log(this.barcode);
+    
    }
 
 }

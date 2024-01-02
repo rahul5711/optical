@@ -46,6 +46,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { ReminderComponent } from './reminder/reminder.component';
 
 
+
 @NgModule({
     declarations: [
         CompanyComponent,

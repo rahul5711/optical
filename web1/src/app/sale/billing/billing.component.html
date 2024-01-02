@@ -6,8 +6,8 @@
                 <div class="card" >
                     <div class="header">
                         <div class="row">
-                            <div class="col-lg-1 col-md-2 col-4">
-                                <h4 style="font-weight: 600;">Customer <b>{{this.data.Category}}</b> </h4>
+                            <div class="col-lg-2 col-md-2 col-4">
+                                <h4 style="font-weight: 600;">Customer ID <b style="color:#000">{{this.data.Idd}}</b> / <b style="color:#000">{{this.data.Category}}</b> </h4>
                             </div>
                             <div class="col-xl-2 col-lg-3 col-md-4 col-8 mr-md-2 mr-0 ms-md-auto"
                                 style="display: inherit; height: 20px;margin-top: 1px;color: black;">
@@ -62,11 +62,12 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Select Position </mat-label>
                                                 <mat-select name="Position" [(ngModel)]="data.Gender" #Gendercontrol>
-                                                    <mat-option value="MR">Mr.</mat-option>
-                                                    <mat-option value="DR">Mrs.</mat-option>
-                                                    <mat-option value="Miss">Miss.</mat-option>
-                                                    <mat-option value="DR">Dr.</mat-option>
-                                                    <mat-option value="ADV">ADV.</mat-option>
+                                                    <mat-option value="MR.">Mr.</mat-option>
+                                                    <mat-option value="DR.">Mrs.</mat-option>
+                                                    <mat-option value="Miss.">Miss.</mat-option>
+                                                    <mat-option value="DR.">Dr.</mat-option>
+                                                    <mat-option value="ADV.">ADV.</mat-option>
+                                                    <mat-option value="Smt.">Smt.</mat-option>
                                                 </mat-select>
                                             </mat-form-field>
                                         </div>

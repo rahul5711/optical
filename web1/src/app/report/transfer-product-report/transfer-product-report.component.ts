@@ -56,6 +56,8 @@ export class TransferProductReportComponent implements OnInit {
   addProductTransferReport = false
   deleteProductTransferReport = false
   
+  searchby = true;
+
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'ProductTransferReport') {
@@ -230,6 +232,7 @@ export class TransferProductReportComponent implements OnInit {
     const subs: Subscription =  this.purchaseService.getproductTransferReport(Parem).subscribe({
       next: (res: any) => {
         if(res.success){
+          this.searchby = false
           this.as.successToast(res.message)
           this.TransfermasterList = res.data
           this.totalQty = res.calculation[0].totalQty
@@ -283,4 +286,8 @@ onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
   }
   return event;
 }
+
+showFitter(){
+  this.searchby = true
+ }
 }

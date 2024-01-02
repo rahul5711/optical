@@ -42,6 +42,8 @@ export class EyetestReportComponent implements OnInit {
   addEyeTestReport = false
   deleteEyeTestReport = false
 
+  searchby = true;
+  
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'EyeTestReport') {
@@ -100,6 +102,7 @@ export class EyetestReportComponent implements OnInit {
     const subs: Subscription =  this.cs.getEyeTestingReport(body).subscribe({
       next: (res: any) => {
         if(res.success){
+          this.searchby = false
           this.as.successToast(res.message)
           this.eyeList = res.data
         }else{
@@ -123,4 +126,8 @@ export class EyetestReportComponent implements OnInit {
     };
     this.eyeList = [];
   }
+
+  showFitter(){
+    this.searchby = true
+   }
 }

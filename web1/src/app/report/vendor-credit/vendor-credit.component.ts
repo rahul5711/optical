@@ -59,6 +59,8 @@ export class VendorCreditComponent implements OnInit {
   totalBalance: any;
   totalPaidAmount: any;
   
+  searchby = true;
+
   ngOnInit(): void {
     this.dropdownShoplist()
     if(this.user.UserGroup === 'Employee'){
@@ -142,6 +144,7 @@ console.log(Parem);
     const subs: Subscription =  this.sup.vendorCreditReport(Parem).subscribe({
       next: (res: any) => {
         if(res.success){
+          this.searchby = false
           this.as.successToast(res.message)
           this.dataList = res.data
           this.totalAmount = res.calculation[0].totalAmount;
@@ -219,4 +222,8 @@ CustomerSelection(mode: any, ID: any) {
             break;
     }
 }
+
+showFitter(){
+  this.searchby = true
+ }
 }

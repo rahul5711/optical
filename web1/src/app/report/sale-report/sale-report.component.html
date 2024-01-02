@@ -6,8 +6,13 @@
                     <div class="card p-0">
                         <div class="header p-2 py-0 pt-1">
                             <div class="row">
-                                <div class="col-md-2 col-8 p-0 ms-3">
+                                <div class="col-md-1 col-7 p-0 ms-3">
                                     <h2>Sale Report </h2>
+                                </div>
+                                <div class="col-md-1 col-4 ">
+                                  <button (click)="showFitter()"  mat-raised-button color="primary">
+                                    Show
+                                  </button>
                                 </div>
                             </div>
                         </div>
@@ -16,7 +21,7 @@
                             <mat-tab *ngIf="viewSaleReport" label="Sale">
                                 <div class="body">
                                     <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getBillMaster()">
-                                        <div class="row">
+                                        <div class="row" *ngIf="this.searchby == true">
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Filter Types</mat-label>
@@ -151,7 +156,7 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
+                                            <div class="col-xl-2 col-lg-2 col-md-6 col-12 mb-0 ">
                                                 <button type="submit" mat-raised-button color="primary">
                                                     Search
                                                 </button>
@@ -310,7 +315,7 @@
                             <mat-tab *ngIf="viewSaleProductReport" label="Sale (Product Type)">
                                 <div class="body">
                                     <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getBillDetails()">
-                                        <div class="row">
+                                        <div class="row"  *ngIf="this.searchby == true">
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Filter Types</mat-label>
@@ -752,7 +757,7 @@
                             <mat-tab *ngIf="viewSaleServiceReport" label="Sale Service">
                                 <div class="body">
                                     <form class="p-3 pb-0" #f="ngForm" (ngSubmit)="BillService()">
-                                        <div class="row">
+                                        <div class="row"  *ngIf="this.searchby == true">
                                             <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>From Date</mat-label>
@@ -902,7 +907,7 @@
                             <mat-tab label="Product Cancel">
                                 <div class="body">
                                     <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getProductCancel()">
-                                        <div class="row">
+                                        <div class="row"  *ngIf="this.searchby == true">
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Filter Types</mat-label>
@@ -1304,7 +1309,7 @@
                             <mat-tab label="Product Pending">
                                 <div class="body">
                                     <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getProductPending()">
-                                        <div class="row">
+                                        <div class="row"  *ngIf="this.searchby == true"> 
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Filter Types</mat-label>
@@ -1681,7 +1686,7 @@
                             <mat-tab label="Sale (Product Expiry)">
                                 <div class="body">
                                     <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getBillExpiry()">
-                                        <div class="row">
+                                        <div class="row"  *ngIf="this.searchby == true">
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>From</mat-label>

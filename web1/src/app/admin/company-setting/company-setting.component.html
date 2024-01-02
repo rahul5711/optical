@@ -24,6 +24,10 @@
                                         <a class="nav-link" id="ex1-tab-3" data-mdb-toggle="tab" href="#ex1-tabs-3"
                                             role="tab" aria-controls="ex1-tabs-3" aria-selected="false">BillFormat</a>
                                     </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link" id="ex1-tab-2" data-mdb-toggle="tab" href="#ex1-tabs-2"
+                                            role="tab" aria-controls="ex1-tabs-2" aria-selected="false">Barcode</a>
+                                    </li>
                                 </ul>
                                 <!-- Tabs navs -->
 
@@ -211,11 +215,16 @@
                                                     <div class="col-12 mt-md-2">
                                                         <mat-radio-group aria-label="Select an option" name="BarCode"
                                                             [(ngModel)]="data.BarCode" style="display: inline-flex;">
-                                                            <mat-radio-button value="1" color="primary">1</mat-radio-button>
-                                                            <mat-radio-button value="2" color="primary">2</mat-radio-button> 
-                                                            <mat-radio-button value="3" color="primary">Lens/WithOut MRP</mat-radio-button>
-                                                            <mat-radio-button value="4" color="primary">Lens/With MRP</mat-radio-button>
-                                                            <mat-radio-button value="5" color="primary">Hv</mat-radio-button>
+                                                            <mat-radio-button value="1"
+                                                                color="primary">1</mat-radio-button>
+                                                            <mat-radio-button value="2"
+                                                                color="primary">2</mat-radio-button>
+                                                            <mat-radio-button value="3" color="primary">Lens/WithOut
+                                                                MRP</mat-radio-button>
+                                                            <mat-radio-button value="4" color="primary">Lens/With
+                                                                MRP</mat-radio-button>
+                                                            <mat-radio-button value="5"
+                                                                color="primary">Hv</mat-radio-button>
                                                         </mat-radio-group>
                                                     </div>
                                                     <div class="col-md-12  header mt-md-4">
@@ -228,7 +237,8 @@
                                                                 required>
                                                                 <mat-option value="invoice.ejs">invoice.ejs</mat-option>
                                                                 <mat-option value="Arabic.ejs">Arabic.ejs</mat-option>
-                                                                <mat-option value="Santosh_Optical.ejs">Santosh_Optical.ejs</mat-option>
+                                                                <mat-option
+                                                                    value="Santosh_Optical.ejs">Santosh_Optical.ejs</mat-option>
                                                             </mat-select>
                                                             <mat-error>Bill Format </mat-error>
                                                         </mat-form-field>
@@ -250,12 +260,15 @@
                                                     <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Font Style</mat-label>
-                                                            <input matInput name="FontsStyle" [(ngModel)]="data.FontsStyle">
+                                                            <input matInput name="FontsStyle"
+                                                                [(ngModel)]="data.FontsStyle">
                                                         </mat-form-field>
                                                     </div>
                                                     <div class="col-md-3 ">
-                                                        <button mat-raised-button color="primary" [disabled]="!settingForm.valid"
-                                                            (click)="updatecompanysetting()"> Update Company Setting</button>
+                                                        <button mat-raised-button color="primary"
+                                                            [disabled]="!settingForm.valid"
+                                                            (click)="updatecompanysetting()"> Update Company
+                                                            Setting</button>
                                                         <!-- <button class="ms-3" type="button" mat-raised-button
                                                             (click)="settingForm.reset()"> Cancel</button> -->
                                                     </div>
@@ -263,7 +276,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                   
+
                                     <div class="tab-pane fade" id="ex1-tabs-3" role="tabpanel"
                                         aria-labelledby="ex1-tab-3">
                                         <div class="row">
@@ -272,32 +285,36 @@
                                                     <div class="row">
                                                         <div class="col-12">
                                                             <div class="row">
-                                                        <div class=" col-md-3 mb-0">
-                                                            <mat-form-field class="example-full-width mb-0">
-                                                                <mat-label>Bill Herder </mat-label>
-                                                                <mat-select name="BillHeader"  [(ngModel)]="bill.BillHeader" required >
-                                                                    <mat-option ></mat-option>
-                                                                    <mat-option value="0">Center Logo</mat-option>
-                                                                    <mat-option value="1">Right Logo</mat-option>
-                                                                    <mat-option value="2">Left Logo</mat-option>
-                                                                    <mat-option value="3">50-50</mat-option>
-                                                                </mat-select>
-                                                                <mat-error>Select BillHeader  </mat-error>
-                                                            </mat-form-field>
-                                                        </div>
+                                                                <div class=" col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>Bill Herder </mat-label>
+                                                                        <mat-select name="BillHeader"
+                                                                            [(ngModel)]="bill.BillHeader" required>
+                                                                            <mat-option></mat-option>
+                                                                            <mat-option value="0">Center
+                                                                                Logo</mat-option>
+                                                                            <mat-option value="1">Right
+                                                                                Logo</mat-option>
+                                                                            <mat-option value="2">Left Logo</mat-option>
+                                                                            <mat-option value="3">50-50</mat-option>
+                                                                        </mat-select>
+                                                                        <mat-error>Select BillHeader </mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Header width</mat-label>
-                                                                        <input matInput name="HeaderWidth"
-                                                                         type="number" min="0" [(ngModel)]="bill.HeaderWidth">
-                                                                         <mat-error>Header width </mat-error>
+                                                                        <input matInput name="HeaderWidth" type="number"
+                                                                            min="0" [(ngModel)]="bill.HeaderWidth">
+                                                                        <mat-error>Header width </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Header height</mat-label>
                                                                         <input matInput name="HeaderHeight"
-                                                                        type="number" min="0"  [(ngModel)]="bill.HeaderHeight">
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="bill.HeaderHeight">
                                                                         <mat-error>Header height </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
@@ -305,7 +322,8 @@
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Header padding</mat-label>
                                                                         <input matInput name="HeaderPadding"
-                                                                        type="number" min="0"  [(ngModel)]="bill.HeaderPadding">
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="bill.HeaderPadding">
                                                                         <mat-error>Header padding </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
@@ -313,32 +331,35 @@
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>header margin</mat-label>
                                                                         <input matInput name="HeaderMargin"
-                                                                        type="number"  min="0"  [(ngModel)]="bill.HeaderMargin">
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="bill.HeaderMargin">
                                                                         <mat-error>Header margin </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>image width</mat-label>
-                                                                        <input matInput name="ImageWidth"
-                                                                        type="number" min="0"  [(ngModel)]="bill.ImageWidth">
+                                                                        <input matInput name="ImageWidth" type="number"
+                                                                            min="0" [(ngModel)]="bill.ImageWidth">
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>image height</mat-label>
-                                                                        <input matInput name="ImageHeight"
-                                                                        type="number" min="0"    [(ngModel)]="bill.ImageHeight">
+                                                                        <input matInput name="ImageHeight" type="number"
+                                                                            min="0" [(ngModel)]="bill.ImageHeight">
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>image align</mat-label>
-                                                                        <mat-select name="ImageAlign"  [(ngModel)]="bill.ImageAlign" required >
+                                                                        <mat-select name="ImageAlign"
+                                                                            [(ngModel)]="bill.ImageAlign" required>
                                                                             <mat-option value="right">Right</mat-option>
-                                                                            <mat-option value="center">Center</mat-option>
+                                                                            <mat-option
+                                                                                value="center">Center</mat-option>
                                                                             <mat-option value="left">Left</mat-option>
-                                                                          
+
                                                                         </mat-select>
                                                                     </mat-form-field>
                                                                 </div>
@@ -346,14 +367,16 @@
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>ShopName Font</mat-label>
                                                                         <input matInput name="ShopNameFont"
-                                                                        type="number" min="0"  [(ngModel)]="bill.ShopNameFont">
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="bill.ShopNameFont">
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>ShopName Bold</mat-label>
                                                                         <input matInput name="ShopNameBold"
-                                                                        type="number" min="0"    [(ngModel)]="bill.ShopNameBold">
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="bill.ShopNameBold">
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
@@ -366,28 +389,32 @@
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>ShopDateil Font</mat-label>
-                                                                        <input matInput name="ShopDetailFont" type="number" min="0"  [(ngModel)]="bill.ShopDetailFont"  >
+                                                                        <input matInput name="ShopDetailFont"
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="bill.ShopDetailFont">
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>ShopDateil line spece </mat-label>
-                                                                        <input matInput name="LineSpace"
-                                                                        type="number" min="0"   [(ngModel)]="bill.LineSpace">
+                                                                        <input matInput name="LineSpace" type="number"
+                                                                            min="0" [(ngModel)]="bill.LineSpace">
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Customer Font </mat-label>
                                                                         <input matInput name="CustomerFont"
-                                                                        type="number" min="0"   [(ngModel)]="bill.CustomerFont">
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="bill.CustomerFont">
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Customer LineSpace </mat-label>
                                                                         <input matInput name="CustomerLineSpace"
-                                                                        type="number" min="0"   [(ngModel)]="bill.CustomerLineSpace">
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="bill.CustomerLineSpace">
                                                                     </mat-form-field>
                                                                 </div>
 
@@ -395,177 +422,222 @@
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>table Heading</mat-label>
                                                                         <input matInput name="TableHeading"
-                                                                        type="number" min="0"    [(ngModel)]="bill.TableHeading">
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="bill.TableHeading">
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>table Body </mat-label>
-                                                                        <input matInput name="TableBody"
-                                                                        type="number" min="0"    [(ngModel)]="bill.TableBody ">
+                                                                        <input matInput name="TableBody" type="number"
+                                                                            min="0" [(ngModel)]="bill.TableBody ">
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Note Font </mat-label>
-                                                                        <input matInput name="NoteFont "
-                                                                        type="number" min="0"   [(ngModel)]="bill.NoteFont  ">
+                                                                        <input matInput name="NoteFont " type="number"
+                                                                            min="0" [(ngModel)]="bill.NoteFont  ">
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Note LineSpace </mat-label>
                                                                         <input matInput name="NoteLineSpace"
-                                                                        type="number" min="0"    [(ngModel)]="bill.NoteLineSpace ">
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="bill.NoteLineSpace ">
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
-                                                            <button  class="me-3" mat-raised-button color="primary" [disabled]="!fb.valid" (click)="saveBillFormate()">Save</button>
+                                                                    <button class="me-3" mat-raised-button
+                                                                        color="primary" [disabled]="!fb.valid"
+                                                                        (click)="saveBillFormate()">Save</button>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </form>
                                             </div>
-                                            <div class="col-md-8" style="zoom:100%; border:1px solid #000 ; width: 265mm; height: 297mm;" >
+                                            <div class="col-md-8"
+                                                style="zoom:100%; border:1px solid #000 ; width: 265mm; height: 297mm;">
                                                 <div class="row">
                                                     <div class="col-12 p-0">
-                                                    <!-- center log -->
-                                                      <span *ngIf="this.bill.BillHeader == '0'">
-                                                        <header style="width:{{this.bill.HeaderWidth}}; height: {{this.bill.HeaderHeight}}; padding: {{this.bill.HeaderPadding}}; margin: {{this.bill.HeaderMargin}};  border: 1px solid #000 ;ltext-align: center;" >
-                                                            <div style="width:100% ; text-align: center;margin-bottom: 15px">
-                                                                <img src="../../../assets/images/OGorange.png" alt=""
-                                                                    style="width:{{this.bill.ImageWidth}}; height: {{this.bill.ImageHeight}};">
-                                                    
-                                                            </div>
-                                                                
-                                                              <p style=" font-weight: 400;text-align: center; font-size: {{this.bill.ShopDetailFont}}; ">  TH SCHONEAR SAMAROL, OPP-RAOSAHEB PATWARDHAN
-                                                                SMARAK, BHISBAUG ROAD, PROFESSOR CHOWK, SAVEDI,
-                                                                A.NAGAR-414003 </p>  
+                                                        <!-- center log -->
+                                                        <span *ngIf="this.bill.BillHeader == '0'">
+                                                            <header
+                                                                style="width:{{this.bill.HeaderWidth}}; height: {{this.bill.HeaderHeight}}; padding: {{this.bill.HeaderPadding}}; margin: {{this.bill.HeaderMargin}};  border: 1px solid #000 ;ltext-align: center;">
+                                                                <div
+                                                                    style="width:100% ; text-align: center;margin-bottom: 15px">
+                                                                    <img src="../../../assets/images/OGorange.png"
+                                                                        alt=""
+                                                                        style="width:{{this.bill.ImageWidth}}; height: {{this.bill.ImageHeight}};">
 
-                                                              <div style="padding-top: 0%;   width: 100%; font-size: {{this.bill.ShopDetailFont}}; ">
-                                                    
-                                                                <div style="font-weight: 400;width: 33%;  float: left;text-align: left;">MobileNo - 9766666248 , 9175773955</div>
-                                                               <div style="font-weight: 400; width: 25%;  float: right; text-align: right; ">PhoneNo - 9175773955</div>
-                                                      
-                                                               <div style="font-weight: 400; width: 41%;  margin: 0px 2px; float: right; text-align: center;">Email - RELINKSYS@GMAIL.COM</div>
-                                                              </div>
-                                                        </header>
-                                                      </span>
-                                                    <!-- center log -->
-                                                    <!-- right log -->
-                                                      <span *ngIf="this.bill.BillHeader == '1'">
-                                                        <header
-                                                            style="width:{{this.bill.HeaderWidth}}; height: {{this.bill.HeaderHeight}}; padding: {{this.bill.HeaderPadding}}; margin: {{this.bill.HeaderMargin}};  border: 1px solid #000">
-                                                            <span style="width: 25%; float: left; height: 90px; ">
-                                                                <img src="../../../assets/images/OGorange.png" alt=""
-                                                                    style="width:{{this.bill.ImageWidth}}; height: {{this.bill.ImageHeight}};">
-                                                            </span>
-                                                            <div style="width: 70%; float: right;line-height: {{this.bill.LineSpace}}; ">
-                                                                <div style=" font-weight: {{this.bill.ShopNameBold}}; font-size: {{this.bill.ShopNameFont}};color:{{this.bill.Color}}">
-                                                                    RELINKSYS SOFTWARE
                                                                 </div>
-                                                                <span style="font-size: {{this.bill.ShopDetailFont}};">
 
-                                                               
-                                                                <div style=" font-weight: 400; padding-top:5px">
+                                                                <p
+                                                                    style=" font-weight: 400;text-align: center; font-size: {{this.bill.ShopDetailFont}}; ">
                                                                     TH SCHONEAR SAMAROL, OPP-RAOSAHEB PATWARDHAN
                                                                     SMARAK, BHISBAUG ROAD, PROFESSOR CHOWK, SAVEDI,
-                                                                    A.NAGAR-414003
-                                                                </div>
-                                                               
+                                                                    A.NAGAR-414003 </p>
 
-                                                                <div style="font-weight: 400; width: 40%; float: left;">9766666248 , 9175773955
-                                                                </div>
-                                                               
-                                                                <div style="font-weight: 400; width: 20%; float: right;"> 9766666248</div>
-                                                           
-                                                                <div style="font-weight: 400; width: 40%; float: right;">RELINKSYS@GMAIL.COM
-                                                                </div>
-                                                            </span>
-                                                            </div>
-                                                        </header>
-                                                      </span>
-                                                    <!-- right log -->
-                                                    <!-- 50-50 log -->
-                                                      <span *ngIf="this.bill.BillHeader == '3'" style="width:100%; ">
-                                                        <header  style="width:{{this.bill.HeaderWidth}}px; height: {{this.bill.HeaderHeight}}px; padding: {{this.bill.HeaderPadding}}px; margin: {{this.bill.HeaderMargin}}px;  border: 1px solid #000">
-                                                            <span style="width: 50%; float: left; height: 90px; text-align:{{this.bill.ImageAlign}}">
-                                                                <img src="{{this.env.apiUrl + this.shop.LogoURL}}" alt=""
-                                                                    style="width:{{this.bill.ImageWidth}}px; height: {{this.bill.ImageHeight}}px;">
-                                                            </span>
-                                                            <div style="width: 50%; float: right;line-height: {{this.bill.LineSpace}}px; ">
-                                                                <div style=" font-weight: {{this.bill.ShopNameBold}}; font-size: {{this.bill.ShopNameFont}}px;color:{{this.bill.Color}}">
-                                                                    {{this.shop?.Name}}
-                                                                </div>
-                                                                <span style="font-size: {{this.bill.ShopDetailFont}}px;">
+                                                                <div
+                                                                    style="padding-top: 0%;   width: 100%; font-size: {{this.bill.ShopDetailFont}}; ">
 
-                                                               
-                                                                <div style=" font-weight: 400; padding-top:5px">
-                                                                    {{this.shop?.Address}}
+                                                                    <div
+                                                                        style="font-weight: 400;width: 33%;  float: left;text-align: left;">
+                                                                        MobileNo - 9766666248 , 9175773955</div>
+                                                                    <div
+                                                                        style="font-weight: 400; width: 25%;  float: right; text-align: right; ">
+                                                                        PhoneNo - 9175773955</div>
+
+                                                                    <div
+                                                                        style="font-weight: 400; width: 41%;  margin: 0px 2px; float: right; text-align: center;">
+                                                                        Email - RELINKSYS@GMAIL.COM</div>
                                                                 </div>
-                                                                <div style="font-weight: 400;">{{this.shop?.MobileNo1}} ,{{this.shop?.MobileNo2}}
+                                                            </header>
+                                                        </span>
+                                                        <!-- center log -->
+                                                        <!-- right log -->
+                                                        <span *ngIf="this.bill.BillHeader == '1'">
+                                                            <header
+                                                                style="width:{{this.bill.HeaderWidth}}; height: {{this.bill.HeaderHeight}}; padding: {{this.bill.HeaderPadding}}; margin: {{this.bill.HeaderMargin}};  border: 1px solid #000">
+                                                                <span style="width: 25%; float: left; height: 90px; ">
+                                                                    <img src="../../../assets/images/OGorange.png"
+                                                                        alt=""
+                                                                        style="width:{{this.bill.ImageWidth}}; height: {{this.bill.ImageHeight}};">
+                                                                </span>
+                                                                <div
+                                                                    style="width: 70%; float: right;line-height: {{this.bill.LineSpace}}; ">
+                                                                    <div
+                                                                        style=" font-weight: {{this.bill.ShopNameBold}}; font-size: {{this.bill.ShopNameFont}};color:{{this.bill.Color}}">
+                                                                        RELINKSYS SOFTWARE
+                                                                    </div>
+                                                                    <span
+                                                                        style="font-size: {{this.bill.ShopDetailFont}};">
+
+
+                                                                        <div style=" font-weight: 400; padding-top:5px">
+                                                                            TH SCHONEAR SAMAROL, OPP-RAOSAHEB PATWARDHAN
+                                                                            SMARAK, BHISBAUG ROAD, PROFESSOR CHOWK,
+                                                                            SAVEDI,
+                                                                            A.NAGAR-414003
+                                                                        </div>
+
+
+                                                                        <div
+                                                                            style="font-weight: 400; width: 40%; float: left;">
+                                                                            9766666248 , 9175773955
+                                                                        </div>
+
+                                                                        <div
+                                                                            style="font-weight: 400; width: 20%; float: right;">
+                                                                            9766666248</div>
+
+                                                                        <div
+                                                                            style="font-weight: 400; width: 40%; float: right;">
+                                                                            RELINKSYS@GMAIL.COM
+                                                                        </div>
+                                                                    </span>
                                                                 </div>
-                                                                <div style="font-weight: 400;">{{this.shop?.Email}}
+                                                            </header>
+                                                        </span>
+                                                        <!-- right log -->
+                                                        <!-- 50-50 log -->
+                                                        <span *ngIf="this.bill.BillHeader == '3'" style="width:100%; ">
+                                                            <header
+                                                                style="width:{{this.bill.HeaderWidth}}px; height: {{this.bill.HeaderHeight}}px; padding: {{this.bill.HeaderPadding}}px; margin: {{this.bill.HeaderMargin}}px;  border: 1px solid #000">
+                                                                <span
+                                                                    style="width: 50%; float: left; height: 90px; text-align:{{this.bill.ImageAlign}}">
+                                                                    <img src="{{this.env.apiUrl + this.shop.LogoURL}}"
+                                                                        alt=""
+                                                                        style="width:{{this.bill.ImageWidth}}px; height: {{this.bill.ImageHeight}}px;">
+                                                                </span>
+                                                                <div
+                                                                    style="width: 50%; float: right;line-height: {{this.bill.LineSpace}}px; ">
+                                                                    <div
+                                                                        style=" font-weight: {{this.bill.ShopNameBold}}; font-size: {{this.bill.ShopNameFont}}px;color:{{this.bill.Color}}">
+                                                                        {{this.shop?.Name}}
+                                                                    </div>
+                                                                    <span
+                                                                        style="font-size: {{this.bill.ShopDetailFont}}px;">
+
+
+                                                                        <div style=" font-weight: 400; padding-top:5px">
+                                                                            {{this.shop?.Address}}
+                                                                        </div>
+                                                                        <div style="font-weight: 400;">
+                                                                            {{this.shop?.MobileNo1}}
+                                                                            ,{{this.shop?.MobileNo2}}
+                                                                        </div>
+                                                                        <div style="font-weight: 400;">
+                                                                            {{this.shop?.Email}}
+                                                                        </div>
+                                                                        <div style="font-weight: 400;">
+                                                                            {{this.shop?.PhoneNo}}</div>
+                                                                    </span>
                                                                 </div>
-                                                                <div style="font-weight: 400;">{{this.shop?.PhoneNo}}</div>
-                                                            </span>
-                                                            </div>
-                                                        </header>
-                                                      </span>
-                                                    <!-- 50-50 log -->
+                                                            </header>
+                                                        </span>
+                                                        <!-- 50-50 log -->
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-12" style="font-size: {{this.bill.CustomerFont}}px; line-height:  {{this.bill.CustomerLineSpace}}px;">
-                                                    <div style="width:100%; padding: 0px 10px; ">
-                                                        <div style="width:55%;float: left; ">
-                                                           <ul style="width:20%;float: left;padding: 0 ; list-style: none; ">
-                                                                <li>Bill of Supply</li>
-                                                                <li>Cust_ID</li>
-                                                                <li>Name</li>
-                                                                <li>MobileNo1</li>
-                                                           </ul>
-                                                           <ul style="width:75%;float: right;padding: 0 ; list-style: none;">
-                                                                 <li>xxxxxxxxxx</li>
-                                                                 <li>xx</li>
-                                                                 <li>xxxxx xxxxx</li>
-                                                                 <li>xxxxxxxx</li>
-                                                           </ul>
-                                                        </div>
-                                                        <div style="width:40%;float: right;">
-                                                            <ul style="width:25%;float: left;padding: 0 ; list-style: none;">
-                                                                <li>Date</li>
-                                                                <li>Del. Date</li>
-                                                                <li>Rx BY</li>
-                                                                <li>Sale Person</li>
-                                                           </ul>
-                                                           <ul style="width:70%;float: right;padding: 0 ; list-style: none;">
-                                                            <li>xx xx xxxx</li>
-                                                            <li>xx xx xxxx</li>
-                                                            <li>xxxxx xxxxx</li>
-                                                            <li>xxxx xxxx</li>
-                                                           </ul>
+                                                    <div class="col-12"
+                                                        style="font-size: {{this.bill.CustomerFont}}px; line-height:  {{this.bill.CustomerLineSpace}}px;">
+                                                        <div style="width:100%; padding: 0px 10px; ">
+                                                            <div style="width:55%;float: left; ">
+                                                                <ul
+                                                                    style="width:20%;float: left;padding: 0 ; list-style: none; ">
+                                                                    <li>Bill of Supply</li>
+                                                                    <li>Cust_ID</li>
+                                                                    <li>Name</li>
+                                                                    <li>MobileNo1</li>
+                                                                </ul>
+                                                                <ul
+                                                                    style="width:75%;float: right;padding: 0 ; list-style: none;">
+                                                                    <li>xxxxxxxxxx</li>
+                                                                    <li>xx</li>
+                                                                    <li>xxxxx xxxxx</li>
+                                                                    <li>xxxxxxxx</li>
+                                                                </ul>
+                                                            </div>
+                                                            <div style="width:40%;float: right;">
+                                                                <ul
+                                                                    style="width:25%;float: left;padding: 0 ; list-style: none;">
+                                                                    <li>Date</li>
+                                                                    <li>Del. Date</li>
+                                                                    <li>Rx BY</li>
+                                                                    <li>Sale Person</li>
+                                                                </ul>
+                                                                <ul
+                                                                    style="width:70%;float: right;padding: 0 ; list-style: none;">
+                                                                    <li>xx xx xxxx</li>
+                                                                    <li>xx xx xxxx</li>
+                                                                    <li>xxxxx xxxxx</li>
+                                                                    <li>xxxx xxxx</li>
+                                                                </ul>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                </div>
-                                                
+
                                                 <div class="row" style="padding: 0px 20px;">
                                                     <table style="width:100%;">
-                                                        <thead style="background-color: rgb(228, 228, 228); text-align: center;">
-                                                          <tr style="font-size: {{this.bill.TableHeading}}px ;">
-                                                              <th>SNo.</th>
-                                                              <th>Item</th>
-                                                              <th>Qty</th>
-                                                              <th>Rate</th>
-                                                              <th>Discount</th>
-                                                              <th>GSTType</th>
-                                                              <th>GSTAmt</th>
-                                                              <th>Total</th>
+                                                        <thead
+                                                            style="background-color: rgb(228, 228, 228); text-align: center;">
+                                                            <tr style="font-size: {{this.bill.TableHeading}}px ;">
+                                                                <th>SNo.</th>
+                                                                <th>Item</th>
+                                                                <th>Qty</th>
+                                                                <th>Rate</th>
+                                                                <th>Discount</th>
+                                                                <th>GSTType</th>
+                                                                <th>GSTAmt</th>
+                                                                <th>Total</th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody style="text-align: center; font-size: {{this.bill.TableBody}}px ;">
+                                                        <tbody
+                                                            style="text-align: center; font-size: {{this.bill.TableBody}}px ;">
                                                             <tr>
                                                                 <td>1</td>
                                                                 <td>xxxxx</td>
@@ -599,20 +671,26 @@
                                                         </tbody>
                                                     </table>
                                                 </div>
-                                                 
-                                                <div class="row" style="padding: 0px 10px;width:100%; border-top:1px solid #000; padding-top: 1%;">
+
+                                                <div class="row"
+                                                    style="padding: 0px 10px;width:100%; border-top:1px solid #000; padding-top: 1%;">
                                                     <div style="width: 70%; float: left;">
                                                         <h2>important Note</h2>
-                                                         <ul style="padding: 0 ; list-style: none; font-size: {{this.bill.NoteFont}}px; line-height:  {{this.bill.NoteLineSpace}}px;">
+                                                        <ul
+                                                            style="padding: 0 ; list-style: none; font-size: {{this.bill.NoteFont}}px; line-height:  {{this.bill.NoteLineSpace}}px;">
                                                             <li> WE PREFER 50% ADVANCE AT THE TIME OF ORDER BOOKING</li>
-                                                            <li> ANY REPAIRING WORK WILL BE DONE AT CUSTOMERS OWN RISK</li>
+                                                            <li> ANY REPAIRING WORK WILL BE DONE AT CUSTOMERS OWN RISK
+                                                            </li>
                                                             <li> NO REFUND AND NO EXCHANGE ONCE ORDER IS PLACED</li>
                                                             <li> NO RETURN FOR ANY GOODS ONCE SOLD</li>
-                                                            <li> WE PREFER CHECKING OF THE PRODUCT AT THE TIME OF DELIVERY</li>
-                                                         </ul>
+                                                            <li> WE PREFER CHECKING OF THE PRODUCT AT THE TIME OF
+                                                                DELIVERY</li>
+                                                        </ul>
                                                     </div>
-                                                    <div style="width: 30%; float: right;font-size: {{this.bill.CustomerFont}}px; line-height:  {{this.bill.CustomerLineSpace}}px;">
-                                                        <ul style="padding: 0 ; list-style: none;  width: 50%; float: left; font-weight: 600;">
+                                                    <div
+                                                        style="width: 30%; float: right;font-size: {{this.bill.CustomerFont}}px; line-height:  {{this.bill.CustomerLineSpace}}px;">
+                                                        <ul
+                                                            style="padding: 0 ; list-style: none;  width: 50%; float: left; font-weight: 600;">
                                                             <li>Sub Total</li>
                                                             <li>Discount</li>
                                                             <li>Tax Amt</li>
@@ -623,7 +701,8 @@
                                                             <li>Payment By</li>
                                                         </ul>
 
-                                                        <ul style="padding: 0 ; list-style: none;  width: 50%; float: right; text-align: right;">
+                                                        <ul
+                                                            style="padding: 0 ; list-style: none;  width: 50%; float: right; text-align: right;">
                                                             <li>0</li>
                                                             <li>0</li>
                                                             <li>0</li>
@@ -633,9 +712,273 @@
                                                             <li>0</li>
                                                             <li>0</li>
                                                         </ul>
-                                                    
+
                                                     </div>
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="tab-pane fade" id="ex1-tabs-2" role="tabpanel"
+                                        aria-labelledby="ex1-tab-2">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <form #fbc="ngForm">
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <div class="row">
+                                                                <div class=" col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>Bill Herder </mat-label>
+                                                                        <mat-select name="BillHeader"
+                                                                            [(ngModel)]="barcode.BillHeader" required>
+                                                                            <mat-option></mat-option>
+                                                                            <mat-option value="0">Regular </mat-option>
+                                                                            <mat-option value="1">Regular 2</mat-option>
+                                                                        </mat-select>
+                                                                        <mat-error>Select BillHeader </mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>Barcode width</mat-label>
+                                                                        <input matInput name="BarcodeWidth"
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="barcode.BarcodeWidth">
+                                                                        <mat-error>Barcode Width </mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>Barcode height</mat-label>
+                                                                        <input matInput name="BarcodeHeight"
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="barcode.BarcodeHeight">
+                                                                        <mat-error>Barcode height </mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                               
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>Leftwidth</mat-label>
+                                                                        <input matInput name="Leftwidth"
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="barcode.Leftwidth">
+                                                                        <mat-error>Leftwidth </mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>Rightwidth</mat-label>
+                                                                        <input matInput name="Rightwidth"
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="barcode.Rightwidth">
+                                                                        <mat-error>Rightwidth</mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>FloatLeftSide </mat-label>
+                                                                        <mat-select name="FloatLeftSide"
+                                                                            [(ngModel)]="barcode.FloatLeftSide" required>
+                                                                            <mat-option value="Left">Left </mat-option>
+                                                                            <mat-option value="Right">Right</mat-option>
+                                                                        </mat-select>
+                                                                        <mat-error>Select FloatLeftSide </mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                <mat-form-field class="example-full-width mb-0">
+                                                                    <mat-label>FloatRightSide </mat-label>
+                                                                    <mat-select name="FloatRightSide"
+                                                                        [(ngModel)]="barcode.FloatRightSide" required>
+                                                                        <mat-option value="Left">Left </mat-option>
+                                                                        <mat-option value="Right">Right</mat-option>
+                                                                    </mat-select>
+                                                                    <mat-error>Select FloatRightSide </mat-error>
+                                                                </mat-form-field>
+                                                            </div>
+                                                                <div class="col-md-12 mb-0">
+                                                                        <h2>padding</h2>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>padding Top</mat-label>
+                                                                        <input matInput name="PaddingTop"
+                                                                            [(ngModel)]="barcode.PaddingTop">
+                                                                        <mat-error>Barcode paddingTop </mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>padding Botton</mat-label>
+                                                                        <input matInput name="PaddingBotton"
+                                                                            [(ngModel)]="barcode.PaddingBotton">
+                                                                        <mat-error>Barcode PaddingBotton </mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>padding Left</mat-label>
+                                                                        <input matInput name="PaddingLeft"
+                                                                            [(ngModel)]="barcode.PaddingLeft">
+                                                                        <mat-error>Barcode PaddingLeft </mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>padding Right</mat-label>
+                                                                        <input matInput name="PaddingRight"
+                                                                            [(ngModel)]="barcode.PaddingRight">
+                                                                        <mat-error>Barcode PaddingRight </mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-12 mb-0">
+                                                                    <h2>Margin</h2>
+                                                            </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>Margin Top</mat-label>
+                                                                        <input matInput name="MarginTop"
+                                                                            [(ngModel)]="barcode.MarginTop">
+                                                                        <mat-error>Barcode MarginTop </mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>Margin Botton</mat-label>
+                                                                        <input matInput name="MarginBotton"
+                                                                            [(ngModel)]="barcode.MarginBotton">
+                                                                        <mat-error>Barcode MarginBotton </mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>Margin Left</mat-label>
+                                                                        <input matInput name="MarginLeft"
+                                                                            [(ngModel)]="barcode.MarginLeft">
+                                                                        <mat-error>Barcode MarginLeft </mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>Margin Right</mat-label>
+                                                                        <input matInput name="MarginRight"
+                                                                            [(ngModel)]="barcode.MarginRight">
+                                                                        <mat-error>Barcode MarginRight </mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-12 mb-0">
+                                                                    <h2>Font Size </h2>
+                                                            </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>Barcode Name Font Size </mat-label>
+                                                                        <input matInput name="BarcodeNameFontSize"
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="barcode.BarcodeNameFontSize">
+                                                                        <mat-error>BarcodeNameFontSize </mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>MRP FontSize</mat-label>
+                                                                        <input matInput name="MRPFontSize"
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="barcode.MRPFontSize">
+                                                                        <mat-error>MRPFontSize </mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>Inc. Tax FontSize</mat-label>
+                                                                        <input matInput name="IncTaxFontSize"
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="barcode.IncTaxFontSize">
+                                                                        <mat-error>IncTaxFontSize </mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>ProductBrand FontSize</mat-label>
+                                                                        <input matInput name="ProductBrandFontSize"
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="barcode.ProductBrandFontSize">
+                                                                        <mat-error>ProductBrandFontSize</mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>ProductModel FontSize</mat-label>
+                                                                        <input matInput name="ProductModelFontSize"
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="barcode.ProductModelFontSize">
+                                                                        <mat-error>ProductModelFontSize</mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>MRP Line Height</mat-label>
+                                                                        <input matInput name="MRPLineHeight"
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="barcode.MRPLineHeight">
+                                                                        <mat-error>MRPLineHeight</mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                              
+                                                                <div class="col-md-3 mb-0">
+                                                                    <button class="me-3" mat-raised-button
+                                                                        color="primary" [disabled]="!fbc.valid"
+                                                                        (click)="saveBarcodeFormate()">Save</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="col-md-8"
+                                                style="zoom:100%;">
+                                                <div class="row">
+                                                    <div class="col-12 p-0">
+                                                        <!-- center log -->
+                                                        <span *ngIf="this.barcode.BillHeader == '0'">
+                                                            <div style="width: {{this.barcode.BarcodeWidth}}px; height:{{this.barcode.BarcodeHeight}}px; padding:{{this.barcode.BarcodePadding}}px; margin:{{this.barcode.BarcodeMargin}}px; border:1px solid #000 ;">
+                                                                <table style=" width: {{this.barcode.Leftwidth}}%; float:{{this.barcode.FloatLeftSide}}">
+                                                                    <tr>
+                                                                        <th style="font-size: {{this.barcode.BarcodeNameFontSize}}px;">Barcode Name</th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th> 
+                                                                            44444444
+                                                                            
+                                                                        </th>
+                                                                    </tr>
+                                                                </table> 
+                                                               
+                                                                <table style=" width: {{this.barcode.Rightwidth}}%; float:{{this.barcode.FloatRightSide}};overflow: hidden;line-height: {{this.barcode.MRPLineHeight}}px;">
+                                                                    <tr>
+                                                                        <th style="font-size: {{this.barcode.MRPFontSize}}px; ">MRP</th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th style="font-size: {{this.barcode.IncTaxFontSize}}px;">Inc all tax</th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th style="font-size: {{this.barcode.ProductBrandFontSize}}px; ">Product Brand Name</th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th style="font-size: {{this.barcode.ProductModelFontSize}}px; ">Product Model Name</th>
+                                                                    </tr>
+                                                                </table>
+                                                            </div>
+                                                        </span>
+                                                        <!-- center log -->
+                                                        <!-- right log -->
+                                                        <span *ngIf="this.barcode.BillHeader == '1'">
+                                                        </span>
+                                                        <!-- right log -->
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </div>
                                     </div>

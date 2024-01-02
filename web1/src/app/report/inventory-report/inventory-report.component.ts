@@ -102,6 +102,8 @@ export class InventoryReportComponent implements OnInit {
   editPurchaseProductExpiryReport = false
   deletePurchaseProductExpiryReport = false
 
+  searchby = true;
+
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'InventoryReport') {
@@ -329,7 +331,7 @@ export class InventoryReportComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.as.successToast(res.message)
-          
+          this.searchby = false
         
           this.inventoryList = res.data
           this.inventoryList.forEach((element: any) => {
@@ -502,6 +504,7 @@ export class InventoryReportComponent implements OnInit {
       const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem).subscribe({
         next: (res: any) => {
           if(res.success){
+            this.searchby = false
             this.ProductExpiryList = res.data
             this.ProductExpiryList.forEach((element: any) => {
               element.ProductName = element.ProductName.trim()
@@ -631,5 +634,9 @@ export class InventoryReportComponent implements OnInit {
     }
     return event;
   }
+
+  showFitter(){
+    this.searchby = true
+   }
 
 }

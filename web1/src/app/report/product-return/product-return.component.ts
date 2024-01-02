@@ -54,6 +54,7 @@ export class ProductReturnComponent implements OnInit {
   DetailtotalGstAmount = 0;
   gstdetails:any = []
 
+  searchby = true;
 
   constructor(
     private router: Router,
@@ -178,6 +179,7 @@ export class ProductReturnComponent implements OnInit {
     const subs: Subscription =  this.purchaseService.getPurchasereturnreports(Parem).subscribe({
       next: (res: any) => {
         if(res.success){
+          this.searchby = false
           this.ReturnMasterList = res.data;
           this.as.successToast(res.message)
           this.ReturnMasterList.forEach((e: any) => {
@@ -374,6 +376,7 @@ export class ProductReturnComponent implements OnInit {
     const subs: Subscription =  this.purchaseService.getPurchasereturndetailreports(Parem).subscribe({
       next: (res: any) => {
         if(res.success){
+          this.searchby = false
           this.RetureDetailList = res.data
           this.DetailtotalQty = res.calculation[0].totalQty;
           this.DetailtotalDiscount = res.calculation[0].totalDiscount.toFixed(2);
@@ -493,4 +496,7 @@ onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
   return event;
 }
 
+showFitter(){
+  this.searchby = true
+ }
 }
