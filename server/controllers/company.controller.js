@@ -146,7 +146,7 @@ module.exports = {
                         if (item.Type === 'DropDown') {
                             item.SptTableName = item.ProductName + Math.floor(Math.random() * 999999) + 1;
                         } else {
-                            item.SptTableName = ''
+                            item.SptTableName = '0'
                         }
                         if (item.Type === 'DropDown') {
                             const [saveSpec] = await mysql2.pool.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', ${saveCompany.insertId}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now())`)
@@ -809,7 +809,7 @@ module.exports = {
                 if (item.Type === 'DropDown') {
                     item.SptTableName = item.SptTableName + item.CompanyID;
                 } else {
-                    item.SptTableName = ''
+                    item.SptTableName = '0'
                 }
                 if (item.Type === 'DropDown') {
                     console.log(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', ${item.CompanyID}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',${item.Status},0,now())`);
