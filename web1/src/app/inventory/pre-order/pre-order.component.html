@@ -295,7 +295,7 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0"  *ngIf="company.RetailPrice === 'true'">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Retail Rate</mat-label>
                                         <input matInput name="SaleRate" type="number" min="0"
@@ -306,7 +306,7 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0"  *ngIf="company.WholeSale === 'true' || shop.WholesaleBill === 'true' && item.WholeSale === 'true'">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Wholesale Rate</mat-label>
                                         <input matInput name="WSaleRate" type="number" min="0"

@@ -1527,13 +1527,38 @@ export class BillComponent implements OnInit {
           backdrop: false,
         }).then((result) => {
           if (result.isConfirmed) {
-            this.sp.show();
+            this.sp.show()
+
+            let billlIst: any[] = this.billItemList
+            this.billItemList.forEach((ele: any) => {
+              if (ele.Status === 2) {
+                ele.Status = 0;
+                ele.CancelStatus = 0;
+                ele.DuaCal = 'delete2';
+              }
+            })
+            this.serviceLists.forEach((ele: any) => {
+              if (ele.Status === 2) {
+                ele.Status = 0;
+                ele.CancelStatus = 0;
+                ele.DuaCal = 'delete2';
+              }
+            })
+            this.billItemList = billlIst
             this.billItemList[i].Status = 0;
             this.billItemList[i].CancelStatus = 0;
             this.billItemList[i].DuaCal = 'delete';
+
             this.data.billMaseterData = this.BillMaster;
             this.data.billDetailData = this.billItemList[i];
             this.calculateGrandTotal();
+            if (this.data.billMaseterData.TotalAmount === 0) {
+              this.data.billMaseterData.AddlDiscountPercentage = 0
+              this.data.billMaseterData.AddlDiscount = 0
+            } else {
+              this.AddDiscalculate('AddlDiscountPercentage', 'discount')
+            }
+
             delete this.data.service
             this.sp.show()
             const subs: Subscription = this.bill.cancelProduct(this.data).subscribe({

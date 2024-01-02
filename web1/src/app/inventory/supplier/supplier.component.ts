@@ -89,7 +89,7 @@ export class SupplierComponent implements OnInit {
   supplierDropList :any = []
   dropShoplist :any = []
   note: any = {
-    SupplierID:null, ShopID:null, CreditNumber:null,  CreditDate:'00-00-0000',  Amount:0, Remark:'',
+    SupplierID:null, ShopID:null, CreditNumber:null,  CreditDate:'',  Amount:0, Remark:'',
   }
 
   async ngOnInit(): Promise<void> {
