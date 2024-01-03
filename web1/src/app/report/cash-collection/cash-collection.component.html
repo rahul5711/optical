@@ -83,8 +83,8 @@
                                 </div>
                             </form>
                             <!--  list -->
-                            <div class="body p-2">
-                                <div id="PurchasePDF" class="col-sm-12" style="overflow: auto; height: 450px;">
+                            <div class="body p-2" >
+                                <div id="print-content" class="col-sm-12" style="overflow: auto; height: 450px;">
                                     <table class="table table-striped table-hover table-sm table-bordered"
                                         style="border: 2px solid #fff !important;" id="CaseConExcel">
                                         <thead>
@@ -97,27 +97,20 @@
                                                 <th>MobileNo</th>
                                                 <th>Payment Mode</th>
                                                 <th>Amount</th>
-                                                <th>DueAmount</th>
-                                                <th>Payable Amount</th>
-                                                <th>Bill Amount</th>
+                                                <th class="hide-on-print">DueAmount</th>
+                                                <th class="hide-on-print">Payable Amount</th>
+                                                <th class="hide-on-print">Bill Amount</th>
                                                 <th>Payment Status</th>
-                                                <th>DeliveryDate</th>
+                                                <th class="hide-on-print">DeliveryDate</th>
                                                 <th>ShopName</th>
                                             </tr>
-                                            <tr class="totolRow">
+                                            <tr class="totolRow hide-on-print">
                                                 <td>
                                                     <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                         aria-hidden="true" type="button" (click)="exportAsXLSX()"> </i>
-                                                    <button class="bg_none ms-4"
-                                                        printTitle="Cash_Collection Report {{this.selectsShop}}"
-                                                        
-                                                        printSectionId="PurchasePDF" ngxPrint ngxPrint
-                                                        [printStyle]="{th : {'color': '#000','border': '1px solid #000','font-Size':'17px'},td : {'color': '#000','border': '1px solid #000','text-align':'center'}, thead : {'background': '#e2e2e2'}, table:{'zoom': '80%','border-collapse': 'collapse','margin': '0', 'panding':'0', 'font-family': 'Arial, Helvetica, sans-serif','background-image' : 'url({{this.selectsShopimg}})', 'background-size':'100%' , 'height':'100%'} }">
-                                                        <i class="far fa-file-pdf "
-                                                            style="color: #1a1e90;font-size: 22px;cursor: pointer;">
-                                                        </i>
-                                                        
-                                                    </button>
+                                                        <button class="bg_none ms-4" (click)="print()">
+                                                            <i class="far fa-file-pdf" style="color: #1a1e90; font-size: 22px; cursor: pointer;"></i>
+                                                          </button>
                                                 </td>
                                                 <td></td>
                                                 <td></td>
@@ -126,11 +119,11 @@
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
+                                                <td class="hide-on-print"></td>
+                                                <td class="hide-on-print"></td>
+                                                <td class="hide-on-print"></td>
                                                 <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td class="hide-on-print"></td>
                                                 <td></td>
                                             </tr>
                                         </thead>
@@ -141,34 +134,37 @@
                                                 <td> {{dateFormat(d.BillDate) }}</td>
                                                 <td> {{dateFormat(d.PaymentDate) }}</td>
                                                 <td> {{ d.CustomerName }} </td>
-                                                <td> {{ d.MobileNo }} </td>
+                                                <td> {{ d.MobileNo1 }} </td>
                                                 <td> {{ d.PaymentMode }} {{d.CreditType === 'Debit' ? '(' + d.CreditType + ')' : ''}} </td>
                                                 <td> {{ d.Amount }} </td>
-                                                <td> {{ d.DueAmount }} </td>
-                                                <td> {{ d.PayableAmount }} </td>
-                                                <td> {{ d.TotalAmount }} </td>
+                                                <td class="hide-on-print"> {{ d.DueAmount }} </td>
+                                                <td class="hide-on-print"> {{ d.PayableAmount }} </td>
+                                                <td class="hide-on-print"> {{ d.TotalAmount }} </td>
                                                 <td> {{ d.PaymentStatus}} <span
                                                         *ngIf="d.PaymentStatus === 'Paid'">(Deliverd)</span> <span
                                                         *ngIf="d.PaymentStatus === 'Unpaid'">(Pending)</span></td>
-                                                <td>{{dateFormat(d.DeliveryDate) }}</td>
+                                                <td class="hide-on-print">{{dateFormat(d.DeliveryDate) }}</td>
                                                 <td> {{ d.ShopName }}<span [style.color]="'blue'"
                                                         *ngIf="d.AreaName !== 'null'">({{d.AreaName}})</span> </td>
                                             </tr>
                                         </tbody>
-                                        <tfoot style="display: none;">
-                                            <tr style=" background-color: red; color:#fff">
-                                                <th colspan="2" *ngFor="let p of paymentMode">{{p.Name | uppercase}} - {{p.Amount}}</th>
-                                                <th colspan="2"> AMTRETURNByCREDIT - {{this.AmountReturnByCredit}}</th>
-                                                <th colspan="2"> AMTRETURNByDEBIT - {{this.AmountReturnByDebit}}</th>
-                                                <th colspan="2"> TOTALAMOUNT - {{this.totalAmount}}</th>
-                                                <th colspan="2"> OLD AMOUNT - {{this.oldPayment}}</th>
-                                                <th colspan="2"> ADVANCE AMOUNT - {{this.newPayment}}</th>
-                                            </tr>
-                                        </tfoot>
                                     </table>
+                                    <table  class="table table-striped table-hover table-sm table-bordered"
+                                    style=" width: 100%;" id="CaseConExcel">
+                                    <tfoot class="hide-on-print">
+                                        <tr style="background-color: #dcdcdc;">
+                                            <th style="border: 1px solid #ff1d1d;" *ngFor="let p of paymentMode">{{p.Name | uppercase}} - {{p.Amount}}</th>
+                                            <th style="border: 1px solid #ff1d1d;"> AMTRETURNByCREDIT - {{this.AmountReturnByCredit}}</th>
+                                            <th style="border: 1px solid #ff1d1d;"> AMTRETURNByDEBIT - {{this.AmountReturnByDebit}}</th>
+                                            <th style="border: 1px solid #ff1d1d;"> TOTALAMOUNT - {{this.totalAmount}}</th>
+                                            <th style="border: 1px solid #ff1d1d;"> OLD AMOUNT - {{this.oldPayment}}</th>
+                                            <th style="border: 1px solid #ff1d1d;"> ADVANCE AMOUNT - {{this.newPayment - this.AmountReturnByCredit}}</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
                                 </div>
-                                <div id="PurchasePDF" class="col-sm-12" *ngIf="dataList.length != 0">
-                                <table class="table table-striped table-hover table-sm table-bordered"
+                                <div  class="col-sm-12" *ngIf="dataList.length != 0">
+                                <table id="print-content" class="table table-striped table-hover table-sm table-bordered"
                                     style="border: 2px solid #ff1d1d !important; width: 100%;" id="CaseConExcel">
                                     <thead >
                                         <tr>
