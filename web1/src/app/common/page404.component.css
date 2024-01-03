@@ -26,9 +26,9 @@ body {
     font-weight: 300;
   }
   .message-box h1 {
-    font-size: 156px;
-    line-height: 50px;
-    margin-bottom: 40px;
+    font-size: 40px;
+    line-height: 36px;
+    margin-bottom: 15px;
     transition:  0.1s linear;
     animation: PageNot 1.5s infinite ease-in-out alternate;
   }
@@ -53,8 +53,8 @@ body {
     color: #fff;
   }
   @keyframes PageNot {
-    from {color: #fff;}
-    to {color: #1e2969 ;}
+    from {color: #20bc35;}
+    to {color: #ffffff ;}
   }
   #Polygon-1,
   #Polygon-2,

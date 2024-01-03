@@ -171,7 +171,7 @@
                                     </form>
                                     <!-- Purchase list -->
                                     <div class="body p-2">
-                                        <div id="PurchasePDF" class="col-sm-12" style="overflow: auto; height: 450px;">
+                                        <div id="sale-content" class="col-sm-12" style="overflow: auto; height: 450px;">
                                             <table class="table table-striped table-hover table-sm table-bordered"
                                                 style="border: 2px solid #fff !important;" id="SaleExcel">
                                                 <thead>
@@ -205,11 +205,7 @@
                                                                 aria-hidden="true" type="button"
                                                                 (click)="exportAsXLSXMaster()">
                                                             </i>
-
-                                                            <button class="bg_none ms-4"
-                                                            printTitle="sale Report {{this.shopLists}}"
-                                                            printSectionId="PurchasePDF" ngxPrint
-                                                            styleSheetFile="../../../assets/pdf.css">
+                                                            <button class="bg_none ms-4" (click)="print('sale-content')" >
                                                             <i class="far fa-file-pdf "
                                                                 style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
                                                         </button>
@@ -552,19 +548,17 @@
                                                     (click)="BillDetailsFromReset()">
                                                     Reset
                                                 </button>
-                                                <button class=" ms-3" mat-raised-button color="primary"
-                                                    printTitle="Sale Product Report {{this.shopLists}}"
-                                                    printSectionId="producttype" ngxPrint
-                                                    styleSheetFile="../../../assets/pdf.css">
+                                                <button class=" ms-3" mat-raised-button color="primary" (click)="print('saleDetail-content')" >
                                                     <i class="far fa-file-pdf "
-                                                        style="color: #ffffff;font-size: 22px;cursor: pointer;"> </i>
+                                                        style="color: #ffffff;font-size: 22px;cursor: pointer;"> 
+                                                    </i>
                                                 </button>
                                             </div>
                                         </div>
                                     </form>
                                     <!-- Purchase Detailed list -->
                                     <div class="body p-2">
-                                        <div id="producttype" class="col-sm-12" style="overflow: auto; height: 450px;">
+                                        <div id="saleDetail-content" class="col-sm-12" style="overflow: auto; height: 450px;">
                                             <table class="table table-striped table-hover table-sm table-bordered"
                                                 style="border: 2px solid #fff !important;" id="saleDetailExcel">
                                                 <thead>
