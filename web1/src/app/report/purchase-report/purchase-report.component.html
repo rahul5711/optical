@@ -9,11 +9,6 @@
                 <div class="col-md-2 col-8 p-0 ms-3">
                   <h2>Purchase Report </h2>
                 </div>
-                <div class="col-md-1 col-4 ">
-                  <button (click)="showFitter()"  mat-raised-button color="primary">
-                    Show Filter
-                  </button>
-                </div>
               </div>
             </div>
             <mat-tab-group>
@@ -21,7 +16,7 @@
               <mat-tab *ngIf="viewPurchaseReport" label="Purchase">
                 <div class="body">
                   <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getPurchaseMaster()">
-                    <div class="row" *ngIf="this.searchby == true">
+                    <div class="row" >
                       <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>From</mat-label>
@@ -188,7 +183,7 @@
               <mat-tab *ngIf="viewPurchaseProductReport" label="Purchase (Product Type)">
                 <div class="body">
                   <form class="p-3 pb-0" #f2="ngForm" (ngSubmit)="getPurchaseDetails()">
-                    <div class="row" *ngIf="this.searchby == true">
+                    <div class="row" >
                       <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>From</mat-label>
@@ -476,7 +471,7 @@
               <mat-tab *ngIf="viewPurchaseChargeReport" label="Purchase Charge">
                 <div class="body">
                   <form class="p-3 pb-0" #f3="ngForm" (ngSubmit)="purchaseCharge()">
-                    <div class="row" *ngIf="this.searchby == true">
+                    <div class="row" >
                       <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>From Date</mat-label>
@@ -584,7 +579,7 @@
               <mat-tab *ngIf="viewPurchaseProductExpiryReport" label="Purchase (Product Expiry)">
                 <div class="body">
                   <form class="p-3 pb-0" #f4="ngForm" (ngSubmit)="purchaseProductExpiry()">
-                    <div class="row" *ngIf="this.searchby == true">
+                    <div class="row" >
                       <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>From</mat-label>

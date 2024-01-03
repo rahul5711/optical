@@ -164,7 +164,6 @@ FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format(
   ExpirytotalGstAmount: any;
   gstExpiry:any
   todaydate: any;
-  searchby = true;
   
 
   ngOnInit(): void {
@@ -357,7 +356,6 @@ FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format(
         if(res.success){
           this.as.successToast(res.message)
           this.BillMasterList = res.data;
-          this.searchby = false
           this.BillMasterList.forEach((e: any) => {
             let g :any = {type: 'iGST' , amt : 0}
             let gs : any = {type: 'cGST-sGST' , amt : 0}
@@ -582,7 +580,6 @@ FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format(
     const subs: Subscription =  this.bill.getSalereportsDetail(Parem).subscribe({
       next: (res: any) => {
         if(res.success){
-          this.searchby = false
           this.as.successToast(res.message)
           this.BillDetailList = res.data
 
@@ -653,7 +650,6 @@ FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format(
     const subs: Subscription =  this.bill.saleServiceReport(Parem).subscribe({
       next: (res: any) => {
         if(res.success){
-          this.searchby = false
           this.as.successToast(res.message)
           this.BillServiceList = res.data
           this.ServiceAmount = (res.calculation[0].totalAmount).toFixed(2);
@@ -841,7 +837,6 @@ FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format(
     const subs: Subscription =  this.bill.getCancelProductReport(Parem).subscribe({
       next: (res: any) => {
         if(res.success){
-          this.searchby = false
           this.as.successToast(res.message)
           this.cancelList = res.data
           this.canceltotalQty = res.calculation[0].totalQty;
@@ -1031,7 +1026,6 @@ getProductPending(){
     next: (res: any) => {
       if(res.success){
         this.as.successToast(res.message)
-        this.searchby = false
         this.pendingList = res.data
         this.pendingtotalQty = res.calculation[0].totalQty;
         this.pendingtotalDiscount = res.calculation[0].totalDiscount;
@@ -1264,7 +1258,6 @@ getBillExpiry(){
     next: (res: any) => {
       if(res.success){
         this.as.successToast(res.message)
-        this.searchby = false
         this.ExpiryList = res.data
         this.ExpiryList.forEach((element: any) => {
           if(element.ProductExpDate < this.todaydate) {
@@ -1323,7 +1316,4 @@ onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
   return event;
 }
 
-showFitter(){
- this.searchby = true
-}
 }

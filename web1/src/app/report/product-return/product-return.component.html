@@ -9,11 +9,7 @@
                   <div class="col-md-4 col-8 p-0 ms-3">
                     <h2>Product Return Report </h2>
                   </div>
-                  <div class="col-md-1 col-4 ">
-                    <button (click)="showFitter()"  mat-raised-button color="primary">
-                      Show Filter
-                    </button>
-                  </div>
+                 
                 </div>
               </div>
               <mat-tab-group>
@@ -21,7 +17,7 @@
                 <mat-tab *ngIf="viewProductReturnReport" label="Return">
                   <div class="body">
                     <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getPurchaseReturnMaster()">
-                      <div class="row" *ngIf="this.searchby == true">
+                      <div class="row" >
                         <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                           <mat-form-field class="example-full-width mb-0">
                             <mat-label>From</mat-label>
@@ -171,7 +167,7 @@
                 <mat-tab *ngIf="viewProductReturnProductTypeReport" label="Return (Product Type)">
                   <div class="body">
                     <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getReturnDetails()">
-                      <div class="row" *ngIf="this.searchby == true">
+                      <div class="row" >
                         <div class="col-xl-2 col-lg-2 col-md-2 col-6">
                           <mat-form-field class="example-full-width mb-0">
                             <mat-label>From</mat-label>

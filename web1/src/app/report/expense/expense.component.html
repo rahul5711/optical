@@ -9,16 +9,11 @@
                                 <div class="col-md-2 col-8 p-0 ms-3">
                                     <h2>Expenses</h2>
                                 </div>
-                                <div class="col-md-1 col-4 ">
-                                    <button (click)="showFitter()"  mat-raised-button color="primary">
-                                        Show Filter
-                                    </button>
-                                  </div>
                             </div>
                         </div>
                         <div class="body">
                             <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="searchData()">
-                                <div class="row" *ngIf="this.searchby == true">
+                                <div class="row" >
                                     <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0">
                                             <mat-label>From</mat-label>
@@ -88,7 +83,7 @@
                             </form>
                             <!--  list -->
                             <div class="body p-2">
-                                <div id="ExpensePDF" class="col-sm-12" style="overflow: auto; height: 450px;">
+                                <div id="print-content" class="col-sm-12" style="overflow: auto; height: 450px;">
                                     <table class="table table-striped table-hover table-sm table-bordered"
                                         style="border: 2px solid #fff !important;" id="ExpenseExcel">
                                         <thead>
@@ -107,11 +102,8 @@
                                                 <td>
                                                     <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                         aria-hidden="true" type="button" (click)="exportAsXLSX()"> </i>
-                                                        <button class="bg_none ms-4"
-                                                        printTitle="Expense Report - {{this.shopLists}}"
-                                                        printSectionId="ExpensePDF" ngxPrint
-                                                        ngxPrint [printStyle]="{th : {'color': '#000','border': '1px solid #000','font-Size':'17px'},td : {'color': '#000','border': '1px solid #000','text-align':'center'}, thead : {'background': '#e2e2e2'}, table:{'border': '1px solid #000','zoom': '100%','border-collapse': 'collapse','margin': '0', 'panding':'0', 'font-family': 'Arial, Helvetica, sans-serif'} }">
-                                                        <i class="far fa-file-pdf "
+                                                        <button class="bg_none ms-4" (click)="print()"
+                                                             ><i class="far fa-file-pdf "
                                                             style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
                                                     </button>
                                                 </td>
