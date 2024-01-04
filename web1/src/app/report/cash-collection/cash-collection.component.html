@@ -89,63 +89,124 @@
                                         style="border: 2px solid #fff !important;" id="CaseConExcel">
                                         <thead>
                                             <tr style="white-space: nowrap;">
-                                                <th>S.No</th>
-                                                <th>Invoice No</th>
-                                                <th>Invoice Date</th>
-                                                <th>Payment Date</th>
-                                                <th>Customer Name</th>
-                                                <th>MobileNo</th>
-                                                <th>Payment Mode</th>
-                                                <th>Amount</th>
-                                                <th class="hide-on-print">DueAmount</th>
-                                                <th class="hide-on-print">Payable Amount</th>
-                                                <th class="hide-on-print">Bill Amount</th>
-                                                <th>Payment Status</th>
-                                                <th class="hide-on-print">DeliveryDate</th>
-                                                <th>ShopName</th>
+                                                <th>S.No </th>
+                                                <th *ngIf="columnVisibility.InvoiceNo"      >Invoice No</th>
+                                                <th *ngIf="columnVisibility.InvoiceDate"    >Invoice Date</th>
+                                                <th *ngIf="columnVisibility.PaymentDate"    >Payment Date</th>
+                                                <th *ngIf="columnVisibility.CustomerName"   >Customer Name</th>
+                                                <th *ngIf="columnVisibility.MobileNo"       >MobileNo</th>
+                                                <th *ngIf="columnVisibility.PaymentMode"    >Payment Mode</th>
+                                                <th *ngIf="columnVisibility.Amount"         >Amount</th>
+                                                <th *ngIf="columnVisibility.DueAmount"      >DueAmount</th>
+                                                <th *ngIf="columnVisibility.PayableAmount"  >Payable Amount</th>
+                                                <th *ngIf="columnVisibility.BillAmount"     >Bill Amount</th>
+                                                <th *ngIf="columnVisibility.PaymentStatus"  >Payment Status</th>
+                                                <th *ngIf="columnVisibility.DeliveryDate"   >DeliveryDate</th>
+                                                <th *ngIf="columnVisibility.ShopName"       >ShopName</th>
                                             </tr>
                                             <tr class="totolRow hide-on-print">
                                                 <td>
+                                                   
                                                     <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                         aria-hidden="true" type="button" (click)="exportAsXLSX()"> </i>
-                                                        <button class="bg_none ms-4" (click)="print()">
+                                                        
+                                                        <button class="bg_none ms-4 me-1" (click)="print()">
                                                             <i class="far fa-file-pdf" style="color: #1a1e90; font-size: 22px; cursor: pointer;"></i>
                                                           </button>
+                                                          <div class="button-container">
+                                                            <button class="bg_none">
+                                                                <i class="fa-solid fa-filter" style="font-size: 20px; color: #f44336;"></i>
+                                                            </button>
+                                                            <div class="hover-box">
+                                                                
+                                                                <button (click)="toggleColumnVisibility('InvoiceNo')">
+                                                                    <mat-checkbox class="me-2" name="InvoiceNo" [(ngModel)]="columnVisibility.InvoiceNo"></mat-checkbox>
+                                                                     InvoiceNo
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('InvoiceDate')">
+                                                                    <mat-checkbox class="me-2" name="InvoiceDate" [(ngModel)]="columnVisibility.InvoiceDate"></mat-checkbox>
+                                                                     InvoiceDate
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('PaymentDate')">
+                                                                    <mat-checkbox class="me-2" name="PaymentDate" [(ngModel)]="columnVisibility.PaymentDate"></mat-checkbox>
+                                                                     PaymentDate
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('CustomerName')">
+                                                                    <mat-checkbox class="me-2" name="CustomerName" [(ngModel)]="columnVisibility.CustomerName"></mat-checkbox>
+                                                                     CustomerName
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('MobileNo')">
+                                                                    <mat-checkbox class="me-2" name="MobileNo" [(ngModel)]="columnVisibility.MobileNo"></mat-checkbox>
+                                                                     MobileNo
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('PaymentMode')">
+                                                                    <mat-checkbox class="me-2" name="PaymentMode" [(ngModel)]="columnVisibility.PaymentMode"></mat-checkbox>
+                                                                     PaymentMode
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('Amount')">
+                                                                    <mat-checkbox class="me-2" name="Amount" [(ngModel)]="columnVisibility.Amount"></mat-checkbox>
+                                                                     Amount
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('DueAmount')">
+                                                                    <mat-checkbox class="me-2" name="DueAmount" [(ngModel)]="columnVisibility.DueAmount"></mat-checkbox>
+                                                                     DueAmount
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('PayableAmount')">
+                                                                    <mat-checkbox class="me-2" name="PayableAmount" [(ngModel)]="columnVisibility.PayableAmount"></mat-checkbox>
+                                                                     PayableAmount
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('BillAmount')">
+                                                                    <mat-checkbox class="me-2" name="BillAmount" [(ngModel)]="columnVisibility.BillAmount"></mat-checkbox>
+                                                                     BillAmount
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('PaymentStatus')">
+                                                                    <mat-checkbox class="me-2" name="PaymentStatus" [(ngModel)]="columnVisibility.PaymentStatus"></mat-checkbox>
+                                                                     PaymentStatus
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('DeliveryDate')">
+                                                                    <mat-checkbox class="me-2" name="DeliveryDate" [(ngModel)]="columnVisibility.DeliveryDate"></mat-checkbox>
+                                                                     DeliveryDate
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('ShopName')">
+                                                                    <mat-checkbox class="me-2" name="ShopName" [(ngModel)]="columnVisibility.ShopName"></mat-checkbox>
+                                                                     ShopName
+                                                                </button>
+
+                                                              
+                                                            </div>
+                                                        </div>
                                                 </td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td class="hide-on-print"></td>
-                                                <td class="hide-on-print"></td>
-                                                <td class="hide-on-print"></td>
-                                                <td></td>
-                                                <td class="hide-on-print"></td>
-                                                <td></td>
+                                                <td *ngIf="columnVisibility.InvoiceNo"    ></td>
+                                                <td *ngIf="columnVisibility.InvoiceDate"  ></td>
+                                                <td *ngIf="columnVisibility.PaymentDate"  ></td>
+                                                <td *ngIf="columnVisibility.CustomerName" ></td>
+                                                <td *ngIf="columnVisibility.MobileNo"     ></td>
+                                                <td *ngIf="columnVisibility.PaymentMode"  ></td>
+                                                <td *ngIf="columnVisibility.Amount"       ></td>
+                                                <td *ngIf="columnVisibility.DueAmount"    ></td>
+                                                <td *ngIf="columnVisibility.PayableAmount"></td>
+                                                <td *ngIf="columnVisibility.BillAmount"   ></td>
+                                                <td *ngIf="columnVisibility.PaymentStatus"></td>
+                                                <td *ngIf="columnVisibility.DeliveryDate" ></td>
+                                                <td *ngIf="columnVisibility.ShopName"     ></td>
                                             </tr>
                                         </thead>
                                         <tbody class="text-center">
                                             <tr *ngFor="let d of dataList; let i = index" text="left">
                                                 <td> {{ i+1 }} </td>
-                                                <td> {{ d.InvoiceNo }} </td>
-                                                <td> {{dateFormat(d.BillDate) }}</td>
-                                                <td> {{dateFormat(d.PaymentDate) }}</td>
-                                                <td> {{ d.CustomerName }} </td>
-                                                <td> {{ d.MobileNo1 }} </td>
-                                                <td> {{ d.PaymentMode }} {{d.CreditType === 'Debit' ? '(' + d.CreditType + ')' : ''}} </td>
-                                                <td> {{ d.Amount }} </td>
-                                                <td class="hide-on-print"> {{ d.DueAmount }} </td>
-                                                <td class="hide-on-print"> {{ d.PayableAmount }} </td>
-                                                <td class="hide-on-print"> {{ d.TotalAmount }} </td>
-                                                <td> {{ d.PaymentStatus}} <span
-                                                        *ngIf="d.PaymentStatus === 'Paid'">(Deliverd)</span> <span
-                                                        *ngIf="d.PaymentStatus === 'Unpaid'">(Pending)</span></td>
-                                                <td class="hide-on-print">{{dateFormat(d.DeliveryDate) }}</td>
-                                                <td> {{ d.ShopName }}<span [style.color]="'blue'"
-                                                        *ngIf="d.AreaName !== 'null'">({{d.AreaName}})</span> </td>
+                                                <td *ngIf="columnVisibility.InvoiceNo"    > {{ d.InvoiceNo }} </td>
+                                                <td *ngIf="columnVisibility.InvoiceDate"  > {{dateFormat(d.BillDate) }}</td>
+                                                <td *ngIf="columnVisibility.PaymentDate"  > {{dateFormat(d.PaymentDate) }}</td>
+                                                <td *ngIf="columnVisibility.CustomerName" > {{ d.CustomerName }} </td>
+                                                <td *ngIf="columnVisibility.MobileNo"     > {{ d.MobileNo1 }} </td>
+                                                <td *ngIf="columnVisibility.PaymentMode"  > {{ d.PaymentMode }} {{d.CreditType === 'Debit' ? '(' + d.CreditType + ')' : ''}} </td>
+                                                <td *ngIf="columnVisibility.Amount"       > {{ d.Amount }} </td>
+                                                <td *ngIf="columnVisibility.DueAmount"    > {{ d.DueAmount }} </td>
+                                                <td *ngIf="columnVisibility.PayableAmount"> {{ d.PayableAmount }} </td>
+                                                <td *ngIf="columnVisibility.BillAmount"   > {{ d.TotalAmount }} </td>
+                                                <td *ngIf="columnVisibility.PaymentStatus"> {{ d.PaymentStatus}} <span *ngIf="d.PaymentStatus === 'Paid'">(Deliverd)</span> <span *ngIf="d.PaymentStatus === 'Unpaid'">(Pending)</span></td>
+                                                <td *ngIf="columnVisibility.DeliveryDate" > {{dateFormat(d.DeliveryDate) }}</td>
+                                                <td *ngIf="columnVisibility.ShopName"     > {{ d.ShopName }}<span [style.color]="'blue'" *ngIf="d.AreaName !== 'null'">({{d.AreaName}})</span> </td>
                                             </tr>
                                         </tbody>
                                     </table>

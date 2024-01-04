@@ -23,7 +23,23 @@ export class CashCollectionComponent implements OnInit {
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
-
+  columnVisibility: any = {
+    SNo: true,
+    InvoiceNo: true,
+    InvoiceDate: true,
+    PaymentDate: true,
+    CustomerName: true,
+    MobileNo: true,
+    PaymentMode: true,
+    Amount: true,
+    DueAmount: true,
+    PayableAmount: true,
+    BillAmount: true,
+    PaymentStatus: true,
+    DeliveryDate: true,
+    ShopName: true,
+  };
+  
   constructor(
     private ss: ShopService,
     public as: AlertService,
@@ -193,9 +209,9 @@ export class CashCollectionComponent implements OnInit {
     let shop = this.shopList
     this.selectsShop = shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
 
-
     let printContent: any = document.getElementById('print-content');
     let printWindow: any = window.open('pp', '_blank');
+
     printWindow.document.write(`
       <html>
         <head>
@@ -213,7 +229,6 @@ export class CashCollectionComponent implements OnInit {
               .header-body{
                 width:100%;
                 height:220px;
-
               }
               .main-body{
                 width:100%;
@@ -245,26 +260,25 @@ export class CashCollectionComponent implements OnInit {
               th{
                 padding:0px;
                 margin:0px;
-
               }
               table  {
                 padding:0px;
                 margin:0px;
               }
-              td  {
+              td {
                 padding:0px;
                 margin:0px;
               }
               tr:nth-child(even) {
                 background-color: #f2f2f2;
-            }
-            th.hide-on-print,tr.hide-on-print,
-            td.hide-on-print {
-              display: none;
-            }
-            tfoot.hide-on-print {
-              display: block;
-            }
+              }
+              th.hide-on-print,tr.hide-on-print,
+              td.hide-on-print {
+                display: none;
+              }
+              tfoot.hide-on-print {
+                display: block;
+              }
             }
           </style>
         </head>
@@ -289,7 +303,12 @@ export class CashCollectionComponent implements OnInit {
       element.classList.add('hide-on-print');
     });
 
+    
     printWindow.document.close();
     printWindow.print();
+  }
+
+  toggleColumnVisibility(column: string): void {
+    this.columnVisibility[column] = !this.columnVisibility[column];
   }
 }
