@@ -8,6 +8,7 @@ import { ShopService } from 'src/app/service/shop.service';
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
 import { FormBuilder,FormGroup } from '@angular/forms';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-transfer-product-report',
@@ -15,6 +16,7 @@ import { FormBuilder,FormGroup } from '@angular/forms';
   styleUrls: ['./transfer-product-report.component.scss']
 })
 export class TransferProductReportComponent implements OnInit {
+  env = environment;
   user:any =JSON.parse(localStorage.getItem('user') || '');
   shop:any =JSON.parse(localStorage.getItem('shop') || '');
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '');
@@ -285,5 +287,111 @@ onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
   return event;
 }
 
+print() {
+  let shop = this.shopList
+  this.selectsShop = shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
 
+  let printContent: any = document.getElementById('print-content');
+  let printWindow: any = window.open('pp', '_blank');
+  printWindow.document.write(`
+    <html>
+      <head>
+      <title>Product Transfer Report</title>
+        <style>
+          @media print {
+
+            body {
+              margin:0;
+              padding:0;
+              zoom:90%;
+              width:100%;
+              font-family: 'Your Font Family', sans-serif;
+            }
+            .header-body{
+              width:100%;
+              height:220px;
+
+            }
+            .main-body{
+              width:100%;
+            }
+            .header-body .print-title {
+              width:55%;
+              text-align: left;
+              margin-bottom: 20px;
+              float:right;
+            }
+            .header-body .print-logo {
+              width:40%;
+              text-align: center;
+              margin-bottom: 0px;
+              float:left;
+            }
+            .print-logo img{
+              width: 100%;
+              height: 200px;
+              object-fit: contain;
+            }
+            thead{
+              background-color: #dcdcdc;
+              height:50px;
+            }
+            thead tr{
+              height:30px;
+            }
+            th{
+              padding:0px;
+              margin:0px;
+
+            }
+            table  {
+              padding:0px;
+              margin:0px;
+              text-align: center;
+            }
+            td  {
+              padding:0px;
+              margin:0px;
+            }
+            tr:nth-child(even) {
+              background-color: #f2f2f2;
+          }
+          th.hide-on-print,totolRow,
+          td.hide-on-print {
+            display: none;
+          }
+          tfoot.hide-on-print {
+            display: block;
+          }
+          .totolRow  td{
+            color:red !important;
+            font-weight: 600 !important;
+          }
+          }
+        </style>
+      </head>
+      <body>
+      <div class="header-body">
+        <div class="print-logo ">
+          <img src="${this.env.apiUrl + this.selectsShop[0].LogoURL}" alt="Logo" >
+        </div>
+        <div class="print-title">
+        <h3>${this.selectsShop[0].Name + ' (' + this.selectsShop[0].AreaName + ')'}</h3>
+        <h4 style="font-weight: 300; letter-spacing: 1px;">${this.selectsShop[0].Address}</h4>
+        </div>
+      </div>
+      <div class="main-body">
+        ${printContent.innerHTML}
+      </div>
+      </body>
+    </html>
+  `);
+
+  printWindow.document.querySelectorAll('.hide-on-print').forEach((element: any) => {
+    element.classList.add('hide-on-print');
+  });
+
+  printWindow.document.close();
+  printWindow.print();
+}
 }

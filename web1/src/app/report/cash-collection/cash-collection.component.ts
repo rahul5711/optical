@@ -187,11 +187,8 @@ export class CashCollectionComponent implements OnInit {
     };
     this.dataList = [];
   }
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.print();
-    }, 1000); // Adjust the delay as needed
-  }
+
+
   print() {
     let shop = this.shopList
     this.selectsShop = shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
@@ -222,13 +219,13 @@ export class CashCollectionComponent implements OnInit {
                 width:100%;
               }
               .header-body .print-title {
-                width:45%;
+                width:55%;
                 text-align: left;
                 margin-bottom: 20px;
                 float:right;
               }
               .header-body .print-logo {
-                width:50%;
+                width:40%;
                 text-align: center;
                 margin-bottom: 0px;
                 float:left;
@@ -277,8 +274,8 @@ export class CashCollectionComponent implements OnInit {
             <img src="${this.env.apiUrl + this.selectsShop[0].LogoURL}" alt="Logo" >
           </div>
           <div class="print-title">
-            <h1>${this.selectsShop[0].Name + ' (' + this.selectsShop[0].AreaName + ')'}</h1>
-            <h2>${this.selectsShop[0].Address}</h2>
+            <h3>${this.selectsShop[0].Name + ' (' + this.selectsShop[0].AreaName + ')'}</h3>
+            <h4 style="font-weight: 300; letter-spacing: 1px;">${this.selectsShop[0].Address}</h4>
           </div>
         </div>
         <div class="main-body">
