@@ -12,12 +12,14 @@ router.post('/fetchBillMaster', verifyAccessTokenAdmin, Controller.fetchBillMast
 router.post('/fetchBillDetail', verifyAccessTokenAdmin, Controller.fetchBillDetail)
 router.post('/fetchBillDetailPreOrder', verifyAccessTokenAdmin, Controller.fetchBillDetailPreOrder)
 router.post('/fetchBillDetailManual', verifyAccessTokenAdmin, Controller.fetchBillDetailManual)
+router.post('/fetchBillDetailStock', verifyAccessTokenAdmin, Controller.fetchBillDetailStock)
 
 router.post('/fetchChargeMaster', verifyAccessTokenAdmin, Controller.fetchChargeMaster)
 router.post('/savePurchaseCharge', verifyAccessTokenAdmin, Controller.saveChargeMaster)
 router.post('/fetchServiceMaster', verifyAccessTokenAdmin, Controller.fetchServiceMaster)
 router.post('/saveBillService', verifyAccessTokenAdmin, Controller.saveServiceMaster)
 router.post('/saveTransferMaster', verifyAccessTokenAdmin, Controller.saveTransferMaster)
+router.post('/fetchExpense', verifyAccessTokenAdmin, Controller.fetchExpense)
 
 
 module.exports = router
