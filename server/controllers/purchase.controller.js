@@ -884,6 +884,7 @@ module.exports = {
             printdata[0].BarcodeName = shopdetails[0].BarcodeName
             printdata[0].Barcode = barcode[0].Barcode
             printdata.companysetting = companysetting[0]
+            printdata[0].ProductUniqueBarcode = printdata[0].UniqueBarcode;
 
             let ProductFullName = printdata[0].ProductName;
             let ProductBrandName = printdata[0].ProductName.split("/")[1];
@@ -891,6 +892,7 @@ module.exports = {
             printdata[0].ProductBrandName = ProductBrandName;
             printdata[0].ProductModelName = ProductModelName;
             printdata[0].ProductFullName = ProductFullName;
+
             printdata.CompanyID = CompanyID;
             printdata.CompanyBarcode = 5
             var file = "barcode" + CompanyID + ".pdf";
