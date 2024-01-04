@@ -68,7 +68,7 @@ module.exports = {
                 return res.send({ message: `Purchase Already exist from this InvoiceNo ${PurchaseMaster.InvoiceNo}` })
             }
 
-            const purchaseDetail = JSON.parse(PurchaseDetail);
+            const purchaseDetail = JSON.parse(PurchaseDetail).reverse();
 
             if (purchaseDetail.length === 0) {
                 return res.send({ message: "Invalid Query Data purchaseDetail" })
@@ -100,6 +100,7 @@ module.exports = {
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
+            console.log("purchaseDetail ===========>",purchaseDetail);
             //  save purchase detail data
             for (const item of purchaseDetail) {
                 const doesProduct = await doesExistProduct(CompanyID, item)
@@ -202,13 +203,15 @@ module.exports = {
 
 
 
-            const [doesExistSystemID] = await mysql2.pool.query(`select * from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and SupplierID = '${PurchaseMaster.SupplierID}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${PurchaseMaster.ID}`)
+            const [doesExistSystemID] = await mysql2.pool.query(`select * from purchasemasternew where Status = 1  and SupplierID = '${PurchaseMaster.SupplierID}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${PurchaseMaster.ID}`)
+
+            console.log("doesExistSystemID =======>", doesExistSystemID);
 
             if (doesExistSystemID[0].SystemID !== "0") {
                 return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
             }
 
-            const purchaseDetail = JSON.parse(PurchaseDetail);
+            const purchaseDetail = JSON.parse(PurchaseDetail).reverse();
 
             if (purchaseDetail.length === 0) {
                 return res.send({ message: "Invalid Query Data purchaseDetail" })
