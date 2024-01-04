@@ -1000,11 +1000,11 @@ module.exports = {
                     [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(0, 2);
                 }
 
+                
                 ele.ProductFullName = ele.ProductName;
                 ele.ProductBrandName = ProductBrandName.substring(0, 14);
-                ele.ProductModelName = ProductModelName.substring(0, 14);
+                ele.ProductModelName = ProductModelName !== undefined ? ProductModelName.substring(0, 14) : '';
                 ele.ProductUniqueBarcode = ele.UniqueBarcode;
-                console.log(ele.ProductUniqueBarcode);
                 ele.Barcode = ele.BaseBarCode;
                 ele.BarcodeName = shopdetails[0].BarcodeName;
             });
