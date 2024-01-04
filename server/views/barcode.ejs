@@ -139,11 +139,18 @@
                         </div>
                         <div
                             style="text-align: left; font-size: 14px; font-weight: 600;letter-spacing: 0.1px;margin-left: 18px; font-family: verdana ;">
-                            (Inc. of all Taxes) </div>
-                        <div
-                            style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 18px;">
-                            <%=i.ProductBrandName%>
+                            (Inc. of all Taxes) 
                         </div>
+                        
+                        <div style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 18px;">
+                            <% if (data.CompanyID !== 63){%>
+                                 <%=i.ProductBrandName%>
+                            <%}%>
+                            <% if (data.CompanyID === 63){%>
+                                <%=i.ProductUniqueBarcode%>
+                            <%}%>
+                        </div>
+
                         <div
                             style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 18px;">
                             <%=i.ProductModelName%>

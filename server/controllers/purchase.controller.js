@@ -989,8 +989,9 @@ module.exports = {
             // })
 
             printdata.forEach(ele => {
+                
                 let ProductBrandName, ProductModelName;
-
+                
                 if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
                     [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(1, 3);
                 } else {
@@ -1000,6 +1001,7 @@ module.exports = {
                 ele.ProductFullName = ele.ProductName;
                 ele.ProductBrandName = ProductBrandName;
                 ele.ProductModelName = ProductModelName;
+                ele.ProductUniqueBarcode = ele.UniqueBarcode;
                 ele.Barcode = ele.BaseBarCode;
                 ele.BarcodeName = shopdetails[0].BarcodeName;
             });
