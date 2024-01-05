@@ -58,13 +58,14 @@ export class ExpenseComponent implements OnInit {
   ) { this.id = this.route.snapshot.params['id']; }
 
 
-  data: any = { ID: 0, CompanyID: 0, ShopID: 0, Name: '', InvoiceNo: '', Category: '', SubCategory: '', Amount: '', PaymentMode: '', CashType: '', PaymentRefereceNo: '', Comments: '', Status: 1, CreatedBy: '', UpdatedBy: '', CreatedOn: '', UpdatedOn: '', };
+  data: any = { ID: 0, CompanyID: 0,ExpenseDate:'', ShopID: 0, Name: '', InvoiceNo: '', Category: '', SubCategory: '', Amount: '', PaymentMode: '', CashType: '', PaymentRefereceNo: '', Comments: '', Status: 1, CreatedBy: '', UpdatedBy: '', CreatedOn: '', UpdatedOn: '', };
 
   editExpenseList = false
   addExpenseList = false
   deleteExpenseList = false
   shopId:any =[]
-  
+  currentTime = '';
+
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'ExpenseList') {
@@ -77,6 +78,8 @@ export class ExpenseComponent implements OnInit {
     this.dropdownShoplist();
     this.getPaymentModesList();
     this.getExpenseTypeList();
+    this.data.ExpenseComponent = moment().format('yyyy-MM-DD');
+    this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23' })
   }
 
   dropdownShoplist() {
@@ -154,6 +157,7 @@ export class ExpenseComponent implements OnInit {
 
   onsubmit() {
     this.sp.show()
+    this.data.ExpenseDate = this.data.ExpenseDate + ' ' + this.currentTime;
     const subs: Subscription = this.expen.saveExpense(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -223,6 +227,7 @@ export class ExpenseComponent implements OnInit {
 
   updateExpense() {
     this.sp.show();
+    this.data.ExpenseDate = this.data.ExpenseDate + ' ' + this.currentTime;
     const subs: Subscription = this.expen.updateExpense(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -269,7 +274,7 @@ export class ExpenseComponent implements OnInit {
   openEditModal(content: any, datas: any) {
     this.suBtn = true;
     this.data = datas
-
+    this.data.ExpenseDate = moment(datas.ExpenseDate).format('YYYY-MM-DD')
     this.data.ShopID = Number(datas.ShopID);
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
   }
