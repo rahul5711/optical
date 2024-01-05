@@ -46,7 +46,7 @@ export class ShopListComponent implements OnInit {
 
   data: any = {
     ID: null, CompanyID: null, Name: '', AreaName: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '',
-    Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: true, GSTnumber: true, AdminDiscount:false, LogoURL: null, WaterMark: null, HSNCode: true, CustGSTNo: true, Rate: true, Discounts: true, Tax: false, SubTotal: true, Total: true, BillShopWise: true, RetailBill:false, WholesaleBill:false, BillName:'InvoiceNo./Total', ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: '[{"NoteType":"retail","Content":"No Return once sold. No Cash Refund."},{"NoteType":"retail","Content":"50% Advance at the time of booking the order."},{"NoteType":"retail","Content":"Please collect your  spects within 15 days from the date of order."},{"NoteType":"retail","Content":"Free Computerized EYES* Testing Facility Available."},{"NoteType":"retail","Content":"Repairing work at customer risk."}]', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
+    Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: true, GSTnumber: true, AdminDiscount:true, LogoURL: null, WaterMark: null, HSNCode: true, CustGSTNo: true, Rate: true, Discounts: true, Tax: false, SubTotal: true, Total: true, BillShopWise: true, RetailBill:false, WholesaleBill:false, BillName:'InvoiceNo./Total/Bill Of Supply', ShopTiming: 'MON-SUN 10 AM - 8 PM', WelcomeNote: '[{"NoteType":"retail","Content":"No Return once sold. No Cash Refund."},{"NoteType":"retail","Content":"50% Advance at the time of booking the order."},{"NoteType":"retail","Content":"Please collect your  spects within 15 days from the date of order."},{"NoteType":"retail","Content":"Free Computerized EYES* Testing Facility Available."},{"NoteType":"retail","Content":"Repairing work at customer risk."}]', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
   };
 
   constructor(
@@ -171,6 +171,7 @@ export class ShopListComponent implements OnInit {
     //   this.suBtn = false;
     //   this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     // }
+
     this.companyImage = '';
     this.waterImage = '';
     this.wlcmArray1 = JSON.parse(this.data.WelcomeNote) || []
@@ -209,7 +210,8 @@ export class ShopListComponent implements OnInit {
   copyData(val: any) {
     if (val) {
       this.data.Name = this.company.Name;
-      this.data.GSTNo = this.company.GSTNo;
+      this.data.BarcodeName = this.data.Name;
+      this.data.GSTNo = 'GST NO: ' + this.company.GSTNo;
       this.data.CINNo = this.company.CINNo;
       this.data.Address = this.company.Address;
       this.data.Website = this.company.Website;

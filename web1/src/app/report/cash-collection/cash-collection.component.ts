@@ -228,27 +228,27 @@ export class CashCollectionComponent implements OnInit {
               }
               .header-body{
                 width:100%;
-                height:220px;
+                height:120px;
               }
               .main-body{
                 width:100%;
               }
               .header-body .print-title {
-                width:55%;
+                width:60%;
                 text-align: left;
                 margin-bottom: 20px;
                 float:right;
               }
               .header-body .print-logo {
-                width:40%;
+                width:20%;
                 text-align: center;
                 margin-bottom: 0px;
                 float:left;
               }
               .print-logo img{
                 width: 100%;
-                height: 200px;
-                object-fit: contain;
+                height: 110px;
+                object-fit: cover;
               }
               thead{
                 background-color: #dcdcdc;
