@@ -11,6 +11,7 @@ router.post('/getUserById',verifyAccessTokenAdmin, Controller.getUserById)
 router.post('/update',verifyAccessTokenAdmin, Controller.update)
 router.post('/dropdownlist', verifyAccessTokenAdmin, Controller.dropdownlist)
 router.post('/LoginHistory', verifyAccessTokenAdmin, Controller.LoginHistory)
+router.post('/LoginHistoryFilter', verifyAccessTokenAdmin, Controller.LoginHistoryFilter)
 router.post('/updatePassword', verifyAccessTokenAdmin, Controller.updatePassword)
 
 // Regex search

@@ -221,6 +221,38 @@ module.exports = {
             next(err)
         }
     },
+    LoginHistoryFilter: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+
+            let userFilterQuery = ``
+            if (Body.UserID) {
+                userFilterQuery = ` and loginhistory.UserID = ${Body.UserID}`
+            }
+
+            let userTimeFilter = ``
+            if (Body.From && Body.To) {
+                userTimeFilter = ` and loginhistory.LoginTime between '${Body.From}' and '${Body.To}'`
+            }
+
+            let qry = `select loginhistory.*, user.Name as UserName, company.Name as CompanyName, user.UserGroup from loginhistory left join user on user.ID = loginhistory.UserID left join company on company.ID  = loginhistory.CompanyID where loginhistory.Status = 1 and loginhistory.CompanyID = ${CompanyID} ${userFilterQuery} ${userTimeFilter} `
+
+
+            let finalQuery = qry;
+
+
+            let [data] = await mysql2.pool.query(finalQuery);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            return res.send(response);
+        } catch(err) {
+            next(err)
+        }
+    },
 
     updatePassword: async (req, res, next) => {
         try {
