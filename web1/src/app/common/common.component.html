@@ -15,7 +15,7 @@
         <div class="nav-links">
           <!-- SuperAdmin nav -->
 
-          <a *ngIf="user?.UserGroup === 'SuperAdmin'" [routerLink]="['/admin/adminDashborad']" (click)="myFunctionS('S3')">Dashborad</a>
+          <a *ngIf="user?.UserGroup === 'SuperAdmin'" [routerLink]="['/admin/adminDashborad']" (click)="myFunctionS('S3')">Dashboard</a>
           <!-- super admin Administration -->
           <div *ngIf="user?.UserGroup === 'SuperAdmin'" class="dropdown" (click)="myFunctionS('S1')">
             <a class="dropBtn" data-target="#collapseExampleS1">Administration <i class="fa fa-caret-down"  aria-hidden="true"></i></a>
@@ -46,7 +46,7 @@
 
           <!-- CompanyAdmin start nav-->
           <a *ngIf="user?.UserGroup !== 'SuperAdmin'" (click)="openModal(content)"><i class="fas fa-search"></i></a>
-          <a *ngIf="user?.UserGroup !== 'SuperAdmin'" [routerLink]="['/admin/CompanyDashborad']" (click)="myFunctionS('A0')">Dashborad</a>
+          <a *ngIf="user?.UserGroup !== 'SuperAdmin'" [routerLink]="['/admin/CompanyDashborad']" (click)="myFunctionS('A0')">Dashboard</a>
           <!-- companyadmin  Administration -->
           <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown" (click)="myFunctionS('A')" >
             <a class="dropBtn" data-target="#collapseExample" >Administration <i class="fa fa-caret-down" aria-hidden="true"></i> </a>

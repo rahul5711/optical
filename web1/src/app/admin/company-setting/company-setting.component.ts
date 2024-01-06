@@ -42,7 +42,7 @@ export class CompanySettingComponent implements OnInit {
   data: any = {ID: null, CompanyLanguage: 'English', Locale: 'en-IN', CompanyCurrency: '', CurrencyFormat: null, DateFormat: null,CompanyTagline: '', BillHeader: '', BillFooter: '', RewardsPointValidity: '', EmailReport: null,
      WholeSalePrice: false, Composite: false, RetailRate: false,  Color1: '', FontApi:'', FontsStyle: '', HSNCode: false, Discount: false, GSTNo: false, Rate: false, SubTotal: false, Total: false, CGSTSGST: false,
      WelComeNote: '' ,BillFormat:null,SenderID: '',MsgAPIKey:'', SmsSetting: '',DataFormat: 1,RewardPercentage:0, RewardExpiryDate: '30',AppliedReward:0, MobileNo:'2', MessageReport: null, LogoURL: null, WatermarkLogoURL: null,
-     InvoiceFormat: 'invoice.ejs', LoginTimeStart: '', LoginTimeEnd: '', year: false, month: false, partycode: false, type: false , BarCode:'', FeedbackDate:'', ServiceDate:'',DeliveryDay:'',UpdatedBy:null
+     InvoiceFormat: 'invoice.ejs', LoginTimeStart: '', LoginTimeEnd: '', year: false, month: false, partycode: false, type: false , BarCode:'', FeedbackDate:'', ServiceDate:'',DeliveryDay:'',UpdatedBy:null,AppliedDiscount:false,
   };
 
   bill : any ={CompanyID: null,  BillHeader:'3',HeaderWidth:980, HeaderHeight:170, HeaderPadding:5,HeaderMargin:5,ImageWidth:200,ImageHeight:150,ImageAlign:'center',ShopNameFont:25,ShopNameBold:'600', ShopDetailFont:17, Color:'red',LineSpace:25, CustomerFont:16, CustomerLineSpace:22,

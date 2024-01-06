@@ -9,7 +9,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
   providedIn: 'root'
 })
 export class BillCalculationService {
-
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   constructor(
     private httpClient: HttpClient,
     private sp: NgxSpinnerService,) { }
@@ -293,11 +293,15 @@ export class BillCalculationService {
     });
 
     // RoundOff
-    let TotalAmt = '';
-    TotalAmt = BillMaster.TotalAmount;
-    BillMaster.TotalAmount = Math.round(BillMaster.TotalAmount);
-    BillMaster.RoundOff = (BillMaster.TotalAmount - Number(TotalAmt)).toFixed(2); 
-
+    if(this.companySetting.AppliedDiscount === "true"){
+      let TotalAmt = '';
+      TotalAmt = BillMaster.TotalAmount;
+      BillMaster.TotalAmount = Math.round(BillMaster.TotalAmount);
+      BillMaster.RoundOff = (BillMaster.TotalAmount - Number(TotalAmt)).toFixed(2); 
+    }else{
+      BillMaster.TotalAmount = BillMaster.TotalAmount;
+      BillMaster.RoundOff = 0
+    }
   };
   // bill Master calculation start
 
@@ -342,10 +346,16 @@ export class BillCalculationService {
     BillMaster.AddlDiscountPercentage = this.convertToDecimal(+ BillMaster.AddlDiscountPercentage, 2);
     BillMaster.AddlDiscount = this.convertToDecimal(+BillMaster.AddlDiscount, 2);
 
-    let TotalAmt = '';
-    TotalAmt = BillMaster.TotalAmount;
-    BillMaster.TotalAmount = Math.round(BillMaster.TotalAmount);
-    BillMaster.RoundOff = (BillMaster.TotalAmount - Number(TotalAmt)).toFixed(2); 
+
+    if(this.companySetting.AppliedDiscount === "true"){
+      let TotalAmt = '';
+      TotalAmt = BillMaster.TotalAmount;
+      BillMaster.TotalAmount = Math.round(BillMaster.TotalAmount);
+      BillMaster.RoundOff = (BillMaster.TotalAmount - Number(TotalAmt)).toFixed(2); 
+    }else{
+      BillMaster.TotalAmount = BillMaster.TotalAmount;
+      BillMaster.RoundOff = 0
+    }
   }
 
   private handleError(errorResponse: HttpErrorResponse) {

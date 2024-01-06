@@ -107,20 +107,20 @@
                         <thead>
                           <tr style="white-space: nowrap;">
                             <th>S.No</th>
-                            <th>Supplier</th>
-                            <th>Current Shop</th>
-                            <th>InvoiceNo</th>
-                            <th>Invoice Date</th>
-                            <th>PaymentStatus</th>
-                            <th>Quantity</th>
-                            <th>Discount </th>
-                            <th>SubTotal</th>
-                            <th>TAX Amount </th>
-                            <th>IGST</th>
-                            <th>SGST</th>
-                            <th>CGST</th>
-                            <th>Grand Total</th>
-                            <th>SupplierTAXNo</th>
+                            <th *ngIf="columnVisibility.Supplier"       >Supplier</th>
+                            <th *ngIf="columnVisibility.CurrentShop"    >CurrentShop</th>
+                            <th *ngIf="columnVisibility.InvoiceNo"      >InvoiceNo</th>
+                            <th *ngIf="columnVisibility.InvoiceDate"    >InvoiceDate</th>
+                            <th *ngIf="columnVisibility.PaymentStatus"  >PaymentStatus</th>
+                            <th *ngIf="columnVisibility.Quantity"       >Quantity</th>
+                            <th *ngIf="columnVisibility.Discount"       >Discount </th>
+                            <th *ngIf="columnVisibility.SubTotal"       >SubTotal</th>
+                            <th *ngIf="columnVisibility.TAXAmount"      >TAXAmount </th>
+                            <th *ngIf="columnVisibility.IGST"           >IGST</th>
+                            <th *ngIf="columnVisibility.SGST"           >SGST</th>
+                            <th *ngIf="columnVisibility.CGST"           >CGST</th>
+                            <th *ngIf="columnVisibility.GrandTotal"     >GrandTotal</th>
+                            <th *ngIf="columnVisibility.SupplierTAXNo"  >SupplierTAXNo</th>
                           </tr>
                           <tr class="totolRow" *ngIf="this.totalQty != null && this.totalQty != '' ">
                             <td>
@@ -131,44 +131,104 @@
                                 <i class="far fa-file-pdf "
                                     style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
                             </button>
+                            <div class="button-container">
+                              <button class="bg_none">
+                                  <i class="fa-solid fa-filter" style="font-size: 20px; color: #f44336;"></i>
+                              </button>
+                              <div class="hover-box">
+                                  
+                                  <button (click)="toggleColumnVisibility('Supplier')">
+                                      <mat-checkbox class="me-2" name="Supplier" [(ngModel)]="columnVisibility.Supplier"></mat-checkbox>
+                                       Supplier
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('CurrentShop')">
+                                      <mat-checkbox class="me-2" name="CurrentShop" [(ngModel)]="columnVisibility.CurrentShop"></mat-checkbox>
+                                       CurrentShop
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('InvoiceNo')">
+                                      <mat-checkbox class="me-2" name="InvoiceNo" [(ngModel)]="columnVisibility.InvoiceNo"></mat-checkbox>
+                                       InvoiceNo
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('InvoiceDate')">
+                                      <mat-checkbox class="me-2" name="InvoiceDate" [(ngModel)]="columnVisibility.InvoiceDate"></mat-checkbox>
+                                       InvoiceDate
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('PaymentStatus')">
+                                      <mat-checkbox class="me-2" name="PaymentStatus" [(ngModel)]="columnVisibility.PaymentStatus"></mat-checkbox>
+                                       PaymentStatus
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('Quantity')">
+                                      <mat-checkbox class="me-2" name="Quantity" [(ngModel)]="columnVisibility.Quantity"></mat-checkbox>
+                                       Quantity
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('Discount')">
+                                      <mat-checkbox class="me-2" name="Discount" [(ngModel)]="columnVisibility.Discount"></mat-checkbox>
+                                       Discount
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('SubTotal')">
+                                      <mat-checkbox class="me-2" name="SubTotal" [(ngModel)]="columnVisibility.SubTotal"></mat-checkbox>
+                                       SubTotal
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('TAXAmount')">
+                                      <mat-checkbox class="me-2" name="TAXAmount" [(ngModel)]="columnVisibility.TAXAmount"></mat-checkbox>
+                                       TAXAmount
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('IGST')">
+                                      <mat-checkbox class="me-2" name="IGST" [(ngModel)]="columnVisibility.IGST"></mat-checkbox>
+                                       IGST
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('SGST')">
+                                      <mat-checkbox class="me-2" name="SGST" [(ngModel)]="columnVisibility.SGST"></mat-checkbox>
+                                       SGST
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('CGST')">
+                                      <mat-checkbox class="me-2" name="CGST" [(ngModel)]="columnVisibility.CGST"></mat-checkbox>
+                                       CGST
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('GrandTotal')">
+                                      <mat-checkbox class="me-2" name="GrandTotal" [(ngModel)]="columnVisibility.GrandTotal"></mat-checkbox>
+                                       GrandTotal
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('SupplierTAXNo')">
+                                      <mat-checkbox class="me-2" name="SupplierTAXNo" [(ngModel)]="columnVisibility.SupplierTAXNo"></mat-checkbox>
+                                       SupplierTAXNo
+                                  </button>
+                              </div>
+                          </div>
                             </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>{{this.totalQty}}</td>
-                            <td>{{this.totalDiscount}}</td>
-                            <td>{{this.totalUnitPrice}}</td>
-                            <td (click)="openModal3(content3)">
-                              {{this.totalGstAmount}}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>{{this.totalAmount}}</td>
-                            <td></td>
+                            <td *ngIf="columnVisibility.Supplier"       ></td>
+                            <td *ngIf="columnVisibility.CurrentShop"    ></td>
+                            <td *ngIf="columnVisibility.InvoiceNo"      ></td>
+                            <td *ngIf="columnVisibility.InvoiceDate"    ></td>
+                            <td *ngIf="columnVisibility.PaymentStatus"  ></td>
+                            <td *ngIf="columnVisibility.Quantity"       >{{this.totalQty}}</td>
+                            <td *ngIf="columnVisibility.Discount"       >{{this.totalDiscount}}</td>
+                            <td *ngIf="columnVisibility.SubTotal"       >{{this.totalUnitPrice}}</td>
+                            <td *ngIf="columnVisibility.TAXAmount"       (click)="openModal3(content3)">{{this.totalGstAmount}}</td>
+                            <td *ngIf="columnVisibility.IGST"           ></td>
+                            <td *ngIf="columnVisibility.SGST"           ></td>
+                            <td *ngIf="columnVisibility.CGST"           ></td>
+                            <td *ngIf="columnVisibility.GrandTotal"     >{{this.totalAmount}}</td>
+                            <td *ngIf="columnVisibility.SupplierTAXNo"  ></td>
                           </tr>
                         </thead>
                         <tbody class="text-center">
                           <tr *ngFor="let m of PurchaseMasterList; let i = index" text="left">
                             <td> {{ i+1 }} </td>
-                            <td>{{m.SupplierName}}</td>
-                            <td>{{m.ShopName}} <span [style.color]="'blue'"
-                                *ngIf="m.AreaName !== 'null'">({{m.AreaName}})</span></td>
-                            <td>{{m.InvoiceNo}}</td>
-                            <td>{{dateFormat(m.PurchaseDate)}}</td>
-                            <td>{{m.PaymentStatus}}</td>
-                            <td>{{m.Quantity}}</td>
-                            <td>{{m.DiscountAmount }} </td>
-                            <td>{{m.SubTotal }}</td>
-                            <td>{{m.GSTAmount }} </td>
-                            <td *ngIf="m.gst_detailssss[0][0].type === 'iGST'">{{m.gst_detailssss[0][0].amt.toFixed(2)}}</td>
-                            <td *ngIf="m.gst_detailssss[0][1].type === 'cGST-sGST'">{{(m.gst_detailssss[0][1].amt/2).toFixed(2) }}
-                            </td>
-                            <td *ngIf="m.gst_detailssss[0][1].type === 'cGST-sGST'">{{(m.gst_detailssss[0][1].amt/2).toFixed(2) }}
-                            </td>
-                            <td>{{m.TotalAmount }}</td>
-                            <td>{{m.SupplierGSTNo}}</td>
+                            <td *ngIf="columnVisibility.Supplier"       >{{m.SupplierName}}</td>
+                            <td *ngIf="columnVisibility.CurrentShop"    >{{m.ShopName}} <span [style.color]="'blue'" *ngIf="m.AreaName !== 'null'">({{m.AreaName}})</span></td>
+                            <td *ngIf="columnVisibility.InvoiceNo"      >{{m.InvoiceNo}}</td>
+                            <td *ngIf="columnVisibility.InvoiceDate"    >{{dateFormat(m.PurchaseDate)}}</td>
+                            <td *ngIf="columnVisibility.PaymentStatus"  >{{m.PaymentStatus}}</td>
+                            <td *ngIf="columnVisibility.Quantity"       >{{m.Quantity}}</td>
+                            <td *ngIf="columnVisibility.Discount"       >{{m.DiscountAmount }} </td>
+                            <td *ngIf="columnVisibility.SubTotal"       >{{m.SubTotal }}</td>
+                            <td *ngIf="columnVisibility.TAXAmount"      >{{m.GSTAmount }} </td>
+                            <td *ngIf="columnVisibility.IGST && m.gst_detailssss[0][0].type === 'iGST'">{{m.gst_detailssss[0][0].amt.toFixed(2)}}</td>
+                            <td *ngIf="columnVisibility.SGST && m.gst_detailssss[0][1].type === 'cGST-sGST'">{{(m.gst_detailssss[0][1].amt/2).toFixed(2) }}</td>
+                            <td *ngIf="columnVisibility.CGST && m.gst_detailssss[0][1].type === 'cGST-sGST'">{{(m.gst_detailssss[0][1].amt/2).toFixed(2) }}</td>
+                            <td *ngIf="columnVisibility.GrandTotal"     >{{m.TotalAmount }}</td>
+                            <td *ngIf="columnVisibility.SupplierTAXNo"  >{{m.SupplierGSTNo}}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -351,89 +411,182 @@
                         <thead>
                           <tr style="white-space: nowrap;">
                             <th>S.No </th>
-                            <th>InvoiceNo</th>
-                            <th>InvoiceDate</th>
-                            <th>Supplier</th>
-                            <th>TAXNo</th>
-                            <th>Product Type</th>
-                            <th>HSNCode</th>
-                            <th>Product</th>
-                            <th>Qty</th>
-                            <th>Unit Price</th>
-                            <th>Dis</th>
-                            <th>SubTotal <span style="font-size: 8px;">(PriceBeforeTax)</span> </th>
-                            <th>TAX Type</th>
-                            <th>TAX%</th>
-                            <th>TAXAmt</th>
-                            <th style="display: none;"> CGST%</th>
-                            <th style="display: none;"> CGSTAmt</th>
-                            <th style="display: none;"> SGST%</th>
-                            <th style="display: none;"> SGSTAmt</th>
-                            <th style="display: none;"> IGST%</th>
-                            <th style="display: none;"> IGSTAmt</th>
-                            <th>Grand Total</th>
-                            <th>BarCode</th>
-                            <th>Payment Status</th>
-                            <th>Retail Per_Pc Price</th>
-                            <th>Retail Total Price</th>
-                            <th>WholeSale Per_Pc Price</th>
-                            <th>WholeSale Total Price</th>
-                            <th>Current Shop</th>
+                            <th *ngIf="columnVisibility1.InvoiceNo"            >InvoiceNo</th>
+                            <th *ngIf="columnVisibility1.InvoiceDate"          >InvoiceDate</th>
+                            <th *ngIf="columnVisibility1.Supplier"             >Supplier</th>
+                            <th *ngIf="columnVisibility1.TAXNo"                >TAXNo</th>
+                            <th *ngIf="columnVisibility1.ProductType"          >ProductType</th>
+                            <th *ngIf="columnVisibility1.HSNCode"              >HSNCode</th>
+                            <th *ngIf="columnVisibility1.Product"              >Product</th>
+                            <th *ngIf="columnVisibility1.Qty"                  >Qty</th>
+                            <th *ngIf="columnVisibility1.UnitPrice"            >UnitPrice</th>
+                            <th *ngIf="columnVisibility1.Dis"                  >Dis</th>
+                            <th *ngIf="columnVisibility1.SubTotal"             >SubTotal <span style="font-size: 8px;">(PriceBeforeTax)</span> </th>
+                            <th *ngIf="columnVisibility1.TAXType"              >TAXType</th>
+                            <th *ngIf="columnVisibility1.TAX"                  >TAX%</th>
+                            <th *ngIf="columnVisibility1.TAXAmt"               >TAXAmt</th>
+                            <th                                               style="display: none;"> CGST%</th>
+                            <th                                               style="display: none;"> CGSTAmt</th>
+                            <th                                               style="display: none;"> SGST%</th>
+                            <th                                               style="display: none;"> SGSTAmt</th>
+                            <th                                               style="display: none;"> IGST%</th>
+                            <th                                               style="display: none;"> IGSTAmt</th>
+                            <th *ngIf="columnVisibility1.GrandTotal"           >GrandTotal</th>
+                            <th *ngIf="columnVisibility1.BarCode"              >BarCode</th>
+                            <th *ngIf="columnVisibility1.PaymentStatus"        >PaymentStatus</th>
+                            <th *ngIf="columnVisibility1.RetailPer_PcPrice"    >RetailPer_PcPrice</th>
+                            <th *ngIf="columnVisibility1.RetailTotalPrice"     >RetailTotalPrice</th>
+                            <th *ngIf="columnVisibility1.WholeSalePer_PcPrice" >WholeSalePer_PcPrice</th>
+                            <th *ngIf="columnVisibility1.WholeSaleTotalPrice"  >WholeSaleTotalPrice</th>
+                            <th *ngIf="columnVisibility1.CurrentShop"          >CurrentShop</th>
                           </tr>
                           <tr class="totolRow" *ngIf="this.DetailtotalQty != null && this.DetailtotalQty != '' ">
-                            <td>
+                            <td style="white-space: nowrap;">
                               <i class="fa fa-file-excel-o excel" title="ExportAsXLSX" aria-hidden="true" type="button"
                                 (click)="exportAsXLSXDetail()">
                               </i>
-                              <button class="bg_none ms-4" (click)="print('PurchaseDetail-content')" >
+                              <button class="bg_none ms-4 me-2" (click)="print('PurchaseDetail-content')" >
                                 <i class="far fa-file-pdf "
                                     style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
                             </button>
+                            <div class="button-container">
+                              <button class="bg_none">
+                                  <i class="fa-solid fa-filter" style="font-size: 20px; color: #f44336;"></i>
+                              </button>
+                              <div class="hover-box">
+                                  
+                                  <button (click)="toggleColumnVisibility1('InvoiceNo')">
+                                      <mat-checkbox class="me-2" name="InvoiceNo" [(ngModel)]="columnVisibility1.InvoiceNo"></mat-checkbox>
+                                       InvoiceNo
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('InvoiceDate')">
+                                      <mat-checkbox class="me-2" name="InvoiceDate" [(ngModel)]="columnVisibility1.InvoiceDate"></mat-checkbox>
+                                       InvoiceDate
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('Supplier')">
+                                      <mat-checkbox class="me-2" name="Supplier" [(ngModel)]="columnVisibility1.Supplier"></mat-checkbox>
+                                       Supplier
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('TAXNo')">
+                                      <mat-checkbox class="me-2" name="TAXNo" [(ngModel)]="columnVisibility1.TAXNo"></mat-checkbox>
+                                       TAXNo
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('ProductType')">
+                                      <mat-checkbox class="me-2" name="ProductType" [(ngModel)]="columnVisibility1.ProductType"></mat-checkbox>
+                                       ProductType
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('HSNCode')">
+                                      <mat-checkbox class="me-2" name="HSNCode" [(ngModel)]="columnVisibility1.HSNCode"></mat-checkbox>
+                                       HSNCode
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('Product')">
+                                      <mat-checkbox class="me-2" name="Product" [(ngModel)]="columnVisibility1.Product"></mat-checkbox>
+                                       Product
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('Qty')">
+                                      <mat-checkbox class="me-2" name="Qty" [(ngModel)]="columnVisibility1.Qty"></mat-checkbox>
+                                       Qty
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('UnitPrice')">
+                                      <mat-checkbox class="me-2" name="UnitPrice" [(ngModel)]="columnVisibility1.UnitPrice"></mat-checkbox>
+                                       UnitPrice
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('Dis')">
+                                      <mat-checkbox class="me-2" name="Dis" [(ngModel)]="columnVisibility1.Dis"></mat-checkbox>
+                                       Dis
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('SubTotal')">
+                                      <mat-checkbox class="me-2" name="SubTotal" [(ngModel)]="columnVisibility1.SubTotal"></mat-checkbox>
+                                       SubTotal
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('TAXType')">
+                                      <mat-checkbox class="me-2" name="TAXType" [(ngModel)]="columnVisibility1.TAXType"></mat-checkbox>
+                                       TAXType
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('TAX')">
+                                      <mat-checkbox class="me-2" name="TAX" [(ngModel)]="columnVisibility1.TAX"></mat-checkbox>
+                                       TAX
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('TAXAmt')">
+                                      <mat-checkbox class="me-2" name="TAXAmt" [(ngModel)]="columnVisibility1.TAXAmt"></mat-checkbox>
+                                       TAXAmt
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('GrandTotal')">
+                                      <mat-checkbox class="me-2" name="GrandTotal" [(ngModel)]="columnVisibility1.GrandTotal"></mat-checkbox>
+                                       GrandTotal
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('BarCode')">
+                                      <mat-checkbox class="me-2" name="BarCode" [(ngModel)]="columnVisibility1.BarCode"></mat-checkbox>
+                                       BarCode
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('PaymentStatus')">
+                                      <mat-checkbox class="me-2" name="PaymentStatus" [(ngModel)]="columnVisibility1.PaymentStatus"></mat-checkbox>
+                                       PaymentStatus
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('RetailPer_PcPrice')">
+                                      <mat-checkbox class="me-2" name="RetailPer_PcPrice" [(ngModel)]="columnVisibility1.RetailPer_PcPrice"></mat-checkbox>
+                                       RetailPer_PcPrice
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('RetailTotalPrice')">
+                                      <mat-checkbox class="me-2" name="RetailTotalPrice" [(ngModel)]="columnVisibility1.RetailTotalPrice"></mat-checkbox>
+                                       RetailTotalPrice
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('WholeSalePer_PcPrice')">
+                                      <mat-checkbox class="me-2" name="WholeSalePer_PcPrice" [(ngModel)]="columnVisibility1.WholeSalePer_PcPrice"></mat-checkbox>
+                                       WholeSalePer_PcPrice
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('WholeSaleTotalPrice')">
+                                      <mat-checkbox class="me-2" name="WholeSaleTotalPrice" [(ngModel)]="columnVisibility1.WholeSaleTotalPrice"></mat-checkbox>
+                                       WholeSaleTotalPrice
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('CurrentShop')">
+                                      <mat-checkbox class="me-2" name="CurrentShop" [(ngModel)]="columnVisibility1.CurrentShop"></mat-checkbox>
+                                       CurrentShop
+                                  </button>
+                              </div>
+                          </div>
                             </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>{{this.DetailtotalQty}}</td>
-                            <td>{{this.DetailtotalUnitPrice}}</td>
-                            <td>{{this.DetailtotalDiscount}}</td>
-                            <td>{{this.DetailtotalSubTotal}}</td>
-                            <td></td>
-                            <td></td>
-                            <td (click)="openModal(content)">
-                              {{this.DetailtotalGstAmount}}</td>
-                            <td>{{this.DetailtotalAmount}}</td>
-                            <td></td>
-                            <td></td>
-                            <!-- <td>{{this.DetailtotalRetailPrice}}</td> -->
-                            <td></td>
-                            <td>{{this.TtlR}}</td>
-                            <!-- <td>{{this.DetailtotalWholeSalePricet}}</td> -->
-                            <td></td>
-                            <td>{{this.TtlW}}</td>
-                            <td></td>
+                            <td *ngIf="columnVisibility1.InvoiceNo"           ></td>
+                            <td *ngIf="columnVisibility1.InvoiceDate"         ></td>
+                            <td *ngIf="columnVisibility1.Supplier"            ></td>
+                            <td *ngIf="columnVisibility1.TAXNo"               ></td>
+                            <td *ngIf="columnVisibility1.ProductType"         ></td>
+                            <td *ngIf="columnVisibility1.HSNCode"             ></td>
+                            <td *ngIf="columnVisibility1.Product"             ></td>
+                            <td *ngIf="columnVisibility1.Qty"                 >{{this.DetailtotalQty}}</td>
+                            <td *ngIf="columnVisibility1.UnitPrice"           >{{this.DetailtotalUnitPrice}}</td>
+                            <td *ngIf="columnVisibility1.Dis"                 >{{this.DetailtotalDiscount}}</td>
+                            <td *ngIf="columnVisibility1.SubTotal"            >{{this.DetailtotalSubTotal}}</td>
+                            <td *ngIf="columnVisibility1.TAXType"             ></td>
+                            <td *ngIf="columnVisibility1.TAX"                 ></td>
+                            <td *ngIf="columnVisibility1.TAXAmt"               (click)="openModal(content)"> {{this.DetailtotalGstAmount}}</td>
+                            <td *ngIf="columnVisibility1.GrandTotal"           >{{this.DetailtotalAmount}}</td>
+                            <td *ngIf="columnVisibility1.BarCode"              ></td>
+                            <td *ngIf="columnVisibility1.PaymentStatus"        ></td>
+                            <td *ngIf="columnVisibility1.RetailPer_PcPrice"    ></td>
+                            <td *ngIf="columnVisibility1.RetailTotalPrice"     >{{this.TtlR}}</td>
+                            <td *ngIf="columnVisibility1.WholeSalePer_PcPrice" ></td>
+                            <td *ngIf="columnVisibility1.WholeSaleTotalPrice"  >{{this.TtlW}}</td>
+                            <td *ngIf="columnVisibility1.CurrentShop"          ></td>
                           </tr>
                         </thead>
                         <tbody class="text-center">
                           <tr *ngFor="let s of PurchaseDetailList; let i = index" text="left">
                             <td>{{ i+1 }} </td>
-                            <td>{{s.InvoiceNo}}</td>
-                            <td>{{dateFormat(s.PurchaseDate)}}</td>
-                            <td>{{s.SupplierName}}</td>
-                            <td>{{s.SupplierGSTNo}}</td>
-                            <td>{{s.ProductTypeName}}</td>
-                            <td>{{s.HSNcode}}</td>
-                            <td>{{s.ProductName}}</td>
-                            <td>{{s.Quantity}}</td>
-                            <td>{{s.UnitPrice }}</td>
-                            <td>{{s.DiscountAmount }}</td>
-                            <td>{{s.SubTotal }}</td>
-                            <td>{{s.GSTType}}</td>
-                            <td>{{s.GSTPercentage}}%</td>
-                            <td>{{s.GSTAmount }}</td>
+                            <td *ngIf="columnVisibility1.InvoiceNo"    >{{s.InvoiceNo}}</td>
+                            <td *ngIf="columnVisibility1.InvoiceDate"  >{{dateFormat(s.PurchaseDate)}}</td>
+                            <td *ngIf="columnVisibility1.Supplier"     >{{s.SupplierName}}</td>
+                            <td *ngIf="columnVisibility1.TAXNo"        >{{s.SupplierGSTNo}}</td>
+                            <td *ngIf="columnVisibility1.ProductType"  >{{s.ProductTypeName}}</td>
+                            <td *ngIf="columnVisibility1.HSNCode"      >{{s.HSNcode}}</td>
+                            <td *ngIf="columnVisibility1.Product"      >{{s.ProductName}}</td>
+                            <td *ngIf="columnVisibility1.Qty"          >{{s.Quantity}}</td>
+                            <td *ngIf="columnVisibility1.UnitPrice"    >{{s.UnitPrice }}</td>
+                            <td *ngIf="columnVisibility1.Dis"          >{{s.DiscountAmount }}</td>
+                            <td *ngIf="columnVisibility1.SubTotal"     >{{s.SubTotal }}</td>
+                            <td *ngIf="columnVisibility1.TAXType"      >{{s.GSTType}}</td>
+                            <td *ngIf="columnVisibility1.TAX"          >{{s.GSTPercentage}}%</td>
+                            <td *ngIf="columnVisibility1.TAXAmt"       >{{s.GSTAmount }}</td>
                             <td style="display: none;"><span
                                 *ngIf="s.GSTType === 'CGST-SGST'">{{s.GSTPercentage/2}}</span></td>
                             <td style="display: none;"><span *ngIf="s.GSTType === 'CGST-SGST'">{{s.GSTAmount/2}} </span>
@@ -445,14 +598,14 @@
                             <td style="display: none;"><span *ngIf="s.GSTType === 'IGST'">{{s.GSTPercentage}}</span>
                             </td>
                             <td style="display: none;"><span *ngIf="s.GSTType === 'IGST'">{{s.GSTAmount}}</span></td>
-                            <td>{{s.TotalAmount }}</td>
-                            <td>{{s.BaseBarCode}}</td>
-                            <td>{{s.PaymentStatus}}</td>
-                            <td>{{s.RetailPrice }}</td>
-                            <td>{{s.RetailPrice * s.Quantity}}</td>
-                            <td>{{s.WholeSalePrice }}</td>
-                            <td>{{s.WholeSalePrice * s.Quantity}}</td>
-                            <td>{{s.ShopName}}<span [style.color]="'blue'"
+                            <td *ngIf="columnVisibility1.GrandTotal"           >{{s.TotalAmount }}</td>
+                            <td *ngIf="columnVisibility1.BarCode"              >{{s.BaseBarCode}}</td>
+                            <td *ngIf="columnVisibility1.PaymentStatus"        >{{s.PaymentStatus}}</td>
+                            <td *ngIf="columnVisibility1.RetailPer_PcPrice"    >{{s.RetailPrice }}</td>
+                            <td *ngIf="columnVisibility1.RetailTotalPrice"     >{{s.RetailPrice * s.Quantity}}</td>
+                            <td *ngIf="columnVisibility1.WholeSalePer_PcPrice" >{{s.WholeSalePrice }}</td>
+                            <td *ngIf="columnVisibility1.WholeSaleTotalPrice"  >{{s.WholeSalePrice * s.Quantity}}</td>
+                            <td *ngIf="columnVisibility1.CurrentShop"          >{{s.ShopName}}<span [style.color]="'blue'"
                                 *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></td>
                           </tr>
                         </tbody>
@@ -516,49 +669,87 @@
                         <thead>
                           <tr style="white-space: nowrap;">
                             <th>S.No</th>
-                            <th>ShopName</th>
-                            <th>InvoiceNo</th>
-                            <th>Description</th>
-                            <th>Amount</th>
-                            <th>TAX Type</th>
-                            <th>TAX%</th>
-                            <th>TAX Amount</th>
-                            <th>GrandTotal</th>
+                            <th *ngIf="columnVisibility2.ShopName"      >ShopName</th>
+                            <th *ngIf="columnVisibility2.InvoiceNo"     >InvoiceNo</th>
+                            <th *ngIf="columnVisibility2.Description"   >Description</th>
+                            <th *ngIf="columnVisibility2.Amount"        >Amount</th>
+                            <th *ngIf="columnVisibility2.TAXType"       >TAXType</th>
+                            <th *ngIf="columnVisibility2.TAX"           >TAX%</th>
+                            <th *ngIf="columnVisibility2.TAXAmount"     >TAXAmount</th>
+                            <th *ngIf="columnVisibility2.GrandTotal"    >GrandTotal</th>
                           </tr>
                           <tr class="totolRow" *ngIf="this.ChargeAmount != null && this.ChargeAmount != '' ">
                             <td>
                               <i class="fa fa-file-excel-o excel" title="ExportAsXLSX" aria-hidden="true" type="button"
                                 (click)="exportAsXLSXcharge()">
                               </i>
-                              <button class="bg_none ms-4" (click)="print('PurchaseService-content')" >
+                              <button class="bg_none ms-4 me-2" (click)="print('PurchaseService-content')" >
                                 <i class="far fa-file-pdf "
                                     style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
                             </button>
+
+                            <div class="button-container">
+                              <button class="bg_none">
+                                  <i class="fa-solid fa-filter" style="font-size: 20px; color: #f44336;"></i>
+                              </button>
+                              <div class="hover-box">
+                                <button (click)="toggleColumnVisibility2('ShopName')">
+                                  <mat-checkbox class="me-2" name="ShopName" [(ngModel)]="columnVisibility2.ShopName"></mat-checkbox>
+                                   ShopName
+                              </button>
+                              <button (click)="toggleColumnVisibility2('InvoiceNo')">
+                                  <mat-checkbox class="me-2" name="InvoiceNo" [(ngModel)]="columnVisibility2.InvoiceNo"></mat-checkbox>
+                                     InvoiceNo
+                              </button>
+                                <button (click)="toggleColumnVisibility2('Description')">
+                                  <mat-checkbox class="me-2" name="Description" [(ngModel)]="columnVisibility2.Description"></mat-checkbox>
+                                   Description
+                              </button>
+                              <button (click)="toggleColumnVisibility2('Amount')">
+                                  <mat-checkbox class="me-2" name="Amount" [(ngModel)]="columnVisibility2.Amount"></mat-checkbox>
+                                     Amount
+                              </button>
+                                <button (click)="toggleColumnVisibility2('TAXType')">
+                                  <mat-checkbox class="me-2" name="TAXType" [(ngModel)]="columnVisibility2.TAXType"></mat-checkbox>
+                                   TAXType
+                              </button>
+                              <button (click)="toggleColumnVisibility2('TAX')">
+                                  <mat-checkbox class="me-2" name="TAX" [(ngModel)]="columnVisibility2.TAX"></mat-checkbox>
+                                     TAX
+                              </button>
+                                <button (click)="toggleColumnVisibility2('TAXAmount')">
+                                  <mat-checkbox class="me-2" name="TAXAmount" [(ngModel)]="columnVisibility2.TAXAmount"></mat-checkbox>
+                                   TAXAmount
+                              </button>
+                              <button (click)="toggleColumnVisibility2('GrandTotal')">
+                                  <mat-checkbox class="me-2" name="GrandTotal" [(ngModel)]="columnVisibility2.GrandTotal"></mat-checkbox>
+                                     GrandTotal
+                              </button>
+                                 
+                              </div>
+                          </div>
                             </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>{{this.ChargeAmount}}</td>
-                            <td></td>
-                            <td></td>
-                            <td (click)="openModal1(content1)">
-                              {{this.ChargetotalGstAmount}}</td>
-                            <td></td>
+                            <td *ngIf="columnVisibility2.ShopName"     ></td>
+                            <td *ngIf="columnVisibility2.InvoiceNo"    ></td>
+                            <td *ngIf="columnVisibility2.Description"  ></td>
+                            <td *ngIf="columnVisibility2.Amount"       >{{this.ChargeAmount}}</td>
+                            <td *ngIf="columnVisibility2.TAXType"      ></td>
+                            <td *ngIf="columnVisibility2.TAX"          ></td>
+                            <td *ngIf="columnVisibility2.TAXAmount"     (click)="openModal1(content1)">{{this.ChargetotalGstAmount}}</td>
+                            <td *ngIf="columnVisibility2.GrandTotal"   ></td>
                           </tr>
                         </thead>
                         <tbody class="text-center">
                           <tr *ngFor="let c of PurchaseChargeList; let i = index" text="left">
                             <td> {{i+1 }} </td>
-                            <td>{{c.ShopName}}<span [style.color]="'blue'"
-                                *ngIf="c.AreaName !== 'null'">({{c.AreaName}})</span>
-                            </td>
-                            <td>{{c.InvoiceNo}}</td>
-                            <td>{{c.Description}}</td>
-                            <td>{{c.Amount }}</td>
-                            <td>{{c.GSTType}}</td>
-                            <td>{{c.GSTPercentage}}%</td>
-                            <td>{{c.GSTAmount }}</td>
-                            <td>{{c.TotalAmount }}</td>
+                            <td *ngIf="columnVisibility2.ShopName"     >{{c.ShopName}}<span [style.color]="'blue'"  *ngIf="c.AreaName !== 'null'">({{c.AreaName}})</span> </td>
+                            <td *ngIf="columnVisibility2.InvoiceNo"    >{{c.InvoiceNo}}</td>
+                            <td *ngIf="columnVisibility2.Description"  >{{c.Description}}</td>
+                            <td *ngIf="columnVisibility2.Amount"       >{{c.Amount }}</td>
+                            <td *ngIf="columnVisibility2.TAXType"      >{{c.GSTType}}</td>
+                            <td *ngIf="columnVisibility2.TAX"          >{{c.GSTPercentage}}%</td>
+                            <td *ngIf="columnVisibility2.TAXAmount"    >{{c.GSTAmount }}</td>
+                            <td *ngIf="columnVisibility2.GrandTotal"   >{{c.TotalAmount }}</td>
                           </tr>
                         </tbody>
                       </table>

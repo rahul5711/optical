@@ -166,6 +166,158 @@ export class SaleReportComponent implements OnInit {
   gstExpiry: any
   todaydate: any;
 
+  columnVisibility: any = {
+    SNo: true,
+    InvoiceDate: true,
+    InvoiceNo: true,
+    CustomerName: true,
+    MobileNo: true,
+    PaymentStatus: true,
+    Qty: true,
+    Discount: true,
+    SubTotal: true,
+    TAXType: true,
+    TAXAmount: true,
+    CGSTAmt: true,
+    SGSTAmt: true,
+    IGSTAmt: true,
+    GrandTotal: true,
+    AddDiscount: true,
+    Paid: true,
+    Balance: true,
+    ProductStatus: true,
+    DeliveryDate: true,
+    Cust_GSTNo: true,
+    ShopName: true,
+  };
+
+  columnVisibility1: any = {
+    SNo: true,
+    InvoiceDate: true,
+    DeliveryDate: true,
+    InvoiceNo: true,
+    CustomerName: true,
+    MobileNo: true,
+    ProductTypeName: true,
+    Option: true,
+    HSNCode: true,
+    ProductName: true,
+    UnitPrice: true,
+    Quantity: true,
+    DiscountAmount: true,
+    SubTotal: true,
+    TAXType: true,
+    TAX: true,
+    TAXAmount: true,
+    CGST: true,
+    CGSTAmt: true,
+    SGST: true,
+    SGSTAmt: true,
+    IGST: true,
+    IGSTAmt: true,
+    GrandTotal: true,
+    Barcode: true,
+    PaymentStatus: true,
+    ProductStatus: true,
+    ProductDeliveryDate: true,
+    Cust_TAXNo: true,
+    Status: true,
+    ShopName: true,
+    PurchasePrice: true,
+    Profit: true,
+  };
+
+  columnVisibility2: any = {
+    SNo: true,
+    InvoiceDate: true,
+    ShopName: true,
+    CustomerName: true,
+    MobileNo: true,
+    BillDate: true,
+    InvoiceNo: true,
+    Description: true,
+    SubTotal: true,
+    TAXType: true,
+    TAX: true,
+    TAXAmount: true,
+    GrandTotal: true,
+  };
+
+  columnVisibility3: any = {
+    SNo: true,
+    InvoiceDate: true,
+    DeliveryDate: true,
+    InvoiceNo: true,
+    CustomerName: true,
+    MobileNo: true,
+    ProductTypeName: true,
+    Option: true,
+    HSNCode: true,
+    ProductName: true,
+    UnitPrice: true,
+    Quantity: true,
+    DiscountAmount: true,
+    SubTotal: true,
+    TAXType: true,
+    TAX: true,
+    TAXAmount: true,
+    GrandTotal: true,
+    Barcode: true,
+    PaymentStatus: true,
+    ProductStatus: true,
+    ProductDeliveryDate: true,
+    Cust_TAXNo: true,
+    Status: true,
+    CancelStatus: true,
+  };
+  columnVisibility4: any = {
+    SNo: true,
+    InvoiceDate: true,
+    DeliveryDate: true,
+    InvoiceNo: true,
+    CustomerName: true,
+    MobileNo: true,
+    ProductTypeName: true,
+    Option: true,
+    HSNCode: true,
+    ProductName: true,
+    UnitPrice: true,
+    Quantity: true,
+    DiscountAmount: true,
+    SubTotal: true,
+    TAXType: true,
+    TAX: true,
+    TAXAmount: true,
+    GrandTotal: true,
+    Barcode: true,
+    ProductStatus: true,
+    Cust_TAXNo: true,
+    Status: true,
+    CancelStatus: true,
+  };
+
+  columnVisibility5: any = {
+    SNo: true,
+    InvoiceNo: true,
+    CustomerName: true,
+    MobileNo: true,
+    ProductTypeName: true,
+    ProductName: true,
+    UnitPrice: true,
+    Quantity: true,
+    DiscountAmount: true,
+    SubTotal: true,
+    TAXType: true,
+    TAX: true,
+    TAXAmount: true,
+    GrandTotal: true,
+    Barcode: true,
+    PaymentStatus: true,
+    ProductStatus: true,
+    ProductDeliveryDate: true,
+    ProductExpiryDate: true,
+    ShopName: true,
+  };
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
@@ -1409,28 +1561,27 @@ export class SaleReportComponent implements OnInit {
             }
             .header-body{
               width:100%;
-              height:220px;
-
+              height:120px;
             }
             .main-body{
               width:100%;
             }
             .header-body .print-title {
-              width:55%;
+              width:60%;
               text-align: left;
               margin-bottom: 20px;
               float:right;
             }
             .header-body .print-logo {
-              width:40%;
+              width:20%;
               text-align: center;
               margin-bottom: 0px;
               float:left;
             }
             .print-logo img{
               width: 100%;
-              height: 200px;
-              object-fit: contain;
+              height: 110px;
+              object-fit: cover;
             }
             thead{
               background-color: #dcdcdc;
@@ -1456,16 +1607,20 @@ export class SaleReportComponent implements OnInit {
             tr:nth-child(even) {
               background-color: #f2f2f2;
           }
-          th.hide-on-print,totolRow,
+          th.hide-on-print,button-container,
           td.hide-on-print {
             display: none;
           }
-          tfoot.hide-on-print {
+          tfoot.hide-on-print, {
             display: block;
           }
           .totolRow  td{
             color:red !important;
             font-weight: 600 !important;
+          }
+          .button-container
+           {
+            display: none;
           }
           }
         </style>
@@ -1493,6 +1648,25 @@ export class SaleReportComponent implements OnInit {
 
     printWindow.document.close();
     printWindow.print();
+  }
+
+  toggleColumnVisibility(column: string): void {
+    this.columnVisibility[column] = !this.columnVisibility[column];
+  }
+  toggleColumnVisibility1(column: string): void {
+    this.columnVisibility1[column] = !this.columnVisibility1[column];
+  }
+  toggleColumnVisibility2(column: string): void {
+    this.columnVisibility2[column] = !this.columnVisibility2[column];
+  }
+  toggleColumnVisibility3(column: string): void {
+    this.columnVisibility3[column] = !this.columnVisibility3[column];
+  }
+  toggleColumnVisibility4(column: string): void {
+    this.columnVisibility4[column] = !this.columnVisibility4[column];
+  }
+  toggleColumnVisibility5(column: string): void {
+    this.columnVisibility5[column] = !this.columnVisibility5[column];
   }
 
 }
