@@ -61,6 +61,11 @@ export class EmployeeService {
     return this.httpClient.post<any>(this.url + '/LoginHistory', Body, { params })
     .pipe(catchError(this.handleError));
   }
+  LoginHistoryFilter(Body: any): Observable<any> {
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/LoginHistoryFilter', Body)
+    .pipe(catchError(this.handleError));
+  }
 
   updatePassword(Body:any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');

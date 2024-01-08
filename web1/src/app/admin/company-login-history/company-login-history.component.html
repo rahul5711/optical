@@ -35,7 +35,9 @@
                                 </div>
                             </div>
                         </div>
+                        <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="searchData()">
                         <div class="row m-2">
+
                             <div class="col-md-2">
                                 <mat-form-field class="example-full-width mb-0" >
                                     <mat-label>From Date</mat-label>
@@ -67,6 +69,7 @@
                             </div>
                             
                         </div>
+                    </form>
                         <div class="row mt-md-2 mt-5 p-md-2 p-3 ">
                             <div style="overflow-x:auto;overflow:auto;height:530px; " class="table-responsive">
                                 <table style="width:100%;" id="exportsss"

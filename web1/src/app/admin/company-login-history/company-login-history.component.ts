@@ -31,9 +31,8 @@ export class CompanyLoginHistoryComponent implements OnInit {
   pageSize!: number;
   collectionSize = 0
   page = 4;
-
-  filter: any =  {PaymentStatus: '', date1: moment().startOf('month').format('YYYY-MM-DD'),
-  date2: moment().add( 2 , 'days').format('YYYY-MM-DD'), UserID: 0,  };
+  filterList:any;
+  filter: any =  { date1: moment().startOf('month').format('YYYY-MM-DD'), date2: moment().add( 2 , 'days').format('YYYY-MM-DD'), UserID: 0,  };
 
   constructor(
     private es: EmployeeService,
@@ -127,7 +126,7 @@ export class CompanyLoginHistoryComponent implements OnInit {
         searchQuery: data.searchQuery
       }
       this.sp.show();
-      const subs: Subscription = this.es.searchByFeildCompanyAdmin(dtm).subscribe({
+      const subs: Subscription = this.es.getLoginList(dtm).subscribe({
         next: (res: any) => {
           if(res.success){
             this.collectionSize = 1;
@@ -150,5 +149,31 @@ export class CompanyLoginHistoryComponent implements OnInit {
 
   dateFormat(date:any){
     return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
+
+  searchData(){
+    this.sp.show()
+
+    let dtm = {
+      From:this.filter.date1,
+      To :this.filter.date2 ,
+      UserID:this.filter.UserID,
+    }
+
+    const subs: Subscription = this.es.LoginHistoryFilter(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+          this.dataList = res.data
+          this.collectionSize = 1;
+          this.page = 1;
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 }
