@@ -688,13 +688,10 @@
                                     {{data.SubTotal |
                                     currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
                                 </td>
-
-
                                 <td *ngIf="!data.UpdateProduct && this.loginShop?.GSTnumber === 'true'"
                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     {{data.GSTPercentage}}%
                                 </td>
-
                                 <td *ngIf="data.UpdateProduct  && this.loginShop?.GSTnumber === 'true'">
                                     <input type="number" min="0" class="inputWidth" [(ngModel)]="data.GSTPercentage"
                                         #name="ngModel" (change)="calculateFields1('GSTPercentage', 'gst',data)"
@@ -854,7 +851,6 @@
                             disabled>
                     </mat-form-field>
                 </div>
-
                 <div class="col-xl-1 col-lg-1 col-md-2 col-4  mb-0 col-1ModifyB" *ngFor="let gst of gst_detail">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">{{gst.GSTType}}</mat-label>

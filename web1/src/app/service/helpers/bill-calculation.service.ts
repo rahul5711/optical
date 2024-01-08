@@ -201,10 +201,8 @@ export class BillCalculationService {
         Service.GSTPercentage = this.convertToDecimal(+Service.GSTPercentage, 2);
         Service.GSTAmount = this.convertToDecimal(+Service.GSTAmount, 2);
         Service.TotalAmount = this.convertToDecimal(+Service.TotalAmount, 2);
-    
     }
 
- 
     // serviceCalcultionEnd 
 
     // WholeSalecalculations
