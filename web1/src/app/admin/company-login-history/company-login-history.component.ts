@@ -176,4 +176,9 @@ export class CompanyLoginHistoryComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+  FromReset() {
+    this.filter =  { date1: moment().startOf('month').format('YYYY-MM-DD'), date2: moment().add( 2 , 'days').format('YYYY-MM-DD'), UserID: 0,  };
+    this.dataList = [];
+  }
 }
