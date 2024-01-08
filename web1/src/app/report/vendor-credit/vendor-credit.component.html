@@ -108,56 +108,105 @@
                                         <thead>
                                             <tr style="white-space: nowrap;">
                                                 <th>S.No</th>
-                                                <th>SupplierName</th>
-                                                <th>CreditNumber</th>
-                                                <th>CreditDate</th>
-                                                <th>Shop</th>
-                                                <th>Amount</th>
-                                                <th>PaidAmount(Used)</th>
-                                                <th>Balance(Not Used)</th>
-                                                <th>Status</th>
-                                                <th>Remark</th>
-                                                <th>CreditType</th>
+                                                <th *ngIf="columnVisibility.SupplierName"           >SupplierName</th>
+                                                <th *ngIf="columnVisibility.CreditNumber"           >CreditNumber</th>
+                                                <th *ngIf="columnVisibility.CreditDate"           >CreditDate</th>
+                                                <th *ngIf="columnVisibility.Shop"           >Shop</th>
+                                                <th *ngIf="columnVisibility.Amount"           >Amount</th>
+                                                <th *ngIf="columnVisibility.PaidAmount"           >PaidAmount(Used)</th>
+                                                <th *ngIf="columnVisibility.Balance"           >Balance(Not Used)</th>
+                                                <th *ngIf="columnVisibility.Status"           >Status</th>
+                                                <th *ngIf="columnVisibility.Remark"           >Remark</th>
+                                                <th *ngIf="columnVisibility.CreditType"           >CreditType</th>
                                             </tr>
                                             <tr class="totolRow " *ngIf="this.dataList != null && this.dataList != ''" >
                                                 <td>
                                                     <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                         aria-hidden="true" type="button" (click)="exportAsXLSX()"> </i>
-                                                        <button class="bg_none ms-4" (click)="print()" >
+                                                        <button class="bg_none ms-2 me-2" (click)="print()" >
                                                             <i class="far fa-file-pdf "
                                                                 style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
                                                         </button>
+                                                        <div class="button-container">
+                                                            <button class="bg_none">
+                                                                <i class="fa-solid fa-filter" style="font-size: 20px; color: #f44336;"></i>
+                                                            </button>
+                                                            <div class="hover-box">
+                                                                
+                                                                <button (click)="toggleColumnVisibility('SupplierName')">
+                                                                    <mat-checkbox class="me-2" name="SupplierName" [(ngModel)]="columnVisibility.SupplierName"></mat-checkbox>
+                                                                     SupplierName
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('CreditNumber')">
+                                                                    <mat-checkbox class="me-2" name="CreditNumber" [(ngModel)]="columnVisibility.CreditNumber"></mat-checkbox>
+                                                                     CreditNumber
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('CreditDate')">
+                                                                    <mat-checkbox class="me-2" name="CreditDate" [(ngModel)]="columnVisibility.CreditDate"></mat-checkbox>
+                                                                     CreditDate
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('Shop')">
+                                                                    <mat-checkbox class="me-2" name="Shop" [(ngModel)]="columnVisibility.Shop"></mat-checkbox>
+                                                                     Shop
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('Amount')">
+                                                                    <mat-checkbox class="me-2" name="Amount" [(ngModel)]="columnVisibility.Amount"></mat-checkbox>
+                                                                     Amount
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('PaidAmount')">
+                                                                    <mat-checkbox class="me-2" name="PaidAmount" [(ngModel)]="columnVisibility.PaidAmount"></mat-checkbox>
+                                                                     PaidAmount
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('Balance')">
+                                                                    <mat-checkbox class="me-2" name="Balance" [(ngModel)]="columnVisibility.Balance"></mat-checkbox>
+                                                                     Balance
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('Status')">
+                                                                    <mat-checkbox class="me-2" name="Status" [(ngModel)]="columnVisibility.Status"></mat-checkbox>
+                                                                     Status
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('Remark')">
+                                                                    <mat-checkbox class="me-2" name="Remark" [(ngModel)]="columnVisibility.Remark"></mat-checkbox>
+                                                                     Remark
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('CreditType')">
+                                                                    <mat-checkbox class="me-2" name="CreditType" [(ngModel)]="columnVisibility.CreditType"></mat-checkbox>
+                                                                     CreditType
+                                                                </button>
+                                                               
+                                                            </div>
+                                                        </div>
                                                 </td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td>{{this.totalAmount}}</td>
-                                                <td>{{this.totalPaidAmount}}</td>
-                                                <td>{{this.totalBalance}}</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td *ngIf="columnVisibility.SupplierName" ></td>
+                                                <td *ngIf="columnVisibility.CreditNumber" ></td>
+                                                <td *ngIf="columnVisibility.CreditDate"   ></td>
+                                                <td *ngIf="columnVisibility.Shop"         ></td>
+                                                <td *ngIf="columnVisibility.Amount"       >{{this.totalAmount}}</td>
+                                                <td *ngIf="columnVisibility.PaidAmount"   >{{this.totalPaidAmount}}</td>
+                                                <td *ngIf="columnVisibility.Balance"      >{{this.totalBalance}}</td>
+                                                <td *ngIf="columnVisibility.Status"       ></td>
+                                                <td *ngIf="columnVisibility.Remark"       ></td>
+                                                <td *ngIf="columnVisibility.CreditType"   ></td>
                                             </tr>
                                         </thead>
                                         <tbody class="text-center">
                                             <tr *ngFor="let data of dataList; let i = index" text="left">
                                                 <td>{{ i + 1 }}</td>
-                                                <td>{{data.SupplierName}}</td>
-                                                <td>{{data.CreditNumber}}</td>
-                                                <td>{{dateFormat(data.CreditDate)}}</td>
-                                                <td>{{data.ShopName}}<span [style.color]="'blue'"
+                                                <td *ngIf="columnVisibility.SupplierName" >{{data.SupplierName}}</td>
+                                                <td *ngIf="columnVisibility.CreditNumber" >{{data.CreditNumber}}</td>
+                                                <td *ngIf="columnVisibility.CreditDate"   >{{dateFormat(data.CreditDate)}}</td>
+                                                <td *ngIf="columnVisibility.Shop"         >{{data.ShopName}}<span [style.color]="'blue'"
                                                         *ngIf="data.AreaName !== 'null'">({{data.AreaName}})</span></td>
-                                                <td>{{data.Amount}}</td>
-                                                <td>{{data.PaidAmount}}</td>
-                                                <td>{{data.Amount - data.PaidAmount}} </td>
-                                                <td>
+                                                <td *ngIf="columnVisibility.Amount"       >{{data.Amount}}</td>
+                                                <td *ngIf="columnVisibility.PaidAmount"   >{{data.PaidAmount}}</td>
+                                                <td *ngIf="columnVisibility.Balance"      >{{data.Amount - data.PaidAmount}} </td>
+                                                <td *ngIf="columnVisibility.Status"       >
                                                     <span *ngIf="data.PaidAmount == 0">Not Used </span>
                                                     <span *ngIf="data.Amount > data.PaidAmount && data.PaidAmount !== 0" >Partial Used </span>
                                                     <span *ngIf="data.Amount === data.PaidAmount && data.PaidAmount !== 0">Used  </span>
                                                 </td>
-                                                <td>{{data.Remark}}</td>
-                                                <td>
+                                                <td *ngIf="columnVisibility.Remark"       >{{data.Remark}}</td>
+                                                <td *ngIf="columnVisibility.CreditType"   >
                                                     <span *ngIf="data.Is_Return === 0"> Direct Credit Note</span>
                                                     <span *ngIf="data.Is_Return === 1"> Product Return Credit Note</span>
                                                 </td>

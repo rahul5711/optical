@@ -89,45 +89,86 @@
                                         <thead>
                                             <tr style="white-space: nowrap;">
                                                 <th>S.No</th>
-                                                <th>ExpenseDate</th>
-                                                <th>InvoiceNo</th>
-                                                <th>ExpenseType</th>
-                                                <th>GivenTo</th>
-                                                <th>PaymentMode</th>
-                                                <th>CashType</th>
-                                                <th>Amount</th>
-                                                <th>ShopName</th>
+                                                <th *ngIf="columnVisibility.ExpenseDate"              >ExpenseDate</th>
+                                                <th *ngIf="columnVisibility.InvoiceNo"            >InvoiceNo</th>
+                                                <th *ngIf="columnVisibility.ExpenseType"              >ExpenseType</th>
+                                                <th *ngIf="columnVisibility.GivenTo"              >GivenTo</th>
+                                                <th *ngIf="columnVisibility.PaymentMode"              >PaymentMode</th>
+                                                <th *ngIf="columnVisibility.CashType"             >CashType</th>
+                                                <th *ngIf="columnVisibility.Amount"           >Amount</th>
+                                                <th *ngIf="columnVisibility.ShopName"             >ShopName</th>
                                             </tr>
                                             <tr class="totolRow" >
                                                 <td>
                                                     <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                         aria-hidden="true" type="button" (click)="exportAsXLSX()"> </i>
-                                                        <button class="bg_none ms-4" (click)="print()"
+                                                        <button class="bg_none ms-4 me-2" (click)="print()"
                                                              ><i class="far fa-file-pdf "
                                                             style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
                                                     </button>
+                                                    <div class="button-container">
+                                                        <button class="bg_none">
+                                                            <i class="fa-solid fa-filter" style="font-size: 20px; color: #f44336;"></i>
+                                                        </button>
+                                                        <div class="hover-box">
+                                                            
+                                                            <button (click)="toggleColumnVisibility('ExpenseDate')">
+                                                                <mat-checkbox class="me-2" name="ExpenseDate" [(ngModel)]="columnVisibility.ExpenseDate"></mat-checkbox>
+                                                                 ExpenseDate
+                                                            </button>
+                                                            <button (click)="toggleColumnVisibility('InvoiceNo')">
+                                                                <mat-checkbox class="me-2" name="InvoiceNo" [(ngModel)]="columnVisibility.InvoiceNo"></mat-checkbox>
+                                                                 InvoiceNo
+                                                            </button>
+                                                            <button (click)="toggleColumnVisibility('ExpenseType')">
+                                                                <mat-checkbox class="me-2" name="ExpenseType" [(ngModel)]="columnVisibility.ExpenseType"></mat-checkbox>
+                                                                 ExpenseType
+                                                            </button>
+                                                            <button (click)="toggleColumnVisibility('GivenTo')">
+                                                                <mat-checkbox class="me-2" name="GivenTo" [(ngModel)]="columnVisibility.GivenTo"></mat-checkbox>
+                                                                 GivenTo
+                                                            </button>
+                                                            <button (click)="toggleColumnVisibility('PaymentMode')">
+                                                                <mat-checkbox class="me-2" name="PaymentMode" [(ngModel)]="columnVisibility.PaymentMode"></mat-checkbox>
+                                                                 PaymentMode
+                                                            </button>
+                                                            <button (click)="toggleColumnVisibility('CashType')">
+                                                                <mat-checkbox class="me-2" name="CashType" [(ngModel)]="columnVisibility.CashType"></mat-checkbox>
+                                                                 CashType
+                                                            </button>
+                                                            <button (click)="toggleColumnVisibility('Amount')">
+                                                                <mat-checkbox class="me-2" name="Amount" [(ngModel)]="columnVisibility.Amount"></mat-checkbox>
+                                                                 Amount
+                                                            </button>
+                                                            <button (click)="toggleColumnVisibility('ShopName')">
+                                                                <mat-checkbox class="me-2" name="ShopName" [(ngModel)]="columnVisibility.ShopName"></mat-checkbox>
+                                                                 ShopName
+                                                            </button>
+                                                           
+                                                        </div>
+                                                    </div>
                                                 </td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td *ngIf="columnVisibility.ExpenseDate"  ></td>
+                                                <td *ngIf="columnVisibility.InvoiceNo"    ></td>
+                                                <td *ngIf="columnVisibility.ExpenseType"  ></td>
+                                                <td *ngIf="columnVisibility.GivenTo"      ></td>
+                                                <td *ngIf="columnVisibility.PaymentMode"  ></td>
+                                                <td *ngIf="columnVisibility.CashType"     ></td>
+                                                <td *ngIf="columnVisibility.Amount"       ></td>
+                                                <td *ngIf="columnVisibility.ShopName"     ></td>
                                             </tr>
                                         </thead>
                                         <tbody class="text-center">
                                             <tr *ngFor="let data of ExpenseList; let i = index" text="left">
                                                 <td>{{ i + 1 }}</td>
-                                                <td>{{dateFormat(data.ExpenseDate)}}</td>
-                                                <td>{{data.InvoiceNo}}</td>
-                                                <td>{{data.Category}}</td>
-                                                <td>{{data.Name}}</td>
-                                                <td>{{data.PaymentMode}}</td>
-                                                <td>{{data.CashType}}</td>
-                                                <td>{{data.Amount}}</td>
-                                                <td>{{data.ShopName}}<span [style.color]="'blue'"
+                                                <td *ngIf="columnVisibility.ExpenseDate"  >{{dateFormat(data.ExpenseDate)}}</td>
+                                                <td *ngIf="columnVisibility.InvoiceNo"    >{{data.InvoiceNo}}</td>
+                                                <td *ngIf="columnVisibility.ExpenseType"  >{{data.Category}}</td>
+                                                <td *ngIf="columnVisibility.GivenTo"      >{{data.Name}}</td>
+                                                <td *ngIf="columnVisibility.PaymentMode"  >{{data.PaymentMode}}</td>
+                                                <td *ngIf="columnVisibility.CashType"     >{{data.CashType}}</td>
+                                                <td *ngIf="columnVisibility.Amount"       >{{data.Amount}}</td>
+                                                <td *ngIf="columnVisibility.ShopName"     >{{data.ShopName}}<span [style.color]="'blue'"
                                                         *ngIf="data.AreaName !== 'null'">({{data.AreaName}})</span></td>
                                             </tr>
                                         </tbody>

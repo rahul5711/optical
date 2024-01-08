@@ -174,14 +174,14 @@
                                         <thead>
                                             <tr style="white-space: nowrap;">
                                                 <th>S.No</th>
-                                                <th>Product Name</th>
-                                                <th>Barcode</th>
-                                                <th>Quantity</th>
-                                                <th>From Shop</th>
-                                                <th>To Shop</th>
-                                                <th>Initiation Date</th>
-                                                <th>Status</th>
-                                                <th>Initiated By</th>
+                                                <th *ngIf="columnVisibility.ProductName"                >ProductName</th>
+                                                <th *ngIf="columnVisibility.Barcode"                >Barcode</th>
+                                                <th *ngIf="columnVisibility.Quantity"                >Quantity</th>
+                                                <th *ngIf="columnVisibility.FromShop"                >FromShop</th>
+                                                <th *ngIf="columnVisibility.ToShop"                >ToShop</th>
+                                                <th *ngIf="columnVisibility.InitiationDate"                >InitiationDate</th>
+                                                <th *ngIf="columnVisibility.Status"                >Status</th>
+                                                <th *ngIf="columnVisibility.InitiatedBy"                >InitiatedBy</th>
                                             </tr>
                                             <tr class="totolRow" *ngIf="this.TransfermasterList != null && this.TransfermasterList != ''" >
                                                 <td>
@@ -191,31 +191,69 @@
                                                             <i class="far fa-file-pdf "
                                                                 style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
                                                         </button>
+                                                        <div class="button-container">
+                                                            <button class="bg_none">
+                                                                <i class="fa-solid fa-filter" style="font-size: 20px; color: #f44336;"></i>
+                                                            </button>
+                                                            <div class="hover-box">
+                                                                
+                                                                <button (click)="toggleColumnVisibility('ProductName')">
+                                                                    <mat-checkbox class="me-2" name="ProductName" [(ngModel)]="columnVisibility.ProductName"></mat-checkbox>
+                                                                     ProductName
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('Barcode')">
+                                                                    <mat-checkbox class="me-2" name="Barcode" [(ngModel)]="columnVisibility.Barcode"></mat-checkbox>
+                                                                     Barcode
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('Quantity')">
+                                                                    <mat-checkbox class="me-2" name="Quantity" [(ngModel)]="columnVisibility.Quantity"></mat-checkbox>
+                                                                     Quantity
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('FromShop')">
+                                                                    <mat-checkbox class="me-2" name="FromShop" [(ngModel)]="columnVisibility.FromShop"></mat-checkbox>
+                                                                     FromShop
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('ToShop')">
+                                                                    <mat-checkbox class="me-2" name="ToShop" [(ngModel)]="columnVisibility.ToShop"></mat-checkbox>
+                                                                     ToShop
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('InitiationDate')">
+                                                                    <mat-checkbox class="me-2" name="InitiationDate" [(ngModel)]="columnVisibility.InitiationDate"></mat-checkbox>
+                                                                     InitiationDate
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('Status')">
+                                                                    <mat-checkbox class="me-2" name="Status" [(ngModel)]="columnVisibility.Status"></mat-checkbox>
+                                                                     Status
+                                                                </button>
+                                                                <button (click)="toggleColumnVisibility('InitiatedBy')">
+                                                                    <mat-checkbox class="me-2" name="InitiatedBy" [(ngModel)]="columnVisibility.InitiatedBy"></mat-checkbox>
+                                                                     InitiatedBy
+                                                                </button>
+                                                               
+                                                            </div>
+                                                        </div>
                                                 </td>
-                                                <td></td>
-                                                <td></td>
-                                                <td>{{this.totalQty}}</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td *ngIf="columnVisibility.ProductName"      ></td>
+                                                <td *ngIf="columnVisibility.Barcode"          ></td>
+                                                <td *ngIf="columnVisibility.Quantity"         >{{this.totalQty}}</td>
+                                                <td *ngIf="columnVisibility.FromShop"         ></td>
+                                                <td *ngIf="columnVisibility.ToShop"           ></td>
+                                                <td *ngIf="columnVisibility.InitiationDate"   ></td>
+                                                <td *ngIf="columnVisibility.Status"           ></td>
+                                                <td *ngIf="columnVisibility.InitiatedBy"      ></td>
                                             </tr>
                                         </thead>
                                         <tbody class="text-center">
                                             <tr *ngFor="let data of TransfermasterList; let i = index" text="left">
                                                 <td>{{ i + 1 }}</td>
-                                                <td>{{data.ProductName}}</td>
-                                                <td>{{data.BarCode}}</td>
-                                                <td>{{data.TransferCount}}</td>
-                                                <td>{{data.FromShop}}<span [style.color]="'blue'"
-                                                        *ngIf="data.AreaName !== 'null'">({{data.AreaName}})</span></td>
-                                                <td>{{data.ToShop}}<span [style.color]="'blue'"
-                                                        *ngIf="data.ToAreaName !== 'null'">({{data.ToAreaName}})</span>
-                                                </td>
-                                                <td>{{dateFormat(data.DateStarted)}}</td>
-                                                <td [ngClass]="{'TransferInitiated': data.TransferStatus === 'Transfer Initiated', 'TransferCompleted': data.TransferStatus === 'Transfer Completed' }">{{data.TransferStatus}}</td>
-                                                <td>{{data.CreatedByUser}}</td>
+                                                <td *ngIf="columnVisibility.ProductName"      >{{data.ProductName}}</td>
+                                                <td *ngIf="columnVisibility.Barcode"          >{{data.BarCode}}</td>
+                                                <td *ngIf="columnVisibility.Quantity"         >{{data.TransferCount}}</td>
+                                                <td *ngIf="columnVisibility.FromShop"         >{{data.FromShop}}<span [style.color]="'blue'" *ngIf="data.AreaName !== 'null'">({{data.AreaName}})</span></td>
+                                                <td *ngIf="columnVisibility.ToShop"           >{{data.ToShop}}<span [style.color]="'blue'" *ngIf="data.ToAreaName !== 'null'">({{data.ToAreaName}})</span> </td>
+                                                <td *ngIf="columnVisibility.InitiationDate"   >{{dateFormat(data.DateStarted)}}</td>
+                                                <td *ngIf="columnVisibility.Status"            [ngClass]="{'TransferInitiated': data.TransferStatus === 'Transfer Initiated', 'TransferCompleted': data.TransferStatus === 'Transfer Completed' }">{{data.TransferStatus}}</td>
+                                                <td *ngIf="columnVisibility.InitiatedBy"      >{{data.CreatedByUser}}</td>
                                             </tr>
                                         </tbody>
                                     </table>

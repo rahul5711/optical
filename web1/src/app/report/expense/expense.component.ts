@@ -21,7 +21,17 @@ export class ExpenseComponent implements OnInit {
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '');
-
+  columnVisibility: any = {
+    SNo: true,
+    ExpenseDate: true,
+    InvoiceNo: true,
+    ExpenseType: true,
+    GivenTo: true,
+    PaymentMode: true,
+    CashType: true,
+    Amount: true,
+    ShopName: true,
+  };
 
   constructor(
     private ss: ShopService,
@@ -166,38 +176,36 @@ export class ExpenseComponent implements OnInit {
         <title>Cash Collection Report</title>
           <style>
             @media print {
-
               body {
                 margin:0;
                 padding:0;
-                zoom:90%;
+                zoom:100%;
                 width:100%;
                 font-family: 'Your Font Family', sans-serif;
               }
               .header-body{
                 width:100%;
-                height:220px;
-
+                height:120px;
               }
               .main-body{
                 width:100%;
               }
               .header-body .print-title {
-                width:55%;
+                width:60%;
                 text-align: left;
                 margin-bottom: 20px;
                 float:right;
               }
               .header-body .print-logo {
-                width:40%;
+                width:20%;
                 text-align: center;
                 margin-bottom: 0px;
                 float:left;
               }
               .print-logo img{
                 width: 100%;
-                height: 200px;
-                object-fit: contain;
+                height: 110px;
+                object-fit: cover;
               }
               thead{
                 background-color: #dcdcdc;
@@ -222,7 +230,7 @@ export class ExpenseComponent implements OnInit {
               tr:nth-child(even) {
                 background-color: #f2f2f2;
             }
-            th.hide-on-print,totolRow,
+            th.hide-on-print,totolRow,button-container,
             td.hide-on-print {
               display: none;
             }
@@ -232,6 +240,9 @@ export class ExpenseComponent implements OnInit {
             .totolRow  td{
               color:red !important;
               font-weight: 600 !important;
+            }
+            .button-container {
+              display: none;
             }
             }
           </style>
@@ -259,5 +270,9 @@ export class ExpenseComponent implements OnInit {
 
     printWindow.document.close();
     printWindow.print();
+  }
+
+  toggleColumnVisibility(column: string): void {
+    this.columnVisibility[column] = !this.columnVisibility[column];
   }
 }

@@ -103,7 +103,51 @@ export class InventoryReportComponent implements OnInit {
   editPurchaseProductExpiryReport = false
   deletePurchaseProductExpiryReport = false
 
+  columnVisibility: any = {
+    SNo: true,
+    InvoiceNo: true,
+    InvoiceDate: true,
+    CurrentShop: true,
+    Supplier: true,
+    ProductCategory: true,
+    ProductName: true,
+    Status: true,
+    Barcode: true,
+    Quantity: true,
+    UnitPrice: true,
+    Discount: true,
+    SubTotal: true,
+    TAXType: true,
+    TAX: true,
+    TAXAmount: true,
+    GrandTotal: true,
+    RetailPrice: true,
+    RetailTotal: true,
+    WholeSalePrice: true,
+    WholeSaleTotal: true,
+  };
 
+  columnVisibility1: any = {
+    SNo: true,
+    InvoiceNo: true,
+    InvoiceDate: true,
+    ProductCategory: true,
+    ProductName: true,
+    CurrentShop: true,
+    Supplier: true,
+    Quantity: true,
+    UnitPrice: true,
+    Discount: true,
+    SubTotal: true,
+    TAX: true,
+    TAXAmount: true,
+    TAXType: true,
+    GrandTotal: true,
+    PaymentStatus: true,
+    RetailPrice: true,
+    WholeSalePrice: true,
+    ProductExpiryDate: true,
+  };
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
@@ -659,15 +703,36 @@ export class InventoryReportComponent implements OnInit {
         <style>
           @media print {
   
-            body { margin:0; padding:0; zoom:100%;width:100%;font-family: 'Your Font Family', sans-serif;}
-            .header-body{ width:100%; height:220px;}
-            .main-body{ width:100%;}
-            .header-body .print-title { width:55%; text-align: left; margin-bottom: 20px; float:right; }
-            .header-body .print-logo { width:40%; text-align: center; margin-bottom: 0px; float:left;}
+            body {
+              margin:0;
+              padding:0;
+              zoom:100%;
+              width:100%;
+              font-family: 'Your Font Family', sans-serif;
+            }
+            .header-body{
+              width:100%;
+              height:120px;
+            }
+            .main-body{
+              width:100%;
+            }
+            .header-body .print-title {
+              width:60%;
+              text-align: left;
+              margin-bottom: 20px;
+              float:right;
+            }
+            .header-body .print-logo {
+              width:20%;
+              text-align: center;
+              margin-bottom: 0px;
+              float:left;
+            }
             .print-logo img{
               width: 100%;
-              height: 200px;
-              object-fit: contain;
+              height: 110px;
+              object-fit: cover;
             }
             thead{
               background-color: #dcdcdc;
@@ -704,6 +769,9 @@ export class InventoryReportComponent implements OnInit {
             color:red !important;
             font-weight: 600 !important;
           }
+          .button-container {
+            display: none;
+          }
           }
         </style>
       </head>
@@ -730,5 +798,13 @@ export class InventoryReportComponent implements OnInit {
   
     printWindow.document.close();
     printWindow.print();
+  }
+
+  toggleColumnVisibility(column: string): void {
+    this.columnVisibility[column] = !this.columnVisibility[column];
+  }
+
+  toggleColumnVisibility1(column: string): void {
+    this.columnVisibility1[column] = !this.columnVisibility1[column];
   }
 }

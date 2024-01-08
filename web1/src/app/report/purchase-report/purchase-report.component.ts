@@ -135,6 +135,28 @@ export class PurchaseReportComponent implements OnInit {
     GrandTotal: true,
   };
 
+  columnVisibility3: any = {
+    SNo: true,
+    InvoiceNo: true,
+    InvoiceDate: true,
+    ProductCategory: true,
+    ProductName: true,
+    CurrentShop: true,
+    Supplier: true,
+    Quantity: true,
+    UnitPrice: true,
+    Discount: true,
+    SubTotal: true,
+    TAX: true,
+    TAXAmt: true,
+    TAXType: true,
+    GrandTotal: true,
+    PaymentStatus: true,
+    RetailPrice: true,
+    WholeSalePrice: true,
+    ProductExpiryDate: true,
+  }
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -950,5 +972,8 @@ toggleColumnVisibility1(column: string): void {
 }
 toggleColumnVisibility2(column: string): void {
   this.columnVisibility2[column] = !this.columnVisibility2[column];
+}
+toggleColumnVisibility3(column: string): void {
+  this.columnVisibility3[column] = !this.columnVisibility3[column];
 }
 }

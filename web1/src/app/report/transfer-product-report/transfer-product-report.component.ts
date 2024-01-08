@@ -22,8 +22,20 @@ export class TransferProductReportComponent implements OnInit {
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
- searchValue :any = '';
-   form :any | FormGroup;
+  searchValue :any = '';
+  form :any | FormGroup;
+
+  columnVisibility: any = {
+    SNo: true,
+    ProductName: true,
+    Barcode: true,
+    Quantity: true,
+    FromShop: true,
+    ToShop: true,
+    InitiationDate: true,
+    Status: true,
+    InitiatedBy: true,
+  };
 
   constructor(
     private purchaseService: PurchaseService,
@@ -303,34 +315,33 @@ print() {
             body {
               margin:0;
               padding:0;
-              zoom:90%;
+              zoom:100%;
               width:100%;
               font-family: 'Your Font Family', sans-serif;
             }
             .header-body{
               width:100%;
-              height:220px;
-
+              height:120px;
             }
             .main-body{
               width:100%;
             }
             .header-body .print-title {
-              width:55%;
+              width:60%;
               text-align: left;
               margin-bottom: 20px;
               float:right;
             }
             .header-body .print-logo {
-              width:40%;
+              width:20%;
               text-align: center;
               margin-bottom: 0px;
               float:left;
             }
             .print-logo img{
               width: 100%;
-              height: 200px;
-              object-fit: contain;
+              height: 110px;
+              object-fit: cover;
             }
             thead{
               background-color: #dcdcdc;
@@ -367,6 +378,9 @@ print() {
             color:red !important;
             font-weight: 600 !important;
           }
+          .button-container {
+            display: none;
+          }
           }
         </style>
       </head>
@@ -393,5 +407,8 @@ print() {
 
   printWindow.document.close();
   printWindow.print();
+}
+toggleColumnVisibility(column: string): void {
+  this.columnVisibility[column] = !this.columnVisibility[column];
 }
 }

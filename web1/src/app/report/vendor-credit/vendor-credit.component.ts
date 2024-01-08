@@ -25,6 +25,19 @@ export class VendorCreditComponent implements OnInit {
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   form :any | FormGroup;
   env = environment;
+  columnVisibility: any = {
+    SNo: true,
+    SupplierName: true,
+    CreditNumber: true,
+    CreditDate: true,
+    Shop: true,
+    Amount: true,
+    PaidAmount: true,
+    Balance: true,
+    Status: true,
+    Remark: true,
+    CreditType: true,
+  };
 
   myControl = new FormControl('All');
   filteredOptions: any ;
@@ -238,34 +251,33 @@ print() {
             body {
               margin:0;
               padding:0;
-              zoom:90%;
+              zoom:100%;
               width:100%;
               font-family: 'Your Font Family', sans-serif;
             }
             .header-body{
               width:100%;
-              height:220px;
-
+              height:120px;
             }
             .main-body{
               width:100%;
             }
             .header-body .print-title {
-              width:55%;
+              width:60%;
               text-align: left;
               margin-bottom: 20px;
               float:right;
             }
             .header-body .print-logo {
-              width:40%;
+              width:20%;
               text-align: center;
               margin-bottom: 0px;
               float:left;
             }
             .print-logo img{
               width: 100%;
-              height: 200px;
-              object-fit: contain;
+              height: 110px;
+              object-fit: cover;
             }
             thead{
               background-color: #dcdcdc;
@@ -302,6 +314,9 @@ print() {
             color:red !important;
             font-weight: 600 !important;
           }
+          .button-container {
+            display: none;
+          }
           }
         </style>
       </head>
@@ -328,5 +343,9 @@ print() {
 
   printWindow.document.close();
   printWindow.print();
+}
+
+toggleColumnVisibility(column: string): void {
+  this.columnVisibility[column] = !this.columnVisibility[column];
 }
 }
