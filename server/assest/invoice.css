@@ -70,7 +70,7 @@ body{
 /* CUSTOMER POWER CSS START */
 
 .power_spec{
-    width: 100% !important; height: 100px; text-align: center;   
+    width: 100% !important; height: 90px; text-align: center;   
 }
 
 .power_spec .tbl0{
@@ -78,7 +78,7 @@ body{
 }
 
 .power_spec .tbl0 tr{
-    height: 25px; font-size: 12px !important;
+    height: 22px; font-size: 12px !important;
 }
 
 .power_spec .tbl1{
@@ -86,7 +86,7 @@ body{
 }
 
 .power_spec .tbl1 tr{
-    height: 25px; font-size: 12px !important;
+    height: 22px; font-size: 12px !important;
 }
 
 .power_spec .tbl2{
@@ -94,7 +94,7 @@ body{
 }
 
 .power_spec .tbl2 tr{
-    height: 25px;font-size: 12px !important;
+    height: 22px;font-size: 12px !important;
 }
 
 .top_btm{
