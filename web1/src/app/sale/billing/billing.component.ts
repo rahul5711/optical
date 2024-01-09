@@ -637,8 +637,8 @@ srcCustomerBox = false
               position: 'center',
               icon: 'success',
               title: 'Your Customer has been Save.',
-              showConfirmButton: false,
-              timer: 1500
+              showConfirmButton: true,
+              backdrop:false
             })
           }
         } else {
