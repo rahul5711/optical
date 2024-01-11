@@ -18,7 +18,7 @@ import { EmployeeService } from 'src/app/service/employee.service';
 import { BillService } from 'src/app/service/bill.service';
 import { CustomerService } from 'src/app/service/customer.service';
 import { FormControl } from '@angular/forms';
-
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-sale-report',
@@ -1673,4 +1673,37 @@ export class SaleReportComponent implements OnInit {
     this.columnVisibility5[column] = !this.columnVisibility5[column];
   }
 
+  sendWhatsapp(data:any, mode: any) {
+    let temp = JSON.parse(this.companySetting.WhatsappSetting);
+    let WhatsappMsg = '';
+    let msg = '';
+
+    if (mode === 'bill') {
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Credit Noteaa') || 'This is a Gentle Reminder for your Balance Amount 1200/- Please clear Today.';
+      msg = `*Hi ${data.CustomerName},*%0A` +
+        `${WhatsappMsg}%0A` +
+        `*${this.shopList[0].Name}* - ${this.shopList[0].AreaName}%0A${this.shopList[0].MobileNo1}%0A${this.shopList[0].Website}`;
+    } 
+
+    if(data.MobileNo1 != ''){
+      var mob = "91" + data.MobileNo1;
+      var url = `https://wa.me/${mob}?text=${msg}`;
+      window.open(url, "_blank");
+    }else{
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: '<b>' + data.CustomerName + '</b>' + ' Mobile number is not available.',
+        showConfirmButton: true,
+      })
+    }
+  }
+
+  getWhatsAppMessage(temp: any, messageName: any) {
+    if (temp && temp !== 'null') {
+      const foundElement = temp.find((element: { MessageName1: any; }) => element.MessageName1 === messageName);
+      return foundElement ? foundElement.MessageText1 : '';
+    }
+    return '';
+  }
 }

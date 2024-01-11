@@ -378,8 +378,12 @@
                                                 <tbody class="text-center">
                                                     <tr *ngFor="let d of BillMasterList; let i = index" text="left">
 
-                                                        <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
-                                                            i+1 }}
+                                                        <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
+                                                         {{i+1 }}   <button *ngIf="d.PaymentStatus === 'Paid'" (click)="sendWhatsapp(d,'bill')" class="bg_none whatsappfBill ms-lg-2 me-lg-1 ms-3 me-3">
+                                                            <i  class="fa-brands fa-whatsapp "></i>
+                                                        </button>
+                                                             
+
                                                         </td>
                                                         <td *ngIf="columnVisibility.InvoiceDate"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">

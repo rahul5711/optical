@@ -242,8 +242,23 @@ font-weight: 500;
     width: 50px;
     box-shadow: 1px 1px 10px #0003;
 }
+.whatsappfBill {
+    font-size: 21px;
+    border: none;
+    border-radius: 5px;
+    background: #55c13e;
+    padding: 9px 10px;
+    color: #FFF;
+    height: 38px;
+    width: 100px;
+    box-shadow: 1px 1px 10px #0003;
+}
 
 button:disabled.whatsappBill {
+    background-color: #bdbdbd !important;
+    color: #878787 !important;
+}
+button:disabled.whatsappfBill {
     background-color: #bdbdbd !important;
     color: #878787 !important;
 }
