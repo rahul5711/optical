@@ -546,7 +546,8 @@ export class SaleReportComponent implements OnInit {
           this.totalGstAmount = (parseFloat(res.calculation[0].totalGstAmount)).toFixed(2);
           this.totalAmount = (parseFloat(res.calculation[0].totalAmount)).toFixed(2);
           this.totalAddlDiscount = (parseFloat(res.calculation[0].totalAddlDiscount)).toFixed(2);
-          this.totalPaid = this.totalAmount - this.totalBalance;
+          let p = this.totalAmount - this.totalBalance;
+          this.totalPaid = this.convertToDecimal(p,2);
           this.gstMaster = res.calculation[0].gst_details
         } else {
           this.as.errorToast(res.message)
@@ -558,6 +559,9 @@ export class SaleReportComponent implements OnInit {
     });
   }
 
+  convertToDecimal(num: any, x: any) {
+    return Number(Math.round(parseFloat(num + 'e' + x)) + 'e-' + x);
+  }
   openModalSale(content3: any) {
     this.modalService.open(content3, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
   }

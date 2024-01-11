@@ -203,7 +203,7 @@ module.exports = {
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select loginhistory.*, user.Name as UserName, company.Name as CompanyName, user.UserGroup from loginhistory left join user on user.ID = loginhistory.UserID left join company on company.ID  = loginhistory.CompanyID where loginhistory.Status = 1 and loginhistory.CompanyID = ${CompanyID} order by loginhistory.ID desc`
+            let qry = `select loginhistory.*, user.Name as UserName, company.Name as CompanyName, user.UserGroup,  loginhistory.LoginTime AS time   from loginhistory left join user on user.ID = loginhistory.UserID left join company on company.ID  = loginhistory.CompanyID where loginhistory.Status = 1 and loginhistory.CompanyID = ${CompanyID} order by loginhistory.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 

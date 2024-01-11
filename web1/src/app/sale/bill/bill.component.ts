@@ -1007,11 +1007,15 @@ export class BillComponent implements OnInit {
         this.BillItem.Quantity = 1;
       }
       this.billCalculation.calculations(fieldName, mode, this.BillItem, this.Service)
+
       // Lens option
-    } else {
+    }
+  
+    else {
       this.billCalculation.calculations(fieldName, mode, this.BillItem, this.Service)
     }
     this.GstTypeDis = false
+
   }
 
   calculateGrandTotal() {
@@ -1019,30 +1023,25 @@ export class BillComponent implements OnInit {
   }
 
   notifyGst() {
-    if (this.BillItem.GSTPercentage !== 0 && this.BillItem.GSTPercentage !== "0") {
-      if (this.BillItem.GSTType === 'None') {
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: 'Please Select GSTType',
-          showConfirmButton: true,
-          backdrop: false,
-        })
-        this.GstTypeDis = true
-      }
+    if ((this.BillItem.GSTType === 'None' && this.BillItem.GSTPercentage !== 0) || (this.BillItem.GSTPercentage === 0 && this.BillItem.GSTType !== 'None') || (this.BillItem.GSTPercentage === null && this.BillItem.GSTType !== 'None')) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Without GSTType, the selected value will not be saved',
+        showConfirmButton: true,
+        backdrop: false,
+      })
+      this.GstTypeDis = false
     }
-
-    if (this.Service.GSTPercentage !== 0 && this.Service.GSTPercentage !== "0") {
-      if (this.Service.GSTType === 'None') {
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: 'Please Select GSTType',
-          showConfirmButton: true,
-          backdrop: false,
-        })
-        this.GstTypeDis = true
-      }
+    if ((this.Service.GSTType === 'None' && this.Service.GSTPercentage !== 0) || (this.Service.GSTPercentage === 0 && this.Service.GSTType !== 'None') || (this.Service.GSTPercentage === null && this.Service.GSTType !== 'None')) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Without GSTType, the selected value will not be saved',
+        showConfirmButton: true,
+        backdrop: false,
+      })
+      this.GstTypeDis = false
     }
   }
 
@@ -1199,7 +1198,8 @@ export class BillComponent implements OnInit {
         this.BillItem.ProductExpDate = this.BillItem.ProductExpDate === '' ? "0000-00-00" : this.BillItem.ProductExpDate;
         this.BillItem.ProductTypeName = this.selectedProduct
         this.BillItem.ProductName = searchString
-        this.BillItem.Barcode = 'ManualProduct'
+        this.BillItem.Barcode = 'ManualProduct';
+        
       }
       // additem Pre order
       if (this.BillItem.Barcode === null || this.BillItem.Barcode === '') {

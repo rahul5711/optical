@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular
 import { Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import Swal from 'sweetalert2';
-import { NgxSpinnerService } from 'ngx-spinner';
+
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +11,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 export class BillCalculationService {
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   constructor(
-    private httpClient: HttpClient,
-    private sp: NgxSpinnerService,) { }
+    private httpClient: HttpClient,) { }
 
   convertToDecimal(num: any, x: any) {
     return Number(Math.round(parseFloat(num + 'e' + x)) + 'e-' + x);
@@ -26,7 +25,7 @@ export class BillCalculationService {
   }
 
   calculations(fieldName: any, mode: any, BillItem: any, Service: any) {
-    this.sp.show()
+
     const propertiesToValidate = ['UnitPrice', 'Quantity', 'DiscountPercentage', 'DiscountAmount', 'GSTPercentage', 'GSTAmount'];
     propertiesToValidate.forEach(property => this.validateAndSetToZero(BillItem, property));
 
@@ -86,7 +85,6 @@ export class BillCalculationService {
                 backdrop: false,
               });
               BillItem.GSTPercentage = 0;
-              BillItem.GSTType = 'None'
             } else {
               BillItem.GSTAmount = (+BillItem.Quantity * +BillItem.UnitPrice - +BillItem.DiscountAmount) - ((+BillItem.Quantity * +BillItem.UnitPrice - +BillItem.DiscountAmount) / (1 + +BillItem.GSTPercentage / 100));
             }
@@ -105,7 +103,6 @@ export class BillCalculationService {
                 backdrop: false,
               });
               BillItem.GSTPercentage = 0;
-              BillItem.GSTType = 'None'
             }
             else {
               BillItem.GSTAmount = (+BillItem.Quantity * +BillItem.UnitPrice - BillItem.DiscountAmount) * +BillItem.GSTPercentage / 100;
@@ -221,7 +218,7 @@ export class BillCalculationService {
     BillItem.GSTPercentage = this.convertToDecimal(+BillItem.GSTPercentage, 2);
     BillItem.GSTAmount = this.convertToDecimal(+BillItem.GSTAmount, 2);
     BillItem.TotalAmount = this.convertToDecimal(+BillItem.TotalAmount, 2);
-    this.sp.hide()
+
   }
 
   // bill Master calculation start
@@ -235,7 +232,7 @@ export class BillCalculationService {
     BillMaster.DueAmount =  BillMaster.DueAmount + BillMaster.AddlDiscount
 
     billItemList.forEach((element: any) => {
-      this.sp.show()
+
       if (element.Status !== 0) {
         BillMaster.Quantity = +BillMaster.Quantity + +element.Quantity;
         BillMaster.SubTotal = (+BillMaster.SubTotal + +element.SubTotal);
@@ -264,12 +261,12 @@ export class BillCalculationService {
      BillMaster.DueAmount = this.convertToDecimal(+BillMaster.DueAmount, 2);
      BillMaster.AddlDiscount = 0;
      BillMaster.AddlDiscountPercentage = 0;
-     this.sp.hide()
+
     });
 
     // serviceList
     serviceLists.forEach((element: any) => {
-      this.sp.show()
+
       if (element.Status !== 0) {
         BillMaster.SubTotal = +BillMaster.SubTotal + +element.SubTotal;
         BillMaster.GSTAmount = +BillMaster.GSTAmount + +element.GSTAmount;
@@ -287,7 +284,7 @@ export class BillCalculationService {
     if(element.DuaCal === 'delete2'){
       BillMaster.DueAmount = BillMaster.DueAmount -  element.TotalAmount
    }
-   this.sp.hide()
+
     });
 
     // RoundOff

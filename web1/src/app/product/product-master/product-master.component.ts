@@ -192,42 +192,87 @@ export class ProductMasterComponent implements OnInit {
     return event;
   }
 
-  deleteSpecValue(value: any, selectedValue: any, i: any) {
-    this.sp.show()
-    value.SptFilterData.forEach((element: any) => {
-      if (element.TableValue === selectedValue) {
-        const subs: Subscription = this.ps.deleteSpecValue(element.ID, 'specspttable').subscribe({
-          next: (res: any) => {
-            // this.specList.splice(i, 1);
-            const subss: Subscription = this.ps.getProductSupportData(value.Ref, this.specList[i].SptTableName).subscribe({
-              next: (res: any) => {
-                this.specList[i].SptTableData = res.data;
-                this.specList[i].SptFilterData = res.data;
-                this.as.successToast(res.message)
-              },
-              error: (err: any) => console.log(err.message),
-              complete: () => subss.unsubscribe(),
-            });
-            if (res.success) {
-              Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'Your file has been deleted.',
-                showConfirmButton: false,
-                timer: 1200
-              })
-            } else {
-              this.as.errorToast(res.message)
-            }
-            this.sp.hide()
-          },
-          error: (err: any) => {
-            console.log(err.msg);
-          },
-          complete: () => subs.unsubscribe(),
-        });
-      }
-    })
-  }
+  // deleteSpecValue(value: any, selectedValue: any, i: any) {
+  //   this.sp.show()
+  //   value.SptFilterData.forEach((element: any) => {
+  //     if (element.TableValue === selectedValue) {
+  //       const subs: Subscription = this.ps.deleteSpecValue(element.ID, 'specspttable').subscribe({
+  //         next: (res: any) => {
+  //           // this.specList.splice(i, 1);
+  //           const subss: Subscription = this.ps.getProductSupportData(value.Ref, this.specList[i].SptTableName).subscribe({
+  //             next: (res: any) => {
+  //               this.specList[i].SptTableData = res.data;
+  //               this.specList[i].SptFilterData = res.data;
+  //               this.as.successToast(res.message)
+  //             },
+  //             error: (err: any) => console.log(err.message),
+  //             complete: () => subss.unsubscribe(),
+  //           });
+  //           if (res.success) {
+  //             Swal.fire({
+  //               position: 'center',
+  //               icon: 'success',
+  //               title: 'Your file has been deleted.',
+  //               showConfirmButton: false,
+  //               timer: 1200
+  //             })
+  //           } else {
+  //             this.as.errorToast(res.message)
+  //           }
+  //           this.sp.hide()
+  //         },
+  //         error: (err: any) => {
+  //           console.log(err.msg);
+  //         },
+  //         complete: () => subs.unsubscribe(),
+  //       });
+  //     }
+  //   })
+  // }
 
+
+  deleteSpecValue(value: any, selectedValue: any, i: any) {
+    this.sp.show();
+  
+    // Find the element to delete
+    const elementToDelete = value.SptFilterData.find((element: any) => element.TableValue === selectedValue);
+  
+    if (!elementToDelete) {
+      // Element not found, handle it accordingly
+      this.sp.hide();
+      return;
+    }
+  
+    const subs: Subscription = this.ps.deleteSpecValue(elementToDelete.ID, 'specspttable').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          // Remove the deleted element from SptFilterData
+          value.SptFilterData = value.SptFilterData.filter((element: any) => element.TableValue !== selectedValue);
+          value.SptTableData = value.SptTableData.filter((element: any) => element.TableValue !== selectedValue);
+  
+          // Update the SptTableData and SptFilterData after deletion
+          this.specList[i].SptTableData = value.SptTableData;
+          this.specList[i].SptFilterData = value.SptFilterData;
+  
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been deleted.',
+            showConfirmButton: false,
+            timer: 1200,
+          });
+        } else {
+          this.as.errorToast(res.message);
+        }
+  
+        this.sp.hide();
+      },
+      error: (err: any) => {
+        console.log(err.message);
+        this.sp.hide();
+      },
+      complete: () => subs.unsubscribe(),
+    });
+  }
+  
 }

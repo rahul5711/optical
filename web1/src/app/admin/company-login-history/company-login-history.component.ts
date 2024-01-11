@@ -10,6 +10,7 @@ import { fromEvent   } from 'rxjs';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import * as moment from 'moment';
 
+
 @Component({
   selector: 'app-company-login-history',
   templateUrl: './company-login-history.component.html',
@@ -25,6 +26,7 @@ export class CompanyLoginHistoryComponent implements OnInit {
   evn = environment;
   stringUrl: string | undefined;
   dataList: any;
+  dataListaa: any;
   userList: any;
   currentPage = 1;
   itemsPerPage = 10;
@@ -39,12 +41,16 @@ export class CompanyLoginHistoryComponent implements OnInit {
     private sp: NgxSpinnerService,
     public as: AlertService,
     private emp: EmployeeService,
-
+ 
   ) { }
+
+  red:any = false
 
   ngOnInit(): void {
     this.getList()
     this.dropdownUserlist()
+    this.companySetting.LoginTimeEnd = moment(this.companySetting.LoginTimeEnd, 'HH:mm').format('hh:mm A');
+    this.companySetting.LoginTimeStart = moment(this.companySetting.LoginTimeStart, 'HH:mm').format('hh:mm A');
   }
 
   onPageChange(pageNum: number): void {
@@ -82,6 +88,18 @@ export class CompanyLoginHistoryComponent implements OnInit {
         if(res.success){
           this.collectionSize = res.count;
           this.dataList = res.data
+          this.dataListaa = this.dataList
+          this.dataListaa.forEach((e: any) =>{
+            e.time = moment(e.time).format('hh:mm A');
+            console.log( e.time);
+             if(this.companySetting.LoginTimeEnd > e.time || this.companySetting.LoginTimeStart < e.time){
+               this.red = true
+             }else{
+              this.red = false
+             }
+             e.rowColorStyle = { 'background-color': this.red ? '' : 'red', 'color': this.red ? '' : '#fff' };
+             this.dataList.push(e);
+          })
           this.as.successToast(res.message)
         }else{
           this.as.errorToast(res.message)

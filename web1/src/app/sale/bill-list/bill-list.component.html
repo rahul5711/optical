@@ -388,7 +388,7 @@
           <mat-form-field class="example-full-width mb-0">
             <mat-label style="color: rgb(255 0 0) !important;letter-spacing: 1px; font-weight: 800;">Balance</mat-label>
             <input type="number" min="0" style="color: rgb(255, 0, 0) !important; font-size: 17px !important; font-weight: 800;" matInput
-              name="Total Amount" value="{{ this.applyPayment.PayableAmount}}" disabled #TOutstandingcontrol
+              name="Total Amount" value="{{ this.applyPayment.PayableAmount.toFixed(2)}}" disabled #TOutstandingcontrol
               [autocomplete]="false">
           </mat-form-field>
         </div>

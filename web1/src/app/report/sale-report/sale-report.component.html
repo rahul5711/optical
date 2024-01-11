@@ -429,7 +429,7 @@
 
                                                         <td *ngIf="columnVisibility.Paid"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
-                                                            {{(d.TotalAmount) - d.DueAmount }} </td>
+                                                            {{((d.TotalAmount) - d.DueAmount ).toFixed(2)}} </td>
 
                                                         <td *ngIf="columnVisibility.Balance"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{

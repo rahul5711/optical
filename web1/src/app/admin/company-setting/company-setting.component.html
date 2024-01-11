@@ -164,15 +164,19 @@
                                                     <div class="col-xl-2 col-lg-2 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>LoginTimeStart</mat-label>
-                                                            <input matInput type="time" name="LoginTimeStart"
-                                                                timeformat="24h" [(ngModel)]="data.LoginTimeStart">
+                                                            <input matInput type="time" name="LoginTimeStart" [(ngModel)]="data.LoginTimeStart" >
                                                         </mat-form-field>
+                                                    
+                                                        <!-- Display formatted time -->
+                                                    
                                                     </div>
+                                                    
                                                     <div class="col-xl-2 col-lg-2 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>LoginTimeEnd</mat-label>
-                                                            <input matInput type="time" type="time-24"
+                                                            <input matInput type="time" timeformat="time-12"
                                                                 name="LoginTimeEnd" [(ngModel)]="data.LoginTimeEnd">
+                                                                
                                                         </mat-form-field>
                                                     </div>
                                                     <!-- <div class="col-xl-3 col-lg-3 mb-0"

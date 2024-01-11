@@ -305,7 +305,11 @@ export class CashCollectionComponent implements OnInit {
 
     
     printWindow.document.close();
-    printWindow.print();
+    printWindow.onload = () => {
+      printWindow.print();
+      printWindow.document.execCommand('SaveAs', true, 'CashCollectionReport.pdf');
+      printWindow.close();
+    };
   }
 
   toggleColumnVisibility(column: string): void {
