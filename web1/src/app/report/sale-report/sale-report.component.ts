@@ -1679,7 +1679,7 @@ export class SaleReportComponent implements OnInit {
     let msg = '';
 
     if (mode === 'bill') {
-      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Credit Noteaa') || 'This is a Gentle Reminder for your Balance Amount 1200/- Please clear Today.';
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Credit Noteaa') || 'This is a Gentle Reminder for your Balance Amount' + ` ${data.DueAmount}` + '/- Please clear Today.';
       msg = `*Hi ${data.CustomerName},*%0A` +
         `${WhatsappMsg}%0A` +
         `*${this.shopList[0].Name}* - ${this.shopList[0].AreaName}%0A${this.shopList[0].MobileNo1}%0A${this.shopList[0].Website}`;
