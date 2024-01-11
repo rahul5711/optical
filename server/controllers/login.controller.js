@@ -107,6 +107,7 @@ module.exports = {
                             `Insert into loginhistory (CompanyID, UserName, UserID, LoginTime, IpAddress, Comment) values (${User[0].CompanyID}, '${User[0].Name}', ${User[0].ID}, now(), '${ip}', '${comment}')`
 
                         );
+                        console.log("saveHistory ==================>",saveHistory);
                         return res.send({ message: comment, success: false, loginCode: loginCode })
                     }
 

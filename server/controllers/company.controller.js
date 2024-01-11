@@ -142,7 +142,7 @@ module.exports = {
 
                 if (result2) {
 
-                    for (const item of result2) {
+                    for (let item of result2) {
                         if (item.Type === 'DropDown') {
                             item.SptTableName = item.ProductName + Math.floor(Math.random() * 999999) + 1;
                         } else {
