@@ -143,11 +143,13 @@ module.exports = {
                 if (result2) {
 
                     for (let item of result2) {
+                        console.log("item.Type =============>", item.Type);
                         if (item.Type === 'DropDown') {
                             item.SptTableName = item.ProductName + Math.floor(Math.random() * 999999) + 1;
                         } else {
                             item.SptTableName = '0'
                         }
+                        console.log("item.SptTableName =============>", item.SptTableName);
                         if (item.Type === 'DropDown') {
                             const [saveSpec] = await mysql2.pool.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', ${saveCompany.insertId}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now())`)
                         } else if (item.Type !== 'DropDown') {

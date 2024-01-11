@@ -244,9 +244,8 @@ module.exports = {
             const [companysetting] = await mysql2.pool.query(`select * from companysetting where ID = ${CompanyID}`)
 
 
-            let feedbackDays = Number(companysetting[0].feedbackDate) || 0
+            let feedbackDays = Number(companysetting[0].FeedbackDate) || 0
             let shopId = ``
-
             if (shopid !== 0) {
                 shopId = `and customer.ShopID = ${shopid}`
             }
@@ -263,8 +262,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
 
-            let qry = `select customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') ${shopId} and DATE_FORMAT(billmaster.BillDate, '%Y-%m-%d') = '${date}'`
-console.log(qry);
+            let qry = `select customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') ${shopId} and DATE_FORMAT(DATE_SUB(billmaster.BillDate, INTERVAL ${feedbackDays} DAY), '%Y-%m-%d') = '${date}'`
 
             const [datum] = await mysql2.pool.query(qry)
 
@@ -295,7 +293,7 @@ console.log(qry);
             const [companysetting] = await mysql2.pool.query(`select * from companysetting where ID = ${CompanyID}`)
 
 
-            let serviceDays = Number(companysetting[0].serviceDate) || 0
+            let serviceDays = Number(companysetting[0].ServiceDate) || 0
             let shopId = ``
 
             if (shopid !== 0) {
@@ -314,7 +312,7 @@ console.log(qry);
                 return res.send({ message: "Invalid Query dateType Data" })
             }
 
-            let qry = `select customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  ${shopId} and DATE_FORMAT(billmaster.BillDate, '%Y-%m-%d') = '${date}'`
+            let qry = `select customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  ${shopId} and DATE_FORMAT(DATE_SUB(billmaster.BillDate, INTERVAL ${serviceDays} DAY), '%Y-%m-%d') = '${date}'`
 
 
             const [datum] = await mysql2.pool.query(qry)
