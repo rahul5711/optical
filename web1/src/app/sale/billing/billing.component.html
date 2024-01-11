@@ -9,12 +9,14 @@
                             <div class="col-lg-2 col-md-2 col-4">
                                 <h4 style="font-weight: 600;">Customer ID <b style="color:#000">{{this.data.Idd}}</b> / <b style="color:#000">{{this.data.Category}}</b> </h4>
                             </div>
-                            <div class="col-xl-2 col-lg-3 col-md-4 col-8 mr-md-2 mr-0 ms-md-auto"
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-8 mr-md-2 mr-0 "
                                 style="display: inherit; height: 20px;margin-top: 1px;color: black;">
+                                <div class="ms-auto">
                                 <label style="font-size: 14px; margin-right:10px">Visit Date </label>
                                 <input style="border-bottom: 1px solid; height: 19px;width: 95px;" matInput
                                     name="VisitDate" type="date" [(ngModel)]="data.VisitDate">
-                                <button class="extra" (click)="openModal(customer)">EXT</button>
+                                <button class="extra" (click)="openModal(customer)">EXTRA</button>
+                            </div>
                             </div>
                             <div class="col-lg-6 col-md-12 col-12 ms-auto d-lg-block d-none">
                                 <!-- nav-tabs start -->
@@ -60,7 +62,7 @@
                                     <div class="row">
                                         <div class="col-xl-2 col-lg-2 col-md-3  col-4 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
-                                                <mat-label>Select Position </mat-label>
+                                                <mat-label></mat-label>
                                                 <mat-select name="Position" [(ngModel)]="data.Gender" #Gendercontrol>
                                                     <mat-option value="MR.">Mr.</mat-option>
                                                     <mat-option value="DR.">Mrs.</mat-option>
@@ -278,9 +280,11 @@
                                                 >
                                             <span class="d-none d-md-block">
                                                 <div class="row  powerRow ">
-                                                    <div class="col-md-1 col-3 m-0 p-0 ps-1">
+                                                    <div class="col-md-2 col-3 m-0 p-0 ps-1">
+                                                        <!-- <b class="extra m-0" style="padding: 2px; cursor: pointer;"
+                                                            (click)="openModal(Spectacles)">EXTRA</b> -->
                                                         <b class="extra m-0" style="padding: 2px; cursor: pointer;"
-                                                            (click)="openModal(Spectacles)">EXTRA</b>
+                                                        (click)="NewVisit('spectacle')">New Visit</b>
                                                     </div>
                                                     <div class="col-md-2 col-3">
                                                         <span class="right_letf">Right Eye</span>
@@ -294,12 +298,15 @@
                                                     <div class="col-md-3 col-3 ">
                                                         <span class="right_letf">Left Eye</span>
                                                     </div>
+                                                    <div class="col-md-1 col-3 m-0 p-0 ps-1">
+                                                        <b class="extra m-0" style="padding: 2px; cursor: pointer;"
+                                                            (click)="openModal(Spectacles)">EXTRA</b>
+                                                    
+                                                    </div>
                                                 </div>
                                                 <!-- herder label start -->
                                                 <div class="row mt-1 powerRow ">
-                                                    <div class="col-md-1 col-2 p-0"><b class="extra m-0  ms-1"
-                                                            style="padding: 2px;cursor: pointer;"
-                                                            (click)="NewVisit('spectacle')">N_Visit</b> </div>
+                                                    <div class="col-md-1 col-2 p-0"> </div>
                                                     <div class="col-md-1 col-2">SPH </div>
                                                     <div class="col-md-1 col-2">CYL </div>
                                                     <div class="col-md-1 col-2">AXIS </div>
@@ -863,9 +870,9 @@
                                                  role="tabpanel" aria-labelledby="ex1-tab-2"> 
                                                  <span class="d-none d-md-block">
                                                 <div class="row  powerRow">
-                                                    <div class="col-1 m-0 p-0 ps-1">
+                                                    <div class="col-2 m-0 p-0 ps-1">
                                                         <button class="extra m-0"
-                                                            (click)="openModal(Contact)">EXTRA</button>
+                                                        (click)="NewVisit('contact')">New Visit</button>
                                                     </div>
                                                     <div class="col-2">
                                                         <span class="right_letf">Right Eye</span>
@@ -880,12 +887,14 @@
                                                     <div class="col-3 ">
                                                         <span class="right_letf">Left Eye</span>
                                                     </div>
+                                                    <div class="col-1 m-0 p-0 ps-1">
+                                                        <button class="extra m-0"
+                                                            (click)="openModal(Contact)">EXTRA</button>
+                                                    </div>
                                                 </div>
                                                 <!-- herder label start -->
                                                 <div class="row mt-1 powerRow">
-                                                    <div class="col-1 p-0"><b class="extra m-0  ms-1"
-                                                            style="padding: 2px;cursor: pointer;"
-                                                            (click)="NewVisit('contact')">N_Visit</b> </div>
+                                                    <div class="col-1 p-0"> </div>
                                                     <div class="col-1">SPH </div>
                                                     <div class="col-1">CYL </div>
                                                     <div class="col-1">AXIS </div>
@@ -1440,7 +1449,7 @@
                                                     <div class="col-md-2 pt-3 P-0">
                                                         <b class="extra m-0 "
                                                             style="padding: 2px;cursor: pointer;"
-                                                            (click)="NewVisit('other')">N_Visit</b>
+                                                            (click)="NewVisit('other')">New Visit</b>
                                                     </div>
                                                     <div class="col-md-1 col-3">
                                                         <mat-form-field class="example-full-width mb-0">
