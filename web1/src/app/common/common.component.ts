@@ -79,7 +79,20 @@ export class CommonComponent implements OnInit {
   element7:any
   element8:any
 
+
+
+  animateIcon :any;
+  iconColor = '#fff';
+
+  isClicked = false;
+
+  onClick() {
+    this.isClicked = true;
+    this.animateIcon = false
+    // Add logic to handle the update when the button is clicked
+  }
   ngOnInit(): void {
+    this.isClicked = true;
     this.sp.show()
     this.user = JSON.parse(localStorage.getItem('user') || '')
     if (this.user.UserGroup !== 'SuperAdmin') {
@@ -133,6 +146,7 @@ export class CommonComponent implements OnInit {
 
   }
 
+ 
   openModal(content: any) {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
   }
@@ -616,6 +630,7 @@ export class CommonComponent implements OnInit {
   }
 
   refresh(mode: any) {
+
     if (mode === 'purchaseList') {
       this.router.navigateByUrl('/inventory/purchaseList', { skipLocationChange: true }).then(() => {
         this.router.navigate(['/inventory/purchaseList', 0]); 

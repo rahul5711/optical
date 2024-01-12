@@ -5,11 +5,13 @@ import { LoginComponent } from './common/login.component';
 import { Page404Component } from './common/page404.component';
 import { AuthGuard } from './auth/auth.guard';
 import { WelcomeComponent } from './admin/welcome.component';
+import { AboutComponent } from './common/about/about.component';
 
 const routes: Routes = [
   
   {path: '' , component: WelcomeComponent},
   {path: 'login' , component: LoginComponent},
+  {path: 'about' , component: AboutComponent},
 
   {path: '', component: CommonComponent,
   children: [

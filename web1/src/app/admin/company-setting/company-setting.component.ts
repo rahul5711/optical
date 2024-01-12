@@ -118,6 +118,7 @@ export class CompanySettingComponent implements OnInit {
     this.data.month = this.data.month === 'true';
     this.data.partycode = this.data.partycode === 'true';
     this.data.type = this.data.type === 'true';
+    this.data.AppliedDiscount = this.data.AppliedDiscount === 'true';
   }
 
   uploadImage(e:any, mode:any){

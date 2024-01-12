@@ -3,7 +3,28 @@
   padding: 0;
   box-sizing: border-box;
 }
+.update{
+  background: #ff5100;
+}
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
 
+.blink {
+  animation: blink 1s infinite; /* Change the duration and iteration count as needed */
+}
+
+.update:active {
+  animation: none; /* Stop the animation when the button is clicked */
+}
 .navbar{
   z-index: 99;
   height: 50px;

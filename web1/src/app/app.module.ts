@@ -37,6 +37,8 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { NgxPrintModule } from 'ngx-print';
 // import { NgxPaginationModule } from 'ngx-pagination';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { AboutComponent } from './common/about/about.component';
+
 
 
 @NgModule({
@@ -45,6 +47,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     LoginComponent,
     CommonComponent,
     Page404Component,
+    AboutComponent,
     
   ],
   imports: [

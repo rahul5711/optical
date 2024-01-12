@@ -175,6 +175,18 @@
             </div>
           </div>
           <!-- companyadmin end Uploader -->
+          <!-- companyadmin  Uploader start -->
+          <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown">
+            <a class="dropBtn" data-target="#collapseExample8" [routerLink]="['/about']" target="_blank" 
+            class="update"  [class.blink]="!isClicked"
+            (click)="onClick()">
+           Latest Update
+         </a>
+            <div class="drop-content" id="collapseExample8"></div>
+          </div>
+          
+          
+          <!-- companyadmin end Uploader -->
         </div>
       </div>
       <!-- CompanyAdmin end nav-->
@@ -185,7 +197,7 @@
           #Typecontrol>
           <mat-option *ngIf="user?.UserGroup === 'CompanyAdmin'" [value]="0">All</mat-option>
           <mat-option *ngFor="let s of dropShoplist let i = index;" [value]="s.ID">
-            <span style="color: rgb(47, 47, 47); "> {{s.Name || s.ShopName}}
+            <span > {{s.Name || s.ShopName}}
               <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}}) </span>
               <i *ngIf="s.Status == 0" class="fas fa-times" style="color: red; font-size: 20px; padding-left: 5px;"> </i>
             </span>
