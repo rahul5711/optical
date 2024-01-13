@@ -56,6 +56,8 @@ export class ExpenseComponent implements OnInit {
   addEyeTestReport = false
   deleteEyeTestReport = false
 
+  totalAmt = 0
+
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'EyeTestReport') {
@@ -107,7 +109,7 @@ export class ExpenseComponent implements OnInit {
   searchData() {
     this.sp.show()
     let Parem = '';
-
+    this.totalAmt = 0
     if (this.data.FromDate !== '' && this.data.FromDate !== null) {
       let FromDate = moment(this.data.FromDate).format('YYYY-MM-DD')
       Parem = Parem + ' and DATE_FORMAT(expense.ExpenseDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
@@ -134,7 +136,8 @@ export class ExpenseComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)
-          this.ExpenseList = res.data
+          this.ExpenseList = res.data;
+          this.totalAmt = this.ExpenseList.reduce((sum: any, e: { Amount: any; }) => sum + e.Amount, 0);
         } else {
           this.as.errorToast(res.message)
         }
