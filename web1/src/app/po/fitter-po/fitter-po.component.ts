@@ -81,7 +81,7 @@ export class FitterPoComponent implements OnInit {
       this.data.ShopID = this.shopList[0].ShopID
     } else {
       this.dropdownShoplist();
-      this.getFitterPo();
+      // this.getFitterPo();
     }
     this.dropdownfitterlist();
     this.getLensTypeList();

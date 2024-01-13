@@ -43,12 +43,13 @@ export class ExpenseComponent implements OnInit {
 
   shopList: any = [];
   PaymentModesList: any = [];
+  ExpenseTypeList: any = [];
   ExpenseList: any = [];
   shopLists: any = []
 
 
   data: any = {
-    FromDate: moment().format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, PaymentMode: 'All', CashType: 'All'
+    FromDate: moment().format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, PaymentMode: 'All',ExpenseType:'All', CashType: 'All'
   };
 
   viewEyeTestReport = false
@@ -76,6 +77,7 @@ export class ExpenseComponent implements OnInit {
     }
 
     this.getPaymentModesList();
+    this.getExpenseTypeList();
     this.searchData()
   }
 
@@ -106,6 +108,21 @@ export class ExpenseComponent implements OnInit {
     });
   }
 
+  getExpenseTypeList() {
+    const subs: Subscription = this.supps.getList('ExpenseType').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.ExpenseTypeList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
   searchData() {
     this.sp.show()
     let Parem = '';
@@ -126,6 +143,10 @@ export class ExpenseComponent implements OnInit {
 
     if (this.data.PaymentMode !== 'All') {
       Parem = Parem + ' and Expense.PaymentMode = ' + `'${this.data.PaymentMode}'`
+    }
+    
+    if (this.data.ExpenseType !== 'All') {
+      Parem = Parem + ' and Expense.Category = ' + `'${this.data.ExpenseType}'`
     }
 
     if (this.data.CashType !== 'All') {

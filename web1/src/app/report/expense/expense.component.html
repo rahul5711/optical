@@ -57,6 +57,15 @@
                                           </mat-select>
                                         </mat-form-field>
                                       </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0" >
+                                        <mat-form-field class="example-full-width mb-0">
+                                          <mat-label>Expense Type</mat-label>
+                                          <mat-select name="ExpenseType" [(ngModel)]="data.ExpenseType" required #GSTTypecontrol1>
+                                            <mat-option value="All">All</mat-option>
+                                            <mat-option [value]="e.Name" *ngFor="let e of ExpenseTypeList"> {{e.Name}} </mat-option>
+                                          </mat-select>
+                                        </mat-form-field>
+                                      </div>
                                       <div *ngIf="data.PaymentMode === 'CASH' || data.PaymentMode === 'Cash'"
                                       class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                       <mat-form-field class="example-full-width mb-0">
