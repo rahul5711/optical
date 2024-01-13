@@ -607,7 +607,7 @@
                                     <button class="bgRemove" type="button">
 
                                         <button class="bgRemove p-0" type="button"
-                                            *ngIf="deleteCustomerBill &&  data.ID !== null &&  data.CancelStatus === 1"
+                                            *ngIf="deleteCustomerBill  &&  data.ID !== null &&  data.CancelStatus === 1"
                                             [disabled]="data.Status === 0 " (click)="deleteItem('Product', i)">
                                             <mat-icon class="deletes_icon " title="Delete">delete_forever</mat-icon>
                                         </button>
