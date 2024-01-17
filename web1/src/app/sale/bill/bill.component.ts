@@ -1697,8 +1697,9 @@ export class BillComponent implements OnInit {
           if (this.invoiceList.length === 0) {
             this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
           }
-          this.applyPayment.PayableAmount = res.totalDueAmount ? res.totalDueAmount : 0;
-          this.applyPayment.CustomerCredit = res.creditAmount ? res.creditAmount : 0
+          this.applyPayment.PayableAmount = res.totalDueAmount.toFixed(2) ? res.totalDueAmount.toFixed(2) : 0;
+
+          this.applyPayment.CustomerCredit = res.creditAmount.toFixed(2) ? res.creditAmount.toFixed(2) : 0;
         } else {
           this.as.errorToast(res.message)
           Swal.fire({
@@ -1753,6 +1754,7 @@ export class BillComponent implements OnInit {
   }
 
   onPaymentSubmit() {
+
     if (this.applyPayment.PayableAmount < this.applyPayment.PaidAmount) {
       Swal.fire({
         position: 'center',
@@ -1763,6 +1765,9 @@ export class BillComponent implements OnInit {
       })
       this.applyPayment.PaidAmount = 0
     }
+
+
+
     if (this.applyPayment.ApplyReturn === true) {
       if (this.applyPayment.CustomerCredit < this.applyPayment.PaidAmount) {
         Swal.fire({
