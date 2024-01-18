@@ -13,6 +13,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AlertService } from './helpers/alert.service';
 import { TokenService } from './token.service';
 import { AuthServiceService } from './auth-service.service';
+import * as moment from 'moment';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
@@ -37,6 +38,8 @@ export class TokenInterceptor implements HttpInterceptor {
           headersConfig['ip'] = ip;
           headersConfig['UserGroup'] = this.tokenService.getUser().UserGroup || '';
           headersConfig['selectedShop'] = localStorage.getItem('selectedShop')|| ['0'];
+          headersConfig['currenttime'] = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+          headersConfig['formatedcurrentTime'] = moment(new Date()).format('YYYY-MM-DD hh:mm A');
 
         }
         req = req.clone({ setHeaders: headersConfig });

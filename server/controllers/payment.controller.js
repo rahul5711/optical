@@ -222,6 +222,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
+            console.log("current time =====> ",req.headers.currenttime, typeof req.headers.currenttime);
+
             const { PaymentType, CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PayableAmount, CreditNumber } = req.body
             console.log('<============= applyPayment =============>');
             console.table({ PaymentType, CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, CustomerCredit, ShopID, PayableAmount, CreditNumber })
@@ -247,7 +249,7 @@ module.exports = {
 
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
                     let [pMaster] = await mysql2.pool.query(
-                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, now())`
+                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, now())`
                     );
 
                     let pMasterID = pMaster.insertId;
@@ -266,7 +268,7 @@ module.exports = {
                                 item.PaymentStatus = "Unpaid";
                                 tempAmount = 0;
                             }
-                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Customer', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Customer', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                             let [pDetail] = await mysql2.pool.query(qry);
                             let [bMaster] = await mysql2.pool.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
                         }
@@ -277,7 +279,7 @@ module.exports = {
 
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
                     let [pMaster] = await mysql2.pool.query(
-                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, now())`
+                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                     );
 
                     let pMasterID = pMaster.insertId;
@@ -296,9 +298,9 @@ module.exports = {
                                 item.PaymentStatus = "Unpaid";
                                 tempAmount = 0;
                             }
-                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Customer Credit', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Customer Credit', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                             let [pDetail] = await mysql2.pool.query(qry);
-                            let [bMaster] = await mysql2.pool.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                            let [bMaster] = await mysql2.pool.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID}`);
                         }
 
                     }
@@ -308,7 +310,7 @@ module.exports = {
             } else if (PaymentType === 'Supplier') {
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
                     let [pMaster] = await mysql2.pool.query(
-                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Supplier',  '1',${LoggedOnUser}, now())`
+                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Supplier',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                     );
 
                     let pMasterID = pMaster.insertId;
@@ -327,9 +329,9 @@ module.exports = {
                                 item.PaymentStatus = "Unpaid";
                                 tempAmount = 0;
                             }
-                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Vendor', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Vendor', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                             let [pDetail] = await mysql2.pool.query(qry);
-                            let [bMaster] = await mysql2.pool.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now() where ID = ${item.ID}`);
+                            let [bMaster] = await mysql2.pool.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}' where ID = ${item.ID}`);
                         }
 
                     }
@@ -350,7 +352,7 @@ module.exports = {
                     }
 
                     let [pMaster] = await mysql2.pool.query(
-                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', 'CN Amount Rs ${PaidAmount} Apply Ref CN No ${CreditNumber}.', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Supplier',  '1',${LoggedOnUser}, now())`
+                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', 'CN Amount Rs ${PaidAmount} Apply Ref CN No ${CreditNumber}.', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Supplier',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                     );
 
                     let pMasterID = pMaster.insertId;
@@ -369,9 +371,9 @@ module.exports = {
                                 item.PaymentStatus = "Unpaid";
                                 tempAmount = 0;
                             }
-                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Vendor Credit', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Vendor Credit', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                             let [pDetail] = await mysql2.pool.query(qry);
-                            let [bMaster] = await mysql2.pool.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now() where ID = ${item.ID}`);
+                            let [bMaster] = await mysql2.pool.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}' where ID = ${item.ID}`);
 
                             const updateAmountForCredit = data[0].PaidAmount + PaidAmount
 
@@ -385,7 +387,7 @@ module.exports = {
             } else if (PaymentType === 'Fitter') {
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
                     let [pMaster] = await mysql2.pool.query(
-                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Fitter',  '1',${LoggedOnUser}, now())`
+                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Fitter',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                     );
 
                     let pMasterID = pMaster.insertId;
@@ -404,9 +406,9 @@ module.exports = {
                                 item.PaymentStatus = "Unpaid";
                                 tempAmount = 0;
                             }
-                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Fitter', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Fitter', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                             let [pDetail] = await mysql2.pool.query(qry);
-                            let [bMaster] = await mysql2.pool.query(`Update fittermaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now() where ID = ${item.ID}`);
+                            let [bMaster] = await mysql2.pool.query(`Update fittermaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}' where ID = ${item.ID}`);
                         }
 
                     }
@@ -415,7 +417,7 @@ module.exports = {
 
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
                     let [pMaster] = await mysql2.pool.query(
-                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Fitter',  '1',${LoggedOnUser}, now())`
+                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Fitter',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                     );
 
                     let pMasterID = pMaster.insertId;
@@ -434,9 +436,9 @@ module.exports = {
                                 item.PaymentStatus = "Unpaid";
                                 tempAmount = 0;
                             }
-                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Fitter Credit', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Fitter Credit', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                             let [pDetail] = await mysql2.pool.query(qry);
-                            let [bMaster] = await mysql2.pool.query(`Update fittermaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now() where ID = ${item.ID}`);
+                            let [bMaster] = await mysql2.pool.query(`Update fittermaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}' where ID = ${item.ID}`);
                         }
 
                     }
@@ -446,7 +448,7 @@ module.exports = {
             } else if (PaymentType === 'Employee') {
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
                     let [pMaster] = await mysql2.pool.query(
-                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Employee',  '1',${LoggedOnUser}, now())`
+                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Employee',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                     );
 
                     let pMasterID = pMaster.insertId;
@@ -465,9 +467,9 @@ module.exports = {
                                 item.PaymentStatus = "Unpaid";
                                 tempAmount = 0;
                             }
-                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Employee', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Employee', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                             let [pDetail] = await mysql2.pool.query(qry);
-                            let [bMaster] = await mysql2.pool.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                            let [bMaster] = await mysql2.pool.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID}`);
                         }
 
                     }
@@ -476,7 +478,7 @@ module.exports = {
 
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
                     let [pMaster] = await mysql2.pool.query(
-                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Employee',  '1',${LoggedOnUser}, now())`
+                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Employee',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                     );
 
                     let pMasterID = pMaster.insertId;
@@ -495,9 +497,9 @@ module.exports = {
                                 item.PaymentStatus = "Unpaid";
                                 tempAmount = 0;
                             }
-                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Employee Credit', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Employee Credit', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                             let [pDetail] = await mysql2.pool.query(qry);
-                            let [bMaster] = await mysql2.pool.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                            let [bMaster] = await mysql2.pool.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID}`);
                         }
 
                     }
@@ -507,7 +509,7 @@ module.exports = {
             } else if (PaymentType === 'Doctor') {
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
                     let [pMaster] = await mysql2.pool.query(
-                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Doctor',  '1',${LoggedOnUser}, now())`
+                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Doctor',  '1',${LoggedOnUser},'${req.headers.currenttime}')`
                     );
 
                     let pMasterID = pMaster.insertId;
@@ -526,9 +528,9 @@ module.exports = {
                                 item.PaymentStatus = "Unpaid";
                                 tempAmount = 0;
                             }
-                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Doctor', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Doctor', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                             let [pDetail] = await mysql2.pool.query(qry);
-                            let [bMaster] = await mysql2.pool.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                            let [bMaster] = await mysql2.pool.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID}`);
                         }
 
                     }
@@ -537,7 +539,7 @@ module.exports = {
 
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
                     let [pMaster] = await mysql2.pool.query(
-                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Doctor',  '1',${LoggedOnUser}, now())`
+                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Doctor',  '1',${LoggedOnUser},'${req.headers.currenttime}')`
                     );
 
                     let pMasterID = pMaster.insertId;
@@ -556,9 +558,9 @@ module.exports = {
                                 item.PaymentStatus = "Unpaid";
                                 tempAmount = 0;
                             }
-                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Doctor Credit', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                            let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Doctor Credit', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                             let [pDetail] = await mysql2.pool.query(qry);
-                            let [bMaster] = await mysql2.pool.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                            let [bMaster] = await mysql2.pool.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID}`);
                         }
 
                     }
@@ -783,6 +785,8 @@ module.exports = {
 
             console.log("customerPayment================================>", req.body);
 
+            console.log("currenttime =============>",req.headers.currenttime);
+
             if (!CustomerID || CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
             if (ApplyReturn === null || ApplyReturn === undefined) return res.send({ message: "Invalid ApplyReturn Data" })
             if (!CreditType || CreditType === undefined) return res.send({ message: "Invalid CreditType Data" })
@@ -801,7 +805,7 @@ module.exports = {
 
             if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
                 let [pMaster] = await mysql2.pool.query(
-                    `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, now())`
+                    `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                 );
 
                 let pMasterID = pMaster.insertId;
@@ -820,9 +824,9 @@ module.exports = {
                             item.PaymentStatus = "Unpaid";
                             tempAmount = 0;
                         }
-                        let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'${paymentType}', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                        let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'${paymentType}', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                         let [pDetail] = await mysql2.pool.query(qry);
-                        let [bMaster] = await mysql2.pool.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                        let [bMaster] = await mysql2.pool.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID}`);
                     }
 
                 }
@@ -833,7 +837,7 @@ module.exports = {
                 paymentType = 'Customer Credit'
 
                 let [pMaster] = await mysql2.pool.query(
-                    `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}',now(), '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, now())`
+                    `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                 );
 
                 let pMasterID = pMaster.insertId;
@@ -852,9 +856,9 @@ module.exports = {
                             item.PaymentStatus = "Unpaid";
                             tempAmount = 0;
                         }
-                        let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'${paymentType}', '${CreditType}', 1, ${LoggedOnUser}, now())`;
+                        let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'${paymentType}', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                         let [pDetail] = await mysql2.pool.query(qry);
-                        let [bMaster] = await mysql2.pool.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID}`);
+                        let [bMaster] = await mysql2.pool.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID}`);
                     }
 
                 }
