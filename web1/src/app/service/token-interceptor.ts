@@ -58,6 +58,11 @@ export class TokenInterceptor implements HttpInterceptor {
           if (err instanceof HttpErrorResponse) {
             console.log(err);
 
+            if(err.status === 401) {
+              localStorage.clear()
+              this.router.navigate(['/'])
+            }
+
             if(err.status === 999) {
               localStorage.clear()
               this.router.navigate(['/'])
