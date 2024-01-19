@@ -749,6 +749,7 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
 
             const printdata = req.body
+            console.log(printdata);
             let powerList = []
             if (printdata.otherSpec === true) {
                 powerList = printdata.spectacle
