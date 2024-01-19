@@ -2177,7 +2177,7 @@ export class BillComponent implements OnInit {
   }
 
   dateFormat(date: any) {
-    return moment(date).format(`${this.companySetting.DateFormat}`);
+    return moment(new Date(date)).format(`${this.companySetting.DateFormat}`);
   }
 
   billPrint(mode: any) {

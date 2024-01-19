@@ -57,10 +57,12 @@ export class CompanySettingComponent implements OnInit {
   dataList: any;
 
   dataFormat: any = [
-       {ID: 'DD-MM-YYYY', Name: '10-02-2021'},
+      {ID: 'YYYY-MM-DD HH:mm:ss', Name: '2000-02-25 05:59:59'},
+      {ID: 'YYYY-MM-DD h:mm A', Name: '2000-02-25 05:59'},
+       {ID: 'DD-MM-YYYY', Name: '10-02-2000'},
        {ID: 'DD-MM-YYYY h:mm a', Name: '01-12-2000 11:39 PM/AM'},
-       {ID: 'DD MMM YYYY', Name: '26 Aug 2023'},
-       {ID: 'DD MMM YYYY h:mm a', Name: '26 Aug 2023 11:39 PM/AM'},
+       {ID: 'DD MMM YYYY', Name: '26 Aug 2000'},
+       {ID: 'DD MMM YYYY h:mm a', Name: '26 Aug 2000 11:39 PM/AM'},
   ];
 
   wlcmArray: any = [];
