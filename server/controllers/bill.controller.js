@@ -1763,11 +1763,16 @@ module.exports = {
             printdata.invoiceNo = printdata.shopdetails.BillName.split("/")[0]
             printdata.TotalValue = printdata.shopdetails.BillName.split("/")[1]
             printdata.BillValue = printdata.shopdetails.BillName.split("/")[2]
+            printdata.CashMemo = printdata.shopdetails.BillName.split("/")[3]
             if(printdata.BillValue === '' || printdata.BillValue == undefined){
                 printdata.BillValue = 'Tax Invoice'
             }
+            if(printdata.CashMemo === '' || printdata.CashMemo == undefined){
+                printdata.CashMemo = 'Cash Memo'
+            }
 
-            printdata.bill = printdata.mode === "Invoice" ? "Cash Memo" : printdata.BillValue;
+
+            printdata.bill = printdata.mode === "Invoice" ? printdata.CashMemo : printdata.BillValue;
             printdata.welComeNoteShop = printdata.shopWelComeNote.filter((ele) => {
                 if (printdata.shopdetails.WholesaleBill == "true" && ele.NoteType === "wholesale") {
                     return true;
