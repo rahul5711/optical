@@ -27,13 +27,15 @@
                   </div>
                 </div>
               </div>
-              <p class="text-light tagline"> Please enter your login and password!</p>
+              <p class=" tagline"> Please enter your login and password!</p>
               <input matInput type="text" name="LoginName" #username placeholder="LoginName" [(ngModel)]="data.LoginName" required autocomplete="off">
               <div>
               <input #x  matInput type="password" name="Password" placeholder="Password" [(ngModel)]="data.Password" required autocomplete="new-password">
               <mat-icon class="key mt-1"   (click)="x.type = x.type=='password'?'text':'password'"  matSuffix>vpn_key</mat-icon>
             </div>
-              <a class="forgot text-light" href="#">Forgot password?</a>
+              <a class="forgot text-light" href="#">
+                <!-- Forgot password? -->
+              </a>
               <br>
               <button class="logibtn" >Login</button>
               <div class="col-md-12 col-12">
