@@ -62,7 +62,7 @@ data : any = {
 
 data1: any = { 
     ID : null, CompanyID : null, Name : "", UserGroup : "", DOB : null, Anniversary : null, MobileNo1 : null, MobileNo2 : null,   PhoneNo  : null, Email : null, Address : null, Branch : null, FaxNo : null, Website : null, PhotoURL : null, LoginName : "", Password : "", Status : 1, CreatedBy : null, UpdatedBy : null, CreatedOn : "", UpdatedOn : null, Document : [], CommissionType : 0, CommissionMode : 0, CommissionValue : 0,CommissionValueNB : 0,
-};
+    DiscountPermission:false};
 
   // public id =  this.route.snapshot.paramMap.get('id');
 

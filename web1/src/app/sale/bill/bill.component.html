@@ -878,7 +878,8 @@
                         <input class="cust-input" type="number" matInput name="SGST" [(ngModel)]="sgst" disabled>
                     </mat-form-field>
                 </div> -->
-                <div *ngIf="this.id2 !== 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin'" class="col-xl-1 col-lg-1 col-md-1 col-4 col-sm-1 mb-0 col-1ModifyB">
+               
+                <div *ngIf="this.user.DiscountPermission == 'true' && (this.id2 !== 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin')" class="col-xl-1 col-lg-1 col-md-1 col-4 col-sm-1 mb-0 col-1ModifyB">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">Additional Discount%</mat-label>
                         <input matInput name="AddlDiscountPercentage"
@@ -890,7 +891,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div *ngIf=" this.id2 == 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'Employee' ||  this.id2 === 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin'" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-4 mb-0 col-1ModifyB">
+                <div *ngIf="this.user.DiscountPermission == 'true' && (this.id2 == 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'Employee' ||  this.id2 === 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin')" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-4 mb-0 col-1ModifyB">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">Additional Discount%</mat-label>
                         <input matInput name="AddlDiscountPercentage"
@@ -902,7 +903,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div *ngIf="this.id2 !== 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin'" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
+                <div *ngIf="this.user.DiscountPermission == 'true' && (this.id2 !== 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin')" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">Additional Discount</mat-label>
                         <input matInput name="AddlDiscount" type="number" min="0"
@@ -913,7 +914,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div *ngIf=" this.id2 == 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'Employee' ||  this.id2 === 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin'" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
+                <div *ngIf="this.user.DiscountPermission == 'true' && (this.id2 == 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'Employee' ||  this.id2 === 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin')" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">Additional Discount</mat-label>
                         <input matInput name="AddlDiscount" type="number" min="0"
@@ -924,6 +925,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
+          
                 <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">Grand Amount</mat-label>

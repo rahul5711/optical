@@ -5,6 +5,13 @@ body {
 
 }
 
+.Bgm{
+  background-image: url(../../assets/images/ram.jpg);
+  background-repeat: no-repeat;
+  background-size: 100% 120%;
+  height: 100vh;
+}
+
 /* Config */
 /* mixins */
 /* Styles */

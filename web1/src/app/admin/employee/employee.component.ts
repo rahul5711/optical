@@ -52,7 +52,7 @@ export class EmployeeComponent implements OnInit {
   data: any  = { ID : null, CompanyID : null , Name : null, UserGroup : "Employee", DOB : null, Anniversary : null, MobileNo1 : null,
   MobileNo2 : null, PhoneNo : null, Email : null, Address : null, Branch : '', FaxNo : null, Website : null, PhotoURL : null, Document: null,
   LoginName : "", Password : "", Status : 1, CreatedBy : null, UpdatedBy : null, CreatedOn : "", UpdatedOn : null, CommissionType: 0, CommissionMode: 0,
-  CommissionValue: 0, CommissionValueNB: 0
+  CommissionValue: 0, CommissionValueNB: 0, DiscountPermission: false
   };
 
   UserShop: any = {ID: null, UserID: null, ShopID: null, RoleID: null, Status: 1};
@@ -77,6 +77,7 @@ export class EmployeeComponent implements OnInit {
     }
     this.dropdownShoplist();
     this.rolesList();
+
   }
 
   onSubmit(){
@@ -150,6 +151,7 @@ export class EmployeeComponent implements OnInit {
         if (res.success) {
           this.as.successToast(res.message)
           this.data = res.data[0]
+          this.data.DiscountPermission = this.data.DiscountPermission === 'true';
             if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
               this.userImage = this.env.apiUrl + res.data[0].PhotoURL;;
             } else {
@@ -367,6 +369,7 @@ export class EmployeeComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     })
     }
+
 
 
 }
