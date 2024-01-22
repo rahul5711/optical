@@ -749,8 +749,9 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
 
             const printdata = req.body
-            console.log(printdata);
+
             let powerList = []
+            console.log(printdata);
             if (printdata.otherSpec === true) {
                 powerList = printdata.spectacle
             } if (printdata.otherContant === true) {
@@ -759,7 +760,6 @@ module.exports = {
                 powerList = []
             }
             printdata.powerList = powerList
-
             const customer = req.body.customer
 
             const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
@@ -817,6 +817,13 @@ module.exports = {
             if(CompanyID === 55){
                 if(printdata.mode === 'other'){
                     formatName = "ShriRamOther.ejs";
+                }else{
+                    formatName = "customerPowerPDF.ejs"
+                }
+            }
+            if(CompanyID === 129){
+                if(printdata.mode === 'spectacle'){
+                    formatName = "aaradhay.ejs";
                 }else{
                     formatName = "customerPowerPDF.ejs"
                 }
