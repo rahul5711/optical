@@ -1,7 +1,7 @@
 
 <div  class="card billCrad" *ngIf="this.CustomerView == true">
     <div class="header">
-        <div class="row " style="background:#d9d9d9">
+        <div class="row " style="background:#d9d9d9 ">
             <div class="col-lg-1 col-md-2 col-6">
                 <h4 style="font-weight: 800;">New Bill </h4>
             </div>
@@ -879,19 +879,19 @@
                     </mat-form-field>
                 </div> -->
                
-                <div *ngIf="this.user.DiscountPermission == 'true' && (this.id2 !== 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin')" class="col-xl-1 col-lg-1 col-md-1 col-4 col-sm-1 mb-0 col-1ModifyB">
+                <div *ngIf="this.id2 != 0 && this.loginShop?.AdminDiscount == 'true'" class="col-xl-1 col-lg-1 col-md-1 col-4 col-sm-1 mb-0 col-1ModifyB">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">Additional Discount%</mat-label>
                         <input matInput name="AddlDiscountPercentage"
                             (blur)="AddDiscalculate('AddlDiscountPercentage', 'discount')" type="number" min="0"
                             [(ngModel)]="BillMaster.AddlDiscountPercentage" #AddlDiscountPercentagecontrol
-                            [autocomplete]="false" required>
+                            [autocomplete]="false" required  [disabled]="this.user.DiscountPermission == 'false'">
                         <mat-error>
                             Additional Discount is required
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div *ngIf="this.user.DiscountPermission == 'true' && (this.id2 == 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'Employee' ||  this.id2 === 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin')" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-4 mb-0 col-1ModifyB">
+                <div *ngIf="this.id2 == 0 && this.loginShop?.AdminDiscount == 'true'" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-4 mb-0 col-1ModifyB">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">Additional Discount%</mat-label>
                         <input matInput name="AddlDiscountPercentage"
@@ -903,23 +903,23 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div *ngIf="this.user.DiscountPermission == 'true' && (this.id2 !== 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin')" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
+                <div *ngIf="this.id2 != 0 && this.loginShop?.AdminDiscount == 'true'" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">Additional Discount</mat-label>
                         <input matInput name="AddlDiscount" type="number" min="0"
                             (blur)="AddDiscalculate('AddlDiscount', 'discount')" [(ngModel)]="BillMaster.AddlDiscount"
-                            #AddlDiscounttcontrol [autocomplete]="false"  required>
+                            #AddlDiscounttcontrol [autocomplete]="false"  required [disabled]="this.user.DiscountPermission == 'false'">
                         <mat-error>
                             Additional Discount is required
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div *ngIf="this.user.DiscountPermission == 'true' && (this.id2 == 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'Employee' ||  this.id2 === 0 && this.loginShop?.AdminDiscount === 'true' && this.user.UserGroup === 'CompanyAdmin')" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
+                <div *ngIf="this.id2 == 0 && this.loginShop?.AdminDiscount == 'true'" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">Additional Discount</mat-label>
                         <input matInput name="AddlDiscount" type="number" min="0"
                             (blur)="AddDiscalculate('AddlDiscount', 'discount')" [(ngModel)]="BillMaster.AddlDiscount"
-                            #AddlDiscounttcontrol [autocomplete]="false" required>
+                            #AddlDiscounttcontrol [autocomplete]="false" required >
                         <mat-error>
                             Additional Discount is required
                         </mat-error>
