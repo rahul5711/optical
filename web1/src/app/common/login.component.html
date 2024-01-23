@@ -1,12 +1,12 @@
 
-<div class="container-fluid bb p-5 Bgm">
+<div class="container-fluid bb p-5 ">
   <!-- <audio controls autoplay style="display: none;">
     <source src="../../assets/images/ram.mp3" type="audio/ogg" auto>
   </audio> -->
   <div class="row">
     <div class="container ">
       <div class="row mt-5 mt-sm-0">
-        <div class="col-xl-4 col-lg-6 col-md-8 col-12 mt-5 mx-auto">
+        <div class="col-xxl-4  col-xl-4 col-lg-6 col-md-8 col-12 mt-5 mx-auto">
           <div class="card">
             <form #f="ngForm" (ngSubmit)="onSubmit(content)" class="box" autocomplete="off">
               <div class="row">
@@ -27,14 +27,14 @@
                   </div>
                 </div>
               </div>
-              <p class=" tagline"> Please enter your login and password!</p>
+              <p class="text-light tagline"> Please enter your login and password!</p>
               <input matInput type="text" name="LoginName" #username placeholder="LoginName" [(ngModel)]="data.LoginName" required autocomplete="off">
               <div>
               <input #x  matInput type="password" name="Password" placeholder="Password" [(ngModel)]="data.Password" required autocomplete="new-password">
               <mat-icon class="key mt-1"   (click)="x.type = x.type=='password'?'text':'password'"  matSuffix>vpn_key</mat-icon>
             </div>
               <a class="forgot text-light" href="#">
-                <!-- Forgot password? -->
+                Forgot password?
               </a>
               <br>
               <button class="logibtn" >Login</button>

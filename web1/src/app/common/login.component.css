@@ -186,7 +186,7 @@ h4:hover {
 .card {
   margin-bottom: 20px;
   border: none;
-  background-color: rgba(0, 0, 0, 0);
+  background-color: rgba(red, green, blue, alpha);
 }
 
 .box {
@@ -194,7 +194,7 @@ h4:hover {
   padding: 40px;
   top: 50%;
   left: 50%;
-  background: rgba(0, 0, 0, 0);;
+  background: rgba(25, 19, 80);;
   text-align: center;
   transition: 0.25s;
   margin-top: 10px;
@@ -242,7 +242,7 @@ h4:hover {
 
 
 .box h1 {
-  color: black;
+  color: white;
   text-transform: uppercase;
   font-weight: 500
 }
@@ -336,7 +336,7 @@ a.socialIcon:hover,
 }
 
 .social-circle i {
-  color: #000;
+  color: #fff;
   transition: all 0.8s;
   transition: all 0.8s;
 
@@ -347,7 +347,7 @@ a.socialIcon:hover,
   padding: 2% 11%;
   border: 2px solid rgb(255, 81, 0);
   border-radius: 23px;
-  color: black;
+  color: #fff;
   margin: 5% 0;
   transition: .5s;
 }
@@ -897,9 +897,7 @@ html {
     bottom: 100vh;
   }
 }
-.tagline{
-  color: #000;
-}
+
 
 @media only screen and (max-width: 700px) and (min-width: 300px) {
 
@@ -996,8 +994,6 @@ html {
   text-transform: uppercase;
   font-weight: 500
 }
-.tagline{
-  color: white;
-}
+
 
 }

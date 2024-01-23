@@ -49,7 +49,7 @@
       <div class="row2">
          <div class="col-1">
             <p class="cus_p">VistingDate</p>
-            <p class="cus_p">PhoneNo </p>
+            <p class="cus_p">Age </p>
             <p class="cus_p">Rx_By </p>
          </div>
          <div class="col-2">
@@ -64,9 +64,9 @@
             <p class="cus_p"> : <%=data.other.VisitDate%></p>
             <%} %>
 
-            <p class="cus_p"> : <%=data.customer.PhoneNo%> </p>
+            <p class="cus_p"> : <%=data.customer.Age%> </p>
 
-            <% if (data.mode === 'spectacle') { %>
+            <% if (data.mode === 'spectacle' && data.spectacle.RefferedByDoc === 'Self') { %>
             <p class="cus_p"> : <%=data.spectacle.RefferedByDoc%></p>
             <%} %>
             <% if (data.mode === 'contact') { %>

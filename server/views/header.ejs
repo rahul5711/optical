@@ -1,10 +1,12 @@
 <html>
 <link rel="stylesheet" href="http://localhost:3000/assest/header.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="<%=data.companysetting.FontApi%>" rel="stylesheet">
 <style>
    
-
     html body {
-        zoom: 100%;
+        zoom: 80%;
     }
 </style>
 
@@ -13,7 +15,7 @@
     <% if (data.billformate.BillHeader==3){%>
         <header class="headerSize" <% %> style='width:<%= data.HeaderWidth %>; height: <%= data.HeaderHeight %>;'>
             <div class="row" style="text-align: left;">
-                <% if (data.bill != "Cash Memo"){%>
+                <% if (data.mode === "Receipt"){%>
                     <p style="font-size: 15px; margin: 0; padding: 0;"> <%=data.shopdetails.GSTNo%></p>
                     <%}%>
             </div>
@@ -23,8 +25,8 @@
                                     <%= data.ImageHeight %>;'>
                         </div>
                         <div class="col2">
-                            <span <% %> style='font-size:<%= data.ShopNameFont %>; font-weight: <%= data.ShopNameBold %>
-                                        ; color: <%= data.Color %>;'>
+                            <span <% %> style="font-size:<%= data.ShopNameFont %>; font-weight: <%= data.ShopNameBold %>
+                                        ; color: <%= data.Color %>; font-family:'<%=data.companysetting.FontsStyle%>'  ">
                                             <%=data.shopdetails.Name%>
                             </span> <br>
                             <span <% %> style='line-height:<%= data.LineSpace %>;font-size:<%= data.ShopDetailFont %>;'>

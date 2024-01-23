@@ -1771,6 +1771,8 @@ module.exports = {
                 printdata.CashMemo = 'Cash Memo'
             }
 
+            console.log(printdata.companysetting.FontApi);
+            console.log(printdata.companysetting.FontsStyle);
 
             printdata.bill = printdata.mode === "Invoice" ? printdata.CashMemo : printdata.BillValue;
             printdata.welComeNoteShop = printdata.shopWelComeNote.filter((ele) => {
