@@ -15,24 +15,24 @@ export class AdminDashboradComponent implements OnInit {
 
     let dashcard = [
       {
-        "icon" : "assets/images/new-company.png",
+        "icon" : "assets/images/newcompanys.png",
         "title": "New Company",
         "routersLinks" : "/admin/company/0"
       },
       {
-        "icon" : "assets/images/company-list.png",
+        "icon" : "assets/images/companylistss.png",
         "title": "Company List",
         "routersLinks" : "/admin/companyList"
       },
       {
-        "icon" : "assets/images/sub-plans.png",
+        "icon" : "assets/images/plans.png",
         "title": "Plan",
         "routersLinks" : "/admin/companyList"
       },
       {
-        "icon" : "assets/images/search-product.png",
+        "icon" : "assets/images/prodss.png",
         "title": "Prod_Master",
-        "routersLinks" : "/admin/productManageAssign"
+        "routersLinks" : "/admin/productManageAssign" 
       }
      ]
      this.cards = dashcard

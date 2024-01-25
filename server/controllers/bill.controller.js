@@ -1771,9 +1771,6 @@ module.exports = {
                 printdata.CashMemo = 'Cash Memo'
             }
 
-            console.log(printdata.companysetting.FontApi);
-            console.log(printdata.companysetting.FontsStyle);
-
             printdata.bill = printdata.mode === "Invoice" ? printdata.CashMemo : printdata.BillValue;
             printdata.welComeNoteShop = printdata.shopWelComeNote.filter((ele) => {
                 if (printdata.shopdetails.WholesaleBill == "true" && ele.NoteType === "wholesale") {
@@ -1814,6 +1811,7 @@ module.exports = {
             });
 
             printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
+            printdata.WaterMark = clientConfig.appURL + printdata.shopdetails.WaterMark;
 
             let BillFormat = ''
             BillFormat = printdata.CompanySetting.BillFormat;
@@ -1960,6 +1958,8 @@ module.exports = {
             const User = req.body.User;
             const Customer = req.body.customer;
             const BillMaster = req.body.billMaster;
+            const CustomerCredit = req.body.CustomerCredit;
+
             req.body.billItemList = req.body.billItemList.filter((element) => {
                 return element.Status !== 0;
             });
@@ -1967,6 +1967,7 @@ module.exports = {
             req.body.paidList = req.body.paidList.filter((element) => {
                 return element.PaymentMode === 'Customer Credit';
             });
+
             const PaidList = req.body.paidList;
             const UnpaidList = req.body.unpaidList;
 
@@ -1981,6 +1982,7 @@ module.exports = {
             printdata.billItemList = BillItemList
             printdata.paidlist = PaidList
             printdata.unpaidlist = UnpaidList
+            printdata.customerCredit = CustomerCredit
             printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
 
             const [billformate] = await mysql2.pool.query(`select * from billformate where CompanyID = ${CompanyID}`)
@@ -2007,17 +2009,16 @@ module.exports = {
             printdata.billformate = billformate[0]
 
             let total = 0;
+
             printdata.paidlist.forEach(ee => {
                 if (ee.Type === 'Debit') {
                     total = total + ee.Amount
-                    ee.Amount = '-' + ee.Amount
                 } else {
                     total = total - ee.Amount
-                    ee.Amount = '+' + ee.Amount
                 }
             })
             printdata.total = total
-
+               
             let fileName = "";
             const file = "CreditNote.ejs" + ".pdf";
             const formatName = "CreditNote.ejs";

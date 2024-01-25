@@ -89,7 +89,23 @@ i: any;
     }
   }
 
+  addClick(){
+    this.newProduct = { ID: null, CompanyID: null, Name: "", HSNCode: "", GSTPercentage: 0, GSTType: "None" };
+    this.specList = []
+  }
+
   saveProduct() {
+    if ((this.newProduct.GSTType === 'None' && this.newProduct.GSTPercentage !== 0) || (this.newProduct.GSTPercentage === 0 && this.newProduct.GSTType !== 'None') || (this.newProduct.GSTPercentage === null && this.newProduct.GSTType !== 'None')) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Without GSTType, the selected value will not be saved',
+        showConfirmButton: true,
+        backdrop: false,
+      })
+      this.GstTypeDis = false
+      this.showAdd = true
+    }else{
     this.sp.show();
     let count = 0;
     this.prodList.forEach((element: { Name: string; }) => {
@@ -134,7 +150,7 @@ i: any;
     });
     this.newProduct.Name = "";
     }
-
+    }
   }
 
   getProductList(){
@@ -209,40 +225,48 @@ i: any;
 
   }
 
-  updateProductType(){
-    this.sp.show()
-    this.newProduct.ID = this.selectedProductID
-    const subs: Subscription =  this.ps.updateProduct(this.newProduct).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.getProductList();
-          this.specList = []
-          this.selectedProduct = '';
-          this.selectedHSNCode = '';
-          this.selectedGSTPercentage = 0;
-          this.selectedGSTType = '';
-          this.specList = [];
-         this.modalService.dismissAll()
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Your file has been update Product.',
-            showConfirmButton: false,
-            timer: 1200,
-          })
-        } else {
-          this.as.errorToast(res.message)
-        }
-       this.sp.hide()
-      },
-      error: (err: any) => {
-        console.log(err.msg);
-      },
-      complete: () => subs.unsubscribe(),
-
-    });
-
-
+  updateProductType() {
+    if ((this.newProduct.GSTType === 'None' && this.newProduct.GSTPercentage !== 0) || (this.newProduct.GSTPercentage === 0 && this.newProduct.GSTType !== 'None') || (this.newProduct.GSTPercentage === null && this.newProduct.GSTType !== 'None')) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Without GSTType, the selected value will not be saved',
+        showConfirmButton: true,
+        backdrop: false,
+      })
+      this.GstTypeDis = false
+    }else{
+      this.sp.show()
+      this.newProduct.ID = this.selectedProductID
+      const subs: Subscription = this.ps.updateProduct(this.newProduct).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.getProductList();
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been update Product.',
+              showConfirmButton: false,
+              timer: 1200
+            })
+            this.specList = []
+            this.selectedProduct = '';
+            this.selectedHSNCode = '';
+            this.selectedGSTPercentage = 0;
+            this.selectedGSTType = '';
+            this.modalService.dismissAll()
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => {
+          console.log(err.msg);
+        },
+        complete: () => subs.unsubscribe(),
+      });
+    }
+ 
   }
 
   saveSpec(){

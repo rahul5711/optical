@@ -30,6 +30,7 @@ export class CommonComponent implements OnInit {
   dropShoplist: any;
   selectedShops: any = [];
   searchText: any
+  showProfileBox= false;
 
   constructor(
     private route: ActivatedRoute,
@@ -650,5 +651,9 @@ export class CommonComponent implements OnInit {
   
   ComingSoon(){
     alert('This report is coming soon...')
+  }
+
+  userd(){
+    this.showProfileBox = !this.showProfileBox
   }
 }

@@ -115,6 +115,7 @@ export class AddTypeComponent implements OnInit {
         const subs: Subscription =   this.supps.deleteSupport(this.selectedProduct, element.Name).subscribe({
         next: (res: any) => {
           if (res.success) {
+            this.getfieldList();
             Swal.fire({
               position: 'center',
               icon: 'success',
@@ -132,7 +133,7 @@ export class AddTypeComponent implements OnInit {
         },
         complete: () => subs.unsubscribe(),
         });
-        this.getfieldList();
+
       }
     });
     }

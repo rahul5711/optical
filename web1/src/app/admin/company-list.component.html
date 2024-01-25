@@ -104,6 +104,7 @@
                                                     <th class="text-left">Version</th>
                                                     <th class="text-left">CacellationDate</th>
                                                     <th class="text-left">Status</th>
+                                                    <th class="text-left">Sale</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -160,6 +161,10 @@
                                                     <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
                                                         <span *ngIf="data.Status === 0">Deactive </span>
                                                         <span *ngIf="data.Status === 1">Active </span>
+                                                    </td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        <span *ngIf="data.WholeSale === 'true'">WholeSale</span>
+                                                        <span *ngIf="data.RetailPrice === 'true'">Retail </span>
                                                     </td>
                                                 </tr>
                                             </tbody>

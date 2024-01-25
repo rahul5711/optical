@@ -462,7 +462,7 @@ export class BillingComponent implements OnInit {
   numberList:any=[]
   otherLists:any=[]
 x:any
-currentTime:any
+currentTime = '';
 srcCustomerBox = false
 
   ngOnInit(): void {

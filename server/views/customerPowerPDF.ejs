@@ -66,7 +66,7 @@
 
             <p class="cus_p"> : <%=data.customer.Age%> </p>
 
-            <% if (data.mode === 'spectacle' && data.spectacle.RefferedByDoc === 'Self') { %>
+            <% if (data.mode === 'spectacle' && data.spectacle.RefferedByDoc != 'Self') { %>
             <p class="cus_p"> : <%=data.spectacle.RefferedByDoc%></p>
             <%} %>
             <% if (data.mode === 'contact') { %>

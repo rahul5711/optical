@@ -312,8 +312,10 @@ export class PurchaseComponent implements OnInit {
     this.selectedPurchaseMaster.SupplierID = this.supplierList[index].ID;
     this.selectedPurchaseMaster.SupplierName = this.supplierList[index].Name;
     this.item.GSTType = this.supplierList[index].GSTType;
-    if (this.item.GSTType !== 'None') {
+    if (this.item.GSTType !== 'None' && this.item.GSTType != undefined) {
       this.supplierGSTType = this.item.GSTType
+    }else{
+      this.item.GSTType = 'None' 
     }
   }
 

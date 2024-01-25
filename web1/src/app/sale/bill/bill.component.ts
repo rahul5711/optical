@@ -118,7 +118,7 @@ export class BillComponent implements OnInit {
 
   body = {
     customer: null, billMaster: null, billItemList: null, serviceList: null, employeeList: null, paidList: null, unpaidList: null, Shop: null,
-    Company: null, CompanySetting: null, User: null, mode: null, ShowPower: false
+    Company: null, CompanySetting: null, User: null, mode: null, ShowPower: false, CustomerCredit:null
   };
   ShowPower = false
   billItemCheckList: any
@@ -1048,14 +1048,19 @@ export class BillComponent implements OnInit {
   AddDiscalculate(fieldName: any, mode: any) {
     let PaidAmount = 0
 
-    if (this.id2 == 0) {
-      this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
-    } else {
-      if (this.BillMaster.DueAmount >= this.BillMaster.AddlDiscount && this.BillMaster.DueAmount >= this.BillMaster.AddlDiscountPercentage) {
+    if (this.id2 == 0) { this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)} 
+    else {
+      if (this.BillMaster.DueAmount >= this.BillMaster.AddlDiscountPercentage ) {
         PaidAmount = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
         this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
         this.BillMaster.DueAmount = + this.BillMaster.TotalAmount - PaidAmount
-      } else {
+      } 
+      else if (this.BillMaster.DueAmount >= this.BillMaster.AddlDiscount) {
+        PaidAmount = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
+        this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
+        this.BillMaster.DueAmount = + this.BillMaster.TotalAmount - PaidAmount
+      }
+      else  {
         this.BillMaster.AddlDiscount = 0
         this.BillMaster.AddlDiscountPercentage = 0
         PaidAmount = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
@@ -2274,7 +2279,7 @@ export class BillComponent implements OnInit {
     this.body.Company = this.company;
     this.body.CompanySetting = this.companySetting;
     this.body.User = this.user;
-
+    this.body.CustomerCredit = this.applyPayment.CustomerCredit
     const subs: Subscription = this.bill.creditNotePrint(this.body).subscribe({
       next: (res: any) => {
         if (res) {

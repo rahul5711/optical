@@ -192,7 +192,7 @@
       <!-- CompanyAdmin end nav-->
       <!-- companyAdmin or employee login btn -->
       <div class="col-md-2 col-8 d-sm-block d-none" *ngIf="selectedShops?.length !== 0">
-        <mat-select name="selectedShops" class="SelectYourShop me-md-0 ms-md-0 me-5 ms-1 "
+        <mat-select *ngIf="user?.UserGroup != 'Employee'" name="selectedShops" class="SelectYourShop me-md-0 ms-md-0 me-5 ms-1 "
           placeholder="Select Your Shop" [(ngModel)]="selectedShops" (selectionChange)="saveSelectedShop()" required
           #Typecontrol>
           <mat-option *ngIf="user?.UserGroup === 'CompanyAdmin'" [value]="0">All</mat-option>
@@ -204,9 +204,27 @@
           </mat-option>
         </mat-select>
         <div style="z-index: 999;">
-          <a *ngIf="user?.UserGroup != 'SuperAdmin'" class="logoutBtn" (click)="logout()" title="LogOut">
+          <a *ngIf="user?.UserGroup != 'SuperAdmin' && user?.UserGroup != 'Employee'" class="logoutBtn" (click)="logout()" title="LogOut">
             <i class="fa-solid fa-right-from-bracket"></i>
           </a>
+          <!-- <a *ngIf="user?.UserGroup == 'Employee'" class="logoutBtn" (click)="userd()" title="LogOut">
+            <i class="fa-solid fa-circle-user" style="color: #ffffff;"></i>
+          </a> -->
+          <div class="profile-container " >
+            <a *ngIf="user?.UserGroup == 'Employee'" class="logoutBtn " (click)="userd()" title="Logout">
+              <i class="fa-solid fa-circle-user" style="color: #ffffff; margin-top: 3rem;"></i>
+              
+            </a>
+          
+            <div class="profile-box" *ngIf="showProfileBox">
+              <!-- Your profile content goes here -->
+              <!-- For example, display user details -->
+              <h2 class="m-0 p-0" style="color: #ff5100;">{{ user?.Name }}</h2>
+              <p class="h5">{{ this.dropShoplist[0].Name }}</p>
+              <button class="btnuser" (click)="logout()">Log Out</button>
+            </div>
+          </div>
+          
         </div>
       </div>
       <div class="col-md-2 col-10 d-sm-none d-block order-1" *ngIf="selectedShops?.length !== 0">
@@ -223,9 +241,10 @@
         </mat-select>
       </div>
       <div class="col-md-2 col-1 order-0 d-sm-none d-block mt-5 mt-sm-0" >
-        <a *ngIf="user?.UserGroup != 'SuperAdmin'" class="logoutBtn" (click)="logout()" title="LogOut">
+        <a *ngIf="user?.UserGroup != 'SuperAdmin' " class="logoutBtn" (click)="logout()" title="LogOut">
           <i class="fa-solid fa-right-from-bracket"></i>
         </a>
+       
       </div>
       <!-- companyAdmin or employee login btn end-->
       <!-- SuperAdmin login btn -->

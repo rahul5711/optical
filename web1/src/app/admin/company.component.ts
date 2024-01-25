@@ -99,6 +99,43 @@ data1: any = {
       }
   }
 
+  // onPlanChange(value: any) {
+  //   if (this.id !== 0) {
+  //     this.data.EffectiveDate = new Date();
+  //   }
+  
+  //   const addDays = (days: number) => {
+  //     const currentDate = new Date();
+  //     currentDate.setDate(currentDate.getDate() + days);
+  
+  //     // Get current time in 12-hour format
+  //     const hours = currentDate.getHours() % 12 || 12;
+  //     const minutes = currentDate.getMinutes();
+  //     const ampm = currentDate.getHours() >= 12 ? 'PM' : 'AM';
+  
+  //     // Format time as HH:mm AM/PM
+  //     const formattedTime = `${hours}:${minutes < 10 ? '0' : ''}${minutes} ${ampm}`;
+  
+  //     // Combine date and time
+  //     const combinedDateTime = new Date(`${currentDate.toDateString()} ${formattedTime}`);
+      
+  //     return combinedDateTime;
+  //   };
+  
+  //   if (value === 1) {
+  //     this.data.CancellationDate = addDays(15);
+  //   }
+  //   if (value === 2) {
+  //     this.data.CancellationDate = addDays(30);
+  //   }
+  //   if (value === 3) {
+  //     this.data.CancellationDate = addDays(181);
+  //   }
+  //   if (value === 4) {
+  //     this.data.CancellationDate = addDays(365);
+  //   }
+  // }
+
   copyData(val: any) {
     if (val) {
       this.data1.Name = this.data.CompanyName;

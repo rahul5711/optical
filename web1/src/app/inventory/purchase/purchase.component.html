@@ -293,7 +293,7 @@
                                         <mat-select name="GSTType" [(ngModel)]="item.GSTType" #GSTTypeacontrol
                                             (selectionChange)="calculateFields('TotalAmount', 'total')" required>
                                             <mat-option value="None" >None</mat-option>
-                                            <mat-option value="{{this.supplierGSTType}}" *ngIf="this.supplierGSTType !== ''">{{this.supplierGSTType}}</mat-option>
+                                            <mat-option value="{{this.supplierGSTType}}" *ngIf="this.supplierGSTType !== '' && this.supplierGSTType != undefined">{{this.supplierGSTType}}</mat-option>
                                         </mat-select>
                                     </mat-form-field>
                                     <mat-checkbox style="padding-top: 14px;"

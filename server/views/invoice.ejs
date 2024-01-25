@@ -15,12 +15,28 @@
     html body{
         zoom: 100%;
     }
+    .watermark{
+        position: absolute;
+        z-index: -11;
+        opacity: .050;
+        top: 10px;
+        bottom: 0;
+        right: 0;
+        left: 200px;
+    }
+
+ img .watermark{
+	width: 400px;
+	height:400px;
+	object-fit: cover;
+}
 </style>
 
-<body>
+<body >
+  
     <!-- header section start -->
     <%- include('./header.ejs', {pageNumber: 1}) %>
-
+    
     <!-- <% if (data.billformate.BillHeader==3){%>
         <header class="headerSize" <% %> style='width:<%= data.HeaderWidth %>; height: <%= data.HeaderHeight %>;'>
                         <div class="row">
@@ -59,6 +75,8 @@
         </header>
         <%}%> -->
             <!-- header section  end -->
+  <section style="position: relative;">
+    <img src=<%=data.WaterMark%> alt="LOGO" class="watermark">
 
             <!-- heading Bill line  start-->
               <section>
@@ -543,6 +561,7 @@
             </div>
             <%}%>
               <!-- You've Saved  end -->
+            </section>
 </body>
 
 </html>

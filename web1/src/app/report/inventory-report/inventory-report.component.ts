@@ -183,7 +183,7 @@ export class InventoryReportComponent implements OnInit {
     this.getGSTList();
     this.inventory.FromDate = moment().format('YYYY-MM-DD');
     this.inventory.ToDate = moment().format('YYYY-MM-DD');
-    this.getInventory()
+    // this.getInventory()
 
   }
 
