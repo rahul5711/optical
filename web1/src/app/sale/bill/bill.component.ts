@@ -2014,14 +2014,14 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.bill.getFitterPo(this.id2, '').subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.orderList = res.data
-          this.orderList.forEach((element: any) => {
-            if (element.LensType !== null || element.ProductTypeName === 'LENS') {
-              element.LensType = '';
-            } else {
+          res.data.forEach((element: any) => {
+            if (element.ProductTypeName !== 'LENS' && (element.LensType === null || element.LensType === '')) {
               element.LensType = 'NO';
+            }else{
+              element.LensType = '';
             }
           });
+          this.orderList = res.data;
         } else {
           this.as.errorToast(res.message)
           Swal.fire({
@@ -2040,6 +2040,12 @@ export class BillComponent implements OnInit {
     });
   }
 
+  calculateFitterCost(lensType: string): number {
+    const rateCardItem = this.rateCardList.find((ele: any) => ele.LensType === lensType);
+    return rateCardItem ? rateCardItem.Rate : 0;
+  }
+
+
   assignFitterPo() {
     let missingType = '';
     this.sp.show()
@@ -2050,15 +2056,15 @@ export class BillComponent implements OnInit {
         element.FitterStatus = "assign fitter"
         element.Remark = element.Remark ? element.Remark : ''
 
-        const i = this.rateCardList.findIndex((ele: any, i: any) => {
-          return ele.LensType === element.LensType
-        })
-        if (i === -1) {
-          missingType = missingType + element.LensType + " ";
-        }
-        else {
-          element.FitterCost = this.rateCardList[i].Rate;
-        }
+        const i = this.rateCardList.findIndex((ele: any) => ele.LensType === element.LensType);
+
+          if (i === -1) {
+            missingType = missingType + element.LensType + " ";
+          } else if (element.LensType == '' || element.LensType == null) {
+            element.LensType = 'NO';
+          } else {
+            element.FitterCost = this.calculateFitterCost(element.LensType);
+          }
 
       });
 

@@ -80,7 +80,7 @@
                                         PDF
                                     </button>
                                     <button *ngIf="this.orderComplete  == true" [disabled]="this.supllierPDF == ''"  (click)="sendWhatsapp('')" class="ms-2" type="button" mat-raised-button color="primary">
-                                        Whatsapp
+                                        <i  class="fa-brands fa-whatsapp " style="font-size: 20px;"></i> Whatsapp
                                     </button>
                                 </div>
                             </div>
@@ -154,15 +154,110 @@
                                     </thead>
                                     <tbody class="text-center">
                                         <tr *ngFor="let v of orderList; let i = index;">
-                                            <td>
+                                            <td style="white-space: nowrap;">
                                                 <input type="checkbox" class="example-margin" id="{{v.ID}}"
                                                     [(ngModel)]="v.checked" color="primary" [checked]="v.Sel"
                                                     (click)="validate(v, $event)" name="feature{{v.ID}}"
                                                     value="{{v.Sel}}" style="width: 20px; height: 16px;  z-index: 999 !important;
                                                     position: relative !important; ">
-                                                <button class="ms-1 bg-none m" type="button"
-                                                    (click)="openModal1(content1,v)"> <mat-icon
-                                                        class="msg pt-1 ms-1">remove_red_eye</mat-icon> </button>
+                                                <div class="button-container" *ngFor="let v of parseMeasurementID(v)">
+                                                    <button class="bg-none">
+                                                        <mat-icon class="edit_icon pt-1">remove_red_eye</mat-icon>
+                                                    </button>
+                                                    <div class="hover-box">
+                                                        <table id="table2" style="width: 100%;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th colspan="1"
+                                                                        style="border-bottom: 0px !important; "></th>
+                                                                    <th colspan="5">Right</th>
+                                                                    <th colspan="5">Left</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <th style="border-top: 0px !important; "></th>
+                                                                    <th>SPH</th>
+                                                                    <th>CYL</th>
+                                                                    <th>AXIS</th>
+                                                                    <th>VP</th>
+                                                                    <th>R_ADD</th>
+                                                                    <th>SPH</th>
+                                                                    <th>CYL</th>
+                                                                    <th>AXIS</th>
+                                                                    <th>VP</th>
+                                                                    <th>L_ADD</th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Distance</th>
+                                                                    <td>
+                                                                        {{v.REDPSPH}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.REDPCYL}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.REDPAxis}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.REDPVA}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.R_Addition}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.LEDPSPH}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.LEDPCYL}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.LEDPAxis}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.LEDPVA}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.L_Addition}}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Near</th>
+                                                                    <td>
+                                                                        {{v.RENPSPH}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.RENPCYL}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.RENPAxis}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.RENPVA}}
+                                                                    </td>
+                                                                    <td>
+
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.LENPSPH}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.LENPCYL}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.LENPAxis}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.LENPVA}}
+                                                                    </td>
+                                                                    <td>
+
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
                                             </td>
                                             <td>{{orderList.length - i}}</td>
                                             <td>{{v.MRDNo}}</td>

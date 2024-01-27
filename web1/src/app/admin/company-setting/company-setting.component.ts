@@ -46,7 +46,8 @@ export class CompanySettingComponent implements OnInit {
   };
 
   bill : any ={CompanyID: null,  BillHeader:'3',HeaderWidth:980, HeaderHeight:170, HeaderPadding:5,HeaderMargin:5,ImageWidth:200,ImageHeight:150,ImageAlign:'center',ShopNameFont:25,ShopNameBold:'600', ShopDetailFont:17, Color:'red',LineSpace:25, CustomerFont:16, CustomerLineSpace:22,
-  TableBody:15,TableHeading:17, NoteFont:15.5, NoteLineSpace:25, UpdateBy:null}
+  TableBody:15,TableHeading:17, NoteFont:15.5, NoteLineSpace:25,
+   WaterMarkWidth:400, WaterMarkHeigh:400, WaterMarkOpecity:0.1, WaterMarkLeft:25,  WaterMarkRight:0, UpdateBy:null}
 
   barcode : any ={CompanyID: null,  BillHeader:'0',BarcodeWidth:425, BarcodeHeight:70, Rightwidth:50, Leftwidth:50,  BarcodePadding:0,BarcodeMargin:0,BarcodeNameFontSize:10,MRPFontSize:16,IncTaxFontSize:10,ProductBrandFontSize:10,ProductModelFontSize:10,MRPLineHeight:15, PaddingTop:0,PaddingBotton:0,PaddingLeft:0,PaddingRight:0,MarginTop:0,MarginBotton:0,MarginLeft:0,MarginRight:0,FloatLeftSide : 'Left', FloatRightSide:'Right', UpdateBy:null}
 

@@ -1722,7 +1722,11 @@ module.exports = {
             printdata.TableHeading = `${Number(printdata.billformate.TableHeading)}px`;
             printdata.TableBody = `${Number(printdata.billformate.TableBody)}px`;
             printdata.NoteFont = `${Number(printdata.billformate.NoteFont)}px`;
-            printdata.NoteLineSpace = `${Number(printdata.billformate.NoteLineSpace)}px`;
+            printdata.WaterMarkWidth = `${Number(printdata.billformate.WaterMarkWidth)}px`;
+            printdata.WaterMarkHeigh = `${Number(printdata.billformate.WaterMarkHeigh)}px`;
+            printdata.WaterMarkOpecity = `${Number(printdata.billformate.WaterMarkOpecity)}`;
+            printdata.WaterMarkLeft = `${Number(printdata.billformate.WaterMarkLeft)}%`;
+            printdata.WaterMarkRight = `${Number(printdata.billformate.WaterMarkRight)}%`;
 
             printdata.company = Company
             printdata.companysetting = CompanySetting

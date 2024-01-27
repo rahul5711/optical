@@ -52,20 +52,20 @@ export class ExpenseComponent implements OnInit {
     FromDate: moment().format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, PaymentMode: 'All',ExpenseType:'All', CashType: 'All'
   };
 
-  viewEyeTestReport = false
-  editEyeTestReport = false
-  addEyeTestReport = false
-  deleteEyeTestReport = false
+  viewExpenesReport = false
+  editExpenesReport = false
+  addExpenesReport = false
+  deleteExpenesReport = false
 
   totalAmt = 0
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
-      if (element.ModuleName === 'EyeTestReport') {
-        this.viewEyeTestReport = element.View;
-        this.editEyeTestReport = element.Edit;
-        this.addEyeTestReport = element.Add;
-        this.deleteEyeTestReport = element.Delete;
+      if (element.ModuleName === 'ExpenesReport') {
+        this.viewExpenesReport = element.View;
+        this.editExpenesReport = element.Edit;
+        this.addExpenesReport = element.Add;
+        this.deleteExpenesReport = element.Delete;
       }
     });
 

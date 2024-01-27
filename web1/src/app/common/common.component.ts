@@ -63,10 +63,15 @@ export class CommonComponent implements OnInit {
     viewPayment: true, viewPaymentList: true, viewPayroll: true, viewpayrollList: true, viewExpense: true, viewExpenseList: true,
     viewPettyCashReport: true,
     // Report Permissions
-    viewSaleReport: true, viewSaleProductReport: true, viewSaleServiceReport: true, viewPurchaseReport: true, viewPurchaseProductReport: true,
-    viewPurchaseChargeReport: true, viewPurchaseProductExpiryReport: true, viewInventoryReport: true, viewProductSummaryReport: true, viewProductTransferReport: true, viewProductReturnReport: true, viewProductReturnProductTypeReport: true, viewEyeTestReport: true,
+    viewSaleReport: true, viewSaleProductReport: true, viewSaleServiceReport: true,
+    viewSaleProductCancelReport: true,viewProductPendingReport: true,viewSaleProductExpiryReport: true,
+    viewPurchaseReport: true, viewPurchaseProductReport: true,
+    viewPurchaseChargeReport: true, viewPurchaseProductExpiryReport: true, 
+    viewCashCollectionReport: true,  viewExpenesReport: true,  viewInventoryReport: true,
+    viewReminderReport: true, viewSalePaymentReport: true, viewCustomerReport: true, viewLedgerReport: true,viewLoyaltyReport: true,
+    viewProductSummaryReport: true, viewProductTransferReport: true, viewProductReturnReport: true, viewProductReturnProductTypeReport: true, viewSupplierCreditReport: true,viewOldSaleReport: true,viewOldSaleProductReport: true,viewEyeTestReport: true,
     // Excel Import
-    viewInventoryExcelImport: true, viewCustomerExcelImport: true,
+    viewInventoryExcelImport: true, viewCustomerExcelImport: true,viewSupplierExcelImport: true,
   }
   heroes: any = []
 

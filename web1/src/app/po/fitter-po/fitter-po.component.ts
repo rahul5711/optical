@@ -28,6 +28,11 @@ export class FitterPoComponent implements OnInit {
   companySetting: any = JSON.parse(localStorage.getItem('companysetting') || '[]');
   env = environment;
 
+  
+  public parseMeasurementID(v: any): any[] {
+    return JSON.parse(v.MeasurementID || '[]');
+  }
+  
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -157,15 +162,16 @@ export class FitterPoComponent implements OnInit {
     const subs: Subscription = this.bill.getFitterPo(this.ID, Parem).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.orderList = res.data
-          this.orderList.forEach((element: any) => {
-            if (element.LensType !== null || element.ProductTypeName === 'LENS') {
-              element.LensType = '';
-            } else {
+          res.data.forEach((element: any) => {
+            if (element.ProductTypeName !== 'LENS' && (element.LensType === null || element.LensType === '')) {
               element.LensType = 'NO';
+            }else{
+              element.LensType = '';
             }
           });
+          this.orderList = res.data;
 
+          this.orderList = res.data
           this.multiCheck = false
         } else {
           this.as.errorToast(res.message)
@@ -205,6 +211,7 @@ export class FitterPoComponent implements OnInit {
 
   // select fitter then rate to fittercost
   getRateCard() {
+    this.sp.show()
     let FitterID = Number(this.fitter)
     const subs: Subscription = this.fitters.getRateCard(FitterID).subscribe({
       next: (res: any) => {
@@ -219,10 +226,16 @@ export class FitterPoComponent implements OnInit {
             showCancelButton: true,
           });
         }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+  }
+
+  calculateFitterCost(lensType: string): number {
+    const rateCardItem = this.rateCardList.find((ele: any) => ele.LensType === lensType);
+    return rateCardItem ? rateCardItem.Rate : 0;
   }
 
   // assing fitter 
@@ -235,21 +248,21 @@ export class FitterPoComponent implements OnInit {
       switch (mode) {
         case "Assign":
           this.filtersList.forEach((element: any) => {
-            this.data.ID = element.BillID
-            element.FitterID = Number(this.fitter)
-            element.FitterStatus = "assign fitter"
-            element.Remark = element.Remark ? element.Remark : ''
+          this.data.ID = element.BillID;
+          element.FitterID = Number(this.fitter);
+          element.FitterStatus = "assign fitter";
+          element.Remark = element.Remark ? element.Remark : '';
 
-            const i = this.rateCardList.findIndex((ele: any, i: any) => {
-              return ele.LensType === element.LensType
-            })
-            if (i === -1) {
-              missingType = missingType + element.LensType + " ";
-            }
-            else {
-              element.FitterCost = this.rateCardList[i].Rate;
-            }
-          });
+          const i = this.rateCardList.findIndex((ele: any) => ele.LensType === element.LensType);
+
+          if (i === -1) {
+            missingType = missingType + element.LensType + " ";
+          } else if (element.LensType == '' || element.LensType == null) {
+            element.LensType = 'NO';
+          } else {
+            element.FitterCost = this.calculateFitterCost(element.LensType);
+          }
+        });
           Swal.fire({
             position: 'center',
             icon: 'success',

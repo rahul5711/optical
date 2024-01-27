@@ -199,7 +199,7 @@
                             <div class="row" *ngIf="category !== 'Charges' ">
                                 <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>Purchase Price</mat-label>
+                                        <mat-label>Purchase Rate/<b style="color:red;">HalfPair</b> </mat-label>
                                         <input matInput name="UnitPrice" type="number" min="0"
                                             [(ngModel)]="item.UnitPrice" required #UnitPricecontrol
                                             [autocomplete]="false" (blur)="calculateFields('UnitPrice', 'subTotal')">
@@ -297,7 +297,7 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0"  *ngIf="company.RetailPrice === 'true'">
                                     <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>Retail Rate</mat-label>
+                                        <mat-label>Retail Rate/<b style="color:red;">Half Pair</b></mat-label>
                                         <input matInput name="SaleRate" type="number" min="0"
                                             [(ngModel)]="item.RetailPrice" required #SaleRatecontrol
                                             [autocomplete]="false">

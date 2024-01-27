@@ -27,6 +27,9 @@ export class SupplierPoComponent implements OnInit {
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
 
+  public parseMeasurementID(v: any): any[] {
+    return JSON.parse(v.MeasurementID || '[]');
+  }
   env = environment;
   searchValue:any
   constructor(
@@ -489,4 +492,5 @@ export class SupplierPoComponent implements OnInit {
       })
     }
   }
+
 }

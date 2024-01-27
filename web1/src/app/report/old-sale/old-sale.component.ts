@@ -82,9 +82,30 @@ export class OldSaleComponent implements OnInit {
     FilterTypes:'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID: 0,  CustomerGSTNo:0, PaymentStatus: 0, ProductStatus:'All', ProductCategory:0, ProductName: '', GSTType:0, GSTPercentage:0, Status:0, Option:0, 
   };
 
+  viewOldSaleReport= false
+  editOldSaleReport= false
+  addOldSaleReport= false
+  deleteOldSaleReport= false
+
+  viewOldSaleProductReport = false
+  editOldSaleProductReport = false
+  addOldSaleProductReport = false
+  deleteOldSaleProductReport = false
 
  ngOnInit(): void {
-
+  this.permission.forEach((element: any) => {
+    if (element.ModuleName === 'OldSaleReport') {
+      this.viewOldSaleReport = element.View;
+      this.editOldSaleReport = element.Edit;
+      this.addOldSaleReport = element.Add;
+      this.deleteOldSaleReport = element.Delete;
+    }else if (element.ModuleName === 'OldSaleProductReport') {
+      this.viewOldSaleProductReport = element.View;
+      this.editOldSaleProductReport = element.Edit;
+      this.addOldSaleProductReport = element.Add;
+      this.deleteOldSaleProductReport = element.Delete;
+    }
+  });
     // billmaster
    
     this.dropdownUserlist()

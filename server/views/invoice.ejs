@@ -18,18 +18,10 @@
     .watermark{
         position: absolute;
         z-index: -11;
-        opacity: .050;
         top: 10px;
-        bottom: 0;
-        right: 0;
-        left: 200px;
+        /* background-color: blue; */
     }
 
- img .watermark{
-	width: 400px;
-	height:400px;
-	object-fit: cover;
-}
 </style>
 
 <body >
@@ -76,7 +68,7 @@
         <%}%> -->
             <!-- header section  end -->
   <section style="position: relative;">
-    <img src=<%=data.WaterMark%> alt="LOGO" class="watermark">
+    <img src=<%=data.WaterMark%> alt="LOGO" class="watermark"  style="width:<%= data.WaterMarkWidth %>;height:<%= data.WaterMarkHeigh %>;opacity:<%= data.WaterMarkOpecity %>;left:<%= data.WaterMarkLeft %>;right:<%= data.WaterMarkRight %>; ">
 
             <!-- heading Bill line  start-->
               <section>

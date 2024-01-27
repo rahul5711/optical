@@ -68,18 +68,18 @@ export class CashCollectionComponent implements OnInit {
   oldPayment = 0
   newPayment = 0
 
-  viewEyeTestReport = false
-  editEyeTestReport = false
-  addEyeTestReport = false
-  deleteEyeTestReport = false
+  viewCashCollectionReport = false
+  editCashCollectionReport = false
+  addCashCollectionReport = false
+  deleteCashCollectionReport = false
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
-      if (element.ModuleName === 'EyeTestReport') {
-        this.viewEyeTestReport = element.View;
-        this.editEyeTestReport = element.Edit;
-        this.addEyeTestReport = element.Add;
-        this.deleteEyeTestReport = element.Delete;
+      if (element.ModuleName === 'CashCollectionReport') {
+        this.viewCashCollectionReport = element.View;
+        this.editCashCollectionReport = element.Edit;
+        this.addCashCollectionReport = element.Add;
+        this.deleteCashCollectionReport = element.Delete;
       }
     });
 

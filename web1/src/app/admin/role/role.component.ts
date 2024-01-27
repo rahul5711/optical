@@ -101,19 +101,34 @@ export class RoleComponent implements OnInit {
     {ModuleName: 'SaleReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
     {ModuleName: 'SaleProductReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
     {ModuleName: 'SaleServiceReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'SaleProductCancelReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'SaleProductPendingReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'SaleProductExpiryReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+
     {ModuleName: 'PurchaseReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
     {ModuleName: 'PurchaseProductReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
     {ModuleName: 'PurchaseChargeReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
     {ModuleName: 'PurchaseProductExpiryReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+
+    {ModuleName: 'CashCollectionReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'ExpenesReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
     {ModuleName: 'InventoryReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
-    {ModuleName: 'ProductSummaryReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'ReminderReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'SalePaymentReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'CustomerReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
     {ModuleName: 'ProductTransferReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
     {ModuleName: 'ProductReturnReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
     {ModuleName: 'ProductReturnProductTypeReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'SupplierCreditReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'LedgerReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'LoyaltyReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'OldSaleReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'OldSaleProductReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
     {ModuleName: 'EyeTestReport', MView: true, Edit: true, Add: true, View: true, Delete: true},
 
     // Excel Import
     {ModuleName: 'InventoryExcelImport', MView: true, Edit: true, Add: true, View: true, Delete: true},
+    {ModuleName: 'SupplierExcelImport', MView: true, Edit: true, Add: true, View: true, Delete: true},
     {ModuleName: 'CustomerExcelImport', MView: true, Edit: true, Add: true, View: true, Delete: true},
   ];
 

@@ -133,6 +133,21 @@ export class SaleReportComponent implements OnInit {
   editSaleServiceReport = false
   deleteSaleServiceReport = false
 
+  viewProductCancelReport = false
+  addProductCancelReport = false
+  editProductCancelReport = false
+  deleteProductCancelReport = false
+
+  viewSaleProductPendingReport = false
+  addSaleProductPendingReport = false
+  editSaleProductPendingReport = false
+  deleteSaleProductPendingReport = false
+
+  viewSaleProductExpiryReport = false
+  addSaleProductExpiryReport = false
+  editSaleProductExpiryReport = false
+  deleteSaleProductExpiryReport = false
+
   employeeHide = false
 
   cancelList: any = [];
@@ -336,6 +351,21 @@ export class SaleReportComponent implements OnInit {
         this.addSaleServiceReport = element.Add;
         this.editSaleServiceReport = element.Edit;
         this.deleteSaleServiceReport = element.Delete;
+      } else if (element.ModuleName === 'SaleProductCancelReport') {
+        this.viewProductCancelReport = element.View;
+        this.addProductCancelReport = element.Add;
+        this.editProductCancelReport = element.Edit;
+        this.deleteProductCancelReport = element.Delete;
+      } else if (element.ModuleName === 'SaleProductPendingReport') {
+        this.viewSaleProductPendingReport = element.View;
+        this.addSaleProductPendingReport = element.Add;
+        this.editSaleProductPendingReport = element.Edit;
+        this.deleteSaleProductPendingReport = element.Delete;
+      } else if (element.ModuleName === 'SaleProductExpiryReport') {
+        this.viewSaleProductExpiryReport = element.View;
+        this.addSaleProductExpiryReport = element.Add;
+        this.editSaleProductExpiryReport = element.Edit;
+        this.deleteSaleProductExpiryReport = element.Delete;
       }
     });
     // billmaster

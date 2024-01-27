@@ -74,7 +74,21 @@ export class VendorCreditComponent implements OnInit {
   totalBalance: any;
   totalPaidAmount: any;
 
+  viewSupplierCreditReport = false
+  editSupplierCreditReport = false
+  addSupplierCreditReport = false
+  deleteSupplierCreditReport = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'SupplierCreditReport') {
+        this.viewSupplierCreditReport = element.View;
+        this.editSupplierCreditReport = element.Edit;
+        this.addSupplierCreditReport = element.Add;
+        this.deleteSupplierCreditReport = element.Delete;
+      }
+    });
+
     this.dropdownShoplist()
     if(this.user.UserGroup === 'Employee'){
       this.shopList  = this.shop;

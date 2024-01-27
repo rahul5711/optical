@@ -51,14 +51,14 @@
                                                     </div>
                                                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
-                                                            <mat-label>Locale</mat-label>
+                                                            <mat-label>Country</mat-label>
                                                             <mat-select name="Locale" required [(ngModel)]="data.Locale"
                                                                 required>
                                                                 <mat-option value="en-IN">India</mat-option>
                                                                 <mat-option value="en-US">USA</mat-option>
                                                                 <mat-option value="ar-ae">UAE</mat-option>
                                                             </mat-select>
-                                                            <mat-error>Select Locale</mat-error>
+                                                            <mat-error>Select country</mat-error>
                                                         </mat-form-field>
                                                     </div>
                                                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
@@ -296,7 +296,7 @@
                                                             <div class="row">
                                                                 <div class=" col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
-                                                                        <mat-label>Bill Herder </mat-label>
+                                                                        <mat-label>Bill Header  </mat-label>
                                                                         <mat-select name="BillHeader"
                                                                             [(ngModel)]="bill.BillHeader" required>
                                                                             <mat-option></mat-option>
@@ -338,7 +338,7 @@
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
-                                                                        <mat-label>header margin</mat-label>
+                                                                        <mat-label>Header margin</mat-label>
                                                                         <input matInput name="HeaderMargin"
                                                                             type="number" min="0"
                                                                             [(ngModel)]="bill.HeaderMargin">
@@ -397,7 +397,7 @@
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
-                                                                        <mat-label>ShopDateil Font</mat-label>
+                                                                        <mat-label>ShopDetail Font</mat-label>
                                                                         <input matInput name="ShopDetailFont"
                                                                             type="number" min="0"
                                                                             [(ngModel)]="bill.ShopDetailFont">
@@ -405,7 +405,7 @@
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
-                                                                        <mat-label>ShopDateil line spece </mat-label>
+                                                                        <mat-label>ShopDetail line space </mat-label>
                                                                         <input matInput name="LineSpace" type="number"
                                                                             min="0" [(ngModel)]="bill.LineSpace">
                                                                     </mat-form-field>
@@ -420,7 +420,7 @@
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
-                                                                        <mat-label>Customer LineSpace </mat-label>
+                                                                        <mat-label>Customer Line space </mat-label>
                                                                         <input matInput name="CustomerLineSpace"
                                                                             type="number" min="0"
                                                                             [(ngModel)]="bill.CustomerLineSpace">
@@ -429,7 +429,7 @@
 
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
-                                                                        <mat-label>table Heading</mat-label>
+                                                                        <mat-label>Table Heading</mat-label>
                                                                         <input matInput name="TableHeading"
                                                                             type="number" min="0"
                                                                             [(ngModel)]="bill.TableHeading">
@@ -437,7 +437,7 @@
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
-                                                                        <mat-label>table Body </mat-label>
+                                                                        <mat-label>Table Body </mat-label>
                                                                         <input matInput name="TableBody" type="number"
                                                                             min="0" [(ngModel)]="bill.TableBody ">
                                                                     </mat-form-field>
@@ -451,10 +451,50 @@
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
-                                                                        <mat-label>Note LineSpace </mat-label>
+                                                                        <mat-label>Note Line Space </mat-label>
                                                                         <input matInput name="NoteLineSpace"
                                                                             type="number" min="0"
                                                                             [(ngModel)]="bill.NoteLineSpace ">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>WaterMark Width </mat-label>
+                                                                        <input matInput name="WaterMarkWidth"
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="bill.WaterMarkWidth ">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>WaterMark Height </mat-label>
+                                                                        <input matInput name="WaterMarkHeigh"
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="bill.WaterMarkHeigh ">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>WaterMark Darkness</mat-label>
+                                                                        <input matInput name="WaterMarkOpecity"
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="bill.WaterMarkOpecity ">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>WaterMark Left </mat-label>
+                                                                        <input matInput name="WaterMarkLeft"
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="bill.WaterMarkLeft ">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>WaterMark Right </mat-label>
+                                                                        <input matInput name="WaterMarkRight"
+                                                                            type="number" min="0"
+                                                                            [(ngModel)]="bill.WaterMarkRight ">
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
@@ -590,6 +630,8 @@
                                                         <!-- 50-50 log -->
                                                     </div>
                                                 </div>
+                                                 <section style="position: relative;">
+                                                    <img src="{{this.env.apiUrl + this.shop.WaterMark}}"   style="position: absolute;  opacity:{{this.bill.WaterMarkOpecity}} ;width: {{this.bill.WaterMarkWidth}}px; height:{{this.bill.WaterMarkHeigh}}px;left:{{this.bill.WaterMarkLeft}}%;right:{{this.bill.WaterMarkRight}}%">
                                                 <div class="row">
                                                     <div class="col-12"
                                                         style="font-size: {{this.bill.CustomerFont}}px; line-height:  {{this.bill.CustomerLineSpace}}px;">
@@ -724,6 +766,7 @@
 
                                                     </div>
                                                 </div>
+                                                 </section>
                                             </div>
                                         </div>
                                     </div>
