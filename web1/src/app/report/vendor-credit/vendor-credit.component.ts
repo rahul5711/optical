@@ -86,6 +86,11 @@ export class VendorCreditComponent implements OnInit {
         this.editSupplierCreditReport = element.Edit;
         this.addSupplierCreditReport = element.Add;
         this.deleteSupplierCreditReport = element.Delete;
+      }else{
+        this.viewSupplierCreditReport = true
+        this.editSupplierCreditReport = true
+        this.addSupplierCreditReport = true
+        this.deleteSupplierCreditReport = true
       }
     });
 

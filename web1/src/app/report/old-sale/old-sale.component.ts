@@ -104,6 +104,15 @@ export class OldSaleComponent implements OnInit {
       this.editOldSaleProductReport = element.Edit;
       this.addOldSaleProductReport = element.Add;
       this.deleteOldSaleProductReport = element.Delete;
+    }else{
+      this.viewOldSaleReport= true
+      this.editOldSaleReport= true
+      this.addOldSaleReport= true
+      this.deleteOldSaleReport= true
+      this.viewOldSaleProductReport = true
+      this.editOldSaleProductReport = true
+      this.addOldSaleProductReport = true
+      this.deleteOldSaleProductReport = true
     }
   });
     // billmaster

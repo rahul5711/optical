@@ -66,6 +66,11 @@ export class ExpenseComponent implements OnInit {
         this.editExpenesReport = element.Edit;
         this.addExpenesReport = element.Add;
         this.deleteExpenesReport = element.Delete;
+      }else{
+        this.viewExpenesReport = true;
+        this.editExpenesReport = true;
+        this.addExpenesReport = true;
+        this.deleteExpenesReport = true;
       }
     });
 

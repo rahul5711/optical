@@ -80,6 +80,11 @@ export class CashCollectionComponent implements OnInit {
         this.editCashCollectionReport = element.Edit;
         this.addCashCollectionReport = element.Add;
         this.deleteCashCollectionReport = element.Delete;
+      }else{
+        this.viewCashCollectionReport = true;
+        this.editCashCollectionReport = true;
+        this.addCashCollectionReport = true;
+        this.deleteCashCollectionReport = true;
       }
     });
 
