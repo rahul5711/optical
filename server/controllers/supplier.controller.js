@@ -33,7 +33,7 @@ module.exports = {
             }
 
 
-            [dataCount] = await mysql2.pool.query(`select * from supplier where CompanyID = ${CompanyID}`)
+           const [dataCount] = await mysql2.pool.query(`select * from supplier where CompanyID = ${CompanyID} and Status = 1`)
             const sno = dataCount.length + 1
 
             const [saveData] = await mysql2.pool.query(`insert into supplier (Sno,Name, CompanyID,  MobileNo1, MobileNo2 , PhoneNo, Address,GSTNo, Email,Website ,CINNo,Fax,PhotoURL,ContactPerson,Remark,GSTType,DOB,Anniversary, Status,CreatedBy,CreatedOn) values ('${sno}','${Body.Name}', ${CompanyID}, '${Body.MobileNo1}', '${Body.MobileNo2}', '${Body.PhoneNo}','${Body.Address}','${Body.GSTNo}','${Body.Email}','${Body.Website}','${Body.CINNo}','${Body.Fax}','${Body.PhotoURL}','${Body.ContactPerson}','${Body.Remark}','${Body.GSTType}','${Body.DOB}','${Body.Anniversary}',1,${LoggedOnUser}, now())`)
