@@ -170,9 +170,9 @@ module.exports = {
             if (!billDetailData) return res.send({ message: "Invalid Query Data" })
             if (!billDetailData.length && !service.length) return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.ID !== null || billMaseterData.ID === undefined || billMaseterData.ID === "None") return res.send({ message: "Invalid Query Data" })
-            if (billMaseterData.CustomerID == null || billMaseterData.CustomerID === undefined || billMaseterData.CustomerID === "None") return res.send({ message: "Invalid Query Data" })
-            if (billMaseterData.Doctor == null || billMaseterData.Doctor === undefined || billMaseterData.Doctor === "None") return res.send({ message: "Invalid Query Data" })
-            if (billMaseterData.Employee == null || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.CustomerID == null || billMaseterData.CustomerID == "null" || billMaseterData.CustomerID === undefined || billMaseterData.CustomerID === "None") return res.send({ message: "Invalid Query CustomerID Data" })
+            if (billMaseterData.Doctor == null || billMaseterData.Doctor == "null" || billMaseterData.Doctor === undefined || billMaseterData.Doctor === "None") return res.send({ message: "Invalid Query Doctor Data" })
+            if (billMaseterData.Employee == null || billMaseterData.Employee == "null" || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") return res.send({ message: "Invalid Query Employee Data" })
 
             const [existShop] = await mysql2.pool.query(`select * from shop where Status = 1 and ID = ${billMaseterData.ShopID}`)
 
@@ -211,7 +211,7 @@ module.exports = {
 
             // save Bill master data
             let [bMaster] = await mysql2.pool.query(
-                `insert into billmaster (CustomerID,CompanyID, Sno,ShopID,BillDate, DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee, BillType, RoundOff, AddlDiscountPercentage, ProductStatus) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}','${billMaseterData.DeliveryDate}', '${paymentMode}',  '${billMaseterData.InvoiceNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.SubTotal}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount}, 1, ${LoggedOnUser}, '${req.headers.currenttime}','${req.headers.currenttime}', ${billMaseterData.Doctor}, '${billMaseterData.TrayNo}', ${billMaseterData.Employee}, ${billType}, ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, '${productStatus}')`
+                `insert into billmaster (CustomerID,CompanyID, Sno,ShopID,BillDate, DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee, BillType, RoundOff, AddlDiscountPercentage, ProductStatus) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}','${billMaseterData.DeliveryDate}', '${paymentMode}',  '${billMaseterData.InvoiceNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.SubTotal}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount}, 1, ${LoggedOnUser}, '${req.headers.currenttime}','${req.headers.currenttime}', ${billMaseterData.Doctor ? billMaseterData.Doctor : 0}, '${billMaseterData.TrayNo}', ${ billMaseterData.Employee ? billMaseterData.Employee : 0}, ${billType}, ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, '${productStatus}')`
             );
 
             console.log(connected("BillMaster Add SuccessFUlly !!!"));
@@ -454,10 +454,10 @@ module.exports = {
             // if (!billDetailData.length && !service.length) return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.ID === null || billMaseterData.ID === undefined || billMaseterData.ID == 0 || billMaseterData.ID === "") return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.ShopID === null || billMaseterData.ShopID === undefined || billMaseterData.ShopID == 0 || billMaseterData.ShopID === "") return res.send({ message: "Invalid Query Data" })
-            if (billMaseterData.InvoiceNo === null || billMaseterData.InvoiceNo === undefined || billMaseterData.InvoiceNo == 0 || billMaseterData.InvoiceNo === "") return res.send({ message: "Invalid Query Data" })
-            if (billMaseterData.CustomerID === null || billMaseterData.CustomerID === undefined || billMaseterData.CustomerID === "None") return res.send({ message: "Invalid Query Data" })
-            if (billMaseterData.Employee === null || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") return res.send({ message: "Invalid Query Data" })
-            if (billMaseterData.Doctor === null || billMaseterData.Doctor === undefined || billMaseterData.Doctor === "None") return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.InvoiceNo === null || billMaseterData.InvoiceNo === undefined || billMaseterData.InvoiceNo == 0 || billMaseterData.InvoiceNo === "") return res.send({ message: "Invalid Query InvoiceNo Data" })
+            if (billMaseterData.CustomerID === null || billMaseterData.CustomerID === "null" || billMaseterData.CustomerID === undefined || billMaseterData.CustomerID === "None") return res.send({ message: "Invalid Query CustomerID Data" })
+            if (billMaseterData.Employee === null || billMaseterData.Employee === "null" || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") return res.send({ message: "Invalid Query Employee Data" })
+            if (billMaseterData.Doctor === null || billMaseterData.Doctor === "null" || billMaseterData.Doctor === undefined || billMaseterData.Doctor === "None") return res.send({ message: "Invalid Query Doctor Data" })
 
             const [existShop] = await mysql2.pool.query(`select * from shop where Status = 1 and ID = ${shopid}`)
 
