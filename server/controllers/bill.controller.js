@@ -162,8 +162,9 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
-            const { billMaseterData, billDetailData, service } = req.body
-
+            let { billMaseterData, billDetailData, service } = req.body
+            billMaseterData.Doctor ? billMaseterData.Doctor : 0
+            billMaseterData.Doctor ? billMaseterData.Doctor : 0
             console.log("saveBill=============================>", req.body);
 
             if (!billMaseterData) return res.send({ message: "Invalid Query Data" })
@@ -173,6 +174,8 @@ module.exports = {
             if (billMaseterData.CustomerID == null || billMaseterData.CustomerID == "null" || billMaseterData.CustomerID === undefined || billMaseterData.CustomerID === "None") return res.send({ message: "Invalid Query CustomerID Data" })
             if (billMaseterData.Doctor == null || billMaseterData.Doctor == "null" || billMaseterData.Doctor === undefined || billMaseterData.Doctor === "None") return res.send({ message: "Invalid Query Doctor Data" })
             if (billMaseterData.Employee == null || billMaseterData.Employee == "null" || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") return res.send({ message: "Invalid Query Employee Data" })
+            if ((new Date(`${billMaseterData.BillDate}`) == "Invalid Date")) return res.send({ message: "Invalid BillDate" })
+            if ((new Date(`${billMaseterData.DeliveryDate}`) == "Invalid Date")) return res.send({ message: "Invalid DeliveryDate" })
 
             const [existShop] = await mysql2.pool.query(`select * from shop where Status = 1 and ID = ${billMaseterData.ShopID}`)
 
@@ -447,8 +450,9 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const { billMaseterData, billDetailData, service } = req.body
-
+            let { billMaseterData, billDetailData, service } = req.body
+            billMaseterData.Doctor ? billMaseterData.Doctor : 0
+            billMaseterData.Doctor ? billMaseterData.Doctor : 0
             if (!billMaseterData) return res.send({ message: "Invalid Query Data" })
             if (!billDetailData) return res.send({ message: "Invalid Query Data" })
             // if (!billDetailData.length && !service.length) return res.send({ message: "Invalid Query Data" })
@@ -458,7 +462,8 @@ module.exports = {
             if (billMaseterData.CustomerID === null || billMaseterData.CustomerID === "null" || billMaseterData.CustomerID === undefined || billMaseterData.CustomerID === "None") return res.send({ message: "Invalid Query CustomerID Data" })
             if (billMaseterData.Employee === null || billMaseterData.Employee === "null" || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") return res.send({ message: "Invalid Query Employee Data" })
             if (billMaseterData.Doctor === null || billMaseterData.Doctor === "null" || billMaseterData.Doctor === undefined || billMaseterData.Doctor === "None") return res.send({ message: "Invalid Query Doctor Data" })
-
+            if ((new Date(`${billMaseterData.BillDate}`) == "Invalid Date")) return res.send({ message: "Invalid BillDate" })
+            if ((new Date(`${billMaseterData.DeliveryDate}`) == "Invalid Date")) return res.send({ message: "Invalid DeliveryDate" })
             const [existShop] = await mysql2.pool.query(`select * from shop where Status = 1 and ID = ${shopid}`)
 
             if (!existShop.length) {
