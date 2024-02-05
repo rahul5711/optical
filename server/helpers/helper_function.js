@@ -320,7 +320,7 @@ module.exports = {
     if (billDetailData.length !== 0 && !billDetailData[0].WholeSale) {
       rw = "R";
     }
-    const [billShopWise] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID}`);
+    const [billShopWise] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`);
     if (billShopWise.length) {
       if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
         billShopWiseBoolean = true
@@ -369,7 +369,7 @@ module.exports = {
       newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
     }
 
-    const [billShopWise] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID}`);
+    const [billShopWise] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`);
     if (billShopWise.length) {
       if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
         billShopWiseBoolean = true
