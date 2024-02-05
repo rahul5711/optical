@@ -163,8 +163,12 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
 
             let { billMaseterData, billDetailData, service } = req.body
-            billMaseterData.Doctor ? billMaseterData.Doctor : 0
-            billMaseterData.Doctor ? billMaseterData.Doctor : 0
+            if (billMaseterData.Employee === null || billMaseterData.Employee === "null" || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") {
+                billMaseterData.Employee = 0
+            }
+            if (billMaseterData.Doctor === null || billMaseterData.Doctor === "null" || billMaseterData.Doctor === undefined || billMaseterData.Doctor === "None") {
+                billMaseterData.Doctor = 0
+            }
             console.log("saveBill=============================>", req.body);
 
             if (!billMaseterData) return res.send({ message: "Invalid Query Data" })
@@ -214,7 +218,7 @@ module.exports = {
 
             // save Bill master data
             let [bMaster] = await mysql2.pool.query(
-                `insert into billmaster (CustomerID,CompanyID, Sno,ShopID,BillDate, DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee, BillType, RoundOff, AddlDiscountPercentage, ProductStatus) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}','${billMaseterData.DeliveryDate}', '${paymentMode}',  '${billMaseterData.InvoiceNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.SubTotal}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount}, 1, ${LoggedOnUser}, '${req.headers.currenttime}','${req.headers.currenttime}', ${billMaseterData.Doctor ? billMaseterData.Doctor : 0}, '${billMaseterData.TrayNo}', ${ billMaseterData.Employee ? billMaseterData.Employee : 0}, ${billType}, ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, '${productStatus}')`
+                `insert into billmaster (CustomerID,CompanyID, Sno,ShopID,BillDate, DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee, BillType, RoundOff, AddlDiscountPercentage, ProductStatus) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}','${billMaseterData.DeliveryDate}', '${paymentMode}',  '${billMaseterData.InvoiceNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.SubTotal}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount}, 1, ${LoggedOnUser}, '${req.headers.currenttime}','${req.headers.currenttime}', ${billMaseterData.Doctor ? billMaseterData.Doctor : 0}, '${billMaseterData.TrayNo}', ${billMaseterData.Employee ? billMaseterData.Employee : 0}, ${billType}, ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, '${productStatus}')`
             );
 
             console.log(connected("BillMaster Add SuccessFUlly !!!"));
@@ -451,8 +455,12 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             let { billMaseterData, billDetailData, service } = req.body
-            billMaseterData.Doctor ? billMaseterData.Doctor : 0
-            billMaseterData.Doctor ? billMaseterData.Doctor : 0
+            if (billMaseterData.Employee === null || billMaseterData.Employee === "null" || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") {
+                billMaseterData.Employee = 0
+            }
+            if (billMaseterData.Doctor === null || billMaseterData.Doctor === "null" || billMaseterData.Doctor === undefined || billMaseterData.Doctor === "None") {
+                billMaseterData.Doctor = 0
+            }
             if (!billMaseterData) return res.send({ message: "Invalid Query Data" })
             if (!billDetailData) return res.send({ message: "Invalid Query Data" })
             // if (!billDetailData.length && !service.length) return res.send({ message: "Invalid Query Data" })
@@ -1691,7 +1699,7 @@ module.exports = {
                 return element.Status !== 0;
             });
 
-            
+
             // lensbird subtotal 
             let subtotals = 0
             const x = [];
@@ -1766,7 +1774,7 @@ module.exports = {
                 }
                 return total;
             }, 0);
-            
+
             printdata.DueAmount = printdata.unpaidlist.reduce((total, item) => total + item.DueAmount, 0);
             printdata.SavedDiscount = printdata.billMaster.DiscountAmount + printdata.billMaster.AddlDiscount
             printdata.billMaster.BillDate = moment(printdata.billMaster.BillDate).format("DD-MM-YYYY")
@@ -1777,10 +1785,10 @@ module.exports = {
             printdata.TotalValue = printdata.shopdetails.BillName.split("/")[1]
             printdata.BillValue = printdata.shopdetails.BillName.split("/")[2]
             printdata.CashMemo = printdata.shopdetails.BillName.split("/")[3]
-            if(printdata.BillValue === '' || printdata.BillValue == undefined){
+            if (printdata.BillValue === '' || printdata.BillValue == undefined) {
                 printdata.BillValue = 'Tax Invoice'
             }
-            if(printdata.CashMemo === '' || printdata.CashMemo == undefined){
+            if (printdata.CashMemo === '' || printdata.CashMemo == undefined) {
                 printdata.CashMemo = 'Cash Memo'
             }
 
@@ -1788,13 +1796,13 @@ module.exports = {
             printdata.welComeNoteShop = printdata.shopWelComeNote.filter((ele) => {
                 if (printdata.shopdetails.WholesaleBill == "true" && ele.NoteType === "wholesale") {
                     return true;
-                } else if (printdata.shopdetails.RetailBill == "true" &&  ele.NoteType === "retail") {
+                } else if (printdata.shopdetails.RetailBill == "true" && ele.NoteType === "retail") {
                     return true;
                 }
                 return false;
             });
 
-         
+
             printdata.billItemList = printdata.billItemList.map((element) => {
                 if (element.Status === 1) {
                     printdata.GSTTypes = element.GSTType;
@@ -1829,7 +1837,7 @@ module.exports = {
             let BillFormat = ''
             BillFormat = printdata.CompanySetting.BillFormat;
             let fileName = "";
-            const file = 'Bill' + '-' + printdata.billMaster.ID + '-'  + CompanyID + ".pdf";
+            const file = 'Bill' + '-' + printdata.billMaster.ID + '-' + CompanyID + ".pdf";
             const formatName = BillFormat;
             fileName = "uploads/" + file;
 
@@ -2031,7 +2039,7 @@ module.exports = {
                 }
             })
             printdata.total = total
-               
+
             let fileName = "";
             const file = "CreditNote.ejs" + ".pdf";
             const formatName = "CreditNote.ejs";
