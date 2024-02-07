@@ -267,8 +267,10 @@ export class CashCollectionComponent implements OnInit {
                 margin:0px;
               }
               table  {
+                width:100%;
                 padding:0px;
                 margin:0px;
+                text-align: center;
               }
               td {
                 padding:0px;
