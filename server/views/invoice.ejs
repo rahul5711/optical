@@ -294,7 +294,10 @@
                                             </td>
                                             <%}%>
                                                 <td>
-                                                    <%= i.ProductName %>
+                                                    <%= i.ProductName %>  
+                                                    <% if (i.Warranty != '' ){%>
+                                                    /<%= i.Warranty %>
+                                                    <%}%>
                                                 </td>
                                                 <td>
                                                     <%= i.Quantity %>

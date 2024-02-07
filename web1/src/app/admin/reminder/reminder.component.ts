@@ -305,7 +305,7 @@ export class ReminderComponent implements OnInit {
 
     // Customer_Order Pending Condition 
     if (mode === 'OrderPending') {
-      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill OrderReady');
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill OrderReady') ;
     }
 
     // Customer_Eye Testing Condition 
@@ -325,17 +325,26 @@ export class ReminderComponent implements OnInit {
   
     // Customer_Comfort Feedback Condition 
     if (mode === 'Comfort') {
-      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Comfort Feedback');
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Comfort Feedback') ;
     }
 
     // Customer_Service Condition 
     if (mode === 'Service') {
-      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Service');
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Service') ;
     }
+
+    let p = ''
+    if(mode === 'Service' || mode === 'Comfort' || mode === 'OrderPending'){
+       p = '*Please give your valuable Review for us !*'
+     }else{
+      p = ''
+     }
 
     const msg = `*Hi ${data.Name},*%0A` +
       `${WhatsappMsg}%0A` +
-      `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}`;
+      `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A${p}`
+    
+      ;
   
     const mob = "91" + data.MobileNo1;
     const url = `https://wa.me/${mob}?text=${msg}`;

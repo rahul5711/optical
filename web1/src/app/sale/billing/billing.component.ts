@@ -1161,20 +1161,20 @@ srcCustomerBox = false
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Eye Prescription');
       var msg = `*Hi ${this.data.Name},*%0A` +
         `${WhatsappMsg}%0A` +
-        `*Open Prescription* : ${this.spectacle.FileURL}%0A` +
-        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}`;
+        `*Open Prescription* : ${this.spectacle.FileURL}%0A` + `Reply *‘Hi’* to  download the Prescription%0A%0A` +
+        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` + `*Please give your valuable Review for us !*`;
     } else if(mode === 'other') {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Eye Prescription');
       var msg = `*Hi ${this.data.Name},*%0A` +
         `${WhatsappMsg}%0A` +
-        `*Open Prescription*  : ${this.other.FileURL}%0A` +
-        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` 
+        `*Open Prescription*  : ${this.other.FileURL}%0A` + `Reply *‘Hi’* to  download the Prescription%0A%0A` + 
+        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` + `*Please give your valuable Review for us !*` 
     }else {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Eye Prescription');
       var msg = `*Hi ${this.data.Name},*%0A` +
         `${WhatsappMsg}%0A` +
-        `*Open Prescription*  : ${this.clens.FileURL}%0A` +
-        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` 
+        `*Open Prescription*  : ${this.clens.FileURL}%0A` + `Reply *‘Hi’* to  download the Prescription%0A%0A` +
+        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` + `*Please give your valuable Review for us !*` 
     }
 
   

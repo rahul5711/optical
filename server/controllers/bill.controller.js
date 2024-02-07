@@ -1690,7 +1690,7 @@ module.exports = {
             const User = req.body.User;
             const Customer = req.body.customer;
             const BillMaster = req.body.billMaster;
-
+            console.log(req.body.billItemList);
             req.body.billItemList = req.body.billItemList.filter((element) => {
                 return element.Status !== 0;
             });

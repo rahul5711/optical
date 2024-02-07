@@ -2334,19 +2334,21 @@ export class BillComponent implements OnInit {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill FinalDelivery');
       var msg = `*Hi ${this.customer.Name},*%0A` +
         `${WhatsappMsg}%0A` +
-        `*Open Bill* : ${this.BillLink}%0A` +
+        `*Open Bill* : ${this.BillLink}%0A` + `Reply *‘Hi’* to  download the BIll%0A%0A` +
         `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A` +
         `${this.loginShop.MobileNo1}%0A` +
-        `${this.loginShop.Website}%0A` 
+        `${this.loginShop.Website}%0A` +
+        `*Please give your valuable Review for us !*`
 
     } else {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill Advance') || 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again';
       var msg = `*Hi ${this.customer.Name},*%0A` +
         `${WhatsappMsg}%0A` +
-        `*Open Bill* : ${this.BillLink}%0A` +
+        `*Open Bill* : ${this.BillLink}%0A` + `Reply *‘Hi’* to  download the BIll%0A%0A` +
         `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A` +
         `${this.loginShop.MobileNo1}%0A` +
-        `${this.loginShop.Website}%0A` 
+        `${this.loginShop.Website}%0A` +
+        `*Please give your valuable Review for us !*`
     }
 
     if(this.customer.MobileNo1 != ''){
