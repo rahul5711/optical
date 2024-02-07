@@ -135,19 +135,20 @@
                 <tr style="text-align: left;">
                     <th>S No.</th>
                     <th> Product Description  </th>
+                    <th> Option  </th>
                     <th> Remarks </th>
                   </tr>
             </thead>
           <tbody>
             
-            <% for (let j = 0; j < i.s.length || j < i.R.length; j++) { %>
+            <% for (let j = 0; j < Math.max(i.s.length, i.R.length, i.o.length); j++) { %>
                 <tr>
-                    <td><%= j + 1 %></td> 
-                  <td><%= j < i.s.length ? i.s[j] : '' %></td>
-                  <td><%= j < i.R.length ? i.R[j] : '' %></td>
-
+                    <td><%= j + 1 %></td>
+                    <td><%= j < i.s.length ? i.s[j] : '' %></td>
+                    <td><%= j < i.o.length ? i.o[j] : '' %></td>
+                    <td><%= j < i.R.length ? i.R[j] : '' %></td>
                 </tr>
-              <% } %>
+                <% } %>
               
           </tbody>
             </table>
