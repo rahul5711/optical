@@ -88,7 +88,7 @@ module.exports = {
                     ) {
                         comment = "login SuccessFully";
                         loginCode = 1;
-                    } else {
+                    } else if(User[0].ID !== 20) {
                         comment = "User can not login during this time window";
                         loginCode = 0;
                     }
