@@ -90,12 +90,11 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Product Status</mat-label>
                         <mat-select name="ProductStatus" [(ngModel)]="BillMaster.ProductStatus" disabled
-                                    #ProductStatuscontrol [ngClass]="{'disabled': ProductStatuscontrol.disabled}">
-                            <mat-option value="Pending">Pending</mat-option>
-                            <mat-option value="Delivered">Delivered</mat-option>
+                            #ProductStatuscontrol >
+                            <mat-option value="Pending">  Pending </mat-option>
+                            <mat-option value="Deliverd" > Delivered </mat-option>
                         </mat-select>
                     </mat-form-field>
-                    
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0 ">
                     <mat-form-field class="example-full-width mb-0 ">
