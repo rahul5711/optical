@@ -14,6 +14,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MomentInput } from 'moment';
 import * as moment from 'moment';
+import { SupportService } from 'src/app/service/support.service';
 
 @Component({
   selector: 'app-purchase-list',
@@ -52,10 +53,21 @@ export class PurchaseListComponent implements OnInit {
     private excelService: ExcelService,
     private purchaseService: PurchaseService,
     private modalService: NgbModal,
+    private supps: SupportService
+
   ) {
     this.id = this.route.snapshot.params['id'];
    }
 
+   applyPayment: any = {
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
+    CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
+    pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
+  };
+
+  PaymentModesList :any = [];
+  invoiceList :any = [];
+  paidList :any = [];
    editPurchaseList = false
    addPurchaseList = false
    deletePurchaseList = false
@@ -73,8 +85,24 @@ export class PurchaseListComponent implements OnInit {
     }else{
       this.getList()
     }
+    this.getPaymentModesList()
   }
   
+    // payment mode 
+    getPaymentModesList() {
+      const subs: Subscription = this.supps.getList('PaymentModeType').subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.PaymentModesList = res.data
+          } else {
+            this.as.errorToast(res.message)
+          }
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+
   changePagesize(num: number): void {
     this.itemsPerPage = this.pageSize + num;
   }
@@ -246,6 +274,14 @@ export class PurchaseListComponent implements OnInit {
 
   dateFormat(date:any){
     return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
+
+  openModal1(content: any, data: any) {
+    this.sp.show();
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+    this.getPaymentModesList()
+    this.applyPayment.PayableAmount = data.DueAmount
+    this.sp.hide();
   }
 
 }

@@ -3579,6 +3579,7 @@ module.exports = {
                 ell.DeliveryDate = moment(ell.DeliveryDate).format("DD-MM-YYYY")
                 ell.s = [ell.ProductName];  // Initialize 'ell.s' as an array with the current ProductName.
                 ell.R = [ell.Remark];  // Initialize 'ell.s' as an array with the current ProductName.
+                ell.o = [ell.Optionsss];  // Initialize 'ell.s' as an array with the current ProductName.
 
                 if (!invoiceNos.includes(ell.InvoiceNo)) {
                     invoiceNos.push(ell.InvoiceNo);
@@ -3595,6 +3596,9 @@ module.exports = {
                     }
                     if (!existingItem.R.some(obj => obj.Remark === ell.Remark)) {
                         existingItem.R.push(ell.Remark);
+                    }
+                    if (!existingItem.o.some(obj => obj.Optionsss === ell.Optionsss)) {
+                        existingItem.o.push(ell.Optionsss);
                     }
                 }
 

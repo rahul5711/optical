@@ -5,6 +5,10 @@
     font-size: 15px;
     padding-top: 15px;
 }
+.mat-select.disabled {
+    color: #868686; /* Change the color to your desired disabled text color */
+    background-color: #f2f2f2; /* Change the background color to your desired disabled background color */
+}
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
