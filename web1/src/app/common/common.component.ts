@@ -98,6 +98,7 @@ export class CommonComponent implements OnInit {
     // Add logic to handle the update when the button is clicked
   }
   ngOnInit(): void {
+    
     this.isClicked = true;
     this.sp.show()
     this.user = JSON.parse(localStorage.getItem('user') || '')
@@ -200,6 +201,10 @@ export class CommonComponent implements OnInit {
         if (this.x.style.display == "block" ) {
           this.x.style.display = "none";
         }
+        this.x = document.getElementById("collapseExampleLs");
+        if (this.x.style.display == "block" ) {
+          this.x.style.display = "none";
+        }
     }
     if(mode == 'A'){
       this.x = document.getElementById("collapseExample1");
@@ -234,6 +239,10 @@ export class CommonComponent implements OnInit {
       }
 
       this.x = document.getElementById("collapseExample8");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExampleLs");
       if (this.x.style.display == "block" ) {
         this.x.style.display = "none";
       }
@@ -276,6 +285,11 @@ export class CommonComponent implements OnInit {
       }
 
       this.x = document.getElementById("collapseExample8");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+
+      this.x = document.getElementById("collapseExampleLs");
       if (this.x.style.display == "block" ) {
         this.x.style.display = "none";
       }
@@ -323,6 +337,11 @@ export class CommonComponent implements OnInit {
         this.x.style.display = "none";
       }
 
+      this.x = document.getElementById("collapseExampleLs");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+
       this.x  = document.getElementById("collapseExample2");
       if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
         this.x.style.display = "block";
@@ -362,6 +381,10 @@ export class CommonComponent implements OnInit {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample8");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExampleLs");
       if (this.x.style.display == "block" ) {
         this.x.style.display = "none";
       }
@@ -406,7 +429,10 @@ export class CommonComponent implements OnInit {
       if (this.x.style.display == "block" ) {
         this.x.style.display = "none";
       }
-
+      this.x = document.getElementById("collapseExampleLs");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
       this.x  = document.getElementById("collapseExample4");
       if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
         this.x.style.display = "block";
@@ -447,7 +473,10 @@ export class CommonComponent implements OnInit {
       if (this.x.style.display == "block" ) {
         this.x.style.display = "none";
       }
-
+      this.x = document.getElementById("collapseExampleLs");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
       this.x  = document.getElementById("collapseExample5");
       if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
         this.x.style.display = "block";
@@ -489,7 +518,10 @@ export class CommonComponent implements OnInit {
       if (this.x.style.display == "block" ) {
         this.x.style.display = "none";
       }
-
+      this.x = document.getElementById("collapseExampleLs");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
       this.x  = document.getElementById("collapseExample6");
       if (this.x.style.display == "none" || this.x.style.display == "" ) {
         this.x.style.display = "block";
@@ -530,7 +562,10 @@ export class CommonComponent implements OnInit {
       if (this.x.style.display == "block" ) {
         this.x.style.display = "none";
       }
-
+      this.x = document.getElementById("collapseExampleLs");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
       this.x  = document.getElementById("collapseExample7");
       if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
         this.x.style.display = "block";
@@ -571,8 +606,55 @@ export class CommonComponent implements OnInit {
       if (this.x.style.display == "block" ) {
         this.x.style.display = "none";
       }
-
+      this.x = document.getElementById("collapseExampleLs");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
       this.x  = document.getElementById("collapseExample8");
+      if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
+        this.x.style.display = "block";
+      } else {
+        this.x.style.display = "none";
+      }
+    }
+    if(mode == 'Ls'){
+      this.x = document.getElementById("collapseExample");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample1");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample2");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample3");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample4");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample5");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample6");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample7");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample8");
+      if (this.x.style.display == "block" ) {
+        this.x.style.display = "none";
+      }
+      this.x  = document.getElementById("collapseExampleLs");
       if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
         this.x.style.display = "block";
       } else {
@@ -655,7 +737,7 @@ export class CommonComponent implements OnInit {
   }
   
   ComingSoon(){
-    alert('This report is coming soon...')
+    alert('This is coming soon...')
   }
 
   userd(){

@@ -37,6 +37,8 @@ import { PerorderDummyListComponent } from './perorder-dummy-list/perorder-dummy
 import { ProductNameFilter} from './../filterDropDown/nameFilter';
 import { ProductItemFilterPurchase} from './../filterDropDown/nameFilter';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { PhysicalStockComponent } from './physical-stock/physical-stock.component';
+import { LocationTrackerComponent } from './location-tracker/location-tracker.component';
 
 
 @NgModule({
@@ -55,7 +57,9 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     PurchaseReturnListComponent,
     PerorderDummyListComponent,
     ProductNameFilter,
-    ProductItemFilterPurchase
+    ProductItemFilterPurchase,
+    PhysicalStockComponent,
+    LocationTrackerComponent
   ],
   imports: [
     CommonModule,

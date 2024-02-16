@@ -1,0 +1,87 @@
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"> </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                <div class="card">
+                    <div class="header">
+                        <h2>Physical Stock 
+                            </h2>
+                    </div>
+                    <div class="body">
+                        <!-- form start -->
+                        <form #f="ngForm" autocomplete="off" #f0="ngForm" >
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-4 col-md-6 col-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Barcode</mat-label>
+                                        <input matInput name="Barcode" [(ngModel)]="data.Barcode"
+                                            #Barcodecontrol>
+                                        <mat-error>
+                                            Barcode required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xxl-4 col-xl-4 col-lg-5 col-md-6 col-12  mb-sm-0 ">
+                                    <button type="submit" mat-raised-button color="primary">Search</button>
+                                    <button type="submit" mat-raised-button color="warn" class="ms-3 me-3">Reset</button>
+                                    <button type="submit" mat-raised-button color="primary">PDF</button>
+                                    <button type="submit" mat-raised-button color="primary" class="ms-3 me-3">Excel</button>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- form end -->
+                        <!-- list start -->
+                        <form>
+                            <div class="row">
+                                <div class="col-sm-12" style="overflow: auto; height: 450px;">
+                                        <table class="table table-responsive table-striped table-hover table-sm table-bordered"
+                                            style="border: 2px solid #fff !important;">
+                                            <thead>
+                                                <tr style="white-space: nowrap;">
+                                                    <th>S No.</th>
+                                                    <th>Available</th>
+                                                    <th>Physical Ava</th>
+                                                    <th>Barcode</th>
+                                                    <th>Product Category</th>
+                                                    <th>Product Name</th>
+                                                    <th>BrandType</th>
+                                                    <th>PurchaseDate</th>
+                                                    <th>Quantity</th>
+                                                    <th>Current Shop</th>
+                                                    <th>Status</th>
+                                                    <th>Supplier</th>
+                                                    <th>Unit Price</th>
+                                                    <th>Dis%</th>
+                                                    <th>TAX%</th>
+                                                    <th>TAX Type</th>
+                                                    <th>Retail Price</th>
+                                                    <th>WholeSale Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="text-center">
+                                               <tr></tr>
+                                            </tbody>
+                                           
+                                        </table>
+                                        <table  class="table table-striped table-hover table-sm table-bordered mx-auto"
+                                        style=" width: 50%; white-space: nowrap;" id="CaseConExcel">
+                                        <tfoot class="hide-on-print">
+                                            <tr style="background-color: #dcdcdc;">
+                                                <th style="border: 1px solid #ff1d1d;" > Total Available Qty - </th>
+                                                <th style="border: 1px solid #ff1d1d;"> Total Physical Qty - </th>
+                                              
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- list end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

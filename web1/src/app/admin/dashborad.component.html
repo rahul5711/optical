@@ -1,7 +1,18 @@
-<section class="content">
+<section class="content d-md-block d-none" >
     <div class="container-fluid ">
-        <div class="row p-4 mt-0">
-            <div *ngFor="let stat of cards" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12 crds">
+        <div class="row p-4 mt-0 ">
+            <div *ngFor="let stat of cards" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12 crds ">
+                <app-dashcard [title]="stat.title" [icon]="stat.icon" [routersLinks]="stat.routersLinks">
+                </app-dashcard>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <section class="content d-md-none d-block" style="background: linear-gradient(139deg, rgb(255 81 0 / 29%) 50%, rgb(30 38 114 / 35%) 50%)">
+        <div class="container-fluid ">
+        <div class="row p-4 mt-0 ">
+            <div *ngFor="let stat of cards" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-6  crdsa" >
                 <app-dashcard [title]="stat.title" [icon]="stat.icon" [routersLinks]="stat.routersLinks">
                 </app-dashcard>
             </div>

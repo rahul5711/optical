@@ -13,6 +13,8 @@ import { PurchaseComponent } from './purchase/purchase.component';
 import { SearchBarcodeComponent } from './search-barcode/search-barcode.component';
 import { SupplierComponent } from './supplier/supplier.component';
 import { PerorderDummyListComponent } from './perorder-dummy-list/perorder-dummy-list.component';
+import { LocationTrackerComponent } from './location-tracker/location-tracker.component';
+import { PhysicalStockComponent } from './physical-stock/physical-stock.component';
 
 const routes: Routes = [
   { path: '',
@@ -30,6 +32,8 @@ const routes: Routes = [
     { path: 'dummyPreorderList', component: PerorderDummyListComponent },  
     { path: 'purchase-return/:id', component: PurchaseReturnComponent },  
     { path: 'purchase-returnList', component: PurchaseReturnListComponent },  
+    { path: 'location-tracker', component: LocationTrackerComponent },  
+    { path: 'physical-stock', component: PhysicalStockComponent },  
   ]}
   ]
 

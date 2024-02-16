@@ -44,6 +44,7 @@ import { SharedModule } from "../shared/shared.module";
 import { SummaryComponent } from './summary/summary.component';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { ReminderComponent } from './reminder/reminder.component';
+import { BulkSmsComponent } from './bulk-sms/bulk-sms.component';
 
 
 
@@ -70,6 +71,7 @@ import { ReminderComponent } from './reminder/reminder.component';
         SmsSettingComponent,
         SummaryComponent,
         ReminderComponent,
+        BulkSmsComponent,
     ],
     exports: [
         FormsModule, ReactiveFormsModule,

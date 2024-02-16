@@ -57,6 +57,7 @@
               <a *ngIf="viewFlag.viewRolePermission" href="javascript:void(0)" [routerLink]="['/admin/rolePermission']" id="collapseExample">Role-Permission</a>
               <a *ngIf="viewFlag.viewCompanySetting" href="javascript:void(0)" [routerLink]="['/admin/companySetting']" id="collapseExample">Company Setting</a>
               <a *ngIf="viewFlag.viewSmsSetting" href="javascript:void(0)" [routerLink]="['/admin/smsSetting']" id="collapseExample">SMS Setting </a>
+              <a (click)="ComingSoon()" *ngIf="viewFlag.viewSmsSetting" href="javascript:void(0)" [routerLink]="['/admin/bulk-sms']" id="collapseExample">Bulk SMS </a>
               <a *ngIf="viewFlag.viewSmsSetting" href="javascript:void(0)" [routerLink]="['/admin/reminder']" id="collapseExample">Reminder</a>
               <a *ngIf="viewFlag.viewLoginHistory" href="javascript:void(0)" [routerLink]="['/admin/companyLoginHistory']" id="collapseExample">Login History</a>
               <a *ngIf="viewFlag.viewRecycleBin" href="javascript:void(0)" [routerLink]="['/admin/CompanyDashborad']" id="collapseExample">Recycle-Bin</a>
@@ -136,6 +137,16 @@
               <a *ngIf="viewFlag.viewpayrollList" href="javascript:void(0)" [routerLink]="['/companyPayment/payroll']" id="collapseExample6">Payroll</a>
               <a *ngIf="viewFlag.viewExpenseList" href="javascript:void(0)" [routerLink]="['/companyPayment/expense']" id="collapseExample6">Expenses</a>
               <a *ngIf="viewFlag.viewPettyCashReport" href="javascript:void(0)" [routerLink]="['/companyPayment/pettyCash']" id="collapseExample6">PettyCash</a>
+            </div>
+          </div>
+          <!-- companyadmin end company payment -->
+          <!-- companyadmin  company payment start -->
+          <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown" (click)="myFunctionS('Ls')">
+            <a class="dropBtn" data-target="#collapseExampleLs" >Security <i class="fa fa-caret-down"
+                aria-hidden="true"></i></a>
+            <div class="drop-content" id="collapseExampleLs">
+              <a (click)="ComingSoon()" *ngIf="viewFlag.viewPayment" href="javascript:void(0)" [routerLink]="['/inventory/location-tracker']" id="collapseExampleLs">Location Tracker</a>
+              <a (click)="ComingSoon()" *ngIf="viewFlag.viewpayrollList" href="javascript:void(0)" [routerLink]="['/inventory/physical-stock']" id="collapseExampleLs">Stock Check</a>
             </div>
           </div>
           <!-- companyadmin end company payment -->

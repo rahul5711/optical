@@ -738,8 +738,9 @@ export class PurchaseComponent implements OnInit {
     this.itemList.forEach((ele: any) => {
       if (ele.ID !== null || ele.ID === null || ele.Status == 0 && ele.UpdatedBy === null) {
         ele.UpdatedBy = this.user.ID;
+        ele.Checked = false
         items.push(ele);
-      }
+      } 
     })
     this.data.PurchaseDetail = JSON.stringify(items);
     const subs: Subscription = this.purchaseService.updatePurchase(this.data).subscribe({
@@ -940,6 +941,7 @@ export class PurchaseComponent implements OnInit {
         next: (res: any) => {
           if (res != '') {
             window.open(res, "_blank");
+            this.barcodeListt = []
           } else {
             this.as.errorToast(res.message)
           }

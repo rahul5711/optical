@@ -155,6 +155,7 @@
 
 
 @media (max-width:700px) {
+  
   .navbar .nav-btn{
     display: inline-block;
     position: absolute;
@@ -189,6 +190,7 @@
     right: 0px;
     z-index: 99;
   }
+
   .navbar .nav-links a {
     display: block;
   }
@@ -197,8 +199,11 @@
   .navbar #nav-check:not(:checked) ~ .nav-links {
     height: 0px;
   }
- 
-  /* when nav toggle button is checked */
+  
+  .navbar #nav-check:not(:checked) ~ .nav-links a{
+    height: 0px;
+  }
+  
   .navbar #nav-check:checked ~ .nav-links {
     height: calc(100vh - 70px);
     overflow-y: auto;

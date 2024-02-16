@@ -9,6 +9,16 @@
     border-bottom: dashed;
   }
 
+  .cardM{
+    border: 0px solid rgb(255, 81, 0);
+    border-radius: 10%;
+    box-shadow: 2px 2px 10px #1e267261;
+    transition: 1s;
+    margin-top: 30px !important;
+    animation-name: example;
+    animation-duration: 9s;
+    background: linear-gradient(219deg, rgb(255 81 0) 10%, rgb(255, 255, 255) 15%);
+  }
   
   .content {
     background-size: 100%;

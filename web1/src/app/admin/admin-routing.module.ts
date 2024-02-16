@@ -20,6 +20,7 @@ import { SmsSettingComponent } from './sms-setting/sms-setting.component';
 import { UserUpdatePasswordComponent } from './user-update-password/user-update-password.component';
 import { SummaryComponent } from './summary/summary.component';
 import { ReminderComponent } from './reminder/reminder.component';
+import { BulkSmsComponent } from './bulk-sms/bulk-sms.component';
 
 
 const routes: Routes = [
@@ -49,6 +50,7 @@ children: [
   { path: 'smsSetting', component: SmsSettingComponent },
   { path: 'companyLoginHistory', component: CompanyLoginHistoryComponent },
   { path: 'dashboardSummary', component: SummaryComponent },
+  { path: 'bulk-sms', component: BulkSmsComponent },
   // ComapnyAdmin end routes 
 ]}
 ]

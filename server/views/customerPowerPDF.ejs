@@ -49,7 +49,12 @@
       <div class="row2">
          <div class="col-1">
             <p class="cus_p">VistingDate</p>
+            <% if (data.customer.CompanyID !== 21) { %>
             <p class="cus_p">Age </p>
+            <%} %>
+            <% if (data.customer.CompanyID === 21) { %>
+            <p class="cus_p">Moblie No2 </p>
+            <%} %>
             <p class="cus_p">Rx_By </p>
          </div>
          <div class="col-2">
@@ -63,9 +68,12 @@
             <% if (data.mode === 'other') { %>
             <p class="cus_p"> : <%=data.other.VisitDate%></p>
             <%} %>
-
+            <% if (data.customer.CompanyID !== 21) { %>
             <p class="cus_p"> : <%=data.customer.Age%> </p>
-
+            <%} %>
+            <% if (data.customer.CompanyID === 21) { %>
+            <p class="cus_p"> : <%=data.customer.MobileNo2%> </p>
+            <%} %>
             <% if (data.mode === 'spectacle' && data.spectacle.RefferedByDoc != 'Self') { %>
             <p class="cus_p"> : <%=data.spectacle.RefferedByDoc%></p>
             <%} %>
