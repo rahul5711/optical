@@ -267,6 +267,7 @@ export class ProductReturnComponent implements OnInit {
   exportAsXLSXMaster(): void {
       let element = document.getElementById('purchaseExcel');
       const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+      delete ws['A2'];
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
       XLSX.writeFile(wb, 'Product_Return_Report.xlsx');
@@ -430,6 +431,7 @@ export class ProductReturnComponent implements OnInit {
   exportAsXLSXDetail(): void {
     let element = document.getElementById('purchaseDetailExcel');
     const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+    delete ws['A2'];
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'Product_Return_ProductType_Report.xlsx');

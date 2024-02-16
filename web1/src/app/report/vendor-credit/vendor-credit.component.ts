@@ -145,6 +145,7 @@ export class VendorCreditComponent implements OnInit {
   exportAsXLSX(): void {
     let element = document.getElementById('SupplierCreditExcel');
     const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+    delete ws['A2'];
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'Supplier_Credit_Report.xlsx');

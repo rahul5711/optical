@@ -260,6 +260,7 @@ export class OldSaleComponent implements OnInit {
   exportAsXLSXMaster(): void {
     let element = document.getElementById('SaleExcel');
     const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+    delete ws['A2'];
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'Old Sale Report.xlsx');
@@ -443,6 +444,7 @@ export class OldSaleComponent implements OnInit {
     exportAsXLSXDetail(): void {
       let element = document.getElementById('saleDetailExcel');
       const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+      delete ws['A2'];
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
       XLSX.writeFile(wb, 'Old Sale ProductType Report.xlsx');

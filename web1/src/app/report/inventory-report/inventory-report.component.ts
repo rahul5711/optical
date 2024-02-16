@@ -405,6 +405,7 @@ export class InventoryReportComponent implements OnInit {
   exportAsXLSXDetail(): void {
     let element = document.getElementById('inventoryExcel');
     const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+    delete ws['A2'];
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'inventory_Report.xlsx');
@@ -579,6 +580,7 @@ export class InventoryReportComponent implements OnInit {
     exportAsXLSXExpiry(): void {
       let element = document.getElementById('ProductExpiry');
       const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+      delete ws['A2'];
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
       XLSX.writeFile(wb, 'PurchaseProductExpiry_Report.xlsx');

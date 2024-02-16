@@ -192,6 +192,7 @@ export class CashCollectionComponent implements OnInit {
   exportAsXLSX(): void {
     const element = document.getElementById('CaseConExcel');
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+        delete ws['A2'];
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'Cash_Collection_Report.xlsx');

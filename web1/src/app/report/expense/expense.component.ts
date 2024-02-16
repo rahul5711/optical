@@ -8,6 +8,8 @@ import * as XLSX from 'xlsx';
 import { SupportService } from 'src/app/service/support.service';
 import { ExpenseService } from 'src/app/service/expense.service';
 import { environment } from 'src/environments/environment';
+import { ExcelService } from 'src/app/service/helpers/excel.service';
+import { color } from 'html2canvas/dist/types/css/types/color';
 
 @Component({
   selector: 'app-expense',
@@ -39,6 +41,7 @@ export class ExpenseComponent implements OnInit {
     public supps: SupportService,
     public sp: NgxSpinnerService,
     public expen: ExpenseService,
+    private excelService: ExcelService,
   ) { }
 
   shopList: any = [];
@@ -177,10 +180,32 @@ export class ExpenseComponent implements OnInit {
   exportAsXLSX(): void {
     let element = document.getElementById('ExpenseExcel');
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+    ws['A1'].s = { fill: { fgColor: { color: 'red' } } };
+    delete ws['A2'];
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'Expense_Report.xlsx');
   }
+
+
+  
+
+  
+  // exportAsXLSX(): void {
+  //   let data = this.ExpenseList.map((e: any) => {
+  //     return {
+  //       ExpenseDate: e.ExpenseDate,
+  //       InvoiceNo: e.InvoiceNo,
+  //       ExpenseType: e.ExpenseType,
+  //       GivenTo: e.GivenTo,
+  //       PaymentMode: e.PaymentMode,
+  //       CashType: e.CashType,
+  //       Amount: e.Amount,
+  //       ShopName: e.ShopName,
+  //     }
+  //   })
+  //   this.excelService.exportAsExcelFile(data, 'supplier_list');
+  // }
 
   dateFormat(date: any) {
     return moment(date).format(`${this.companySetting.DateFormat}`);

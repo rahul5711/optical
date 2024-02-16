@@ -612,6 +612,7 @@ export class SaleReportComponent implements OnInit {
   exportAsXLSXMaster(): void {
     let element = document.getElementById('SaleExcel');
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+    delete ws['A2'];
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'Sale Report.xlsx');
@@ -820,6 +821,7 @@ export class SaleReportComponent implements OnInit {
   exportAsXLSXDetail(): void {
     let element = document.getElementById('saleDetailExcel');
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+    delete ws['A2'];
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'Sale ProductType Report.xlsx');
@@ -894,6 +896,7 @@ export class SaleReportComponent implements OnInit {
   exportAsXLSXcharge(): void {
     let element = document.getElementById('billServiceExcel');
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+    delete ws['A2'];
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'BillService_Report.xlsx');
@@ -1090,6 +1093,7 @@ export class SaleReportComponent implements OnInit {
   exportAsXLSXCancel(): void {
     let element = document.getElementById('saleCancelExcel');
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+    delete ws['A2'];
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'BillCancelProduct_Report.xlsx');
@@ -1284,6 +1288,7 @@ export class SaleReportComponent implements OnInit {
   exportAsXLSXPending(): void {
     let element = document.getElementById('salePendingExcel');
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+    delete ws['A2'];
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'BillPendingProduct_Report.xlsx');
@@ -1529,6 +1534,7 @@ export class SaleReportComponent implements OnInit {
   exportAsXLSXExpiry(): void {
     let element = document.getElementById('saleExpiryExcel');
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+    delete ws['A2'];
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'Sale Product Expiry Report.xlsx');
