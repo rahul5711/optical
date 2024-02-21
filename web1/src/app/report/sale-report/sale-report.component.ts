@@ -27,6 +27,7 @@ import Swal from 'sweetalert2';
 })
 export class SaleReportComponent implements OnInit {
   env = environment;
+  company = JSON.parse(localStorage.getItem('company') || '');
   shop: any = JSON.parse(localStorage.getItem('shop') || '');
   user: any = JSON.parse(localStorage.getItem('user') || '');
   selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '');
@@ -1727,16 +1728,29 @@ export class SaleReportComponent implements OnInit {
     let temp = JSON.parse(this.companySetting.WhatsappSetting);
     let WhatsappMsg = '';
     let msg = '';
-
+    let Cusmob = ''
     if (mode === 'bill') {
+      Cusmob = data.MobileNo1
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Credit Noteaa') || 'This is a Gentle Reminder for your Balance Amount' + ` ${data.DueAmount}` + '/- Please clear Today.';
       msg = `*Hi ${data.CustomerName},*%0A` +
         `${WhatsappMsg}%0A` +
         `*${this.shopList[0].Name}* - ${this.shopList[0].AreaName}%0A${this.shopList[0].MobileNo1}%0A${this.shopList[0].Website}`;
     } 
 
+    if(mode === 'Fbill') {
+      Cusmob = data.CustomerMoblieNo1
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill OrderReady');
+        msg = `*Hi ${data.CustomerName},*%0A` +
+        `${WhatsappMsg}%0A` +
+        `*${this.shopList[0].Name}* - ${this.shopList[0].AreaName}%0A` +
+        `${this.shopList[0].MobileNo1}%0A` +
+        `${this.shopList[0].Website}%0A` +
+        `*Please give your valuable Review for us !*`
+    } 
+
+
     if(data.MobileNo1 != ''){
-      var mob = "91" + data.MobileNo1;
+      var mob = "91" + Cusmob;
       var url = `https://wa.me/${mob}?text=${msg}`;
       window.open(url, "_blank");
     }else{

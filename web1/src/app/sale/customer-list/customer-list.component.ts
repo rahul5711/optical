@@ -14,6 +14,7 @@ import { CustomerService } from 'src/app/service/customer.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 
+
 @Component({
   selector: 'app-customer-list',
   templateUrl: './customer-list.component.html',
@@ -22,9 +23,11 @@ import * as moment from 'moment';
 export class CustomerListComponent implements OnInit {
 
   @ViewChild('searching') searching: ElementRef | any;
+  company = JSON.parse(localStorage.getItem('company') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
-
+  shop = JSON.parse(localStorage.getItem('shop') || '');
+  selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
 
   env = environment;
   gridview = true
@@ -50,7 +53,7 @@ export class CustomerListComponent implements OnInit {
   editCustomerSearch = false
   addCustomerSearch = false
   deleteCustomerSearch = false
-
+  loginShop:any
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'CustomerSearch') {
@@ -59,7 +62,8 @@ export class CustomerListComponent implements OnInit {
         this.deleteCustomerSearch = element.Delete;
       }
     });
-    this.getList()
+    this.getList();
+    [this.loginShop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
   }
   
   changePagesize(num: number): void {
@@ -195,4 +199,43 @@ export class CustomerListComponent implements OnInit {
   dateFormat(date:any){
     return moment(date).format(`${this.companySetting.DateFormat}`);
   }
+
+  sendWhatsapp(mode: any,customer:any) {
+    let temp = JSON.parse(this.companySetting.WhatsappSetting);
+    let WhatsappMsg = '';
+    let msg = ''
+
+   if(mode === 'Fbill') {
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill OrderReady');
+        msg = `*Hi ${customer.Name},*%0A` +
+        `${WhatsappMsg}%0A` +
+        `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A` +
+        `${this.loginShop.MobileNo1}%0A` +
+        `${this.loginShop.Website}%0A` +
+        `*Please give your valuable Review for us !*`
+    } 
+
+    if(customer.MobileNo1 != ''){
+      var mob = "91" + customer.MobileNo1;
+      var url = `https://wa.me/${mob}?text=${msg}`;
+      window.open(url, "_blank");
+    }else{
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: '<b>' + customer.Name + '</b>' + ' Mobile number is not available.',
+        showConfirmButton: true,
+      })
+    }
+  }
+
+  getWhatsAppMessage(temp: any, messageName: any) {
+    if (temp && temp !== 'null') {
+      const foundElement = temp.find((element: { MessageName1: any; }) => element.MessageName1 === messageName);
+      return foundElement ? foundElement.MessageText1 : '';
+    }
+    return '';
+  }
+
+
 }

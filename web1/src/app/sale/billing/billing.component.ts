@@ -51,6 +51,7 @@ export class BillingComponent implements OnInit {
     }
   }
   @ViewChild('UserNamecontrol') UserNamecontrol: ElementRef | any;
+  company = JSON.parse(localStorage.getItem('company') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   shop = JSON.parse(localStorage.getItem('shop') || '');

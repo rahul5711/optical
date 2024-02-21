@@ -98,6 +98,7 @@
                         <tr class="text-center" *ngFor="let data of dataList let i = index;"
                           style="white-space: nowrap;">
                           <td style="width: 7%;">
+                            <button *ngIf="this.company.WhatsappMsg == 'true'"  (click)="sendWhatsapp('Fbill',data)" class="bg-btn whatsappBill ms-lg-1 me-lg-1 ms-2 me-2"><i  class="fa-brands fa-whatsapp "></i></button>
                             <button class="bg-btn">
                               <mat-icon class="edit_icon pt-1">remove_red_eye</mat-icon>
                             </button>
@@ -105,6 +106,7 @@
                               [routerLink]="['/sale/billing',data.ID,0,]">edit</mat-icon>
                             <mat-icon *ngIf="deleteCustomerSearch" class="delete_icon ms-1"
                               (click)="deleteItem(i)">delete_forever</mat-icon>
+                             
                           </td>
                           <td class="text-left">{{dataList.length - i }}</td>
                           <td class="text-left">{{data.Idd}} </td>

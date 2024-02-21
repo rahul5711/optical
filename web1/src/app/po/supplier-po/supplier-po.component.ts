@@ -22,6 +22,7 @@ import { ShopService } from 'src/app/service/shop.service';
   styleUrls: ['./supplier-po.component.css']
 })
 export class SupplierPoComponent implements OnInit {
+  company = JSON.parse(localStorage.getItem('company') || '');
   shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   user:any =JSON.parse(localStorage.getItem('user') || '') ;

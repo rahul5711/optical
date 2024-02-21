@@ -971,9 +971,9 @@
                         <!-- [disabled]="this.BillLink == ''" -->
                    
 
-                    <button [disabled]="this.BillLink == ''" (click)="sendWhatsapp('bill')" class="bgRemove whatsappBill ms-lg-2 me-lg-1 ms-3 me-3"><i  class="fa-brands fa-whatsapp "></i></button>
+                    <button *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="this.BillLink == ''" (click)="sendWhatsapp('bill')" class="bgRemove whatsappBill ms-lg-2 me-lg-1 ms-3 me-3"><i  class="fa-brands fa-whatsapp "></i></button>
                     <button class="bgRemove"><i class="fa-solid fa-envelope EmailBill"></i></button>
-                    <button [disabled]="this.BillLink == ''" (click)="sendWhatsapp('Fbill')" class="bgRemove whatsappfBill ms-lg-2 me-lg-1 ms-3 me-3"><i  class="fa-brands fa-whatsapp "></i> Final</button>
+                    <button *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="this.BillLink == ''" (click)="sendWhatsapp('Fbill')" class="bgRemove whatsappfBill ms-lg-2 me-lg-1 ms-3 me-3"><i  class="fa-brands fa-whatsapp "></i> Final</button>
                 </div>
             </div>
         </form>
@@ -1312,7 +1312,7 @@
                         mat-raised-button color="primary">
                         Credit Note
                     </button>
-                    <button [disabled]="CreditPDF == ''" (click)="sendWhatsapp('credit')" class="whatsapp ms-lg-4 me-lg-4 ms-3 me-3"><i class="fa-brands fa-whatsapp"></i></button>
+                    <button *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="CreditPDF == ''" (click)="sendWhatsapp('credit')" class="whatsapp ms-lg-4 me-lg-4 ms-3 me-3"><i class="fa-brands fa-whatsapp"></i></button>
                     <button class="email"><i class="fa-solid fa-envelope"></i></button>
                 </div>
             </div>

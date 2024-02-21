@@ -19,7 +19,7 @@ import * as moment from 'moment';
   styleUrls: ['./reminder.component.css']
 })
 export class ReminderComponent implements OnInit {
-
+  company = JSON.parse(localStorage.getItem('company') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
   companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
   shop:any = JSON.parse(localStorage.getItem('shop') || '');

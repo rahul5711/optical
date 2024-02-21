@@ -22,6 +22,7 @@ import { SupportService } from 'src/app/service/support.service';
   styleUrls: ['./fitter-po.component.css']
 })
 export class FitterPoComponent implements OnInit {
+  company = JSON.parse(localStorage.getItem('company') || '');
   shop: any = JSON.parse(localStorage.getItem('shop') || '');
   selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '');
   user: any = JSON.parse(localStorage.getItem('user') || '');

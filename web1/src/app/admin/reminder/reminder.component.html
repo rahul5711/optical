@@ -42,7 +42,7 @@
                                                 <tbody>
                                                     <tr *ngFor=" let c of bdayList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i (click)="WhatsappSend(c,'CustomerBday')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(c,'CustomerBday')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
                                                             <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
                                                             <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
@@ -71,7 +71,7 @@
                                                 <tbody>
                                                     <tr *ngFor=" let s of bdayList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i (click)="WhatsappSend(s,'SupplierBday')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(s,'SupplierBday')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
                                                             <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
                                                             <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
@@ -99,7 +99,7 @@
                                                 <tbody>
                                                     <tr *ngFor=" let e of bdayList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i (click)="WhatsappSend(e,'EmployeeBday')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(e,'EmployeeBday')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
                                                             <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
                                                             <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
@@ -127,7 +127,7 @@
                                                 <tbody>
                                                     <tr *ngFor=" let f of bdayList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i (click)="WhatsappSend(f,'FitterBday')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(f,'FitterBday')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
                                                             <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
                                                             <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
@@ -155,7 +155,7 @@
                                                 <tbody>
                                                     <tr *ngFor=" let d of bdayList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i (click)="WhatsappSend(d,'DoctorBday')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(d,'DoctorBday')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
                                                             <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
                                                             <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
@@ -201,7 +201,7 @@
                                                 <tbody>
                                                     <tr *ngFor=" let c of AnniversaryList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i (click)="WhatsappSend(c,'CustomerAnniversary')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(c,'CustomerAnniversary')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
                                                             <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
                                                             <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
@@ -230,7 +230,7 @@
                                                 <tbody>
                                                     <tr *ngFor=" let s of AnniversaryList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i (click)="WhatsappSend(s,'SupplierAnniversary')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(s,'SupplierAnniversary')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
                                                             <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
                                                             <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
@@ -258,7 +258,7 @@
                                                 <tbody>
                                                     <tr *ngFor=" let e of AnniversaryList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i (click)="WhatsappSend(e,'EmployeeAnniversary')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(e,'EmployeeAnniversary')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
                                                             <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
                                                             <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
@@ -286,7 +286,7 @@
                                                 <tbody>
                                                     <tr *ngFor=" let f of AnniversaryList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i (click)="WhatsappSend(f,'FitterAnniversary')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(f,'FitterAnniversary')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
                                                             <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
                                                             <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
@@ -314,7 +314,7 @@
                                                 <tbody>
                                                     <tr *ngFor=" let d of AnniversaryList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i (click)="WhatsappSend(d,'DoctorAnniversary')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(d,'DoctorAnniversary')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
                                                             <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
                                                             <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
@@ -358,7 +358,7 @@
                                     <tbody>
                                         <tr *ngFor=" let o of OrderPendingList; let i = index;">
                                             <td style=" width:25%;">
-                                                <i (click)="WhatsappSend(o,'OrderPending')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(o,'OrderPending')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
                                                 <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
                                                 <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                             </td>
@@ -402,7 +402,7 @@
                                   <tbody>
                                       <tr *ngFor=" let eye of EyeTestingList; let i = index;">
                                         <td style=" width:25%;">
-                                            <i (click)="WhatsappSend(eye,'EyeTesting')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(eye,'EyeTesting')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
                                             <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
                                             <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                         </td>
@@ -445,7 +445,7 @@
                                                 <tbody>
                                                     <tr *ngFor=" let cs of SolutionList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i (click)="WhatsappSend(cs,'CustomerSolution')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(cs,'CustomerSolution')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
                                                             <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
                                                             <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
@@ -474,7 +474,7 @@
                                                 <tbody>
                                                     <tr *ngFor=" let ss of SolutionList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i (click)="WhatsappSend(ss,'SupplierSolution')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(ss,'SupplierSolution')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
                                                             <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
                                                             <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
@@ -519,7 +519,7 @@
                                                 <tbody>
                                                     <tr *ngFor=" let cc of ContactLensList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i (click)="WhatsappSend(cc,'CustomerContactlens')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(cc,'CustomerContactlens')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
                                                             <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
                                                             <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
@@ -548,7 +548,7 @@
                                                 <tbody>
                                                     <tr *ngFor=" let sc of ContactLensList; let i = index;">
                                                         <td style=" width:25%;">
-                                                            <i (click)="WhatsappSend(sc,'SupplierContactlens')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(sc,'SupplierContactlens')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
                                                             <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
                                                             <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                                         </td>
@@ -593,7 +593,7 @@
                                     <tbody>
                                         <tr *ngFor=" let Feed of FeedBackList; let i = index;">
                                             <td style=" width:25%;">
-                                                <i (click)="WhatsappSend(Feed,'Comfort')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(Feed,'Comfort')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
                                                 <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
                                                 <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                             </td>
@@ -634,7 +634,7 @@
                                     <tbody>
                                         <tr *ngFor=" let S of ServiceList; let i = index;">
                                             <td style=" width:25%;">
-                                                <i (click)="WhatsappSend(S,'Service')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(S,'Service')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
                                                 <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
                                                 <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                             </td>

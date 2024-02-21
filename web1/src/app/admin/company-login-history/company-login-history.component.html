@@ -36,7 +36,7 @@
                             </div>
                         </div>
                         <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="searchData()">
-                        <div class="row m-2">
+                        <div class="row ">
 
                             <div class="col-md-2">
                                 <mat-form-field class="example-full-width mb-0" >
@@ -88,13 +88,13 @@
                                     </thead>
                                     <tbody>
                                         <tr class="text-center" *ngFor="let data of dataList  ; let i = index;">
-                                            <td class="text-left" [ngStyle]="data.rowColorStyle">{{dataList.length - i }}</td>
-                                            <td class="text-left" [ngStyle]="data.rowColorStyle">{{data.UserName}}</td>
-                                            <td class="text-left" [ngStyle]="data.rowColorStyle">{{data.UserGroup}}</td>
-                                            <td class="text-left" [ngStyle]="data.rowColorStyle">{{data.CompanyName}}</td>
-                                            <td class="text-left" [ngStyle]="data.rowColorStyle">{{data.IpAddress}}</td>
-                                            <td class="text-left" [ngStyle]="data.rowColorStyle">{{dateFormat(data.LoginTime)}}</td>
-                                            <td class="text-left" [ngStyle]="data.rowColorStyle">{{data.Comment }}</td>
+                                            <td class="text-left" [ngClass]="{'my_class': data.Comment !== 'login SuccessFully'}">{{dataList.length - i }}</td>
+                                            <td class="text-left" [ngClass]="{'my_class': data.Comment !== 'login SuccessFully'}">{{data.UserName}}</td>
+                                            <td class="text-left" [ngClass]="{'my_class': data.Comment !== 'login SuccessFully'}">{{data.UserGroup}}</td>
+                                            <td class="text-left" [ngClass]="{'my_class': data.Comment !== 'login SuccessFully'}">{{data.CompanyName}}</td>
+                                            <td class="text-left" [ngClass]="{'my_class': data.Comment !== 'login SuccessFully'}">{{data.IpAddress}}</td>
+                                            <td class="text-left" [ngClass]="{'my_class': data.Comment !== 'login SuccessFully'}">{{dateFormat(data.LoginTime)}}</td>
+                                            <td class="text-left" [ngClass]="{'my_class': data.Comment !== 'login SuccessFully'}">{{data.Comment }}</td>
                                         </tr>
                                     </tbody>
                                 </table>

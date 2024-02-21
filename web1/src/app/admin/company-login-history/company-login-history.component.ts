@@ -47,7 +47,7 @@ export class CompanyLoginHistoryComponent implements OnInit {
   red:any = false
 
   ngOnInit(): void {
-    this.getList()
+    // this.getList()
     this.dropdownUserlist()
     this.companySetting.LoginTimeEnd = moment(this.companySetting.LoginTimeEnd, 'HH:mm').format('hh:mm A');
     this.companySetting.LoginTimeStart = moment(this.companySetting.LoginTimeStart, 'HH:mm').format('hh:mm A');

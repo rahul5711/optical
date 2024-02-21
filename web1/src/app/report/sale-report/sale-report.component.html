@@ -379,7 +379,9 @@
                                                     <tr *ngFor="let d of BillMasterList; let i = index" text="left">
 
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
-                                                         {{i+1 }}   <button *ngIf="d.PaymentStatus === 'Unpaid'" (click)="sendWhatsapp(d,'bill')" class="bg_none whatsappfBill ms-lg-2 me-lg-1 ms-3 me-3">
+                                                         {{i+1 }} 
+                                                         
+                                                         <button *ngIf="d.PaymentStatus === 'Unpaid' && this.company.WhatsappMsg == 'true'" (click)="sendWhatsapp(d,'bill')" class="bg_none whatsappfBill ms-lg-2 me-lg-1 ms-3 me-3">
                                                             <i  class="fa-brands fa-whatsapp "></i>
                                                         </button>
                                                              
@@ -2443,7 +2445,9 @@
                                                 <tbody class="text-center">
                                                     <tr *ngFor=" let t of pendingList; let i = index ">
                                                         <td [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
-                                                            {{pendingList.length-i }} </td>
+                                                            {{pendingList.length-i }} <button *ngIf="t.CustomerMoblieNo1 !== '' && this.company.WhatsappMsg == 'true'" (click)="sendWhatsapp(t,'Fbill')" class="bg_none whatsappfBill ms-lg-2 me-lg-1 ms-3 me-3">
+                                                                <i  class="fa-brands fa-whatsapp "></i>
+                                                            </button></td>
                                                         <td *ngIf="columnVisibility4.InvoiceDate"
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
                                                             {{dateFormat(t.BillDate)}}</td>

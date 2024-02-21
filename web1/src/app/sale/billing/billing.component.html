@@ -815,7 +815,7 @@
 
                                                                                 <button (click)="customerPowerPDF(i,'spectacle')"  class="pdfpower  me-1 ms-1"><i class="fa fa-file-pdf"></i></button>
                                                                                 
-                                                                                <button (click)="sendWhatsappPower(i,'spectacle')" class="whatsapp  "><i class="fa-brands fa-whatsapp"></i></button>
+                                                                                <button *ngIf="this.company.WhatsappMsg == 'true'" (click)="sendWhatsappPower(i,'spectacle')" class="whatsapp  "><i class="fa-brands fa-whatsapp"></i></button>
                                                                         </td>
                                                                         <td class="text-left">{{spectacleLists.length -
                                                                             i }}</td>
@@ -1386,7 +1386,7 @@
                                                                                 
                                                                                 <button (click)="customerPowerPDF(i,'contact')"  class="pdfpower  me-1 ms-1"><i class="fa fa-file-pdf"></i></button>
                                                                                 
-                                                                                <button (click)="sendWhatsappPower(i,'contact')" class="whatsapp  "><i class="fa-brands fa-whatsapp"></i></button>
+                                                                                <button *ngIf="this.company.WhatsappMsg == 'true'" (click)="sendWhatsappPower(i,'contact')" class="whatsapp  "><i class="fa-brands fa-whatsapp"></i></button>
                                                                         </td>
                                                                         <td class="text-left">{{contactList.length - i
                                                                             }}</td>
@@ -1605,7 +1605,7 @@
                                                                                 class="deletes_icon ms-1"
                                                                                 (click)="deleteSpec(i,'other')">delete_forever</mat-icon>
                                                                                 <button (click)="otherOpne(Other,i,'other')"  class="pdfpower  me-1 ms-1"><i class="fa fa-file-pdf"></i></button>
-                                                                                <button  (click)="sendWhatsappPower(i,'other')" class="whatsapp  "><i class="fa-brands fa-whatsapp"></i></button>
+                                                                                <button *ngIf="this.company.WhatsappMsg == 'true'" (click)="sendWhatsappPower(i,'other')" class="whatsapp  "><i class="fa-brands fa-whatsapp"></i></button>
 
                                                                         </td>
                                                                         <td class="text-left">{{otherList.length - i }}

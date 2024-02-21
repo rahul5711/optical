@@ -25,6 +25,7 @@ import { CalculationService } from 'src/app/service/helpers/calculation.service'
 import { PaymentService } from 'src/app/service/payment.service';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { NgTinyUrlService } from 'ng-tiny-url';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-bill',
@@ -48,6 +49,7 @@ export class BillComponent implements OnInit {
     }
   }
 
+
   [x: string]: any;
 
   @Input() customerID2: any
@@ -65,7 +67,9 @@ export class BillComponent implements OnInit {
 
   myControl = new FormControl('');
   ProductSrchList: any;
-
+  
+  BillLink = '';
+  safeUrl!: SafeResourceUrl;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -84,6 +88,7 @@ export class BillComponent implements OnInit {
     public cal: CalculationService,
     public pay: PaymentService,
     private tinyUrlService: NgTinyUrlService,
+    private sanitizer: DomSanitizer
 
   ) {
     this.id = this.route.snapshot.params['customerid'];
@@ -183,7 +188,7 @@ export class BillComponent implements OnInit {
   deleteCustomerBill = false
   CustomerView = false
   currentTime = '';
-  BillLink = '';
+
   CreditPDF = '';
 
   ngOnInit(): void {
@@ -2364,6 +2369,9 @@ export class BillComponent implements OnInit {
       })
     }
   }
+
+ 
+
 
   getWhatsAppMessage(temp: any, messageName: any) {
     if (temp && temp !== 'null') {
