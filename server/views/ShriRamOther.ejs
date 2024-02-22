@@ -120,7 +120,11 @@
             <thead>
                <tr>
                   <th style="text-align: left;">Vising Date <br> Moblie No. <br> Gender </th>
-                  <td>: <%=data.customer.VisitDate%><br>: <%=data.customer.MobileNo1%> <br>: <%=data.customer.Gender%></td>
+                  <td>: <%=data.customer.VisitDate%><br>: <%=data.customer.MobileNo1%> <br>: 
+                     <% if (data.customer.Gender != 'MR.' && data.customer.Gender != 'DR.' && data.customer.Gender != 'Mrs.' && data.customer.Gender != 'Miss.' && data.customer.Gender != 'ADV.' && data.customer.Gender != 'Smt.' && data.customer.Gender != 'Mst.') { %>
+                     <%=data.customer.Gender%> 
+                     <%} %>
+                  </td>
                </tr>
             </thead>
          </table>
