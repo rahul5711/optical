@@ -1,0 +1,247 @@
+{
+	"info": {
+		"_postman_id": "f15dfc6b-6e49-4488-ba4a-bbce3a1279cb",
+		"name": "VendorPayment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getInvoicePayment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDg2MjAxODksImV4cCI6MTcwODcwNjU4OSwiYXVkIjoiJzIwMiciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.DYHgX-NFzrQ6_XNGV0wvoQ7kBLKhZ0shOlUF26zoeSc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"164\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"PayeeName\": \"1359\",\r\n   \"PaymentType\": \"Supplier\",\r\n   \"PurchaseID\": \"5496\" \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/purchase/getInvoicePayment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"getInvoicePayment"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getInvoicePayment",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"164\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"PayeeName\": \"1359\",\r\n   \"PaymentType\": \"Supplier\",\r\n   \"PurchaseID\": \"5496\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/purchase/getInvoicePayment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchase",
+								"getInvoicePayment"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "376"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"178-55ZpCP3TdWdXQWmYdaKPxkvVA18\""
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 22 Feb 2024 17:18:47 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"PayeeName\": \"PAWAN OPTICAL\",\n            \"ShopName\": \"company20\",\n            \"AreaName\": \"MANJHANPUR\",\n            \"InvoiceNo\": \"9239\",\n            \"PurchaseDate\": \"2023-09-08T18:30:00.000Z\",\n            \"GSTNo\": \"null\",\n            \"DiscountAmount\": 0,\n            \"GSTAmount\": 0,\n            \"PaymentStatus\": \"Unpaid\",\n            \"TotalAmount\": 5180,\n            \"DueAmount\": 5180,\n            \"PaidAmount\": 0,\n            \"ID\": 5496\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch sucessfully\",\n    \"totalCreditAmount\": 0,\n    \"totalDueAmount\": 5180\n}"
+				}
+			]
+		},
+		{
+			"name": "paymentHistoryByPurchaseID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDg2MjAxODksImV4cCI6MTcwODcwNjU4OSwiYXVkIjoiJzIwMiciLCJpc3MiOiJwaWNrdXJwYWdlLmNvbSJ9.DYHgX-NFzrQ6_XNGV0wvoQ7kBLKhZ0shOlUF26zoeSc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedshop",
+						"value": "[\"164\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"SupplierID\": \"1359\",\r\n   \"PurchaseID\": \"5496\" \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/purchase/paymentHistoryByPurchaseID",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"paymentHistoryByPurchaseID"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "paymentHistoryByPurchaseID",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedshop",
+								"value": "[\"164\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"SupplierID\": \"1359\",\r\n   \"PurchaseID\": \"5496\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/purchase/paymentHistoryByPurchaseID",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchase",
+								"paymentHistoryByPurchaseID"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "209"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"d1-J9OVJ3hTTSrYobmYUwwLVK7UfpI\""
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 22 Feb 2024 17:21:47 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Amount\": 0,\n            \"PaymentDate\": \"2023-09-19T08:59:31.000Z\",\n            \"PaymentType\": \"Supplier\",\n            \"PaymentMode\": \"Payment Initiated\",\n            \"CardNo\": \"\",\n            \"PaymentReferenceNo\": \"\",\n            \"Type\": \"Debit\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				}
+			]
+		}
+	]
+}

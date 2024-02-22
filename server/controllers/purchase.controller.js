@@ -998,16 +998,16 @@ module.exports = {
             // })
 
             printdata.forEach(ele => {
-                
+
                 let ProductBrandName, ProductModelName;
-                
+
                 if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
                     [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(1, 3);
                 } else {
                     [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(0, 2);
                 }
 
-                
+
                 ele.ProductFullName = ele.ProductName;
                 ele.ProductBrandName = ProductBrandName.substring(0, 14);
                 ele.ProductModelName = ProductModelName !== undefined ? ProductModelName.substring(0, 14) : '';
@@ -1071,7 +1071,7 @@ module.exports = {
                                 }
                             }
 
-                            
+
                             options.timeout = 540000,  // in milliseconds
                                 pdf.create(data, options).toFile(fileName, function (err, data) {
                                     if (err) {
@@ -3759,7 +3759,7 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
             const currentStatus = "Available";
 
-           
+
             //  save barcode
 
             let [detailDataForBarCode] = await mysql2.pool.query(`SELECT * FROM purchasedetailnew WHERE CompanyID = ${CompanyID} AND BaseBarCode IN (
@@ -3823,7 +3823,7 @@ module.exports = {
 
             console.log(connected("Barcode Data Save SuccessFUlly !!!"));
 
-          
+
 
             response.message = "data save sucessfully"
             return res.send(response);
@@ -3831,6 +3831,88 @@ module.exports = {
 
         } catch (err) {
             console.log(err);
+            next(err)
+        }
+    },
+    getInvoicePayment: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const Body = req.body;
+
+            let { PaymentType, PayeeName, PurchaseID } = req.body
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (!Body.PaymentType) return res.send({ message: "Invalid Query Data" })
+            if (!Body.PayeeName) return res.send({ message: "Invalid Query Data" })
+            if (!Body.PurchaseID) return res.send({ message: "Invalid Query Data" })
+
+            let qry = ``
+            let totalDueAmount = 0
+            let totalCreditAmount = 0
+            let creditCreditAmount = 0
+            let creditDebitAmount = 0
+
+            if (PaymentType === 'Supplier') {
+
+                const [credit] = await mysql2.pool.query(`select SUM(vendorcredit.Amount) as CreditAmount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${PayeeName}`);
+
+                const [debit] = await mysql2.pool.query(`select SUM(vendorcredit.PaidAmount) as CreditAmount from vendorcredit where CompanyID = ${CompanyID}  and SupplierID = ${PayeeName}`);
+
+                if (credit[0].CreditAmount !== null) {
+                    creditCreditAmount = credit[0].CreditAmount
+                }
+                if (debit[0].CreditAmount !== null) {
+                    creditDebitAmount = debit[0].CreditAmount
+                }
+
+                const [due] = await mysql2.pool.query(`select SUM(purchasemasternew.DueAmount) as due from purchasemasternew where CompanyID = ${CompanyID} and SupplierID = ${PayeeName} and PStatus = 0 and Status = 1 and ID = ${PurchaseID}`)
+
+                if (due[0].due !== null) {
+                    totalDueAmount = due[0].due
+                }
+
+
+                qry = `select supplier.Name as PayeeName, shop.Name as ShopName, shop.AreaName, purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.GSTNo, purchasemasternew.DiscountAmount, purchasemasternew.GSTAmount, purchasemasternew.PaymentStatus, purchasemasternew.TotalAmount, purchasemasternew.DueAmount, ( purchasemasternew.TotalAmount - purchasemasternew.DueAmount) as PaidAmount, purchasemasternew.ID  from purchasemasternew left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.SupplierID = ${PayeeName} and purchasemasternew.CompanyID = ${CompanyID} and purchasemasternew.PaymentStatus = 'Unpaid' and purchasemasternew.DueAmount != 0 and purchasemasternew.Status = 1 and purchasemasternew.ID = ${PurchaseID}`
+
+                const [data] = await mysql2.pool.query(qry)
+                response.data = data
+
+
+            }
+
+            totalCreditAmount = creditCreditAmount - creditDebitAmount
+
+            response.totalCreditAmount = totalCreditAmount
+            response.totalDueAmount = totalDueAmount
+            response.message = "data fetch sucessfully"
+            return res.send(response);
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
+    paymentHistoryByPurchaseID: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const { SupplierID, PurchaseID } = req.body
+
+            if (SupplierID === null || SupplierID === undefined || SupplierID == 0 || SupplierID === "") return res.send({ message: "Invalid Query Data" })
+            if (PurchaseID === null || PurchaseID === undefined || PurchaseID == 0 || PurchaseID === "") return res.send({ message: "Invalid Query Data" })
+
+            let [data] = await mysql2.pool.query(`select paymentdetail.amount as Amount, paymentmaster.PaymentDate as PaymentDate, paymentmaster.PaymentType AS PaymentType,paymentmaster.PaymentMode as PaymentMode, paymentmaster.CardNo as CardNo, paymentmaster.PaymentReferenceNo as PaymentReferenceNo, paymentdetail.Credit as Type from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentmaster.CustomerID = ${SupplierID} and paymentmaster.PaymentType = 'Supplier' and paymentmaster.Status = 1 and paymentdetail.BillMasterID = ${PurchaseID}`)
+
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+        } catch (err) {
             next(err)
         }
     },

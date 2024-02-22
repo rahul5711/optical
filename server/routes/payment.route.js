@@ -19,6 +19,10 @@ router.post('/getCommissionDetailList', verifyAccessTokenAdmin, Controller.getCo
 router.post('/customerPayment', verifyAccessTokenAdmin, Controller.customerPayment)
 router.post('/customerPaymentDebit', verifyAccessTokenAdmin, Controller.customerPaymentDebit)
 
+// vendor payment
+
+router.post('/vendorPayment', verifyAccessTokenAdmin, Controller.vendorPayment)
+
 
 // update customer payment mode
 

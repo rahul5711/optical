@@ -872,6 +872,121 @@ module.exports = {
             next(err)
         }
     },
+    vendorPayment: async (req, res, next) => {
+        try {
+
+            const response = { data: null, success: true, message: "" }
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const { CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PaymentDate, PayableAmount, CreditNumber } = req.body
+
+
+            console.log("customerPayment================================>", req.body);
+
+            console.log("currenttime =============>",req.headers.currenttime);
+
+            if (!CustomerID || CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
+            if (ApplyReturn === null || ApplyReturn === undefined) return res.send({ message: "Invalid ApplyReturn Data" })
+            if (!CreditType || CreditType === undefined) return res.send({ message: "Invalid CreditType Data" })
+            if (!PaidAmount || PaidAmount === undefined) return res.send({ message: "Invalid PaidAmount Data" })
+            if (!PaymentMode || PaymentMode === undefined) return res.send({ message: "Invalid PaymentMode Data" })
+            if (PaymentReferenceNo === null || PaymentReferenceNo === undefined) return res.send({ message: "Invalid PaymentReferenceNo Data" })
+            if (CardNo === null || CardNo === undefined) return res.send({ message: "Invalid CardNo Data" })
+            if (Comments === null || Comments === undefined) return res.send({ message: "Invalid Comments Data" })
+            if (CustomerCredit === null || CustomerCredit === undefined) return res.send({ message: "Invalid CustomerCredit Data" })
+            if (!pendingPaymentList || pendingPaymentList.length === 0) return res.send({ message: "Invalid pendingPaymentList Data" })
+
+            let unpaidList = pendingPaymentList;
+            let customerCredit = CustomerCredit;
+            let tempAmount = PaidAmount;
+            let paymentType = 'Supplier'
+
+            if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
+                let [pMaster] = await mysql2.pool.query(
+                    `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Supplier',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
+                );
+
+                let pMasterID = pMaster.insertId;
+                pid = pMaster.insertId;
+
+                for (const item of unpaidList) {
+                    if (tempAmount !== 0) {
+                        if (tempAmount >= item.DueAmount) {
+                            tempAmount = tempAmount - item.DueAmount;
+                            item.Amount = item.DueAmount;
+                            item.DueAmount = 0;
+                            item.PaymentStatus = "Paid";
+                        } else {
+                            item.DueAmount = item.DueAmount - tempAmount;
+                            item.Amount = tempAmount;
+                            item.PaymentStatus = "Unpaid";
+                            tempAmount = 0;
+                        }
+                        let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Vendor', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
+                        let [pDetail] = await mysql2.pool.query(qry);
+                        let [bMaster] = await mysql2.pool.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}' where ID = ${item.ID}`);
+                    }
+
+                }
+
+            }
+
+            if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
+                if (!CreditNumber || CreditNumber === undefined) return res.send({ message: "Invalid CreditNumber Data" })
+
+                const [data] = await mysql2.pool.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount, PaidAmount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
+
+                if (!data.length) {
+                    return res.send({ message: `Invalid CreditNumber ${CreditNumber}` })
+                }
+
+                if (data[0].Amount < PaidAmount) {
+                    return res.send({ message: `you can't apply amount more than ${data[0].Amount}` })
+                }
+
+                let [pMaster] = await mysql2.pool.query(
+                    `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', 'CN Amount Rs ${PaidAmount} Apply Ref CN No ${CreditNumber}.', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Supplier',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
+                );
+
+                let pMasterID = pMaster.insertId;
+                pid = pMaster.insertId;
+
+                for (const item of unpaidList) {
+                    if (tempAmount !== 0) {
+                        if (tempAmount >= item.DueAmount) {
+                            tempAmount = tempAmount - item.DueAmount;
+                            item.Amount = item.DueAmount;
+                            item.DueAmount = 0;
+                            item.PaymentStatus = "Paid";
+                        } else {
+                            item.DueAmount = item.DueAmount - tempAmount;
+                            item.Amount = tempAmount;
+                            item.PaymentStatus = "Unpaid";
+                            tempAmount = 0;
+                        }
+                        let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Vendor Credit', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
+                        let [pDetail] = await mysql2.pool.query(qry);
+                        let [bMaster] = await mysql2.pool.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}' where ID = ${item.ID}`);
+
+                        const updateAmountForCredit = data[0].PaidAmount + PaidAmount
+
+                        const [updateVendorCredit] = await mysql2.pool.query(`update vendorcredit set PaidAmount = ${updateAmountForCredit}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
+                    }
+
+                }
+
+            }
+
+            response.message = "data update sucessfully"
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        }
+    },
     customerPaymentDebit: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }

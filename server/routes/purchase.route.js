@@ -125,6 +125,9 @@ router.post('/setProductExpiryDate',verifyAccessTokenAdmin, Controller.setProduc
 
 router.post('/setbarcodemaster',verifyAccessTokenAdmin, Controller.setbarcodemaster)
 
+// Payment
+router.post('/getInvoicePayment',verifyAccessTokenAdmin, Controller.getInvoicePayment)
+router.post('/paymentHistoryByPurchaseID',verifyAccessTokenAdmin, Controller.paymentHistoryByPurchaseID)
 
 
 module.exports = router
