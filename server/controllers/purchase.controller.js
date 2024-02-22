@@ -744,11 +744,12 @@ module.exports = {
             } else {
                 printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
             }
-            printdata.LogoURL1 = clientConfig.appURL + '../assest/relinksyslogo.png';
-            printdata.web = clientConfig.appURL + '../assest/web.png';
-            printdata.mail = clientConfig.appURL + '../assest/mail.png';
-            printdata.call = clientConfig.appURL + '../assest/call.png';
-            var formatName = "relinksys.ejs";
+            // printdata.LogoURL1 = clientConfig.appURL + '../assest/relinksyslogo.png';
+            // printdata.web = clientConfig.appURL + '../assest/web.png';
+            // printdata.mail = clientConfig.appURL + '../assest/mail.png';
+            // printdata.call = clientConfig.appURL + '../assest/call.png';
+            // var formatName = "relinksys.ejs";
+            var formatName = "PurchasePDF.ejs";
             var file = 'Supplier_Purchase' + "_" + CompanyID + ".pdf";
             fileName = "uploads/" + file;
 
