@@ -296,6 +296,15 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+  getInvoicePayment(PaymentType:any,PayeeName: any,PurchaseID:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getInvoicePayment', {PaymentType:PaymentType, PayeeName:PayeeName,PurchaseID:PurchaseID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+  
+  paymentHistoryByPurchaseID(SupplierID: any,PurchaseID:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/paymentHistoryByPurchaseID', { SupplierID:SupplierID,PurchaseID:PurchaseID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

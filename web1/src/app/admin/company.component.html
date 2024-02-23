@@ -228,7 +228,7 @@
                                         <div class="col-xl-1 col-lg-1 col-md-3 col-4 " style="margin-top: -13px;">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Code</mat-label>
-                                                    <mat-select name="Code"
+                                                    <mat-select name="Code" [(ngModel)]="data.Code"
                                                         #Codecontrol [disabled]="user?.UserGroup !== 'SuperAdmin'">
                                                         <mat-option value="91">91 india</mat-option>
                                                         <mat-option value="971">971 dubai</mat-option>

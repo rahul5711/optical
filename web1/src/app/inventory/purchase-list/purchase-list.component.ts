@@ -1,12 +1,12 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { fromEvent   } from 'rxjs';
+import { fromEvent } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { PurchaseService } from 'src/app/service/purchase.service';
@@ -15,6 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MomentInput } from 'moment';
 import * as moment from 'moment';
 import { SupportService } from 'src/app/service/support.service';
+import { PaymentService } from 'src/app/service/payment.service';
 
 @Component({
   selector: 'app-purchase-list',
@@ -23,26 +24,29 @@ import { SupportService } from 'src/app/service/support.service';
 })
 export class PurchaseListComponent implements OnInit {
 
-  @ViewChild('searching') searching: ElementRef | any ;
+  @ViewChild('searching') searching: ElementRef | any;
   user = JSON.parse(localStorage.getItem('user') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
-  companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
+  companySetting: any = JSON.parse(localStorage.getItem('companysetting') || '[]');
+  selectShop: any = JSON.parse(localStorage.getItem('selectedShop') || '[]');
 
   env = environment;
-  id :any
+  id: any
 
   gridview = true;
-  term:any;
+  term: any;
   dataList: any = [];
   currentPage = 1;
   itemsPerPage = 10;
   pageSize!: number;
   collectionSize = 0
   page = 4;
-  paymentHistoryList:any = [];
-  CustomerTotal:any = []
-  TotalAmountInv:any
-  DueAmountIvn:any
+  paymentHistoryList: any = [];
+  CustomerTotal: any = []
+  creditList: any = []
+  TotalAmountInv: any
+  DueAmountIvn: any
+  vendorCredit: any
 
   constructor(
     private router: Router,
@@ -53,24 +57,25 @@ export class PurchaseListComponent implements OnInit {
     private excelService: ExcelService,
     private purchaseService: PurchaseService,
     private modalService: NgbModal,
-    private supps: SupportService
+    private supps: SupportService,
+    private payment: PaymentService,
 
   ) {
     this.id = this.route.snapshot.params['id'];
-   }
+  }
 
-   applyPayment: any = {
-    ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
+  applyPayment: any = {
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Debit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
     CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
-    pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
+    pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false, CreditNumber: ''
   };
 
-  PaymentModesList :any = [];
-  invoiceList :any = [];
-  paidList :any = [];
-   editPurchaseList = false
-   addPurchaseList = false
-   deletePurchaseList = false
+  PaymentModesList: any = [];
+  invoiceList: any = [];
+  paidList: any = [];
+  editPurchaseList = false
+  addPurchaseList = false
+  deletePurchaseList = false
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
@@ -80,28 +85,28 @@ export class PurchaseListComponent implements OnInit {
         this.deletePurchaseList = element.Delete;
       }
     });
-    if(this.id != "0"){
-     this.purchaseHsitory()
-    }else{
+    if (this.id != "0") {
+      this.purchaseHsitory()
+    } else {
       this.getList()
     }
     this.getPaymentModesList()
   }
-  
-    // payment mode 
-    getPaymentModesList() {
-      const subs: Subscription = this.supps.getList('PaymentModeType').subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.PaymentModesList = res.data
-          } else {
-            this.as.errorToast(res.message)
-          }
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    }
+
+  // payment mode 
+  getPaymentModesList() {
+    const subs: Subscription = this.supps.getList('PaymentModeType').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.PaymentModesList = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
 
   changePagesize(num: number): void {
     this.itemsPerPage = this.pageSize + num;
@@ -115,10 +120,10 @@ export class PurchaseListComponent implements OnInit {
     }
     const subs: Subscription = this.purchaseService.getList(dtm).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.collectionSize = res.count;
           this.dataList = res.data;
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -128,7 +133,7 @@ export class PurchaseListComponent implements OnInit {
     });
   }
 
-  deleteItem(i:any){
+  deleteItem(i: any) {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -142,7 +147,7 @@ export class PurchaseListComponent implements OnInit {
         this.sp.show()
         const subs: Subscription = this.purchaseService.deleteData(this.dataList[i].ID).subscribe({
           next: (res: any) => {
-            if(res.success){
+            if (res.success) {
               this.dataList.splice(i, 1);
               this.as.successToast(res.message)
               Swal.fire({
@@ -152,7 +157,7 @@ export class PurchaseListComponent implements OnInit {
                 showConfirmButton: false,
                 timer: 1000
               })
-            }else{
+            } else {
               this.as.errorToast(res.message)
               Swal.fire({
                 position: 'center',
@@ -172,76 +177,76 @@ export class PurchaseListComponent implements OnInit {
 
   ngAfterViewInit() {
     if (this.searching) {
-    const nativeElem = this.searching.nativeElement
-    fromEvent(nativeElem, 'keyup').pipe(
-      map((event: any) => {
-        return event.target.value;
-      }),
-      debounceTime(1000),
-      distinctUntilChanged(),
-    ).subscribe((text: string) => {
-    let data = {
-      searchQuery: text.trim(),
-    } 
-    if(data.searchQuery !== "") {
-      const dtm = {
-        currentPage: 1,
-        itemsPerPage: 50000,
-        searchQuery: data.searchQuery 
-      }
-      this.sp.show()
-      const subs: Subscription = this.purchaseService.searchByFeild(dtm).subscribe({
-        next: (res: any) => {
-          if(res.success){
-            this.collectionSize = 1;
-            this.page = 1;
-            this.dataList = res.data
-            this.as.successToast(res.message)
-          }else{
-            this.as.errorToast(res.message)
+      const nativeElem = this.searching.nativeElement
+      fromEvent(nativeElem, 'keyup').pipe(
+        map((event: any) => {
+          return event.target.value;
+        }),
+        debounceTime(1000),
+        distinctUntilChanged(),
+      ).subscribe((text: string) => {
+        let data = {
+          searchQuery: text.trim(),
+        }
+        if (data.searchQuery !== "") {
+          const dtm = {
+            currentPage: 1,
+            itemsPerPage: 50000,
+            searchQuery: data.searchQuery
           }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
+          this.sp.show()
+          const subs: Subscription = this.purchaseService.searchByFeild(dtm).subscribe({
+            next: (res: any) => {
+              if (res.success) {
+                this.collectionSize = 1;
+                this.page = 1;
+                this.dataList = res.data
+                this.as.successToast(res.message)
+              } else {
+                this.as.errorToast(res.message)
+              }
+              this.sp.hide();
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subs.unsubscribe(),
+          });
+        } else {
+          this.getList();
+        }
       });
-    } else {
-      this.getList();
-     } 
-    });
-  }
+    }
   }
 
   exportAsXLSX(): void {
     let data = this.dataList.map((e: any) => {
-      return{
+      return {
         SupplierName: e.SupplierName,
-        InvoiceNo : e.InvoiceNo,
-        ShopName : e.ShopName,
-        AreaName : e.AreaName,
-        PurchaseDate : e.PurchaseDate,
-        PaymentStatus : e.PaymentStatus,
-        GSTNo : e.GSTNo,
-        Quantity : e.Quantity,
-        TotalAmount : e.TotalAmount,
-        DiscountAmount : e.DiscountAmount,
-        GSTAmount : e.GSTAmount,
-        CreatedPerson : e.CreatedPerson,
-        UpdatedPerson : e.UpdatedPerson,
+        InvoiceNo: e.InvoiceNo,
+        ShopName: e.ShopName,
+        AreaName: e.AreaName,
+        PurchaseDate: e.PurchaseDate,
+        PaymentStatus: e.PaymentStatus,
+        GSTNo: e.GSTNo,
+        Quantity: e.Quantity,
+        TotalAmount: e.TotalAmount,
+        DiscountAmount: e.DiscountAmount,
+        GSTAmount: e.GSTAmount,
+        CreatedPerson: e.CreatedPerson,
+        UpdatedPerson: e.UpdatedPerson,
       }
     })
     this.excelService.exportAsExcelFile(data, 'purchase_list');
   }
 
-  openModal(content: any,data:any) {
+  openModal(content: any, data: any) {
     this.sp.show();
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'lg'});
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
     const subs: Subscription = this.purchaseService.paymentHistory(data.ID, data.InvoiceNo).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.paymentHistoryList = res.data;
           this.as.successToast(res.message)
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -251,18 +256,20 @@ export class PurchaseListComponent implements OnInit {
     });
   }
 
-  purchaseHsitory(){
+
+
+  purchaseHsitory() {
     this.sp.show();
     let SupplierID = Number(this.id)
     const subs: Subscription = this.purchaseService.purchaseHistoryBySupplier(SupplierID).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.dataList = res.data;
           this.DueAmountIvn = (res.sumData.DueAmount || 0).toFixed(2);
           this.TotalAmountInv = (res.sumData.TotalAmount || 0).toFixed(2);
-          this.CustomerTotal = (this.TotalAmountInv - this.DueAmountIvn).toFixed(2) ;
+          this.CustomerTotal = (this.TotalAmountInv - this.DueAmountIvn).toFixed(2);
           this.as.successToast(res.message)
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -272,16 +279,156 @@ export class PurchaseListComponent implements OnInit {
     });
   }
 
-  dateFormat(date:any){
+  dateFormat(date: any) {
     return moment(date).format(`${this.companySetting.DateFormat}`);
   }
 
   openModal1(content: any, data: any) {
     this.sp.show();
+    this.creditList = []
+    this.applyPayment.CreditType = 'Debit';
+    this.applyPayment.PaymentMode = ''
+    this.applyPayment.CustomerCredit = 0
+    
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.getPaymentModesList()
-    this.applyPayment.PayableAmount = data.DueAmount
+    this.applyPayment.ApplyReturn = false;
+
+    this.applyPayment.CustomerID = data.SupplierID
+    this.applyPayment.ID = data.ID
+    this.getInvoicePayment()
+    this.paymentHistoryByPurchaseID()
     this.sp.hide();
   }
+
+  paymentHistoryByPurchaseID() {
+    this.sp.show();
+    const subs: Subscription = this.purchaseService.paymentHistoryByPurchaseID(this.applyPayment.CustomerID, this.applyPayment.ID).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.paidList = res.data;
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getInvoicePayment() {
+    this.sp.show();
+    const subs: Subscription = this.purchaseService.getInvoicePayment('Supplier', this.applyPayment.CustomerID, this.applyPayment.ID).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.invoiceList = res.data;
+          this.applyPayment.CustomerCredit = (res.totalCreditAmount || 0).toFixed(2);
+          this.applyPayment.PayableAmount = (res.totalDueAmount || 0).toFixed(2);
+          this.DueAmountIvn = (res.DueAmount || 0).toFixed(2);
+          this.TotalAmountInv = (res.TotalAmount || 0).toFixed(2);
+          this.CustomerTotal = (this.TotalAmountInv - this.DueAmountIvn).toFixed(2);
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getSupplierCreditNote(SupplierID: any) {
+    this.sp.show()
+    const subs: Subscription = this.payment.getSupplierCreditNote(SupplierID).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.creditList = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  ApplyReturn() {
+    if (this.applyPayment.ApplyReturn === false) {
+      this.applyPayment.PaymentMode = 'Vendor Credit';
+      this.applyPayment.CreditType = 'Credit';
+      this.getSupplierCreditNote(this.applyPayment.CustomerID)
+    } else {
+      this.creditList = []
+      this.applyPayment.CreditType = 'Debit';
+      this.applyPayment.PaymentMode = ''
+      this.applyPayment.CustomerCredit = 0
+      this.getInvoicePayment()
+    }
+  }
+
+  vendorCreditValue() {
+    this.applyPayment.CustomerCredit = this.vendorCredit.Amount
+    this.applyPayment.CreditNumber = this.vendorCredit.CreditNumber
+  }
+
+  onVendorPaySubmit() {
+    if (this.applyPayment.PayableAmount < this.applyPayment.PaidAmount) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'The Paid Amount exceeds the Payable Amount. Please verify the amounts.',
+        showConfirmButton: true,
+        backdrop: false,
+      })
+      this.applyPayment.PaidAmount = 0
+    }
+    if (this.applyPayment.ApplyReturn == true) {
+      if (this.applyPayment.CustomerCredit < this.applyPayment.PaidAmount) {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'The Paid Amount exceeds the Customer Credit. Please verify the amounts.',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        this.applyPayment.PaidAmount = 0
+      }
+    }
+    if (this.applyPayment.PaidAmount !== 0) {
+      this.sp.show()
+      this.applyPayment.pendingPaymentList = this.invoiceList;
+      this.applyPayment.ShopID = this.selectShop[0];
+      const subs: Subscription = this.payment.vendorPayment(this.applyPayment).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.getInvoicePayment()
+            this.paymentHistoryByPurchaseID()
+            this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.PaymentReferenceNo = '';
+            this.applyPayment.ApplyReturn = false
+            this.creditList = []
+          } else {
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: 'Opps !!',
+              text: res.message,
+              showConfirmButton: true,
+              backdrop: false,
+            })
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+  }
+
+
 
 }

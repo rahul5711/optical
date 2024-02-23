@@ -5,7 +5,9 @@
   i {
     pointer-events: none;
   }
-
+  .mat-input-element:disabled, .mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after {
+    color: rgb(0 0 0);
+}
 .bg-none{
     background-color: rgba(0, 0, 0, 0);
     border: none;

@@ -230,7 +230,7 @@
       <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-      <form #f3="ngForm" >
+      <form #f3="ngForm" (ngSubmit)="onVendorPaySubmit()">
           <div class="row">
               <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                   <mat-form-field class="example-full-width mb-0">
@@ -240,6 +240,33 @@
                           #TOutstandingcontrol [autocomplete]="false">
                   </mat-form-field>
               </div>
+              <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                <mat-form-field class="example-full-width mb-0 ">
+                    <mat-label>Previous Credit</mat-label>
+                    <div class="row mt-0">
+                        <div class="col-md-2 p-0" style="height: 16px;">
+                            <mat-checkbox color="primary" class="ms-2" name="ApplyReturn"
+                                [(ngModel)]="applyPayment.ApplyReturn"
+                                (click)="ApplyReturn()"></mat-checkbox>
+                        </div>
+                        <div class="col-md-10 p-0" style="height: 16px;">
+                            <input type="number" min="0" class="ms-2" matInput name="CustomerCredit"
+                                disabled [(ngModel)]="applyPayment.CustomerCredit" [autocomplete]="false"
+                                #CustomerCreditcontrol>
+                        </div>
+                    </div>
+                </mat-form-field>
+            </div>
+            <div *ngIf="this.creditList != ''" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Vendore Credit</mat-label>
+                    <mat-select name="vendorCredit" [(ngModel)]="vendorCredit"  (selectionChange)="vendorCreditValue()" required
+                        #vendorCreditcontrol1>
+                        <mat-option [value]="c" *ngFor="let c of creditList"> {{c.CreditNumber}}  <b style="color: red;float: right;">{{c.Amount}} </b> 
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
               <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                   <mat-form-field class="example-full-width mb-0">
                       <mat-label>New Payment</mat-label>
@@ -256,6 +283,15 @@
                       </mat-select>
                   </mat-form-field>
               </div>
+              <div *ngIf="applyPayment.ApplyReturn"  class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Payment Mode</mat-label>
+                    <mat-select name="PayMode" [(ngModel)]="applyPayment.PaymentMode" required
+                        #GSTTypecontrol1>
+                        <mat-option value="{{applyPayment.PaymentMode}}">{{applyPayment.PaymentMode}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
               <div class="col-xl-4 col-lg-3 col-md-3 col-6 mb-0">
                   <mat-form-field class="example-full-width mb-0">
                       <mat-label>Reference</mat-label>
@@ -319,6 +355,7 @@
                               <td class="text-left">{{dateFormat(paid.PaymentDate)}}</td>
                               <td class="text-left">{{paid.PaymentMode}}</td>
                               <td class="text-left">{{paid.PaymentReferenceNo}}</td>
+                              <td class="text-left">{{paid.Amount}}</td>
                           </tr>
                       </tbody>
                   </table>
