@@ -1750,7 +1750,7 @@ export class SaleReportComponent implements OnInit {
 
 
     if(data.MobileNo1 != ''){
-      var mob = "91" + Cusmob;
+      var mob = this.company.Code + Cusmob;
       var url = `https://wa.me/${mob}?text=${msg}`;
       window.open(url, "_blank");
     }else{

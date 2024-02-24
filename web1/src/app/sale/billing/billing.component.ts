@@ -1180,7 +1180,7 @@ srcCustomerBox = false
 
   
     if(this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1){
-      var mob = "91" + this.data.MobileNo1;
+      var mob = this.company.Code + this.data.MobileNo1;
       var url = `https://wa.me/${mob}?text=${msg}`;
       window.open(url, "_blank");
     }else{

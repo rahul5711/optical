@@ -346,7 +346,7 @@ export class ReminderComponent implements OnInit {
     
       ;
   
-    const mob = "91" + data.MobileNo1;
+    const mob = this.company.Code + data.MobileNo1;
     const url = `https://wa.me/${mob}?text=${msg}`;
     window.open(url, "_blank");
   }

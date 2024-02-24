@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { ReportRoutingModule } from './report-routing.module';
 import { PurchaseReportComponent } from './purchase-report/purchase-report.component';
-
 import { FormsModule, ReactiveFormsModule, } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';

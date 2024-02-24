@@ -2357,7 +2357,7 @@ export class BillComponent implements OnInit {
     }
 
     if(this.customer.MobileNo1 != ''){
-      var mob = "91" + this.customer.MobileNo1;
+      var mob = this.company.Code + this.customer.MobileNo1;
       var url = `https://wa.me/${mob}?text=${msg}`;
       window.open(url, "_blank");
     }else{

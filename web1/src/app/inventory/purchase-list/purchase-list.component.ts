@@ -284,12 +284,11 @@ export class PurchaseListComponent implements OnInit {
   }
 
   openModal1(content: any, data: any) {
-    this.sp.show();
     this.creditList = []
     this.applyPayment.CreditType = 'Debit';
     this.applyPayment.PaymentMode = ''
     this.applyPayment.CustomerCredit = 0
-    
+
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.getPaymentModesList()
     this.applyPayment.ApplyReturn = false;
@@ -298,7 +297,6 @@ export class PurchaseListComponent implements OnInit {
     this.applyPayment.ID = data.ID
     this.getInvoicePayment()
     this.paymentHistoryByPurchaseID()
-    this.sp.hide();
   }
 
   paymentHistoryByPurchaseID() {
@@ -324,6 +322,9 @@ export class PurchaseListComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.invoiceList = res.data;
+          if (this.invoiceList.length === 0) {
+            this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
+          }
           this.applyPayment.CustomerCredit = (res.totalCreditAmount || 0).toFixed(2);
           this.applyPayment.PayableAmount = (res.totalDueAmount || 0).toFixed(2);
           this.DueAmountIvn = (res.DueAmount || 0).toFixed(2);

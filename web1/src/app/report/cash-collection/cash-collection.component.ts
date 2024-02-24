@@ -10,6 +10,7 @@ import { BillService } from 'src/app/service/bill.service';
 import { environment } from 'src/environments/environment';
 import { NgxPrintDirective } from 'ngx-print';
 
+
 @Component({
   selector: 'app-cash-collection',
   templateUrl: './cash-collection.component.html',

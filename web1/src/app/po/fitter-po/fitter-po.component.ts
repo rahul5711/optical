@@ -666,7 +666,7 @@ export class FitterPoComponent implements OnInit {
 
 
     if (s[0].MobileNo1 != '') {
-      var mob = "91" + s[0].MobileNo1;
+      var mob = this.company.Code + s[0].MobileNo1;
       var url = `https://wa.me/${mob}?text=${msg}`;
       window.open(url, "_blank");
     } else {
