@@ -6,10 +6,11 @@
                 <div class="card" >
                     <div class="header">
                         <div class="row">
-                            <div class="col-lg-2 col-md-2 col-4">
-                                <h4 style="font-weight: 600;">Customer ID <b style="color:#000">{{this.data.Idd}}</b> / <b style="color:#000">{{this.data.Category}}</b> </h4>
+                            <div class="col-lg-2 col-md-2 col-3">
+                                <h4 class="d-none d-md-block" style="font-weight: 600;">  Customer ID  <b style="color:#000">{{this.data.Idd}}</b> / <b style="color:#000">{{this.data.Category}}</b> </h4>
+                                <h4 class="d-block d-md-none" style="font-weight: 600;"> ID  <b style="color:#000">{{this.data.Idd}}</b> / <b style="color:#000">{{this.data.Category}}</b> </h4>
                             </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-8 mr-md-2 mr-0 "
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-9 mr-md-2 mr-0 "
                                 style="display: inherit; height: 20px;margin-top: 1px;color: black;">
                                 <div class="ms-auto">
                                 <label style="font-size: 14px; margin-right:10px">Visit Date </label>
@@ -117,7 +118,7 @@
                                         <div class="col-xl-2 col-lg-2 col-md-3  col-4 mb-0">
                                             <mat-form-field class="example-full-width">
                                                 <mat-label>Mobile No</mat-label>
-                                                <input type="text" aria-label="Text" matInput
+                                                <input type="text" inputMode="numeric" aria-label="Text" matInput
                                                 name="MobileNo1" [(ngModel)]="data.MobileNo1"  [formControl]="myControl1" [matAutocomplete]="auto" 
                                                       (input)="customerSearch(myControl1.value, 'MobileNo1')" >
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'370px'">
@@ -204,7 +205,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-8 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0 ms-auto" style="text-align:right;">
+                                        <div class="col-xl-8 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0 ms-auto mobButton" style="text-align:right;">
                                             <button *ngIf="id != 0" class="me-2 " mat-raised-button color="primary"
                                                 style="padding: 0px 10px;"
                                                 [routerLink]="['/sale/oldBilllist/',data.ID]">Old Bill
@@ -1083,7 +1084,7 @@
                                                          <div class="row mt-2">
                                                             <div class="col-2" style="font-weight: 600;">Dis</div>
                                                             <div class="col-2 p-0">
-                                                                <input class="inputWidth box" type="text" name="CREDPSPH"
+                                                                <input class="inputWidth box" inputMode="numeric" type="text" name="CREDPSPH"
                                                                     [(ngModel)]="clens.REDPSPH" id="CREDPSPH" list="cdpsphList"
                                                                     (change)="calculate('', 'CRD', 0.00)">
                                                                 <datalist id="cdpsphList">c
@@ -1092,7 +1093,7 @@
                                                                 </datalist>
                                                             </div>
                                                             <div class="col-2 p-0">
-                                                                <input class="inputWidth box " type="text" name="CREDPCYL"
+                                                                <input class="inputWidth box " inputMode="numeric" type="text" name="CREDPCYL"
                                                                     [(ngModel)]="clens.REDPCYL" id="CREDPCYL" list="CdpcylList" >
                                                                 <datalist id="CdpcylList" >
                                                                     <option [value]="c.Name" *ngFor="let c of dataCYL">
@@ -1100,11 +1101,11 @@
                                                                 </datalist>
                                                             </div>
                                                             <div class="col-2 p-0">
-                                                                <input class="inputWidth box" type="text" name="CREDPAxis"
+                                                                <input class="inputWidth box" inputMode="numeric" type="text" name="CREDPAxis"
                                                                     [(ngModel)]="clens.REDPAxis" >
                                                             </div>
                                                             <div class="col-2 p-0">
-                                                                <input class="inputWidth box" type="text" name="CREDPVA"
+                                                                <input class="inputWidth box" inputMode="numeric" type="text" name="CREDPVA"
                                                                     [(ngModel)]="clens.REDPVA" id="CREDPVA" list="CdpvaList">
                                                                 <datalist id="CdpvaList">
                                                                     <option [value]="d.Name" *ngFor="let d of dataPVA">
@@ -1112,7 +1113,7 @@
                                                                 </datalist>
                                                             </div>
                                                             <div class="col-2 p-0">
-                                                                <input class="inputWidth box" type="text" name="CR_Addition"
+                                                                <input class="inputWidth box" inputMode="numeric" type="text" name="CR_Addition"
                                                                     [(ngModel)]="clens.R_Addition"
                                                                     (change)="calculate(' ', 'CR', 0.00)">
                                                             </div>

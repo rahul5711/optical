@@ -134,7 +134,7 @@
                         <mat-label>BarCode</mat-label>
                         <input matInput name="SearchBarCode" [(ngModel)]="Req.SearchBarCode"
                             (blur)="getSearchByBarcodeNo()" required #SearchBarCodecontrol autocomplete="off"
-                            appAutoFoucsDirectives>
+                            appAutoFoucsDirectives inputMode="numeric">
                     </mat-form-field>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-6 col-8 mb-0">
@@ -311,7 +311,7 @@
                                 <mat-option value="Half Glass Right">Half Lens Right</mat-option>
                             </mat-select>
                             <mat-error>
-                                Select Entry Type
+                                Select Option Type
                             </mat-error>
                         </mat-form-field>
                     </div>
@@ -468,7 +468,7 @@
                         [disabled]="!f1.valid || this.GstTypeDis || !fp.valid" mat-raised-button
                         color="primary">PreOder</button>
                     <button *ngIf="BillItem.Manual" type="submit"
-                        [disabled]="!f1.valid || !fp.valid && this.BillItem.Quantity === 0 || this.GstTypeDis " mat-raised-button
+                        [disabled]="!f1.valid || !fp.valid || this.BillItem.TotalAmount === 0 || this.GstTypeDis " mat-raised-button
                         color="primary" >Manual</button>
                 </div>
             </div>
@@ -942,21 +942,21 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-12 col-md-12 col-12">
-                    <button *ngIf="this.id2 == 0" type="button" class="me-3" mat-raised-button color="primary"
+                <div class="col-lg-12 col-md-12 col-12 mobbtn" >
+                    <button *ngIf="this.id2 == 0" type="button" class=" me-md-3 me-0" mat-raised-button color="primary"
                         (click)="onSubmit(content1)"
                         [disabled]="(billItemList?.length === 0 && serviceLists?.length === 0) || BillMaster.ID !== null">Save</button>
-                    <button *ngIf="this.id2 != 0" type="button" class="me-3" mat-raised-button color="primary"
+                    <button *ngIf="this.id2 != 0" type="button" class=" me-md-3 me-0" mat-raised-button color="primary"
                         [disabled]="BillMaster.ID === null && !f2.valid" (click)="update()">Update</button>
-                    <button type="button" class=" me-3" mat-raised-button color="primary"
+                    <button type="button" class="  me-md-3 me-0" mat-raised-button color="primary"
                         [disabled]="BillMaster.ID === null" (click)="openModal1(content1)">Payment</button>
-                    <button type="button" class=" me-3" mat-raised-button color="primary"
+                    <button type="button" class="  me-md-3 me-0" mat-raised-button color="primary"
                         [disabled]="BillMaster.ID === null" (click)="openModal12(content12)">Lens Order</button>
-                    <button type="button" class=" me-3" mat-raised-button color="primary"
+                    <button type="button" class="  me-md-3 me-0" mat-raised-button color="primary"
                         [disabled]="BillMaster.ID === null" (click)="openModal13(content13)">Fitter Order</button>
                         <button type="button" mat-raised-button color="primary"
                         (click)="billPrint('Invoice')" > Receipt</button>
-                    <button type="button" class="me-3 ms-3"  mat-raised-button color="primary"
+                    <button type="button" class=" me-md-3 me-0 ms-md-3 ms-0"  mat-raised-button color="primary"
                         (click)="billPrint('Receipt')"> Invoice</button>
                        
                     <button type="button" mat-raised-button color="primary">
@@ -971,9 +971,9 @@
                         <!-- [disabled]="this.BillLink == ''" -->
                    
 
-                    <button *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="this.BillLink == ''" (click)="sendWhatsapp('bill')" class="bgRemove whatsappBill ms-lg-2 me-lg-1 ms-3 me-3"><i  class="fa-brands fa-whatsapp "></i></button>
-                    <button class="bgRemove"><i class="fa-solid fa-envelope EmailBill"></i></button>
-                    <button *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="this.BillLink == ''" (click)="sendWhatsapp('Fbill')" class="bgRemove whatsappfBill ms-lg-2 me-lg-1 ms-3 me-3"><i  class="fa-brands fa-whatsapp "></i> Final</button>
+                    <button *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="this.BillLink == ''" (click)="sendWhatsapp('bill')" class="bgRemove whatsappBill ms-lg-2 me-lg-1 ms-md-3 me-md-3 ms-0 me-0"><i  class="fa-brands fa-whatsapp "></i></button>
+                    <button class="bgRemove ms-0 me-0"><i class="fa-solid fa-envelope EmailBill"></i></button>
+                    <button *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="this.BillLink == ''" (click)="sendWhatsapp('Fbill')" class="bgRemove whatsappfBill ms-lg-2 me-lg-1 ms-md-3 me-md-3 ms-0 me-0"><i  class="fa-brands fa-whatsapp "></i> Final</button>
                 </div>
             </div>
         </form>

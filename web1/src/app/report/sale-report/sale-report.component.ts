@@ -367,7 +367,7 @@ export class SaleReportComponent implements OnInit {
         this.addSaleProductExpiryReport = element.Add;
         this.editSaleProductExpiryReport = element.Edit;
         this.deleteSaleProductExpiryReport = element.Delete;
-      }else{
+      } else {
         this.viewProductCancelReport = true
         this.addProductCancelReport = true
         this.editProductCancelReport = true
@@ -590,8 +590,8 @@ export class SaleReportComponent implements OnInit {
           this.totalGstAmount = (parseFloat(res.calculation[0].totalGstAmount)).toFixed(2);
           this.totalAmount = (parseFloat(res.calculation[0].totalAmount)).toFixed(2);
           this.totalAddlDiscount = (parseFloat(res.calculation[0].totalAddlDiscount)).toFixed(2);
-          let p = this.totalAmount - this.totalBalance;
-          this.totalPaid = this.convertToDecimal(p,2);
+          let p = + this.totalAmount - this.totalBalance;
+          this.totalPaid = this.convertToDecimal(p, 2);
           this.gstMaster = res.calculation[0].gst_details
         } else {
           this.as.errorToast(res.message)
@@ -614,6 +614,20 @@ export class SaleReportComponent implements OnInit {
     let element = document.getElementById('SaleExcel');
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
     delete ws['A2'];
+    // Initialize column widths array
+    const colWidths: number[] = [];
+
+    // Iterate over all cells to determine maximum width for each column
+    XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any = []) => {
+      row.forEach((cell: any, index: number) => {
+        const cellValue = cell ? String(cell) : '';
+        colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+      });
+    });
+
+    // Set column widths in the worksheet
+    ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'Sale Report.xlsx');
@@ -823,6 +837,20 @@ export class SaleReportComponent implements OnInit {
     let element = document.getElementById('saleDetailExcel');
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
     delete ws['A2'];
+    // Initialize column widths array
+    const colWidths: number[] = [];
+
+    // Iterate over all cells to determine maximum width for each column
+    XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any = []) => {
+      row.forEach((cell: any, index: number) => {
+        const cellValue = cell ? String(cell) : '';
+        colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+      });
+    });
+
+    // Set column widths in the worksheet
+    ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'Sale ProductType Report.xlsx');
@@ -898,6 +926,20 @@ export class SaleReportComponent implements OnInit {
     let element = document.getElementById('billServiceExcel');
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
     delete ws['A2'];
+    // Initialize column widths array
+    const colWidths: number[] = [];
+
+    // Iterate over all cells to determine maximum width for each column
+    XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any = []) => {
+      row.forEach((cell: any, index: number) => {
+        const cellValue = cell ? String(cell) : '';
+        colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+      });
+    });
+
+    // Set column widths in the worksheet
+    ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'BillService_Report.xlsx');
@@ -1095,6 +1137,20 @@ export class SaleReportComponent implements OnInit {
     let element = document.getElementById('saleCancelExcel');
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
     delete ws['A2'];
+    // Initialize column widths array
+    const colWidths: number[] = [];
+
+    // Iterate over all cells to determine maximum width for each column
+    XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any = []) => {
+      row.forEach((cell: any, index: number) => {
+        const cellValue = cell ? String(cell) : '';
+        colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+      });
+    });
+
+    // Set column widths in the worksheet
+    ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'BillCancelProduct_Report.xlsx');
@@ -1290,6 +1346,20 @@ export class SaleReportComponent implements OnInit {
     let element = document.getElementById('salePendingExcel');
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
     delete ws['A2'];
+    // Initialize column widths array
+    const colWidths: number[] = [];
+
+    // Iterate over all cells to determine maximum width for each column
+    XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any = []) => {
+      row.forEach((cell: any, index: number) => {
+        const cellValue = cell ? String(cell) : '';
+        colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+      });
+    });
+
+    // Set column widths in the worksheet
+    ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'BillPendingProduct_Report.xlsx');
@@ -1536,6 +1606,20 @@ export class SaleReportComponent implements OnInit {
     let element = document.getElementById('saleExpiryExcel');
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
     delete ws['A2'];
+    // Initialize column widths array
+    const colWidths: number[] = [];
+
+    // Iterate over all cells to determine maximum width for each column
+    XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any = []) => {
+      row.forEach((cell: any, index: number) => {
+        const cellValue = cell ? String(cell) : '';
+        colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+      });
+    });
+
+    // Set column widths in the worksheet
+    ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'Sale Product Expiry Report.xlsx');
@@ -1724,7 +1808,7 @@ export class SaleReportComponent implements OnInit {
     this.columnVisibility5[column] = !this.columnVisibility5[column];
   }
 
-  sendWhatsapp(data:any, mode: any) {
+  sendWhatsapp(data: any, mode: any) {
     let temp = JSON.parse(this.companySetting.WhatsappSetting);
     let WhatsappMsg = '';
     let msg = '';
@@ -1735,25 +1819,25 @@ export class SaleReportComponent implements OnInit {
       msg = `*Hi ${data.CustomerName},*%0A` +
         `${WhatsappMsg}%0A` +
         `*${this.shopList[0].Name}* - ${this.shopList[0].AreaName}%0A${this.shopList[0].MobileNo1}%0A${this.shopList[0].Website}`;
-    } 
+    }
 
-    if(mode === 'Fbill') {
+    if (mode === 'Fbill') {
       Cusmob = data.CustomerMoblieNo1
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill OrderReady');
-        msg = `*Hi ${data.CustomerName},*%0A` +
+      msg = `*Hi ${data.CustomerName},*%0A` +
         `${WhatsappMsg}%0A` +
         `*${this.shopList[0].Name}* - ${this.shopList[0].AreaName}%0A` +
         `${this.shopList[0].MobileNo1}%0A` +
         `${this.shopList[0].Website}%0A` +
         `*Please give your valuable Review for us !*`
-    } 
+    }
 
 
-    if(data.MobileNo1 != ''){
+    if (data.MobileNo1 != '') {
       var mob = this.company.Code + Cusmob;
       var url = `https://wa.me/${mob}?text=${msg}`;
       window.open(url, "_blank");
-    }else{
+    } else {
       Swal.fire({
         position: 'center',
         icon: 'warning',

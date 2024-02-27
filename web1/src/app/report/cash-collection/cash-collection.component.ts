@@ -190,14 +190,80 @@ export class CashCollectionComponent implements OnInit {
     }
   }
 
-  exportAsXLSX(): void {
-    const element = document.getElementById('CaseConExcel');
-    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
-        delete ws['A2'];
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    XLSX.writeFile(wb, 'Cash_Collection_Report.xlsx');
-  }
+//   exportAsXLSX(): void {
+//     const element = document.getElementById('CaseConExcel');
+//     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+
+//     // Delete specific cell
+//     delete ws['A2'];
+
+//     // Initialize column widths array
+//     const colWidths: number[] = [];
+
+//     // Iterate over all cells to determine maximum width for each column
+//     XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any=[]) => {
+//         row.forEach((cell: any, index: number) => {
+//             const cellValue = cell ? String(cell) : '';
+//             colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+//         });
+//     });
+
+//     // Set column widths in the worksheet
+//     ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+
+//     // Create workbook and write file
+//     const wb: XLSX.WorkBook = XLSX.utils.book_new();
+//     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+//     XLSX.writeFile(wb, 'Cash_Collection_Report.xlsx');
+// }
+
+exportAsXLSX(): void {
+  const element = document.getElementById('CaseConExcel');
+  const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+
+  // Delete specific cell
+  delete ws['A2'];
+
+  // Initialize column widths array
+  const colWidths: number[] = [];
+
+  // Iterate over all cells to determine maximum width for each column
+  XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any=[]) => {
+      row.forEach((cell: any, index: number) => {
+          const cellValue = cell ? String(cell) : '';
+          colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+      });
+  });
+
+   // Set column widths in the worksheet
+   ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+
+   // Customize the Excel sheet here (e.g., set header background color)
+   const headerRange = XLSX.utils.decode_range(ws['!ref'] || "A1:Z1");
+   for (let col = headerRange.s.c; col <= headerRange.e.c; col++) {
+       const headerCellAddress = XLSX.utils.encode_cell({ r: headerRange.s.r, c: col });
+       if (ws[headerCellAddress]) {
+           ws[headerCellAddress].s = ws[headerCellAddress].s || {}; // Initialize style object if not exist
+           ws[headerCellAddress].s.fill = {
+               fgColor: { rgb: "FF0000FF" }, // Red background color
+               patternType: 'solid' // Solid fill pattern
+           };
+       }
+   }
+
+  // Create workbook and write file
+  const wb: XLSX.WorkBook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  XLSX.writeFile(wb, 'Cash_Collection_Report.xlsx');
+}
+
+
+
+
+
+
+
+
 
   dateFormat(date: any) {
     return moment(date).format(`${this.companySetting.DateFormat}`);

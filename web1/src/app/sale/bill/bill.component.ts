@@ -760,6 +760,7 @@ export class BillComponent implements OnInit {
                 this.BillItem.UnitPrice = this.searchList.RetailPrice;
               }
               this.BillItem.Quantity = 1;
+              this.calculations('Quantity', 'subTotal')
             } else {
               this.as.errorToast(res.message)
             }

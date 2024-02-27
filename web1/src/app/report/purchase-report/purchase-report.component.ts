@@ -355,6 +355,20 @@ export class PurchaseReportComponent implements OnInit {
       let element = document.getElementById('purchaseExcel');
       const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
       delete ws['A2'];
+            // Initialize column widths array
+    const colWidths: number[] = [];
+
+    // Iterate over all cells to determine maximum width for each column
+    XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any=[]) => {
+        row.forEach((cell: any, index: number) => {
+            const cellValue = cell ? String(cell) : '';
+            colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+        });
+    });
+
+    // Set column widths in the worksheet
+    ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+    
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
       XLSX.writeFile(wb, 'Purchase Report.xlsx');
@@ -512,6 +526,20 @@ export class PurchaseReportComponent implements OnInit {
     let element = document.getElementById('purchaseDetailExcel');
     const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
     delete ws['A2'];
+          // Initialize column widths array
+          const colWidths: number[] = [];
+
+          // Iterate over all cells to determine maximum width for each column
+          XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any=[]) => {
+              row.forEach((cell: any, index: number) => {
+                  const cellValue = cell ? String(cell) : '';
+                  colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+              });
+          });
+      
+          // Set column widths in the worksheet
+          ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+          
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'Purchase ProductType Report.xlsx');
@@ -586,6 +614,20 @@ export class PurchaseReportComponent implements OnInit {
     let element = document.getElementById('purchaseChargeExcel');
     const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
     delete ws['A2'];
+          // Initialize column widths array
+          const colWidths: number[] = [];
+
+          // Iterate over all cells to determine maximum width for each column
+          XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any=[]) => {
+              row.forEach((cell: any, index: number) => {
+                  const cellValue = cell ? String(cell) : '';
+                  colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+              });
+          });
+      
+          // Set column widths in the worksheet
+          ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+          
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'PurchaseCharge_Report.xlsx');
@@ -740,6 +782,20 @@ export class PurchaseReportComponent implements OnInit {
     let element = document.getElementById('ProductExpiry');
     const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
     delete ws['A2'];
+          // Initialize column widths array
+          const colWidths: number[] = [];
+
+          // Iterate over all cells to determine maximum width for each column
+          XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any=[]) => {
+              row.forEach((cell: any, index: number) => {
+                  const cellValue = cell ? String(cell) : '';
+                  colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+              });
+          });
+      
+          // Set column widths in the worksheet
+          ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+          
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'PurchaseProductExpiry_Report.xlsx');

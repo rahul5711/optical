@@ -12,6 +12,7 @@ import { CalculationService } from 'src/app/service/helpers/calculation.service'
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FLAGS } from 'html2canvas/dist/types/dom/element-container';
 
 @Component({
   selector: 'app-purchase',
@@ -32,6 +33,7 @@ export class PurchaseComponent implements OnInit {
   GstTypeDis = false
   searchValue: any = '';
   checked = false;
+  selectAllChecked = false
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -735,12 +737,13 @@ export class PurchaseComponent implements OnInit {
     this.data.PurchaseMaster = this.selectedPurchaseMaster;
     this.data.Charge = this.chargeList;
     let items: any = [];
+    this.selectAllChecked = false;
     this.itemList.forEach((ele: any) => {
       if (ele.ID !== null || ele.ID === null || ele.Status == 0 && ele.UpdatedBy === null) {
         ele.UpdatedBy = this.user.ID;
         ele.Checked = false
         items.push(ele);
-      } 
+      }
     })
     this.data.PurchaseDetail = JSON.stringify(items);
     const subs: Subscription = this.purchaseService.updatePurchase(this.data).subscribe({
@@ -884,28 +887,36 @@ export class PurchaseComponent implements OnInit {
     });
   }
 
-  selectBarcode(type: any) {
+  selectBarcode(type: any, toggleCheckbox: any = true) {
     if (type === 'all') {
-      // Toggle the checked property
-      this.checked = !this.checked;
-      // Reset the barcodeListt
-      this.barcodeListt = [];
-      this.sp.show();
-      this.itemList.forEach((ele: any, i: any) => {
-        if (this.checked) {
-          if (ele.Status !== 0) {
+      if (toggleCheckbox) {
+        this.checked = !this.checked; // Toggle the checked property if needed
+        this.sp.show();
+        this.barcodeListt = [];
+        this.itemList.forEach((ele: any, i: any) => {
+          if (this.checked && ele.Status !== 0) {
             ele.Checked = 1;
             ele.index = i;
             this.barcodeListt.push(ele);
+          } else {
+            ele.Checked = 0;
           }
-        } else {
-          // If this.checked is false, uncheck all items and clear barcodeListt
+        });
+        this.sp.hide();
+      } else {
+        // If toggleCheckbox is false, uncheck all items
+        this.checked = false;
+        this.selectAllChecked = false
+        this.barcodeListt = [];
+        this.itemList.forEach((ele: any) => {
           ele.Checked = 0;
-        }
-      });
-      this.sp.hide();
+          ele.Checked = false
+        });
+      }
     }
   }
+  
+  
 
   singleSelectBarcode(i: any) {
     const currentItem = this.itemList[i];
@@ -939,9 +950,14 @@ export class PurchaseComponent implements OnInit {
 
       const subs: Subscription = this.purchaseService.AllPrintBarcode(tempItem).subscribe({
         next: (res: any) => {
-          if (res != '') {
+          if (res != '') { 
+            this.barcodeListt = [];
+            this.selectBarcode('all', false);
+            this.itemList.forEach((e: any) =>{
+              e.Checked = false
+            })
             window.open(res, "_blank");
-            this.barcodeListt = []
+           
           } else {
             this.as.errorToast(res.message)
           }

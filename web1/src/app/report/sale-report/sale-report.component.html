@@ -3003,7 +3003,7 @@
                                                 <tbody class="text-center">
                                                     <tr *ngFor=" let t of ExpiryList; let i = index ">
                                                         <td [ngClass]="{'ex_class': t.Color === true}">
-                                                            {{BillDetailList.length-i }} </td>
+                                                            {{ExpiryList.length-i }} </td>
                                                         <td *ngIf="columnVisibility5.InvoiceNo"
                                                             [ngClass]="{'ex_class': t.Color === true}">
                                                             {{t.BillInvoiceNo}}</td>

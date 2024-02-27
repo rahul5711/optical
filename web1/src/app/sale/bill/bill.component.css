@@ -5,9 +5,12 @@
     font-size: 15px;
     padding-top: 15px;
 }
+
 .mat-select.disabled {
-    color: #868686; /* Change the color to your desired disabled text color */
-    background-color: #f2f2f2; /* Change the background color to your desired disabled background color */
+    color: #868686;
+    /* Change the color to your desired disabled text color */
+    background-color: #f2f2f2;
+    /* Change the background color to your desired disabled background color */
 }
 
 input::-webkit-outer-spin-button,
@@ -46,6 +49,7 @@ input::-webkit-inner-spin-button {
     transition: 0.5s;
     box-shadow: 2px 2px 6px #9c9795fa;
 }
+
 .pritn_icon {
     background: #007cff;
     color: #fff;
@@ -120,18 +124,19 @@ input::-webkit-inner-spin-button {
     box-shadow: 2px 2px 6px #9c9795fa;
 }
 
-button:disabled .deletes_icon{
+button:disabled .deletes_icon {
     background-color: #bdbdbd;
     color: #878787;
 }
 
-.inputWidth{
+.inputWidth {
     width: 70px;
     text-align: center;
     color: #000;
     border: #f71a1c 1px solid;
 }
-.inputselectWidth{
+
+.inputselectWidth {
     width: 75px;
     text-align: center;
     font-size: 10px;
@@ -140,7 +145,7 @@ button:disabled .deletes_icon{
     border: #f71a1c 1px solid;
 }
 
-.redclass{
+.redclass {
     color: red !important;
     font-weight: 600;
     font-size: 16px;
@@ -175,7 +180,8 @@ button:disabled .deletes_icon{
     font-weight: 600;
 }
 
-.mat-option:hover:not(.mat-option-disabled), .mat-option:focus:not(.mat-option-disabled) {
+.mat-option:hover:not(.mat-option-disabled),
+.mat-option:focus:not(.mat-option-disabled) {
     background: rgb(30 38 114);
     color: white;
 }
@@ -187,13 +193,13 @@ button:disabled .deletes_icon{
     letter-spacing: .5px !important;
 }
 
-.billCrad{
+.billCrad {
     zoom: 100% !important;
 }
 
-.cus-label{
-font-size: 16px;
-font-weight: 500;
+.cus-label {
+    font-size: 16px;
+    font-weight: 500;
 }
 
 .visible-scrollbar,
@@ -246,6 +252,7 @@ font-weight: 500;
     width: 50px;
     box-shadow: 1px 1px 10px #0003;
 }
+
 .whatsappfBill {
     font-size: 21px;
     border: none;
@@ -262,6 +269,7 @@ button:disabled.whatsappBill {
     background-color: #bdbdbd !important;
     color: #878787 !important;
 }
+
 button:disabled.whatsappfBill {
     background-color: #bdbdbd !important;
     color: #878787 !important;
@@ -282,7 +290,25 @@ button:disabled.whatsappfBill {
 
 
 @media screen and (min-width: 768px) and (max-width: 1300px) {
-  .card  {
-    zoom:70% !important
-  }
+    .card {
+        zoom: 70% !important
+    }
+}
+
+@media screen and (max-width: 425px) and (min-width: 320px) {
+    .mobbtn {
+        display: grid;
+        grid-template-columns: auto auto;
+        grid-column-gap: 10px;
+        grid-row-gap: 10px;
+    }
+
+    .EmailBill,
+    .whatsappfBill,
+    .whatsappBill {
+        width: 100%;
+    }
+
+
+
 }

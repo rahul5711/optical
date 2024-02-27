@@ -458,7 +458,7 @@
                                             <thead>
                                                 <tr style="white-space: nowrap;">
                                                     <th style="z-index: 0 !important;">
-                                                        <mat-checkbox type="checkbox" name="checked"  (click)="selectBarcode('all')"></mat-checkbox>
+                                                        <mat-checkbox [(ngModel)]="selectAllChecked" name="checked"  (click)="selectBarcode('all')"></mat-checkbox>
                                                     </th>
                                                     <th>Action</th>
                                                     <th>BarCode</th>
