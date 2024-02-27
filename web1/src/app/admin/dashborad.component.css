@@ -5,12 +5,3 @@
 .content {
   background-size: 100%;
 }
-
-.bgchange{
-  background: linear-gradient(139deg, rgb(255 81 0) 50%, rgb(30 38 114) 50%);
-  animation: fadeInOut 5s ease-in-out infinite alternate;
-  transition: all 5s;
-}
-
-
-
