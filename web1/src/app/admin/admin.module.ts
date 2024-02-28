@@ -47,7 +47,6 @@ import { ReminderComponent } from './reminder/reminder.component';
 import { BulkSmsComponent } from './bulk-sms/bulk-sms.component';
 
 
-
 @NgModule({
     declarations: [
         CompanyComponent,

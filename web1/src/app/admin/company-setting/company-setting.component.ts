@@ -9,7 +9,7 @@ import { AlertService } from 'src/app/service/helpers/alert.service';
 import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { CompanyService } from 'src/app/service/company.service';
 import { Router } from '@angular/router';
-
+import * as JsBarcode from 'jsbarcode';
 
 @Component({
   selector: 'app-company-setting',
@@ -18,13 +18,14 @@ import { Router } from '@angular/router';
 })
 export class CompanySettingComponent implements OnInit {
 
-  @ViewChild('barcode') barcodeElement: ElementRef | any;
+
   companysetting:any = JSON.parse(localStorage.getItem('companysetting') || '');
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
   shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   company:any =JSON.parse(localStorage.getItem('company') || '') ;
- 
+  @ViewChild('barcodeElement')
+  barcodeElement!: ElementRef;
   env = environment;
   img: any;
   userImage: string | undefined;
@@ -49,7 +50,7 @@ export class CompanySettingComponent implements OnInit {
   TableBody:15,TableHeading:17, NoteFont:15.5, NoteLineSpace:25,
    WaterMarkWidth:400, WaterMarkHeigh:400, WaterMarkOpecity:0.1, WaterMarkLeft:25,  WaterMarkRight:0, UpdateBy:null}
 
-  barcode : any ={CompanyID: null,  BillHeader:'0',BarcodeWidth:425, BarcodeHeight:70, Rightwidth:50, Leftwidth:50,  BarcodePadding:0,BarcodeMargin:0,BarcodeNameFontSize:10,MRPFontSize:16,IncTaxFontSize:10,ProductBrandFontSize:10,ProductModelFontSize:10,MRPLineHeight:15, PaddingTop:0,PaddingBotton:0,PaddingLeft:0,PaddingRight:0,MarginTop:0,MarginBotton:0,MarginLeft:0,MarginRight:0,FloatLeftSide : 'Left', FloatRightSide:'Right', UpdateBy:null}
+  barcode : any ={CompanyID: null,  BillHeader:'0',BarcodeWidth:425, BarcodeHeight:70, Rightwidth:50, Leftwidth:50,  BarcodePadding:0,BarcodeMargin:0,BarcodeNameFontSize:15,MRPFontSize:16,IncTaxFontSize:10,ProductBrandFontSize:10,ProductModelFontSize:10,MRPLineHeight:15, PaddingTop:0,PaddingBotton:0,PaddingLeft:0,PaddingRight:0,MarginTop:0,MarginBotton:0,MarginLeft:0,MarginRight:0,FloatLeftSide : 'Left', FloatRightSide:'Right', BarHeight:45, BarWidth:1, BarMarginTop:'-15', BarFontSize:'15', UpdateBy:null}
 
   companyWatermark: any;
   companyWholeSalePrice: any;
@@ -72,12 +73,28 @@ export class CompanySettingComponent implements OnInit {
   wlcmArray1: any = [] ;
 
   ngOnInit(): void {
+    JsBarcode(".barcode").init();
    this.getCompanySetting();
    this.getBillFormateById();
    [this.shop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));;
+   
   }
-
-  
+  ngAfterViewInit(): void {
+    this.barcode1()
+  }
+  barcode1() {
+    // Generate barcode using jsbarcode
+    JsBarcode(this.barcodeElement.nativeElement, '123456789', {
+      format: 'CODE128',
+      textMargin: 0,
+      height: this.barcode.BarHeight,
+      width: this.barcode.BarWidth,
+      marginTop: this.barcode.BarMarginTop,
+      fontSize: this.barcode.BarFontSize,
+      marginBottom: 0,
+      fontOptions: 'bold'
+    });
+  }
   // getCompanySetting(){
   //   this.data = JSON.parse(localStorage.getItem('companysetting') || '');
   //   this.wlcmArray1 = JSON.parse(this.companysetting.WelComeNote) || ''
