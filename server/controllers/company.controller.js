@@ -442,6 +442,51 @@ module.exports = {
             next(err)
         }
     },
+    updateBarcodeSetting: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+
+
+
+            const [doesExist] = await mysql2.pool.query(`select * from barcodesetting where Status = 1 and CompanyID = ${CompanyID}`)
+            let message = "data save sucessfully";
+            if (!doesExist.length) {
+                message = "data save sucessfully";
+                const [saveCompany] = await mysql2.pool.query(`insert into barcodesetting (barFontSize,  barHeight,  barMarginTop,  barWidth,  barcodeHeight, barcodeMargin, barcodeNameFontSize, barcodePadding,  barcodeWidth,  billHeader,  floatLeftSide,  floatRightSide,  incTaxFontSize,  leftWidth, mrpFontSize, mrpLineHeight,  marginBottom, marginLeft, marginRight,  marginTop,  paddingBottom, paddingLeft, paddingRight, paddingTop,productBrandFontSize,productModelFontSize, rightWidth,  Status, CreatedBy , CreatedOn ) values ('${Body.barFontSize}', '${Body.barHeight}', '${Body.barMarginTop}', '${Body.barWidth}', '${Body.barcodeHeight}', '${Body.barcodeMargin}', '${Body.barcodeNameFontSize}', '${Body.barcodePadding}', '${Body.barcodeWidth}','${Body.billHeader}','${Body.floatLeftSide}','${Body.floatRightSide}','${Body.incTaxFontSize}','${Body.leftWidth}','${Body.mrpFontSize}','${Body.mrpLineHeight}','${Body.marginBottom}','${Body.marginLeft}','${Body.marginRight}', '${Body.marginTop}', '${Body.paddingBottom}', '${Body.paddingLeft}',  '${Body.paddingRight}','${Body.paddingTop}', '${Body.productBrandFontSize}', '${Body.productModelFontSize}', '${Body.rightWidth}', 1 , ${LoggedOnUser}, now())`)
+
+            } else {
+                message = "data update successfully"
+                const [updateCompany] = await mysql2.pool.query(`update barcodesetting set barFontSize='${Body.barFontSize}', barHeight='${Body.barHeight}', barMarginTop='${Body.barMarginTop}', barWidth='${Body.barWidth}', barcodeHeight='${Body.barcodeHeight}', barcodeMargin='${Body.barcodeMargin}', barcodeNameFontSize='${Body.barcodeNameFontSize}', barcodePadding='${Body.barcodePadding}', barcodeWidth='${Body.barcodeWidth}', billHeader='${Body.billHeader}', floatLeftSide='${Body.floatLeftSide}', floatRightSide='${Body.floatRightSide}', incTaxFontSize='${Body.incTaxFontSize}', leftWidth='${Body.leftWidth}', mrpFontSize='${Body.mrpFontSize}', mrpLineHeight='${Body.mrpLineHeight}', marginBottom='${Body.marginBottom}', marginLeft='${Body.marginLeft}', marginRight='${Body.marginRight}', marginTop='${Body.marginTop}', paddingBottom='${Body.paddingBottom}', paddingLeft='${Body.paddingLeft}', paddingRight='${Body.paddingRight}', paddingTop='${Body.paddingTop}', productBrandFontSize='${Body.productBrandFontSize}', productModelFontSize='${Body.productModelFontSize}', rightWidth='${Body.rightWidth}', UpdatedBy=${Body.LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID}`)
+
+            }
+            response.message = message
+            return res.send(response);
+        } catch (err) {
+            next(err)
+        }
+    },
+    getBarcodeSettingByCompanyID: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            if (!CompanyID) res.send({ message: "Invalid Query Data" })
+
+            const [fetchData] = await mysql2.pool.query(`select * from barcodesetting where CompanyID = ${CompanyID}`)
+
+            response.message = "data fetch sucessfully"
+            response.data = fetchData
+            return res.send(response);
+        } catch (err) {
+            next(err)
+        }
+    },
     getCompanyById: async (req, res, next) => {
         try {
             const response = { data: null, user: null, success: true, message: "" }

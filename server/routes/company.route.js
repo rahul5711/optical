@@ -15,6 +15,8 @@ router.post('/update', Controller.update)
 router.post('/delete', Controller.delete)
 router.post('/deactive', Controller.deactive)
 router.post('/activecompany', Controller.activecompany)
+router.post('/updateBarcodeSetting', verifyAccessTokenAdmin, Controller.updateBarcodeSetting)
+router.post('/getBarcodeSettingByCompanyID', verifyAccessTokenAdmin, Controller.getBarcodeSettingByCompanyID)
 
 
 // update company setting
