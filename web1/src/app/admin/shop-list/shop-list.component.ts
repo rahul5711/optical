@@ -395,6 +395,7 @@ export class ShopListComponent implements OnInit {
   exportAsXLSX(): void {
     let data = this.dataList.map((e: any) => {
       return {
+        ShopID: e.ID,
         Name: e.Name,
         AreaName: e.AreaName,
         MobileNo1: e.MobileNo1,
