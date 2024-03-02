@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -18,14 +18,13 @@ import * as JsBarcode from 'jsbarcode';
 })
 export class CompanySettingComponent implements OnInit {
 
+  @ViewChild('barcodeElement', { static: false }) barcodeElement: ElementRef | any;
 
-  companysetting:any = JSON.parse(localStorage.getItem('companysetting') || '');
-  user:any =JSON.parse(localStorage.getItem('user') || '') ;
-  shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
-  selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
-  company:any =JSON.parse(localStorage.getItem('company') || '') ;
-  @ViewChild('barcodeElement')
-  barcodeElement!: ElementRef;
+  companysetting: any = JSON.parse(localStorage.getItem('companysetting') || '');
+  user: any = JSON.parse(localStorage.getItem('user') || '');
+  shop: any = JSON.parse(localStorage.getItem('shop') || '');
+  selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '');
+  company: any = JSON.parse(localStorage.getItem('company') || '');
   env = environment;
   img: any;
   userImage: string | undefined;
@@ -40,17 +39,50 @@ export class CompanySettingComponent implements OnInit {
 
   ) { }
 
-  data: any = {ID: null, CompanyLanguage: 'English', Locale: 'en-IN', CompanyCurrency: '', CurrencyFormat: null, DateFormat: null,CompanyTagline: '', BillHeader: '', BillFooter: '', RewardsPointValidity: '', EmailReport: null,
-     WholeSalePrice: false, Composite: false, RetailRate: false,  Color1: '', FontApi:'', FontsStyle: '', HSNCode: false, Discount: false, GSTNo: false, Rate: false, SubTotal: false, Total: false, CGSTSGST: false,
-     WelComeNote: '' ,BillFormat:null,SenderID: '',MsgAPIKey:'', SmsSetting: '',DataFormat: 1,RewardPercentage:0, RewardExpiryDate: '30',AppliedReward:0, MobileNo:'2', MessageReport: null, LogoURL: null, WatermarkLogoURL: null,
-     InvoiceFormat: 'invoice.ejs', LoginTimeStart: '', LoginTimeEnd: '', year: false, month: false, partycode: false, type: false , BarCode:'', FeedbackDate:'', ServiceDate:'',DeliveryDay:'',UpdatedBy:null,AppliedDiscount:false,
+  data: any = {
+    ID: null, CompanyLanguage: 'English', Locale: 'en-IN', CompanyCurrency: '', CurrencyFormat: null, DateFormat: null, CompanyTagline: '', BillHeader: '', BillFooter: '', RewardsPointValidity: '', EmailReport: null,
+    WholeSalePrice: false, Composite: false, RetailRate: false, Color1: '', FontApi: '', FontsStyle: '', HSNCode: false, Discount: false, GSTNo: false, Rate: false, SubTotal: false, Total: false, CGSTSGST: false,
+    WelComeNote: '', BillFormat: null, SenderID: '', MsgAPIKey: '', SmsSetting: '', DataFormat: 1, RewardPercentage: 0, RewardExpiryDate: '30', AppliedReward: 0, MobileNo: '2', MessageReport: null, LogoURL: null, WatermarkLogoURL: null,
+    InvoiceFormat: 'invoice.ejs', LoginTimeStart: '', LoginTimeEnd: '', year: false, month: false, partycode: false, type: false, BarCode: '', FeedbackDate: '', ServiceDate: '', DeliveryDay: '', UpdatedBy: null, AppliedDiscount: false,
   };
 
-  bill : any ={CompanyID: null,  BillHeader:'3',HeaderWidth:980, HeaderHeight:170, HeaderPadding:5,HeaderMargin:5,ImageWidth:200,ImageHeight:150,ImageAlign:'center',ShopNameFont:25,ShopNameBold:'600', ShopDetailFont:17, Color:'red',LineSpace:25, CustomerFont:16, CustomerLineSpace:22,
-  TableBody:15,TableHeading:17, NoteFont:15.5, NoteLineSpace:25,
-   WaterMarkWidth:400, WaterMarkHeigh:400, WaterMarkOpecity:0.1, WaterMarkLeft:25,  WaterMarkRight:0, UpdateBy:null}
+  bill: any = {
+    CompanyID: null, BillHeader: '3', HeaderWidth: 980, HeaderHeight: 170, HeaderPadding: 5, HeaderMargin: 5, ImageWidth: 200, ImageHeight: 150, ImageAlign: 'center', ShopNameFont: 25, ShopNameBold: '600', ShopDetailFont: 17, Color: 'red', LineSpace: 25, CustomerFont: 16, CustomerLineSpace: 22,
+    TableBody: 15, TableHeading: 17, NoteFont: 15.5, NoteLineSpace: 25,
+    WaterMarkWidth: 400, WaterMarkHeigh: 400, WaterMarkOpecity: 0.1, WaterMarkLeft: 25, WaterMarkRight: 0, UpdateBy: null
+  }
 
-  barcode : any ={CompanyID: null,  BillHeader:'0',BarcodeWidth:425, BarcodeHeight:70, Rightwidth:50, Leftwidth:50,  BarcodePadding:0,BarcodeMargin:0,BarcodeNameFontSize:15,MRPFontSize:16,IncTaxFontSize:10,ProductBrandFontSize:10,ProductModelFontSize:10,MRPLineHeight:15, PaddingTop:0,PaddingBotton:0,PaddingLeft:0,PaddingRight:0,MarginTop:0,MarginBotton:0,MarginLeft:0,MarginRight:0,FloatLeftSide : 'Left', FloatRightSide:'Right', BarHeight:45, BarWidth:1, BarMarginTop:'-15', BarFontSize:'15', UpdateBy:null}
+  barcode: any = {
+    CompanyID: null,
+    barFontSize: '15',
+    billHeader: '0',
+    barcodeWidth: 425,
+    barcodeHeight: 70,
+    barMarginTop: '-15',
+    rightWidth: 50,
+    leftWidth: 50,
+    barcodePadding: 0,
+    barcodeMargin: 0,
+    barcodeNameFontSize: 15,
+    mrpFontSize: 16,
+    incTaxFontSize: 10,
+    productBrandFontSize: 10,
+    productModelFontSize: 10,
+    mrpLineHeight: 15,
+    paddingTop: 0,
+    paddingBottom: 0,
+    paddingLeft: 0,
+    paddingRight: 0,
+    marginTop: 0,
+    marginBottom: 0,
+    marginLeft: 0,
+    marginRight: 0,
+    floatLeftSide: 'Left',
+    floatRightSide: 'Right',
+    barHeight: 45,
+    barWidth: 1,
+    UpdateBy: null
+  }
 
   companyWatermark: any;
   companyWholeSalePrice: any;
@@ -59,42 +91,50 @@ export class CompanySettingComponent implements OnInit {
   dataList: any;
 
   dataFormat: any = [
-      {ID: 'YYYY-MM-DD HH:mm:ss', Name: '2000-02-25 05:59:59'},
-      {ID: 'YYYY-MM-DD', Name: '2000-02-25'},
-      {ID: 'DD-MM-YYYY', Name: '25-02-2000'},
-      {ID: 'YYYY-MM-DD h:mm A', Name: '2000-02-25 05:59 PM/AM'},
-       {ID: 'DD-MM-YYYY', Name: '10-02-2000'},
-       {ID: 'DD-MM-YYYY h:mm a', Name: '01-12-2000 11:39 PM/AM'},
-       {ID: 'DD MMM YYYY', Name: '26 Aug 2000'},
-       {ID: 'DD MMM YYYY h:mm a', Name: '26 Aug 2000 11:39 PM/AM'},
+    { ID: 'YYYY-MM-DD HH:mm:ss', Name: '2000-02-25 05:59:59' },
+    { ID: 'YYYY-MM-DD', Name: '2000-02-25' },
+    { ID: 'DD-MM-YYYY', Name: '25-02-2000' },
+    { ID: 'YYYY-MM-DD h:mm A', Name: '2000-02-25 05:59 PM/AM' },
+    { ID: 'DD-MM-YYYY', Name: '10-02-2000' },
+    { ID: 'DD-MM-YYYY h:mm a', Name: '01-12-2000 11:39 PM/AM' },
+    { ID: 'DD MMM YYYY', Name: '26 Aug 2000' },
+    { ID: 'DD MMM YYYY h:mm a', Name: '26 Aug 2000 11:39 PM/AM' },
   ];
 
   wlcmArray: any = [];
-  wlcmArray1: any = [] ;
+  wlcmArray1: any = [];
 
   ngOnInit(): void {
-    JsBarcode(".barcode").init();
-   this.getCompanySetting();
-   this.getBillFormateById();
-   [this.shop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));;
-   
+
+    this.getCompanySetting();
+    this.getBillFormateById();
+    this.getBarcodeSettingByCompanyID();
+    [this.shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));;
+
   }
   ngAfterViewInit(): void {
     this.barcode1()
   }
   barcode1() {
-    // Generate barcode using jsbarcode
-    JsBarcode(this.barcodeElement.nativeElement, '123456789', {
-      format: 'CODE128',
-      textMargin: 0,
-      height: this.barcode.BarHeight,
-      width: this.barcode.BarWidth,
-      marginTop: this.barcode.BarMarginTop,
-      fontSize: this.barcode.BarFontSize,
-      marginBottom: 0,
-      fontOptions: 'bold'
-    });
+    // Check if barcodeElement is defined
+    if (this.barcodeElement) {
+      // Generate barcode using jsbarcode
+
+      JsBarcode(this.barcodeElement.nativeElement, '123456789', {
+        format: 'CODE128',
+        textMargin: 0,
+        height: this.barcode.barHeight,
+        width: this.barcode.barWidth,
+        marginTop: this.barcode.barMarginTop,
+        fontSize: this.barcode.barFontSize,
+        marginBottom: 0,
+        fontOptions: 'bold'
+      });
+    } else {
+      console.error("Barcode element is undefined.");
+    }
   }
+
   // getCompanySetting(){
   //   this.data = JSON.parse(localStorage.getItem('companysetting') || '');
   //   this.wlcmArray1 = JSON.parse(this.companysetting.WelComeNote) || ''
@@ -131,10 +171,10 @@ export class CompanySettingComponent implements OnInit {
     // Retrieve company settings from local storage
     const companySettingJson = localStorage.getItem('companysetting') || '{}';
     this.data = JSON.parse(companySettingJson);
-  
+
     // Set default logo URL if it's null or empty
     this.data.LogoURL = this.data.LogoURL || 'assets/images/userEmpty.png';
-  
+
     // Convert string values to booleans
     this.data.year = this.data.year === 'true';
     this.data.month = this.data.month === 'true';
@@ -143,11 +183,11 @@ export class CompanySettingComponent implements OnInit {
     this.data.AppliedDiscount = this.data.AppliedDiscount === 'true';
   }
 
-  uploadImage(e:any, mode:any){
-    if(e.target.files.length) {
+  uploadImage(e: any, mode: any) {
+    if (e.target.files.length) {
       this.img = e.target.files[0];
     };
-    this.fu.uploadFileComapny(this.img).subscribe((data:any) => {
+    this.fu.uploadFileComapny(this.img).subscribe((data: any) => {
       if (data.body !== undefined && mode === 'company') {
         this.companyImage = this.env.apiUrl + data.body?.download;
         this.data.LogoURL = data.body?.download
@@ -161,17 +201,17 @@ export class CompanySettingComponent implements OnInit {
   }
 
   addRow() {
-    this.wlcmArray1.push({NoteType: '', Content: ''});
+    this.wlcmArray1.push({ NoteType: '', Content: '' });
   }
 
   delete(i: any) {
     this.wlcmArray1.splice(this.wlcmArray.indexOf(this.wlcmArray[i]), 1);
   }
 
-  updatecompanysetting(){
+  updatecompanysetting() {
     this.sp.show();
     this.data.WelComeNote = JSON.stringify(this.wlcmArray1);
-    const subs: Subscription =  this.cs.updatecompanysetting( this.data).subscribe({
+    const subs: Subscription = this.cs.updatecompanysetting(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
           Swal.fire({
@@ -202,68 +242,122 @@ export class CompanySettingComponent implements OnInit {
     });
   }
 
-  saveBillFormate(){
+  saveBillFormate() {
     this.sp.show()
     this.bill.CompanyID = this.companysetting.CompanyID
-   const subs: Subscription =  this.cs.saveBillFormate(this.bill).subscribe({
-    next: (res: any) => {
-      if (res.success) {
-        Swal.fire({
-          title: 'Are you sure?',
-          text: "You won't be able to revert this!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, LogOut it!'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            localStorage.clear();
-            this.router.navigate(['/login']).then(() => {
-              window.location.reload();
-            });
-          }
-        })
+    const subs: Subscription = this.cs.saveBillFormate(this.bill).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, LogOut it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              localStorage.clear();
+              this.router.navigate(['/login']).then(() => {
+                window.location.reload();
+              });
+            }
+          })
           this.getBillFormateById()
-      } else {
-        this.as.errorToast(res.message)
-      }
-      this.sp.hide();
-    },
-    error: (err: any) => {
-      console.log(err.msg);
-    },
-    complete: () => subs.unsubscribe(),
-  });
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
   }
 
-  getBillFormateById(){
+  getBillFormateById() {
     this.sp.show()
- 
-   let dtm = {
-     CompanyID : this.companysetting.CompanyID
-    }
-    const subs: Subscription =  this.cs.getBillFormateById(dtm).subscribe({
-     next: (res: any) => {
-       if (res.success) {
-        if(res.data[0] != undefined){
-          this.bill = res.data[0]  
-        }
-       } else {
-         this.as.errorToast(res.message)
-       }
-       this.sp.hide();
-     },
-     error: (err: any) => {
-       console.log(err.msg);
-     },
-     complete: () => subs.unsubscribe(),
-   });
-   }
 
-   saveBarcodeFormate(){
-    console.log(this.barcode);
-    
-   }
+    let dtm = {
+      CompanyID: this.companysetting.CompanyID
+    }
+    const subs: Subscription = this.cs.getBillFormateById(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          if (res.data[0] != undefined) {
+            this.bill = res.data[0]
+          }
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+
+  saveBarcodeFormate() {
+    this.sp.show()
+    this.barcode.CompanyID = this.companysetting.CompanyID
+    const subs: Subscription = this.cs.updateBarcodeSetting(this.barcode).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, LogOut it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              localStorage.clear();
+              this.router.navigate(['/login']).then(() => {
+                window.location.reload();
+              });
+            }
+          })
+          this.getBarcodeSettingByCompanyID()
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getBarcodeSettingByCompanyID() {
+    this.sp.show()
+    let dtm = {
+      CompanyID: this.companysetting.CompanyID
+    }
+    const subs: Subscription = this.cs.getBarcodeSettingByCompanyID(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          if (res.data[0] != undefined) {
+            this.barcode = res.data[0]
+          }
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+  }
 
 }

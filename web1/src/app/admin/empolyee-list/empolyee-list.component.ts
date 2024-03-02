@@ -257,7 +257,12 @@ export class EmpolyeeListComponent implements OnInit {
     this.excelService.exportAsExcelFile(data, 'empolyee_list');
   }
 
-  dateFormat(date:any){
-    return moment(date).format(`${this.companySetting.DateFormat}`);
+  dateFormat(date: any) {
+    if (date == 'null' || date == '' ) {
+      return '';
+    } else {
+      return moment(date).format(`${this.companySetting.DateFormat}`);
+    }
   }
 }
+  

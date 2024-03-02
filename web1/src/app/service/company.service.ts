@@ -112,6 +112,15 @@ export class CompanyService {
     .pipe(catchError(this.handleError));
   }
 
+  updateBarcodeSetting(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/updateBarcodeSetting', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+  
+  getBarcodeSettingByCompanyID(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getBarcodeSettingByCompanyID', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

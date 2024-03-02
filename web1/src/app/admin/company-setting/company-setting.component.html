@@ -782,8 +782,8 @@
                                                                 <div class=" col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Bill Herder </mat-label>
-                                                                        <mat-select name="BillHeader"
-                                                                            [(ngModel)]="barcode.BillHeader" required>
+                                                                        <mat-select name="billHeader"
+                                                                            [(ngModel)]="barcode.billHeader" required>
                                                                             <mat-option></mat-option>
                                                                             <mat-option value="0">Regular </mat-option>
                                                                             <mat-option value="1">Regular 2</mat-option>
@@ -794,18 +794,18 @@
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Barcode width</mat-label>
-                                                                        <input matInput name="BarcodeWidth"
+                                                                        <input matInput name="barcodeWidth"
                                                                             type="number" min="0"
-                                                                            [(ngModel)]="barcode.BarcodeWidth">
+                                                                            [(ngModel)]="barcode.barcodeWidth">
                                                                         <mat-error>Barcode Width </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Barcode height</mat-label>
-                                                                        <input matInput name="BarcodeHeight"
+                                                                        <input matInput name="barcodeHeight"
                                                                             type="number" min="0"
-                                                                            [(ngModel)]="barcode.BarcodeHeight">
+                                                                            [(ngModel)]="barcode.barcodeHeight">
                                                                         <mat-error>Barcode height </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
@@ -813,26 +813,26 @@
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Leftwidth</mat-label>
-                                                                        <input matInput name="Leftwidth"
+                                                                        <input matInput name="leftWidth"
                                                                             type="number" min="0"
-                                                                            [(ngModel)]="barcode.Leftwidth">
+                                                                            [(ngModel)]="barcode.leftWidth">
                                                                         <mat-error>Leftwidth </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Rightwidth</mat-label>
-                                                                        <input matInput name="Rightwidth"
+                                                                        <input matInput name="rightWidth"
                                                                             type="number" min="0"
-                                                                            [(ngModel)]="barcode.Rightwidth">
+                                                                            [(ngModel)]="barcode.rightWidth">
                                                                         <mat-error>Rightwidth</mat-error>
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>FloatLeftSide </mat-label>
-                                                                        <mat-select name="FloatLeftSide"
-                                                                            [(ngModel)]="barcode.FloatLeftSide" required>
+                                                                        <mat-select name="floatLeftSide"
+                                                                            [(ngModel)]="barcode.floatLeftSide" required>
                                                                             <mat-option value="Left">Left </mat-option>
                                                                             <mat-option value="Right">Right</mat-option>
                                                                         </mat-select>
@@ -842,8 +842,8 @@
                                                                 <div class="col-md-3 mb-0">
                                                                 <mat-form-field class="example-full-width mb-0">
                                                                     <mat-label>FloatRightSide </mat-label>
-                                                                    <mat-select name="FloatRightSide"
-                                                                        [(ngModel)]="barcode.FloatRightSide" required>
+                                                                    <mat-select name="floatRightSide"
+                                                                        [(ngModel)]="barcode.floatRightSide" required>
                                                                         <mat-option value="Left">Left </mat-option>
                                                                         <mat-option value="Right">Right</mat-option>
                                                                     </mat-select>
@@ -856,32 +856,32 @@
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>padding Top</mat-label>
-                                                                        <input matInput type="number" name="PaddingTop"
-                                                                            [(ngModel)]="barcode.PaddingTop">
+                                                                        <input matInput type="number" name="paddingTop"
+                                                                            [(ngModel)]="barcode.paddingTop">
                                                                         <mat-error>Barcode paddingTop </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>padding Botton</mat-label>
-                                                                        <input matInput  name="PaddingBotton"
-                                                                            [(ngModel)]="barcode.PaddingBotton">
+                                                                        <input matInput  name="paddingBottom"
+                                                                            [(ngModel)]="barcode.paddingBottom">
                                                                         <mat-error>Barcode PaddingBotton </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>padding Left</mat-label>
-                                                                        <input matInput type="number" name="PaddingLeft"
-                                                                            [(ngModel)]="barcode.PaddingLeft">
+                                                                        <input matInput type="number" name="paddingLeft"
+                                                                            [(ngModel)]="barcode.paddingLeft">
                                                                         <mat-error>Barcode PaddingLeft </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>padding Right</mat-label>
-                                                                        <input matInput type="number" name="PaddingRight"
-                                                                            [(ngModel)]="barcode.PaddingRight">
+                                                                        <input matInput type="number" name="paddingRight"
+                                                                            [(ngModel)]="barcode.paddingRight">
                                                                         <mat-error>Barcode PaddingRight </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
@@ -891,32 +891,32 @@
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Margin Top</mat-label>
-                                                                        <input matInput type="number" name="MarginTop"
-                                                                            [(ngModel)]="barcode.MarginTop">
+                                                                        <input matInput type="number" name="marginTop"
+                                                                            [(ngModel)]="barcode.marginTop">
                                                                         <mat-error>Barcode MarginTop </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Margin Botton</mat-label>
-                                                                        <input matInput type="number" name="MarginBotton"
-                                                                            [(ngModel)]="barcode.MarginBotton">
+                                                                        <input matInput type="number" name="marginBottom"
+                                                                            [(ngModel)]="barcode.marginBottom">
                                                                         <mat-error>Barcode MarginBotton </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Margin Left</mat-label>
-                                                                        <input matInput type="number" name="MarginLeft"
-                                                                            [(ngModel)]="barcode.MarginLeft">
+                                                                        <input matInput type="number" name="marginLeft"
+                                                                            [(ngModel)]="barcode.marginLeft">
                                                                         <mat-error>Barcode MarginLeft </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Margin Right</mat-label>
-                                                                        <input matInput type="number" name="MarginRight"
-                                                                            [(ngModel)]="barcode.MarginRight">
+                                                                        <input matInput type="number" name="marginRight"
+                                                                            [(ngModel)]="barcode.marginRight">
                                                                         <mat-error>Barcode MarginRight </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
@@ -926,54 +926,54 @@
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Barcode Name Font Size </mat-label>
-                                                                        <input matInput name="BarcodeNameFontSize"
+                                                                        <input matInput name="barcodeNameFontSize"
                                                                             type="number" min="0"
-                                                                            [(ngModel)]="barcode.BarcodeNameFontSize">
+                                                                            [(ngModel)]="barcode.barcodeNameFontSize">
                                                                         <mat-error>BarcodeNameFontSize </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>MRP FontSize</mat-label>
-                                                                        <input matInput name="MRPFontSize"
+                                                                        <input matInput name="mrpFontSize"
                                                                             type="number" min="0"
-                                                                            [(ngModel)]="barcode.MRPFontSize">
+                                                                            [(ngModel)]="barcode.mrpFontSize">
                                                                         <mat-error>MRPFontSize </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Inc. Tax FontSize</mat-label>
-                                                                        <input matInput name="IncTaxFontSize"
+                                                                        <input matInput name="incTaxFontSize"
                                                                             type="number" min="0"
-                                                                            [(ngModel)]="barcode.IncTaxFontSize">
+                                                                            [(ngModel)]="barcode.incTaxFontSize">
                                                                         <mat-error>IncTaxFontSize </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>ProductBrand FontSize</mat-label>
-                                                                        <input matInput name="ProductBrandFontSize"
+                                                                        <input matInput name="productBrandFontSize"
                                                                             type="number" min="0"
-                                                                            [(ngModel)]="barcode.ProductBrandFontSize">
+                                                                            [(ngModel)]="barcode.productBrandFontSize">
                                                                         <mat-error>ProductBrandFontSize</mat-error>
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>ProductModel FontSize</mat-label>
-                                                                        <input matInput name="ProductModelFontSize"
+                                                                        <input matInput name="productModelFontSize"
                                                                             type="number" min="0"
-                                                                            [(ngModel)]="barcode.ProductModelFontSize">
+                                                                            [(ngModel)]="barcode.productModelFontSize">
                                                                         <mat-error>ProductModelFontSize</mat-error>
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>MRP Line Height</mat-label>
-                                                                        <input matInput name="MRPLineHeight"
+                                                                        <input matInput name="mrpLineHeight"
                                                                             type="number" min="0"
-                                                                            [(ngModel)]="barcode.MRPLineHeight">
+                                                                            [(ngModel)]="barcode.mrpLineHeight">
                                                                         <mat-error>MRPLineHeight</mat-error>
                                                                     </mat-form-field>
                                                                 </div>
@@ -983,36 +983,36 @@
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Barcode Height </mat-label>
-                                                                        <input matInput name="BarHeight"
+                                                                        <input matInput name="barHeight"
                                                                             type="number" min="0" (change)="barcode1()"
-                                                                            [(ngModel)]="barcode.BarHeight">
+                                                                            [(ngModel)]="barcode.barHeight">
                                                                         <mat-error>BarcodeHeight </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Barcode Width</mat-label>
-                                                                        <input matInput name="BarcodeWidth"
+                                                                        <input matInput name="barWidth"
                                                                             type="number" min="0" (change)="barcode1()"
-                                                                            [(ngModel)]="barcode.BarWidth">
+                                                                            [(ngModel)]="barcode.barWidth">
                                                                         <mat-error>BarcodeWidth </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Barcode MarginTop</mat-label>
-                                                                        <input matInput name="BarcodeMarginTop"
+                                                                        <input matInput name="barMarginTop"
                                                                             type="number" (change)="barcode1()"
-                                                                            [(ngModel)]="barcode.BarMarginTop">
+                                                                            [(ngModel)]="barcode.barMarginTop">
                                                                         <mat-error>BarcodeMarginTop </mat-error>
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
                                                                         <mat-label>Barcode FontSize</mat-label>
-                                                                        <input matInput name="BarFontSize"
+                                                                        <input matInput name="barFontSize"
                                                                             type="number" min="0" (change)="barcode1()"
-                                                                            [(ngModel)]="barcode.BarFontSize">
+                                                                            [(ngModel)]="barcode.barFontSize">
                                                                         <mat-error>BarcodeFontSize</mat-error>
                                                                     </mat-form-field>
                                                                 </div>
@@ -1033,35 +1033,31 @@
                                                 <div class="row">
                                                     <div class="col-12 p-0">
                                                         <!-- center log -->
-                                                        <span *ngIf="this.barcode.BillHeader == '0'">
-                                                            <div style="width: {{this.barcode.BarcodeWidth}}px; height:{{this.barcode.BarcodeHeight}}px; padding-top:{{this.barcode.PaddingTop}}px;padding-bottom:{{this.barcode.PaddingBotton}}px;padding-left:{{this.barcode.PaddingLeft}}px;padding-right:{{this.barcode.PaddingRight}}px; margin-top:{{this.barcode.MarginTop}}px;margin-bottom:{{this.barcode.MarginBotton}}px;margin-left:{{this.barcode.MarginLeft}}px;margin-right:{{this.barcode.MarginRight}}px; border:1px solid #000 ;">
-                                                                <table style=" width: {{this.barcode.Leftwidth}}%; float:{{this.barcode.FloatLeftSide}}">
+                                                        <span *ngIf="this.barcode.billHeader == '0'">
+                                                            <div style="width: {{this.barcode.barcodeWidth}}px; height:{{this.barcode.barcodeHeight}}px; padding-top:{{this.barcode.paddingTop}}px;padding-bottom:{{this.barcode.paddingBotton}}px;padding-left:{{this.barcode.paddingLeft}}px;padding-right:{{this.barcode.paddingRight}}px; margin-top:{{this.barcode.marginTop}}px;margin-bottom:{{this.barcode.marginBottom}}px;margin-left:{{this.barcode.marginLeft}}px;margin-right:{{this.barcode.marginRight}}px; border:1px solid #000 ;">
+                                                                <table style=" width: {{this.barcode.leftWidth}}%; float:{{this.barcode.floatLeftSide}}">
                                                                     <tr>
                                                                         <th style="font-size: {{this.barcode.BarcodeNameFontSize}}px;">Barcode Name</th>
                                                                     </tr>
                                                                     <tr>
                                                                         <th> 
-                                                                            
-                                                                            <!-- barcode.component.html -->
-                                                                    <svg class="barcode" #barcodeElement></svg>
-                                                                  
-                                                               
+                                                                            <svg class="barcode" #barcodeElement></svg>
                                                                         </th>
                                                                     </tr>
                                                                 </table> 
                                                                
-                                                                <table style=" width: {{this.barcode.Rightwidth}}%; float:{{this.barcode.FloatRightSide}};overflow: hidden;line-height: {{this.barcode.MRPLineHeight}}px;">
+                                                                <table style=" width: {{this.barcode.rightWidth}}%; float:{{this.barcode.floatRightSide}};overflow: hidden;line-height: {{this.barcode.mrpLineHeight}}px;">
                                                                     <tr>
-                                                                        <th style="font-size: {{this.barcode.MRPFontSize}}px; ">MRP</th>
+                                                                        <th style="font-size: {{this.barcode.mrpFontSize}}px; ">MRP</th>
                                                                     </tr>
                                                                     <tr>
-                                                                        <th style="font-size: {{this.barcode.IncTaxFontSize}}px;">Inc all tax</th>
+                                                                        <th style="font-size: {{this.barcode.incTaxFontSize}}px;">Inc all tax</th>
                                                                     </tr>
                                                                     <tr>
-                                                                        <th style="font-size: {{this.barcode.ProductBrandFontSize}}px; ">Product Brand Name</th>
+                                                                        <th style="font-size: {{this.barcode.productBrandFontSize}}px; ">Product Brand Name</th>
                                                                     </tr>
                                                                     <tr>
-                                                                        <th style="font-size: {{this.barcode.ProductModelFontSize}}px; ">Product Model Name</th>
+                                                                        <th style="font-size: {{this.barcode.productModelFontSize}}px; ">Product Model Name</th>
                                                                     </tr>
                                                                 </table>
                                                             </div>

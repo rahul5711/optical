@@ -1017,6 +1017,9 @@ module.exports = {
             });
 
             if (printdata.length > 0) {
+                const [barcodeFormate] = await mysql2.pool.query(`select * from barcodesetting where CompanyID = ${CompanyID}`)
+                printdata.barcodeFormate = barcodeFormate[0];
+                console.log(printdata.barcodeFormate);
                 printdata.CompanyID = CompanyID;
                 printdata.CompanyBarcode = 5
                 var file = "barcode" + CompanyID + ".pdf";

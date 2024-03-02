@@ -116,14 +116,14 @@
                                         <td>{{ dataList.length - i }}</td>
                                         <td>{{data.Sno}}</td>
                                         <td>{{data.Name}}</td>
-                                        <td>{{data.MobileNo1}}</td>
-                                        <td>{{data.MobileNo2}}</td>
-                                        <td>{{(data.PhoneNo !== 'undefined')? data.PhoneNo: ''}}</td>
+                                        <td>{{(data.MobileNo1 !== 'undefined' || data.MobileNo1 != null)?  data.MobileNo1: ''}}</td>
+                                        <td>{{(data.MobileNo2 !== 'undefined' || data.MobileNo2 != null)? data.MobileNo2: ''}}</td>
+                                        <td>{{(data.PhoneNo !== 'undefined' || data.PhoneNo != null)? data.PhoneNo: ''}}</td>
                                         <td>{{data.Address}}</td>
-                                        <td>{{(data.Email !== 'undefined')? data.Email: ''}}</td>
-                                        <td>{{(data.GSTType !== "undefined")? data.GSTType:''}}</td>
+                                        <td>{{(data.Email !== 'undefined' || data.PhoneNo != null)? data.Email: ''}}</td>
+                                        <td>{{(data.GSTType !== "undefined" || data.PhoneNo != null)? data.GSTType:''}}</td>
                                         <td>{{data.GSTNo}}</td>
-                                        <td>{{(data.ContactPerson !== "undefined")? data.ContactPerson:''}}</td>
+                                        <td>{{(data.ContactPerson !== "undefined" || data.PhoneNo != null)? data.ContactPerson:''}}</td>
                                         <td>{{data.CreatedPerson}} </td>
                                         <td>{{data.UpdatedPerson}} </td>
                                     </tr>
