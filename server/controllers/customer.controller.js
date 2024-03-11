@@ -839,10 +839,19 @@ module.exports = {
                     console.log(err);
                     res.send(err);
                 } else {
-                    let options = {
-                        format: "A4",
-                        orientation: "portrait",
-                    };
+                    let options
+                    if (CompanyID == 1) {
+                        options = {
+                            "height": "1.9in",
+                            "width": "3.14in",
+                        };
+                    }else{
+                        options = {
+                            format: "A4",
+                            orientation: "portrait",
+                        };
+                    }
+                   
                     pdf.create(data, options).toFile(fileName, function (err, data) {
                         if (err) {
                             res.send(err);
@@ -998,7 +1007,16 @@ module.exports = {
 
                 qry = `select contact_lens_rx.*, customer.Name as CustomerName, shop.Name as ShopName, shop.AreaName, user.Name as CreatedPerson from contact_lens_rx left join customer on customer.ID = contact_lens_rx.CustomerID left join shop on shop.ID = customer.ShopID left join user on user.ID = contact_lens_rx.CreatedBy where contact_lens_rx.Status = 1 and contact_lens_rx.CompanyID = ${CompanyID} ${shopFilter}  ${employeeFilter} and contact_lens_rx.VisitDate between '${From}' and '${To}'`;
 
-            } else {
+            } else if (Type === 'contact_lens_rx') {
+                if (Employee === 'All') {
+                    employeeFilter = ``
+                } else {
+                    employeeFilter = `contact_lens_rx.CreatedBy = ${Employee}`
+                }
+
+                qry = `select contact_lens_rx.*, customer.Name as CustomerName, shop.Name as ShopName, shop.AreaName, user.Name as CreatedPerson from contact_lens_rx left join customer on customer.ID = contact_lens_rx.CustomerID left join shop on shop.ID = customer.ShopID left join user on user.ID = contact_lens_rx.CreatedBy where contact_lens_rx.Status = 1 and contact_lens_rx.CompanyID = ${CompanyID} ${shopFilter}  ${employeeFilter} and contact_lens_rx.VisitDate between '${From}' and '${To}'`;
+
+            }else {
                 return res.send({ message: "Invalid Type Data" })
             }
 
@@ -1013,4 +1031,47 @@ module.exports = {
             next(err)
         }
     },
+
+
+    // all customer data export api
+    // getEyeTestingReport: async (req, res, next) => {
+    //     try {
+    //         const response = { data: null, success: true, message: "" }
+    //         const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+    //         const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+    
+    //         const { From, To, Type, Employee, ShopID } = req.body;
+    
+    //         const dataQuery = `SELECT customer.*, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser,shop.Name AS ShopName , shop.AreaName AS AreaName FROM customer 
+    //         LEFT JOIN user ON user.ID = customer.CreatedBy 
+    //         LEFT JOIN user AS User1 ON User1.ID = customer.UpdatedBy 
+    //         LEFT JOIN shop ON shop.ID = customer.ID WHERE  customer.CompanyID  = '${CompanyID}' AND  customer.Status = 1 `;
+    
+    //         const spectacleRxQuery = `SELECT * FROM spectacle_rx WHERE CompanyID = ${CompanyID} and spectacle_rx.Status = 1`;
+    
+    //         const contactLensRxQuery = `SELECT * FROM contact_lens_rx WHERE CompanyID = ${CompanyID} and contact_lens_rx.Status = 1`;
+    
+    //         const [customerData] = await mysql2.pool.query(dataQuery);
+    //         const [spectacleRxData] = await mysql2.pool.query(spectacleRxQuery);
+    //         const [contactLensRxData] = await mysql2.pool.query(contactLensRxQuery);
+    
+    //         // Iterate over customer data and append spectacle_rx and contact_lens_rx data
+    //         customerData.forEach(customer => {
+    //             customer.contact_lens_rx = contactLensRxData.filter(el => el.CustomerID === customer.ID);
+    //             customer.spectacle_rx = spectacleRxData.filter(e => e.CustomerID === customer.ID);
+    //         });
+           
+    //          console.log(customerData);
+
+    //         response.message = "data fetched successfully"
+    //         response.data = customerData;
+    
+    //         return res.send(response);
+    //     } catch (err) {
+    //         next(err)
+    //     }
+    // }
+    
+
+    
 }

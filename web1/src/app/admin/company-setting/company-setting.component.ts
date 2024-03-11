@@ -56,8 +56,8 @@ export class CompanySettingComponent implements OnInit {
     CompanyID: null,
     barFontSize: '15',
     billHeader: '0',
-    barcodeWidth: 425,
-    barcodeHeight: 70,
+    barcodeWidth: 4.41,
+    barcodeHeight: .70,
     barMarginTop: '-15',
     rightWidth: 50,
     leftWidth: 50,
@@ -81,6 +81,13 @@ export class CompanySettingComponent implements OnInit {
     floatRightSide: 'Right',
     barHeight: 45,
     barWidth: 1,
+
+    MRPHide:false,
+    taxHide:false,
+    productNameHide:false,
+    specialCodeHide:false,
+    modelName:false,
+
     UpdateBy: null
   }
 
@@ -347,6 +354,18 @@ export class CompanySettingComponent implements OnInit {
         if (res.success) {
           if (res.data[0] != undefined) {
             this.barcode = res.data[0]
+            if (this.barcode !== null && this.barcode !== undefined && this.barcode.length !== 0) {
+             
+          
+              const stringToBoolean = (value: string) => value.toLowerCase() === 'true';
+              this.barcode.MRPHide = stringToBoolean(this.barcode.MRPHide.toString());
+              this.barcode.taxHide = stringToBoolean(this.barcode.taxHide.toString());
+              this.barcode.productNameHide = stringToBoolean(this.barcode.productNameHide.toString());
+              this.barcode.specialCodeHide = stringToBoolean(this.barcode.specialCodeHide.toString());
+              this.barcode.modelName = stringToBoolean(this.barcode.modelName.toString());
+
+
+            }
           }
         } else {
           this.as.errorToast(res.message)

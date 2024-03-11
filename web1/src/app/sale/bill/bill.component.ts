@@ -2135,18 +2135,21 @@ export class BillComponent implements OnInit {
   // product edit 
 
   showInput(data: any) {
-    if (this.BillMaster.DueAmount === 0) {
-      Swal.fire({
-        position: 'center',
-        icon: 'warning',
-        title: 'Opps !! <br> Balance ',
-        showConfirmButton: true,
-        backdrop: false,
-      })
-    } else {
-      data.UpdateProduct = !data.UpdateProduct
+    // if (this.BillMaster.DueAmount === 0) {
+    //   Swal.fire({
+    //     position: 'center',
+    //     icon: 'warning',
+    //     title: 'Opps !! <br> Balance ',
+    //     showConfirmButton: true,
+    //     backdrop: false,
+    //   })
+    // } else {
+    //   data.UpdateProduct = !data.UpdateProduct
+    //   this.disbaleupdate = true
+    // }
+
+       data.UpdateProduct = !data.UpdateProduct
       this.disbaleupdate = true
-    }
   }
 
   calculateFields1(fieldName: any, mode: any, data: any) {

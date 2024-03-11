@@ -9,6 +9,7 @@ import { SupportService } from 'src/app/service/support.service';
 import { BillService } from 'src/app/service/bill.service';
 import { environment } from 'src/environments/environment';
 import { NgxPrintDirective } from 'ngx-print';
+import { MatSelectChange } from '@angular/material/select';
 
 
 @Component({
@@ -258,13 +259,6 @@ exportAsXLSX(): void {
 }
 
 
-
-
-
-
-
-
-
   dateFormat(date: any) {
     return moment(date).format(`${this.companySetting.DateFormat}`);
   }
@@ -390,4 +384,7 @@ exportAsXLSX(): void {
   toggleColumnVisibility(column: string): void {
     this.columnVisibility[column] = !this.columnVisibility[column];
   }
+
+
+
 }

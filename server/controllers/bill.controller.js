@@ -1690,7 +1690,7 @@ module.exports = {
             const User = req.body.User;
             const Customer = req.body.customer;
             const BillMaster = req.body.billMaster;
-            console.log(req.body.billItemList);
+            
             req.body.billItemList = req.body.billItemList.filter((element) => {
                 return element.Status !== 0;
             });
@@ -1714,6 +1714,7 @@ module.exports = {
             printdata.subtotals = subtotals
             printdata.EyeMeasurement = x[0];
             const BillItemList = req.body.billItemList;
+            console.log(BillItemList);
             const ServiceList = req.body.serviceList;
             const PaidList = req.body.paidList;
             const UnpaidList = req.body.unpaidList;
@@ -1836,6 +1837,7 @@ module.exports = {
 
             let BillFormat = ''
             BillFormat = printdata.CompanySetting.BillFormat;
+            // BillFormat = "invoiceSapphire.ejs";
             let fileName = "";
             const file = 'Bill' + '-' + printdata.billMaster.ID + '-' + CompanyID + ".pdf";
             const formatName = BillFormat;

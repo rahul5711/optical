@@ -126,5 +126,17 @@ export class EyetestReportComponent implements OnInit {
     this.eyeList = [];
   }
 
+  exportEx(): void
+  {
+    /* pass here the table id */
+    let element = document.getElementById('exportsss');
+    const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    /* save to file */  
+    XLSX.writeFile(wb, 'customer.xlsx');
+ 
+  }
 
+  
 }

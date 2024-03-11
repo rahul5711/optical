@@ -703,18 +703,12 @@
                                                             <mat-icon>add</mat-icon>
                                                         </button>
                                                         </div>
-                                                    <div class="col-md-1 col-3 p-md-0 ps-1">
-                                                        <mat-form-field class="example-full-width mb-0">
-                                                            <mat-label>PD_R</mat-label>
-                                                            <input matInput name="REPD" [(ngModel)]="spectacle.REPD" />
-                                                        </mat-form-field>
-                                                    </div>
-                                                    <div class="col-md-1 col-3 p-md-0">
-                                                        <mat-form-field class="example-full-width mb-0">
-                                                            <mat-label>PD_L</mat-label>
-                                                            <input matInput name="LEPD" [(ngModel)]="spectacle.LEPD" />
-                                                        </mat-form-field>
-                                                    </div>
+                                                        <div class="col-md-3 col-3 p-md-0">
+                                                            <mat-form-field class="example-full-width mb-0">
+                                                                <mat-label>Other/Shade</mat-label>
+                                                                <input matInput name="Shade" [(ngModel)]="spectacle.Shade" />
+                                                            </mat-form-field>
+                                                        </div>
                                                     <div class="col-md-1 col-3 p-md-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Prism_R</mat-label>
@@ -743,13 +737,7 @@
                                                                 [(ngModel)]="spectacle.RefractiveIndex" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-md-1 col-3 p-md-0 pe-3">
-                                                        <mat-form-field class="example-full-width mb-0">
-                                                            <mat-label>FittingHeight</mat-label>
-                                                            <input matInput name="FittingHeight"
-                                                                [(ngModel)]="spectacle.FittingHeight" />
-                                                        </mat-form-field>
-                                                    </div>
+                                                   
                                                 </div>
 
                                                 <!-- tbl list spec start -->
@@ -1788,10 +1776,24 @@
                                                         </datalist>
                                                     </mat-form-field>
                                                 </div>
+                                               
                                                 <div class="col-xl-3 col-lg-3  col-md-6 col-sm-6 col-6 mb-0">
                                                     <mat-form-field class="example-full-width mb-0">
-                                                        <mat-label>Other/Shade</mat-label>
-                                                        <input matInput name="Shade" [(ngModel)]="spectacle.Shade" />
+                                                        <mat-label>PD_R</mat-label>
+                                                        <input matInput name="REPD" [(ngModel)]="spectacle.REPD" />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-3 col-lg-3  col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>PD_L</mat-label>
+                                                        <input matInput name="LEPD" [(ngModel)]="spectacle.LEPD" />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-3 col-lg-3  col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>FittingHeight</mat-label>
+                                                        <input matInput name="FittingHeight"
+                                                            [(ngModel)]="spectacle.FittingHeight" />
                                                     </mat-form-field>
                                                 </div>
                                                 <div class="col-xl-3 col-lg-3  col-md-6 col-sm-6 col-6 mb-0">

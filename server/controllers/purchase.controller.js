@@ -1019,7 +1019,41 @@ module.exports = {
             if (printdata.length > 0) {
                 const [barcodeFormate] = await mysql2.pool.query(`select * from barcodesetting where CompanyID = ${CompanyID}`)
                 printdata.barcodeFormate = barcodeFormate[0];
-                console.log(printdata.barcodeFormate);
+                printdata.BillHeader = `${Number(printdata.barcodeFormate.billHeader)}`;
+                printdata.BarcodeHeight = `${Number(printdata.barcodeFormate.barcodeHeight)}in`;
+                printdata.barcodeWidth = `${Number(printdata.barcodeFormate.barcodeWidth)}in`;
+                printdata.barcodePadding = `${Number(printdata.barcodeFormate.barcodePadding)}px`;
+                printdata.barcodeMargin = `${Number(printdata.barcodeFormate.barcodeMargin)}px`;
+                printdata.barcodeNameFontSize = `${Number(printdata.barcodeFormate.barcodeNameFontSize)}px`;
+                printdata.floatLeftSide = printdata.barcodeFormate.floatLeftSide;
+                printdata.floatRightSide = printdata.barcodeFormate.floatRightSide;
+                printdata.incTaxFontSize = `${Number(printdata.barcodeFormate.incTaxFontSize)}px`;
+                printdata.leftWidth = `${Number(printdata.barcodeFormate.leftWidth)}%`;
+                printdata.rightWidth = `${Number(printdata.barcodeFormate.rightWidth)}%`;
+                printdata.barHeight = `${Number(printdata.barcodeFormate.barHeight)}px`;
+                printdata.barWidth = `${Number(printdata.barcodeFormate.barWidth)}px`;
+                printdata.barFontSize = `${Number(printdata.barcodeFormate.barFontSize)}px`;
+                printdata.barMarginTop = `${Number(printdata.barcodeFormate.barMarginTop)}px`;
+                printdata.mrpFontSize = `${Number(printdata.barcodeFormate.mrpFontSize)}px`;
+                printdata.mrpLineHeight = `${Number(printdata.barcodeFormate.mrpLineHeight)}px`;
+                printdata.productBrandFontSize = `${Number(printdata.barcodeFormate.productBrandFontSize)}px`;
+                printdata.productModelFontSize = `${Number(printdata.barcodeFormate.productModelFontSize)}px`;
+                printdata.marginBottom = `${Number(printdata.barcodeFormate.marginBottom)}px`;
+                printdata.marginLeft = `${Number(printdata.barcodeFormate.marginLeft)}px`;
+                printdata.marginRight = `${Number(printdata.barcodeFormate.marginRight)}px`;
+                printdata.marginTop = `${Number(printdata.barcodeFormate.marginTop)}px`;
+                printdata.paddingBottom = `${Number(printdata.barcodeFormate.paddingBottom)}px`;
+                printdata.paddingLeft = `${Number(printdata.barcodeFormate.paddingLeft)}px`;
+                printdata.paddingRight = `${Number(printdata.barcodeFormate.paddingRight)}px`;
+                printdata.paddingTop = `${Number(printdata.barcodeFormate.paddingTop)}px`;
+
+                printdata.MRPHide = printdata.barcodeFormate.MRPHide;
+                printdata.taxHide = printdata.barcodeFormate.taxHide;
+                printdata.productNameHide = printdata.barcodeFormate.productNameHide;
+                printdata.specialCodeHide = printdata.barcodeFormate.specialCodeHide;
+                printdata.modelName = printdata.barcodeFormate.modelName;
+
+                console.log(printdata.MRPHide);
                 printdata.CompanyID = CompanyID;
                 printdata.CompanyBarcode = 5
                 var file = "barcode" + CompanyID + ".pdf";
@@ -1068,9 +1102,8 @@ module.exports = {
                                     options = {
                                         "height": "0.70in",
                                         "width": "4.41in",
-                                        // "height": "0.90in",
-                                        // "width": "6.00in",
                                     };
+                                    console.log(options);
                                 }
                             }
 

@@ -241,6 +241,7 @@
                                                                 required>
                                                                 <mat-option value="invoice.ejs">invoice.ejs</mat-option>
                                                                 <mat-option value="Arabic.ejs">Arabic.ejs</mat-option>
+                                                                <mat-option value="invoiceSapphire.ejs">invoiceSapphire.ejs</mat-option>
                                                                 <mat-option
                                                                     value="Santosh_Optical.ejs">Santosh_Optical.ejs</mat-option>
                                                             </mat-select>
@@ -1017,8 +1018,36 @@
                                                                     </mat-form-field>
                                                                 </div>
                                                                 
-                                                              
+                                                                <div class="col-md-12 mb-0">
+                                                                    <h2>Barcode Hide option </h2>
+                                                            </div>
                                                                 <div class="col-md-3 mb-0">
+                                                                        <mat-slide-toggle name="MRPHide"   color="primary" #Multiplecontrol
+                                                                        [(ngModel)]="barcode.MRPHide" class="example-margin">MRP
+                                                                    </mat-slide-toggle>
+                                                                </div>
+                                                                <div class="col-md-2 mb-0">
+                                                                        <mat-slide-toggle name="taxHide"   color="primary" #Multiplecontrol
+                                                                        [(ngModel)]="barcode.taxHide" class="example-margin">Tax
+                                                                    </mat-slide-toggle>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                        <mat-slide-toggle name="specialCodeHide"   color="primary" #Multiplecontrol
+                                                                        [(ngModel)]="barcode.specialCodeHide" class="example-margin">Special Code
+                                                                    </mat-slide-toggle>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                        <mat-slide-toggle name="productNameHide"   color="primary" #Multiplecontrol
+                                                                        [(ngModel)]="barcode.productNameHide" class="example-margin">Product Name
+                                                                    </mat-slide-toggle>
+                                                                </div>
+                                                                <div class="col-md-3 mb-0">
+                                                                        <mat-slide-toggle name="modelName"   color="primary" #Multiplecontrol
+                                                                        [(ngModel)]="barcode.modelName" class="example-margin">Model Name
+                                                                    </mat-slide-toggle>
+                                                                </div>
+                                                              
+                                                                <div class="col-md-12 mt-2 mb-0">
                                                                     <button class="me-3" mat-raised-button
                                                                         color="primary" [disabled]="!fbc.valid"
                                                                         (click)="saveBarcodeFormate()">Save</button>
@@ -1034,10 +1063,10 @@
                                                     <div class="col-12 p-0">
                                                         <!-- center log -->
                                                         <span *ngIf="this.barcode.billHeader == '0'">
-                                                            <div style="width: {{this.barcode.barcodeWidth}}px; height:{{this.barcode.barcodeHeight}}px; padding-top:{{this.barcode.paddingTop}}px;padding-bottom:{{this.barcode.paddingBotton}}px;padding-left:{{this.barcode.paddingLeft}}px;padding-right:{{this.barcode.paddingRight}}px; margin-top:{{this.barcode.marginTop}}px;margin-bottom:{{this.barcode.marginBottom}}px;margin-left:{{this.barcode.marginLeft}}px;margin-right:{{this.barcode.marginRight}}px; border:1px solid #000 ;">
+                                                            <div style="width: {{this.barcode.barcodeWidth}}in; height:{{this.barcode.barcodeHeight}}in; padding-top:{{this.barcode.paddingTop}}px;padding-bottom:{{this.barcode.paddingBotton}}px;padding-left:{{this.barcode.paddingLeft}}px;padding-right:{{this.barcode.paddingRight}}px; margin-top:{{this.barcode.marginTop}}px;margin-bottom:{{this.barcode.marginBottom}}px;margin-left:{{this.barcode.marginLeft}}px;margin-right:{{this.barcode.marginRight}}px; border:1px solid #000 ;">
                                                                 <table style=" width: {{this.barcode.leftWidth}}%; float:{{this.barcode.floatLeftSide}}">
                                                                     <tr>
-                                                                        <th style="font-size: {{this.barcode.BarcodeNameFontSize}}px;">Barcode Name</th>
+                                                                        <th style="font-size: {{this.barcode.barcodeNameFontSize}}px;">Barcode Name</th>
                                                                     </tr>
                                                                     <tr>
                                                                         <th> 
@@ -1047,16 +1076,19 @@
                                                                 </table> 
                                                                
                                                                 <table style=" width: {{this.barcode.rightWidth}}%; float:{{this.barcode.floatRightSide}};overflow: hidden;line-height: {{this.barcode.mrpLineHeight}}px;">
-                                                                    <tr>
+                                                                    <tr *ngIf="this.barcode.MRPHide == true">
                                                                         <th style="font-size: {{this.barcode.mrpFontSize}}px; ">MRP</th>
                                                                     </tr>
-                                                                    <tr>
-                                                                        <th style="font-size: {{this.barcode.incTaxFontSize}}px;">Inc all tax</th>
+                                                                    <tr *ngIf="this.barcode.taxHide == true">
+                                                                        <th style="font-size: {{this.barcode.incTaxFontSize}}px;">(Inc. of all Taxes) </th>
                                                                     </tr>
-                                                                    <tr>
+                                                                    <tr *ngIf="this.barcode.productNameHide == true">
                                                                         <th style="font-size: {{this.barcode.productBrandFontSize}}px; ">Product Brand Name</th>
                                                                     </tr>
-                                                                    <tr>
+                                                                    <tr *ngIf="this.barcode.specialCodeHide == true">
+                                                                        <th style="font-size: {{this.barcode.productModelFontSize}}px; ">special Code</th>
+                                                                    </tr>
+                                                                    <tr *ngIf="this.barcode.modelName == true">
                                                                         <th style="font-size: {{this.barcode.productModelFontSize}}px; ">Product Model Name</th>
                                                                     </tr>
                                                                 </table>

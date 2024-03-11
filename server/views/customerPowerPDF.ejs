@@ -14,9 +14,14 @@
     html body{
         zoom: 100%;
     }
+
+    .TBLbLOD thead tr th {
+      font-weight: 900 !important;
+    }
    </style>
 </head>
 
+<% if (data.customer.CompanyID !== 1) { %>
 <body>
  
       <%- include('./header.ejs', {pageNumber: 1}) %>
@@ -424,5 +429,51 @@
     </div>
 
 </body>
+<%} %>
 
+<% if (data.customer.CompanyID === 1) { %>
+   <body>
+      <section style="margin-top: 2%;">
+          <table style="width: 100%;">
+             <tr  style="height: 30px;">
+               <th><%=data.customer.Name%></th>
+             </tr>
+          </table>
+          <table class="TBLbLOD" style="width: 100%; border: 2px solid #000; text-align: left;">
+            <thead>
+               <tr style="height: 30px;">
+                  <th>SIDE</th>
+                  <th>SPH</th>
+                  <th>CYL</th>
+                  <th>AXIS</th>
+                  <th>ADD</th>
+                </tr>
+            </thead>
+             <tbody>
+                <tr  style="height: 30px;">
+                  <td>L</td>
+                  <td> <%=data.spectacle.LEDPSPH%> </td> 
+                  <td> <%=data.spectacle.LEDPCYL%> </td> 
+                  <td> <%=data.spectacle.LEDPAxis%> </td> 
+                  <td> <%=data.spectacle.LEDPVA%> </td> 
+                  <td> <%=data.spectacle.L_Addition%> </td> 
+                </tr>
+                <tr  style="height: 30px;">
+                  <td>R</td>
+                  <td> <%=data.spectacle.REDPSPH%> </td> 
+                  <td> <%=data.spectacle.REDPCYL%> </td> 
+                  <td> <%=data.spectacle.REDPAxis%> </td> 
+                  <td> <%=data.spectacle.REDPVA%> </td> 
+                  <td> <%=data.spectacle.R_Addition%> </td> 
+                </tr>
+             </tbody>
+             <tfoot>
+                <tr  style="height: 30px;">
+                  <td colspan="4"><%=data.spectacle.Shade%>  </td>
+                </tr>
+             </tfoot>
+          </table>
+      </section>
+   </body>
+<%} %>
 </html>
