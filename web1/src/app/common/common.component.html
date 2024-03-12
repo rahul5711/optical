@@ -230,8 +230,8 @@
             <div class="profile-box" *ngIf="showProfileBox">
               <!-- Your profile content goes here -->
               <!-- For example, display user details -->
-              <h2 class="m-0 p-0" style="color: #ff5100;">{{ user?.Name }}</h2>
-              <p class="h5">{{ this.dropShoplist[0].Name }}</p>
+              <h2 class="m-0 p-0" style="color: #ff5100;text-transform: capitalize;">{{ user?.Name }}</h2>
+              <p class="h5">{{ this.dropShoplist[0].Name }} <span [style.color]="'blue'" *ngIf=" this.dropShoplist[0].AreaName !== 'null'">({{ this.dropShoplist[0].Name }}) </span> </p>
               <button class="btnuser" (click)="logout()">Log Out</button>
             </div>
           </div>

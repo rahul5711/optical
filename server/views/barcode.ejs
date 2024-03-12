@@ -128,17 +128,19 @@
                         </div>
                     </th>
                     <th  style="width: 200px;">
-                        <% if (data.MRPHide === true){%>
+                       
                         <div 
                             style="text-align: left; font-size: 22px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 18px;">
+                            <% if (data.MRPHide == 'true' ){%>
                             <% if (data.CompanyID !== 2){%>
                                        MRP  <%=i.RetailPrice%>    
                               <%}%>
                             <% if (data.CompanyID == 2){%>
                                        OMR  <%=i.RetailPrice%>    
-                              <%}%>            
+                              <%}%>    
+                              <%}%>         
                         </div>
-                        <%}%> 
+                       
                         <div
                             style="text-align: left; font-size: 14px; font-weight: 600;letter-spacing: 0.1px;margin-left: 18px; font-family: verdana ;">
                             (Inc. of all Taxes) 

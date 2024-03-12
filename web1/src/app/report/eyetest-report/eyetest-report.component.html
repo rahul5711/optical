@@ -230,7 +230,7 @@
 
                                                 <td> {{ i+1 }} </td>
                                                 <td> {{ d.CustomerName }} </td>
-                                                <td> {{ d.MobileNo1 }} </td>
+                                                <td> {{ d.CustomerMobileNo1 }} </td>
                                                 <td> {{ d.Family }} </td>
                                                 <td> {{ d.RefferedByDoc }} </td>
                                                 <td> {{ d.ShopName }} <span [style.color]="'blue'"
@@ -286,6 +286,7 @@
                                                 <th class="text-left">L_Addition</th>
                                                 <th class="text-left">VisitDate</th>
                                                 <th class="text-left">Lens/Material</th>
+                                                <th class="text-left">VisitDate</th>
                                             </tr>
                                         </thead>
                                         <tbody *ngFor="let c of eyeList " class="text-center">
@@ -326,6 +327,7 @@
                                                 <td class="text-left">{{cc?.L_Addition}}</td>
                                                 <td class="text-left">{{cc?.FittingHeight}}</td>
                                                 <td class="text-left">{{cc?.Lens}}</td>
+                                                <td class="text-left">{{cc?.VisitDate}}</td>
                                             </tr>
 
                                             <tr *ngFor="let cs of c.contact_lens_rx ">
@@ -365,12 +367,14 @@
                                                 <td class="text-left">{{cs?.L_Addition}}</td>
                                                 <td class="text-left">{{cs?.Other}}</td>
                                                 <td class="text-left">{{cs?.Material}}</td>
+                                                <td class="text-left">{{cs?.VisitDate}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div> -->
+
                     </div>
                 </div>
             </div>

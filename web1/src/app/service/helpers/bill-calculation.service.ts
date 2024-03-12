@@ -53,6 +53,7 @@ export class BillCalculationService {
               backdrop: false,
             });
             BillItem.DiscountPercentage = 0
+            BillItem.DiscountAmount = 0
           } else {
             BillItem.DiscountAmount = +BillItem.Quantity * +BillItem.UnitPrice * +BillItem.DiscountPercentage / 100;
           }

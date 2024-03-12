@@ -18,10 +18,11 @@
     .TBLbLOD thead tr th {
       font-weight: 900 !important;
     }
+
    </style>
 </head>
 
-<% if (data.customer.CompanyID !== 1) { %>
+<% if (data.customer.CompanyID !== 169) { %>
 <body>
  
       <%- include('./header.ejs', {pageNumber: 1}) %>
@@ -431,7 +432,7 @@
 </body>
 <%} %>
 
-<% if (data.customer.CompanyID === 1) { %>
+<% if (data.customer.CompanyID === 169) { %>
    <body>
       <section style="margin-top: 2%;">
           <table style="width: 100%;">

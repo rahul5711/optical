@@ -355,16 +355,12 @@ export class CompanySettingComponent implements OnInit {
           if (res.data[0] != undefined) {
             this.barcode = res.data[0]
             if (this.barcode !== null && this.barcode !== undefined && this.barcode.length !== 0) {
-             
-          
               const stringToBoolean = (value: string) => value.toLowerCase() === 'true';
               this.barcode.MRPHide = stringToBoolean(this.barcode.MRPHide.toString());
               this.barcode.taxHide = stringToBoolean(this.barcode.taxHide.toString());
               this.barcode.productNameHide = stringToBoolean(this.barcode.productNameHide.toString());
               this.barcode.specialCodeHide = stringToBoolean(this.barcode.specialCodeHide.toString());
               this.barcode.modelName = stringToBoolean(this.barcode.modelName.toString());
-
-
             }
           }
         } else {
