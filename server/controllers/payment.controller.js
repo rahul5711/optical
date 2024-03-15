@@ -752,7 +752,7 @@ module.exports = {
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select commissionmaster.*, COALESCE( user.Name, doctor.Name ) AS UserName from commissionmaster left join user as user on user.ID = commissionmaster.UserID and commissionmaster.UserType = 'Employee' left join doctor on doctor.ID = commissionmaster.UserID and commissionmaster.UserType = 'Doctor' where commissionmaster.CompanyID = ${CompanyID} order by commissionmaster.ID desc`
+            let qry = `select commissionmaster.*, COALESCE( user.Name, doctor.Name ) AS UserName, shop.Name AS ShopName, shop.AreaName AS AreaName from commissionmaster left join user as user on user.ID = commissionmaster.UserID and commissionmaster.UserType = 'Employee' left join doctor on doctor.ID = commissionmaster.UserID and commissionmaster.UserType = 'Doctor' LEFT JOIN shop ON shop.ID = commissionmaster.ShopID  where commissionmaster.CompanyID = ${CompanyID} order by commissionmaster.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
