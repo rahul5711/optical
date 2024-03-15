@@ -1010,7 +1010,7 @@ module.exports = {
 
                 ele.ProductFullName = ele.ProductName;
                 ele.ProductBrandName = ProductBrandName.substring(0, 14);
-                ele.ProductModelName = ProductModelName !== undefined ? ProductModelName.substring(0, 14) : '';
+                ele.ProductModelName = ProductModelName !== undefined ? ProductModelName.substring(0, 18) : '';
                 ele.ProductUniqueBarcode = ele.UniqueBarcode;
                 ele.Barcode = ele.BaseBarCode;
                 ele.BarcodeName = shopdetails[0].BarcodeName;

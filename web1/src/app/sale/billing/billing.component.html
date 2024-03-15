@@ -709,20 +709,19 @@
                                                                 <input matInput name="Shade" [(ngModel)]="spectacle.Shade" />
                                                             </mat-form-field>
                                                         </div>
-                                                    <div class="col-md-1 col-3 p-md-0">
-                                                        <mat-form-field class="example-full-width mb-0">
-                                                            <mat-label>Prism_R</mat-label>
-                                                            <input matInput name="R_Prism"
-                                                                [(ngModel)]="spectacle.R_Prism" />
-                                                        </mat-form-field>
-                                                    </div>
-                                                    <div class="col-md-1 col-3 p-md-0">
-                                                        <mat-form-field class="example-full-width mb-0">
-                                                            <mat-label>Prism_L</mat-label>
-                                                            <input matInput name="L_Prism"
-                                                                [(ngModel)]="spectacle.L_Prism" />
-                                                        </mat-form-field>
-                                                    </div>
+                                                  
+                                                <div class="col-xl-3 col-lg-3  col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>PD_R</mat-label>
+                                                        <input matInput name="REPD" [(ngModel)]="spectacle.REPD" />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-3 col-lg-3  col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>PD_L</mat-label>
+                                                        <input matInput name="LEPD" [(ngModel)]="spectacle.LEPD" />
+                                                    </mat-form-field>
+                                                </div>
                                                     <div class="col-md-1 col-3 p-md-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>VertexDis</mat-label>
@@ -1777,16 +1776,18 @@
                                                     </mat-form-field>
                                                 </div>
                                                
-                                                <div class="col-xl-3 col-lg-3  col-md-6 col-sm-6 col-6 mb-0">
+                                                <div class="col-md-1 col-3 p-md-0">
                                                     <mat-form-field class="example-full-width mb-0">
-                                                        <mat-label>PD_R</mat-label>
-                                                        <input matInput name="REPD" [(ngModel)]="spectacle.REPD" />
+                                                        <mat-label>Prism_R</mat-label>
+                                                        <input matInput name="R_Prism"
+                                                            [(ngModel)]="spectacle.R_Prism" />
                                                     </mat-form-field>
                                                 </div>
-                                                <div class="col-xl-3 col-lg-3  col-md-6 col-sm-6 col-6 mb-0">
+                                                <div class="col-md-1 col-3 p-md-0">
                                                     <mat-form-field class="example-full-width mb-0">
-                                                        <mat-label>PD_L</mat-label>
-                                                        <input matInput name="LEPD" [(ngModel)]="spectacle.LEPD" />
+                                                        <mat-label>Prism_L</mat-label>
+                                                        <input matInput name="L_Prism"
+                                                            [(ngModel)]="spectacle.L_Prism" />
                                                     </mat-form-field>
                                                 </div>
                                                 <div class="col-xl-3 col-lg-3  col-md-6 col-sm-6 col-6 mb-0">
