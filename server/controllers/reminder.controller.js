@@ -32,28 +32,28 @@ module.exports = {
                 shopId = `and ShopID = ${shopid}`
             }
 
-            let date = moment(new Date()).format("YYYY-MM-DD")
+            let date = moment(new Date()).format("MM-DD")
 
             if (dateType === 'today') {
-                date = moment(new Date()).format("YYYY-MM-DD");
+                date = moment(new Date()).format("MM-DD");
             } else if (dateType === 'tomorrow') {
-                date = moment(new Date()).add(1, "days").format("YYYY-MM-DD");
+                date = moment(new Date()).add(1, "days").format("MM-DD");
             } else if (dateType === 'yesterday') {
-                date = moment(new Date()).add(-1, 'days').format("YYYY-MM-DD");
+                date = moment(new Date()).add(-1, 'days').format("MM-DD");
             } else {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
 
             if (type === 'Customer') {
-                qry = `select Name, MobileNo1, DOB from customer where CompanyID = ${CompanyID} and DOB = '${date}' ${shopId}`
+                qry = `select Name, MobileNo1, DOB from customer where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}' ${shopId}`
             } else if (type === 'Supplier') {
-                qry = `select Name, MobileNo1, DOB from supplier where CompanyID = ${CompanyID} and DOB = '${date}'`
+                qry = `select Name, MobileNo1, DOB from supplier where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
             } else if (type === 'Employee') {
-                qry = `select Name, MobileNo1, DOB from user where CompanyID = ${CompanyID} and DOB = '${date}'`
+                qry = `select Name, MobileNo1, DOB from user where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
             } else if (type === 'Doctor') {
-                qry = `select Name, MobileNo1, DOB from doctor where CompanyID = ${CompanyID} and DOB = '${date}'`
+                qry = `select Name, MobileNo1, DOB from doctor where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
             } else if (type === 'Fitter') {
-                qry = `select Name, MobileNo1, DOB from fitter where CompanyID = ${CompanyID} and DOB = '${date}'`
+                qry = `select Name, MobileNo1, DOB from fitter where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
             } else {
                 return res.send({ message: "Invalid Query Type Data" })
             }
@@ -93,28 +93,28 @@ module.exports = {
                 shopId = `and ShopID = ${shopid}`
             }
 
-            let date = moment(new Date()).format("YYYY-MM-DD")
+            let date = moment(new Date()).format("MM-DD")
 
             if (dateType === 'today') {
-                date = moment(new Date()).format("YYYY-MM-DD");
+                date = moment(new Date()).format("MM-DD");
             } else if (dateType === 'tomorrow') {
-                date = moment(new Date()).add(1, "days").format("YYYY-MM-DD");
+                date = moment(new Date()).add(1, "days").format("MM-DD");
             } else if (dateType === 'yesterday') {
-                date = moment(new Date()).add(-1, 'days').format("YYYY-MM-DD");
+                date = moment(new Date()).add(-1, 'days').format("MM-DD");
             } else {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
 
             if (type === 'Customer') {
-                qry = `select Name, MobileNo1, Anniversary from customer where CompanyID = ${CompanyID} and Anniversary = '${date}'  ${shopId}`
+                qry = `select Name, MobileNo1, Anniversary from customer where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d')  = '${date}'  ${shopId}`
             } else if (type === 'Supplier') {
-                qry = `select Name, MobileNo1, Anniversary from supplier where CompanyID = ${CompanyID} and Anniversary = '${date}'`
+                qry = `select Name, MobileNo1, Anniversary from supplier where CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
             } else if (type === 'Employee') {
-                qry = `select Name, MobileNo1, Anniversary from user where CompanyID = ${CompanyID} and Anniversary = '${date}'`
+                qry = `select Name, MobileNo1, Anniversary from user where CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
             } else if (type === 'Doctor') {
-                qry = `select Name, MobileNo1, Anniversary from doctor where CompanyID = ${CompanyID} and Anniversary = '${date}'`
+                qry = `select Name, MobileNo1, Anniversary from doctor where CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
             } else if (type === 'Fitter') {
-                qry = `select Name, MobileNo1, Anniversary from fitter where CompanyID = ${CompanyID} and Anniversary = '${date}'`
+                qry = `select Name, MobileNo1, Anniversary from fitter where CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
             } else {
                 return res.send({ message: "Invalid Query Type Data" })
             }
@@ -262,7 +262,8 @@ module.exports = {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
 
-            let qry = `select DISTINCT(billmaster.ID),customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') ${shopId} and DATE_FORMAT(DATE_SUB(billmaster.BillDate, INTERVAL ${feedbackDays} DAY), '%Y-%m-%d') = '${date}'`
+            let qry = `select DISTINCT(billmaster.ID),customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') ${shopId} 
+            and DATE(billmaster.BillDate) = DATE_SUB('${date}', INTERVAL ${feedbackDays} DAY)`
 
             const [datum] = await mysql2.pool.query(qry)
 
@@ -312,7 +313,9 @@ module.exports = {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
 
-            let qry = `select DISTINCT(billmaster.ID), customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  ${shopId} and DATE_FORMAT(DATE_SUB(billmaster.BillDate, INTERVAL ${serviceDays} DAY), '%Y-%m-%d') = '${date}'`
+            let qry = `select DISTINCT(billmaster.ID), customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  ${shopId} and 
+            DATE_FORMAT(DATE_SUB(billmaster.BillDate, INTERVAL ${serviceDays} DAY), '%Y-%m-%d') = '${date}'`
+            
 
 
             const [datum] = await mysql2.pool.query(qry)
