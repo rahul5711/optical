@@ -206,6 +206,7 @@ export class SupplierPoComponent implements OnInit {
     }
 
     if (this.orderComplete === false) {
+      this.orderSupplier = true
       const subs: Subscription = this.bill.getSupplierPo(ID, Parem).subscribe({
         next: (res: any) => {
           if (res.success) {
@@ -225,6 +226,7 @@ export class SupplierPoComponent implements OnInit {
         itemsPerPage: 50000,
         Parem: Parem
       }
+      this.orderComplete = true
       const subs: Subscription = this.bill.getSupplierPoList(dtm).subscribe({
         next: (res: any) => {
           if (res.success) {
