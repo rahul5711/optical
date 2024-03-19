@@ -16,6 +16,7 @@ import { ShopService } from '../service/shop.service';
 import { RoleService } from '../service/role.service';
 import { DataStorageServiceService } from '../service/helpers/data-storage-service.service';
 import { environment } from 'src/environments/environment';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-login',
@@ -217,46 +218,117 @@ export class LoginComponent implements OnInit {
           }
 
           if (res.data.UserGroup == "CompanyAdmin") {
-            localStorage.setItem('user', JSON.stringify(res.data));
-            localStorage.setItem('company', JSON.stringify(res.Company));
-            localStorage.setItem('companysetting', JSON.stringify(res.CompanySetting));
-            localStorage.setItem('shop', JSON.stringify(res.shop));
-            localStorage.setItem('selectedShop', JSON.stringify([`${res.shop[0]?.ID}`]));
-            localStorage.setItem('permission', JSON.stringify(this.moduleList));
-            this.dataStorageService.permission = this.moduleList;
-            this.router.navigate(['/admin/CompanyDashborad'])
-              .then(() => {
-                // window.location.reload();
+            let differenceDay = Number(moment().diff(res.Company.CancellationDate, 'days').toString().substring(1));
+
+            if (moment() > moment(res.Company.EffectiveDate) && moment() <= moment(res.Company.CancellationDate) && differenceDay >= 1) {
+              localStorage.setItem('user', JSON.stringify(res.data));
+              localStorage.setItem('company', JSON.stringify(res.Company));
+              localStorage.setItem('companysetting', JSON.stringify(res.CompanySetting));
+              localStorage.setItem('shop', JSON.stringify(res.shop));
+              localStorage.setItem('selectedShop', JSON.stringify([`${res.shop[0]?.ID}`]));
+              localStorage.setItem('permission', JSON.stringify(this.moduleList));
+              this.dataStorageService.permission = this.moduleList;
+
+              if (differenceDay <= 10 || differenceDay <= 1) {
+                // alert("Your key will expire in the next " + differenceDay + " days");
+                Swal.fire({
+                  title: 'Your key will expire in the next ' + differenceDay + " days.",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Login',
+                  backdrop: false
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    this.router.navigate(['/admin/CompanyDashborad']).then(() => {
+                      // window.location.reload();
+                      Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Welcome TO ' + `${res.data.Name}`,
+                        showConfirmButton: false,
+                        timer: 1500
+                      });
+                    });
+                  }
+                })
+              } else if (differenceDay >= 1) {
+                this.router.navigate(['/admin/CompanyDashborad']);
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Welcome TO ' + `${res.data.Name}`,
+                  showConfirmButton: false,
+                  timer: 1500
+                });
+              }
+            } else {
+              // alert("Your plan expired, Please contact us");
+              Swal.fire({
+                position: 'center',
+                iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                iconColor: '#FF0000',
+                title: 'Your Server Plan Expired !',
+                showConfirmButton: true,
+                backdrop: false
               });
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'Welcome TO ' + `${res.data.Name}`,
-              showConfirmButton: false,
-              timer: 1500
-            })
+            }
           }
 
+
           if (res.data.UserGroup == "Employee") {
-            localStorage.setItem('company', JSON.stringify(res.Company));
-            localStorage.setItem('companysetting', JSON.stringify(res.CompanySetting));
-            localStorage.setItem('user', JSON.stringify(res.data));
-            localStorage.setItem('permission', JSON.stringify(this.moduleList));
-            this.dataStorageService.permission = this.moduleList;
-            this.dropShoplist = res.shop
-            this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
+            let differenceDay = Number(moment().diff(res.Company.CancellationDate, 'days').toString().substring(1));
+            
+            if (moment() > moment(res.Company.EffectiveDate) && moment() <= moment(res.Company.CancellationDate) && differenceDay >= 1) {
+              localStorage.setItem('company', JSON.stringify(res.Company));
+              localStorage.setItem('companysetting', JSON.stringify(res.CompanySetting));
+              localStorage.setItem('user', JSON.stringify(res.data));
+              localStorage.setItem('permission', JSON.stringify(this.moduleList));
+              this.dataStorageService.permission = this.moduleList;
+              this.dropShoplist = res.shop
+
+              if (differenceDay <= 10 || differenceDay <= 1) {
+                // alert("Your key will expire in the next " + differenceDay + " days");
+                Swal.fire({
+                  title: 'Your key will expire in the next ' + differenceDay + " days.",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Login',
+                  backdrop: false
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
+                  }
+                })
+              } else if (differenceDay >= 1) {
+                this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
+              }
+            } else {
+              // alert("Your plan expired, Please contact us");
+              Swal.fire({
+                position: 'center',
+                iconHtml: '<i class="fas fa-exclamation-circle"></i>',
+                iconColor: '#FF0000',
+                title: 'Your Server Plan Expired !',
+                showConfirmButton: true,
+                backdrop: false
+              });
+            }
           }
         }
         else {
-            Swal.fire({
-              icon: 'warning',
-              title: res.message,
-              showClass: {
-                popup: 'animate__animated animate__fadeInDown'
-              },
-              hideClass: {
-                popup: 'animate__animated animate__fadeOutUp'
-              }
+          Swal.fire({
+            icon: 'warning',
+            title: res.message,
+            showClass: {
+              popup: 'animate__animated animate__fadeInDown'
+            },
+            hideClass: {
+              popup: 'animate__animated animate__fadeOutUp'
+            }
           })
           this.as.errorToast(res.message);
         }
