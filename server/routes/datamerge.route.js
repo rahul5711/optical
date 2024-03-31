@@ -20,6 +20,7 @@ router.post('/fetchServiceMaster', verifyAccessTokenAdmin, Controller.fetchServi
 router.post('/saveBillService', verifyAccessTokenAdmin, Controller.saveServiceMaster)
 router.post('/saveTransferMaster', verifyAccessTokenAdmin, Controller.saveTransferMaster)
 router.post('/fetchExpense', verifyAccessTokenAdmin, Controller.fetchExpense)
+router.post('/chcekPhysicalStock', Controller.chcekPhysicalStock)
 
 
 module.exports = router
