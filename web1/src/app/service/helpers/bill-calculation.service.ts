@@ -57,6 +57,11 @@ export class BillCalculationService {
           } else {
             BillItem.DiscountAmount = +BillItem.Quantity * +BillItem.UnitPrice * +BillItem.DiscountPercentage / 100;
           }
+
+          if(BillItem.DiscountPercentage == 100){
+            BillItem.GSTPercentage = 0
+            BillItem.GSTType = 'None'
+          }
         }
         if (fieldName === 'DiscountAmount') {
           BillItem.DiscountPercentage = 100 * +BillItem.DiscountAmount / (+BillItem.Quantity * +BillItem.UnitPrice);
@@ -71,6 +76,10 @@ export class BillCalculationService {
             BillItem.DiscountAmount = 0
             BillItem.DiscountPercentage = 0
           } 
+          if(BillItem.DiscountPercentage == 100){
+            BillItem.GSTPercentage = 0
+            BillItem.GSTType = 'None'
+          }
         }
         break;
 

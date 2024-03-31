@@ -67,7 +67,7 @@ export class BillComponent implements OnInit {
 
   myControl = new FormControl('');
   ProductSrchList: any;
-  
+
   BillLink = '';
   safeUrl!: SafeResourceUrl;
   constructor(
@@ -123,7 +123,7 @@ export class BillComponent implements OnInit {
 
   body = {
     customer: null, billMaster: null, billItemList: null, serviceList: null, employeeList: null, paidList: null, unpaidList: null, Shop: null,
-    Company: null, CompanySetting: null, User: null, mode: null, ShowPower: false, CustomerCredit:null
+    Company: null, CompanySetting: null, User: null, mode: null, ShowPower: false, CustomerCredit: null
   };
   ShowPower = false
   billItemCheckList: any
@@ -581,7 +581,7 @@ export class BillComponent implements OnInit {
           next: (res: any) => {
             if (res.success) {
               element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-              element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));  
+              element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
             } else {
               this.as.errorToast(res.message)
             }
@@ -714,7 +714,7 @@ export class BillComponent implements OnInit {
               this.BillItem.PurchasePrice = this.searchList.UnitPrice;
               this.BillItem.Quantity = 0;
               this.myControl = new FormControl(this.BillItem.ProductName)
-              if (this.selectedProduct == 'CONTACT LENS' || this.selectedProduct == 'SOLUTION' ) {
+              if (this.selectedProduct == 'CONTACT LENS' || this.selectedProduct == 'SOLUTION') {
                 this.showProductExpDate = true
               } else {
                 this.showProductExpDate = false
@@ -1016,7 +1016,7 @@ export class BillComponent implements OnInit {
 
       // Lens option
     }
-  
+
     else {
       this.billCalculation.calculations(fieldName, mode, this.BillItem, this.Service)
     }
@@ -1054,19 +1054,19 @@ export class BillComponent implements OnInit {
   AddDiscalculate(fieldName: any, mode: any) {
     let PaidAmount = 0
 
-    if (this.id2 == 0) { this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)} 
+    if (this.id2 == 0) { this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster) }
     else {
-      if (this.BillMaster.DueAmount >= this.BillMaster.AddlDiscountPercentage ) {
+      if (this.BillMaster.DueAmount >= this.BillMaster.AddlDiscountPercentage) {
         PaidAmount = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
         this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
         this.BillMaster.DueAmount = + this.BillMaster.TotalAmount - PaidAmount
-      } 
+      }
       else if (this.BillMaster.DueAmount >= this.BillMaster.AddlDiscount) {
         PaidAmount = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
         this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
         this.BillMaster.DueAmount = + this.BillMaster.TotalAmount - PaidAmount
       }
-      else  {
+      else {
         this.BillMaster.AddlDiscount = 0
         this.BillMaster.AddlDiscountPercentage = 0
         PaidAmount = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
@@ -1108,6 +1108,21 @@ export class BillComponent implements OnInit {
       this.BillItem.TotalAmount = 0;
       this.billCalculation.calculations('', '', this.BillItem, this.Service)
     } else {
+
+      // LENS POWER LAST INDEXING REMOVE CONDITION 
+      if (this.BillItem.ProductTypeName.toLowerCase() === 'lens') {
+        this.specList.forEach((s: any) => {
+          if (s.FieldName.toLowerCase() === 'POWER RANGE') {
+            // Assuming this.BillItem.ProductName contains the string 'PROGRESSIVE/ESSILOR/CRIZAL/CY +1.00 TO +4.00'
+            const lastSlashIndex = this.BillItem.ProductName.lastIndexOf('/');
+            // Extract the substring before the last "/"
+            const newProductName = this.BillItem.ProductName.substring(0, lastSlashIndex);
+            // Update the ProductName with the modified value
+            this.BillItem.ProductName = newProductName;
+          }
+        })
+      }
+
       this.billItemList.unshift(this.BillItem);
       this.calculateGrandTotal()
       console.log(this.billItemList);
@@ -1208,9 +1223,9 @@ export class BillComponent implements OnInit {
         });
         this.BillItem.ProductExpDate = this.BillItem.ProductExpDate === '' ? "0000-00-00" : this.BillItem.ProductExpDate;
         this.BillItem.ProductTypeName = this.selectedProduct
-        this.BillItem.ProductName = searchString
+        this.BillItem.ProductName = searchString.slice(0, -1);
         this.BillItem.Barcode = 'ManualProduct';
-        
+
       }
       // additem Pre order
       if (this.BillItem.Barcode === null || this.BillItem.Barcode === '') {
@@ -1232,7 +1247,7 @@ export class BillComponent implements OnInit {
           });
           this.BillItem.ProductExpDate = this.BillItem.ProductExpDate === '' ? "0000-00-00" : this.BillItem.ProductExpDate;
           this.BillItem.ProductTypeName = this.selectedProduct
-          this.BillItem.ProductName = searchString
+          this.BillItem.ProductName = searchString.slice(0, -1)
           this.BillItem.Barcode = '0'
           this.BillItem.BaseBarCode = '0'
 
@@ -1410,7 +1425,7 @@ export class BillComponent implements OnInit {
           confirmButtonText: 'Yes, delete it!',
           backdrop: false,
         }).then((result) => {
-          
+
           if (result.isConfirmed) {
             this.sp.show();
             let billlIst: any[] = this.billItemList
@@ -2023,7 +2038,7 @@ export class BillComponent implements OnInit {
           res.data.forEach((element: any) => {
             if (element.ProductTypeName !== 'LENS' && (element.LensType === null || element.LensType === '')) {
               element.LensType = 'NO';
-            }else{
+            } else {
               element.LensType = '';
             }
           });
@@ -2064,13 +2079,13 @@ export class BillComponent implements OnInit {
 
         const i = this.rateCardList.findIndex((ele: any) => ele.LensType === element.LensType);
 
-          if (i === -1) {
-            missingType = missingType + element.LensType + " ";
-          } else if (element.LensType == '' || element.LensType == null) {
-            element.LensType = 'NO';
-          } else {
-            element.FitterCost = this.calculateFitterCost(element.LensType);
-          }
+        if (i === -1) {
+          missingType = missingType + element.LensType + " ";
+        } else if (element.LensType == '' || element.LensType == null) {
+          element.LensType = 'NO';
+        } else {
+          element.FitterCost = this.calculateFitterCost(element.LensType);
+        }
 
       });
 
@@ -2148,8 +2163,8 @@ export class BillComponent implements OnInit {
     //   this.disbaleupdate = true
     // }
 
-       data.UpdateProduct = !data.UpdateProduct
-      this.disbaleupdate = true
+    data.UpdateProduct = !data.UpdateProduct
+    this.disbaleupdate = true
   }
 
   calculateFields1(fieldName: any, mode: any, data: any) {
@@ -2339,7 +2354,7 @@ export class BillComponent implements OnInit {
         `${WhatsappMsg}%0A` +
         `*Save your Credit note*: ${this.CreditPDF}%0A` +
         `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A${this.loginShop.MobileNo1}%0A${this.loginShop.Website}`;
-    } else if(mode === 'Fbill') {
+    } else if (mode === 'Fbill') {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill FinalDelivery');
       var msg = `*Hi ${this.customer.Name},*%0A` +
         `${WhatsappMsg}%0A` +
@@ -2360,11 +2375,11 @@ export class BillComponent implements OnInit {
         `*Please give your valuable Review for us !*`
     }
 
-    if(this.customer.MobileNo1 != ''){
+    if (this.customer.MobileNo1 != '') {
       var mob = this.company.Code + this.customer.MobileNo1;
-      var url = `https://wa.me/${mob}?text=${msg}`;
+      var url = `https://wa.me/${mob.trim()}?text=${msg}`;
       window.open(url, "_blank");
-    }else{
+    } else {
       Swal.fire({
         position: 'center',
         icon: 'warning',
@@ -2374,7 +2389,7 @@ export class BillComponent implements OnInit {
     }
   }
 
- 
+
 
 
   getWhatsAppMessage(temp: any, messageName: any) {

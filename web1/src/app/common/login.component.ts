@@ -229,10 +229,10 @@ export class LoginComponent implements OnInit {
               localStorage.setItem('permission', JSON.stringify(this.moduleList));
               this.dataStorageService.permission = this.moduleList;
 
-              if (differenceDay <= 10 || differenceDay <= 1) {
+              if (differenceDay <= 30 || differenceDay <= 1) {
                 // alert("Your key will expire in the next " + differenceDay + " days");
                 Swal.fire({
-                  title: 'Your key will expire in the next ' + differenceDay + " days.",
+                  title: 'Your Server Plan Expired In Next ' + differenceDay + " Days.",
                   icon: 'warning',
                   showCancelButton: true,
                   confirmButtonColor: '#3085d6',
@@ -288,10 +288,10 @@ export class LoginComponent implements OnInit {
               this.dataStorageService.permission = this.moduleList;
               this.dropShoplist = res.shop
 
-              if (differenceDay <= 10 || differenceDay <= 1) {
+              if (differenceDay <= 30 || differenceDay <= 1) {
                 // alert("Your key will expire in the next " + differenceDay + " days");
                 Swal.fire({
-                  title: 'Your key will expire in the next ' + differenceDay + " days.",
+                  title: 'Your Server Plan Expired In Next ' + differenceDay + " Days.",
                   icon: 'warning',
                   showCancelButton: true,
                   confirmButtonColor: '#3085d6',

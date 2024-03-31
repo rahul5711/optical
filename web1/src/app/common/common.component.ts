@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
@@ -16,7 +16,7 @@ import { environment } from 'src/environments/environment';
 })
 export class CommonComponent implements OnInit {
   env = environment;
-
+  @HostListener('document:keydown.control.h', ['$event'])
   user: any = JSON.parse(localStorage.getItem('user') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
 
@@ -158,6 +158,7 @@ export class CommonComponent implements OnInit {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
   }
 
+ 
 
   myFunctionS(mode:any) {
     

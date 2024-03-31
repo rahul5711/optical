@@ -1181,7 +1181,7 @@ srcCustomerBox = false
   
     if(this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1){
       var mob = this.company.Code + this.data.MobileNo1;
-      var url = `https://wa.me/${mob}?text=${msg}`;
+      var url = `https://wa.me/${mob.trim()}?text=${msg}`;
       window.open(url, "_blank");
     }else{
       Swal.fire({

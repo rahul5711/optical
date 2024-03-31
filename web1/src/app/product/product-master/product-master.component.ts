@@ -90,6 +90,9 @@ export class ProductMasterComponent implements OnInit {
     this.sp.show()
     this.specList.forEach((element: any) => {
       if (element.FieldType === 'DropDown' && element.Ref === '0') {
+        element.SptTableData = null;
+        element.SptFilterData = null;
+        
         const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
           next: (res: any) => {
             if (res.success) {
@@ -108,11 +111,16 @@ export class ProductMasterComponent implements OnInit {
   }
 
   getFieldSupportData(index: any) {
+
     this.specList.forEach((element: any) => {
       if (element.Ref === this.specList[index].FieldName.toString()) {
+  
         const subs: Subscription = this.ps.getProductSupportData(this.specList[index].SelectedValue, element.SptTableName).subscribe({
           next: (res: any) => {
             if (res.success) {
+              element.SptTableData = null;
+              element.SptFilterData = null;
+              element.SelectedValue = '';
               element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
               element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
               this.as.successToast(res.message)
@@ -127,6 +135,9 @@ export class ProductMasterComponent implements OnInit {
       }
     });
   }
+
+ 
+  
 
   displayAddField(i: any) {
     this.specList[i].DisplayAdd = 1;
@@ -152,7 +163,10 @@ export class ProductMasterComponent implements OnInit {
       let RefValue = 0;
       if (Ref !== 0) {
         this.specList.forEach((element: any, j: any) => {
-          if (element.FieldName === Ref) { RefValue = element.SelectedValue; }
+          if (element.FieldName === Ref) 
+          {
+             RefValue = element.SelectedValue;
+          }
         });
       }
       this.sp.show()
