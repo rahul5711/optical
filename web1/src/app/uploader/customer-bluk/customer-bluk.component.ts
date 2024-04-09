@@ -79,6 +79,7 @@ export class CustomerBlukComponent implements OnInit {
     'VisitDate' : '',
     'Remarks' : '',
     'Category' : '',
+    'SR_MRD_No' : '',
     }
   ]
 

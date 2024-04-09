@@ -417,7 +417,7 @@ module.exports = {
 
                 newData.Idd = 0
                 newData.CompanyID = CompanyID
-                newData.Sno = `${CompanyID}-${fd[0]}` ? `${CompanyID}-${fd[0]}` : ""
+                newData.Sno = fd[14] ? fd[14] : `${CompanyID}-${fd[0]}`
                 newData.PhotoURL = ""
                 newData.RefferedByDoc = ""
                 newData.ReferenceType = ""
