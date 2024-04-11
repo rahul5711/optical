@@ -511,6 +511,10 @@ module.exports = {
 
             console.log("Product Delete SuccessFUlly !!!");
 
+            const [deleteBarcodeMasterNew] = await mysql2.pool.query(`update barcodemasternew set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where PurchaseDetailID = ${Body.ID} and CompanyID = ${CompanyID} and CurrentStatus = 'Available'`)
+
+            console.log("Barcode Delete SuccessFUlly !!!");
+
             // update purchasemaster
             const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount}, DueAmount = ${Body.PurchaseMaster.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${Body.PurchaseMaster.InvoiceNo}' and ShopID = ${shopid}`)
 
