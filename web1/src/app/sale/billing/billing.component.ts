@@ -116,7 +116,7 @@ export class BillingComponent implements OnInit {
   spectacle: any = {
     ID: 'null', CustomerID: '', REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
     LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
-    R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: null, FileURL: null, Family: 'Self', ExpiryDate: '0000-00-00', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
+    R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: null, FileURL: null, Family: 'Self', ExpiryDate: '0000-00-00', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '',VisitDate: '',
   };
 
   clens: any = {
@@ -125,11 +125,11 @@ export class BillingComponent implements OnInit {
     R_Addition: '', L_Addition: '', R_KR: '', L_KR: '', R_HVID: '', L_HVID: '', R_CS: '', L_CS: '', R_BC: '', L_BC: '',
     R_Diameter: '', L_Diameter: '', BR: '', Material: '', Modality: '', RefferedByDoc: 'Self', Other: '', ConstantUse: false,
     NearWork: false, DistanceWork: false, Multifocal: false, PhotoURL: null, FileURL: null, Family: 'Self', Status: 1, CreatedBy: 0,
-    CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
+    CreatedOn: '', UpdatedBy: 0, UpdatedOn: '',VisitDate: '',
   };
 
   other: any = {
-    ID: 'null', CustomerID: '', BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
+    ID: 'null', CustomerID: '', BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '',VisitDate: '',
   };
 
   Check: any = { SpectacleCheck: true, ContactCheck: false, OtherCheck: false, };
@@ -471,12 +471,16 @@ srcCustomerBox = false
       if (element.ModuleName === 'Customer') {
         this.editCustomer = element.Edit;
         this.addCustomer = element.Add;
+        
         this.deleteCustomer = element.Delete;
       } if (element.ModuleName === 'CustomerBill') {
         this.CustomerBillView = element.View;
       }
     });
     this.data.VisitDate = moment().format('YYYY-MM-DD');
+    this.spectacle.VisitDate = moment().format('YYYY-MM-DD');
+    this.clens.VisitDate = moment().format('YYYY-MM-DD');
+    this.other.VisitDate = moment().format('YYYY-MM-DD');
     this.currentTime = new Date().toLocaleTimeString('en-IN', { hourCycle: 'h23' })
     if (this.id != 0) {
       this.getCustomerById();
@@ -581,6 +585,7 @@ srcCustomerBox = false
     if (this.Check.SpectacleCheck === true) {
       this.data.tablename = 'spectacle_rx'
       this.data.spectacle_rx = this.spectacle
+     
 
       const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL','LEDPSPH','LEDPCYL','LENPSPH','LENPCYL']
 
@@ -589,7 +594,7 @@ srcCustomerBox = false
           this.data.spectacle_rx[prop] = '+0.00';
         }
       }
-
+      this.spectacle.VisitDate =  moment(this.spectacle.VisitDate).format('YYYY-MM-DD');
       this.spectacle.ExpiryDate = moment().add(Number(this.spectacle.Reminder), 'M').format('YYYY-MM-DD');
     }
     if (this.Check.ContactCheck === true) {
@@ -603,11 +608,12 @@ srcCustomerBox = false
           this.data.contact_lens_rx[prop] = '+0.00';
         }
       }
-
+      this.clens.VisitDate = this.clens.VisitDate ;
     }
     if (this.Check.OtherCheck === true) {
       this.data.tablename = 'other_rx'
       this.data.other_rx = this.other
+      this.other.VisitDate = this.other.VisitDate;
     }
 
     if (this.data.MobileNo1 !== '') {
@@ -701,7 +707,8 @@ srcCustomerBox = false
 
           if (res.spectacle_rx.length !== 0) {
             this.spectacle = res.spectacle_rx[0]
-
+            this.spectacle.VisitDate = moment(this.spectacle.VisitDate).format('YYYY-MM-DD');
+         
             const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL','LEDPSPH','LEDPCYL','LENPSPH','LENPCYL'];
             for (const prop of PLANOCheck) {
               if (this.spectacle[prop] === '+0.00' || this.spectacle[prop] === "0") {
@@ -718,7 +725,7 @@ srcCustomerBox = false
 
           if (res.contact_lens_rx.length !== 0) {
             this.clens = res.contact_lens_rx[0]
-
+            this.clens.VisitDate = moment(this.clens.VisitDate).format('YYYY-MM-DD');
             const PLANOCheck1 = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL']
             for (const prop1 of PLANOCheck1) {
               if (this.clens[prop1] === '+0.00' || this.spectacle[prop1] === "0") {
@@ -735,6 +742,7 @@ srcCustomerBox = false
 
           if (res.other_rx.length !== 0) {
             this.other = res.other_rx[0]
+            this.other.VisitDate = moment(this.other.VisitDate).format('YYYY-MM-DD');
           }
           this.getScoList()
           this.as.successToast(res.message)
@@ -784,7 +792,7 @@ srcCustomerBox = false
     this.spectacle = {
       ID: '', CustomerID: '', REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
       LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
-      R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: '', DistanceWork: false, UploadBy: 'Upload', PhotoURL: null, FileURL: null, Family: 'Self', ExpiryDate: '0000-00-00', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
+      R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: '', DistanceWork: false, UploadBy: 'Upload', PhotoURL: null, FileURL: null, Family: 'Self', ExpiryDate: '0000-00-00', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: this.spectacle.other,
     };
 
     this.clens = {
@@ -793,12 +801,12 @@ srcCustomerBox = false
       R_Addition: '', L_Addition: '', R_KR: '', L_KR: '', R_HVID: '', L_HVID: '', R_CS: '', L_CS: '', R_BC: '', L_BC: '',
       R_Diameter: '', L_Diameter: '', BR: '', Material: '', Modality: '', RefferedByDoc: '', Other: '', ConstantUse: false,
       NearWork: false, DistanceWork: false, Multifocal: false, PhotoURL: null, FileURL: null, Family: 'Self', Status: 1, CreatedBy: 0,
-      CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
+      CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: this.clens.VisitDate,
     };
 
     this.other = {
       ID: '', CustomerID: '', BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '',
-      R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
+      R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: this.other.VisitDate,
     };
 
     this.sp.show();
@@ -818,7 +826,7 @@ srcCustomerBox = false
   NewVisit(mode: any) {
     if (mode === 'spectacle') {
       this.spectacle = {
-        ID: 'null', CustomerID: this.id, REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '', R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: null, FileURL: null, Family: 'Self', ExpiryDate: '0000-00-00', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
+        ID: 'null', CustomerID: this.id, REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '', R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: null, FileURL: null, Family: 'Self', ExpiryDate: '0000-00-00', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '',VisitDate:  this.spectacle.VisitDate = moment().format('YYYY-MM-DD'),
       };
     }
 
@@ -827,13 +835,13 @@ srcCustomerBox = false
         ID: 'null', CustomerID: this.id, REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
         LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '', R_Addition: '', L_Addition: '', R_KR: '', L_KR: '', R_HVID: '', L_HVID: '', R_CS: '', L_CS: '', R_BC: '', L_BC: '',
         R_Diameter: '', L_Diameter: '', BR: '', Material: '', Modality: '', RefferedByDoc: 'Self', Other: '', ConstantUse: false,
-        NearWork: false, DistanceWork: false, Multifocal: false, PhotoURL: null, FileURL: null, Family: 'Self', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
+        NearWork: false, DistanceWork: false, Multifocal: false, PhotoURL: null, FileURL: null, Family: 'Self', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '',VisitDate: this.clens.VisitDate = moment().format('YYYY-MM-DD'),
       };
     }
 
     if (mode === 'other') {
     this.other = {
-      ID: 'null', CustomerID: this.id, BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: ''
+      ID: 'null', CustomerID: this.id, BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '',VisitDate: this.other.VisitDate = moment().format('YYYY-MM-DD'),
      }
     };
   }
@@ -923,8 +931,9 @@ srcCustomerBox = false
   updateCustomer() {
     this.sp.show()
     if (this.Check.SpectacleCheck === true) {
-      this.data.tablename = 'spectacle_rx'
+      this.data.tablename = 'spectacle_rx';
       this.spectacle.ExpiryDate = moment().add(Number(this.spectacle.Reminder), 'M').format('YYYY-MM-DD');
+    this.spectacle.VisitDate =  moment(this.spectacle.VisitDate).format('YYYY-MM-DD');;
       this.data.spectacle_rx = this.spectacle
 
       const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL']
@@ -936,6 +945,7 @@ srcCustomerBox = false
     }
     if (this.Check.ContactCheck === true) {
       this.data.tablename = 'contact_lens_rx'
+      this.clens.VisitDate = this.clens.VisitDate ;
       this.data.contact_lens_rx = this.clens
 
       const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL']
@@ -947,6 +957,7 @@ srcCustomerBox = false
     }
     if (this.Check.OtherCheck === true) {
       this.data.tablename = 'other_rx'
+      this.other.VisitDate = this.other.VisitDate;
       this.data.other_rx = this.other
     }
     const subs: Subscription = this.cs.updateCustomer(this.data).subscribe({

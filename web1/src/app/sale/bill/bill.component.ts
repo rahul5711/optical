@@ -1110,18 +1110,27 @@ export class BillComponent implements OnInit {
     } else {
 
       // LENS POWER LAST INDEXING REMOVE CONDITION 
-      if (this.BillItem.ProductTypeName.toLowerCase() === 'lens') {
-        this.specList.forEach((s: any) => {
-          if (s.FieldName.toLowerCase() === 'POWER RANGE') {
-            // Assuming this.BillItem.ProductName contains the string 'PROGRESSIVE/ESSILOR/CRIZAL/CY +1.00 TO +4.00'
-            const lastSlashIndex = this.BillItem.ProductName.lastIndexOf('/');
-            // Extract the substring before the last "/"
+      if (this.BillItem.PreOrder === true && this.BillItem.ProductTypeName.toLowerCase() === 'lens') {
+        if (this.specList && Array.isArray(this.specList) && this.specList.length > 0) {
+          this.specList.forEach((s: any) => {
+            if (s.FieldName && s.FieldName.toLowerCase() === 'power range') {
+              const lastSlashIndex = this.BillItem.ProductName.lastIndexOf('/');
+              if (lastSlashIndex !== -1) {
+                const newProductName = this.BillItem.ProductName.substring(0, lastSlashIndex);
+                this.BillItem.ProductName = newProductName;
+              }
+            }
+          });
+        } else {
+          const lastSlashIndex = this.BillItem.ProductName.lastIndexOf('/');
+          if (lastSlashIndex !== -1) {
             const newProductName = this.BillItem.ProductName.substring(0, lastSlashIndex);
-            // Update the ProductName with the modified value
             this.BillItem.ProductName = newProductName;
           }
-        })
+        }
       }
+      
+
 
       this.billItemList.unshift(this.BillItem);
       this.calculateGrandTotal()

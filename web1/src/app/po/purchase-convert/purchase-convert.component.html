@@ -173,7 +173,7 @@
                                                         <input class="inputWidth" name="Quantity{{item.ID}}"
                                                             [(ngModel)]="item.Quantity" type="number" min="0"
                                                             (blur)="calculateFields('Quantity', 'subTotal',item)"
-                                                            required [disabled]="item.Sel !== 1" #Quantitycontrol
+                                                            required [disabled]="true" #Quantitycontrol
                                                             [autocomplete]="false">
                                                     </td>
                                                     <td>
