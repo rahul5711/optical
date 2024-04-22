@@ -6,6 +6,7 @@ const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const mysql2 = require('../database')
+var moment = require("moment");
 
 function match(password, p) {
     return bcrypt.compare(password, p)
@@ -265,6 +266,17 @@ module.exports = {
 
             console.log(connected("Default Employee Role  Initiated SuccessFully !!!"));
 
+
+            // setting for creport
+            let date = moment(new Date()).format("YYYY-MM-DD")
+            let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
+
+            const [save_c_report_back_date] = await mysql2.pool.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, AcceptTransfer, ClosingStock)values('${back_date}', ${saveCompany.insertId},0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)`);
+            console.log(connected(`save_c_report Created SuccessFully !!!!`));
+
+            const [save_c_report] = await mysql2.pool.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, AcceptTransfer, ClosingStock)values('${date}', ${saveCompany.insertId},0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)`);
+            console.log(connected(`save_c_report Created SuccessFully !!!!`));
+
             const [Company] = await mysql2.pool.query(`select * from company where ID = ${saveCompany.insertId}`)
             const [User] = await mysql2.pool.query(`select * from user where ID = ${saveUser.insertId}`)
 
@@ -449,7 +461,7 @@ module.exports = {
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-             console.log(Body);
+            console.log(Body);
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
 

@@ -2,7 +2,8 @@ const pass_init = require('./generate_password')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const mysql2 = require('../database')
-
+var moment = require("moment");
+const { getInventory, getInventoryAmt } = require('../helpers/helper_function')
 const init = async () => {
     try {
 
@@ -85,8 +86,6 @@ const init = async () => {
         console.log(error)
     }
 }
-
-
 const product = async () => {
     try {
 
@@ -135,7 +134,6 @@ const product = async () => {
         console.log(error)
     }
 }
-
 const product_support = async () => {
     try {
         // spec spt table data to another company
@@ -184,9 +182,118 @@ const product_support = async () => {
         console.log(error)
     }
 }
+const c_report_init = async () => {
+    try {
+        let date = moment(new Date('2024-04-21')).format("YYYY-MM-DD")
+        const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1`)
+        let result = []
+        if (company) {
+            result = JSON.parse(JSON.stringify(company))
+        }
+
+        if (result) {
+           for(let data of result) {
+                const [fetch] = await mysql2.pool.query(`select * from creport where Date = '${date}' and CompanyID = ${data.ID}`)
+                let company_closing = await getInventory(data.ID, 0)
+                let amt_company_closing = await getInventoryAmt(data.ID, 0)
+                console.log(amt_company_closing, 'amt_company_closing');
+                if (!fetch.length) {
+                   const [save] = await mysql2.pool.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock, AmtOpeningStock, AmtAddPurchase, AmtAddPreOrderPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtAddPreOrderSale, AmtDeletePreOrderSale, AmtAddManualSale, AmtDeleteManualSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock)values('${date}', ${data.ID},0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,${company_closing}, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,'${amt_company_closing}')`);
+
+                   console.log(connected(`CompanyID : - ${data.ID}, Name:- ${data.Name} Created SuccessFully !!!!`));
+                }
+
+                const [fetchShop] = await mysql2.pool.query(`select ID, Name from shop where Status = 1 and CompanyID = ${data.ID}`)
+
+                if (fetchShop.length) {
+
+                    for(let item of fetchShop) {
+
+                        const [fetchShopWise] = await mysql2.pool.query(`select * from creport where Date = '${date}' and CompanyID = ${data.ID} and ShopID = ${item.ID}`)
+
+                        let shop_closing = await getInventory(data.ID, item.ID)
+                        let amt_shop_closing = await getInventoryAmt(data.ID, item.ID)
+                        console.log(amt_shop_closing, 'amt_shop_closing');
+
+                        if (!fetchShopWise.length) {
+
+                            const [save] = await mysql2.pool.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock, AmtOpeningStock, AmtAddPurchase, AmtAddPreOrderPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtAddPreOrderSale, AmtDeletePreOrderSale, AmtAddManualSale, AmtDeleteManualSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock)values('${date}', ${data.ID},${item.ID},0,0,0,0,0,0,0,0,0,0,0,0,0,0,${shop_closing},0,0,0,0,0,0,0,0,0,0,0,0,0,0,'${amt_shop_closing}')`);
+
+                            console.log(connected(`CompanyID : - ${data.ID}, CompanyName:- ${data.Name}, ShopID :- ${item.ID}, ShopName:- ${item.Name} Created SuccessFully !!!!`));
+                        }
+
+                    }
+
+                }
 
 
+           }
+        }
 
+        console.log(connected(`Data all updated !!!`));
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+const c_report_init_set_opening_closing = async () => {
+    try {
+        let date = moment(new Date()).format("YYYY-MM-DD")
+        let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
+
+        const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1`)
+        let result = []
+        if (company) {
+            result = JSON.parse(JSON.stringify(company))
+        }
+
+        if (result) {
+           for(let data of result) {
+                const [fetch] = await mysql2.pool.query(`select * from creport where Date = '${date}' and CompanyID = ${data.ID}`)
+                const [fetch_back_date] = await mysql2.pool.query(`select * from creport where Date = '${back_date}' and CompanyID = ${data.ID} and ShopID = 0`)
+
+                if (!fetch.length && fetch_back_date.length) {
+                   const [save] = await mysql2.pool.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock, AmtOpeningStock, AmtAddPurchase, AmtAddPreOrderPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtAddPreOrderSale, AmtDeletePreOrderSale, AmtAddManualSale, AmtDeleteManualSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock)values('${date}', ${data.ID},0,${fetch_back_date[0].ClosingStock},0,0,0,0,0,0,0,0,0,0,0,0,0,${fetch_back_date[0].ClosingStock},'${fetch_back_date[0].AmtClosingStock}',0,0,0,0,0,0,0,0,0,0,0,0,0,'${fetch_back_date[0].AmtClosingStock}')`);
+
+                   console.log(connected(`CompanyID : - ${data.ID}, Name:- ${data.Name} Created SuccessFully !!!!`));
+                }
+
+                const [fetchShop] = await mysql2.pool.query(`select ID, Name from shop where Status = 1 and CompanyID = ${data.ID}`)
+
+                if (fetchShop.length) {
+
+                    for(let item of fetchShop) {
+
+                        const [fetchShopWise] = await mysql2.pool.query(`select * from creport where Date = '${date}' and CompanyID = ${data.ID} and ShopID = ${item.ID}`)
+
+                        const [fetchShopWise_back_date] = await mysql2.pool.query(`select * from creport where Date = '${back_date}' and CompanyID = ${data.ID} and ShopID = ${item.ID}`)
+
+
+                        if (!fetchShopWise.length && fetchShopWise_back_date.length) {
+
+                            const [save] = await mysql2.pool.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock, AmtOpeningStock, AmtAddPurchase, AmtAddPreOrderPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtAddPreOrderSale, AmtDeletePreOrderSale, AmtAddManualSale, AmtDeleteManualSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock)values('${date}', ${data.ID},${item.ID},${fetchShopWise_back_date[0].ClosingStock},0,0,0,0,0,0,0,0,0,0,0,0,0,${fetchShopWise_back_date[0].ClosingStock},'${fetchShopWise_back_date[0].AmtClosingStock}',0,0,0,0,0,0,0,0,0,0,0,0,0,'${fetchShopWise_back_date[0].AmtClosingStock}')`);
+
+                            console.log(connected(`CompanyID : - ${data.ID}, CompanyName:- ${data.Name}, ShopID :- ${item.ID}, ShopName:- ${item.Name} Created SuccessFully !!!!`));
+                        }
+
+                    }
+
+                }
+
+
+           }
+        }
+
+        console.log(connected(`Data all updated !!!`));
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+// c_report_init()
+// c_report_init_set_opening_closing()
 // product()
 // init()
 // product_support()

@@ -3,7 +3,7 @@ const mysql = require('../newdb')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const { now } = require('lodash')
-const { shopID, generateInvoiceNo, generateBillSno, generateCommission, updateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder, gstDetailBill, generateUniqueBarcode, generateInvoiceNoForService } = require('../helpers/helper_function')
+const { shopID, generateInvoiceNo, generateBillSno, generateCommission, updateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder, gstDetailBill, generateUniqueBarcode, generateInvoiceNoForService, update_c_report_setting, update_c_report, amt_update_c_report,getTotalAmountByBarcode } = require('../helpers/helper_function')
 const _ = require("lodash")
 let ejs = require("ejs");
 let path = require("path");
@@ -395,12 +395,14 @@ module.exports = {
                         for (j = 0; j < count; j++) {
                             const [result] = await mysql2.pool.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, PreOrder,Po, TransferStatus, TransferToShop, MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn,AvailableDate, GSTType, GSTPercentage, PurchaseDetailID) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Pre Order', ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0 ,0,${ele.WholeSale},${ele.WholeSale === 1 ? ele.UnitPrice : 0},0, 1, 1, '', 0, '${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1, ${LoggedOnUser}, '${req.headers.currenttime}',  '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage},0)`);
                         }
+
                     } else if (ele.Manual === 1) {
                         let count = ele.Quantity;
                         let j = 0;
                         for (j = 0; j < count; j++) {
                             const [result] = await mysql2.pool.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn, AvailableDate, GSTType, GSTPercentage, PurchaseDetailID,RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,PreOrder, TransferStatus, TransferToShop) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Not Available','${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1,${LoggedOnUser}, '${req.headers.currenttime}', '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage}, 0, ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0, 0, ${ele.WholeSale}, ${ele.WholeSale === 1 ? ele.UnitPrice : 0},0,0,'',0)`);
                         }
+
 
                     } else {
                         let [selectRows1] = await mysql2.pool.query(`SELECT * FROM barcodemasternew WHERE CompanyID = ${CompanyID} AND ShopID = ${shopid} AND CurrentStatus = "Available" AND Status = 1 AND Barcode = '${ele.Barcode}' LIMIT ${ele.Quantity}`);
@@ -409,6 +411,16 @@ module.exports = {
                                 let [resultn] = await mysql2.pool.query(`Update barcodemasternew set CurrentStatus = "Sold" , MeasurementID = '${ele.MeasurementID}', Family = '${ele.Family}',Optionsss = '${ele.Optionsss}', BillDetailID = ${ele.ID}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' Where ID = ${ele1.ID}`);
                             })
                         );
+
+                        // update c report setting
+
+                        const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+
+                        const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+
+                        const totalAmount = await getTotalAmountByBarcode(CompanyID,ele.Barcode)
+
+                        const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
                     }
                 }
                 // save employee commission
@@ -606,12 +618,15 @@ module.exports = {
                         for (j = 0; j < count; j++) {
                             const [result] = await mysql2.pool.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, PreOrder,Po, TransferStatus, TransferToShop, MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn,AvailableDate, GSTType, GSTPercentage, PurchaseDetailID) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Pre Order', ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0 ,0,${ele.WholeSale},${ele.WholeSale === 1 ? ele.UnitPrice : 0},0, 1, 1, '', 0, '${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1, ${LoggedOnUser}, '${req.headers.currenttime}',  '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage},0)`);
                         }
+
+
                     } else if (ele.Manual === 1) {
                         let count = ele.Quantity;
                         let j = 0;
                         for (j = 0; j < count; j++) {
                             const [result] = await mysql2.pool.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn, AvailableDate, GSTType, GSTPercentage, PurchaseDetailID,RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,PreOrder, TransferStatus, TransferToShop) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Not Available','${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1,${LoggedOnUser}, '${req.headers.currenttime}', '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage}, 0, ${ele.WholeSale !== 1 ? ele.PurchasePrice : 0}, 0, 0, ${ele.WholeSale === 1 ? ele.PurchasePrice : 0}, 0,0,0,'',0)`);
                         }
+
 
                     } else {
                         let [selectRows1] = await mysql2.pool.query(`SELECT * FROM barcodemasternew WHERE CompanyID = ${CompanyID} AND ShopID = ${shopid} AND CurrentStatus = "Available" AND Status = 1 AND Barcode = '${ele.Barcode}' LIMIT ${ele.Quantity}`);
@@ -620,6 +635,14 @@ module.exports = {
                                 let [resultn] = await mysql2.pool.query(`Update barcodemasternew set CurrentStatus = "Sold" , MeasurementID = '${ele.MeasurementID}', Family = '${ele.Family}',Optionsss = '${ele.Optionsss}', BillDetailID = ${ele.ID}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' Where ID = ${ele1.ID}`);
                             })
                         );
+
+                        // update c report setting
+
+                        const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+
+                        const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+                        const totalAmount = await getTotalAmountByBarcode(CompanyID,ele.Barcode)
+                        const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
                     }
 
 
@@ -1337,6 +1360,8 @@ module.exports = {
                 if (bDetail.Manual === 1) {
                     const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Not Available' limit ${bDetail.Quantity}`)
                     console.log(connected("Barcode Update SuccessFUlly !!!"));
+
+
                 }
 
                 if (bDetail.PreOrder === 1) {
@@ -1352,11 +1377,21 @@ module.exports = {
                         const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set BillDetailID=0,CurrentStatus='Available' where BillDetailID = ${bDetail.ID} and PurchaseDetailID != 0 limit ${bDetail.Quantity}`)
                         console.log(connected("Barcode Update SuccessFUlly !!!"));
                     }
+
+
                 }
 
                 if (bDetail.Manual === 0 && bDetail.PreOrder === 0) {
                     const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus='Available', BillDetailID=0 where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Sold' limit ${bDetail.Quantity}`)
                     console.log(connected("Barcode Update SuccessFUlly !!!"));
+
+                    // update c report setting
+
+                    const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+
+                    const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, 0, billDetailData.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+                    const totalAmount = await getTotalAmountByBarcode(CompanyID,billDetailData.Barcode)
+                    const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, 0, billDetailData.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
                 }
             }
 
@@ -1505,6 +1540,9 @@ module.exports = {
                 if (bDetail.Manual === 1) {
                     const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Not Available' limit ${bDetail.Quantity}`)
                     console.log(connected("Barcode Update SuccessFUlly !!!"));
+
+
+
                 }
 
                 if (bDetail.PreOrder === 1) {
@@ -1520,11 +1558,22 @@ module.exports = {
                         const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set BillDetailID=0,CurrentStatus='Available' where BillDetailID = ${bDetail.ID} and PurchaseDetailID != 0 limit ${bDetail.Quantity}`)
                         console.log(connected("Barcode Update SuccessFUlly !!!"));
                     }
+
                 }
 
                 if (bDetail.Manual === 0 && bDetail.PreOrder === 0) {
                     const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus='Available', BillDetailID=0 where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Sold' limit ${bDetail.Quantity}`)
                     console.log(connected("Barcode Update SuccessFUlly !!!"));
+
+                    // update c report setting
+
+                    const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+
+                    const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, 0, billDetailData.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+
+                    const totalAmount = await getTotalAmountByBarcode(CompanyID,billDetailData.Barcode)
+
+                    const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, 0, billDetailData.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
                 }
             }
 
@@ -1690,7 +1739,7 @@ module.exports = {
             const User = req.body.User;
             const Customer = req.body.customer;
             const BillMaster = req.body.billMaster;
-            
+
             req.body.billItemList = req.body.billItemList.filter((element) => {
                 return element.Status !== 0;
             });
@@ -3382,7 +3431,7 @@ module.exports = {
             const supplierId = purchase.SupplierID;
 
             //  save purchase data
-            const [savePurchase] = await mysql2.pool.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${purchase.PaymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,0,${purchase.TotalAmount}, ${LoggedOnUser}, now())`);
+            const [savePurchase] = await mysql2.pool.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${purchase.PaymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,0,${purchase.TotalAmount}, ${LoggedOnUser}, '${req.headers.currenttime}')`);
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
@@ -3393,7 +3442,7 @@ module.exports = {
                 // generate unique barcode
                 item.UniqueBarcode = await generateUniqueBarcode(CompanyID, supplierId, item)
 
-                const [savePurchaseDetail] = await mysql2.pool.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},0,${item.WholeSale},'${item.BaseBarcode}',0,1,'${item.BaseBarcode}',0,0,'${item.UniqueBarcode}',0,0,${LoggedOnUser},now())`)
+                const [savePurchaseDetail] = await mysql2.pool.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},0,${item.WholeSale},'${item.BaseBarcode}',0,1,'${item.BaseBarcode}',0,0,'${item.UniqueBarcode}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
 
 
                 let saleCount = 0
@@ -3405,16 +3454,18 @@ module.exports = {
 
                 if (count !== 0 && count > 0) {
                     for (j = 0; j < count; j++) {
-                        const [saveBarcode] = await mysql2.pool.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${savePurchaseDetail.insertId},'${item.GSTType}',${item.GSTPercentage}, '${item.Barcode}',now(),'Available', ${item.RetailPrice},0,0,${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, now())`)
+                        const [saveBarcode] = await mysql2.pool.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${savePurchaseDetail.insertId},'${item.GSTType}',${item.GSTPercentage}, '${item.Barcode}','${req.headers.currenttime}','Available', ${item.RetailPrice},0,0,${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, '${req.headers.currenttime}')`)
                     }
                 }
+
+
 
             }
 
 
-            const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${supplierId}, ${CompanyID}, ${shopid}, 'Supplier','Debit',now(), 'Payment Initiated', '', '', ${purchase.TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
+            const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${supplierId}, ${CompanyID}, ${shopid}, 'Supplier','Debit','${req.headers.currenttime}', 'Payment Initiated', '', '', ${purchase.TotalAmount}, 0, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
 
-            const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${purchase.InvoiceNo}',${savePurchase.insertId},${supplierId},${CompanyID},0,${purchase.TotalAmount},'Vendor','Debit',1,${LoggedOnUser}, now())`)
+            const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${purchase.InvoiceNo}',${savePurchase.insertId},${supplierId},${CompanyID},0,${purchase.TotalAmount},'Vendor','Debit',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
 
             console.log(connected("Payment Initiate SuccessFUlly !!!"));
 

@@ -4,6 +4,7 @@ const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const mysql2 = require('../database')
+var moment = require("moment");
 
 
 module.exports = {
@@ -48,6 +49,14 @@ module.exports = {
             const [saveinvoice] = await mysql2.pool.query(`insert into invoice(CompanyID, ShopID, Retail, WholeSale, Service)values(${CompanyID},${invoice.ShopID},1,1,1)`);
 
             console.log(connected("Invoice Number Setting Initiated SuccessFully !!!"));
+
+             // setting for creport
+             let date = moment(new Date()).format("YYYY-MM-DD")
+             let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
+
+             const [save_c_report_back_date] = await mysql2.pool.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, AcceptTransfer, ClosingStock)values('${back_date}', ${CompanyID},${saveData.insertId},0,0,0,0,0,0,0,0,0,0,0,0,0,0)`);
+             const [save_c_report] = await mysql2.pool.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, AcceptTransfer, ClosingStock)values('${date}', ${CompanyID},${saveData.insertId},0,0,0,0,0,0,0,0,0,0,0,0,0,0)`);
+             console.log(connected(`save_c_report Created SuccessFully !!!!`));
 
             response.message = "data save sucessfully"
             // response.data =  await mysql2.pool.query(`select * from shop where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)

@@ -17,6 +17,12 @@ function gstAmount(SubTotal, GSTPercentage) {
   return gstAmount
 }
 
+function discountAmount2(UnitPrice, DiscountPercentage, Qty) {
+  let discountAmount = 0
+  discountAmount = (UnitPrice * Qty) * DiscountPercentage / 100;
+  return discountAmount
+}
+
 module.exports = {
 
   shopID: async (header) => {
@@ -305,6 +311,11 @@ module.exports = {
     discountAmount = (item.UnitPrice * item.Quantity) * item.DiscountPercentage / 100;
     return discountAmount
   },
+  discountAmount2: async (UnitPrice, DiscountPercentage, Qty) => {
+    let discountAmount = 0
+    discountAmount = (UnitPrice * Qty) * DiscountPercentage / 100;
+    return discountAmount
+  },
   gstAmount: async (SubTotal, GSTPercentage) => {
     let gstAmount = 0
     gstAmount = (SubTotal * GSTPercentage) / 100
@@ -335,8 +346,8 @@ module.exports = {
       [lastInvoiceID] = await mysql2.pool.query(`select * from invoice WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`);
 
       const updateDatum = {
-        Retail : rw === "R" ? lastInvoiceID[0].Retail + 1 : lastInvoiceID[0].Retail,
-        WholeSale : rw === "W" ? lastInvoiceID[0].WholeSale + 1 : lastInvoiceID[0].WholeSale,
+        Retail: rw === "R" ? lastInvoiceID[0].Retail + 1 : lastInvoiceID[0].Retail,
+        WholeSale: rw === "W" ? lastInvoiceID[0].WholeSale + 1 : lastInvoiceID[0].WholeSale,
       }
 
       const [update] = await mysql2.pool.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`)
@@ -345,8 +356,8 @@ module.exports = {
       [lastInvoiceID] = await mysql2.pool.query(`select * from invoice WHERE CompanyID = '${CompanyID}' and ShopID = 0`);
 
       const updateDatum = {
-        Retail : rw === "R" ? lastInvoiceID[0].Retail + 1 : lastInvoiceID[0].Retail,
-        WholeSale : rw === "W" ? lastInvoiceID[0].WholeSale + 1 : lastInvoiceID[0].WholeSale,
+        Retail: rw === "R" ? lastInvoiceID[0].Retail + 1 : lastInvoiceID[0].Retail,
+        WholeSale: rw === "W" ? lastInvoiceID[0].WholeSale + 1 : lastInvoiceID[0].WholeSale,
       }
 
       const [update] = await mysql2.pool.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = 0`)
@@ -384,7 +395,7 @@ module.exports = {
       [lastInvoiceID] = await mysql2.pool.query(`select * from invoice WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`);
 
       const updateDatum = {
-        Service :lastInvoiceID[0].Service + 1
+        Service: lastInvoiceID[0].Service + 1
       }
 
       const [update] = await mysql2.pool.query(`update invoice set Service = ${updateDatum.Service}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`)
@@ -393,7 +404,7 @@ module.exports = {
       [lastInvoiceID] = await mysql2.pool.query(`select * from invoice WHERE CompanyID = '${CompanyID}' and ShopID = 0`);
 
       const updateDatum = {
-        Service :lastInvoiceID[0].Service + 1
+        Service: lastInvoiceID[0].Service + 1
       }
 
       const [update] = await mysql2.pool.query(`update invoice set Service = ${updateDatum.Service}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = 0`)
@@ -402,7 +413,7 @@ module.exports = {
     const [shopDetails] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
 
     if (lastInvoiceID) {
-      newInvoiceID = newInvoiceID + "-" + rw + ShopID + "-" + shopDetails[0].Sno + "-" +  lastInvoiceID[0].Service;
+      newInvoiceID = newInvoiceID + "-" + rw + ShopID + "-" + shopDetails[0].Sno + "-" + lastInvoiceID[0].Service;
 
     }
 
@@ -852,6 +863,305 @@ module.exports = {
 
     return
 
+  },
+  update_c_report_setting: async (CompanyID, ShopID, CurrentDate) => {
+    try {
+
+      let date = moment(CurrentDate).format("YYYY-MM-DD")
+      let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
+      if (!CompanyID) {
+        return ({ success: false, message: "Invalid CompanyID Data" })
+      }
+      if (!ShopID) {
+        return ({ success: false, message: "Invalid ShopID Data" })
+      }
+
+      // company wise
+
+      const [fetch_company_wise] = await mysql2.pool.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = 0`)
+
+      const [fetch_back_date_company_wise] = await mysql2.pool.query(`select * from creport where Date = '${back_date}' and CompanyID = ${CompanyID} and ShopID = 0`)
+
+      if (fetch_back_date_company_wise[0].ClosingStock !== fetch_company_wise[0].OpeningStock) {
+        const [update] = await mysql2.pool.query(`update creport set OpeningStock = ${fetch_back_date_company_wise[0].ClosingStock} where Date = '${date}' and CompanyID = ${data.ID} and ShopID = 0`)
+      }
+      if (fetch_back_date_company_wise[0].AmtClosingStock !== fetch_company_wise[0].AmtOpeningStock) {
+        const [update] = await mysql2.pool.query(`update creport set AmtOpeningStock = ${fetch_back_date_company_wise[0].AmtClosingStock} where Date = '${date}' and CompanyID = ${data.ID} and ShopID = 0`)
+      }
+
+      // shop wise
+
+      const [fetch_shop_wise] = await mysql2.pool.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+
+      const [fetch_back_date_shop_wise] = await mysql2.pool.query(`select * from creport where Date = '${back_date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+
+      if (fetch_back_date_shop_wise[0].ClosingStock !== fetch_shop_wise[0].OpeningStock) {
+        const [update] = await mysql2.pool.query(`update creport set OpeningStock = ${fetch_shop_wise[0].ClosingStock} where Date = '${date}' and CompanyID = ${data.ID} and ShopID = ${ShopID}`)
+      }
+      if (fetch_back_date_shop_wise[0].AmtClosingStock !== fetch_shop_wise[0].AmtOpeningStock) {
+        const [update] = await mysql2.pool.query(`update creport set AmtOpeningStock = ${fetch_shop_wise[0].AmtClosingStock} where Date = '${date}' and CompanyID = ${data.ID} and ShopID = ${ShopID}`)
+      }
+      return ({ success: true, message: "update_c_report_setting done" })
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  getInventory: async (CompanyID, ShopID) => {
+    try {
+
+      let Qty = 0;
+      let shopid = ShopID;
+      let params = ``
+      if (shopid !== 0) {
+        params = ` and barcodemasternew.ShopID IN (${shopid})`
+      }
+      qry = `SELECT COUNT(barcodemasternew.ID) AS Count, purchasedetailnew.BrandType, purchasedetailnew.ID as PurchaseDetailID , purchasedetailnew.UnitPrice, purchasedetailnew.Quantity, purchasedetailnew.ID, purchasedetailnew.DiscountAmount, purchasedetailnew.TotalAmount, supplier.Name AS SupplierName, shop.Name AS ShopName, shop.AreaName AS AreaName, purchasedetailnew.ProductName, purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice, purchasedetailnew.SubTotal, purchasedetailnew.DiscountPercentage, purchasedetailnew.GSTPercentage as GSTPercentagex, purchasedetailnew.GSTAmount, purchasedetailnew.GSTType as GSTTypex, purchasedetailnew.WholeSalePrice, purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.PaymentStatus,  barcodemasternew.*, purchasemasternew.SupplierID FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID  LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} AND purchasedetailnew.Status = 1  and barcodemasternew.CurrentStatus = "Available" ${params} Group By barcodemasternew.PurchaseDetailID, barcodemasternew.ShopID HAVING barcodemasternew.Status = 1 `;
+
+      let [data] = await mysql2.pool.query(qry);
+
+      if (data.length) {
+        for (const item of data) {
+          Qty += item.Count
+        }
+      }
+      return Qty
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  getTotalAmountByBarcode: async (CompanyID, Barcode) => {
+    try {
+      console.log("================== getTotalAmountByBarcode ===========");
+      console.log(CompanyID, Barcode);
+      const [fetchPurchaseDetail] = await mysql2.pool.query(`select * from purchasedetailnew where Status = 1 and CompanyID = ${CompanyID} and BaseBarCode = '${Barcode}'`);
+      console.log(fetchPurchaseDetail);
+      if (!fetchPurchaseDetail.length) {
+        return ({ success: false, message: `Purchase detail not found from Barcode no :- ${Barcode}` })
+      }
+
+      const itemDetails = {
+        UnitPrice: fetchPurchaseDetail[0].UnitPrice,
+        Quantity: 1,
+        DiscountPercentage: fetchPurchaseDetail[0].DiscountPercentage,
+        DiscountAmount: 0,
+        GSTPercentage: fetchPurchaseDetail[0].GSTPercentage,
+        SubTotal: 0,
+        GSTAmount: 0,
+        TotalAmount: 0,
+      }
+
+      itemDetails.DiscountAmount = discountAmount2(fetchPurchaseDetail[0].UnitPrice, fetchPurchaseDetail[0].DiscountPercentage, 1)
+      itemDetails.SubTotal = fetchPurchaseDetail[0].UnitPrice * 1 - itemDetails.DiscountAmount
+      itemDetails.GSTAmount = gstAmount(itemDetails.SubTotal, itemDetails.GSTPercentage)
+      itemDetails.TotalAmount = itemDetails.SubTotal + itemDetails.GSTAmount
+
+      console.log(" getTotalAmountByBarcode ========> ")
+      console.table(itemDetails)
+      return itemDetails.TotalAmount
+
+    } catch (error) {
+
+    }
+  },
+  getInventoryAmt: async (CompanyID, ShopID) => {
+    try {
+      const response = {
+        data: null, success: true, message: "", calculation: [{
+          "totalQty": 0,
+          "totalGstAmount": 0,
+          "totalAmount": 0,
+          "totalDiscount": 0,
+          "totalUnitPrice": 0,
+          "totalSubTotal": 0,
+          "totalRetailPrice": 0,
+          "totalWholeSalePrice": 0,
+          "gst_details": []
+        }]
+      }
+      let shopid = ShopID;
+      let params = ``
+      if (shopid !== 0) {
+        params = ` and barcodemasternew.ShopID IN (${shopid})`
+      }
+      qry = `SELECT COUNT(barcodemasternew.ID) AS Count, purchasedetailnew.BrandType, purchasedetailnew.ID as PurchaseDetailID , purchasedetailnew.UnitPrice, purchasedetailnew.Quantity, purchasedetailnew.ID, purchasedetailnew.DiscountAmount, purchasedetailnew.TotalAmount, supplier.Name AS SupplierName, shop.Name AS ShopName, shop.AreaName AS AreaName, purchasedetailnew.ProductName, purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice, purchasedetailnew.SubTotal, purchasedetailnew.DiscountPercentage, purchasedetailnew.GSTPercentage as GSTPercentagex, purchasedetailnew.GSTAmount, purchasedetailnew.GSTType as GSTTypex, purchasedetailnew.WholeSalePrice, purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.PaymentStatus,  barcodemasternew.*, purchasemasternew.SupplierID FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID  LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} AND purchasedetailnew.Status = 1  and barcodemasternew.CurrentStatus = "Available" ${params} Group By barcodemasternew.PurchaseDetailID, barcodemasternew.ShopID HAVING barcodemasternew.Status = 1 `;
+
+      let [data] = await mysql2.pool.query(qry);
+
+      if (data.length) {
+        for (const item of data) {
+          item.DiscountAmount = item.UnitPrice * item.Count * item.DiscountPercentage / 100
+          item.SubTotal = (item.Count * item.UnitPrice) - item.DiscountAmount
+          item.GSTAmount = (item.UnitPrice * item.Count - item.DiscountAmount) * item.GSTPercentage / 100
+          item.TotalAmount = item.SubTotal + item.GSTAmount
+
+          response.calculation[0].totalQty += item.Count
+          response.calculation[0].totalGstAmount += item.GSTAmount
+          response.calculation[0].totalAmount += item.TotalAmount
+          response.calculation[0].totalDiscount += item.DiscountAmount
+          response.calculation[0].totalUnitPrice += item.UnitPrice
+          response.calculation[0].totalSubTotal += item.SubTotal
+          response.calculation[0].totalRetailPrice += item.Quantity * item.RetailPrice
+          response.calculation[0].totalWholeSalePrice += item.Quantity * item.WholeSalePrice
+        }
+      }
+      return response.calculation[0].totalAmount.toFixed(2) || 0
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  update_c_report: async (CompanyID, ShopID, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, CurrentDate) => {
+    try {
+
+      // let updatesetting = await this.update_c_report_setting(CompanyID, ShopID, CurrentDate)
+
+      let date = moment(CurrentDate).format("YYYY-MM-DD")
+
+      if (!CompanyID) {
+        return ({ success: false, message: "Invalid CompanyID Data" })
+      }
+      if (!ShopID) {
+        return ({ success: false, message: "Invalid ShopID Data" })
+      }
+
+      // company wise
+
+      const [fetch_company_wise] = await mysql2.pool.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = 0`)
+
+      let company_wise = {
+        openingstock: parseInt(fetch_company_wise[0].OpeningStock),
+        addpurchase: parseFloat(fetch_company_wise[0].AddPurchase) + parseFloat(AddPurchase),
+        addpreorderpurchase: parseFloat(fetch_company_wise[0].AddPreOrderPurchase) + parseFloat(AddPreOrderPurchase),
+        deletepurchase: parseFloat(fetch_company_wise[0].DeletePurchase) + parseFloat(DeletePurchase),
+        addsale: parseFloat(fetch_company_wise[0].AddSale) + parseFloat(AddSale),
+        deletesale: parseFloat(fetch_company_wise[0].DeleteSale) + parseFloat(DeleteSale),
+        addpreordersale: parseFloat(fetch_company_wise[0].AddPreOrderSale) + parseFloat(AddPreOrderSale),
+        deletepreordersale: parseFloat(fetch_company_wise[0].DeletePreOrderSale) + parseFloat(DeletePreOrderSale),
+        addmanualsale: parseFloat(fetch_company_wise[0].AddManualSale) + parseFloat(AddManualSale),
+        deletemanualsale: parseFloat(fetch_company_wise[0].DeleteManualSale) + parseFloat(DeleteManualSale),
+        otherdeletestock: parseFloat(fetch_company_wise[0].OtherDeleteStock) + parseFloat(OtherDeleteStock),
+        initiatetransfer: parseFloat(fetch_company_wise[0].InitiateTransfer) + parseFloat(InitiateTransfer),
+        cancelTransfer: parseFloat(fetch_company_wise[0].CancelTransfer) + parseFloat(CancelTransfer),
+        accepttransfer: parseFloat(fetch_company_wise[0].AcceptTransfer) + parseFloat(AcceptTransfer),
+        closingstock: 0
+      };
+
+      company_wise.closingstock = company_wise.openingstock + company_wise.addpurchase + company_wise.addpreorderpurchase - company_wise.deletepurchase - company_wise.addsale + company_wise.deletesale - company_wise.addpreordersale + company_wise.deletepreordersale + company_wise.accepttransfer - company_wise.initiatetransfer + company_wise.cancelTransfer - company_wise.otherdeletestock;
+
+      const [update_company_wise] = await mysql2.pool.query(`update creport set AddPurchase=${company_wise.addpurchase}, AddPreOrderPurchase=${company_wise.addpreorderpurchase}, DeletePurchase=${company_wise.deletepurchase}, AddSale=${company_wise.addsale}, DeleteSale=${company_wise.deletesale}, AddPreOrderSale=${company_wise.addpreordersale}, DeletePreOrderSale=${company_wise.deletepreordersale}, AddManualSale=${company_wise.addmanualsale}, DeleteManualSale=${company_wise.deletemanualsale}, OtherDeleteStock=${company_wise.otherdeletestock}, InitiateTransfer=${company_wise.initiatetransfer}, CancelTransfer=${company_wise.cancelTransfer}, AcceptTransfer=${company_wise.accepttransfer}, ClosingStock=${company_wise.closingstock} where ID = ${fetch_company_wise[0].ID}`)
+
+      console.log("===== company wise =====", date);
+      console.table(company_wise);
+
+      // shop wise
+
+      const [fetch_shop_wise] = await mysql2.pool.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+
+      let shop_wise = {
+        openingstock: parseInt(fetch_shop_wise[0].OpeningStock),
+        addpurchase: parseFloat(fetch_shop_wise[0].AddPurchase) + parseFloat(AddPurchase),
+        addpreorderpurchase: parseFloat(fetch_shop_wise[0].AddPreOrderPurchase) + parseFloat(AddPreOrderPurchase),
+        deletepurchase: parseFloat(fetch_shop_wise[0].DeletePurchase) + parseFloat(DeletePurchase),
+        addsale: parseFloat(fetch_shop_wise[0].AddSale) + parseFloat(AddSale),
+        deletesale: parseFloat(fetch_shop_wise[0].DeleteSale) + parseFloat(DeleteSale),
+        addpreordersale: parseFloat(fetch_shop_wise[0].AddPreOrderSale) + parseFloat(AddPreOrderSale),
+        deletepreordersale: parseFloat(fetch_shop_wise[0].DeletePreOrderSale) + parseFloat(DeletePreOrderSale),
+        addmanualsale: parseFloat(fetch_shop_wise[0].AddManualSale) + parseFloat(AddManualSale),
+        deletemanualsale: parseFloat(fetch_shop_wise[0].DeleteManualSale) + parseFloat(DeleteManualSale),
+        otherdeletestock: parseFloat(fetch_shop_wise[0].OtherDeleteStock) + parseFloat(OtherDeleteStock),
+        initiatetransfer: parseFloat(fetch_shop_wise[0].InitiateTransfer) + parseFloat(InitiateTransfer),
+        cancelTransfer: parseFloat(fetch_shop_wise[0].CancelTransfer) + parseFloat(CancelTransfer),
+        accepttransfer: parseFloat(fetch_shop_wise[0].AcceptTransfer) + parseFloat(AcceptTransfer),
+        closingstock: 0
+      };
+
+
+      shop_wise.closingstock = shop_wise.openingstock + shop_wise.addpurchase + shop_wise.addpreorderpurchase - shop_wise.deletepurchase - shop_wise.addsale + shop_wise.deletesale - shop_wise.addpreordersale + shop_wise.deletepreordersale + shop_wise.accepttransfer - shop_wise.initiatetransfer + shop_wise.cancelTransfer - shop_wise.otherdeletestock;
+
+      const [update_shop_wise] = await mysql2.pool.query(`update creport set AddPurchase=${shop_wise.addpurchase}, AddPreOrderPurchase=${shop_wise.addpreorderpurchase}, DeletePurchase=${shop_wise.deletepurchase}, AddSale=${shop_wise.addsale}, DeleteSale=${shop_wise.deletesale}, AddPreOrderSale=${shop_wise.addpreordersale}, DeletePreOrderSale=${shop_wise.deletepreordersale}, AddManualSale=${shop_wise.addmanualsale}, DeleteManualSale=${shop_wise.deletemanualsale}, OtherDeleteStock=${shop_wise.otherdeletestock}, InitiateTransfer=${shop_wise.initiatetransfer}, CancelTransfer=${shop_wise.cancelTransfer}, AcceptTransfer=${shop_wise.accepttransfer},ClosingStock=${shop_wise.closingstock} where ID = ${fetch_shop_wise[0].ID}`)
+
+      console.log("===== shop wise =====", date);
+      console.table(shop_wise);
+
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  amt_update_c_report: async (CompanyID, ShopID, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, CurrentDate) => {
+    try {
+
+      // let updatesetting = await this.update_c_report_setting(CompanyID, ShopID, CurrentDate)
+
+      let date = moment(CurrentDate).format("YYYY-MM-DD")
+
+      if (!CompanyID) {
+        return ({ success: false, message: "Invalid CompanyID Data" })
+      }
+      if (!ShopID) {
+        return ({ success: false, message: "Invalid ShopID Data" })
+      }
+
+      // company wise
+
+      const [fetch_company_wise] = await mysql2.pool.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = 0`)
+
+      let company_wise = {
+        openingstock: parseInt(fetch_company_wise[0].AmtOpeningStock),
+        addpurchase: parseFloat(fetch_company_wise[0].AmtAddPurchase) + parseFloat(AddPurchase),
+        addpreorderpurchase: parseFloat(fetch_company_wise[0].AmtAddPreOrderPurchase) + parseFloat(AddPreOrderPurchase),
+        deletepurchase: parseFloat(fetch_company_wise[0].AmtDeletePurchase) + parseFloat(DeletePurchase),
+        addsale: parseFloat(fetch_company_wise[0].AmtAddSale) + parseFloat(AddSale),
+        deletesale: parseFloat(fetch_company_wise[0].AmtDeleteSale) + parseFloat(DeleteSale),
+        addpreordersale: parseFloat(fetch_company_wise[0].AmtAddPreOrderSale) + parseFloat(AddPreOrderSale),
+        deletepreordersale: parseFloat(fetch_company_wise[0].AmtDeletePreOrderSale) + parseFloat(DeletePreOrderSale),
+        addmanualsale: parseFloat(fetch_company_wise[0].AmtAddManualSale) + parseFloat(AddManualSale),
+        deletemanualsale: parseFloat(fetch_company_wise[0].AmtDeleteManualSale) + parseFloat(DeleteManualSale),
+        otherdeletestock: parseFloat(fetch_company_wise[0].AmtOtherDeleteStock) + parseFloat(OtherDeleteStock),
+        initiatetransfer: parseFloat(fetch_company_wise[0].AmtInitiateTransfer) + parseFloat(InitiateTransfer),
+        cancelTransfer: parseFloat(fetch_company_wise[0].AmtCancelTransfer) + parseFloat(CancelTransfer),
+        accepttransfer: parseFloat(fetch_company_wise[0].AmtAcceptTransfer) + parseFloat(AcceptTransfer),
+        closingstock: 0
+      };
+
+      company_wise.closingstock = company_wise.openingstock + company_wise.addpurchase + company_wise.addpreorderpurchase - company_wise.deletepurchase - company_wise.addsale + company_wise.deletesale - company_wise.addpreordersale + company_wise.deletepreordersale + company_wise.accepttransfer - company_wise.initiatetransfer + company_wise.cancelTransfer - company_wise.otherdeletestock;
+
+      const [update_company_wise] = await mysql2.pool.query(`update creport set AmtAddPurchase=${company_wise.addpurchase}, AmtAddPreOrderPurchase=${company_wise.addpreorderpurchase}, AmtDeletePurchase=${company_wise.deletepurchase}, AmtAddSale=${company_wise.addsale}, AmtDeleteSale=${company_wise.deletesale}, AmtAddPreOrderSale=${company_wise.addpreordersale}, AmtDeletePreOrderSale=${company_wise.deletepreordersale}, AmtAddManualSale=${company_wise.addmanualsale}, AmtDeleteManualSale=${company_wise.deletemanualsale}, AmtOtherDeleteStock=${company_wise.otherdeletestock}, AmtInitiateTransfer=${company_wise.initiatetransfer}, AmtCancelTransfer=${company_wise.cancelTransfer}, AmtAcceptTransfer=${company_wise.accepttransfer}, AmtClosingStock=${company_wise.closingstock} where ID = ${fetch_company_wise[0].ID}`)
+
+      console.log("===== company wise Amount Report =====", date);
+      console.table(company_wise);
+
+      // shop wise
+
+      const [fetch_shop_wise] = await mysql2.pool.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+
+      let shop_wise = {
+        openingstock: parseInt(fetch_shop_wise[0].AmtOpeningStock),
+        addpurchase: parseFloat(fetch_shop_wise[0].AmtAddPurchase) + parseFloat(AddPurchase),
+        addpreorderpurchase: parseFloat(fetch_shop_wise[0].AmtAddPreOrderPurchase) + parseFloat(AddPreOrderPurchase),
+        deletepurchase: parseFloat(fetch_shop_wise[0].AmtDeletePurchase) + parseFloat(DeletePurchase),
+        addsale: parseFloat(fetch_shop_wise[0].AmtAddSale) + parseFloat(AddSale),
+        deletesale: parseFloat(fetch_shop_wise[0].AmtDeleteSale) + parseFloat(DeleteSale),
+        addpreordersale: parseFloat(fetch_shop_wise[0].AmtAddPreOrderSale) + parseFloat(AddPreOrderSale),
+        deletepreordersale: parseFloat(fetch_shop_wise[0].AmtDeletePreOrderSale) + parseFloat(DeletePreOrderSale),
+        addmanualsale: parseFloat(fetch_shop_wise[0].AmtAddManualSale) + parseFloat(AddManualSale),
+        deletemanualsale: parseFloat(fetch_shop_wise[0].AmtDeleteManualSale) + parseFloat(DeleteManualSale),
+        otherdeletestock: parseFloat(fetch_shop_wise[0].AmtOtherDeleteStock) + parseFloat(OtherDeleteStock),
+        initiatetransfer: parseFloat(fetch_shop_wise[0].AmtInitiateTransfer) + parseFloat(InitiateTransfer),
+        cancelTransfer: parseFloat(fetch_shop_wise[0].AmtCancelTransfer) + parseFloat(CancelTransfer),
+        accepttransfer: parseFloat(fetch_shop_wise[0].AmtAcceptTransfer) + parseFloat(AcceptTransfer),
+        closingstock: 0
+      };
+
+
+      shop_wise.closingstock = shop_wise.openingstock + shop_wise.addpurchase + shop_wise.addpreorderpurchase - shop_wise.deletepurchase - shop_wise.addsale + shop_wise.deletesale - shop_wise.addpreordersale + shop_wise.deletepreordersale + shop_wise.accepttransfer - shop_wise.initiatetransfer + shop_wise.cancelTransfer - shop_wise.otherdeletestock;
+
+      const [update_shop_wise] = await mysql2.pool.query(`update creport set AmtAddPurchase=${shop_wise.addpurchase}, AmtAddPreOrderPurchase=${shop_wise.addpreorderpurchase}, AmtDeletePurchase=${shop_wise.deletepurchase}, AmtAddSale=${shop_wise.addsale}, AmtDeleteSale=${shop_wise.deletesale}, AmtAddPreOrderSale=${shop_wise.addpreordersale}, AmtDeletePreOrderSale=${shop_wise.deletepreordersale}, AmtAddManualSale=${shop_wise.addmanualsale}, AmtDeleteManualSale=${shop_wise.deletemanualsale}, AmtOtherDeleteStock=${shop_wise.otherdeletestock}, AmtInitiateTransfer=${shop_wise.initiatetransfer}, AmtCancelTransfer=${shop_wise.cancelTransfer}, AmtAcceptTransfer=${shop_wise.accepttransfer},AmtClosingStock=${shop_wise.closingstock} where ID = ${fetch_shop_wise[0].ID}`)
+
+      console.log("===== shop wise Amount Report =====", date);
+      console.table(shop_wise);
+
+    } catch (error) {
+      console.log(error);
+    }
   }
 
 }

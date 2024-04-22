@@ -1,6 +1,6 @@
 const createError = require('http-errors')
 const _ = require("lodash")
-const { generateBarcode, generateUniqueBarcode, doesExistProduct, shopID, gstDetail, doesExistProduct2 } = require('../helpers/helper_function')
+const { generateBarcode, generateUniqueBarcode, doesExistProduct, shopID, gstDetail, doesExistProduct2, update_c_report_setting, update_c_report, amt_update_c_report, getTotalAmountByBarcode } = require('../helpers/helper_function')
 const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
@@ -100,7 +100,7 @@ module.exports = {
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
-            console.log("purchaseDetail ===========>",purchaseDetail);
+            console.log("purchaseDetail ===========>", purchaseDetail);
             //  save purchase detail data
             for (const item of purchaseDetail) {
                 const doesProduct = await doesExistProduct(CompanyID, item)
@@ -115,6 +115,14 @@ module.exports = {
                 } else {
                     baseBarCode = await generateBarcode(CompanyID, 'SB')
                 }
+
+                // update c report setting
+
+                const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+
+                const var_update_c_report = await update_c_report(CompanyID, shopid, item.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+
+                const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, item.TotalAmount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
 
                 const [savePurchaseDetail] = await mysql2.pool.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
 
@@ -268,6 +276,14 @@ module.exports = {
                     } else {
                         baseBarCode = await generateBarcode(CompanyID, 'SB')
                     }
+
+                    // update c report setting
+
+                    const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+
+                    const var_update_c_report = await update_c_report(CompanyID, shopid, item.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+
+                    const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, item.TotalAmount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
 
                     const [savePurchaseDetail] = await mysql2.pool.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${purchase.ID},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
 
@@ -531,6 +547,14 @@ module.exports = {
             fetchPurchaseMaster[0].gst_detail = gst_detail
 
             const [PurchaseDetail] = await mysql2.pool.query(`select * from purchasedetailnew where  PurchaseID = ${doesExist[0].PurchaseID} and CompanyID = ${CompanyID}`)
+
+            // update c report setting
+
+            const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+
+            const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, doesExist[0].Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+            const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, doesExist[0].TotalAmount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+
             response.result.PurchaseDetail = PurchaseDetail;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data delete sucessfully"
@@ -615,6 +639,12 @@ module.exports = {
             fetchPurchaseMaster[0].gst_detail = gst_detail
 
             const [PurchaseDetail] = await mysql2.pool.query(`select * from purchasedetailnew where  PurchaseID = ${doesExist[0].PurchaseID} and CompanyID = ${CompanyID}`)
+
+            let totalAmount = Number(Body.TotalAmount) - Number(doesExist[0].TotalAmount)
+
+            const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+
+
             response.result.PurchaseDetail = PurchaseDetail;
             response.result.PurchaseMaster = fetchPurchaseMaster;
             response.message = "data update product sucessfully"
@@ -926,7 +956,7 @@ module.exports = {
                         res.send(err);
                     } else {
                         let options;
-                        if (printdata.CompanyID == 20 || printdata.CompanyID == 19 || printdata.CompanyID == 64 ) {
+                        if (printdata.CompanyID == 20 || printdata.CompanyID == 19 || printdata.CompanyID == 64) {
                             if (printdata.CompanyBarcode == 5) {
                                 options = {
                                     "height": "0.70in",
@@ -1084,8 +1114,8 @@ module.exports = {
                             if (printdata.CompanyID == 20 || printdata.CompanyID == 19 || printdata.CompanyID == 64) {
                                 if (printdata.CompanyBarcode == 5) {
                                     options = {
-                                    //    printdata.CompanyID == 64 only this company ke liye option he
-                                       height: "1.00in",
+                                        //    printdata.CompanyID == 64 only this company ke liye option he
+                                        height: "1.00in",
                                         width: "5.00in",
                                         margin: {
                                             top: "0in",
@@ -1093,8 +1123,8 @@ module.exports = {
                                             bottom: "0in",
                                             left: "0in"
                                         },
-                                    // "height": "0.70in",
-                                    // "width": "4.90in",
+                                        // "height": "0.70in",
+                                        // "width": "4.90in",
                                     };
                                     //    options = {
                                     //    height: "0.70in",
@@ -1303,6 +1333,18 @@ module.exports = {
 
             let qry1 = `SELECT transfermaster.*, shop.Name AS FromShop,ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName,shop.AreaName as FromAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} and transfermaster.TransferStatus = 'Transfer Initiated' and (transfermaster.TransferFromShop = ${TransferFromShop} or transfermaster.TransferToShop = ${TransferFromShop}) Order By transfermaster.ID Desc`
             let [xferList] = await mysql2.pool.query(qry1);
+
+
+            // update c report setting
+
+            const var_update_c_report_setting = await update_c_report_setting(CompanyID, TransferFromShop, req.headers.currenttime)
+
+            const var_update_c_report = await update_c_report(CompanyID, TransferFromShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, TransferCount, 0, 0, req.headers.currenttime)
+
+            const totalAmount = await getTotalAmountByBarcode(CompanyID, Barcode)
+            console.log(totalAmount, " ===== > transferProduct");
+            const var_amt_update_c_report = await amt_update_c_report(CompanyID, TransferFromShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Number(TransferCount) * Number(totalAmount), 0, 0, req.headers.currenttime)
+
             response.data = xferList;
             response.message = "Success";
             return res.send(response);
@@ -1354,6 +1396,16 @@ module.exports = {
             let qry1 = `SELECT transfermaster.*, shop.Name AS FromShop,ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName,shop.AreaName as FromAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} and transfermaster.TransferStatus = 'Transfer Initiated' and (transfermaster.TransferFromShop = ${TransferFromShop} or transfermaster.TransferToShop = ${TransferFromShop}) Order By transfermaster.ID Desc`
             let [xferList] = await mysql2.pool.query(qry1);
             response.data = xferList;
+
+            // update c report setting
+
+            const var_update_c_report_setting = await update_c_report_setting(CompanyID, TransferFromShop, req.headers.currenttime)
+
+            const var_update_c_report = await update_c_report(CompanyID, doesExist[0].TransferToShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, doesExist[0].TransferCount, req.headers.currenttime)
+
+            const totalAmount = await getTotalAmountByBarcode(CompanyID, doesExist[0].BarCode)
+            console.log(totalAmount, " ===== > transferProduct");
+            const var_amt_update_c_report = await amt_update_c_report(CompanyID, doesExist[0].TransferToShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Number(doesExist[0].TransferCount) * Number(totalAmount), req.headers.currenttime)
             response.message = "Success";
             return res.send(response);
 
@@ -1401,6 +1453,17 @@ module.exports = {
             let qry1 = `SELECT transfermaster.*, shop.Name AS FromShop,ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName,shop.AreaName as FromAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} and transfermaster.TransferStatus = 'Transfer Initiated' and (transfermaster.TransferFromShop = ${TransferFromShop} or transfermaster.TransferToShop = ${TransferFromShop}) Order By transfermaster.ID Desc`
             let [xferList] = await mysql2.pool.query(qry1);
             response.data = xferList;
+
+            // update c report setting
+
+            const var_update_c_report_setting = await update_c_report_setting(CompanyID, TransferFromShop, req.headers.currenttime)
+
+            const var_update_c_report = await update_c_report(CompanyID, doesExist[0].TransferFromShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, doesExist[0].TransferCount, 0, req.headers.currenttime)
+
+            const totalAmount = await getTotalAmountByBarcode(CompanyID, doesExist[0].BarCode)
+
+            const var_amt_update_c_report = await amt_update_c_report(CompanyID, doesExist[0].TransferFromShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Number(doesExist[0].TransferCount) * Number(totalAmount), 0, req.headers.currenttime)
+
             response.message = "Success";
             return res.send(response);
 
@@ -1630,8 +1693,7 @@ module.exports = {
     updateBarcode: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
-            const { ID, Barcode, Remark, CurrentStatus } = req.body;
-            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const { ID, Barcode, Remark, CurrentStatus, CompanyID, ShopID } = req.body;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
 
@@ -1639,9 +1701,36 @@ module.exports = {
             if (Barcode === "" || Barcode === undefined || Barcode === null) return res.send({ message: "Invalid Query Data" })
             if (CurrentStatus === "" || CurrentStatus === undefined || CurrentStatus === null) return res.send({ message: "Invalid Query Data" })
 
+            const [doesCheck] = await mysql2.pool.query(`select * from barcodemasternew where ID = ${ID}`)
+
+            if (doesCheck[0].CurrentStatus === 'Available' && CurrentStatus !== 'Available') {
+                // update c report setting
+
+                const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+
+                const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, req.headers.currenttime)
+
+                const totalAmount = await getTotalAmountByBarcode(CompanyID, Barcode)
+
+                const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 * Number(totalAmount), 0, 0, 0, req.headers.currenttime)
+
+            } else {
+                // update c report setting
+
+                const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+
+                const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, req.headers.currenttime)
+
+                const totalAmount = await getTotalAmountByBarcode(CompanyID, Barcode)
+
+                const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1 * Number(totalAmount), 0, 0, 0, req.headers.currenttime)
+            }
+
             qry = `Update barcodemasternew set CurrentStatus = '${CurrentStatus}' , Barcode = '${Barcode}' , Remark = '${Remark}' Where ID = ${ID}`;
 
             let [barcode] = await mysql2.pool.query(qry);
+
+
             response.data = [];
             response.message = "success";
             return res.send(response);
@@ -2200,12 +2289,12 @@ module.exports = {
             const [data] = await mysql2.pool.query(`select * from purchasedetailnew where CompanyID = ${CompanyID}`)
 
             if (data) {
-                for(const item of data) {
+                for (const item of data) {
                     let pName = item.ProductName.split("/")
-                    console.log(pName[pName.length-1],isValidDate(pName[pName.length-1]));
+                    console.log(pName[pName.length - 1], isValidDate(pName[pName.length - 1]));
 
-                    if (isValidDate(pName[pName.length-1])) {
-                       const [update] = await mysql2.pool.query(`update purchasedetailnew set ProductExpDate = '${pName[pName.length-1]}', UpdatedBy = ${item.CreatedBy}, UpdatedOn = now() where ID = ${item.ID}`)
+                    if (isValidDate(pName[pName.length - 1])) {
+                        const [update] = await mysql2.pool.query(`update purchasedetailnew set ProductExpDate = '${pName[pName.length - 1]}', UpdatedBy = ${item.CreatedBy}, UpdatedOn = now() where ID = ${item.ID}`)
                     }
                 }
             }
@@ -2859,7 +2948,6 @@ module.exports = {
             qry = `SELECT COUNT(barcodemasternew.ID) AS Count, purchasedetailnew.BrandType, purchasedetailnew.ID as PurchaseDetailID , purchasedetailnew.UnitPrice, purchasedetailnew.Quantity, purchasedetailnew.ID, purchasedetailnew.DiscountAmount, purchasedetailnew.TotalAmount, supplier.Name AS SupplierName, shop.Name AS ShopName, shop.AreaName AS AreaName, purchasedetailnew.ProductName, purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice, purchasedetailnew.SubTotal, purchasedetailnew.DiscountPercentage, purchasedetailnew.GSTPercentage as GSTPercentagex, purchasedetailnew.GSTAmount, purchasedetailnew.GSTType as GSTTypex, purchasedetailnew.WholeSalePrice, purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.PaymentStatus,  barcodemasternew.*, purchasemasternew.SupplierID FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID  LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} AND purchasedetailnew.Status = 1  ` +
                 Parem +
                 " Group By barcodemasternew.PurchaseDetailID, barcodemasternew.ShopID" + " HAVING barcodemasternew.Status = 1";
-
             let [data] = await mysql2.pool.query(qry);
 
             let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
@@ -3314,6 +3402,12 @@ module.exports = {
 
                 let [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus = 'Return To Supplier', BillDetailID = ${savePurchaseDetail.insertId} where Status = 1 and Barcode = '${item.Barcode}' and CurrentStatus = 'Available' and CompanyID = ${CompanyID} and ShopID = ${shopid} limit ${count}`)
 
+                // update c report setting
+
+                const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+
+                const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, 0, 0, 0, 0, 0, 0, count, 0, 0, 0, req.headers.currenttime)
+                const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, 0, 0, 0, 0, 0, 0, item.TotalAmount, 0, 0, 0, req.headers.currenttime)
 
                 console.log(`Barcode No ${item.Barcode} update successfully`);
 
@@ -3409,6 +3503,12 @@ module.exports = {
 
                     let [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus = 'Return To Supplier', BillDetailID = ${savePurchaseDetail.insertId} where Status = 1 and Barcode = '${item.Barcode}' and CurrentStatus = 'Available' limit ${count}`)
 
+                    // update c report setting
+
+                    const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+
+                    const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, 0, 0, 0, 0, 0, 0, count, 0, 0, 0, req.headers.currenttime)
+                    const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, 0, 0, 0, 0, 0, 0, item.TotalAmount, 0, 0, 0, req.headers.currenttime)
 
                     console.log(`Barcode No ${item.Barcode} update successfully`);
 
@@ -3656,7 +3756,11 @@ module.exports = {
 
 
             }
+            // update c report setting
 
+            const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+
+            const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, 0, 0, 0, 0, 0, 0, -doesExist[0].Quantity, 0, 0, 0, req.headers.currenttime)
             fetchPurchaseMaster[0].gst_detail = values
             response.result.PurchaseDetail = PurchaseDetail2;
             response.result.PurchaseMaster = fetchPurchaseMaster;
