@@ -129,5 +129,9 @@ router.post('/setbarcodemaster',verifyAccessTokenAdmin, Controller.setbarcodemas
 router.post('/getInvoicePayment',verifyAccessTokenAdmin, Controller.getInvoicePayment)
 router.post('/paymentHistoryByPurchaseID',verifyAccessTokenAdmin, Controller.paymentHistoryByPurchaseID)
 
+// creport
+
+router.post('/getCountInventoryReport',verifyAccessTokenAdmin, Controller.getCountInventoryReport)
+router.post('/getAmountInventoryReport',verifyAccessTokenAdmin, Controller.getAmountInventoryReport)
 
 module.exports = router

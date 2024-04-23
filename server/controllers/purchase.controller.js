@@ -4060,4 +4060,104 @@ module.exports = {
             next(err)
         }
     },
+    getCountInventoryReport: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "", calculation : {
+                "OpeningStock": 0, "AddPurchase": 0, "DeletePurchase" : 0, "AddSale": 0, "DeleteSale": 0, "OtherDeleteStock": 0, "InitiateTransfer": 0, "CancelTransfer": 0, "AcceptTransfer": 0, "ClosingStock": 0
+            } }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            const { ShopID, DateParam } = req.body
+
+            if (ShopID === null || ShopID === undefined || ShopID === "") return res.send({ message: "Invalid Query Data" })
+            if (DateParam === null || DateParam === undefined || DateParam == 0 || DateParam === "") return res.send({ message: "Invalid Query Data" })
+
+            let [data] = await mysql2.pool.query(`SELECT CompanyID, ShopID, DATE, OpeningStock, AddPurchase, DeletePurchase, AddSale, DeleteSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock FROM creport WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}  ${DateParam}  `)
+
+            let [firstOpening] = await mysql2.pool.query(`SELECT ClosingStock FROM creport WHERE CompanyID = ${CompanyID} AND ShopID = ${ShopID} LIMIT 1`)
+
+            if (data.length) {
+              response.calculation.OpeningStock = firstOpening[0].ClosingStock
+              response.calculation.ClosingStock =  data[data.length - 1].ClosingStock
+            }
+
+            let [datum] = await mysql2.pool.query(`SELECT SUM(AddPurchase) AS TotalAddPurchase,
+            SUM(DeletePurchase) AS TotalDeletePurchase,
+            SUM(AddSale) AS TotalAddSale,
+            SUM(DeleteSale) AS TotalDeleteSale,
+            SUM(OtherDeleteStock) AS TotalOtherDeleteStock,
+            SUM(InitiateTransfer) AS TotalInitiateTransfer,
+            SUM(CancelTransfer) AS TotalCancelTransfer,
+            SUM(AcceptTransfer) AS TotalAcceptTransfer FROM creport WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}  ${DateParam}  `)
+
+            if (datum) {
+                response.calculation.AddPurchase = datum[0].TotalAddPurchase
+                response.calculation.DeletePurchase = datum[0].TotalDeletePurchase
+                response.calculation.AddSale = datum[0].TotalAddSale
+                response.calculation.DeleteSale = datum[0].TotalDeleteSale
+                response.calculation.OtherDeleteStock = datum[0].TotalOtherDeleteStock
+                response.calculation.InitiateTransfer = datum[0].TotalInitiateTransfer
+                response.calculation.CancelTransfer = datum[0].TotalCancelTransfer
+                response.calculation.AcceptTransfer = datum[0].TotalAcceptTransfer
+            }
+
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
+    getAmountInventoryReport: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "", calculation : {
+                "AmtOpeningStock": 0, "AmtAddPurchase": 0, "AmtDeletePurchase" : 0, "AmtAddSale": 0, "AmtDeleteSale": 0, "AmtOtherDeleteStock": 0, "AmtInitiateTransfer": 0, "AmtCancelTransfer": 0, "AmtAcceptTransfer": 0, "AmtClosingStock": 0
+            } }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            const { ShopID, DateParam } = req.body
+
+            if (ShopID === null || ShopID === undefined || ShopID === "") return res.send({ message: "Invalid Query Data" })
+            if (DateParam === null || DateParam === undefined || DateParam == 0 || DateParam === "") return res.send({ message: "Invalid Query Data" })
+
+            let [data] = await mysql2.pool.query(`SELECT CompanyID, ShopID, DATE, AmtOpeningStock, AmtAddPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock FROM creport WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}  ${DateParam}  `)
+
+            let [firstOpening] = await mysql2.pool.query(`SELECT AmtClosingStock FROM creport WHERE CompanyID = ${CompanyID} AND ShopID = ${ShopID} LIMIT 1`)
+
+            if (data.length) {
+              response.calculation.AmtOpeningStock = firstOpening[0].AmtClosingStock
+              response.calculation.AmtClosingStock =  data[data.length - 1].AmtClosingStock
+            }
+
+            let [datum] = await mysql2.pool.query(`SELECT SUM(AmtAddPurchase) AS TotalAddPurchase,
+            SUM(AmtDeletePurchase) AS TotalDeletePurchase,
+            SUM(AmtAddSale) AS TotalAddSale,
+            SUM(AmtDeleteSale) AS TotalDeleteSale,
+            SUM(AmtOtherDeleteStock) AS TotalOtherDeleteStock,
+            SUM(AmtInitiateTransfer) AS TotalInitiateTransfer,
+            SUM(AmtCancelTransfer) AS TotalCancelTransfer,
+            SUM(AmtAcceptTransfer) AS TotalAcceptTransfer FROM creport WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}  ${DateParam}  `)
+
+            if (datum) {
+                response.calculation.AmtAddPurchase = datum[0].TotalAddPurchase
+                response.calculation.AmtDeletePurchase = datum[0].TotalDeletePurchase
+                response.calculation.AmtAddSale = datum[0].TotalAddSale
+                response.calculation.AmtDeleteSale = datum[0].TotalDeleteSale
+                response.calculation.AmtOtherDeleteStock = datum[0].TotalOtherDeleteStock
+                response.calculation.AmtInitiateTransfer = datum[0].TotalInitiateTransfer
+                response.calculation.AmtCancelTransfer = datum[0].TotalCancelTransfer
+                response.calculation.AmtAcceptTransfer = datum[0].TotalAcceptTransfer
+            }
+
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
 }
