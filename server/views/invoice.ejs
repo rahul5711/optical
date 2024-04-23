@@ -465,7 +465,9 @@
                                                                     Total </li>
                                                             <li>Advance </li>
                                                             <li>Current Inv. Bal. </li>
+                                                            <% if (data.unpaidlist.length == 0 ){%>
                                                             <li>Total Balance </li>
+                                                            <%}%>
                                                             <li>Payment By </li>
                         </ul>
                         <ul class="ul2" <% %> style="font-size:<%= data.CustomerFont %> ; line-height:<%=
@@ -473,7 +475,7 @@
                                     <!-- <li><%=data.billMaster.SubTotal%></li> -->
                                     <% if (data.shopdetails.SubTotal==="true" ){%>
                                         <li>
-                                            <%= data.billMaster.SubTotal %>
+                                            <%= data.subtotals %>
                                         </li>
                                         <%}%>
 
@@ -507,9 +509,11 @@
                                                             <li>
                                                                 <%= data.CurrentInvoiceBalance %>
                                                             </li>
+                                                            <% if (data.unpaidlist.length == 0 ){%>
                                                             <li>
                                                                 <%= data.DueAmount %>
                                                             </li>
+                                                            <%}%>
                                                             <li>
                                                                 <% if(data.paidlist.length !==0){
                                                                     data.paidlist.forEach(function (i, index) { %>

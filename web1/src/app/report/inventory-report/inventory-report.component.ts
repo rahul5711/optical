@@ -88,6 +88,12 @@ export class InventoryReportComponent implements OnInit {
     PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
   };
 
+  QtyStock: any = {
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,
+  }
+  AmtStock: any = {
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,
+  }
   viewInventoryReport = false
   addInventoryReport = false
   editInventoryReport = false
@@ -342,6 +348,74 @@ export class InventoryReportComponent implements OnInit {
     if (this.inventory.ToDate !== '' && this.inventory.ToDate !== null){
       let ToDate =  moment(this.inventory.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' +  `'${ToDate}'`; }
+
+    if (this.inventory.SupplierID !== 0){
+      Parem = Parem + ' and purchasemasternew.SupplierID = ' +  this.inventory.SupplierID; }
+    
+    if (this.inventory.ShopID != 0){
+      Parem = Parem + ' and barcodemasternew.ShopID IN ' +  `(${this.inventory.ShopID})`;}
+
+    if (this.inventory.Barcode !== '') {
+      Parem = Parem + ' and barcodemasternew.Barcode Like ' + '"' + this.inventory.Barcode + '%"';}
+      
+      // if (this.inventory.StringProductName !== '' ) {
+      //   Parem = Parem + ' and purchasedetailnew.ProductName LIKE ' + "'" + this.inventory.StringProductName + "%'"; }
+  
+    if (this.inventory.CurrentStatus !== 0) {
+      Parem = Parem + ' and barcodemasternew.CurrentStatus = ' + '"' + this.inventory.CurrentStatus + '"';}
+
+    if (this.inventory.GSTPercentage !== 0){
+      Parem = Parem + ' and purchasedetailnew.GSTPercentage = '  + `'${this.inventory.GSTPercentage}'`; }
+  
+    if (this.inventory.GSTType !== 0){
+      Parem = Parem + ' and purchasedetailnew.GSTType = '  + `'${this.inventory.GSTType}'`; }
+
+    if (this.inventory.ProductCategory  !== 0){
+      Parem = Parem + ' and purchasedetailnew.ProductTypeID = ' +  this.inventory.ProductCategory;
+      this.filter();}
+
+    if (this.inventory.ProductName !== '' ) {
+      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.inventory.ProductName.trim() + "%'"; }
+
+
+    const subs: Subscription =  this.purchaseService.getProductInventoryReport(Parem).subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.as.successToast(res.message)
+          this.inventoryList = res.data
+          this.inventoryList.forEach((element: any) => {
+            this.TtlR  =+ this.TtlR + element.RetailPrice * element.Count
+            this.TtlW  =+ this.TtlW + element.WholeSalePrice * element.Count
+           });
+          this.DetailtotalQty = res.calculation[0].totalQty;
+          this.DetailtotalDiscount = res.calculation[0].totalDiscount.toFixed(2);
+          this.DetailtotalUnitPrice = res.calculation[0].totalUnitPrice.toFixed(2);
+          this.DetailtotalSubTotal = res.calculation[0].totalSubTotal.toFixed(2);
+          this.DetailtotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
+          this.DetailtotalAmount = res.calculation[0].totalAmount.toFixed(2);
+          this.DetailtotalRetailPrice = res.calculation[0].totalRetailPrice.toFixed(2);
+          this.DetailtotalWholeSalePricet = res.calculation[0].totalWholeSalePrice.toFixed(2);
+          this.TtlR = res.calculation[0].totalRetailPrice.toFixed(2);
+          this.TtlW = res.calculation[0].totalWholeSalePrice.toFixed(2);
+          this.gstdetails = res.calculation[0].gst_details
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+  inventoryAll(){
+    this.sp.show()
+    let Parem = '';
+    this.TtlR = 0
+    this.TtlW = 0
+
+  
+      Parem = Parem + ' and  DATE_FORMAT(purchasemasternew.PurchaseDate, "%Y-%m-%d")  between ' +  '0001-01-01'; 
+      Parem = Parem + ' and ' +  '9000-01-01'; 
 
     if (this.inventory.SupplierID !== 0){
       Parem = Parem + ' and purchasemasternew.SupplierID = ' +  this.inventory.SupplierID; }
@@ -724,6 +798,10 @@ export class InventoryReportComponent implements OnInit {
       printContent = document.getElementById('ProductExpiry-content');
       printTitle = 'Purchase (Product Expiry) Report'
     }
+    if (mode === 'QtyStockExcel-content') {
+      printContent = document.getElementById('QtyStockExcel-content');
+      printTitle = 'opening/closing_stock_(QTY) Report'
+    }
   
     let printWindow: any = window.open('pp', '_blank');
     printWindow.document.write(`
@@ -837,5 +915,28 @@ export class InventoryReportComponent implements OnInit {
 
   toggleColumnVisibility1(column: string): void {
     this.columnVisibility1[column] = !this.columnVisibility1[column];
+  }
+
+  exportAsXLSXQtyStock(): void {
+    let element = document.getElementById('QtyStockExcel');
+    const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+    delete ws['A2'];
+          // Initialize column widths array
+  const colWidths: number[] = [];
+
+  // Iterate over all cells to determine maximum width for each column
+  XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any=[]) => {
+      row.forEach((cell: any, index: number) => {
+          const cellValue = cell ? String(cell) : '';
+          colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+      });
+  });
+
+  // Set column widths in the worksheet
+  ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+  
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'opening/closing_stock_(QTY).xlsx');
   }
 }

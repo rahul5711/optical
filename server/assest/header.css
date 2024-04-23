@@ -5,7 +5,8 @@
 }
 
 body{
-    margin: 5px !important; font-family: 'Roboto', sans-serif; display: flex;
+    margin: 5px !important; font-family: 'Roboto', sans-serif; padding-left: 2% !important;
+
 }
 /* header css  start*/
 /* company logo */

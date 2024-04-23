@@ -159,7 +159,7 @@
                                                             [(ngModel)]="data.CurrentStatus" #name="ngModel"
                                                             [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                                             <option value="Available">Available</option>
-                                                            <option value="Sold">Sold</option>
+                                                            <!-- <option value="Sold" [disabled]="true">Sold</option> -->
                                                             <!-- <option value="Pre Order">Pre Order</option> -->
                                                             <option value="Lost/Stolen">Lost/Stolen</option>
                                                             <option value="Damaged">Damaged</option>
@@ -169,12 +169,12 @@
                                                             <!-- <option value="Transfer Pending">Transfer Pending </option> -->
                                                         </select>
                                                     </td>
-                                                    <td *ngIf="!UpdateBarcode"> {{data.Barcode}}</td>
-                                                    <td *ngIf="UpdateBarcode">
+                                                    <td > {{data.Barcode}}</td>
+                                                    <!-- <td *ngIf="UpdateBarcode">
                                                         <input style=" width: 90px; text-align: center;"
                                                             [(ngModel)]="data.Barcode" #name="ngModel"
                                                             [ngModelOptions]="{standalone: true}" name="data{{i}}">
-                                                    </td>
+                                                    </td> -->
                                                     <td *ngIf="!UpdateBarcode">{{(data.Remark !== 'null')? data.Remark:
                                                         ''}}</td>
                                                     <td *ngIf="UpdateBarcode" style=" width: 90px;text-align: center;">
