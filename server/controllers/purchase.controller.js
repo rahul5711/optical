@@ -4075,10 +4075,8 @@ module.exports = {
 
             let [data] = await mysql2.pool.query(`SELECT CompanyID, ShopID, DATE, OpeningStock, AddPurchase, DeletePurchase, AddSale, DeleteSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock FROM creport WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}  ${DateParam}  `)
 
-            let [firstOpening] = await mysql2.pool.query(`SELECT ClosingStock FROM creport WHERE CompanyID = ${CompanyID} AND ShopID = ${ShopID} LIMIT 1`)
-
             if (data.length) {
-              response.calculation.OpeningStock = firstOpening[0].ClosingStock
+              response.calculation.OpeningStock = data[0].OpeningStock
               response.calculation.ClosingStock =  data[data.length - 1].ClosingStock
             }
 
@@ -4125,10 +4123,8 @@ module.exports = {
 
             let [data] = await mysql2.pool.query(`SELECT CompanyID, ShopID, DATE, AmtOpeningStock, AmtAddPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock FROM creport WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}  ${DateParam}  `)
 
-            let [firstOpening] = await mysql2.pool.query(`SELECT AmtClosingStock FROM creport WHERE CompanyID = ${CompanyID} AND ShopID = ${ShopID} LIMIT 1`)
-
             if (data.length) {
-              response.calculation.AmtOpeningStock = firstOpening[0].AmtClosingStock
+              response.calculation.AmtOpeningStock = data[0].AmtOpeningStock
               response.calculation.AmtClosingStock =  data[data.length - 1].AmtClosingStock
             }
 

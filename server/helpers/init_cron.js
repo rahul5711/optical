@@ -9,6 +9,8 @@ const cronConnect = async() => {
     cron.schedule('0 0 * * *', async () => {
         // This function will run at 12:00 AM (midnight) every day
         // Add your code logic here
+        // 0 2 * * * every day 2 AM
+        // * * * * * every second
         try {
             console.log('This function will run at 12:00 AM (midnight) every day');
             let date = moment(new Date()).format("YYYY-MM-DD")
