@@ -77,6 +77,28 @@ export class InventoryReportComponent implements OnInit {
   QtyStockList:any
   AmtStockList:any
 
+OpeningStock     :any;
+AddPurchase      :any;
+DeletePurchase   :any;
+AddSale          :any;
+DeleteSale       :any;
+OtherDeleteStock :any;
+InitiateTransfer :any;
+CancelTransfer   :any;
+AcceptTransfer   :any;
+ClosingStock     :any;
+
+AmtOpeningStock     :any;
+AmtAddPurchase      :any;
+AmtDeletePurchase   :any;
+AmtAddSale          :any;
+AmtDeleteSale       :any;
+AmtOtherDeleteStock :any;
+AmtInitiateTransfer :any;
+AmtCancelTransfer   :any;
+AmtAcceptTransfer   :any;
+AmtClosingStock     :any;
+
   inventory: any =  {
     FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0, Barcode:'', CurrentStatus:'Available', PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0,StringProductName:''
   };
@@ -991,6 +1013,17 @@ export class InventoryReportComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.QtyStockList = res.data
+          this.OpeningStock       = res.calculation.OpeningStock
+          this.AddPurchase        = res.calculation.AddPurchase
+          this.DeletePurchase     = res.calculation.DeletePurchase
+          this.AddSale            = res.calculation.AddSale
+          this.DeleteSale         = res.calculation.DeleteSale
+          this.OtherDeleteStock   = res.calculation.OtherDeleteStock
+          this.InitiateTransfer   = res.calculation.InitiateTransfer
+          this.CancelTransfer     = res.calculation.CancelTransfer
+          this.AcceptTransfer     = res.calculation.AcceptTransfer
+          this.ClosingStock       = res.calculation.ClosingStock
+
         }else{
           this.as.errorToast(res.message)
         }
@@ -1022,6 +1055,16 @@ export class InventoryReportComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.AmtStockList = res.data
+          this.AmtOpeningStock       = res.calculation.AmtOpeningStock
+          this.AmtAddPurchase        = res.calculation.AmtAddPurchase
+          this.AmtDeletePurchase     = res.calculation.AmtDeletePurchase
+          this.AmtAddSale            = res.calculation.AmtAddSale
+          this.AmtDeleteSale         = res.calculation.AmtDeleteSale
+          this.AmtOtherDeleteStock   = res.calculation.AmtOtherDeleteStock
+          this.AmtInitiateTransfer   = res.calculation.AmtInitiateTransfer
+          this.AmtCancelTransfer     = res.calculation.AmtCancelTransfer
+          this.AmtAcceptTransfer     = res.calculation.AmtAcceptTransfer
+          this.AmtClosingStock       = res.calculation.AmtClosingStock
         }else{
           this.as.errorToast(res.message)
         }
