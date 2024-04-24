@@ -305,6 +305,14 @@ export class PurchaseService {
     return this.httpClient.post<any>(this.url + '/paymentHistoryByPurchaseID', { SupplierID:SupplierID,PurchaseID:PurchaseID}, httpOptions)
     .pipe(catchError(this.handleError));
   }
+  getCountInventoryReport(ShopID: any,DateParam:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getCountInventoryReport', { ShopID:ShopID,DateParam:DateParam}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+  getAmountInventoryReport(ShopID: any,DateParam:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getAmountInventoryReport', { ShopID:ShopID,DateParam:DateParam}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

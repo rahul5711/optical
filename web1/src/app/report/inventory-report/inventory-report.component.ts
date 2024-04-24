@@ -74,6 +74,8 @@ export class InventoryReportComponent implements OnInit {
   gstExpirys :any 
   todaydate: any;
 
+  QtyStockList:any
+  AmtStockList:any
 
   inventory: any =  {
     FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0, Barcode:'', CurrentStatus:'Available', PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0,StringProductName:''
@@ -802,6 +804,10 @@ export class InventoryReportComponent implements OnInit {
       printContent = document.getElementById('QtyStockExcel-content');
       printTitle = 'opening/closing_stock_(QTY) Report'
     }
+    if (mode === 'AmtStockExcel-content') {
+      printContent = document.getElementById('AmtStockExcel-content');
+      printTitle = 'opening/closing_stock_(AMT) Report'
+    }
   
     let printWindow: any = window.open('pp', '_blank');
     printWindow.document.write(`
@@ -938,5 +944,91 @@ export class InventoryReportComponent implements OnInit {
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'opening/closing_stock_(QTY).xlsx');
+  }
+  exportAsXLSXAmtStock(): void {
+    let element = document.getElementById('AmtStockExcel');
+    const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+    delete ws['A2'];
+          // Initialize column widths array
+  const colWidths: number[] = [];
+
+  // Iterate over all cells to determine maximum width for each column
+  XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any=[]) => {
+      row.forEach((cell: any, index: number) => {
+          const cellValue = cell ? String(cell) : '';
+          colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+      });
+  });
+
+  // Set column widths in the worksheet
+  ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+  
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'opening/closing_stock_(AMT).xlsx');
+  }
+
+
+  getCountInventoryReport(){
+
+    this.sp.show()
+    this.todaydate = moment(new Date()).format('YYYY-MM-DD');
+    let Parem = '';
+
+    if (this.QtyStock.FromDate !== '' && this.QtyStock.FromDate !== null){
+      let FromDate =  moment(this.QtyStock.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and Date between ' +  `'${FromDate}'`; }
+
+    if (this.QtyStock.ToDate !== '' && this.QtyStock.ToDate !== null){
+      let ToDate =  moment(this.QtyStock.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' +  `'${ToDate}'`; }
+
+    if (this.QtyStock.ShopID != 0){
+      this.QtyStock.ShopID
+    }
+
+    const subs: Subscription =  this.purchaseService.getCountInventoryReport(this.QtyStock.ShopID,Parem).subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.QtyStockList = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+  getAmountInventoryReport(){
+
+    this.sp.show()
+    this.todaydate = moment(new Date()).format('YYYY-MM-DD');
+    let Parem = '';
+
+    if (this.AmtStock.FromDate !== '' && this.AmtStock.FromDate !== null){
+      let FromDate =  moment(this.AmtStock.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + 'and Date between ' +  `'${FromDate}'`; }
+
+    if (this.AmtStock.ToDate !== '' && this.AmtStock.ToDate !== null){
+      let ToDate =  moment(this.AmtStock.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' +  `'${ToDate}'`; }
+
+    if (this.AmtStock.ShopID != 0){
+      this.AmtStock.ShopID
+    }
+
+    const subs: Subscription =  this.purchaseService.getAmountInventoryReport(this.AmtStock.ShopID,Parem).subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.AmtStockList = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 }
