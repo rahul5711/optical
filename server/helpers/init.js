@@ -184,7 +184,7 @@ const product_support = async () => {
 }
 const c_report_init = async () => {
     try {
-        let date = moment(new Date('2024-04-21')).format("YYYY-MM-DD")
+        let date = moment(new Date('2024-04-23')).format("YYYY-MM-DD")
         const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1`)
         let result = []
         if (company) {
