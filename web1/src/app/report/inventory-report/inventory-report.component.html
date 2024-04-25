@@ -399,18 +399,40 @@
                 <div class="body">
                   <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getCountInventoryReport()">
                     <div class="row" >
-                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                      <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                            <mat-label>Filter Types</mat-label>
+                            <mat-select name="FilterTypes" [(ngModel)]="FilterTypes" (selectionChange)="ChangeDate('Qty')" required>
+                                <mat-option value="Month">Month</mat-option>
+                                <mat-option value="Date">Date</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                      <div *ngIf="FilterTypes === 'Date'" class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>From</mat-label>
                           <input matInput name="FromDate" type="date" [(ngModel)]="QtyStock.FromDate" #Fromcontrol >
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                      
+                      <div *ngIf="FilterTypes === 'Date'" class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>To</mat-label>
                           <input matInput type="date" name="ToDate" [(ngModel)]="QtyStock.ToDate" #Tocontrol>
                         </mat-form-field>
                       </div>
+                      <div *ngIf="FilterTypes === 'Month'" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>From</mat-label>
+                          <input matInput name="FromDate" type="month" [(ngModel)]="QtyStock.FromDate"  #Fromcontrol >
+                        </mat-form-field>
+                    </div>
+                      <div *ngIf="FilterTypes === 'Month'" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>To</mat-label>
+                          <input matInput name="ToDate" type="month" [(ngModel)]="QtyStock.ToDate" (change)="ChangeDateTo('Qty')" #Fromcontrol >
+                        </mat-form-field>
+                    </div>
                      
                       <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0">
                         <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
@@ -481,7 +503,7 @@
                             <td></td>
                           </tr>
                         </thead>
-                        <tbody class="text-center">
+                        <tbody *ngIf="FilterTypes === 'Date'" class="text-center">
                             <tr *ngFor="let data of QtyStockList; let i = index" text="left">
                               <td>{{ i + 1 }}</td>
                               <td>{{data.DATE}}</td>
@@ -499,6 +521,24 @@
                             </tr>
                            
                         </tbody>
+                        <tbody *ngIf="FilterTypes === 'Month'" class="text-center">
+                            <tr *ngFor="let data of QtyStockList; let i = index" text="left">
+                              <td>{{ i + 1 }}</td>
+                              <td>{{data.MonthYear}}</td>
+                              <td>{{data.OpeningStock}}</td>
+                              <td>{{data.TotalAddPurchase}}</td>
+                              <td>{{data.TotalDeletePurchase}}</td>
+                              <td>{{data.TotalAddSale}}</td>
+                              <td>{{data.TotalDeleteSale}}</td>
+                              <td>{{data.TotalOtherDeleteStock}}</td>
+                              <td>{{data.TotalInitiateTransfer}}</td>
+                              <td>{{data.TotalCancelTransfer}}</td>
+                              <td>{{data.TotalAcceptTransfer}}</td>
+                              <td>{{data.ClosingStock}}</td>
+                              <td>{{data.ShopID}}</td>
+                            </tr>
+                           
+                        </tbody>
                       </table>
                     </div>
                   </div>
@@ -509,19 +549,40 @@
                 <div class="body">
                   <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getAmountInventoryReport()">
                     <div class="row" >
-                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                      <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                            <mat-label>Filter Types</mat-label>
+                            <mat-select name="FilterTypes1" [(ngModel)]="FilterTypes1" (selectionChange)="ChangeDate('Amt')" required>
+                                <mat-option value="Month">Month</mat-option>
+                                <mat-option value="Date">Date</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                      <div *ngIf="FilterTypes1 === 'Date'" class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>From</mat-label>
                           <input matInput name="FromDate" type="date" [(ngModel)]="AmtStock.FromDate" #Fromcontrol >
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                      <div *ngIf="FilterTypes1 === 'Date'" class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>To</mat-label>
                           <input matInput type="date" name="ToDate" [(ngModel)]="AmtStock.ToDate" #Tocontrol>
                         </mat-form-field>
                       </div>
-                     
+                      <div *ngIf="FilterTypes1 === 'Month'" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>From</mat-label>
+                          <input matInput name="FromDate" type="month" [(ngModel)]="AmtStock.FromDate"  #Fromcontrol >
+                        </mat-form-field>
+                    </div>
+                      <div *ngIf="FilterTypes1 === 'Month'" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>To</mat-label>
+                          <input matInput name="ToDate" type="month" [(ngModel)]="AmtStock.ToDate" (change)="ChangeDateTo('Amt')" #Fromcontrol >
+                        </mat-form-field>
+                    </div>
                       <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0">
                         <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
                           <mat-label>Shop Name</mat-label>
@@ -591,7 +652,7 @@
                             <td></td>
                           </tr>
                         </thead>
-                        <tbody class="text-center">
+                        <tbody *ngIf="FilterTypes1 == 'Date'" class="text-center">
                           <tr *ngFor="let Amt of AmtStockList; let i = index" text="left">
                             <td>{{ i + 1 }}</td>
                             <td>{{Amt.DATE}}</td>
@@ -604,6 +665,23 @@
                             <td>{{Amt.AmtInitiateTransfer}}</td>
                             <td>{{Amt.AmtCancelTransfer}}</td>
                             <td>{{Amt.AmtAcceptTransfer}}</td>
+                            <td>{{Amt.AmtClosingStock}}</td>
+                            <td>{{Amt.ShopID}}</td>
+                          </tr>
+                        </tbody>
+                        <tbody *ngIf="FilterTypes1 == 'Month'"  class="text-center">
+                          <tr *ngFor="let Amt of AmtStockList; let i = index" text="left">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{Amt.MonthYear}}</td>
+                            <td>{{Amt.AmtOpeningStock}}</td>
+                            <td>{{Amt.TotalAddPurchase}}</td>
+                            <td>{{Amt.TotalDeletePurchase}}</td>
+                            <td>{{Amt.TotalAddSale}}</td>
+                            <td>{{Amt.TotalDeleteSale}}</td>
+                            <td>{{Amt.TotalOtherDeleteStock}}</td>
+                            <td>{{Amt.TotalInitiateTransfer}}</td>
+                            <td>{{Amt.TotalCancelTransfer}}</td>
+                            <td>{{Amt.TotalAcceptTransfer}}</td>
                             <td>{{Amt.AmtClosingStock}}</td>
                             <td>{{Amt.ShopID}}</td>
                           </tr>

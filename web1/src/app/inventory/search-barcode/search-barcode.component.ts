@@ -23,7 +23,7 @@ export class SearchBarcodeComponent implements OnInit {
   shop = JSON.parse(localStorage.getItem('shop') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
-
+  Productsearch:any = '';
   id: any;
   SearchBarCode: any;
   selectedProduct: any;

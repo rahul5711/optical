@@ -27,7 +27,7 @@ export class InventorySummaryComponent implements OnInit {
   shop = JSON.parse(localStorage.getItem('shop') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
-
+  Productsearch:any = '';
   id: any;
   selectedProduct: any;
   prodList:any;

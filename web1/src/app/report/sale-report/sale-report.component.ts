@@ -39,7 +39,7 @@ export class SaleReportComponent implements OnInit {
   filteredOptions: any;
   filteredOption2: any;
   searchValue: any = '';
-
+  Productsearch:any = ''
   constructor(
     private router: Router,
     private route: ActivatedRoute,

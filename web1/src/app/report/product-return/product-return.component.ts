@@ -28,7 +28,7 @@ export class ProductReturnComponent implements OnInit {
   companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
   searchValue :any = '';
   env = environment;
-
+  Productsearch:any = '';
   columnVisibility: any = {
     SNo: true,
     Supplier: true,

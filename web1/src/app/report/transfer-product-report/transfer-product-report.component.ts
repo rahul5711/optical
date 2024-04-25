@@ -24,7 +24,7 @@ export class TransferProductReportComponent implements OnInit {
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   searchValue: any = '';
   form: any | FormGroup;
-
+  Productsearch:any = '';
   columnVisibility: any = {
     SNo: true,
     ProductName: true,

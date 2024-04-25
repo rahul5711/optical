@@ -43,7 +43,7 @@ export class PurchaseReportComponent implements OnInit {
   roundOffAmount: any;
   totalGstAmount: any;
   gstMaster: any;
-
+  Productsearch :any = '';
   PurchaseDetailList:any = [];
   selectedProduct: any;
   prodList:any;

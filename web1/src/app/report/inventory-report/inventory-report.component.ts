@@ -21,12 +21,16 @@ import { FormControl } from '@angular/forms';
 })
 
 export class InventoryReportComponent implements OnInit {
+
+  FilterTypes: any = 'Date'
+  FilterTypes1: any = 'Date'
+
   env = environment;
-  user:any =JSON.parse(localStorage.getItem('user') || '') ;
-  shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
-  selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
+  user: any = JSON.parse(localStorage.getItem('user') || '');
+  shop: any = JSON.parse(localStorage.getItem('shop') || '');
+  selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
-  companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
+  companySetting: any = JSON.parse(localStorage.getItem('companysetting') || '[]');
 
   constructor(
     private router: Router,
@@ -42,14 +46,14 @@ export class InventoryReportComponent implements OnInit {
   ) { }
 
   myControl = new FormControl('All');
-  filteredOptions: any ;
-  searchValue:any='';
-  supplierList :any;
-  shopList :any;
-  selectsShop :any;
+  filteredOptions: any;
+  searchValue: any = '';
+  supplierList: any;
+  shopList: any;
+  selectsShop: any;
   inventoryList: any;
   selectedProduct: any;
-  prodList:any;
+  prodList: any;
   specList: any;
   gstList: any;
   DetailtotalQty: any;
@@ -60,61 +64,63 @@ export class InventoryReportComponent implements OnInit {
   DetailtotalGstAmount: any;
   DetailtotalRetailPrice: any;
   DetailtotalWholeSalePricet: any;
-  gstdetails:any
-  TtlR:any = 0
-  TtlW:any = 0
+  gstdetails: any
+  TtlR: any = 0
+  TtlW: any = 0
 
-  ProductExpiryList:any
-  specList1:any
-  ExpirytotalQty :any 
-  ExpirytotalDiscount :any 
-  ExpirytotalUnitPrice :any
-  ExpirytotalGstAmount :any
-  ExpirytotalAmount :any 
-  gstExpirys :any 
+  ProductExpiryList: any
+  specList1: any
+  ExpirytotalQty: any
+  ExpirytotalDiscount: any
+  ExpirytotalUnitPrice: any
+  ExpirytotalGstAmount: any
+  ExpirytotalAmount: any
+  gstExpirys: any
   todaydate: any;
 
-  QtyStockList:any
-  AmtStockList:any
+  QtyStockList: any
+  AmtStockList: any
 
-OpeningStock     :any;
-AddPurchase      :any;
-DeletePurchase   :any;
-AddSale          :any;
-DeleteSale       :any;
-OtherDeleteStock :any;
-InitiateTransfer :any;
-CancelTransfer   :any;
-AcceptTransfer   :any;
-ClosingStock     :any;
+  OpeningStock: any;
+  AddPurchase: any;
+  DeletePurchase: any;
+  AddSale: any;
+  DeleteSale: any;
+  OtherDeleteStock: any;
+  InitiateTransfer: any;
+  CancelTransfer: any;
+  AcceptTransfer: any;
+  ClosingStock: any;
 
-AmtOpeningStock     :any;
-AmtAddPurchase      :any;
-AmtDeletePurchase   :any;
-AmtAddSale          :any;
-AmtDeleteSale       :any;
-AmtOtherDeleteStock :any;
-AmtInitiateTransfer :any;
-AmtCancelTransfer   :any;
-AmtAcceptTransfer   :any;
-AmtClosingStock     :any;
-
-  inventory: any =  {
-    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0, Barcode:'', CurrentStatus:'Available', PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0,StringProductName:''
+  AmtOpeningStock: any;
+  AmtAddPurchase: any;
+  AmtDeletePurchase: any;
+  AmtAddSale: any;
+  AmtDeleteSale: any;
+  AmtOtherDeleteStock: any;
+  AmtInitiateTransfer: any;
+  AmtCancelTransfer: any;
+  AmtAcceptTransfer: any;
+  AmtClosingStock: any;
+  lastDayOfMonth: any
+  lastDayOfMonth1: any
+  inventory: any = {
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0, Barcode: '', CurrentStatus: 'Available', PaymentStatus: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, StringProductName: ''
   };
 
-  data: any =  {
-    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'),SupplierID:0, ShopID: 0, 
+  data: any = {
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), SupplierID: 0, ShopID: 0,
   };
 
-  ProductExpiry: any =  {
-    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
-    PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
+  ProductExpiry: any = {
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,
+    PaymentStatus: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0
   };
 
   QtyStock: any = {
     FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,
   }
+
   AmtStock: any = {
     FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,
   }
@@ -186,12 +192,12 @@ AmtClosingStock     :any;
         this.addInventoryReport = element.Add;
         this.editInventoryReport = element.Edit;
         this.deleteInventoryReport = element.Delete;
-      }else if (element.ModuleName === 'ProductSummaryReport') {
+      } else if (element.ModuleName === 'ProductSummaryReport') {
         this.viewProductSummaryReport = element.View;
         this.addProductSummaryReport = element.Add;
         this.editProductSummaryReport = element.Edit;
         this.deleteProductSummaryReport = element.Delete;
-      }else if (element.ModuleName === 'PurchaseProductExpiryReport') {
+      } else if (element.ModuleName === 'PurchaseProductExpiryReport') {
         this.viewPurchaseProductExpiryReport = element.View;
         this.addPurchaseProductExpiryReport = element.Add;
         this.editPurchaseProductExpiryReport = element.Edit;
@@ -199,12 +205,12 @@ AmtClosingStock     :any;
       }
     });
 
-    if(this.user.UserGroup === 'Employee'){
-      this.shopList  = this.shop;
+    if (this.user.UserGroup === 'Employee') {
+      this.shopList = this.shop;
       this.inventory.ShopID = this.shopList[0].ShopID
       this.data.ShopID = this.shopList[0].ShopID
       this.ProductExpiry.ShopID = this.shopList[0].ShopID
-    }else{
+    } else {
       this.dropdownShoplist()
     }
 
@@ -217,16 +223,16 @@ AmtClosingStock     :any;
 
   }
 
-  dropdownShoplist(){
+  dropdownShoplist() {
     this.sp.show()
     const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
       next: (res: any) => {
-        if(res.success){
-          this.shopList  = res.data
+        if (res.success) {
+          this.shopList = res.data
           let shop = res.data
-          this.selectsShop = shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
-          this.selectsShop =  '/ ' + this.selectsShop[0].Name + ' (' + this.selectsShop[0].AreaName + ')'
-        }else{
+          this.selectsShop = shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+          this.selectsShop = '/ ' + this.selectsShop[0].Name + ' (' + this.selectsShop[0].AreaName + ')'
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide()
@@ -236,13 +242,13 @@ AmtClosingStock     :any;
     });
   }
 
-  dropdownSupplierlist(){
+  dropdownSupplierlist() {
     this.sp.show()
     const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
       next: (res: any) => {
-        if(res.success){
-          this.supplierList  = res.data
-        }else{
+        if (res.success) {
+          this.supplierList = res.data
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide()
@@ -252,13 +258,13 @@ AmtClosingStock     :any;
     });
   }
 
-  getProductList(){
+  getProductList() {
     this.sp.show()
-    const subs: Subscription =  this.ps.getList().subscribe({
+    const subs: Subscription = this.ps.getList().subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.prodList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide()
@@ -268,25 +274,25 @@ AmtClosingStock     :any;
     });
   }
 
-  getFieldList(){
-    if(this.inventory.ProductCategory !== 0){
+  getFieldList() {
+    if (this.inventory.ProductCategory !== 0) {
       this.prodList.forEach((element: any) => {
         if (element.ID === this.inventory.ProductCategory) {
           this.selectedProduct = element.Name;
         }
       })
-      const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
+      const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
         next: (res: any) => {
-          if(res.success){
+          if (res.success) {
             this.specList = res.data;
             this.getSptTableData();
-          }else{
+          } else {
             this.as.errorToast(res.message)
           }
-       },
-       error: (err: any) => console.log(err.message),
-       complete: () => subs.unsubscribe(),
-     });
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     }
     else {
       this.specList = [];
@@ -295,122 +301,132 @@ AmtClosingStock     :any;
     }
   }
 
-  getSptTableData() { 
+  getSptTableData() {
     this.specList.forEach((element: any) => {
-     if (element.FieldType === 'DropDown' && element.Ref === '0') {
-       const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
-         next: (res: any) => {
-          if(res.success){
-            element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-          element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));       
-         }else{
-            this.as.errorToast(res.message)
-          }
-         },
-         error: (err: any) => console.log(err.message),
-         complete: () => subs.unsubscribe(),
-       });
-     }
+      if (element.FieldType === 'DropDown' && element.Ref === '0') {
+        const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+              element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+            } else {
+              this.as.errorToast(res.message)
+            }
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
     });
   }
 
-  getFieldSupportData(index:any) {
+  getFieldSupportData(index: any) {
     this.specList.forEach((element: any) => {
-     if (element.Ref === this.specList[index].FieldName.toString() ) {
-       const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
-         next: (res: any) => {
-          if(res.success){
-            element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-            element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));       
-           }else{
-            this.as.errorToast(res.message)
-          }
-         },
-         error: (err: any) => console.log(err.message),
-         complete: () => subs.unsubscribe(),
-       });
+      if (element.Ref === this.specList[index].FieldName.toString()) {
+        const subs: Subscription = this.ps.getProductSupportData(this.specList[index].SelectedValue, element.SptTableName).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+              element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+            } else {
+              this.as.errorToast(res.message)
+            }
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
       }
-     });
+    });
   }
 
-  getGSTList(){
+  getGSTList() {
     const subs: Subscription = this.supps.getList('TaxType').subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.gstList = res.data
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
       },
-    error: (err: any) => console.log(err.message),
-    complete: () => subs.unsubscribe(),
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
     });
   }
 
   filter() {
     let productName = '';
     this.specList.forEach((element: any) => {
-     if (productName === '') {
+      if (productName === '') {
         productName = element.SelectedValue;
-     } else if (element.SelectedValue !== '') {
+      } else if (element.SelectedValue !== '') {
         productName += '/' + element.SelectedValue;
-     }
+      }
     });
     this.inventory.ProductName = productName;
   }
 
-  getInventory(){
+  getInventory() {
     this.sp.show()
     let Parem = '';
     this.TtlR = 0
     this.TtlW = 0
 
-    if (this.inventory.FromDate !== '' && this.inventory.FromDate !== null){
-      let FromDate =  moment(this.inventory.FromDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and  DATE_FORMAT(purchasemasternew.PurchaseDate, "%Y-%m-%d")  between ' +  `'${FromDate}'`; }
+    if (this.inventory.FromDate !== '' && this.inventory.FromDate !== null) {
+      let FromDate = moment(this.inventory.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and  DATE_FORMAT(purchasemasternew.PurchaseDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
+    }
 
-    if (this.inventory.ToDate !== '' && this.inventory.ToDate !== null){
-      let ToDate =  moment(this.inventory.ToDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and ' +  `'${ToDate}'`; }
+    if (this.inventory.ToDate !== '' && this.inventory.ToDate !== null) {
+      let ToDate = moment(this.inventory.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
 
-    if (this.inventory.SupplierID !== 0){
-      Parem = Parem + ' and purchasemasternew.SupplierID = ' +  this.inventory.SupplierID; }
-    
-    if (this.inventory.ShopID != 0){
-      Parem = Parem + ' and barcodemasternew.ShopID IN ' +  `(${this.inventory.ShopID})`;}
+    if (this.inventory.SupplierID !== 0) {
+      Parem = Parem + ' and purchasemasternew.SupplierID = ' + this.inventory.SupplierID;
+    }
+
+    if (this.inventory.ShopID != 0) {
+      Parem = Parem + ' and barcodemasternew.ShopID IN ' + `(${this.inventory.ShopID})`;
+    }
 
     if (this.inventory.Barcode !== '') {
-      Parem = Parem + ' and barcodemasternew.Barcode Like ' + '"' + this.inventory.Barcode + '%"';}
-      
-      // if (this.inventory.StringProductName !== '' ) {
-      //   Parem = Parem + ' and purchasedetailnew.ProductName LIKE ' + "'" + this.inventory.StringProductName + "%'"; }
-  
+      Parem = Parem + ' and barcodemasternew.Barcode Like ' + '"' + this.inventory.Barcode + '%"';
+    }
+
+    // if (this.inventory.StringProductName !== '' ) {
+    //   Parem = Parem + ' and purchasedetailnew.ProductName LIKE ' + "'" + this.inventory.StringProductName + "%'"; }
+
     if (this.inventory.CurrentStatus !== 0) {
-      Parem = Parem + ' and barcodemasternew.CurrentStatus = ' + '"' + this.inventory.CurrentStatus + '"';}
+      Parem = Parem + ' and barcodemasternew.CurrentStatus = ' + '"' + this.inventory.CurrentStatus + '"';
+    }
 
-    if (this.inventory.GSTPercentage !== 0){
-      Parem = Parem + ' and purchasedetailnew.GSTPercentage = '  + `'${this.inventory.GSTPercentage}'`; }
-  
-    if (this.inventory.GSTType !== 0){
-      Parem = Parem + ' and purchasedetailnew.GSTType = '  + `'${this.inventory.GSTType}'`; }
+    if (this.inventory.GSTPercentage !== 0) {
+      Parem = Parem + ' and purchasedetailnew.GSTPercentage = ' + `'${this.inventory.GSTPercentage}'`;
+    }
 
-    if (this.inventory.ProductCategory  !== 0){
-      Parem = Parem + ' and purchasedetailnew.ProductTypeID = ' +  this.inventory.ProductCategory;
-      this.filter();}
+    if (this.inventory.GSTType !== 0) {
+      Parem = Parem + ' and purchasedetailnew.GSTType = ' + `'${this.inventory.GSTType}'`;
+    }
 
-    if (this.inventory.ProductName !== '' ) {
-      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.inventory.ProductName.trim() + "%'"; }
+    if (this.inventory.ProductCategory !== 0) {
+      Parem = Parem + ' and purchasedetailnew.ProductTypeID = ' + this.inventory.ProductCategory;
+      this.filter();
+    }
+
+    if (this.inventory.ProductName !== '') {
+      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.inventory.ProductName.trim() + "%'";
+    }
 
 
-    const subs: Subscription =  this.purchaseService.getProductInventoryReport(Parem).subscribe({
+    const subs: Subscription = this.purchaseService.getProductInventoryReport(Parem).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.as.successToast(res.message)
           this.inventoryList = res.data
           this.inventoryList.forEach((element: any) => {
-            this.TtlR  =+ this.TtlR + element.RetailPrice * element.Count
-            this.TtlW  =+ this.TtlW + element.WholeSalePrice * element.Count
-           });
+            this.TtlR = + this.TtlR + element.RetailPrice * element.Count
+            this.TtlW = + this.TtlW + element.WholeSalePrice * element.Count
+          });
           this.DetailtotalQty = res.calculation[0].totalQty;
           this.DetailtotalDiscount = res.calculation[0].totalDiscount.toFixed(2);
           this.DetailtotalUnitPrice = res.calculation[0].totalUnitPrice.toFixed(2);
@@ -422,7 +438,7 @@ AmtClosingStock     :any;
           this.TtlR = res.calculation[0].totalRetailPrice.toFixed(2);
           this.TtlW = res.calculation[0].totalWholeSalePrice.toFixed(2);
           this.gstdetails = res.calculation[0].gst_details
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide()
@@ -431,54 +447,62 @@ AmtClosingStock     :any;
       complete: () => subs.unsubscribe(),
     });
   }
-  inventoryAll(){
+  inventoryAll() {
     this.sp.show()
     let Parem = '';
     this.TtlR = 0
     this.TtlW = 0
 
-  
-      Parem = Parem + ' and  DATE_FORMAT(purchasemasternew.PurchaseDate, "%Y-%m-%d")  between ' +  '0001-01-01'; 
-      Parem = Parem + ' and ' +  '9000-01-01'; 
 
-    if (this.inventory.SupplierID !== 0){
-      Parem = Parem + ' and purchasemasternew.SupplierID = ' +  this.inventory.SupplierID; }
-    
-    if (this.inventory.ShopID != 0){
-      Parem = Parem + ' and barcodemasternew.ShopID IN ' +  `(${this.inventory.ShopID})`;}
+    Parem = Parem + ' and  DATE_FORMAT(purchasemasternew.PurchaseDate, "%Y-%m-%d")  between ' + '0001-01-01';
+    Parem = Parem + ' and ' + '9000-01-01';
+
+    if (this.inventory.SupplierID !== 0) {
+      Parem = Parem + ' and purchasemasternew.SupplierID = ' + this.inventory.SupplierID;
+    }
+
+    if (this.inventory.ShopID != 0) {
+      Parem = Parem + ' and barcodemasternew.ShopID IN ' + `(${this.inventory.ShopID})`;
+    }
 
     if (this.inventory.Barcode !== '') {
-      Parem = Parem + ' and barcodemasternew.Barcode Like ' + '"' + this.inventory.Barcode + '%"';}
-      
-      // if (this.inventory.StringProductName !== '' ) {
-      //   Parem = Parem + ' and purchasedetailnew.ProductName LIKE ' + "'" + this.inventory.StringProductName + "%'"; }
-  
+      Parem = Parem + ' and barcodemasternew.Barcode Like ' + '"' + this.inventory.Barcode + '%"';
+    }
+
+    // if (this.inventory.StringProductName !== '' ) {
+    //   Parem = Parem + ' and purchasedetailnew.ProductName LIKE ' + "'" + this.inventory.StringProductName + "%'"; }
+
     if (this.inventory.CurrentStatus !== 0) {
-      Parem = Parem + ' and barcodemasternew.CurrentStatus = ' + '"' + this.inventory.CurrentStatus + '"';}
+      Parem = Parem + ' and barcodemasternew.CurrentStatus = ' + '"' + this.inventory.CurrentStatus + '"';
+    }
 
-    if (this.inventory.GSTPercentage !== 0){
-      Parem = Parem + ' and purchasedetailnew.GSTPercentage = '  + `'${this.inventory.GSTPercentage}'`; }
-  
-    if (this.inventory.GSTType !== 0){
-      Parem = Parem + ' and purchasedetailnew.GSTType = '  + `'${this.inventory.GSTType}'`; }
+    if (this.inventory.GSTPercentage !== 0) {
+      Parem = Parem + ' and purchasedetailnew.GSTPercentage = ' + `'${this.inventory.GSTPercentage}'`;
+    }
 
-    if (this.inventory.ProductCategory  !== 0){
-      Parem = Parem + ' and purchasedetailnew.ProductTypeID = ' +  this.inventory.ProductCategory;
-      this.filter();}
+    if (this.inventory.GSTType !== 0) {
+      Parem = Parem + ' and purchasedetailnew.GSTType = ' + `'${this.inventory.GSTType}'`;
+    }
 
-    if (this.inventory.ProductName !== '' ) {
-      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.inventory.ProductName.trim() + "%'"; }
+    if (this.inventory.ProductCategory !== 0) {
+      Parem = Parem + ' and purchasedetailnew.ProductTypeID = ' + this.inventory.ProductCategory;
+      this.filter();
+    }
+
+    if (this.inventory.ProductName !== '') {
+      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.inventory.ProductName.trim() + "%'";
+    }
 
 
-    const subs: Subscription =  this.purchaseService.getProductInventoryReport(Parem).subscribe({
+    const subs: Subscription = this.purchaseService.getProductInventoryReport(Parem).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.as.successToast(res.message)
           this.inventoryList = res.data
           this.inventoryList.forEach((element: any) => {
-            this.TtlR  =+ this.TtlR + element.RetailPrice * element.Count
-            this.TtlW  =+ this.TtlW + element.WholeSalePrice * element.Count
-           });
+            this.TtlR = + this.TtlR + element.RetailPrice * element.Count
+            this.TtlW = + this.TtlW + element.WholeSalePrice * element.Count
+          });
           this.DetailtotalQty = res.calculation[0].totalQty;
           this.DetailtotalDiscount = res.calculation[0].totalDiscount.toFixed(2);
           this.DetailtotalUnitPrice = res.calculation[0].totalUnitPrice.toFixed(2);
@@ -490,7 +514,7 @@ AmtClosingStock     :any;
           this.TtlR = res.calculation[0].totalRetailPrice.toFixed(2);
           this.TtlW = res.calculation[0].totalWholeSalePrice.toFixed(2);
           this.gstdetails = res.calculation[0].gst_details
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide()
@@ -502,39 +526,39 @@ AmtClosingStock     :any;
 
   exportAsXLSXDetail(): void {
     let element = document.getElementById('inventoryExcel');
-    const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
     delete ws['A2'];
-          // Initialize column widths array
-          const colWidths: number[] = [];
+    // Initialize column widths array
+    const colWidths: number[] = [];
 
-          // Iterate over all cells to determine maximum width for each column
-          XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any=[]) => {
-              row.forEach((cell: any, index: number) => {
-                  const cellValue = cell ? String(cell) : '';
-                  colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
-              });
-          });
-      
-          // Set column widths in the worksheet
-          ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
-          
+    // Iterate over all cells to determine maximum width for each column
+    XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any = []) => {
+      row.forEach((cell: any, index: number) => {
+        const cellValue = cell ? String(cell) : '';
+        colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+      });
+    });
+
+    // Set column widths in the worksheet
+    ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'inventory_Report.xlsx');
   }
 
-  PDFdetail(){
+  PDFdetail() {
   }
 
-  inventorysFromReset(){
-    this.inventory =  { 
-      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0, Barcode:'', CurrentStatus:'Available', PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
+  inventorysFromReset() {
+    this.inventory = {
+      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0, Barcode: '', CurrentStatus: 'Available', PaymentStatus: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0
     };
     this.inventoryList = [];
     this.DetailtotalQty = ''
     this.DetailtotalDiscount = ''
     this.DetailtotalUnitPrice = ''
-    this.DetailtotalGstAmount =''
+    this.DetailtotalGstAmount = ''
     this.DetailtotalSubTotal = ''
     this.DetailtotalAmount = ''
     this.TtlR = 0
@@ -542,258 +566,266 @@ AmtClosingStock     :any;
   }
 
   openModal(content: any) {
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
   }
 
-    // purchase product expiry
+  // purchase product expiry
 
-    getFieldList1(){
-      if(this.ProductExpiry.ProductCategory !== 0){
-        this.prodList.forEach((element: any) => {
-          if (element.ID === this.ProductExpiry.ProductCategory) {
-            this.selectedProduct = element.Name;
-          }
-        })
-        const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
-          next: (res: any) => {
-            if(res.success){
-              this.specList1 = res.data;
-              this.getSptTableData1();
-            }else{
-              this.as.errorToast(res.message)
-            }
-         },
-         error: (err: any) => console.log(err.message),
-         complete: () => subs.unsubscribe(),
-       });
-      }
-      else {
-        this.specList1 = [];
-        this.ProductExpiry.ProductName = '';
-        this.ProductExpiry.ProductCategory = 0;
-      }
-    }
-  
-    getSptTableData1() { 
-      this.specList1.forEach((element: any) => {
-       if (element.FieldType === 'DropDown' && element.Ref === '0') {
-         const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
-           next: (res: any) => {
-            if(res.success){
-              element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-              element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));       
-            }else{
-              this.as.errorToast(res.message)
-            }
-           },
-           error: (err: any) => console.log(err.message),
-           complete: () => subs.unsubscribe(),
-         });
-       }
-      });
-    }
-  
-    getFieldSupportData1(index:any) {
-      this.specList1.forEach((element: any) => {
-       if (element.Ref === this.specList1[index].FieldName.toString() ) {
-         const subs: Subscription =  this.ps.getProductSupportData( this.specList1[index].SelectedValue,element.SptTableName).subscribe({
-           next: (res: any) => {
-            if(res.success){
-              element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-              element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));       
-            }else{
-              this.as.errorToast(res.message)
-            }
-           },
-           error: (err: any) => console.log(err.message),
-           complete: () => subs.unsubscribe(),
-         });
+  getFieldList1() {
+    if (this.ProductExpiry.ProductCategory !== 0) {
+      this.prodList.forEach((element: any) => {
+        if (element.ID === this.ProductExpiry.ProductCategory) {
+          this.selectedProduct = element.Name;
         }
-       });
-    }
-  
-    filter1() {
-      let productName = '';
-      this.specList1.forEach((element: any) => {
-       if (productName === '') {
-          productName = element.SelectedValue;
-       } else if (element.SelectedValue !== '') {
-          productName += '/' + element.SelectedValue;
-       }
-      });
-      this.ProductExpiry.ProductName = productName;
-    }
-  
-    purchaseProductExpiry(){
-
-      this.sp.show()
-      this.todaydate = moment(new Date()).format('YYYY-MM-DD');
-      let Parem = '';
-  
-      if (this.ProductExpiry.FromDate !== '' && this.ProductExpiry.FromDate !== null){
-        let FromDate =  moment(this.ProductExpiry.FromDate).format('YYYY-MM-DD')
-        Parem = Parem + ' and  DATE_FORMAT(purchasedetailnew.ProductExpDate, "%Y-%m-%d")  between ' +  `'${FromDate}'`; }
-  
-      if (this.ProductExpiry.ToDate !== '' && this.ProductExpiry.ToDate !== null){
-        let ToDate =  moment(this.ProductExpiry.ToDate).format('YYYY-MM-DD')
-        Parem = Parem + ' and ' +  `'${ToDate}'`; }
-  
-      if (this.ProductExpiry.ProductCategory  !== 0){
-        Parem = Parem + ' and purchasedetailnew.ProductTypeID = ' +  this.ProductExpiry.ProductCategory;
-        this.filter1();}
-  
-      if (this.ProductExpiry.ProductName !== '' ) {
-        Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.ProductExpiry.ProductName.trim() + "%'"; }
-  
-      if (this.ProductExpiry.ShopID != 0){
-        Parem = Parem + ' and purchasemasternew.ShopID IN ' +  `(${this.ProductExpiry.ShopID})`;}
-  
-      if (this.ProductExpiry.SupplierID !== 0){
-        Parem = Parem + ' and purchasemasternew.SupplierID = ' +  this.ProductExpiry.SupplierID; }
-  
-      if (this.ProductExpiry.GSTPercentage !== 0){
-        Parem = Parem + ' and purchasedetailnew.GSTPercentage = '  + `'${this.ProductExpiry.GSTPercentage}'`; }
-  
-      if (this.ProductExpiry.GSTType !== 0){
-        Parem = Parem + ' and purchasedetailnew.GSTType = '  + `'${this.ProductExpiry.GSTType}'`; }
-  
-      const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem).subscribe({
+      })
+      const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
         next: (res: any) => {
-          if(res.success){
-            this.ProductExpiryList = res.data
-            this.ProductExpiryList.forEach((element: any) => {
-              element.ProductName = element.ProductName.trim()
-              if(element.ProductExpDate < this.todaydate) {
-                element.Color = true;
-              } else {
-                element.Color = false;
-              }
-            });
-            this.ExpirytotalQty = res.calculation[0].totalQty;
-            this.ExpirytotalDiscount = res.calculation[0].totalDiscount.toFixed(2);
-            this.ExpirytotalUnitPrice = res.calculation[0].totalUnitPrice.toFixed(2);
-            this.ExpirytotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
-            this.ExpirytotalAmount = res.calculation[0].totalAmount.toFixed(2);
-            this.gstExpirys = res.calculation[0].gst_details
-          }else{
+          if (res.success) {
+            this.specList1 = res.data;
+            this.getSptTableData1();
+          } else {
             this.as.errorToast(res.message)
           }
-          this.sp.hide()
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
     }
-  
-    openModal2(content2: any) {
-      this.modalService.open(content2, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+    else {
+      this.specList1 = [];
+      this.ProductExpiry.ProductName = '';
+      this.ProductExpiry.ProductCategory = 0;
     }
-    
-    exportAsXLSXExpiry(): void {
-      let element = document.getElementById('ProductExpiry');
-      const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
-      delete ws['A2'];
-            // Initialize column widths array
+  }
+
+  getSptTableData1() {
+    this.specList1.forEach((element: any) => {
+      if (element.FieldType === 'DropDown' && element.Ref === '0') {
+        const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+              element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+            } else {
+              this.as.errorToast(res.message)
+            }
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    });
+  }
+
+  getFieldSupportData1(index: any) {
+    this.specList1.forEach((element: any) => {
+      if (element.Ref === this.specList1[index].FieldName.toString()) {
+        const subs: Subscription = this.ps.getProductSupportData(this.specList1[index].SelectedValue, element.SptTableName).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+              element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+            } else {
+              this.as.errorToast(res.message)
+            }
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    });
+  }
+
+  filter1() {
+    let productName = '';
+    this.specList1.forEach((element: any) => {
+      if (productName === '') {
+        productName = element.SelectedValue;
+      } else if (element.SelectedValue !== '') {
+        productName += '/' + element.SelectedValue;
+      }
+    });
+    this.ProductExpiry.ProductName = productName;
+  }
+
+  purchaseProductExpiry() {
+
+    this.sp.show()
+    this.todaydate = moment(new Date()).format('YYYY-MM-DD');
+    let Parem = '';
+
+    if (this.ProductExpiry.FromDate !== '' && this.ProductExpiry.FromDate !== null) {
+      let FromDate = moment(this.ProductExpiry.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and  DATE_FORMAT(purchasedetailnew.ProductExpDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
+    }
+
+    if (this.ProductExpiry.ToDate !== '' && this.ProductExpiry.ToDate !== null) {
+      let ToDate = moment(this.ProductExpiry.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
+
+    if (this.ProductExpiry.ProductCategory !== 0) {
+      Parem = Parem + ' and purchasedetailnew.ProductTypeID = ' + this.ProductExpiry.ProductCategory;
+      this.filter1();
+    }
+
+    if (this.ProductExpiry.ProductName !== '') {
+      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.ProductExpiry.ProductName.trim() + "%'";
+    }
+
+    if (this.ProductExpiry.ShopID != 0) {
+      Parem = Parem + ' and purchasemasternew.ShopID IN ' + `(${this.ProductExpiry.ShopID})`;
+    }
+
+    if (this.ProductExpiry.SupplierID !== 0) {
+      Parem = Parem + ' and purchasemasternew.SupplierID = ' + this.ProductExpiry.SupplierID;
+    }
+
+    if (this.ProductExpiry.GSTPercentage !== 0) {
+      Parem = Parem + ' and purchasedetailnew.GSTPercentage = ' + `'${this.ProductExpiry.GSTPercentage}'`;
+    }
+
+    if (this.ProductExpiry.GSTType !== 0) {
+      Parem = Parem + ' and purchasedetailnew.GSTType = ' + `'${this.ProductExpiry.GSTType}'`;
+    }
+
+    const subs: Subscription = this.purchaseService.getPurchasereportsDetail(Parem).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.ProductExpiryList = res.data
+          this.ProductExpiryList.forEach((element: any) => {
+            element.ProductName = element.ProductName.trim()
+            if (element.ProductExpDate < this.todaydate) {
+              element.Color = true;
+            } else {
+              element.Color = false;
+            }
+          });
+          this.ExpirytotalQty = res.calculation[0].totalQty;
+          this.ExpirytotalDiscount = res.calculation[0].totalDiscount.toFixed(2);
+          this.ExpirytotalUnitPrice = res.calculation[0].totalUnitPrice.toFixed(2);
+          this.ExpirytotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
+          this.ExpirytotalAmount = res.calculation[0].totalAmount.toFixed(2);
+          this.gstExpirys = res.calculation[0].gst_details
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  openModal2(content2: any) {
+    this.modalService.open(content2, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
+  }
+
+  exportAsXLSXExpiry(): void {
+    let element = document.getElementById('ProductExpiry');
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+    delete ws['A2'];
+    // Initialize column widths array
     const colWidths: number[] = [];
 
     // Iterate over all cells to determine maximum width for each column
-    XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any=[]) => {
-        row.forEach((cell: any, index: number) => {
-            const cellValue = cell ? String(cell) : '';
-            colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
-        });
+    XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any = []) => {
+      row.forEach((cell: any, index: number) => {
+        const cellValue = cell ? String(cell) : '';
+        colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+      });
     });
 
     // Set column widths in the worksheet
     ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
-    
-      const wb: XLSX.WorkBook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-      XLSX.writeFile(wb, 'PurchaseProductExpiry_Report.xlsx');
-    }
-  
-    productExpiryFromReset(){
-      this.ProductExpiry =  {
-        FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
-        PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
-      };
-      this.ProductExpiryList= [];
-      this.ExpirytotalQty = '';
-      this.ExpirytotalDiscount = '';
-      this.ExpirytotalUnitPrice = '';
-      this.ExpirytotalGstAmount = '';
-      this.ExpirytotalAmount = '';
-      this.gstExpirys = '' ;
-    }
 
-    dateFormat(date:any){
-      return moment(date).format(`${this.companySetting.DateFormat}`);
-    }
-
-    customerSearch(searchKey: any, mode: any, type:any) {
-      this.filteredOptions = [];
-  
-      let supplierID = 0;
-  
-      if (type === 'Supplier') {
-          switch(mode) {
-              case 'inventory':
-                  supplierID = this.inventory.SupplierID;
-                  break;
-              case 'data':
-                  supplierID = this.data.SupplierID;
-                  break;
-              case 'ProductExpiry':
-                  supplierID = this.ProductExpiry.SupplierID;
-                  break;
-              default:
-                  break;
-          }
-      }
-  
-      let dtm = {
-          Type: 'Supplier',
-          Name: supplierID.toString()
-      };
-  
-      if (searchKey.length >= 2 && mode === 'Name') {
-          dtm.Name = searchKey;
-      }
-  
-      const subs: Subscription = this.supps.dropdownlistBySearch(dtm).subscribe({
-          next: (res: any) => {
-              if(res.success){
-                  this.filteredOptions = res.data;
-              } else {
-                  this.as.errorToast(res.message);
-              }
-              this.sp.hide();
-          },
-          error: (err: any) => console.log(err.message),
-          complete: () => subs.unsubscribe(),
-      });
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'PurchaseProductExpiry_Report.xlsx');
   }
-  
-  CustomerSelection(mode: any, ID: any) {
-      switch(mode) {
-          case 'inventory':
-              this.inventory.SupplierID = ID;
-              break;
-          case 'PurchaseDetail':
-              this.data.SupplierID = ID;
-              break;
-          case 'ProductExpiry':
-              this.ProductExpiry.SupplierID = ID;
-              break;
-          case 'All':
-              this.filteredOptions = [];
-              this.inventory.SupplierID = 0;
-              this.data.SupplierID = 0;
-              this.ProductExpiry.SupplierID = 0;
-              break;
-          default:
-              break;
+
+  productExpiryFromReset() {
+    this.ProductExpiry = {
+      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,
+      PaymentStatus: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0
+    };
+    this.ProductExpiryList = [];
+    this.ExpirytotalQty = '';
+    this.ExpirytotalDiscount = '';
+    this.ExpirytotalUnitPrice = '';
+    this.ExpirytotalGstAmount = '';
+    this.ExpirytotalAmount = '';
+    this.gstExpirys = '';
+  }
+
+  dateFormat(date: any) {
+    return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
+
+  customerSearch(searchKey: any, mode: any, type: any) {
+    this.filteredOptions = [];
+
+    let supplierID = 0;
+
+    if (type === 'Supplier') {
+      switch (mode) {
+        case 'inventory':
+          supplierID = this.inventory.SupplierID;
+          break;
+        case 'data':
+          supplierID = this.data.SupplierID;
+          break;
+        case 'ProductExpiry':
+          supplierID = this.ProductExpiry.SupplierID;
+          break;
+        default:
+          break;
       }
+    }
+
+    let dtm = {
+      Type: 'Supplier',
+      Name: supplierID.toString()
+    };
+
+    if (searchKey.length >= 2 && mode === 'Name') {
+      dtm.Name = searchKey;
+    }
+
+    const subs: Subscription = this.supps.dropdownlistBySearch(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.filteredOptions = res.data;
+        } else {
+          this.as.errorToast(res.message);
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  CustomerSelection(mode: any, ID: any) {
+    switch (mode) {
+      case 'inventory':
+        this.inventory.SupplierID = ID;
+        break;
+      case 'PurchaseDetail':
+        this.data.SupplierID = ID;
+        break;
+      case 'ProductExpiry':
+        this.ProductExpiry.SupplierID = ID;
+        break;
+      case 'All':
+        this.filteredOptions = [];
+        this.inventory.SupplierID = 0;
+        this.data.SupplierID = 0;
+        this.ProductExpiry.SupplierID = 0;
+        break;
+      default:
+        break;
+    }
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
@@ -809,7 +841,7 @@ AmtClosingStock     :any;
     this.selectsShop = shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
     let printContent: any = '';
     let printTitle: any = '';
-  
+
     if (mode === 'Inventory-content') {
       printContent = document.getElementById('Inventory-content');
       printTitle = 'Inventory Report'
@@ -830,7 +862,7 @@ AmtClosingStock     :any;
       printContent = document.getElementById('AmtStockExcel-content');
       printTitle = 'opening/closing_stock_(AMT) Report'
     }
-  
+
     let printWindow: any = window.open('pp', '_blank');
     printWindow.document.write(`
     <html>
@@ -928,11 +960,11 @@ AmtClosingStock     :any;
       </body>
     </html>
   `);
-  
+
     printWindow.document.querySelectorAll('.hide-on-print').forEach((element: any) => {
       element.classList.add('hide-on-print');
     });
-  
+
     printWindow.document.close();
     printWindow.print();
   }
@@ -947,131 +979,296 @@ AmtClosingStock     :any;
 
   exportAsXLSXQtyStock(): void {
     let element = document.getElementById('QtyStockExcel');
-    const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
     delete ws['A2'];
-          // Initialize column widths array
-  const colWidths: number[] = [];
+    // Initialize column widths array
+    const colWidths: number[] = [];
 
-  // Iterate over all cells to determine maximum width for each column
-  XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any=[]) => {
+    // Iterate over all cells to determine maximum width for each column
+    XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any = []) => {
       row.forEach((cell: any, index: number) => {
-          const cellValue = cell ? String(cell) : '';
-          colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+        const cellValue = cell ? String(cell) : '';
+        colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
       });
-  });
+    });
 
-  // Set column widths in the worksheet
-  ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
-  
+    // Set column widths in the worksheet
+    ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'opening/closing_stock_(QTY).xlsx');
   }
   exportAsXLSXAmtStock(): void {
     let element = document.getElementById('AmtStockExcel');
-    const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
     delete ws['A2'];
-          // Initialize column widths array
-  const colWidths: number[] = [];
+    // Initialize column widths array
+    const colWidths: number[] = [];
 
-  // Iterate over all cells to determine maximum width for each column
-  XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any=[]) => {
+    // Iterate over all cells to determine maximum width for each column
+    XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any = []) => {
       row.forEach((cell: any, index: number) => {
-          const cellValue = cell ? String(cell) : '';
-          colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+        const cellValue = cell ? String(cell) : '';
+        colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
       });
-  });
+    });
 
-  // Set column widths in the worksheet
-  ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
-  
+    // Set column widths in the worksheet
+    ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'opening/closing_stock_(AMT).xlsx');
   }
 
 
-  getCountInventoryReport(){
+  getCountInventoryReport() {
+    if (this.FilterTypes === 'Date') {
+      this.sp.show()
+      this.todaydate = moment(new Date()).format('YYYY-MM-DD');
+      let Parem = '';
 
-    this.sp.show()
-    this.todaydate = moment(new Date()).format('YYYY-MM-DD');
-    let Parem = '';
+      if (this.QtyStock.FromDate !== '' && this.QtyStock.FromDate !== null) {
+        let FromDate = moment(this.QtyStock.FromDate).format('YYYY-MM-DD')
+        Parem = Parem + ' and Date between ' + `'${FromDate}'`;
+      }
 
-    if (this.QtyStock.FromDate !== '' && this.QtyStock.FromDate !== null){
-      let FromDate =  moment(this.QtyStock.FromDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and Date between ' +  `'${FromDate}'`; }
+      if (this.QtyStock.ToDate !== '' && this.QtyStock.ToDate !== null) {
+        let ToDate = moment(this.QtyStock.ToDate).format('YYYY-MM-DD')
+        Parem = Parem + ' and ' + `'${ToDate}'`;
+      }
 
-    if (this.QtyStock.ToDate !== '' && this.QtyStock.ToDate !== null){
-      let ToDate =  moment(this.QtyStock.ToDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and ' +  `'${ToDate}'`; }
+      if (this.QtyStock.ShopID != 0) {
+        this.QtyStock.ShopID
+      }
 
-    if (this.QtyStock.ShopID != 0){
-      this.QtyStock.ShopID
+      const subs: Subscription = this.purchaseService.getCountInventoryReport(this.QtyStock.ShopID, Parem).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.QtyStockList = res.data
+            this.OpeningStock = res.calculation.OpeningStock
+            this.AddPurchase = res.calculation.AddPurchase
+            this.DeletePurchase = res.calculation.DeletePurchase
+            this.AddSale = res.calculation.AddSale
+            this.DeleteSale = res.calculation.DeleteSale
+            this.OtherDeleteStock = res.calculation.OtherDeleteStock
+            this.InitiateTransfer = res.calculation.InitiateTransfer
+            this.CancelTransfer = res.calculation.CancelTransfer
+            this.AcceptTransfer = res.calculation.AcceptTransfer
+            this.ClosingStock = res.calculation.ClosingStock
+
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    } else {
+      this.sp.show()
+
+      let FromDate = '';
+      let ToDate = '';
+
+      if (this.QtyStock.FromDate !== '' && this.QtyStock.FromDate !== null) {
+        FromDate = moment(this.QtyStock.FromDate).format('YYYY-MM-DD')
+      }
+
+      if (this.QtyStock.ToDate !== '' && this.QtyStock.ToDate !== null) {
+        this.QtyStock.ToDate = this.lastDayOfMonth
+        ToDate = moment(this.QtyStock.ToDate).format('YYYY-MM-DD')
+      }
+
+      if (this.QtyStock.ShopID != 0) {
+        this.QtyStock.ShopID
+      }
+
+      const subs: Subscription = this.purchaseService.getCountInventoryReportMonthWise(this.QtyStock.ShopID, FromDate, ToDate).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.QtyStockList = res.data
+            this.OpeningStock = res.calculation.OpeningStock
+            this.AddPurchase = res.calculation.AddPurchase
+            this.DeletePurchase = res.calculation.DeletePurchase
+            this.AddSale = res.calculation.AddSale
+            this.DeleteSale = res.calculation.DeleteSale
+            this.OtherDeleteStock = res.calculation.OtherDeleteStock
+            this.InitiateTransfer = res.calculation.InitiateTransfer
+            this.CancelTransfer = res.calculation.CancelTransfer
+            this.AcceptTransfer = res.calculation.AcceptTransfer
+            this.ClosingStock = res.calculation.ClosingStock
+            this.QtyStock.ToDate = moment(this.lastDayOfMonth).endOf('month').format('YYYY-MM')
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     }
-
-    const subs: Subscription =  this.purchaseService.getCountInventoryReport(this.QtyStock.ShopID,Parem).subscribe({
-      next: (res: any) => {
-        if(res.success){
-          this.QtyStockList = res.data
-          this.OpeningStock       = res.calculation.OpeningStock
-          this.AddPurchase        = res.calculation.AddPurchase
-          this.DeletePurchase     = res.calculation.DeletePurchase
-          this.AddSale            = res.calculation.AddSale
-          this.DeleteSale         = res.calculation.DeleteSale
-          this.OtherDeleteStock   = res.calculation.OtherDeleteStock
-          this.InitiateTransfer   = res.calculation.InitiateTransfer
-          this.CancelTransfer     = res.calculation.CancelTransfer
-          this.AcceptTransfer     = res.calculation.AcceptTransfer
-          this.ClosingStock       = res.calculation.ClosingStock
-
-        }else{
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
   }
-  getAmountInventoryReport(){
+  getAmountInventoryReport() {
+    if (this.FilterTypes1 === 'Date') {
 
-    this.sp.show()
-    this.todaydate = moment(new Date()).format('YYYY-MM-DD');
-    let Parem = '';
+      this.sp.show()
+      this.todaydate = moment(new Date()).format('YYYY-MM-DD');
+      let Parem = '';
 
-    if (this.AmtStock.FromDate !== '' && this.AmtStock.FromDate !== null){
-      let FromDate =  moment(this.AmtStock.FromDate).format('YYYY-MM-DD')
-      Parem = Parem + 'and Date between ' +  `'${FromDate}'`; }
+      if (this.AmtStock.FromDate !== '' && this.AmtStock.FromDate !== null) {
+        let FromDate = moment(this.AmtStock.FromDate).format('YYYY-MM-DD')
+        Parem = Parem + 'and Date between ' + `'${FromDate}'`;
+      }
 
-    if (this.AmtStock.ToDate !== '' && this.AmtStock.ToDate !== null){
-      let ToDate =  moment(this.AmtStock.ToDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and ' +  `'${ToDate}'`; }
+      if (this.AmtStock.ToDate !== '' && this.AmtStock.ToDate !== null) {
+        let ToDate = moment(this.AmtStock.ToDate).format('YYYY-MM-DD')
+        Parem = Parem + ' and ' + `'${ToDate}'`;
+      }
 
-    if (this.AmtStock.ShopID != 0){
-      this.AmtStock.ShopID
+      if (this.AmtStock.ShopID != 0) {
+        this.AmtStock.ShopID
+      }
+
+      const subs: Subscription = this.purchaseService.getAmountInventoryReport(this.AmtStock.ShopID, Parem).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.AmtStockList = res.data
+            this.AmtOpeningStock = res.calculation.AmtOpeningStock
+            this.AmtAddPurchase = res.calculation.AmtAddPurchase
+            this.AmtDeletePurchase = res.calculation.AmtDeletePurchase
+            this.AmtAddSale = res.calculation.AmtAddSale
+            this.AmtDeleteSale = res.calculation.AmtDeleteSale
+            this.AmtOtherDeleteStock = res.calculation.AmtOtherDeleteStock
+            this.AmtInitiateTransfer = res.calculation.AmtInitiateTransfer
+            this.AmtCancelTransfer = res.calculation.AmtCancelTransfer
+            this.AmtAcceptTransfer = res.calculation.AmtAcceptTransfer
+            this.AmtClosingStock = res.calculation.AmtClosingStock
+
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    } else {
+      this.sp.show()
+
+      let FromDate = '';
+      let ToDate = '';
+
+      if (this.AmtStock.FromDate !== '' && this.AmtStock.FromDate !== null) {
+        FromDate = moment(this.AmtStock.FromDate).format('YYYY-MM-DD')
+      }
+
+      if (this.AmtStock.ToDate !== '' && this.AmtStock.ToDate !== null) {
+        this.AmtStock.ToDate = this.lastDayOfMonth1
+        ToDate = moment(this.AmtStock.ToDate).format('YYYY-MM-DD')
+      }
+
+      if (this.AmtStock.ShopID != 0) {
+        this.AmtStock.ShopID
+      }
+
+      const subs: Subscription = this.purchaseService.getAmountInventoryReportMonthWise(this.AmtStock.ShopID, FromDate, ToDate).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.AmtStockList = res.data
+            this.AmtOpeningStock = res.calculation.AmtOpeningStock
+            this.AmtAddPurchase = res.calculation.AmtAddPurchase
+            this.AmtDeletePurchase = res.calculation.AmtDeletePurchase
+            this.AmtAddSale = res.calculation.AmtAddSale
+            this.AmtDeleteSale = res.calculation.AmtDeleteSale
+            this.AmtOtherDeleteStock = res.calculation.AmtOtherDeleteStock
+            this.AmtInitiateTransfer = res.calculation.AmtInitiateTransfer
+            this.AmtCancelTransfer = res.calculation.AmtCancelTransfer
+            this.AmtAcceptTransfer = res.calculation.AmtAcceptTransfer
+            this.AmtClosingStock = res.calculation.AmtClosingStock
+            this.AmtStock.ToDate = moment(this.lastDayOfMonth1).endOf('month').format('YYYY-MM')
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     }
-
-    const subs: Subscription =  this.purchaseService.getAmountInventoryReport(this.AmtStock.ShopID,Parem).subscribe({
-      next: (res: any) => {
-        if(res.success){
-          this.AmtStockList = res.data
-          this.AmtOpeningStock       = res.calculation.AmtOpeningStock
-          this.AmtAddPurchase        = res.calculation.AmtAddPurchase
-          this.AmtDeletePurchase     = res.calculation.AmtDeletePurchase
-          this.AmtAddSale            = res.calculation.AmtAddSale
-          this.AmtDeleteSale         = res.calculation.AmtDeleteSale
-          this.AmtOtherDeleteStock   = res.calculation.AmtOtherDeleteStock
-          this.AmtInitiateTransfer   = res.calculation.AmtInitiateTransfer
-          this.AmtCancelTransfer     = res.calculation.AmtCancelTransfer
-          this.AmtAcceptTransfer     = res.calculation.AmtAcceptTransfer
-          this.AmtClosingStock       = res.calculation.AmtClosingStock
-        }else{
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
   }
+
+
+  ChangeDate(mode: any) {
+    if (mode == 'Qty') {
+        if (this.FilterTypes === 'Date') {
+          this.QtyStock = {
+           FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,
+        }
+      } else {
+          this.QtyStock = {
+            FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment(this.QtyStock.FromDate).endOf('month').format('YYYY-MM-DD'), ShopID: 0,
+        }
+      }
+      this.QtyStockList = []
+      this.OpeningStock = 0
+      this.AddPurchase = 0
+      this.DeletePurchase = 0
+      this.AddSale = 0
+      this.DeleteSale = 0
+      this.OtherDeleteStock = 0
+      this.InitiateTransfer = 0
+      this.CancelTransfer = 0
+      this.AcceptTransfer = 0
+      this.ClosingStock = 0
+    } else {
+      if (this.FilterTypes1 === 'Date') {
+        this.AmtStock = {
+          FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,
+        }
+      } else {
+        this.AmtStock = {
+          FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment(this.AmtStock.FromDate).endOf('month').format('YYYY-MM-DD'), ShopID: 0,
+        }
+      }
+      this.AmtStockList = []
+      this.AmtOpeningStock = 0
+      this.AmtAddPurchase = 0
+      this.AmtDeletePurchase = 0
+      this.AmtAddSale = 0
+      this.AmtDeleteSale = 0
+      this.AmtOtherDeleteStock = 0
+      this.AmtInitiateTransfer = 0
+      this.AmtCancelTransfer = 0
+      this.AmtAcceptTransfer = 0
+      this.AmtClosingStock = 0
+    }
+  }
+
+
+  ChangeDateTo(mode: any) {
+    if (mode === 'Qty') {
+      if (this.QtyStock.ToDate) {
+        // Get the last day of the selected month
+        this.lastDayOfMonth = moment(this.QtyStock.ToDate).endOf('month').format('YYYY-MM-DD');
+      } else {
+        // Handle case when no date is selected
+        this.QtyStock.ToDate = null; // or any other default value
+      }
+    } else {
+      if (this.AmtStock.ToDate) {
+        // Get the last day of the selected month
+        this.lastDayOfMonth1 = moment(this.AmtStock.ToDate).endOf('month').format('YYYY-MM-DD');
+      } else {
+        // Handle case when no date is selected
+        this.AmtStock.ToDate = null; // or any other default value
+      }
+    }
+  }
+
+
+
+
+
 }

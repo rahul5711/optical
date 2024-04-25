@@ -309,11 +309,18 @@ export class PurchaseService {
     return this.httpClient.post<any>(this.url + '/getCountInventoryReport', { ShopID:ShopID,DateParam:DateParam}, httpOptions)
     .pipe(catchError(this.handleError));
   }
+  getCountInventoryReportMonthWise(ShopID: any,FromDate:any,ToDate:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getCountInventoryReportMonthWise', { ShopID:ShopID,FromDate:FromDate,ToDate:ToDate}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
   getAmountInventoryReport(ShopID: any,DateParam:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/getAmountInventoryReport', { ShopID:ShopID,DateParam:DateParam}, httpOptions)
     .pipe(catchError(this.handleError));
   }
-
+  getAmountInventoryReportMonthWise(ShopID: any,FromDate:any,ToDate:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getAmountInventoryReportMonthWise', { ShopID:ShopID,FromDate:FromDate,ToDate:ToDate}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);
