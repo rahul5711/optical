@@ -132,6 +132,8 @@ router.post('/paymentHistoryByPurchaseID',verifyAccessTokenAdmin, Controller.pay
 // creport
 
 router.post('/getCountInventoryReport',verifyAccessTokenAdmin, Controller.getCountInventoryReport)
+router.post('/getCountInventoryReportMonthWise',verifyAccessTokenAdmin, Controller.getCountInventoryReportMonthWise)
 router.post('/getAmountInventoryReport',verifyAccessTokenAdmin, Controller.getAmountInventoryReport)
+router.post('/getAmountInventoryReportMonthWise',verifyAccessTokenAdmin, Controller.getAmountInventoryReportMonthWise)
 
 module.exports = router

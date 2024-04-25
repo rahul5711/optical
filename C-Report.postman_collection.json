@@ -218,6 +218,220 @@
 					"body": "{\n    \"data\": [\n        {\n            \"CompanyID\": 1,\n            \"ShopID\": 0,\n            \"DATE\": \"2024-04-21\",\n            \"AmtOpeningStock\": \"0\",\n            \"AmtAddPurchase\": \"0\",\n            \"AmtDeletePurchase\": \"0\",\n            \"AmtAddSale\": \"0\",\n            \"AmtDeleteSale\": \"0\",\n            \"AmtOtherDeleteStock\": \"0\",\n            \"AmtInitiateTransfer\": \"0\",\n            \"AmtCancelTransfer\": \"0\",\n            \"AmtAcceptTransfer\": \"0\",\n            \"AmtClosingStock\": \"13997361.07\"\n        },\n        {\n            \"CompanyID\": 1,\n            \"ShopID\": 0,\n            \"DATE\": \"2024-04-22\",\n            \"AmtOpeningStock\": \"13997361.07\",\n            \"AmtAddPurchase\": \"0\",\n            \"AmtDeletePurchase\": \"0\",\n            \"AmtAddSale\": \"0\",\n            \"AmtDeleteSale\": \"0\",\n            \"AmtOtherDeleteStock\": \"0\",\n            \"AmtInitiateTransfer\": \"0\",\n            \"AmtCancelTransfer\": \"0\",\n            \"AmtAcceptTransfer\": \"0\",\n            \"AmtClosingStock\": \"13997361.07\"\n        },\n        {\n            \"CompanyID\": 1,\n            \"ShopID\": 0,\n            \"DATE\": \"2024-04-23\",\n            \"AmtOpeningStock\": \"13997361.07\",\n            \"AmtAddPurchase\": \"16000\",\n            \"AmtDeletePurchase\": \"0\",\n            \"AmtAddSale\": \"0\",\n            \"AmtDeleteSale\": \"0\",\n            \"AmtOtherDeleteStock\": \"3000\",\n            \"AmtInitiateTransfer\": \"0\",\n            \"AmtCancelTransfer\": \"0\",\n            \"AmtAcceptTransfer\": \"0\",\n            \"AmtClosingStock\": \"14010361\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\",\n    \"calculation\": {\n        \"AmtOpeningStock\": \"13997361.07\",\n        \"AmtAddPurchase\": 16000,\n        \"AmtDeletePurchase\": 0,\n        \"AmtAddSale\": 0,\n        \"AmtDeleteSale\": 0,\n        \"AmtOtherDeleteStock\": 3000,\n        \"AmtInitiateTransfer\": 0,\n        \"AmtCancelTransfer\": 0,\n        \"AmtAcceptTransfer\": 0,\n        \"AmtClosingStock\": \"14010361\"\n    }\n}"
 				}
 			]
+		},
+		{
+			"name": "getCountInventoryReportMonthWise",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTM5ODYzNTEsImV4cCI6MTcxNDA3Mjc1MSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.ZF3jBj_NkOdocN0K3fKAftW-ixp1XWvqsxc6KGAjCys",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ShopID\" : 0,\r\n    \"FromDate\": \"2024-04-20\",\r\n    \"ToDate\": \"2024-04-25\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/purchase/getCountInventoryReportMonthWise",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"getCountInventoryReportMonthWise"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getCountInventoryReportMonthWise",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ShopID\" : 0,\r\n    \"FromDate\": \"2024-04-20\",\r\n    \"ToDate\": \"2024-04-25\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/purchase/getCountInventoryReportMonthWise",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchase",
+								"getCountInventoryReportMonthWise"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "565"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"235-8LFbExamnqU16S4b7e5V/C8yz5o\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 24 Apr 2024 19:28:51 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"YEAR\": 2024,\n            \"MONTH\": 4,\n            \"CompanyID\": 1,\n            \"ShopID\": 0,\n            \"OpeningStock\": \"3768\",\n            \"TotalAddPurchase\": \"35\",\n            \"TotalDeletePurchase\": \"0\",\n            \"TotalAddSale\": \"0\",\n            \"TotalDeleteSale\": \"0\",\n            \"TotalOtherDeleteStock\": \"0\",\n            \"TotalInitiateTransfer\": \"0\",\n            \"TotalCancelTransfer\": \"0\",\n            \"TotalAcceptTransfer\": \"0\",\n            \"ClosingStock\": \"3803\",\n            \"MonthYear\": \"April-2024\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\",\n    \"calculation\": {\n        \"OpeningStock\": \"3768\",\n        \"AddPurchase\": 35,\n        \"DeletePurchase\": 0,\n        \"AddSale\": 0,\n        \"DeleteSale\": 0,\n        \"OtherDeleteStock\": 0,\n        \"InitiateTransfer\": 0,\n        \"CancelTransfer\": 0,\n        \"AcceptTransfer\": 0,\n        \"ClosingStock\": \"3803\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "getAmountInventoryReportMonthWise",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTM5ODYzNTEsImV4cCI6MTcxNDA3Mjc1MSwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.ZF3jBj_NkOdocN0K3fKAftW-ixp1XWvqsxc6KGAjCys",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ShopID\" : 0,\r\n    \"FromDate\": \"2024-04-20\",\r\n    \"ToDate\": \"2024-04-25\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/purchase/getAmountInventoryReportMonthWise",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"purchase",
+						"getAmountInventoryReportMonthWise"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getAmountInventoryReportMonthWise",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ShopID\" : 0,\r\n    \"FromDate\": \"2024-04-20\",\r\n    \"ToDate\": \"2024-04-25\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/purchase/getAmountInventoryReportMonthWise",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"purchase",
+								"getAmountInventoryReportMonthWise"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "613"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"265-mElYAASDQUXxr79zSxo2NsX1Meo\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 24 Apr 2024 19:36:45 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"YEAR\": 2024,\n            \"MONTH\": 4,\n            \"CompanyID\": 1,\n            \"ShopID\": 0,\n            \"AmtOpeningStock\": \"14016311.07\",\n            \"TotalAddPurchase\": 21000,\n            \"TotalDeletePurchase\": 0,\n            \"TotalAddSale\": 0,\n            \"TotalDeleteSale\": 0,\n            \"TotalOtherDeleteStock\": 0,\n            \"TotalInitiateTransfer\": 0,\n            \"TotalCancelTransfer\": 0,\n            \"TotalAcceptTransfer\": 0,\n            \"AmtClosingStock\": \"14037311\",\n            \"MonthYear\": \"April-2024\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\",\n    \"calculation\": {\n        \"AmtOpeningStock\": \"14016311.07\",\n        \"AmtAddPurchase\": 21000,\n        \"AmtDeletePurchase\": 0,\n        \"AmtAddSale\": 0,\n        \"AmtDeleteSale\": 0,\n        \"AmtOtherDeleteStock\": 0,\n        \"AmtInitiateTransfer\": 0,\n        \"AmtCancelTransfer\": 0,\n        \"AmtAcceptTransfer\": 0,\n        \"AmtClosingStock\": \"14037311\"\n    }\n}"
+				}
+			]
 		}
 	]
 }

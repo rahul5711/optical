@@ -184,7 +184,7 @@ const product_support = async () => {
 }
 const c_report_init = async () => {
     try {
-        let date = moment(new Date('2024-04-21')).format("YYYY-MM-DD")
+        let date = moment(new Date('2024-04-23')).format("YYYY-MM-DD")
         const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1`)
         let result = []
         if (company) {
@@ -198,7 +198,7 @@ const c_report_init = async () => {
                 let amt_company_closing = await getInventoryAmt(data.ID, 0)
                 console.log(amt_company_closing, 'amt_company_closing');
                 if (!fetch.length) {
-                   const [save] = await mysql2.pool.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock, AmtOpeningStock, AmtAddPurchase, AmtAddPreOrderPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtAddPreOrderSale, AmtDeletePreOrderSale, AmtAddManualSale, AmtDeleteManualSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock)values('${date}', ${data.ID},0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,${company_closing}, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,'${amt_company_closing}')`);
+                   const [save] = await mysql2.pool.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock, AmtOpeningStock, AmtAddPurchase, AmtAddPreOrderPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtAddPreOrderSale, AmtDeletePreOrderSale, AmtAddManualSale, AmtDeleteManualSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock)values('${date}', ${data.ID},0,${company_closing},0,0,0,0,0,0,0,0,0,0,0,0,0,${company_closing},'${amt_company_closing}',0,0,0,0,0,0,0,0,0,0,0,0,0,'${amt_company_closing}')`);
 
                    console.log(connected(`CompanyID : - ${data.ID}, Name:- ${data.Name} Created SuccessFully !!!!`));
                 }
@@ -217,7 +217,7 @@ const c_report_init = async () => {
 
                         if (!fetchShopWise.length) {
 
-                            const [save] = await mysql2.pool.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock, AmtOpeningStock, AmtAddPurchase, AmtAddPreOrderPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtAddPreOrderSale, AmtDeletePreOrderSale, AmtAddManualSale, AmtDeleteManualSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock)values('${date}', ${data.ID},${item.ID},0,0,0,0,0,0,0,0,0,0,0,0,0,0,${shop_closing},0,0,0,0,0,0,0,0,0,0,0,0,0,0,'${amt_shop_closing}')`);
+                            const [save] = await mysql2.pool.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock, AmtOpeningStock, AmtAddPurchase, AmtAddPreOrderPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtAddPreOrderSale, AmtDeletePreOrderSale, AmtAddManualSale, AmtDeleteManualSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock)values('${date}', ${data.ID},${item.ID},${shop_closing},0,0,0,0,0,0,0,0,0,0,0,0,0,${shop_closing},'${amt_shop_closing}',0,0,0,0,0,0,0,0,0,0,0,0,0,'${amt_shop_closing}')`);
 
                             console.log(connected(`CompanyID : - ${data.ID}, CompanyName:- ${data.Name}, ShopID :- ${item.ID}, ShopName:- ${item.Name} Created SuccessFully !!!!`));
                         }

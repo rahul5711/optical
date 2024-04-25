@@ -29,6 +29,29 @@ function isValidDate(dateString) {
     return day > 0 && day <= daysInMonth;
 }
 
+function numberToMonth(number) {
+    const months = {
+        1: "January",
+        2: "February",
+        3: "March",
+        4: "April",
+        5: "May",
+        6: "June",
+        7: "July",
+        8: "August",
+        9: "September",
+        10: "October",
+        11: "November",
+        12: "December"
+    };
+
+    if (months.hasOwnProperty(number)) {
+        return months[number];
+    } else {
+        return "Invalid month number";
+    }
+}
+
 module.exports = {
 
     create: async (req, res, next) => {
@@ -4062,9 +4085,11 @@ module.exports = {
     },
     getCountInventoryReport: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "", calculation : {
-                "OpeningStock": 0, "AddPurchase": 0, "DeletePurchase" : 0, "AddSale": 0, "DeleteSale": 0, "OtherDeleteStock": 0, "InitiateTransfer": 0, "CancelTransfer": 0, "AcceptTransfer": 0, "ClosingStock": 0
-            } }
+            const response = {
+                data: null, success: true, message: "", calculation: {
+                    "OpeningStock": 0, "AddPurchase": 0, "DeletePurchase": 0, "AddSale": 0, "DeleteSale": 0, "OtherDeleteStock": 0, "InitiateTransfer": 0, "CancelTransfer": 0, "AcceptTransfer": 0, "ClosingStock": 0
+                }
+            }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
@@ -4075,11 +4100,9 @@ module.exports = {
 
             let [data] = await mysql2.pool.query(`SELECT CompanyID, ShopID, DATE, OpeningStock, AddPurchase, DeletePurchase, AddSale, DeleteSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock FROM creport WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}  ${DateParam}  `)
 
-            let [firstOpening] = await mysql2.pool.query(`SELECT ClosingStock FROM creport WHERE CompanyID = ${CompanyID} AND ShopID = ${ShopID} LIMIT 1`)
-
             if (data.length) {
-              response.calculation.OpeningStock = firstOpening[0].ClosingStock
-              response.calculation.ClosingStock =  data[data.length - 1].ClosingStock
+                response.calculation.OpeningStock = data[0].OpeningStock
+                response.calculation.ClosingStock = data[data.length - 1].ClosingStock
             }
 
             let [datum] = await mysql2.pool.query(`SELECT SUM(AddPurchase) AS TotalAddPurchase,
@@ -4110,11 +4133,107 @@ module.exports = {
             next(err)
         }
     },
+    getCountInventoryReportMonthWise: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, success: true, message: "", calculation: {
+                    "OpeningStock": 0, "AddPurchase": 0, "DeletePurchase": 0, "AddSale": 0, "DeleteSale": 0, "OtherDeleteStock": 0, "InitiateTransfer": 0, "CancelTransfer": 0, "AcceptTransfer": 0, "ClosingStock": 0
+                }
+            }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            const { ShopID, FromDate, ToDate } = req.body
+
+            if (ShopID === null || ShopID === undefined || ShopID === "") return res.send({ message: "Invalid Query Data" })
+            if (FromDate === null || FromDate === undefined || FromDate == 0 || FromDate === "") return res.send({ message: "Invalid Query Data" })
+            if (ToDate === null || ToDate === undefined || ToDate == 0 || ToDate === "") return res.send({ message: "Invalid Query Data" })
+
+            let [data] = await mysql2.pool.query(`SELECT YEAR(c.DATE) AS YEAR, MONTH(c.DATE) AS MONTH, CompanyID, ShopID, (SELECT OpeningStock FROM creport WHERE CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND YEAR(DATE) = YEAR(c.DATE) AND MONTH(DATE) = MONTH(c.DATE) AND DATE BETWEEN '${FromDate}' AND '${ToDate}' LIMIT 1) AS OpeningStock, SUM(AddPurchase) AS TotalAddPurchase, SUM(DeletePurchase) AS TotalDeletePurchase, SUM(AddSale) AS TotalAddSale, SUM(DeleteSale) AS TotalDeleteSale, SUM(OtherDeleteStock) AS TotalOtherDeleteStock, SUM(InitiateTransfer) AS TotalInitiateTransfer, SUM(CancelTransfer) AS TotalCancelTransfer, SUM(AcceptTransfer) AS TotalAcceptTransfer, (SELECT ClosingStock FROM creport WHERE CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND YEAR(DATE) = YEAR(c.DATE) AND MONTH(DATE) = MONTH(c.DATE) AND DATE BETWEEN '${FromDate}' AND '${ToDate}' ORDER BY DATE DESC LIMIT 1) AS ClosingStock FROM creport c WHERE CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND DATE BETWEEN '${FromDate}' AND '${ToDate}' GROUP BY YEAR(c.DATE), MONTH(c.DATE), CompanyID, ShopID ORDER BY YEAR, MONTH;
+            `)
+
+            if (data.length) {
+                response.calculation.OpeningStock = data[0].OpeningStock
+                response.calculation.ClosingStock = data[data.length - 1].ClosingStock
+            }
+
+            if (data) {
+                for (let item of data) {
+                    item.MonthYear = `${numberToMonth(item.MONTH)}-${item.YEAR}`
+                    response.calculation.AddPurchase += Number(item.TotalAddPurchase)
+                    response.calculation.DeletePurchase += Number(item.TotalDeletePurchase)
+                    response.calculation.AddSale += Number(item.TotalAddSale)
+                    response.calculation.DeleteSale += Number(item.TotalDeleteSale)
+                    response.calculation.OtherDeleteStock += Number(item.TotalOtherDeleteStock)
+                    response.calculation.InitiateTransfer += Number(item.TotalInitiateTransfer)
+                    response.calculation.CancelTransfer += Number(item.TotalCancelTransfer)
+                    response.calculation.AcceptTransfer += Number(item.TotalAcceptTransfer)
+
+                }
+            }
+
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
+    getAmountInventoryReportMonthWise: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, success: true, message: "", calculation: {
+                    "AmtOpeningStock": 0, "AmtAddPurchase": 0, "AmtDeletePurchase": 0, "AmtAddSale": 0, "AmtDeleteSale": 0, "AmtOtherDeleteStock": 0, "AmtInitiateTransfer": 0, "AmtCancelTransfer": 0, "AmtAcceptTransfer": 0, "AmtClosingStock": 0
+                }
+            }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            const { ShopID, FromDate, ToDate } = req.body
+
+            if (ShopID === null || ShopID === undefined || ShopID === "") return res.send({ message: "Invalid Query Data" })
+            if (FromDate === null || FromDate === undefined || FromDate == 0 || FromDate === "") return res.send({ message: "Invalid Query Data" })
+            if (ToDate === null || ToDate === undefined || ToDate == 0 || ToDate === "") return res.send({ message: "Invalid Query Data" })
+
+            let [data] = await mysql2.pool.query(`SELECT YEAR(c.DATE) AS YEAR, MONTH(c.DATE) AS MONTH, CompanyID, ShopID, (SELECT AmtOpeningStock FROM creport WHERE CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND YEAR(DATE) = YEAR(c.DATE) AND MONTH(DATE) = MONTH(c.DATE) AND DATE BETWEEN '${FromDate}' AND '${ToDate}' LIMIT 1) AS AmtOpeningStock, SUM(AmtAddPurchase) AS TotalAddPurchase, SUM(AmtDeletePurchase) AS TotalDeletePurchase, SUM(AmtAddSale) AS TotalAddSale, SUM(AmtDeleteSale) AS TotalDeleteSale, SUM(AmtOtherDeleteStock) AS TotalOtherDeleteStock, SUM(AmtInitiateTransfer) AS TotalInitiateTransfer, SUM(AmtCancelTransfer) AS TotalCancelTransfer, SUM(AmtAcceptTransfer) AS TotalAcceptTransfer, (SELECT AmtClosingStock FROM creport WHERE CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND YEAR(DATE) = YEAR(c.DATE) AND MONTH(DATE) = MONTH(c.DATE) AND DATE BETWEEN '${FromDate}' AND '${ToDate}' ORDER BY DATE DESC LIMIT 1) AS AmtClosingStock FROM creport c WHERE CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND DATE BETWEEN '${FromDate}' AND '${ToDate}' GROUP BY YEAR(c.DATE), MONTH(c.DATE), CompanyID, ShopID ORDER BY YEAR, MONTH;
+            `)
+
+            if (data.length) {
+                response.calculation.AmtOpeningStock = data[0].AmtOpeningStock
+                response.calculation.AmtClosingStock = data[data.length - 1].AmtClosingStock
+            }
+
+            if (data) {
+                for (let item of data) {
+                    item.MonthYear = `${numberToMonth(item.MONTH)}-${item.YEAR}`
+                    response.calculation.AmtAddPurchase += Number(item.TotalAddPurchase)
+                    response.calculation.AmtDeletePurchase += Number(item.TotalDeletePurchase)
+                    response.calculation.AmtAddSale += Number(item.TotalAddSale)
+                    response.calculation.AmtDeleteSale += Number(item.TotalDeleteSale)
+                    response.calculation.AmtOtherDeleteStock += Number(item.TotalOtherDeleteStock)
+                    response.calculation.AmtInitiateTransfer += Number(item.TotalInitiateTransfer)
+                    response.calculation.AmtCancelTransfer += Number(item.TotalCancelTransfer)
+                    response.calculation.AmtAcceptTransfer += Number(item.TotalAcceptTransfer)
+
+                }
+            }
+
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
     getAmountInventoryReport: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "", calculation : {
-                "AmtOpeningStock": 0, "AmtAddPurchase": 0, "AmtDeletePurchase" : 0, "AmtAddSale": 0, "AmtDeleteSale": 0, "AmtOtherDeleteStock": 0, "AmtInitiateTransfer": 0, "AmtCancelTransfer": 0, "AmtAcceptTransfer": 0, "AmtClosingStock": 0
-            } }
+            const response = {
+                data: null, success: true, message: "", calculation: {
+                    "AmtOpeningStock": 0, "AmtAddPurchase": 0, "AmtDeletePurchase": 0, "AmtAddSale": 0, "AmtDeleteSale": 0, "AmtOtherDeleteStock": 0, "AmtInitiateTransfer": 0, "AmtCancelTransfer": 0, "AmtAcceptTransfer": 0, "AmtClosingStock": 0
+                }
+            }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
@@ -4125,11 +4244,9 @@ module.exports = {
 
             let [data] = await mysql2.pool.query(`SELECT CompanyID, ShopID, DATE, AmtOpeningStock, AmtAddPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock FROM creport WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}  ${DateParam}  `)
 
-            let [firstOpening] = await mysql2.pool.query(`SELECT AmtClosingStock FROM creport WHERE CompanyID = ${CompanyID} AND ShopID = ${ShopID} LIMIT 1`)
-
             if (data.length) {
-              response.calculation.AmtOpeningStock = firstOpening[0].AmtClosingStock
-              response.calculation.AmtClosingStock =  data[data.length - 1].AmtClosingStock
+                response.calculation.AmtOpeningStock = data[0].AmtOpeningStock
+                response.calculation.AmtClosingStock = data[data.length - 1].AmtClosingStock
             }
 
             let [datum] = await mysql2.pool.query(`SELECT SUM(AmtAddPurchase) AS TotalAddPurchase,
