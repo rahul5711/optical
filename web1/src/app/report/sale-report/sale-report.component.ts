@@ -39,7 +39,7 @@ export class SaleReportComponent implements OnInit {
   filteredOptions: any;
   filteredOption2: any;
   searchValue: any = '';
-  Productsearch:any = ''
+  Productsearch:any = '';
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -809,7 +809,7 @@ export class SaleReportComponent implements OnInit {
         Parem = Parem + ' and billdetail.Manual = ' + '0';
       }
     }
-    const subs: Subscription = this.bill.getSalereportsDetail(Parem).subscribe({
+    const subs: Subscription = this.bill.getSalereportsDetail(Parem,this.Productsearch).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)
@@ -1316,7 +1316,7 @@ export class SaleReportComponent implements OnInit {
       Parem = Parem + ' and billdetail.ProductStatus = ' + `'${this.pending.ProductStatus}'`;
     }
 
-    const subs: Subscription = this.bill.getSalereportsDetail(Parem).subscribe({
+    const subs: Subscription = this.bill.getSalereportsDetail(Parem,this.Productsearch).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)
@@ -1574,7 +1574,7 @@ export class SaleReportComponent implements OnInit {
     }
 
 
-    const subs: Subscription = this.bill.getSalereportsDetail(Parem).subscribe({
+    const subs: Subscription = this.bill.getSalereportsDetail(Parem,this.Productsearch).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)

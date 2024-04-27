@@ -24,7 +24,7 @@ export class InventoryReportComponent implements OnInit {
 
   FilterTypes: any = 'Date'
   FilterTypes1: any = 'Date'
-
+  Productsearch :any = '';
   env = environment;
   user: any = JSON.parse(localStorage.getItem('user') || '');
   shop: any = JSON.parse(localStorage.getItem('shop') || '');
@@ -418,7 +418,7 @@ export class InventoryReportComponent implements OnInit {
     }
 
 
-    const subs: Subscription = this.purchaseService.getProductInventoryReport(Parem).subscribe({
+    const subs: Subscription = this.purchaseService.getProductInventoryReport(Parem,this.Productsearch).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)
@@ -494,7 +494,7 @@ export class InventoryReportComponent implements OnInit {
     }
 
 
-    const subs: Subscription = this.purchaseService.getProductInventoryReport(Parem).subscribe({
+    const subs: Subscription = this.purchaseService.getProductInventoryReport(Parem,this.Productsearch).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)
@@ -689,7 +689,7 @@ export class InventoryReportComponent implements OnInit {
       Parem = Parem + ' and purchasedetailnew.GSTType = ' + `'${this.ProductExpiry.GSTType}'`;
     }
 
-    const subs: Subscription = this.purchaseService.getPurchasereportsDetail(Parem).subscribe({
+    const subs: Subscription = this.purchaseService.getPurchasereportsDetail(Parem,this.Productsearch).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.ProductExpiryList = res.data

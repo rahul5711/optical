@@ -135,8 +135,8 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
-  getPurchasereportsDetail(Parem:any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getPurchasereportsDetail',{Parem:Parem}, httpOptions)
+  getPurchasereportsDetail(Parem:any,Productsearch:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getPurchasereportsDetail',{Parem:Parem,Productsearch:Productsearch}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
@@ -191,8 +191,8 @@ export class PurchaseService {
   }
 
  
-  getProductInventoryReport(Parem:any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getProductInventoryReport',{Parem:Parem}, httpOptions)
+  getProductInventoryReport(Parem:any,Productsearch:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getProductInventoryReport',{Parem:Parem,Productsearch:Productsearch}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 

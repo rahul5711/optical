@@ -498,7 +498,7 @@ export class PurchaseReportComponent implements OnInit {
     if (this.PurchaseDetail.GSTType !== 0){
       Parem = Parem + ' and purchasedetailnew.GSTType = '  + `'${this.PurchaseDetail.GSTType}'`; }
 
-    const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem).subscribe({
+    const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem,this.Productsearch).subscribe({
       next: (res: any) => {
         if(res.success){
           this.PurchaseDetailList = res.data
@@ -746,7 +746,7 @@ export class PurchaseReportComponent implements OnInit {
     if (this.ProductExpiry.GSTType !== 0){
       Parem = Parem + ' and purchasedetailnew.GSTType = '  + `'${this.ProductExpiry.GSTType}'`; }
 
-    const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem).subscribe({
+    const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem,this.Productsearch).subscribe({
       next: (res: any) => {
         if(res.success){
           this.ProductExpiryList = res.data
