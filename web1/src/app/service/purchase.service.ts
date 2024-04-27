@@ -256,8 +256,8 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
-  getPurchasereturndetailreports(Parem:any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getPurchasereturndetailreports',{Parem:Parem}, httpOptions)
+  getPurchasereturndetailreports(Parem:any,Productsearch:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getPurchasereturndetailreports',{Parem:Parem,Productsearch:Productsearch}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 

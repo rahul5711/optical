@@ -422,7 +422,7 @@ export class ProductReturnComponent implements OnInit {
     if (this.ReturnDetail.SupplierID !== 0){
       Parem = Parem + ' and purchasereturn.SupplierID = ' +  this.ReturnDetail.SupplierID; }
 
-    const subs: Subscription =  this.purchaseService.getPurchasereturndetailreports(Parem).subscribe({
+    const subs: Subscription =  this.purchaseService.getPurchasereturndetailreports(Parem,this.Productsearch).subscribe({
       next: (res: any) => {
         if(res.success){
           this.RetureDetailList = res.data
