@@ -229,7 +229,7 @@ export class InventorySummaryComponent implements OnInit {
     if (this.data.SupplierID !== 0){
       Parem = Parem + ' and purchasemasternew.SupplierID = ' +  this.data.SupplierID;}
 
-    const subs: Subscription =  this.purchaseService.getInventorySummary(Parem).subscribe({
+    const subs: Subscription =  this.purchaseService.getInventorySummary(Parem,this.Productsearch).subscribe({
       next: (res: any) => {
         if(res.message){
           this.as.successToast(res.message)

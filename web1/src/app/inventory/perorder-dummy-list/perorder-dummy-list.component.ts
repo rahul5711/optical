@@ -32,6 +32,7 @@ export class PerorderDummyListComponent implements OnInit {
   prodList: any;
   specList: any;
   dataList: any;
+  Productsearch: any = '';
   dataListt: any = [];
   currentPage = 1;
   itemsPerPage = 10;
@@ -237,11 +238,14 @@ export class PerorderDummyListComponent implements OnInit {
     if (this.data1.ProductName !== '') {
       Parem = Parem + ' and purchasedetailnew.ProductName Like ' + '"' + this.data1.ProductName.trim()+ '%"';
     }
+  
 
     const dtm = {
       currentPage: 1,
       itemsPerPage: 50000,
+      Productsearch :this.data1.Productsearch,
       Parem: Parem
+
     }
 
     const subs: Subscription = this.purchaseService.listPreOrderDummy(dtm).subscribe({

@@ -249,7 +249,7 @@ export class TransferProductReportComponent implements OnInit {
       Parem = Parem + ' and transfermaster.ProductName Like ' + "'" + this.data.ProductName.trim() + "%'";
     }
 
-    const subs: Subscription = this.purchaseService.getproductTransferReport(Parem).subscribe({
+    const subs: Subscription = this.purchaseService.getproductTransferReport(Parem,this.Productsearch).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)
