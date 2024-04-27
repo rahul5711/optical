@@ -1966,17 +1966,23 @@ module.exports = {
                     "gst_details": []
                 }], success: true, message: ""
             }
-            const { Parem } = req.body;
+            const { Parem, Productsearch } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
 
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
-            qry = `SELECT purchasedetailnew.*,purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.PaymentStatus, shop.Name AS ShopName,  shop.AreaName AS AreaName, supplier.Name AS SupplierName,supplier.GSTNo AS SupplierGSTNo,product.HSNCode AS HSNcode  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1  AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem;
+            if (Productsearch === undefined || Productsearch === null) {
+                return res.send({success: false, message: "Invalid Query Data"})
+             }
 
+             let searchString = ``
+             if (Productsearch) {
+                 searchString = ` and purchasedetailnew.ProductName like '%${Productsearch}%'`
+             }
 
-
+            qry = `SELECT purchasedetailnew.*,purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.PaymentStatus, shop.Name AS ShopName,  shop.AreaName AS AreaName, supplier.Name AS SupplierName,supplier.GSTNo AS SupplierGSTNo,product.HSNCode AS HSNcode  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1  AND purchasedetailnew.CompanyID = ${CompanyID}  ${searchString}` + Parem;
 
             let [datum] = await mysql2.pool.query(`SELECT SUM(purchasedetailnew.Quantity) as totalQty, SUM(purchasedetailnew.GSTAmount) as totalGstAmount, SUM(purchasedetailnew.TotalAmount) as totalAmount, SUM(purchasedetailnew.DiscountAmount) as totalDiscount, SUM(purchasedetailnew.UnitPrice) as totalUnitPrice, SUM(purchasedetailnew.RetailPrice) as totalRetailPrice,SUM(purchasedetailnew.SubTotal) as totalSubTotalPrice, SUM(purchasedetailnew.WholeSalePrice) as totalWholeSalePrice FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1 AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem)
 
