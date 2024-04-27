@@ -2514,6 +2514,7 @@ module.exports = {
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
             let Parem = Body.Parem;
+            let Productsearch = Body.Productsearch;
             let page = Body.currentPage;
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
@@ -2528,7 +2529,16 @@ module.exports = {
                 shopId = `and purchasemasternew.ShopID = ${shopid}`
             }
 
-            let qry = `select purchasedetailnew.*, supplier.Name as SupplierName,  supplier.GSTNo as GSTNo, users1.Name as CreatedPerson,shop.Name as ShopName, shop.AreaName as AreaName, users.Name as UpdatedPerson from purchasedetailnew LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID left join user as users1 on users1.ID = purchasedetailnew.CreatedBy left join user as users on users.ID = purchasedetailnew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and purchasemasternew.PStatus = 1 and purchasedetailnew.Status = 1 and purchasemasternew.CompanyID = ${CompanyID} ${shopId}  ${Parem} order by purchasedetailnew.ID desc`
+            if (Productsearch === undefined || Productsearch === null) {
+                return res.send({success: false, message: "Invalid Query Data"})
+             }
+
+             let searchString = ``
+             if (Productsearch) {
+                 searchString = ` and purchasedetailnew.ProductName like '%${Productsearch}%'`
+             }
+
+            let qry = `select purchasedetailnew.*, supplier.Name as SupplierName,  supplier.GSTNo as GSTNo, users1.Name as CreatedPerson,shop.Name as ShopName, shop.AreaName as AreaName, users.Name as UpdatedPerson from purchasedetailnew LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID left join user as users1 on users1.ID = purchasedetailnew.CreatedBy left join user as users on users.ID = purchasedetailnew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and purchasemasternew.PStatus = 1 and purchasedetailnew.Status = 1 and purchasemasternew.CompanyID = ${CompanyID} ${searchString} ${shopId}  ${Parem} order by purchasedetailnew.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
