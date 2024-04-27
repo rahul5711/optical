@@ -73,5 +73,7 @@ router.post('/cashcollectionreport', verifyAccessTokenAdmin, Controller.cashcoll
 
 router.post('/updateProductTypeNameOnBill', Controller.updateProductTypeNameOnBill)
 
+router.post('/updateVisitDateContactlensTable', Controller.updateVisitDateContactlensTable)
+
 
 module.exports = router
