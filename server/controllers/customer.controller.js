@@ -40,7 +40,7 @@ module.exports = {
                 //  spectacle_rx object data
 
                 const spectacle = spectacle_rx;
-                const vDate = VisitDate ? new Date(VisitDate) : new Date()
+                const vDate = spectacle.VisitDate ? new Date(spectacle.VisitDate) : new Date()
                 const specDatum = {
                     ID: null,
                     VisitNo: 1,
@@ -98,7 +98,7 @@ module.exports = {
                 // contact_lens_rx object data
 
                 const contact = contact_lens_rx
-                const vDate = VisitDate ? new Date(VisitDate) : new Date()
+                const vDate = contact.VisitDate ? new Date(contact.VisitDate) : new Date()
                 const contactDatum = {
                     ID: null,
                     VisitNo: 1,
@@ -160,7 +160,7 @@ module.exports = {
                 // other_rx other_rx object
 
                 const other = other_rx
-                const vDate = VisitDate ? new Date(VisitDate) : new Date()
+                const vDate = other.VisitDate ? new Date(other.VisitDate) : new Date()
                 const otherDatum = {
                     ID: null,
                     VisitNo: 1,
@@ -858,7 +858,7 @@ module.exports = {
                             orientation: "portrait",
                         };
                     }
-                   
+
                     pdf.create(data, options).toFile(fileName, function (err, data) {
                         if (err) {
                             res.send(err);
@@ -978,7 +978,7 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-                 
+
             const { From, To, Type, Employee, ShopID } = req.body;
 
             if (From === "" || From === undefined || From === null) return res.send({ message: "Invalid Query Data" })
@@ -1046,39 +1046,86 @@ module.exports = {
     //         const response = { data: null, success: true, message: "" }
     //         const LoggedOnUser = req.user.ID ? req.user.ID : 0;
     //         const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-    
+
     //         const { From, To, Type, Employee, ShopID } = req.body;
-    
-    //         const dataQuery = `SELECT customer.*, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser,shop.Name AS ShopName , shop.AreaName AS AreaName FROM customer 
-    //         LEFT JOIN user ON user.ID = customer.CreatedBy 
-    //         LEFT JOIN user AS User1 ON User1.ID = customer.UpdatedBy 
+
+    //         const dataQuery = `SELECT customer.*, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser,shop.Name AS ShopName , shop.AreaName AS AreaName FROM customer
+    //         LEFT JOIN user ON user.ID = customer.CreatedBy
+    //         LEFT JOIN user AS User1 ON User1.ID = customer.UpdatedBy
     //         LEFT JOIN shop ON shop.ID = customer.ID WHERE  customer.CompanyID  = '${CompanyID}' AND  customer.Status = 1 `;
-    
+
     //         const spectacleRxQuery = `SELECT * FROM spectacle_rx WHERE CompanyID = ${CompanyID} and spectacle_rx.Status = 1`;
-    
+
     //         const contactLensRxQuery = `SELECT * FROM contact_lens_rx WHERE CompanyID = ${CompanyID} and contact_lens_rx.Status = 1`;
-    
+
     //         const [customerData] = await mysql2.pool.query(dataQuery);
     //         const [spectacleRxData] = await mysql2.pool.query(spectacleRxQuery);
     //         const [contactLensRxData] = await mysql2.pool.query(contactLensRxQuery);
-    
+
     //         // Iterate over customer data and append spectacle_rx and contact_lens_rx data
     //         customerData.forEach(customer => {
     //             customer.contact_lens_rx = contactLensRxData.filter(el => el.CustomerID === customer.ID);
     //             customer.spectacle_rx = spectacleRxData.filter(e => e.CustomerID === customer.ID);
     //         });
-           
+
     //          console.log(customerData);
 
     //         response.message = "data fetched successfully"
     //         response.data = customerData;
-    
+
     //         return res.send(response);
     //     } catch (err) {
     //         next(err)
     //     }
     // }
-    
 
-    
+    exportCustomerData: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const [data] = await mysql2.pool.query(`select ID as CustomerID, CompanyID, ShopID, Sno as MRDNO, Idd as Sno, Name, Email, MobileNo1, MobileNo2, PhoneNo, Address, GSTNo, Age, Anniversary, DOB, RefferedByDoc, ReferenceType, Gender,CASE WHEN Category IS NULL THEN '' ELSE Category END AS Category, Other, Remarks, Status, CreatedOn, CASE WHEN UpdatedOn IS NULL THEN '0000-00-00' ELSE UpdatedOn END AS UpdatedOn, VisitDate  from customer where Status = 1 and CompanyID = ${CompanyID}`);
+
+            response.message = "customer data export sucessfully"
+            response.data = data
+            return res.send(response);
+        } catch (err) {
+            next(err)
+        }
+    },
+    exportCustomerPower: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            const { Type } = req.body;
+
+            if (Type === undefined || Type.trim() === "") {
+                return res.send({ message: "Invalid Type, kindly send Type spectacle_rx , contact_lens_rx or other_rx" })
+            }
+
+            if (Type !== "spectacle_rx" && Type !== "contact_lens_rx" && Type !== "other_rx") {
+                return res.send({ message: "Invalid Type, Type must be spectacle_rx, contact_lens_rx, or other_rx" });
+            }
+            let data = []
+
+            if (Type === 'spectacle_rx') {
+                [data] = await mysql2.pool.query(`select spectacle_rx.*, customer.Name as CustomerName from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID where spectacle_rx.Status = 1 and spectacle_rx.CompanyID = ${CompanyID}`);
+            }
+            if (Type === 'contact_lens_rx') {
+                [data] = await mysql2.pool.query(`select contact_lens_rx.*, customer.Name as CustomerName from contact_lens_rx left join customer on customer.ID = contact_lens_rx.CustomerID where contact_lens_rx.Status = 1 and contact_lens_rx.CompanyID = ${CompanyID}`);
+            }
+            if (Type === 'other_rx') {
+                [data] = await mysql2.pool.query(`select other_rx.*, customer.Name as CustomerName from other_rx left join customer on customer.ID = other_rx.CustomerID where other_rx.Status = 1 and other_rx.CompanyID = ${CompanyID}`);
+            }
+
+            response.message = "customer power data export sucessfully"
+            response.data = data
+            return res.send(response);
+        } catch (err) {
+            next(err)
+        }
+    },
+
+
+
 }
