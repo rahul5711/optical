@@ -115,7 +115,7 @@ export class CustomerReportComponent implements OnInit {
         return {
           VisitDate: e.VisitDate,
           MRDNO: e.MRDNO,
-          Sno: e.Sno,
+          Cust_ID: e.Sno,
           Name: e.Name,
           MobileNo1: e.MobileNo1,
           MobileNo2: e.MobileNo2,
