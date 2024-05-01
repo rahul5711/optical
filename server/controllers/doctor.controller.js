@@ -88,8 +88,8 @@ module.exports = {
             const [doesExistDoctor] = await mysql2.pool.query(`select * from doctor where Name = '${Body.Name}' and Status = 1 and ID != ${Body.ID}`)
             if (doesExistDoctor.length) return res.send({ message: `Doctor Already exist from this Name ${Body.Name}` })
 
-            const [doesExistLoginName] = await mysql2.pool.query(`select * from doctor where LoginName = '${Body.LoginName}' and Status = 1 and ID != ${Body.ID}`)
-            if (doesExistLoginName.length) return res.send({ message: `LoginName Already exist from this LoginName ${Body.LoginName}` })
+            // const [doesExistLoginName] = await mysql2.pool.query(`select * from doctor where LoginName = '${Body.LoginName}' and Status = 1 and ID != ${Body.ID}`)
+            // if (doesExistLoginName.length) return res.send({ message: `LoginName Already exist from this LoginName ${Body.LoginName}` })
 
             const datum = {
                 Name: req.body.Name ? req.body.Name : '',
