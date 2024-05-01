@@ -102,9 +102,9 @@
                         </mat-form-field>
                       </div>
                       <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
-                        <mat-form-field class="example-full-width mb-0">
-                          <mat-label>StringProductName</mat-label>
-                          <input matInput name="Productsearch" [(ngModel)]="Productsearch" #StringProductNamecontrol>
+                        <mat-form-field class="example-full-width mb-0" >
+                          <mat-label >Product Search</mat-label>
+                          <input matInput name="Productsearch" [(ngModel)]="Productsearch" #StringProductNamecontrol >
                           <mat-error>
                             Productsearch required
                           </mat-error>
@@ -457,6 +457,9 @@
                         <button class="me-3" mat-raised-button color="primary">Search</button>
                         <button type="button" mat-raised-button color="warn">Reset</button>
                       </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 p-0">
+                      <h3 style="color:red;text-transform: capitalize;">this report starts from 1 may 2024. don't try to search for a backdate report.</h3>
+                      </div>
                     </div>
                   </form>
                   <!-- list -->
@@ -606,6 +609,9 @@
                         <button class="me-3" mat-raised-button color="primary">Search</button>
                         <button type="button" mat-raised-button color="warn">Reset</button>
                       </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 p-0">
+                        <h3 style="color:red;text-transform: capitalize;">this report starts from 1 may 2024. don't try to search for a backdate report.</h3>
+                        </div>
                     </div>
                   </form>
                   <!-- list -->

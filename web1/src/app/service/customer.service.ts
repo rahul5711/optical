@@ -107,6 +107,14 @@ export class CustomerService {
     return this.httpClient.post<any>(this.url + '/getEyeTestingReport',body, httpOptions)
     .pipe(catchError(this.handleError));
   }
+  exportCustomerData(body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/exportCustomerData',body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+  exportCustomerPower(Type:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/exportCustomerPower',{Type:Type}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

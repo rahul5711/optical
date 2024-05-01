@@ -37,6 +37,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {ProductTypeName} from './../filterDropDown/nameFilter';
 import {ProductItemFilter} from './../filterDropDown/nameFilter';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { CustomerReportComponent } from './customer-report/customer-report.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     CashCollectionComponent,
     OldSaleComponent,
     ProductTypeName,
-    ProductItemFilter
+    ProductItemFilter,
+    CustomerReportComponent
   ],
   imports: [
     CommonModule,

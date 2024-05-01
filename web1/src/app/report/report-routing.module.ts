@@ -10,12 +10,14 @@ import { ExpenseComponent } from './expense/expense.component';
 import { VendorCreditComponent } from './vendor-credit/vendor-credit.component';
 import { CashCollectionComponent } from './cash-collection/cash-collection.component';
 import { OldSaleComponent } from './old-sale/old-sale.component';
+import { CustomerReportComponent } from './customer-report/customer-report.component';
 
 const routes: Routes = [
   { path: '',
   children: [
     { path: 'sale', component: SaleReportComponent },
     { path: 'purchase', component: PurchaseReportComponent },
+    { path: 'customer', component: CustomerReportComponent },
     { path: 'product-transfer', component: TransferProductReportComponent },
     { path: 'product-return', component: ProductReturnComponent },
     { path: 'inventory', component: InventoryReportComponent },
