@@ -109,6 +109,7 @@ export class CustomerReportComponent implements OnInit {
 
 
   excel(Type: any): void {
+    
     let data = []
     if (Type === 'Customer') {
       data = this.powerList.map((e: any) => {
@@ -132,6 +133,8 @@ export class CustomerReportComponent implements OnInit {
           ReferenceType: e.ReferenceType,
           GSTNo: e.GSTNo,
           Other: e.Other,
+          ShopName: e.ShopName,
+          ShopID: e.ShopID,
         }
       })
     } else if (Type === 'spectacle_rx') {
@@ -139,6 +142,7 @@ export class CustomerReportComponent implements OnInit {
         return {
           VisitDate: e.VisitDate,
           VisitNo: e.VisitNo,
+          Cust_ID: e.Sno,
           CustomerName: e.CustomerName,
           REDPSPH: e.REDPSPH,
           REDPCYL: e.REDPCYL,
@@ -181,6 +185,7 @@ export class CustomerReportComponent implements OnInit {
         return {
           VisitDate: e.VisitDate,
           VisitNo: e.VisitNo,
+          Cust_ID: e.Sno,
           CustomerName: e.CustomerName,
           REDPSPH: e.REDPSPH,
           REDPCYL: e.REDPCYL,
@@ -229,6 +234,7 @@ export class CustomerReportComponent implements OnInit {
         return {
           VisitDate: e.VisitDate,
           VisitNo: e.VisitNo,
+          Cust_ID: e.Sno,
           CustomerName: e.CustomerName,
           BP: e.BP,
           Sugar: e.Sugar,
@@ -246,7 +252,6 @@ export class CustomerReportComponent implements OnInit {
         }
       })
     }
-
 
     this.excelService.exportAsExcelFile(data, this.Type);
   }

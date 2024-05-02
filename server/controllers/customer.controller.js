@@ -1109,13 +1109,13 @@ module.exports = {
             let data = []
 
             if (Type === 'spectacle_rx') {
-                [data] = await mysql2.pool.query(`select spectacle_rx.*, customer.Name as CustomerName from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID where spectacle_rx.Status = 1 and spectacle_rx.CompanyID = ${CompanyID}`);
+                [data] = await mysql2.pool.query(`select spectacle_rx.*, customer.Name as CustomerName, customer.Idd AS Sno from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID where spectacle_rx.Status = 1 and spectacle_rx.CompanyID = ${CompanyID}`);
             }
             if (Type === 'contact_lens_rx') {
-                [data] = await mysql2.pool.query(`select contact_lens_rx.*, customer.Name as CustomerName from contact_lens_rx left join customer on customer.ID = contact_lens_rx.CustomerID where contact_lens_rx.Status = 1 and contact_lens_rx.CompanyID = ${CompanyID}`);
+                [data] = await mysql2.pool.query(`select contact_lens_rx.*, customer.Name as CustomerName , customer.Idd AS Sno from contact_lens_rx left join customer on customer.ID = contact_lens_rx.CustomerID where contact_lens_rx.Status = 1 and contact_lens_rx.CompanyID = ${CompanyID}`);
             }
             if (Type === 'other_rx') {
-                [data] = await mysql2.pool.query(`select other_rx.*, customer.Name as CustomerName from other_rx left join customer on customer.ID = other_rx.CustomerID where other_rx.Status = 1 and other_rx.CompanyID = ${CompanyID}`);
+                [data] = await mysql2.pool.query(`select other_rx.*, customer.Name as CustomerName, customer.Idd AS Sno from other_rx left join customer on customer.ID = other_rx.CustomerID where other_rx.Status = 1 and other_rx.CompanyID = ${CompanyID}`);
             }
 
             response.message = "customer power data export sucessfully"

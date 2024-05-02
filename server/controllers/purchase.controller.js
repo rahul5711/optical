@@ -1133,7 +1133,7 @@ module.exports = {
                             res.send(err);
                         } else {
                             let options;
-
+                            
                             if (printdata.CompanyID == 20 || printdata.CompanyID == 19 || printdata.CompanyID == 64) {
                                 if (printdata.CompanyBarcode == 5) {
                                     options = {
@@ -1159,6 +1159,16 @@ module.exports = {
                                     options = {
                                         "height": "0.70in",
                                         "width": "4.41in",
+                                    };
+                                    console.log(options);
+                                }
+                            }
+
+                             if(printdata.CompanyID == 193) {
+                                if (printdata.CompanyBarcode == 5) {
+                                    options = {
+                                        "height": "25mm",
+                                        "width": "60mm",
                                     };
                                     console.log(options);
                                 }
@@ -2235,23 +2245,14 @@ module.exports = {
                     "gst_details": []
                 }], success: true, message: ""
             }
-            const { Parem,  Productsearch} = req.body;
+            const { Parem } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
 
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
-            if (Productsearch === undefined || Productsearch === null) {
-                return res.send({success: false, message: "Invalid Query Data"})
-             }
-
-             let searchString = ``
-             if (Productsearch) {
-                 searchString = ` and purchasereturndetail.ProductName like '%${Productsearch}%'`
-             }
-
-            qry = `SELECT purchasereturndetail.*,purchasereturn.SystemCn, purchasereturn.SupplierCn, shop.Name AS ShopName,  shop.AreaName AS AreaName, supplier.Name AS SupplierName,supplier.GSTNo AS SupplierGSTNo,product.HSNCode AS HSNcode  FROM purchasereturndetail INNER JOIN purchasereturn ON purchasereturn.ID = purchasereturndetail.ReturnID LEFT JOIN shop ON shop.ID = purchasereturn.ShopID LEFT JOIN supplier ON supplier.ID = purchasereturn.SupplierID LEFT JOIN product ON product.ID = purchasereturndetail.ProductTypeID WHERE purchasereturndetail.Status = 1 AND purchasereturndetail.CompanyID = ${CompanyID}  ${searchString}` + Parem;
+            qry = `SELECT purchasereturndetail.*,purchasereturn.SystemCn, purchasereturn.SupplierCn, shop.Name AS ShopName,  shop.AreaName AS AreaName, supplier.Name AS SupplierName,supplier.GSTNo AS SupplierGSTNo,product.HSNCode AS HSNcode  FROM purchasereturndetail INNER JOIN purchasereturn ON purchasereturn.ID = purchasereturndetail.ReturnID LEFT JOIN shop ON shop.ID = purchasereturn.ShopID LEFT JOIN supplier ON supplier.ID = purchasereturn.SupplierID LEFT JOIN product ON product.ID = purchasereturndetail.ProductTypeID WHERE purchasereturndetail.Status = 1 AND purchasereturndetail.CompanyID = ${CompanyID}  ` + Parem;
 
 
 
