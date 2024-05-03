@@ -4330,4 +4330,52 @@ module.exports = {
             next(err)
         }
     },
+    updateProductPrice: async (req, res, next) => {
+        try {
+            const response = {data: null, success: true, message: ""}
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            const { ProductData } = req.body
+
+            if (!ProductData) return res.send({ message: "Invalid Query Data" })
+            if (ProductData.length === 0) return res.send({ message: "Invalid Query Data" })
+
+            for(let item of ProductData) {
+                if (!item.PurchaseDetailID || item.PurchaseDetailID === 0 || item.PurchaseDetailID === null) {
+                    return res.send({ message: "Invalid Query PurchaseDetailID" })
+                }
+                if (!item.Count || item.Count === 0 || item.Count === null) {
+                    return res.send({ message: "Invalid Query Count/Available Barcode" })
+                }
+
+                if (!item.Barcode || item.Barcode === 0 || item.Barcode === null || item.Barcode === '') {
+                    return res.send({ message: "Invalid Query Barcode no" })
+                }
+                if (!item.RetailPrice || item.RetailPrice === undefined || item.RetailPrice === null || item.RetailPrice === '') {
+                    return res.send({ message: "Invalid Query RetailPrice" })
+                }
+                if (!item.WholeSalePrice || item.WholeSalePrice === undefined || item.WholeSalePrice === null || item.WholeSalePrice === '') {
+                    return res.send({ message: "Invalid Query WholeSalePrice" })
+                }
+
+                let [fetchBarcode] = await mysql2.pool.query(`select * from barcodemasternew where CompanyID = ${CompanyID} and PurchaseDetailID = ${item.PurchaseDetailID} and Status = 1 and CurrentStatus = 'Available' and Barcode = '${item.Barcode}'`)
+
+                if (fetchBarcode.length !== item.Count) {
+                    return res.send({ message: "Invalid Query Count/Available Barcode" })
+                }
+
+                const [update] = await mysql2.pool.query(`update barcodemasternew set RetailPrice = ${item.RetailPrice}, WholeSalePrice = ${item.WholeSalePrice}, UpdatedOn=now() where CompanyID = ${CompanyID} and PurchaseDetailID = ${item.PurchaseDetailID} and Status = 1 and CurrentStatus = 'Available' and Barcode = '${item.Barcode}' `)
+
+            }
+
+
+            response.data = []
+            response.message = "data update successfully";
+            return res.send(response);
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
 }

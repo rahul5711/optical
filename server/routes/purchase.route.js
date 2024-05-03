@@ -136,4 +136,9 @@ router.post('/getCountInventoryReportMonthWise',verifyAccessTokenAdmin, Controll
 router.post('/getAmountInventoryReport',verifyAccessTokenAdmin, Controller.getAmountInventoryReport)
 router.post('/getAmountInventoryReportMonthWise',verifyAccessTokenAdmin, Controller.getAmountInventoryReportMonthWise)
 
+// update retail price && whole sale price
+
+router.post('/updateProductPrice',verifyAccessTokenAdmin, Controller.updateProductPrice)
+
+
 module.exports = router
