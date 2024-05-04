@@ -75,5 +75,10 @@ router.post('/updateProductTypeNameOnBill', Controller.updateProductTypeNameOnBi
 
 router.post('/updateVisitDateContactlensTable', Controller.updateVisitDateContactlensTable)
 
+// emp & dr commission/loyality report
+
+router.post('/getLoyalityReport',verifyAccessTokenAdmin, Controller.getLoyalityReport)
+router.post('/getLoyalityDetailReport',verifyAccessTokenAdmin, Controller.getLoyalityDetailReport)
+
 
 module.exports = router

@@ -1,0 +1,247 @@
+{
+	"info": {
+		"_postman_id": "aad1b4d5-f9cd-4558-ba62-4e00d4782354",
+		"name": "Loayality report",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getLoyalityReport",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTQ4MTYzMDMsImV4cCI6MTcxNDkwMjcwMywiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.pLNYto5ZSJsJTxzCkT5TSrGObTfGp0uYlfKW3Q33ICY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedShop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"UserType\": \"Employee\",\r\n    \"UserID\": 2,\r\n    \"ShopID\": 1,\r\n    \"PaymentStatus\": \"Paid\",\r\n    \"FromDate\": \"2024-05-01\",\r\n    \"ToDate\": \"2024-05-05\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/bill/getLoyalityReport",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"bill",
+						"getLoyalityReport"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getLoyalityReport",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedShop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"UserType\": \"Employee\",\r\n    \"UserID\": 2,\r\n    \"ShopID\": 1,\r\n    \"PaymentStatus\": \"Paid\",\r\n    \"FromDate\": \"2024-05-01\",\r\n    \"ToDate\": \"2024-05-05\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/getLoyalityReport",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"getLoyalityReport"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "548"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"224-y5CwYkw5bbLN0GgQkGECG6gpffs\""
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 04 May 2024 10:45:27 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 20,\n            \"UserID\": 2,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"UserType\": \"Employee\",\n            \"PaymentStatus\": \"Paid\",\n            \"InvoiceNo\": \"2405-R1-1-385\",\n            \"GSTNo\": null,\n            \"Quantity\": 1,\n            \"TotalAmount\": 178.57,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2024-05-01T19:07:48.000Z\",\n            \"UpdatedBy\": 2,\n            \"UpdatedOn\": \"2024-05-01T19:08:41.000Z\",\n            \"PurchaseDate\": \"2024-05-01T19:07:12.000Z\",\n            \"DueAmount\": 0,\n            \"LastUpdate\": \"2024-05-02 00:38:41\",\n            \"ShopName\": \"OPTICALGURU BETA(1)\",\n            \"UserName\": \"OPTICALGURU BETA\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch successfully\",\n    \"calculation\": {\n        \"Quantity\": 1,\n        \"TotalAmount\": 178.57\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "getLoyalityDetailReport",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTQ4MTYzMDMsImV4cCI6MTcxNDkwMjcwMywiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.pLNYto5ZSJsJTxzCkT5TSrGObTfGp0uYlfKW3Q33ICY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedShop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"UserType\": \"Employee\",\r\n    \"UserID\": 2,\r\n    \"ShopID\": 1,\r\n    \"PaymentStatus\": \"Paid\",\r\n    \"FromDate\": \"2024-05-01\",\r\n    \"ToDate\": \"2024-05-05\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/bill/getLoyalityDetailReport",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"bill",
+						"getLoyalityDetailReport"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getLoyalityDetailReport",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedShop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"UserType\": \"Employee\",\r\n    \"UserID\": 2,\r\n    \"ShopID\": 1,\r\n    \"PaymentStatus\": \"Paid\",\r\n    \"FromDate\": \"2024-05-01\",\r\n    \"ToDate\": \"2024-05-05\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/getLoyalityDetailReport",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"getLoyalityDetailReport"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "765"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"2fd-B5CFsDKsucCg8lITS9ygkgxIAvY\""
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 04 May 2024 11:21:34 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"ID\": 2819,\n            \"CompanyID\": 1,\n            \"ShopID\": 1,\n            \"CommissionMasterID\": 20,\n            \"UserType\": \"Employee\",\n            \"UserID\": 2,\n            \"BillMasterID\": 258990,\n            \"CommissionMode\": \"Percentage\",\n            \"CommissionType\": \"Per Sale Loyalty\",\n            \"CommissionValue\": 10,\n            \"CommissionAmount\": 178.57,\n            \"BrandedCommissionAmount\": 0,\n            \"NonBrandedCommissionAmount\": 0,\n            \"Status\": 1,\n            \"CreatedBy\": 2,\n            \"CreatedOn\": \"2024-05-01T19:06:21.000Z\",\n            \"UpdatedBy\": 2,\n            \"UpdatedOn\": \"2024-05-01T19:07:49.000Z\",\n            \"SaleInvoiceNo\": \"2405-R1-1-385\",\n            \"Quantity\": 1,\n            \"PaymentInvoiceNo\": \"2405-R1-1-385\",\n            \"PurchaseDate\": \"2024-05-01T19:07:12.000Z\",\n            \"ShopName\": \"OPTICALGURU BETA(1)\",\n            \"UserName\": \"OPTICALGURU BETA\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data fetch successfully\",\n    \"calculation\": {\n        \"Quantity\": 1,\n        \"CommissionAmount\": 178.57,\n        \"BrandedCommissionAmount\": 0,\n        \"NonBrandedCommissionAmount\": 0\n    }\n}"
+				}
+			]
+		}
+	]
+}
