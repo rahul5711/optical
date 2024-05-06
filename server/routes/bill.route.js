@@ -43,6 +43,8 @@ router.post('/getSalereport', verifyAccessTokenAdmin, Controller.getSalereport)
 
 router.post('/getSalereportsDetail', verifyAccessTokenAdmin, Controller.getSalereportsDetail)
 
+
+
 router.post('/getOldSalereport', verifyAccessTokenAdmin, Controller.getOldSalereport)
 router.post('/getOldSaleDetailreport', verifyAccessTokenAdmin, Controller.getOldSalereDetailport)
 
@@ -79,6 +81,11 @@ router.post('/updateVisitDateContactlensTable', Controller.updateVisitDateContac
 
 router.post('/getLoyalityReport',verifyAccessTokenAdmin, Controller.getLoyalityReport)
 router.post('/getLoyalityDetailReport',verifyAccessTokenAdmin, Controller.getLoyalityDetailReport)
+
+// GST Report
+
+router.post('/getGstReport', verifyAccessTokenAdmin, Controller.getGstReport)
+router.post('/submitGstFile', verifyAccessTokenAdmin, Controller.submitGstFile)
 
 
 module.exports = router

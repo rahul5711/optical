@@ -8553,10 +8553,12 @@ module.exports = {
     },
     getLoyalityReport: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "", calculation : {
-                "Quantity": 0,
-                "TotalAmount": 0
-            } }
+            const response = {
+                data: null, success: true, message: "", calculation: {
+                    "Quantity": 0,
+                    "TotalAmount": 0
+                }
+            }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
             const {
@@ -8606,7 +8608,7 @@ module.exports = {
             const [fetch] = await mysql2.pool.query(`select commissionmaster.*,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, ${userFeild} from commissionmaster left join shop on shop.ID = commissionmaster.ShopID ${userJoin} where commissionmaster.CompanyID = ${CompanyID} and commissionmaster.Status = 1 and commissionmaster.UserType = '${UserType}' and UserID = ${UserID} ${shopParams} ${dateParams}`)
 
             if (fetch) {
-                for(let item of fetch) {
+                for (let item of fetch) {
                     response.calculation.Quantity += item.Quantity
                     response.calculation.TotalAmount += item.TotalAmount
                 }
@@ -8622,12 +8624,14 @@ module.exports = {
     },
     getLoyalityDetailReport: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "", calculation : {
-                "Quantity": 0,
-                "CommissionAmount": 0,
-                "BrandedCommissionAmount": 0,
-                "NonBrandedCommissionAmount": 0,
-            } }
+            const response = {
+                data: null, success: true, message: "", calculation: {
+                    "Quantity": 0,
+                    "CommissionAmount": 0,
+                    "BrandedCommissionAmount": 0,
+                    "NonBrandedCommissionAmount": 0,
+                }
+            }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
             const {
@@ -8677,7 +8681,7 @@ module.exports = {
             const [fetch] = await mysql2.pool.query(`select commissiondetail.*,billmaster.InvoiceNo as SaleInvoiceNo,commissionmaster.Quantity,commissionmaster.InvoiceNo as PaymentInvoiceNo, commissionmaster.PurchaseDate,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, ${userFeild} from commissiondetail left join billmaster on billmaster.ID = commissiondetail.BillMasterID left join commissionmaster on commissionmaster.ID = commissiondetail.CommissionMasterID left join shop on shop.ID = commissiondetail.ShopID ${userJoin} where commissiondetail.CompanyID = ${CompanyID} and commissiondetail.Status = 1 and commissiondetail.UserType = '${UserType}' and commissiondetail.CommissionMasterID != 0 and commissiondetail.UserID = ${UserID} ${shopParams} ${dateParams}`)
 
             if (fetch) {
-                for(let item of fetch) {
+                for (let item of fetch) {
                     response.calculation.Quantity += item.Quantity
                     response.calculation.CommissionAmount += item.CommissionAmount
                     response.calculation.NonBrandedCommissionAmount += item.NonBrandedCommissionAmount
@@ -8704,6 +8708,236 @@ module.exports = {
         } catch (error) {
             console.log(error);
             next(error)
+        }
+    },
+    getGstReport: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, calculation: [{
+                    "totalQty": 0,
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalDiscount": 0,
+                    "totalUnitPrice": 0,
+                    "totalPurchasePrice": 0,
+                    "totalProfit": 0,
+                    "gst_details": []
+                }], success: true, message: ""
+            }
+            const { Parem, Productsearch } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            if (Productsearch === undefined || Productsearch === null) {
+                return res.send({ success: false, message: "Invalid Query Data" })
+            }
+
+            let searchString = ``
+            if (Productsearch) {
+                searchString = ` and billdetail.ProductName like '%${Productsearch}%'`
+            }
+
+            qry = `SELECT 0 as Sel, billdetail.IsGstFiled, billdetail.ID,billdetail.ProductName,billdetail.ProductTypeID,billdetail.ProductTypeName,billdetail.HSNCode,billdetail.UnitPrice,billdetail.Quantity,billdetail.SubTotal,billdetail.DiscountPercentage,billdetail.DiscountAmount,billdetail.GSTPercentage,billdetail.GSTType,billdetail.TotalAmount,billdetail.WholeSale,billdetail.Manual,billdetail.PreOrder,billdetail.BaseBarCode,billdetail.Barcode, billdetail.Status, billdetail.CancelStatus, billdetail.ProductStatus,billdetail.GSTAmount,billdetail.PurchasePrice,billmaster.CompanyID,customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName, shop.Name as ShopName, shop.AreaName,0 AS Profit , 0 AS ModifyPurchasePrice  FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.CompanyID = '${CompanyID}' ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 ` + Parem
+
+            let [datum] = await mysql2.pool.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
+            left join user on user.ID = billmaster.Employee
+            LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.CompanyID = ${CompanyID}  ${searchString}  ` + Parem)
+
+            let [data] = await mysql2.pool.query(qry);
+
+            let [data2] = await mysql2.pool.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE  billdetail.CompanyID = ${CompanyID} ` + Parem);
+
+            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            const values = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        values.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        values.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+
+            if (data2.length && values.length) {
+                for (const item of data2) {
+                    values.forEach(e => {
+                        if (e.GSTType === item.GSTType) {
+                            e.Amount += item.GSTAmount
+                        }
+
+                        // CGST-SGST
+
+                        if (item.GSTType === 'CGST-SGST') {
+
+                            if (e.GSTType === 'CGST') {
+                                e.Amount += item.GSTAmount / 2
+                            }
+
+                            if (e.GSTType === 'SGST') {
+                                e.Amount += item.GSTAmount / 2
+                            }
+                        }
+                    })
+
+                }
+
+            }
+            const values2 = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        values2.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        values2.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+
+            if (data.length && values2.length) {
+                for (let item of data) {
+                    item.gst_details = []
+                    values2.forEach(e => {
+                        if (e.GSTType === item.GSTType) {
+                            e.Amount += item.GSTAmount
+                            item.gst_details.push({
+                                GSTType: item.GSTType,
+                                Amount: item.GSTAmount
+                            })
+                        }
+
+                        // CGST-SGST
+
+                        if (item.GSTType === 'CGST-SGST') {
+
+                            if (e.GSTType === 'CGST') {
+                                e.Amount += item.GSTAmount / 2
+
+                                item.gst_details.push({
+                                    GSTType: 'CGST',
+                                    Amount: item.GSTAmount / 2
+                                })
+                            }
+
+                            if (e.GSTType === 'SGST') {
+                                e.Amount += item.GSTAmount / 2
+
+                                item.gst_details.push({
+                                    GSTType: 'SGST',
+                                    Amount: item.GSTAmount / 2
+                                })
+                            }
+                        }
+                    })
+
+                    // profit calculation
+                    item.ModifyPurchasePrice = item.PurchasePrice * item.Quantity;
+                    item.Profit = item.SubTotal - (item.PurchasePrice * item.Quantity)
+
+                    response.calculation[0].totalPurchasePrice += item.ModifyPurchasePrice
+                    response.calculation[0].totalProfit += item.Profit
+                }
+
+
+
+            }
+            response.calculation[0].gst_details = values2;
+            response.calculation[0].totalPurchasePrice = response.calculation[0].totalPurchasePrice.toFixed(2) || 0
+            response.calculation[0].totalProfit = response.calculation[0].totalProfit.toFixed(2) || 0
+            response.calculation[0].totalQty = datum[0].totalQty ? datum[0].totalQty : 0
+            response.calculation[0].totalGstAmount = datum[0].totalGstAmount ? datum[0].totalGstAmount.toFixed(2) : 0
+            response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount.toFixed(2) : 0
+            response.calculation[0].totalDiscount = datum[0].totalDiscount ? datum[0].totalDiscount.toFixed(2) : 0
+            response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice.toFixed(2) : 0
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+
+    },
+    submitGstFile: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const { GstData } = req.body;
+
+            if (!GstData || GstData.length === 0) {
+                return res.send({ message: "Invalid GstData Data" })
+            }
+
+            if (GstData) {
+                for (let item of GstData) {
+                    if (!item.Sel || item.Sel === 0) {
+                        return res.send({ message: "Invalid Sel Data" })
+                    }
+                    if (!item.IsGstFiled) {
+                        return res.send({ message: "Invalid IsGstFiled Data" })
+                    }
+                    if (item.IsGstFiled !== 0) {
+                        return res.send({ message: "Invalid IsGstFiled Data" })
+                    }
+                    if (!item.ID || item.ID === 0 || item.ID === null || item.ID === undefined) {
+                        return res.send({ message: "Invalid ID Data" })
+                    }
+
+                    const [fetch] = await mysql2.pool.query(`select * from billdetail where CompanyID = ${CompanyID} and Status = 1 and IsGstFiled = 0 and ID = ${item.ID}`)
+
+                    if (!fetch.length) {
+                        return res.send({ message: `bill detail not found from ID :- ${item.ID}` })
+                    }
+
+                    const [update] = await mysql2.pool.query(`update billdetail set IsGstFiled = 1 where CompanyID = ${CompanyID} and ID = ${item.ID}`)
+
+                    console.log(connected(` bill detail ID:- ${item.ID} successfully updated !!!`));
+
+
+                }
+            }
+
+            response.data = GstData
+            response.message = "data update successfully";
+
+            return res.send(response);
+
+        } catch (err) {
+            console.log(err);
+            next(err)
         }
     },
 }
