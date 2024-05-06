@@ -28,7 +28,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"Parem\": \" and billdetail.IsGstFiled = 0 and billdetail.Status = 1 and DATE_FORMAT(billmaster.BillDate, \\\"%Y-%m-%d\\\") between '2024-04-01' and '2024-04-30'\",\r\n    \"Productsearch\": \"\"\r\n}",
+					"raw": "{\r\n    \"Parem\": \" and billdetail.IsGstFiled = 1 and billdetail.Status = 1 and DATE_FORMAT(billmaster.BillDate, \\\"%Y-%m-%d\\\") between '2024-04-01' and '2024-04-30'\",\r\n    \"Productsearch\": \"\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -267,6 +267,152 @@
 					],
 					"cookie": [],
 					"body": "{\n    \"data\": [],\n    \"calculation\": [\n        {\n            \"totalQty\": 0,\n            \"totalGstAmount\": 0,\n            \"totalAmount\": 0,\n            \"totalDiscount\": 0,\n            \"totalUnitPrice\": 0,\n            \"totalPurchasePrice\": \"0.00\",\n            \"totalProfit\": \"0.00\",\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 0\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 0\n                },\n                {\n                    \"GSTType\": \"IGST\",\n                    \"Amount\": 0\n                }\n            ]\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				},
+				{
+					"name": "getGstReport - CANCEL PRODUCT",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "SelectedShop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Parem\": \" and billdetail.IsGstFiled = 1 and billdetail.Status = 0 and DATE_FORMAT(billmaster.BillDate, \\\"%Y-%m-%d\\\") between '2024-04-01' and '2024-04-30'\",\r\n    \"Productsearch\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/getGstReport",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"getGstReport"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1217"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"4c1-EY4fKsfzshEQLbrsjm/bpkUZI10\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 06 May 2024 19:32:15 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Sel\": 0,\n            \"IsGstFiled\": 1,\n            \"ID\": 513045,\n            \"ProductName\": \"BIFOCAL/ESSILOR/UV/BLUE CUT/CY +0.00 TO +4.00\",\n            \"ProductTypeID\": 7,\n            \"ProductTypeName\": \"LENS\",\n            \"HSNCode\": \"90015000\",\n            \"UnitPrice\": 560,\n            \"Quantity\": 1,\n            \"SubTotal\": 500,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 12,\n            \"GSTType\": \"CGST-SGST\",\n            \"TotalAmount\": 560,\n            \"WholeSale\": 0,\n            \"Manual\": 0,\n            \"PreOrder\": 0,\n            \"BaseBarCode\": \"10000239\",\n            \"Barcode\": \"10000239\",\n            \"Status\": 0,\n            \"CancelStatus\": 1,\n            \"ProductStatus\": 0,\n            \"GSTAmount\": 60,\n            \"PurchasePrice\": 100,\n            \"CompanyID\": 1,\n            \"CustomerName\": \"VINAY UUIIUIUI\",\n            \"CustomerMoblieNo1\": \"\",\n            \"GSTNo\": \"\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"BillInvoiceNo\": \"2404-R1-1-292\",\n            \"BillDate\": \"2024-04-05T12:10:20.000Z\",\n            \"DeliveryDate\": \"2024-04-05T12:10:20.000Z\",\n            \"EmployeeName\": \"OPTICALGURU BETA\",\n            \"ShopName\": \"OPTICALGURU BETA\",\n            \"AreaName\": \"1\",\n            \"Profit\": 400,\n            \"ModifyPurchasePrice\": 100,\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 30\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 30\n                }\n            ]\n        }\n    ],\n    \"calculation\": [\n        {\n            \"totalQty\": \"1\",\n            \"totalGstAmount\": \"60.00\",\n            \"totalAmount\": \"560.00\",\n            \"totalDiscount\": 0,\n            \"totalUnitPrice\": \"500.00\",\n            \"totalPurchasePrice\": \"100.00\",\n            \"totalProfit\": \"400.00\",\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 30\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 30\n                },\n                {\n                    \"GSTType\": \"IGST\",\n                    \"Amount\": 0\n                }\n            ]\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				},
+				{
+					"name": "getGstReport - GST FILED",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "SelectedShop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Parem\": \" and billdetail.IsGstFiled = 1 and billdetail.Status = 1 and DATE_FORMAT(billmaster.BillDate, \\\"%Y-%m-%d\\\") between '2024-04-01' and '2024-04-30'\",\r\n    \"Productsearch\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/getGstReport",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"getGstReport"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "5506"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1582-x83mbwiz7VoIh9435h0P3ePRyxc\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 06 May 2024 19:33:10 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Sel\": 0,\n            \"IsGstFiled\": 1,\n            \"ID\": 509108,\n            \"ProductName\": \"SDFJSGFJHGJFGJF\",\n            \"ProductTypeID\": 600,\n            \"ProductTypeName\": \"LENS NEW\",\n            \"HSNCode\": \"\",\n            \"UnitPrice\": 1500,\n            \"Quantity\": 1,\n            \"SubTotal\": 1500,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 0,\n            \"GSTType\": \"None\",\n            \"TotalAmount\": 1500,\n            \"WholeSale\": 0,\n            \"Manual\": 1,\n            \"PreOrder\": 0,\n            \"BaseBarCode\": \"1309\",\n            \"Barcode\": \"1309\",\n            \"Status\": 1,\n            \"CancelStatus\": 1,\n            \"ProductStatus\": 0,\n            \"GSTAmount\": 0,\n            \"PurchasePrice\": 0,\n            \"CompanyID\": 1,\n            \"CustomerName\": \"SANTOSH GO\",\n            \"CustomerMoblieNo1\": \"888885555\",\n            \"GSTNo\": \"\",\n            \"PaymentStatus\": \"Paid\",\n            \"BillInvoiceNo\": \"2404-R1-1-288\",\n            \"BillDate\": \"2024-04-02T12:42:58.000Z\",\n            \"DeliveryDate\": \"2024-04-02T12:42:58.000Z\",\n            \"EmployeeName\": \"rahul\",\n            \"ShopName\": \"OPTICALGURU BETA\",\n            \"AreaName\": \"1\",\n            \"Profit\": 1500,\n            \"ModifyPurchasePrice\": 0,\n            \"gst_details\": []\n        },\n        {\n            \"Sel\": 0,\n            \"IsGstFiled\": 1,\n            \"ID\": 509109,\n            \"ProductName\": \"FULL FRAME/INDIAN/TEEN AGER\",\n            \"ProductTypeID\": 6,\n            \"ProductTypeName\": \"FRAME\",\n            \"HSNCode\": \"90031100\",\n            \"UnitPrice\": 1500,\n            \"Quantity\": 1,\n            \"SubTotal\": 1339.29,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 12,\n            \"GSTType\": \"CGST-SGST\",\n            \"TotalAmount\": 1500,\n            \"WholeSale\": 0,\n            \"Manual\": 0,\n            \"PreOrder\": 0,\n            \"BaseBarCode\": \"10000244\",\n            \"Barcode\": \"10000244\",\n            \"Status\": 1,\n            \"CancelStatus\": 1,\n            \"ProductStatus\": 0,\n            \"GSTAmount\": 160.71,\n            \"PurchasePrice\": 100,\n            \"CompanyID\": 1,\n            \"CustomerName\": \"SANTOSH GO\",\n            \"CustomerMoblieNo1\": \"888885555\",\n            \"GSTNo\": \"\",\n            \"PaymentStatus\": \"Paid\",\n            \"BillInvoiceNo\": \"2404-R1-1-288\",\n            \"BillDate\": \"2024-04-02T12:42:58.000Z\",\n            \"DeliveryDate\": \"2024-04-02T12:42:58.000Z\",\n            \"EmployeeName\": \"rahul\",\n            \"ShopName\": \"OPTICALGURU BETA\",\n            \"AreaName\": \"1\",\n            \"Profit\": 1239.29,\n            \"ModifyPurchasePrice\": 100,\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 80.355\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 80.355\n                }\n            ]\n        },\n        {\n            \"Sel\": 0,\n            \"IsGstFiled\": 1,\n            \"ID\": 509991,\n            \"ProductName\": \"SINGLE VISION/REGULAR/BLUE CUT/\",\n            \"ProductTypeID\": 7,\n            \"ProductTypeName\": \"LENS\",\n            \"HSNCode\": \"90015000\",\n            \"UnitPrice\": 1000,\n            \"Quantity\": 2,\n            \"SubTotal\": 1785.71,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 12,\n            \"GSTType\": \"CGST-SGST\",\n            \"TotalAmount\": 2000,\n            \"WholeSale\": 0,\n            \"Manual\": 0,\n            \"PreOrder\": 1,\n            \"BaseBarCode\": \"90000010\",\n            \"Barcode\": \"90000010\",\n            \"Status\": 1,\n            \"CancelStatus\": 1,\n            \"ProductStatus\": 0,\n            \"GSTAmount\": 214.29,\n            \"PurchasePrice\": 0,\n            \"CompanyID\": 1,\n            \"CustomerName\": \"SANDEEP JI\",\n            \"CustomerMoblieNo1\": \"7896541230\",\n            \"GSTNo\": \"\",\n            \"PaymentStatus\": \"Paid\",\n            \"BillInvoiceNo\": \"2404-R1-1-290\",\n            \"BillDate\": \"2024-04-03T07:59:07.000Z\",\n            \"DeliveryDate\": \"2024-04-03T07:59:07.000Z\",\n            \"EmployeeName\": \"rahul\",\n            \"ShopName\": \"OPTICALGURU BETA\",\n            \"AreaName\": \"1\",\n            \"Profit\": 1785.71,\n            \"ModifyPurchasePrice\": 0,\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 107.145\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 107.145\n                }\n            ]\n        },\n        {\n            \"Sel\": 0,\n            \"IsGstFiled\": 1,\n            \"ID\": 509993,\n            \"ProductName\": \"RIMLESS/INDIAN/SANTOSH\",\n            \"ProductTypeID\": 6,\n            \"ProductTypeName\": \"FRAME\",\n            \"HSNCode\": \"90031100\",\n            \"UnitPrice\": 1100,\n            \"Quantity\": 1,\n            \"SubTotal\": 982.14,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 12,\n            \"GSTType\": \"CGST-SGST\",\n            \"TotalAmount\": 1100,\n            \"WholeSale\": 0,\n            \"Manual\": 0,\n            \"PreOrder\": 0,\n            \"BaseBarCode\": \"10000246\",\n            \"Barcode\": \"10000246\",\n            \"Status\": 1,\n            \"CancelStatus\": 1,\n            \"ProductStatus\": 0,\n            \"GSTAmount\": 117.86,\n            \"PurchasePrice\": 90,\n            \"CompanyID\": 1,\n            \"CustomerName\": \"SANDEEP JI\",\n            \"CustomerMoblieNo1\": \"7896541230\",\n            \"GSTNo\": \"\",\n            \"PaymentStatus\": \"Paid\",\n            \"BillInvoiceNo\": \"2404-R1-1-290\",\n            \"BillDate\": \"2024-04-03T07:59:07.000Z\",\n            \"DeliveryDate\": \"2024-04-03T07:59:07.000Z\",\n            \"EmployeeName\": \"rahul\",\n            \"ShopName\": \"OPTICALGURU BETA\",\n            \"AreaName\": \"1\",\n            \"Profit\": 892.14,\n            \"ModifyPurchasePrice\": 90,\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 58.93\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 58.93\n                }\n            ]\n        },\n        {\n            \"Sel\": 0,\n            \"IsGstFiled\": 1,\n            \"ID\": 513044,\n            \"ProductName\": \"SINGLE VISION/ESSILOR/CRIZAL/ARC\",\n            \"ProductTypeID\": 7,\n            \"ProductTypeName\": \"LENS\",\n            \"HSNCode\": \"90015000\",\n            \"UnitPrice\": 500,\n            \"Quantity\": 2,\n            \"SubTotal\": 892.86,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 12,\n            \"GSTType\": \"CGST-SGST\",\n            \"TotalAmount\": 1000,\n            \"WholeSale\": 0,\n            \"Manual\": 0,\n            \"PreOrder\": 1,\n            \"BaseBarCode\": \"90000020\",\n            \"Barcode\": \"90000020\",\n            \"Status\": 1,\n            \"CancelStatus\": 1,\n            \"ProductStatus\": 0,\n            \"GSTAmount\": 107.14,\n            \"PurchasePrice\": 50,\n            \"CompanyID\": 1,\n            \"CustomerName\": \"VINAY UUIIUIUI\",\n            \"CustomerMoblieNo1\": \"\",\n            \"GSTNo\": \"\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"BillInvoiceNo\": \"2404-R1-1-292\",\n            \"BillDate\": \"2024-04-05T12:10:20.000Z\",\n            \"DeliveryDate\": \"2024-04-05T12:10:20.000Z\",\n            \"EmployeeName\": \"OPTICALGURU BETA\",\n            \"ShopName\": \"OPTICALGURU BETA\",\n            \"AreaName\": \"1\",\n            \"Profit\": 792.86,\n            \"ModifyPurchasePrice\": 100,\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 53.57\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 53.57\n                }\n            ]\n        },\n        {\n            \"Sel\": 0,\n            \"IsGstFiled\": 1,\n            \"ID\": 590128,\n            \"ProductName\": \"BBC\",\n            \"ProductTypeID\": 7,\n            \"ProductTypeName\": \"LENS\",\n            \"HSNCode\": \"90015000\",\n            \"UnitPrice\": 500,\n            \"Quantity\": 2,\n            \"SubTotal\": 892.86,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 12,\n            \"GSTType\": \"CGST-SGST\",\n            \"TotalAmount\": 1000,\n            \"WholeSale\": 0,\n            \"Manual\": 0,\n            \"PreOrder\": 1,\n            \"BaseBarCode\": \"90000034\",\n            \"Barcode\": \"90000034\",\n            \"Status\": 1,\n            \"CancelStatus\": 1,\n            \"ProductStatus\": 1,\n            \"GSTAmount\": 107.14,\n            \"PurchasePrice\": 50,\n            \"CompanyID\": 1,\n            \"CustomerName\": \"SANTOSH NEW VERSION\",\n            \"CustomerMoblieNo1\": \"\",\n            \"GSTNo\": \"\",\n            \"PaymentStatus\": \"Paid\",\n            \"BillInvoiceNo\": \"2404-R1-1-375\",\n            \"BillDate\": \"2024-04-30T10:53:47.000Z\",\n            \"DeliveryDate\": \"2024-04-30T10:53:47.000Z\",\n            \"EmployeeName\": \"OPTICALGURU BETA\",\n            \"ShopName\": \"OPTICALGURU BETA\",\n            \"AreaName\": \"1\",\n            \"Profit\": 792.86,\n            \"ModifyPurchasePrice\": 100,\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 53.57\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 53.57\n                }\n            ]\n        }\n    ],\n    \"calculation\": [\n        {\n            \"totalQty\": \"9\",\n            \"totalGstAmount\": \"707.14\",\n            \"totalAmount\": \"8100.00\",\n            \"totalDiscount\": 0,\n            \"totalUnitPrice\": \"7392.86\",\n            \"totalPurchasePrice\": \"390.00\",\n            \"totalProfit\": \"7002.86\",\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 353.57\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 353.57\n                },\n                {\n                    \"GSTType\": \"IGST\",\n                    \"Amount\": 0\n                }\n            ]\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
 				}
 			]
 		},
