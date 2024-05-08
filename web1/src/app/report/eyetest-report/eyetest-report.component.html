@@ -236,7 +236,7 @@
                                                 <td> {{ d.ShopName }} <span [style.color]="'blue'"
                                                         *ngIf="d.AreaName !== 'null'">({{d.AreaName}})</span></td>
                                                 <td> {{ d.CreatedPerson}}
-                                                <td> {{ dateFormat(d.CreatedOn)}}
+                                                <td> {{ dateFormat(d.VisitDate)}}
                                                 <td> {{ dateFormat(d.ExpiryDate)}}</td>
                                             </tr>
                                         </tbody>
