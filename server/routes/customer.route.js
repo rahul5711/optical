@@ -41,6 +41,14 @@ router.post('/getEyeTestingReport', verifyAccessTokenAdmin, Controller.getEyeTes
 router.post('/exportCustomerData', verifyAccessTokenAdmin, Controller.exportCustomerData)
 router.post('/exportCustomerPower', verifyAccessTokenAdmin, Controller.exportCustomerPower)
 
+// customer category
+
+router.post('/saveCategory', verifyAccessTokenAdmin, Controller.saveCategory)
+router.post('/getCategoryList', verifyAccessTokenAdmin, Controller.getCategoryList)
+router.post('/deleteAllCategory', verifyAccessTokenAdmin, Controller.deleteAllCategory)
+router.post('/getCustomerCategory', verifyAccessTokenAdmin, Controller.getCustomerCategory)
+
+
 
 
 module.exports = router

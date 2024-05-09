@@ -814,29 +814,29 @@ module.exports = {
 
             var formatName = "customerPowerPDF.ejs";
             var file = printdata.mode + "-" + 'Power' + "_" + CompanyID + "-" + customer.ID + ".pdf";
-            if(CompanyID === 78){
-                if(printdata.mode === 'other'){
+            if (CompanyID === 78) {
+                if (printdata.mode === 'other') {
                     formatName = "NavjyotiOther.ejs";
-                }else{
+                } else {
                     formatName = "customerPowerPDF.ejs"
                 }
             }
-            if(CompanyID === 55){
-                if(printdata.mode === 'other'){
+            if (CompanyID === 55) {
+                if (printdata.mode === 'other') {
                     formatName = "ShriRamOther.ejs";
-                }else{
+                } else {
                     formatName = "customerPowerPDF.ejs"
                 }
             }
-            if(CompanyID === 129){
-                if(printdata.mode === 'spectacle'){
+            if (CompanyID === 129) {
+                if (printdata.mode === 'spectacle') {
                     formatName = "aaradhay.ejs";
-                }else{
+                } else {
                     formatName = "customerPowerPDF.ejs"
                 }
             }
 
-            var file =  printdata.mode + "-" + 'Power' + "_" + CompanyID + "-" + customer.ID + ".pdf";
+            var file = printdata.mode + "-" + 'Power' + "_" + CompanyID + "-" + customer.ID + ".pdf";
             fileName = "uploads/" + file;
 
 
@@ -852,7 +852,7 @@ module.exports = {
                             "height": "1.9in",
                             "width": "3.14in",
                         };
-                    }else{
+                    } else {
                         options = {
                             format: "A4",
                             orientation: "portrait",
@@ -1023,7 +1023,7 @@ module.exports = {
 
                 qry = `select contact_lens_rx.*, customer.Name as CustomerName, customer.MobileNo1 as CustomerMobileNo1, shop.Name as ShopName, shop.AreaName, user.Name as CreatedPerson from contact_lens_rx left join customer on customer.ID = contact_lens_rx.CustomerID left join shop on shop.ID = customer.ShopID left join user on user.ID = contact_lens_rx.CreatedBy where contact_lens_rx.Status = 1 and contact_lens_rx.CompanyID = ${CompanyID} ${shopFilter}  ${employeeFilter} and contact_lens_rx.VisitDate between '${From}' and '${To}'`;
 
-            }else {
+            } else {
                 return res.send({ message: "Invalid Type Data" })
             }
 
@@ -1120,6 +1120,130 @@ module.exports = {
 
             response.message = "customer power data export sucessfully"
             response.data = data
+            return res.send(response);
+        } catch (err) {
+            next(err)
+        }
+    },
+    saveCategory: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            const { CategoryID, Fromm, Too } = req.body;
+            if (!CategoryID || CategoryID === 0 || CategoryID === null) return res.send({ message: "Invalid Query Data" })
+            if (!Fromm || Fromm === 0 || Fromm === null || Fromm === '') return res.send({ message: "Invalid Query Data" })
+            if (!Too || Too === 0 || Too === null || Too === '') return res.send({ message: "Invalid Query Data" })
+
+            const [checkCategory] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'CustomerCategory' and ID = ${CategoryID}`)
+
+            if (!checkCategory.length) {
+                return res.send({ message: "Invalid Query CategoryID Data" })
+            }
+
+            const [fetch] = await mysql2.pool.query(`select * from customercategory where CompanyID = ${CompanyID} and Status = 1 and CategoryID = ${CategoryID}`)
+
+            if (fetch.length) {
+                return res.send({ message: "Invalid Query CategoryID Data, Category already exist" })
+            }
+            const [fetch2] = await mysql2.pool.query(`select * from customercategory where CompanyID = ${CompanyID} and Status = 1 and Fromm = '${Fromm}' and Too = '${Too}'`)
+
+            if (fetch2.length) {
+                return res.send({ message: `Invalid Query Data, Category already exist from this range.` })
+            }
+            const [fetch3] = await mysql2.pool.query(`select * from customercategory where CompanyID = ${CompanyID} and Status = 1 and Too = '${Fromm}'`)
+
+            if (fetch3.length) {
+                return res.send({ message: `Invalid Query Data, Category Range Invalid` })
+            }
+
+            const [save] = await mysql2.pool.query(`insert into customercategory(CompanyID,CategoryID, Fromm, Too, Status, CreatedOn, CreatedBy) values(${CompanyID}, ${CategoryID},'${Fromm}', '${Too}', 1, now(), ${LoggedOnUser})`)
+
+
+            response.message = "data save successfully";
+            return res.send(response);
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
+    getCategoryList: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+
+
+            const [fetch] = await mysql2.pool.query(`select * from customercategory where CompanyID = ${CompanyID} and Status = 1`)
+
+            response.data = fetch
+            response.message = "data fetch successfully";
+            return res.send(response);
+        } catch (err) {
+            next(err)
+        }
+    },
+    deleteAllCategory: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            const [update] = await mysql2.pool.query(`update customercategory set Status = 0, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where CompanyID = ${CompanyID}`)
+
+            response.message = "data delete successfully";
+            return res.send(response);
+        } catch (err) {
+            next(err)
+        }
+    },
+    getCustomerCategory: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            const { CustomerID } = req.body;
+            if (!CustomerID || CustomerID === 0 || CustomerID === null) return res.send({ message: "Invalid Query Data" })
+
+
+            const [fetch] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID} and Status = 1 and ID = ${CustomerID}`)
+
+            if (!fetch.length) {
+                return res.send({ message: "Invalid Query CustomerID Data, Customer not found" })
+            }
+
+            const [fetchBill] = await mysql2.pool.query(`select SUM(TotalAmount) as Amount from billmaster where CompanyID = ${CompanyID} and Status = 1 and CustomerID = ${CustomerID}`)
+
+            let amount = 0
+
+            if (fetchBill.length) {
+                amount = Number(fetchBill[0].Amount)
+            }
+
+            const [fetchCategory] = await mysql2.pool.query(`select * from customercategory where CompanyID = ${CompanyID} and Status = 1 and Fromm <= ${amount} and Too >= ${amount}`)
+
+            if (!fetchCategory.length) {
+                response.data = {
+                    Category : 'NA'
+                }
+            }
+
+            const [fetchCategoryValue] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'CustomerCategory' and ID = ${fetchCategory[0].CategoryID}`)
+
+            if (!fetchCategoryValue.length) {
+                response.data = {
+                    Category : 'NA'
+                }
+            }
+
+            console.log(fetchCategoryValue);
+            response.data = {
+                Category : fetchCategoryValue[0].Name
+            }
+            response.message = "data fetch successfully";
             return res.send(response);
         } catch (err) {
             next(err)
