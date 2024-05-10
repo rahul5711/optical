@@ -1,0 +1,227 @@
+{
+	"info": {
+		"_postman_id": "dbc73e30-2ae9-43ef-a102-05d25771f6b3",
+		"name": "Employee-Document",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "ImageSave",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/Dell/Downloads/software-engineering-introduction.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/file/upload",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"file",
+						"upload"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "ImageSave",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Dell/Downloads/software-engineering-introduction.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/file/upload",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"file",
+								"upload"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "381"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"17d-xINsXIboD3Ja9RGsA0b/5Z4Upiw\""
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 10 May 2024 18:55:04 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Uploaded Successfully\",\n    \"file\": {\n        \"fieldname\": \"file\",\n        \"originalname\": \"software-engineering-introduction.png\",\n        \"encoding\": \"7bit\",\n        \"mimetype\": \"image/png\",\n        \"destination\": \"./uploads/2024/5/images\",\n        \"filename\": \"1715367304296.png\",\n        \"path\": \"uploads\\\\2024\\\\5\\\\images\\\\1715367304296.png\",\n        \"size\": 44483\n    },\n    \"fileName\": \"1715367304296.png\",\n    \"download\": \"/uploads/2024/5/images/1715367304296.png\"\n}"
+				}
+			]
+		},
+		{
+			"name": "UpdateDocument",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTUzNjc3OTYsImV4cCI6MTcxNTQ1NDE5NiwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.bKL_oHg8SIqW03KNjLZUbgezTtsG_ZuyHVa8hhOv1Qs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "selectedShop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ID\": 31,\r\n    \"CompanyID\": 1,\r\n    \"Name\": \"rahul\",\r\n    \"UserGroup\": \"Employee\",\r\n    \"DOB\": \"null\",\r\n    \"Anniversary\": \"null\",\r\n    \"MobileNo1\": \"null\",\r\n    \"MobileNo2\": \"null\",\r\n    \"PhoneNo\": \"null\",\r\n    \"Email\": \"sdfsdf@gmail.com\",\r\n    \"Address\": \"sdfsdf\",\r\n    \"Branch\": \"\",\r\n    \"PhotoURL\": \"null\",\r\n    \"Document\": [\r\n        {\r\n            \"fileName\": \"software-engineering-introduction.png\",\r\n            \"download\": \"/uploads/2024/5/images/1715367304296.png\"\r\n        }\r\n    ],\r\n    \"LoginName\": \"rahul\",\r\n    \"Password\": \"$2b$10$pEmy6lGPRVv0jEg3sKyLhOZQFAbhhAHRVHaCHbJtG2beIETM2rMbS\",\r\n    \"Status\": 1,\r\n    \"CreatedBy\": 2,\r\n    \"UpdatedBy\": 2,\r\n    \"CreatedOn\": \"2024-05-10T18:37:44.000Z\",\r\n    \"UpdatedOn\": \"2023-10-12T07:16:11.000Z\",\r\n    \"CommissionType\": 1,\r\n    \"CommissionMode\": 1,\r\n    \"CommissionValue\": 5,\r\n    \"CommissionValueNB\": 0,\r\n    \"DiscountPermission\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/employee/update",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"employee",
+						"update"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "UpdateDocument",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "selectedShop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\": 31,\r\n    \"CompanyID\": 1,\r\n    \"Name\": \"rahul\",\r\n    \"UserGroup\": \"Employee\",\r\n    \"DOB\": \"null\",\r\n    \"Anniversary\": \"null\",\r\n    \"MobileNo1\": \"null\",\r\n    \"MobileNo2\": \"null\",\r\n    \"PhoneNo\": \"null\",\r\n    \"Email\": \"sdfsdf@gmail.com\",\r\n    \"Address\": \"sdfsdf\",\r\n    \"Branch\": \"\",\r\n    \"PhotoURL\": \"null\",\r\n    \"Document\": [\r\n        {\r\n            \"fileName\": \"software-engineering-introduction.png\",\r\n            \"download\": \"/uploads/2024/5/images/1715367304296.png\"\r\n        }\r\n    ],\r\n    \"LoginName\": \"rahul\",\r\n    \"Password\": \"$2b$10$pEmy6lGPRVv0jEg3sKyLhOZQFAbhhAHRVHaCHbJtG2beIETM2rMbS\",\r\n    \"Status\": 1,\r\n    \"CreatedBy\": 2,\r\n    \"UpdatedBy\": 2,\r\n    \"CreatedOn\": \"2024-05-10T18:37:44.000Z\",\r\n    \"UpdatedOn\": \"2023-10-12T07:16:11.000Z\",\r\n    \"CommissionType\": 1,\r\n    \"CommissionMode\": 1,\r\n    \"CommissionValue\": 5,\r\n    \"CommissionValueNB\": 0,\r\n    \"DiscountPermission\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/employee/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"employee",
+								"update"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "64"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"40-MGJ0ocsb6PIIuQ77QMJmmBvSGwE\""
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 10 May 2024 19:08:48 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": null,\n    \"success\": true,\n    \"message\": \"data update sucessfully\"\n}"
+				}
+			]
+		}
+	]
+}
