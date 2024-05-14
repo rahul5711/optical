@@ -250,6 +250,12 @@ module.exports = {
                 return res.send({ message: "customer doesnot exist from this id " })
             }
 
+            const [doesExistBill] = await mysql2.pool.query(`select * from billmaster where Status = 1 and CompanyID = '${CompanyID}' and CustomerID = '${Body.ID}'`)
+
+            if (doesExistBill.length) {
+                return res.send({ message: `You can't delete customer. Please delete the bill first` })
+            }
+
 
             const [deleteCustomer] = await mysql2.pool.query(`update customer set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
