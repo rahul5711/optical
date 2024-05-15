@@ -1231,10 +1231,13 @@ module.exports = {
 
             const [fetchCategory] = await mysql2.pool.query(`select * from customercategory where CompanyID = ${CompanyID} and Status = 1 and Fromm <= ${amount} and Too >= ${amount}`)
 
+
             if (!fetchCategory.length) {
                 response.data = {
                     Category : 'NA'
                 }
+                response.message = "data fetch successfully";
+                return res.send(response);
             }
 
             const [fetchCategoryValue] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'CustomerCategory' and ID = ${fetchCategory[0].CategoryID}`)
@@ -1252,6 +1255,7 @@ module.exports = {
             response.message = "data fetch successfully";
             return res.send(response);
         } catch (err) {
+            console.log(err);
             next(err)
         }
     },
