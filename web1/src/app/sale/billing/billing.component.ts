@@ -484,7 +484,7 @@ srcCustomerBox = false
     this.currentTime = new Date().toLocaleTimeString('en-IN', { hourCycle: 'h23' })
     if (this.id != 0) {
       this.getCustomerById();
-      // this.getCustomerCategory()
+      this.getCustomerCategory();
     }
     this.doctorList()
     this.srcBox = true;
@@ -525,7 +525,7 @@ srcCustomerBox = false
     const subs: Subscription = this.cs.getCustomerCategory(CustomerID).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.data.Category = res.data;
+          this.data.Category = res.data.Category;
         } else {
           this.as.errorToast(res.message)
         }
@@ -715,7 +715,8 @@ srcCustomerBox = false
         if (res.success) {
 
           this.data = res.data[0]
-          this.data.Idd = res.data[0].Idd
+          this.data.Idd = res.data[0].Idd;
+          this.getCustomerCategory()
           this.data.VisitDate = moment(res.data[0].VisitDate).format('YYYY-MM-DD');
           if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
             this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
@@ -1018,6 +1019,7 @@ srcCustomerBox = false
     if(mode === 'Value'){
       this.getCustomerSearchId(ID)
     }
+    this.getCustomerCategory()
   }
 
   customerSearch(searchKey: any, mode: any) {
@@ -1066,6 +1068,7 @@ srcCustomerBox = false
 
             this.data = res.data[0]
             this.data.Idd = res.data[0].Idd
+            this.getCustomerCategory()
             if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
               this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
             } else {
