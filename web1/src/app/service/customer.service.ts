@@ -116,6 +116,26 @@ export class CustomerService {
     .pipe(catchError(this.handleError));
   }
 
+  saveCategory(CategoryID:any,Fromm:any,Too:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/saveCategory',{CategoryID:CategoryID,Fromm:Fromm,Too:Too}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getCategoryList(): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getCategoryList', httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  deleteAllCategory(): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/deleteAllCategory', httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getCustomerCategory(CustomerID:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getCustomerCategory',{CustomerID:CustomerID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

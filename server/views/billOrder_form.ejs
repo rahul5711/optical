@@ -441,7 +441,7 @@
                 <li>Balance</li>
             </ul>
             <ul class="ul2" >
-                <li><%=data.billMaster.DiscountAmount + data.billMaster.SubTotal%></li>
+                <li><%= (data.billMaster.DiscountAmount + data.billMaster.SubTotal).toFixed(2) %></li>
                 <li><%=data.billMaster.DiscountAmount + data.billMaster.AddlDiscount%></li>
                 <li><%=data.billMaster.TotalAmount%></li>
                 <li><%=data.recivePayment%></li>

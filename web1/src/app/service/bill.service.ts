@@ -248,6 +248,16 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  getLoyalityReport( UserType:any,UserID:any,FromDate:any,ToDate:any,ShopID:any,PaymentStatus:any,): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getLoyalityReport',{UserType:UserType,UserID:UserID,FromDate:FromDate,ToDate:ToDate,ShopID:ShopID,PaymentStatus:PaymentStatus}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getLoyalityDetailReport( UserType:any,UserID:any,FromDate:any,ToDate:any,ShopID:any,PaymentStatus:any,): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getLoyalityDetailReport',{UserType:UserType,UserID:UserID,FromDate:FromDate,ToDate:ToDate,ShopID:ShopID,PaymentStatus:PaymentStatus}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
  
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

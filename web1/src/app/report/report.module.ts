@@ -38,6 +38,8 @@ import {ProductTypeName} from './../filterDropDown/nameFilter';
 import {ProductItemFilter} from './../filterDropDown/nameFilter';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { CustomerReportComponent } from './customer-report/customer-report.component';
+import { LoyalityReportComponent } from './loyality-report/loyality-report.component';
+
 
 @NgModule({
   declarations: [
@@ -53,7 +55,9 @@ import { CustomerReportComponent } from './customer-report/customer-report.compo
     OldSaleComponent,
     ProductTypeName,
     ProductItemFilter,
-    CustomerReportComponent
+    CustomerReportComponent,
+    LoyalityReportComponent,
+
   ],
   imports: [
     CommonModule,

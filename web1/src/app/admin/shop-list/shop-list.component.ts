@@ -14,6 +14,8 @@ import { fromEvent } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
+import { SupportService } from 'src/app/service/support.service';
+import { CustomerService } from 'src/app/service/customer.service';
 
 
 @Component({
@@ -49,6 +51,9 @@ export class ShopListComponent implements OnInit {
     Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: true, GSTnumber: true, AdminDiscount:true, LogoURL: null, WaterMark: null, HSNCode: true, CustGSTNo: true, Rate: true, Discounts: true, Tax: false, SubTotal: true, Total: true, BillShopWise: true, RetailBill:false, WholesaleBill:false, BillName:'InvoiceNo./Total/Bill Of Supply/Cash Memo', ShopTiming: 'MON-SUN 10 AM - 8 PM', WelcomeNote: '[{"NoteType":"retail","Content":"No Return once sold. No Cash Refund."},{"NoteType":"retail","Content":"50% Advance at the time of booking the order."},{"NoteType":"retail","Content":"Please collect your  spects within 15 days from the date of order."},{"NoteType":"retail","Content":"Free Computerized EYES* Testing Facility Available."},{"NoteType":"retail","Content":"Repairing work at customer risk."}]', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
   };
 
+  Category:any = {
+    CategoryID:null, Fromm:'', Too:''
+  }
   constructor(
     private router: Router,
     public as: AlertService,
@@ -60,6 +65,8 @@ export class ShopListComponent implements OnInit {
     private formBuilder: FormBuilder,
     private compressImage: CompressImageService,
     private excelService: ExcelService,
+    private supps: SupportService,
+    private cus: CustomerService,
 
   ) {
     this.id = this.route.snapshot.params['id'];
@@ -72,6 +79,8 @@ export class ShopListComponent implements OnInit {
 
   wlcmArray: any = [];
   wlcmArray1: any = [];
+  CategoryList: any = [];
+  CategoryLists: any = [];
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
@@ -428,4 +437,101 @@ export class ShopListComponent implements OnInit {
   delete(i: any) {
     this.wlcmArray1.splice(i, 1);
 }
+
+openModal2(content: any) {
+  this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
+  this.getCategoryList()
+  this.getCategoryLists()
+}
+
+getCategoryList() {
+  const subs: Subscription = this.supps.getList('CustomerCategory').subscribe({
+    next: (res: any) => {
+      if (res.success) {
+        this.CategoryList = res.data
+      } else {
+        this.as.errorToast(res.message)
+      }
+    },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+  });
+}
+
+categorySave(){
+  this.sp.show();
+  const subs: Subscription = this.cus.saveCategory(this.Category.CategoryID,this.Category.Fromm,this.Category.Too,).subscribe({
+    next: (res: any) => {
+      if (res.success) {
+        this.getCategoryLists();
+        this.Category = []
+      } else {
+        this.as.errorToast(res.message)
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Opps !!',
+          text: res.message,
+          showConfirmButton: true,
+          backdrop: false,
+        })
+      }
+      this.sp.hide();
+    },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+  });
+ }
+
+getCategoryLists(){
+  this.sp.show();
+  const subs: Subscription = this.cus.getCategoryList().subscribe({
+    next: (res: any) => {
+      if (res.success) {
+        this.CategoryLists = res.data 
+      } else {
+        this.as.errorToast(res.message)
+      }
+      this.sp.hide();
+    },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+  });
+ }
+
+ deleteAll(){
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.sp.show()
+      const subs: Subscription = this.cus.deleteAllCategory().subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.getCategoryLists()
+            this.as.successToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been deleted.',
+              showConfirmButton: false,
+              timer: 1000
+            })
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+  })
+ }
 }

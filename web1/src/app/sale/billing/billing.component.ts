@@ -484,6 +484,7 @@ srcCustomerBox = false
     this.currentTime = new Date().toLocaleTimeString('en-IN', { hourCycle: 'h23' })
     if (this.id != 0) {
       this.getCustomerById();
+      // this.getCustomerCategory()
     }
     this.doctorList()
     this.srcBox = true;
@@ -508,6 +509,23 @@ srcCustomerBox = false
       next: (res: any) => {
         if (res.success) {
            this.docList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getCustomerCategory() {
+    this.sp.show();
+    let CustomerID = Number(this.id)
+    const subs: Subscription = this.cs.getCustomerCategory(CustomerID).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.data.Category = res.data;
         } else {
           this.as.errorToast(res.message)
         }

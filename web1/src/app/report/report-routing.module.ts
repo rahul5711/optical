@@ -11,6 +11,8 @@ import { VendorCreditComponent } from './vendor-credit/vendor-credit.component';
 import { CashCollectionComponent } from './cash-collection/cash-collection.component';
 import { OldSaleComponent } from './old-sale/old-sale.component';
 import { CustomerReportComponent } from './customer-report/customer-report.component';
+import { LoyalityReportComponent } from './loyality-report/loyality-report.component';
+
 
 const routes: Routes = [
   { path: '',
@@ -18,7 +20,7 @@ const routes: Routes = [
     { path: 'sale', component: SaleReportComponent },
     { path: 'purchase', component: PurchaseReportComponent },
     { path: 'customer', component: CustomerReportComponent },
-    { path: 'product-transfer', component: TransferProductReportComponent },
+    { path: 'product-transfer', component: TransferProductReportComponent }, 
     { path: 'product-return', component: ProductReturnComponent },
     { path: 'inventory', component: InventoryReportComponent },
     { path: 'eyetest', component: EyetestReportComponent },
@@ -26,6 +28,8 @@ const routes: Routes = [
     { path: 'supplierCredit', component: VendorCreditComponent },
     { path: 'cashCollection', component: CashCollectionComponent },
     { path: 'oldSale', component: OldSaleComponent },
+    { path: 'loyality', component: LoyalityReportComponent },
+
   ]}
   ]
 

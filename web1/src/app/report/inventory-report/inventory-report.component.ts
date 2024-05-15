@@ -45,6 +45,8 @@ export class InventoryReportComponent implements OnInit {
     private sp: NgxSpinnerService,
   ) { }
 
+  UpdatePriceEdit = false;
+
   myControl = new FormControl('All');
   filteredOptions: any;
   searchValue: any = '';
@@ -447,6 +449,7 @@ export class InventoryReportComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+  
   inventoryAll() {
     this.sp.show()
     let Parem = '';
@@ -567,6 +570,9 @@ export class InventoryReportComponent implements OnInit {
 
   openModal(content: any) {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
+  }
+  updatePurchasePriceModel(content: any) {
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
   }
 
   // purchase product expiry
@@ -1269,6 +1275,34 @@ export class InventoryReportComponent implements OnInit {
 
 
 
+  EditPrice(){
+    this.UpdatePriceEdit = !this.UpdatePriceEdit
+  }
 
+  UpdatePrice(){
+    this.sp.show()
+     let ProductData = this.inventoryList.map((e: any) => {
+      return{
+        PurchaseDetailID: e.PurchaseDetailID,
+        Count : e.Count,
+        Barcode : e.Barcode,
+        RetailPrice : e.RetailPrice,
+        WholeSalePrice : e.WholeSalePrice
+      }
+    })
+    
+    const subs: Subscription = this.purchaseService.updateProductPrice(ProductData).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.modalService.dismissAll()
+          this.sp.hide()
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
 
 }
