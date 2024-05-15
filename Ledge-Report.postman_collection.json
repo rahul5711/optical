@@ -1,0 +1,247 @@
+{
+	"info": {
+		"_postman_id": "04d627fb-30c0-417b-b528-b14e61894cd3",
+		"name": "Ledge-Report",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getSupplierLedgeReport",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTU3MTEzODIsImV4cCI6MTcxNTc5Nzc4MiwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.H3omorzFs4PuSlYK53MDOrYD3-lP-srkOPdSlg_0H5g",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "SelectedShop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"FromDate\" : \"2024-02-02\",\r\n    \"ToDate\" : \"2024-05-30\",\r\n    \"SupplierID\" : 269,\r\n    \"ShopID\" : 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/ledge/getSupplierLedgeReport",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"ledge",
+						"getSupplierLedgeReport"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getSupplierLedgeReport",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "SelectedShop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"FromDate\" : \"2024-02-02\",\r\n    \"ToDate\" : \"2024-05-30\",\r\n    \"SupplierID\" : 269,\r\n    \"ShopID\" : 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/ledge/getSupplierLedgeReport",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"ledge",
+								"getSupplierLedgeReport"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "9576"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"2568-Y65Ihp84W+kRodIzZWULzVXpW4c\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 15 May 2024 15:50:38 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"message\": \"data fetch successfully\",\n    \"OpeningBalance\": 1800,\n    \"InvoicedAmount\": 84170,\n    \"AmountPaid\": 60870,\n    \"BalanceDue\": 25100,\n    \"data\": [\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"safaf\",\n            \"InvoiceAmount\": 500,\n            \"PaymentDate\": \"2024-02-02\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"safaf\",\n            \"balance\": 500\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"SASAS\",\n            \"InvoiceAmount\": 10,\n            \"PaymentDate\": \"2024-02-02\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"SASAS\",\n            \"balance\": 510\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"MKKK\",\n            \"InvoiceAmount\": 100,\n            \"PaymentDate\": \"2024-02-03\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"MKKK\",\n            \"balance\": 610\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"TEST- 3-2\",\n            \"InvoiceAmount\": 7740,\n            \"PaymentDate\": \"2024-02-03\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"TEST- 3-2\",\n            \"balance\": 8350\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 500,\n            \"InvoiceNo\": \"safaf\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-02-06\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"500 CASH For Payment Of - safaf\",\n            \"balance\": 7850\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 10,\n            \"InvoiceNo\": \"SASAS\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-02-06\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"10 CASH For Payment Of - SASAS\",\n            \"balance\": 7840\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 100,\n            \"InvoiceNo\": \"MKKK\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-02-06\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"100 CASH For Payment Of - MKKK\",\n            \"balance\": 7740\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 7666,\n            \"InvoiceNo\": \"TEST- 3-2\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-02-06\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"7666 CASH For Payment Of - TEST- 3-2\",\n            \"balance\": 74\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"ZXFZXFZF\",\n            \"InvoiceAmount\": 6250,\n            \"PaymentDate\": \"2024-02-21\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"ZXFZXFZF\",\n            \"balance\": 6324\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 100,\n            \"InvoiceNo\": \"ZXFZXFZF\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-02-23\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"100 CASH For Payment Of - ZXFZXFZF\",\n            \"balance\": 6224\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"ADsaD\",\n            \"InvoiceAmount\": 600,\n            \"PaymentDate\": \"2024-02-24\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"ADsaD\",\n            \"balance\": 6824\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"fd\",\n            \"InvoiceAmount\": 100,\n            \"PaymentDate\": \"2024-03-27\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"fd\",\n            \"balance\": 6924\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"sadsda\",\n            \"InvoiceAmount\": 5000,\n            \"PaymentDate\": \"2024-03-27\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"sadsda\",\n            \"balance\": 11924\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"SDFSFD\",\n            \"InvoiceAmount\": 250,\n            \"PaymentDate\": \"2024-04-02\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"SDFSFD\",\n            \"balance\": 12174\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"DSFSDFSFSF\",\n            \"InvoiceAmount\": 5000,\n            \"PaymentDate\": \"2024-04-11\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"DSFSDFSFSF\",\n            \"balance\": 17174\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"HUUYY55\",\n            \"InvoiceAmount\": 1000,\n            \"PaymentDate\": \"2024-04-11\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"HUUYY55\",\n            \"balance\": 18174\n        },\n        {\n            \"PaymentMode\": \"UPI\",\n            \"PaidAmount\": 1000,\n            \"InvoiceNo\": \"HUUYY55\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-04-11\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"1000 UPI For Payment Of - HUUYY55\",\n            \"balance\": 17174\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"rahul test\",\n            \"InvoiceAmount\": 25600,\n            \"PaymentDate\": \"2024-04-11\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"rahul test\",\n            \"balance\": 42774\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"123123\",\n            \"InvoiceAmount\": 1120,\n            \"PaymentDate\": \"2024-04-12\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"123123\",\n            \"balance\": 43894\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"szdfsf\",\n            \"InvoiceAmount\": 700,\n            \"PaymentDate\": \"2024-04-12\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"szdfsf\",\n            \"balance\": 44594\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"PO\",\n            \"InvoiceAmount\": 5900,\n            \"PaymentDate\": \"2024-04-20\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"PO\",\n            \"balance\": 50494\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 74,\n            \"InvoiceNo\": \"TEST- 3-2\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-04-20\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"74 CASH For Payment Of - TEST- 3-2\",\n            \"balance\": 50420\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 6150,\n            \"InvoiceNo\": \"ZXFZXFZF\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-04-20\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"6150 CASH For Payment Of - ZXFZXFZF\",\n            \"balance\": 44270\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 600,\n            \"InvoiceNo\": \"ADsaD\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-04-20\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"600 CASH For Payment Of - ADsaD\",\n            \"balance\": 43670\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 100,\n            \"InvoiceNo\": \"fd\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-04-20\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"100 CASH For Payment Of - fd\",\n            \"balance\": 43570\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 5000,\n            \"InvoiceNo\": \"sadsda\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-04-20\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"5000 CASH For Payment Of - sadsda\",\n            \"balance\": 38570\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 250,\n            \"InvoiceNo\": \"SDFSFD\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-04-20\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"250 CASH For Payment Of - SDFSFD\",\n            \"balance\": 38320\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 5000,\n            \"InvoiceNo\": \"DSFSDFSFSF\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-04-20\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"5000 CASH For Payment Of - DSFSDFSFSF\",\n            \"balance\": 33320\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 25600,\n            \"InvoiceNo\": \"rahul test\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-04-20\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"25600 CASH For Payment Of - rahul test\",\n            \"balance\": 7720\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 1120,\n            \"InvoiceNo\": \"123123\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-04-20\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"1120 CASH For Payment Of - 123123\",\n            \"balance\": 6600\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 700,\n            \"InvoiceNo\": \"szdfsf\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-04-20\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"700 CASH For Payment Of - szdfsf\",\n            \"balance\": 5900\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 2800,\n            \"InvoiceNo\": \"PO\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-04-20\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"2800 CASH For Payment Of - PO\",\n            \"balance\": 3100\n        },\n        {\n            \"PaymentMode\": \"Vendor Credit\",\n            \"PaidAmount\": 3100,\n            \"InvoiceNo\": \"PO\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-04-20\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"3100 Vendor Credit For Payment Of - PO\",\n            \"balance\": 0\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"yt5t\",\n            \"InvoiceAmount\": 1000,\n            \"PaymentDate\": \"2024-04-22\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"yt5t\",\n            \"balance\": 1000\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 1000,\n            \"InvoiceNo\": \"yt5t\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-04-22\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"1000 CASH For Payment Of - yt5t\",\n            \"balance\": 0\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"r123\",\n            \"InvoiceAmount\": 15000,\n            \"PaymentDate\": \"2024-04-24\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"r123\",\n            \"balance\": 15000\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"25-04\",\n            \"InvoiceAmount\": 6000,\n            \"PaymentDate\": \"2024-04-25\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"25-04\",\n            \"balance\": 21000\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"SSAFASFASF\",\n            \"InvoiceAmount\": 500,\n            \"PaymentDate\": \"2024-04-30\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"SSAFASFASF\",\n            \"balance\": 21500\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"werwerwerewr\",\n            \"InvoiceAmount\": 1800,\n            \"PaymentDate\": \"2024-05-03\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"werwerwerewr\",\n            \"balance\": 23300\n        }\n    ],\n    \"ShopDetails\": {\n        \"ID\": 1,\n        \"SystemID\": \"0\",\n        \"CompanyID\": 1,\n        \"Sno\": 1,\n        \"Name\": \"OPTICALGURU BETA\",\n        \"AreaName\": \"1\",\n        \"Address\": \"SHOP NO. 5, TH SCHONEAR SAMAROL, OPP-RAOSAHEB SAVEDI, A.NAGAR-414003\",\n        \"MobileNo1\": \"9766666248\",\n        \"MobileNo2\": \"9766666248\",\n        \"PhoneNo\": \"\",\n        \"Email\": \"BETA@GMAIL.COM\",\n        \"Website\": \"https://g.page/r/Cezvo-E8RWyrEB0/review\",\n        \"GSTNo\": \"cvGHFDHFDHDFH\",\n        \"CINNo\": \"\",\n        \"BarcodeName\": \"OPTICAL \",\n        \"Discount\": \"true\",\n        \"GSTnumber\": \"true\",\n        \"LogoURL\": \"/uploads/2024/1/1/images/1706212495466.png\",\n        \"ShopTiming\": \"MON-SAT 10 AM - 8 PM, SUN OFF\",\n        \"WelcomeNote\": \"[{\\\"NoteType\\\":\\\"retail\\\",\\\"Content\\\":\\\"No Return once sold. No Cash Refund.\\\"},{\\\"NoteType\\\":\\\"retail\\\",\\\"Content\\\":\\\"Please collect your  spects within 15 days from the date of order.\\\"},{\\\"NoteType\\\":\\\"retail\\\",\\\"Content\\\":\\\"Repairing work at customer risk.\\\"},{\\\"NoteType\\\":\\\"CustomerPower\\\",\\\"Content\\\":\\\"MR SANTOSH PATIL\\\"},{\\\"NoteType\\\":\\\"CustomerPower\\\",\\\"Content\\\":\\\"*** OPTHAL TECH ***\\\"},{\\\"NoteType\\\":\\\"CustomerPower\\\",\\\"Content\\\":\\\"*** D OPTOM ***\\\"}]\",\n        \"Status\": 1,\n        \"CreatedBy\": \"2\",\n        \"UpdatedBy\": \"2\",\n        \"CreatedOn\": \"2023-10-09 09:39:58\",\n        \"UpdatedOn\": \"2024-05-07 14:47:47\",\n        \"HSNCode\": \"true\",\n        \"CustGSTNo\": \"true\",\n        \"Rate\": \"true\",\n        \"Discounts\": \"true\",\n        \"Tax\": \"true\",\n        \"SubTotal\": \"true\",\n        \"Total\": \"true\",\n        \"BillShopWise\": \"true\",\n        \"RetailBill\": \"true\",\n        \"WholesaleBill\": \"false\",\n        \"ShopStatus\": 0,\n        \"BillName\": \"InvoiceNo./Total/Tax Invoice/Cash Memo\",\n        \"AdminDiscount\": \"true\",\n        \"WaterMark\": \"/uploads/2024/1/1/images/1706381368553.jpeg\"\n    },\n    \"SupplierDetails\": {\n        \"ID\": 269,\n        \"SystemID\": \"0\",\n        \"Sno\": \"92\",\n        \"Name\": \"ABC GARMENTS\",\n        \"CompanyID\": 1,\n        \"MobileNo1\": \"9797979\",\n        \"MobileNo2\": \"\",\n        \"PhoneNo\": \"\",\n        \"Address\": \"SDFSDFSDF\",\n        \"GSTNo\": \"\",\n        \"GSTType\": \"None\",\n        \"Email\": \"\",\n        \"Website\": \"\",\n        \"CINNo\": \"\",\n        \"Fax\": \"\",\n        \"PhotoURL\": \"null\",\n        \"ContactPerson\": \"\",\n        \"Remark\": \"\",\n        \"DOB\": \"\",\n        \"Anniversary\": \"\",\n        \"Status\": 1,\n        \"CreatedBy\": 2,\n        \"UpdatedBy\": null,\n        \"CreatedOn\": \"2023-10-27T05:06:32.000Z\",\n        \"UpdatedOn\": null\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "getCustomerLedgeReport",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTU3MTEzODIsImV4cCI6MTcxNTc5Nzc4MiwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.H3omorzFs4PuSlYK53MDOrYD3-lP-srkOPdSlg_0H5g",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "SelectedShop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"FromDate\" : \"2024-01-11\",\r\n    \"ToDate\" : \"2024-01-12\",\r\n    \"CustomerID\" : 279278,\r\n    \"ShopID\" : 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/ledge/getCustomerLedgeReport",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"ledge",
+						"getCustomerLedgeReport"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getCustomerLedgeReport",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "SelectedShop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"FromDate\" : \"2024-01-11\",\r\n    \"ToDate\" : \"2024-01-12\",\r\n    \"CustomerID\" : 279278,\r\n    \"ShopID\" : 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/ledge/getCustomerLedgeReport",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"ledge",
+								"getCustomerLedgeReport"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "3135"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"c3f-PJj+IyOyiXse9+le5tRAJUnVhLM\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 15 May 2024 17:38:49 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"message\": \"data fetch successfully\",\n    \"OpeningBalance\": 0,\n    \"InvoicedAmount\": 4000,\n    \"AmountPaid\": 600,\n    \"BalanceDue\": 3400,\n    \"data\": [\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"2401-R1-1-172\",\n            \"InvoiceAmount\": 1000,\n            \"PaymentDate\": \"2024-01-11\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"2401-R1-1-172\",\n            \"balance\": 1000\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"2401-R1-1-173\",\n            \"InvoiceAmount\": 500,\n            \"PaymentDate\": \"2024-01-11\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"2401-R1-1-173\",\n            \"balance\": 1500\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"2401-R1-1-176\",\n            \"InvoiceAmount\": 2500,\n            \"PaymentDate\": \"2024-01-12\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"2401-R1-1-176\",\n            \"balance\": 4000\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 100,\n            \"InvoiceNo\": \"2401-R1-1-173\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-05-15\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"100 CASH For Payment Of - 2401-R1-1-173\",\n            \"balance\": 3900\n        },\n        {\n            \"PaymentMode\": \"CHEQUE\",\n            \"PaidAmount\": 500,\n            \"InvoiceNo\": \"2401-R1-1-176\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-05-15\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"500 CHEQUE For Payment Of - 2401-R1-1-176\",\n            \"balance\": 3400\n        }\n    ],\n    \"ShopDetails\": {\n        \"ID\": 1,\n        \"SystemID\": \"0\",\n        \"CompanyID\": 1,\n        \"Sno\": 1,\n        \"Name\": \"OPTICALGURU BETA\",\n        \"AreaName\": \"1\",\n        \"Address\": \"SHOP NO. 5, TH SCHONEAR SAMAROL, OPP-RAOSAHEB SAVEDI, A.NAGAR-414003\",\n        \"MobileNo1\": \"9766666248\",\n        \"MobileNo2\": \"9766666248\",\n        \"PhoneNo\": \"\",\n        \"Email\": \"BETA@GMAIL.COM\",\n        \"Website\": \"https://g.page/r/Cezvo-E8RWyrEB0/review\",\n        \"GSTNo\": \"cvGHFDHFDHDFH\",\n        \"CINNo\": \"\",\n        \"BarcodeName\": \"OPTICAL \",\n        \"Discount\": \"true\",\n        \"GSTnumber\": \"true\",\n        \"LogoURL\": \"/uploads/2024/1/1/images/1706212495466.png\",\n        \"ShopTiming\": \"MON-SAT 10 AM - 8 PM, SUN OFF\",\n        \"WelcomeNote\": \"[{\\\"NoteType\\\":\\\"retail\\\",\\\"Content\\\":\\\"No Return once sold. No Cash Refund.\\\"},{\\\"NoteType\\\":\\\"retail\\\",\\\"Content\\\":\\\"Please collect your  spects within 15 days from the date of order.\\\"},{\\\"NoteType\\\":\\\"retail\\\",\\\"Content\\\":\\\"Repairing work at customer risk.\\\"},{\\\"NoteType\\\":\\\"CustomerPower\\\",\\\"Content\\\":\\\"MR SANTOSH PATIL\\\"},{\\\"NoteType\\\":\\\"CustomerPower\\\",\\\"Content\\\":\\\"*** OPTHAL TECH ***\\\"},{\\\"NoteType\\\":\\\"CustomerPower\\\",\\\"Content\\\":\\\"*** D OPTOM ***\\\"}]\",\n        \"Status\": 1,\n        \"CreatedBy\": \"2\",\n        \"UpdatedBy\": \"2\",\n        \"CreatedOn\": \"2023-10-09 09:39:58\",\n        \"UpdatedOn\": \"2024-05-07 14:47:47\",\n        \"HSNCode\": \"true\",\n        \"CustGSTNo\": \"true\",\n        \"Rate\": \"true\",\n        \"Discounts\": \"true\",\n        \"Tax\": \"true\",\n        \"SubTotal\": \"true\",\n        \"Total\": \"true\",\n        \"BillShopWise\": \"true\",\n        \"RetailBill\": \"true\",\n        \"WholesaleBill\": \"false\",\n        \"ShopStatus\": 0,\n        \"BillName\": \"InvoiceNo./Total/Tax Invoice/Cash Memo\",\n        \"AdminDiscount\": \"true\",\n        \"WaterMark\": \"/uploads/2024/1/1/images/1706381368553.jpeg\"\n    },\n    \"CustomerDetails\": {\n        \"ID\": 279278,\n        \"Idd\": \"318\",\n        \"ShopID\": 1,\n        \"SystemID\": \"0\",\n        \"Sno\": \"\",\n        \"Name\": \"SANTOSH PATIL\",\n        \"CompanyID\": 1,\n        \"MobileNo1\": \"9999999\",\n        \"MobileNo2\": \"\",\n        \"PhoneNo\": \"\",\n        \"Address\": \"\",\n        \"GSTNo\": \"\",\n        \"Email\": \"\",\n        \"PhotoURL\": \"null\",\n        \"DOB\": \"2024-01-11\",\n        \"RefferedByDoc\": \"\",\n        \"Age\": \"0\",\n        \"Anniversary\": \"2024-01-11\",\n        \"ReferenceType\": \"\",\n        \"Gender\": \"\",\n        \"Category\": null,\n        \"Other\": \"\",\n        \"Remarks\": \"\",\n        \"Status\": 1,\n        \"CreatedBy\": 2,\n        \"UpdatedBy\": 2,\n        \"CreatedOn\": \"2024-01-11T12:03:20.000Z\",\n        \"UpdatedOn\": \"2024-01-12T16:45:51.000Z\",\n        \"TotalCustomer\": null,\n        \"VisitDate\": \"2024-01-11\"\n    }\n}"
+				}
+			]
+		}
+	]
+}

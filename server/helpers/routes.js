@@ -21,6 +21,7 @@ app.use('/bill', require('../routes/bill.route'));
 app.use('/payment', require('../routes/payment.route'));
 app.use('/reminder', require('../routes/reminder.route'));
 app.use('/dm', require('../routes/datamerge.route'));
+app.use('/ledge', require('../routes/ledge.route'));
 }
 
 module.exports = { addRoutes };
