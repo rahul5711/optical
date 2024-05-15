@@ -716,7 +716,7 @@ srcCustomerBox = false
 
           this.data = res.data[0]
           this.data.Idd = res.data[0].Idd;
-          this.getCustomerCategory()
+          
           this.data.VisitDate = moment(res.data[0].VisitDate).format('YYYY-MM-DD');
           if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
             this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
@@ -764,6 +764,7 @@ srcCustomerBox = false
             this.other.VisitDate = moment(this.other.VisitDate).format('YYYY-MM-DD');
           }
           this.getScoList()
+          this.getCustomerCategory();
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
