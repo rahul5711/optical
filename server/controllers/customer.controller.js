@@ -1246,9 +1246,10 @@ module.exports = {
                 response.data = {
                     Category : 'NA'
                 }
+                response.message = "data fetch successfully";
+                return res.send(response);
             }
 
-            console.log(fetchCategoryValue);
             response.data = {
                 Category : fetchCategoryValue[0].Name
             }
