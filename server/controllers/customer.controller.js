@@ -1182,7 +1182,7 @@ module.exports = {
 
 
 
-            const [fetch] = await mysql2.pool.query(`select * from customercategory where CompanyID = ${CompanyID} and Status = 1`)
+            const [fetch] = await mysql2.pool.query(`select * from customercategory where CompanyID = ${CompanyID} and Status = 1 ORDER BY CategoryID DESC`)
 
             response.data = fetch
             response.message = "data fetch successfully";

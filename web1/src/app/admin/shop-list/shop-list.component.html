@@ -495,7 +495,7 @@
          
             <mat-form-field class="example-full-width mb-0">
                 <mat-label>Category</mat-label>
-                <mat-select name="CategoryID" [(ngModel)]="Category.CategoryID" required #Categorycontrol1>
+                <mat-select name="CategoryID" [(ngModel)]="Category.CategoryID" required (selectionChange)="selectedFromValue()" #Categorycontrol1>
                   <mat-option [value]="p.ID" *ngFor="let p of CategoryList"> {{p.Name}} </mat-option>
                 </mat-select>
               </mat-form-field>
@@ -503,7 +503,7 @@
         <div class="col-md-3 mb-0">
             <mat-form-field class="example-full-width mb-0">
                 <mat-label>From</mat-label>
-                <input matInput name="Fromm" type="number" [(ngModel)]="Category.Fromm" required #Frommcontrol >
+                <input matInput name="Fromm" readonly [(ngModel)]="Category.Fromm" required #Frommcontrol >
                 <mat-error>
                     From is required
                 </mat-error>
@@ -542,7 +542,7 @@
                 </thead>
                 <tbody class="text-center">
                     <tr *ngFor="let data of CategoryLists; let i = index" text="left">
-                        <td>{{ i + 1 }}</td>
+                        <td>{{CategoryLists.length - i }}</td>
                         <td>{{ data.CategoryID }}</td>
                         <td>{{ data.Fromm }}</td>
                         <td>{{ data.Too }}</td>

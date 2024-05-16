@@ -52,7 +52,7 @@ export class ShopListComponent implements OnInit {
   };
 
   Category:any = {
-    CategoryID:null, Fromm:'', Too:''
+    CategoryID:null, Fromm:'0', Too:''
   }
   constructor(
     private router: Router,
@@ -439,6 +439,7 @@ export class ShopListComponent implements OnInit {
 }
 
 openModal2(content: any) {
+  this.Category = { CategoryID:null, Fromm:'0', Too:''}
   this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
   this.getCategoryList()
   this.getCategoryLists()
@@ -458,13 +459,19 @@ getCategoryList() {
   });
 }
 
+selectedFromValue() {
+  if (this.CategoryLists.length !== 0) {
+    this.Category.Fromm = Number(this.CategoryLists[0].Too) + 1;
+  }
+}
+
 categorySave(){
   this.sp.show();
   const subs: Subscription = this.cus.saveCategory(this.Category.CategoryID,this.Category.Fromm,this.Category.Too,).subscribe({
     next: (res: any) => {
       if (res.success) {
         this.getCategoryLists();
-        this.Category = []
+        this.Category = { CategoryID:null, Fromm:'0', Too:''}
       } else {
         this.as.errorToast(res.message)
         Swal.fire({
@@ -515,6 +522,7 @@ getCategoryLists(){
         next: (res: any) => {
           if (res.success) {
             this.getCategoryLists()
+            this.Category = { CategoryID:null, Fromm:'0', Too:''}
             this.as.successToast(res.message)
             Swal.fire({
               position: 'center',
