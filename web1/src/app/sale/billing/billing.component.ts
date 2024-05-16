@@ -484,8 +484,9 @@ srcCustomerBox = false
     this.currentTime = new Date().toLocaleTimeString('en-IN', { hourCycle: 'h23' })
     if (this.id != 0) {
       this.getCustomerById();
-      this.getCustomerCategory();
+
     }
+
     this.doctorList()
     this.srcBox = true;
     [this.shop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
@@ -519,22 +520,7 @@ srcCustomerBox = false
     });
   }
 
-  getCustomerCategory() {
-    this.sp.show();
-    let CustomerID = Number(this.id)
-    const subs: Subscription = this.cs.getCustomerCategory(CustomerID).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.data.Category = res.data.Category;
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
+ 
 
   specCheck(mode: any) {
     if (mode === 'spec') {
@@ -695,6 +681,7 @@ srcCustomerBox = false
           this.spectacleLists = res.spectacle_rx
           this.contactList = res.contact_lens_rx
           this.otherList = res.other_rx
+          this.getCustomerCategory();
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
@@ -764,7 +751,6 @@ srcCustomerBox = false
             this.other.VisitDate = moment(this.other.VisitDate).format('YYYY-MM-DD');
           }
           this.getScoList()
-          this.getCustomerCategory();
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
@@ -776,6 +762,21 @@ srcCustomerBox = false
       },
       complete: () => subs.unsubscribe(),
     })
+  }
+
+  getCustomerCategory() {
+    let CustomerID = Number(this.id)
+    const subs: Subscription = this.cs.getCustomerCategory(CustomerID).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.data.Category = res.data.Category;
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   uploadImage(e: any, mode: any) {

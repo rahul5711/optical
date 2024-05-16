@@ -82,7 +82,7 @@ export class EmployeeComponent implements OnInit {
 
   onSubmit(){
     this.sp.show();
-  
+    this.data.Document = JSON.stringify(this.imgArray);
     const subs: Subscription =  this.es.saveUser(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -151,6 +151,12 @@ export class EmployeeComponent implements OnInit {
         if (res.success) {
           this.as.successToast(res.message)
           this.data = res.data[0]
+          let document = JSON.parse(res.data[0].Document);
+          for(var i = 0; i < document.length; i++) {
+            let Obj: any = {ImageName: '' , Src: ''};
+            Obj.ImageName = document[i].ImageName;
+            this.imgArray.push(Obj);
+          }
           this.data.DiscountPermission = this.data.DiscountPermission === 'true';
             if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
               this.userImage = this.env.apiUrl + res.data[0].PhotoURL;;
@@ -172,6 +178,7 @@ export class EmployeeComponent implements OnInit {
 
   updateUser(){
     this.sp.show()
+    this.data.Document = this.imgArray;
     const subs: Subscription =  this.es.updateUser(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -337,8 +344,8 @@ export class EmployeeComponent implements OnInit {
   }
 
   add() {
-    this.imgArray.push({ImageName: '' , Src: ''});
-  }
+    this.imgArray.push({ImageName: '' });
+  } 
 
   download(imgArray:any) {
     const url = 'http://opticalguru.relinksys.com:50080/zip?id=' + JSON.stringify(imgArray);

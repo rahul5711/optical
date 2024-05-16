@@ -23,7 +23,7 @@ export class CompressImageService {
 
 
   compress(file: File): Observable<File> {
-    const imageType = file.type || 'image/jpeg';
+    const imageType:any = file.type || 'image/jpeg';
     const reader = new FileReader();
     reader.readAsDataURL(file);
 
