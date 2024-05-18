@@ -186,7 +186,7 @@ export class InventoryReportComponent implements OnInit {
     WholeSalePrice: true,
     ProductExpiryDate: true,
   };
-
+  temp:any = []
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'InventoryReport') {
@@ -1279,18 +1279,13 @@ export class InventoryReportComponent implements OnInit {
     this.UpdatePriceEdit = !this.UpdatePriceEdit
   }
 
+  updateTemp(data:any){
+    this.temp.push(data)
+  }
+
   UpdatePrice(){
     this.sp.show()
-     let ProductData = this.inventoryList.map((e: any) => {
-      return{
-        PurchaseDetailID: e.PurchaseDetailID,
-        Count : e.Count,
-        Barcode : e.Barcode,
-        RetailPrice : e.RetailPrice,
-        WholeSalePrice : e.WholeSalePrice
-      }
-    })
-    
+     let ProductData = this.temp;
     const subs: Subscription = this.purchaseService.updateProductPrice(ProductData).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -1304,5 +1299,6 @@ export class InventoryReportComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
 
 }

@@ -40,6 +40,7 @@ export class VendorCreditComponent implements OnInit {
   };
 
   myControl = new FormControl('All');
+  myControl1 = new FormControl('All');
   filteredOptions: any;
 
   constructor(

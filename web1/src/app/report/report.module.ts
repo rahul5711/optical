@@ -39,6 +39,7 @@ import {ProductItemFilter} from './../filterDropDown/nameFilter';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { CustomerReportComponent } from './customer-report/customer-report.component';
 import { LoyalityReportComponent } from './loyality-report/loyality-report.component';
+import { LedgeReportComponent } from './ledge-report/ledge-report.component';
 
 
 @NgModule({
@@ -57,6 +58,7 @@ import { LoyalityReportComponent } from './loyality-report/loyality-report.compo
     ProductItemFilter,
     CustomerReportComponent,
     LoyalityReportComponent,
+    LedgeReportComponent,
 
   ],
   imports: [

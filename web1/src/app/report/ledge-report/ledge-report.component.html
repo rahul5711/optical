@@ -1,0 +1,169 @@
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                    <!-- customer card  -->
+                    <div class="card p-0">
+                        <div class="header p-2 py-0 pt-1">
+                            <div class="row">
+                                <div class="col-md-2 col-8 p-0 ms-3">
+                                    <h2>Customer Ledger Report </h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="body">
+                            <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getCustomerLedgeReport()">
+                                <div class="row" >
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp">
+                                            <mat-label>From</mat-label>
+                                            <input matInput name="FromDate" type="date" [(ngModel)]="data.FromDate"
+                                                #DOBcontrol  />
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp ">
+                                            <mat-label>To</mat-label>
+                                            <input matInput type="date" name="ToDate" [(ngModel)]="data.ToDate" />
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                                        <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
+                                            <mat-label>Shop Name</mat-label>
+                                            <mat-select name="ShopID" [(ngModel)]="data.ShopID" >
+                                                <mat-option [value]=0>All</mat-option>
+                                                <mat-option [value]="Fs.ID" *ngFor="let Fs of shopList"> {{Fs.Name}}
+                                                    <span [style.color]="'blue'"
+                                                        *ngIf="Fs.AreaName !== 'null'">({{Fs.AreaName}})</span>
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                                            <mat-label>Shop Name</mat-label>
+                                            <mat-select name="ShopID" [(ngModel)]="data.ShopID">
+                                                <mat-option [value]="Fs.ID" *ngFor="let Fs of shopList"> {{Fs.Name}}
+                                                    <span [style.color]="'blue'"
+                                                        *ngIf="Fs.AreaName !== 'null'">({{Fs.AreaName}})</span>
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width">
+                                            <mat-label>Customer</mat-label>
+                                            <input type="text" placeholder="serach customer" aria-label="Text"
+                                                matInput name="CustomerID" [formControl]="myControl"
+                                                [matAutocomplete]="auto"
+                                                (input)="customerSearch(myControl.value, 'Name','Customer')">
+                                            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                                <mat-option (click)="CustomerSelection('All','0')"
+                                                    value='All'>All</mat-option>
+                                                <mat-option (click)="CustomerSelection('customer',option.ID)"
+                                                    *ngFor="let option of filteredOptions"
+                                                    [value]="option.Name">
+                                                    {{option.Name}} {{option.MobileNo1}}
+                                                </mat-option>
+                                            </mat-autocomplete>
+                                        </mat-form-field>
+                                      </div>
+                                    <!--  spec end -->
+                                    <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-0 ">
+                                        <button class="me-3" type="submit" mat-raised-button color="primary">
+                                             Search
+                                        </button>
+                                        <button type="button" mat-raised-button color="warn" (click)="FromReset('customer')">
+                                            Reset
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                          
+                        </div>
+                    </div>
+
+                    <!-- supplier card  -->
+                    <div class="card p-0">
+                        <div class="header p-2 py-0 pt-1">
+                            <div class="row">
+                                <div class="col-md-2 col-8 p-0 ms-3">
+                                    <h2>Supplier Ledger Report </h2>
+                                </div>
+                              
+                            </div>
+                        </div>
+                        <div class="body">
+                            <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getSupplierLedgeReport()">
+                                <div class="row" >
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp">
+                                            <mat-label>From</mat-label>
+                                            <input matInput name="FromDate" type="date" [(ngModel)]="supplier.FromDate"
+                                                #DOBcontrol  />
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp ">
+                                            <mat-label>To</mat-label>
+                                            <input matInput type="date" name="ToDate" [(ngModel)]="supplier.ToDate" />
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                                        <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
+                                            <mat-label>Shop Name</mat-label>
+                                            <mat-select name="ShopID" [(ngModel)]="supplier.ShopID" >
+                                                <mat-option [value]=0>All</mat-option>
+                                                <mat-option [value]="Fs.ID" *ngFor="let Fs of shopList"> {{Fs.Name}}
+                                                    <span [style.color]="'blue'"
+                                                        *ngIf="Fs.AreaName !== 'null'">({{Fs.AreaName}})</span>
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                                            <mat-label>Shop Name</mat-label>
+                                            <mat-select name="ShopID" [(ngModel)]="supplier.ShopID">
+                                                <mat-option [value]="Fs.ID" *ngFor="let Fs of shopList"> {{Fs.Name}}
+                                                    <span [style.color]="'blue'"
+                                                        *ngIf="Fs.AreaName !== 'null'">({{Fs.AreaName}})</span>
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width">
+                                            <mat-label>Supplier</mat-label>
+                                            <input type="text" placeholder="serach supplier" aria-label="Text"
+                                                matInput name="SupplierID" [formControl]="myControl"
+                                                [matAutocomplete]="auto1"
+                                                (input)="customerSearch(myControl.value, 'Name','Supplier')">
+                                            <mat-autocomplete autoActiveFirstOption1 #auto1="matAutocomplete">
+                                                <mat-option (click)="CustomerSelection('All','0')"
+                                                    value='All'>All</mat-option>
+                                                <mat-option (click)="CustomerSelection('Suppliers',option1.ID)"
+                                                    *ngFor="let option1 of filteredOptions"
+                                                    [value]="option1.Name">
+                                                    {{option1.Name}} {{option1.MobileNo1}}
+                                                </mat-option>
+                                            </mat-autocomplete>
+                                        </mat-form-field>
+                                      </div>
+                                    <!--  spec end -->
+                                    <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-0 ">
+                                        <button class="me-3" type="submit" mat-raised-button color="primary">
+                                             Search
+                                        </button>
+                                        <button type="button" mat-raised-button color="warn" (click)="FromReset('supplier')">
+                                            Reset
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                          
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+</section>

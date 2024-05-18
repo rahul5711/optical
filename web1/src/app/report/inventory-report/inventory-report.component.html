@@ -1357,14 +1357,14 @@
             <td *ngIf="UpdatePriceEdit" style=" width:60px;text-align: center;">
                   <input style=" width:60px;text-align: center;" min="0"
                       type="number" [(ngModel)]="s.RetailPrice"
-                       (ngModelChange)="s.RetailPrice = onChange($event)"
+                       (ngModelChange)="s.RetailPrice = onChange($event)" (change)="updateTemp(s)"
                      #name="ngModel" [ngModelOptions]="{standalone: true}" name="s{{i}}">
              </td>
             <td *ngIf="!UpdatePriceEdit">{{ s.WholeSalePrice }}</td>
             <td *ngIf="UpdatePriceEdit" style=" width:60px;text-align: center;">
               <input style=" width:60px;text-align: center;" min="0"
                   type="number" [(ngModel)]="s.WholeSalePrice"
-                   (ngModelChange)="s.WholeSalePrice = onChange($event)"
+                   (ngModelChange)="s.WholeSalePrice = onChange($event)" (change)="updateTemp(s)"
                  #name="ngModel" [ngModelOptions]="{standalone: true}" name="s{{i}}">
          </td>
           </tr>

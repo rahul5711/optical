@@ -449,7 +449,7 @@
                                                             pending </td>
                                                         <td *ngIf="columnVisibility.DeliveryDate"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
-                                                            {{dateFormat(d.ProductDeliveryDate)}} </td>
+                                                            {{dateFormat(d.DeliveryDate)}} </td>
                                                         <td *ngIf="columnVisibility.Cust_GSTNo"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             {{d.GSTNo}} </td>

@@ -258,6 +258,89 @@ module.exports = {
             console.log(err);
             next(err)
         }
-    }
+    },
+    getSupplierLedgeReportPDF: async (req, res, next) => {
+        try {
+            const printdata = req.body.Body;
+            const AmountPaid = printdata.AmountPaid;
+            const BalanceDue = printdata.BalanceDue;
+            const InvoicedAmount = printdata.InvoicedAmount;
+            const OpeningBalance = printdata.OpeningBalance;
+            const ShopDetails = printdata.ShopDetails;
+            const Details = printdata.SupplierDetails;
+            const paymentList = printdata.data;
 
+            var formatName = "ladger.ejs";
+            var file = "ladger" + ".pdf";
+            var fileName = "uploads/" + file;
+            
+            ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                if (err) {
+                    res.send(err);
+                } else {
+                    let options = {
+                        "height": "11.25in",
+                        "width": "8.5in",
+                        "header": {
+                            "height": "0mm"
+                        },
+                        "footer": {
+                            "height": "0mm",
+                        },
+                    };
+                    pdf.create(data, options).toFile(fileName, function (err, data) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            res.json(file);
+                        }
+                    });
+                }
+            });
+        } catch (err) {
+            next(err)
+        }
+    },
+    getCustomerLedgeReportPDF: async (req, res, next) => {
+        try {
+            const printdata = req.body.Body;
+            const AmountPaid = printdata.AmountPaid;
+            const BalanceDue = printdata.BalanceDue;
+            const InvoicedAmount = printdata.InvoicedAmount;
+            const OpeningBalance = printdata.OpeningBalance;
+            const ShopDetails = printdata.ShopDetails;
+            const Details = printdata.CustomerDetails;
+            const paymentList = printdata.data;
+
+            var formatName = "ladger.ejs";
+            var file = "ladger" + ".pdf";
+            var fileName = "uploads/" + file;
+            
+            ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                if (err) {
+                    res.send(err);
+                } else {
+                    let options = {
+                        "height": "11.25in",
+                        "width": "8.5in",
+                        "header": {
+                            "height": "0mm"
+                        },
+                        "footer": {
+                            "height": "0mm",
+                        },
+                    };
+                    pdf.create(data, options).toFile(fileName, function (err, data) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            res.json(file);
+                        }
+                    });
+                }
+            });
+        } catch (err) {
+            next(err)
+        }
+    },
 }

@@ -166,7 +166,7 @@
 
               <a *ngIf="user?.UserGroup == 'SuperAdmin' || user?.UserGroup == 'CompanyAdmin'" href="javascript:void(0)"  [routerLink]="['/report/customer']" id="collapseExample7">Customer </a>
 
-              <a *ngIf="viewFlag.viewLedgerReport" href="javascript:void(0)"  (click)="ComingSoon()"  id="collapseExample7">Ledger </a>
+              <a *ngIf="viewFlag.viewLedgerReport" href="javascript:void(0)" [routerLink]="['/report/ledger']"  id="collapseExample7">Ledger </a>
               <a *ngIf="viewFlag.viewProductTransferReport" href="javascript:void(0)" [routerLink]="['/report/product-transfer']" id="collapseExample7">Product Transfer</a>
               <a *ngIf="viewFlag.viewProductReturnReport" href="javascript:void(0)" [routerLink]="['/report/product-return']" id="collapseExample7">Product Return</a>
               <a *ngIf="viewFlag.viewSupplierCreditReport" href="javascript:void(0)" [routerLink]="['/report/supplierCredit']" id="collapseExample7">Supplier Credit</a>

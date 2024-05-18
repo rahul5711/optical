@@ -542,21 +542,19 @@
                 <td>
                   <%= index+1 %>
                 </td>
-                <% if (data.shopdetails.HSNCode==="true" ){%>
-                  <td></td>
-                  <%}%>
+               
 
                     <td>
                       <%= i.ServiceType %>/<%= i.Description %>
                     </td>
-                    <td> </td>
+                    
 
                     <% if (data.shopdetails.Rate==="true" ){%>
                       <td>
                         <%= i.Price %>
                       </td>
                       <%}%>
-
+                      <td> </td>
                         <% if (data.shopdetails.Discounts==="true" ){%>
                           <td> </td>
                           <%}%>
