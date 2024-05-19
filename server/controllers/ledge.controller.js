@@ -261,7 +261,7 @@ module.exports = {
     },
     getSupplierLedgeReportPDF: async (req, res, next) => {
         try {
-            const printdata = req.body.Body;
+            const printdata = req.body.Body.res;
             const AmountPaid = printdata.AmountPaid;
             const BalanceDue = printdata.BalanceDue;
             const InvoicedAmount = printdata.InvoicedAmount;
@@ -270,8 +270,22 @@ module.exports = {
             const Details = printdata.SupplierDetails;
             const paymentList = printdata.data;
 
+            const From = moment(printdata.From).format('DD-MM-YYYY')
+            const To = moment(printdata.To).format('DD-MM-YYYY')
+
+            printdata.From = From
+            printdata.To = To
+            printdata.AmountPaid = AmountPaid;
+            printdata.BalanceDue = BalanceDue;
+            printdata.InvoicedAmount = InvoicedAmount;
+            printdata.OpeningBalance = OpeningBalance;
+            printdata.ShopDetails = ShopDetails;
+            printdata.Details = Details;
+            printdata.paymentList = paymentList;
+            
+
             var formatName = "ladger.ejs";
-            var file = "ladger" + ".pdf";
+            var file = "supplier" +"_"+ "ladger" +  ".pdf";
             var fileName = "uploads/" + file;
             
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
@@ -303,7 +317,7 @@ module.exports = {
     },
     getCustomerLedgeReportPDF: async (req, res, next) => {
         try {
-            const printdata = req.body.Body;
+            const printdata = req.body.Body.res;
             const AmountPaid = printdata.AmountPaid;
             const BalanceDue = printdata.BalanceDue;
             const InvoicedAmount = printdata.InvoicedAmount;
@@ -312,8 +326,21 @@ module.exports = {
             const Details = printdata.CustomerDetails;
             const paymentList = printdata.data;
 
+            const From = moment(printdata.From).format('DD-MM-YYYY')
+            const To = moment(printdata.To).format('DD-MM-YYYY')
+
+            printdata.From = From
+            printdata.To = To
+            printdata.AmountPaid = AmountPaid;
+            printdata.BalanceDue = BalanceDue;
+            printdata.InvoicedAmount = InvoicedAmount;
+            printdata.OpeningBalance = OpeningBalance;
+            printdata.ShopDetails = ShopDetails;
+            printdata.Details = Details;
+            printdata.paymentList = paymentList;
+
             var formatName = "ladger.ejs";
-            var file = "ladger" + ".pdf";
+            var file = "customer" +"_"+ "ladger" +  ".pdf";
             var fileName = "uploads/" + file;
             
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {

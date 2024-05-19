@@ -169,7 +169,7 @@ export class LedgeReportComponent implements OnInit {
     const subs: Subscription = this.ledge.getCustomerLedgeReport(this.data.FromDate,this.data.ToDate,this.data.CustomerID,this.data.ShopID).subscribe({
       next: (res: any) => {
         if (res) {
-          let customerData = res; 
+          let customerData = {res :res,  From: this.data.FromDate, To: this.data.ToDate}; 
           this.sp.show()
           const subs: Subscription = this.ledge.getCustomerLedgeReportPDF(customerData).subscribe({
             next: (res: any) => {
@@ -200,7 +200,7 @@ export class LedgeReportComponent implements OnInit {
     const subs: Subscription = this.ledge.getSupplierLedgeReport(this.supplier.FromDate,this.supplier.ToDate,this.supplier.SupplierID,this.supplier.ShopID).subscribe({
       next: (res: any) => {
         if (res.success) {
-          let supplierData = res; 
+          let supplierData = {res :res,  From: this.supplier.FromDate, To: this.supplier.ToDate} ; 
           this.sp.show()
           const subs: Subscription = this.ledge.getSupplierLedgeReportPDF(supplierData).subscribe({
             next: (res: any) => {
