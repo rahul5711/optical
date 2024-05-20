@@ -3333,7 +3333,7 @@ module.exports = {
                 printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
             }
 
-            if (CompanyID === 0) {
+            if (CompanyID === 1) {
                 var formatName = "AssignSupplierPDF.ejs"
             } else {
                 var formatName = "AssignLensPDF.ejs";
@@ -8577,9 +8577,9 @@ module.exports = {
             if (UserType !== 'Employee' && UserType !== 'Doctor') {
                 return res.send({ message: "Invalid UserType Data" })
             }
-            if (PaymentStatus !== 'Paid' && PaymentStatus !== 'Unpaid') {
-                return res.send({ message: "Invalid PaymentStatus Data" })
-            }
+            // if (PaymentStatus !== 'Paid' && PaymentStatus !== 'Unpaid') {
+            //     return res.send({ message: "Invalid PaymentStatus Data" })
+            // }
 
             let shopParams = ``
 
@@ -8591,6 +8591,12 @@ module.exports = {
 
             if (FromDate && ToDate) {
                 dateParams = ` and DATE_FORMAT(commissionmaster.PurchaseDate,"%Y-%m-%d") between '${FromDate}' and '${ToDate}'`
+            }
+
+            let paymentStatus = ``
+
+            if (PaymentStatus !== 0) {
+                paymentStatus = ` and commissionmaster.PaymentStatus = '${PaymentStatus}'`
             }
 
             let userJoin = ``
@@ -8605,7 +8611,7 @@ module.exports = {
                 userFeild = `doctor.Name as UserName`
             }
 
-            const [fetch] = await mysql2.pool.query(`select commissionmaster.*,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, ${userFeild} from commissionmaster left join shop on shop.ID = commissionmaster.ShopID ${userJoin} where commissionmaster.CompanyID = ${CompanyID} and commissionmaster.Status = 1 and commissionmaster.UserType = '${UserType}' and UserID = ${UserID} ${shopParams} ${dateParams}`)
+            const [fetch] = await mysql2.pool.query(`select commissionmaster.*,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, ${userFeild} from commissionmaster left join shop on shop.ID = commissionmaster.ShopID ${userJoin} where commissionmaster.CompanyID = ${CompanyID} and commissionmaster.Status = 1 and commissionmaster.UserType = '${UserType}' and UserID = ${UserID} ${shopParams} ${dateParams} ${paymentStatus}`)
 
             if (fetch) {
                 for (let item of fetch) {
@@ -8650,9 +8656,9 @@ module.exports = {
             if (UserType !== 'Employee' && UserType !== 'Doctor') {
                 return res.send({ message: "Invalid UserType Data" })
             }
-            if (PaymentStatus !== 'Paid' && PaymentStatus !== 'Unpaid') {
-                return res.send({ message: "Invalid PaymentStatus Data" })
-            }
+            // if (PaymentStatus !== 'Paid' && PaymentStatus !== 'Unpaid') {
+            //     return res.send({ message: "Invalid PaymentStatus Data" })
+            // }
 
             let shopParams = ``
 
@@ -8664,6 +8670,12 @@ module.exports = {
 
             if (FromDate && ToDate) {
                 dateParams = ` and DATE_FORMAT(commissionmaster.PurchaseDate,"%Y-%m-%d") between '${FromDate}' and '${ToDate}'`
+            }
+
+            let paymentStatus = ``
+
+            if (PaymentStatus !== 0) {
+                paymentStatus = ` and commissionmaster.PaymentStatus = '${PaymentStatus}'`
             }
 
             let userJoin = ``
@@ -8678,7 +8690,7 @@ module.exports = {
                 userFeild = `doctor.Name as UserName`
             }
 
-            const [fetch] = await mysql2.pool.query(`select commissiondetail.*,billmaster.InvoiceNo as SaleInvoiceNo,commissionmaster.Quantity,commissionmaster.InvoiceNo as PaymentInvoiceNo, commissionmaster.PurchaseDate,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, ${userFeild} from commissiondetail left join billmaster on billmaster.ID = commissiondetail.BillMasterID left join commissionmaster on commissionmaster.ID = commissiondetail.CommissionMasterID left join shop on shop.ID = commissiondetail.ShopID ${userJoin} where commissiondetail.CompanyID = ${CompanyID} and commissiondetail.Status = 1 and commissiondetail.UserType = '${UserType}' and commissiondetail.CommissionMasterID != 0 and commissiondetail.UserID = ${UserID} ${shopParams} ${dateParams}`)
+            const [fetch] = await mysql2.pool.query(`select commissiondetail.*,billmaster.InvoiceNo as SaleInvoiceNo,commissionmaster.Quantity,commissionmaster.InvoiceNo as PaymentInvoiceNo, commissionmaster.PurchaseDate,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, ${userFeild} from commissiondetail left join billmaster on billmaster.ID = commissiondetail.BillMasterID left join commissionmaster on commissionmaster.ID = commissiondetail.CommissionMasterID left join shop on shop.ID = commissiondetail.ShopID ${userJoin} where commissiondetail.CompanyID = ${CompanyID} and commissiondetail.Status = 1 and commissiondetail.UserType = '${UserType}' and commissiondetail.CommissionMasterID != 0 and commissiondetail.UserID = ${UserID} ${shopParams} ${dateParams} ${paymentStatus}`)
 
             if (fetch) {
                 for (let item of fetch) {

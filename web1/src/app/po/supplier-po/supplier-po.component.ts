@@ -73,6 +73,10 @@ export class SupplierPoComponent implements OnInit {
   multiCheck: any 
   supllierPDF = ''
 
+  ChangeUnitPrice = false;
+  editlist = false;
+  UrlunitPricePDF = '';
+
   ngOnInit(): void {
     this.sp.show()
     if(this.user.UserGroup === 'Employee'){
@@ -496,4 +500,35 @@ export class SupplierPoComponent implements OnInit {
     }
   }
 
+  ChangeUnitPriceModel(content: any) {
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+  }
+
+  updateUnitPriceValue(v:any, i:any){
+    this.orderList[i].GSTAmount = (+this.orderList[i].UnitPrice * +this.orderList[i].Quantity - (this.orderList[i].DiscountAmount ? this.orderList[i].DiscountAmount : 0)) * +this.orderList[i].GSTPercentage / 100;
+    this.orderList[i].TotalAmount = (+this.orderList[i].UnitPrice * +this.orderList[i].Quantity - (this.orderList[i].DiscountAmount ? this.orderList[i].DiscountAmount : 0)) + +this.orderList[i].GSTAmount;
+  }
+
+  unitPricePDF() {
+    let body: any = { productList:this.orderList }
+
+    this.sp.show();
+    const subs: Subscription = this.bill.AssignSupplierPDF(body).subscribe({
+      next: (res: any) => {
+        if (res) {
+          this.ChangeUnitPrice = false;
+          this.editlist = false;
+          this.modalService.dismissAll()
+          const url = this.env.apiUrl + "/uploads/" + res;
+          this.UrlunitPricePDF = url
+          window.open(url, "_blank");
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
 }

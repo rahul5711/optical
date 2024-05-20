@@ -26,6 +26,7 @@ export class InventoryReportComponent implements OnInit {
   FilterTypes1: any = 'Date'
   Productsearch :any = '';
   env = environment;
+  company: any = JSON.parse(localStorage.getItem('company') || '');
   user: any = JSON.parse(localStorage.getItem('user') || '');
   shop: any = JSON.parse(localStorage.getItem('shop') || '');
   selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '');

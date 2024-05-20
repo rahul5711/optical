@@ -5,7 +5,17 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
                 <div class="card">
                     <div class="header">
-                        <h2>Supplier Order </h2>
+                        
+                        <div class="row">
+                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 mt-0">
+                                <h2>Supplier Order </h2>
+                            </div>
+                            <div *ngIf="this.orderComplete == true" class="col-lg-2 col-md-12 col-sm-12 col-xs-12 mt-0 ms-auto ps-5 text-center">
+                                <mat-slide-toggle  name="ChangeUnitPrice" color="primary" [(ngModel)]="ChangeUnitPrice" [ngModelOptions]="{standalone: true}" class="example-margin" >
+                                   <b> Change Unit Price</b>
+                                </mat-slide-toggle>
+                            </div>
+                        </div>
                     </div>
                     <div class="body">
                         <form #f="ngForm" autocomplete="off">
@@ -88,9 +98,13 @@
                                         color="warn">
                                         Reset
                                     </button>
-                                    <button *ngIf="this.orderComplete === true" class="ms-2"
+                                    <button *ngIf="this.orderComplete === true && ChangeUnitPrice === false" class="ms-2"
                                         (click)="AssignSupplierPDF()" type="button" mat-raised-button color="warn">
                                         PDF
+                                    </button>
+                                    <button *ngIf="this.orderComplete === true && ChangeUnitPrice === true" class="ms-2"  type="button" mat-raised-button data-mdb-toggle="modal"
+                                    data-mdb-target="#exampleModal" (click)="ChangeUnitPriceModel(content3)" color="primary"> 
+                                        Change Unit Price 
                                     </button>
                                     <button *ngIf="this.orderComplete  == true && this.company.WhatsappMsg == 'true'" [disabled]="this.supllierPDF === ''"
                                         (click)="sendWhatsapp('')" class="ms-2" type="button" mat-raised-button
@@ -454,3 +468,61 @@
         </div>
     </div>
 </ng-template>
+
+
+<!--update purchase price model -->
+<ng-template #content3 role="document" let-modal>
+    <div class="modal-header" style="height: 50px;">
+      <h2 class="modal-title header pt-2" id="exampleModalLabel">Update Purchase Price</h2>
+      <mat-slide-toggle  name="editlist"   color="primary" [(ngModel)]="editlist" [ngModelOptions]="{standalone: true}" class="example-margin ms-3" ></mat-slide-toggle>
+      <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+
+    <div class="modal-body" style="overflow: auto; height: 550px; padding: 0;">
+        <form >
+            <div class="row">
+                <div class="col-12" >
+                        <table  class="table table-striped table-hover table-sm table-bordered" style="width:100%;">
+                            <thead >
+                                <tr class="text-center">
+                                    <th>SNo</th>
+                                    <th>InvoiceNo</th>
+                                    <th>ProductName</th>
+                                    <th>Qty</th>
+                                    <th>Unit Price</th>
+                                    <th>GST% </th>
+                                    <th>GSTAmount</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr *ngFor="let v of orderList; let i = index;">
+                                    <td *ngIf="v.Sel === 1">{{orderList.length - i}}</td>
+                                    <td *ngIf="v.Sel === 1">{{v.InvoiceNo}}</td>
+                                    <td *ngIf="v.Sel === 1"> {{v.ProductName}}</td>
+                                    <td *ngIf="v.Sel === 1">{{v.Quantity}}</td>
+                                    <td *ngIf="v.Sel === 1 && editlist === false">{{v.UnitPrice}}</td>
+                                    <td *ngIf="v.Sel === 1 && editlist === true" class="text-center">
+                                            <input type="number" name="{{v.UnitPrice}}" style="width: 80px !important;" 
+                                            [ngModelOptions]="{standalone: true}" [(ngModel)]="v.UnitPrice" (change)="updateUnitPriceValue(v, i)">
+                                    </td>
+                                    <td *ngIf="v.Sel === 1">{{v.GSTPercentage}}</td>
+                                    <td *ngIf="v.Sel === 1">{{v.GSTAmount}}</td>
+                                    <td *ngIf="v.Sel === 1">{{v.TotalAmount}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-9 ms-4">
+                    <button #closeAddModal class="modal-close-button"  aria-label="Close" class="btn btn-primary" type="button" data-dismiss="modal" (click)="unitPricePDF()">Report</button>
+                </div>
+            </div>
+        </form>
+    </div>
+  
+
+
+  </ng-template>

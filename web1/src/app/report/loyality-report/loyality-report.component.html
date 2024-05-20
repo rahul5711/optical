@@ -90,6 +90,7 @@
                                                     <mat-label>PaymentStatus</mat-label>
                                                     <mat-select name="PaymentStatus" placeholder="PaymentStatus"
                                                         [(ngModel)]="LoyalityMaster.PaymentStatus" required>
+                                                        <mat-option [value]="0">All</mat-option>
                                                         <mat-option value="Paid">Paid</mat-option>
                                                         <mat-option value="Unpaid">Unpaid</mat-option>
                                                     </mat-select>
@@ -331,6 +332,7 @@
                                                     <mat-label>PaymentStatus</mat-label>
                                                     <mat-select name="PaymentStatus" placeholder="PaymentStatus"
                                                         [(ngModel)]="LoyalityDetail.PaymentStatus" required>
+                                                        <mat-option [value]="0">All</mat-option>
                                                         <mat-option value="Paid">Paid</mat-option>
                                                         <mat-option value="Unpaid">Unpaid</mat-option>
                                                     </mat-select>

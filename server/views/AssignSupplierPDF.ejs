@@ -2,17 +2,21 @@
 <link rel="stylesheet" href="http://localhost:3000/assest/purchaseDetails.css">
 
 <style>
+
     html body {
         zoom: 100%;
     }
+    .logo{
+        width: 100%;
+    }
 </style>
-<body>
+<body style="padding: 20px;">
     <section>
         <h2>Purchase Order </h2>
         <div class="main">
             <div class="row1">
                 <div class="col-1">
-                   <img src="<%=data.LogoURL%>" alt="" class="logo">
+                   <img src="<%=data.LogoURL%>" alt="" class="logo" width="100%">
                 </div>
             </div>
             <div class="row2">
@@ -71,16 +75,16 @@
                             <%=i.UnitPrice%>
                         </td>
                         <td>
-                            <%=(i.Quantity * i.UnitPrice)%>
+                            <%=(i.Quantity * i.UnitPrice).toFixed(2)%>
                         </td>
                         <td>
                             <%=i.GSTPercentage%>
                         </td>
                         <td>
-                            <%= ( i.GSTAmount)%>
+                            <%= ( i.GSTAmount).toFixed(2)%>
                         </td>
                         <td>
-                            <%=(i.TotalAmount)%>
+                            <%=(i.TotalAmount).toFixed(2)%>
                         </td>
                     </tr>
                     <%})}%>

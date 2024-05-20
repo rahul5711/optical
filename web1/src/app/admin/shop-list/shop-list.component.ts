@@ -466,28 +466,40 @@ selectedFromValue() {
 }
 
 categorySave(){
-  this.sp.show();
-  const subs: Subscription = this.cus.saveCategory(this.Category.CategoryID,this.Category.Fromm,this.Category.Too,).subscribe({
-    next: (res: any) => {
-      if (res.success) {
-        this.getCategoryLists();
-        this.Category = { CategoryID:null, Fromm:'0', Too:''}
-      } else {
-        this.as.errorToast(res.message)
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: 'Opps !!',
-          text: res.message,
-          showConfirmButton: true,
-          backdrop: false,
-        })
-      }
-      this.sp.hide();
-    },
-    error: (err: any) => console.log(err.message),
-    complete: () => subs.unsubscribe(),
-  });
+  if(this.Category.Fromm < this.Category.Too){
+    this.sp.show();
+    const subs: Subscription = this.cus.saveCategory(this.Category.CategoryID,this.Category.Fromm,this.Category.Too,).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.getCategoryLists();
+          this.Category = { CategoryID:null, Fromm:'0', Too:''}
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Opps !!',
+            text: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }else{
+    Swal.fire({
+      position: 'center',
+      icon: 'warning',
+      title: 'Opps !!',
+      text: 'Please Check the value`s From And To',
+      showConfirmButton: true,
+      backdrop: false,
+    })
+  }
+ 
  }
 
 getCategoryLists(){

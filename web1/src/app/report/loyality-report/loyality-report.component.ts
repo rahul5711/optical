@@ -96,12 +96,12 @@ export class LoyalityReportComponent implements OnInit {
 
   LoyalityMaster: any = {
     FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, UserID: '',
-    UserType: '', PaymentStatus: ''
+    UserType: '', PaymentStatus: 0
   };
 
   LoyalityDetail: any = {
     FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, UserID: '',
-    UserType: '', PaymentStatus: ''
+    UserType: '', PaymentStatus: 0
   };
 
 
