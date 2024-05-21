@@ -1182,7 +1182,9 @@ module.exports = {
 
 
 
-            const [fetch] = await mysql2.pool.query(`select * from customercategory where CompanyID = ${CompanyID} and Status = 1 ORDER BY CategoryID DESC`)
+            const [fetch] = await mysql2.pool.query(`select customercategory.*, supportmaster.Name AS Category FROM customercategory
+            LEFT JOIN supportmaster ON  supportmaster.ID = customercategory.CategoryID 
+            WHERE customercategory.CompanyID = ${CompanyID} AND customercategory.Status = 1 ORDER BY CategoryID DESC`)
 
             response.data = fetch
             response.message = "data fetch successfully";
