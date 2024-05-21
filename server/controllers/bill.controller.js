@@ -8908,7 +8908,7 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const { GstData } = req.body;
-
+console.log(GstData);
             if (!GstData || GstData.length === 0) {
                 return res.send({ message: "Invalid GstData Data" })
             }
@@ -8918,9 +8918,9 @@ module.exports = {
                     if (!item.Sel || item.Sel === 0) {
                         return res.send({ message: "Invalid Sel Data" })
                     }
-                    if (!item.IsGstFiled) {
-                        return res.send({ message: "Invalid IsGstFiled Data" })
-                    }
+                    // if (!item.IsGstFiled) {
+                    //     return res.send({ message: "Invalid IsGstFiled Data" })
+                    // }
                     if (item.IsGstFiled !== 0) {
                         return res.send({ message: "Invalid IsGstFiled Data" })
                     }

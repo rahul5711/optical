@@ -26,15 +26,7 @@ export class LedgeService {
     .pipe(catchError(this.handleError));
   }
 
-  getSupplierLedgeReportPDF(Body:any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getSupplierLedgeReportPDF', {Body:Body}, httpOptions)
-    .pipe(catchError(this.handleError));
-  }
 
-  getCustomerLedgeReportPDF(Body:any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getCustomerLedgeReportPDF', {Body:Body}, httpOptions)
-    .pipe(catchError(this.handleError));
-  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

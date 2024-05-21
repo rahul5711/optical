@@ -40,6 +40,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { CustomerReportComponent } from './customer-report/customer-report.component';
 import { LoyalityReportComponent } from './loyality-report/loyality-report.component';
 import { LedgeReportComponent } from './ledge-report/ledge-report.component';
+import { GstReportComponent } from './gst-report/gst-report.component';
 
 
 @NgModule({
@@ -59,6 +60,7 @@ import { LedgeReportComponent } from './ledge-report/ledge-report.component';
     CustomerReportComponent,
     LoyalityReportComponent,
     LedgeReportComponent,
+    GstReportComponent,
 
   ],
   imports: [

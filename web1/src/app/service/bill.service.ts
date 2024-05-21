@@ -258,7 +258,17 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
- 
+  getGstReport(Parem:any,Productsearch:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getGstReport',{Parem:Parem,Productsearch:Productsearch}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  submitGstFile(GstData:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/submitGstFile',{GstData:GstData}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

@@ -57,6 +57,7 @@ export class LedgeReportComponent implements OnInit {
 
   ngOnInit(): void {
     this.dropdownShoplist()
+    this.dropdownSupplierlist()
     if (this.user.UserGroup === 'Employee') {
       this.shopList = this.shop;
       this.data.ShopID = this.shopList[0].ShopID
@@ -93,6 +94,17 @@ export class LedgeReportComponent implements OnInit {
     });
   }
 
+  dropdownSupplierlist() {
+    const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
+      next: (res: any) => {
+        this.supplierList = res.data
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+
   customerSearch(searchKey: any, mode: any, type: any) {
     this.filteredOptions = []
 
@@ -102,13 +114,6 @@ export class LedgeReportComponent implements OnInit {
       dtm = {
         Type: 'Customer',
         Name: this.data.CustomerID
-      };
-    }
-
-    if (type === 'Supplier') {
-      dtm = {
-        Type: 'Supplier',
-        Name: this.supplier.SupplierID
       };
     }
 
@@ -139,14 +144,9 @@ export class LedgeReportComponent implements OnInit {
       this.data.CustomerID = ID
     }
 
-    if (mode === 'Suppliers') {
-      this.supplier.SupplierID = ID
-    }
-
     if (mode === 'All') {
       this.filteredOptions = []
       this.data.CustomerID = 0
-      this.supplier.SupplierID = 0
     }
   }
 
@@ -169,22 +169,10 @@ export class LedgeReportComponent implements OnInit {
     const subs: Subscription = this.ledge.getCustomerLedgeReport(this.data.FromDate,this.data.ToDate,this.data.CustomerID,this.data.ShopID).subscribe({
       next: (res: any) => {
         if (res) {
-          let customerData = {res :res,  From: this.data.FromDate, To: this.data.ToDate}; 
-          this.sp.show()
-          const subs: Subscription = this.ledge.getCustomerLedgeReportPDF(customerData).subscribe({
-            next: (res: any) => {
-              if (res) {
-                const url = this.env.apiUrl + "/uploads/" + res;
-                this.pdfLink = url;
-                window.open(url, "_blank");
-              } else {
-                this.as.errorToast(res.message)
-              }
-              this.sp.hide()
-            },
-            error: (err: any) => console.log(err.message),
-            complete: () => subs.unsubscribe(),
-          });
+          const url = this.env.apiUrl + "/uploads/" + res;
+          this.pdfLink = url;
+          window.open(url, "_blank");
+
         } else {
           this.as.errorToast(res.message)
         }
@@ -199,23 +187,10 @@ export class LedgeReportComponent implements OnInit {
     this.sp.show()
     const subs: Subscription = this.ledge.getSupplierLedgeReport(this.supplier.FromDate,this.supplier.ToDate,this.supplier.SupplierID,this.supplier.ShopID).subscribe({
       next: (res: any) => {
-        if (res.success) {
-          let supplierData = {res :res,  From: this.supplier.FromDate, To: this.supplier.ToDate} ; 
-          this.sp.show()
-          const subs: Subscription = this.ledge.getSupplierLedgeReportPDF(supplierData).subscribe({
-            next: (res: any) => {
-              if (res) {
-                const url = this.env.apiUrl + "/uploads/" + res;
-                this.pdfLink = url;
-                window.open(url, "_blank");
-              } else {
-                this.as.errorToast(res.message)
-              }
-              this.sp.hide()
-            },
-            error: (err: any) => console.log(err.message),
-            complete: () => subs.unsubscribe(),
-          });
+        if (res) {
+          const url = this.env.apiUrl + "/uploads/" + res;
+          this.pdfLink = url;
+          window.open(url, "_blank");
 
         } else {
           this.as.errorToast(res.message)
