@@ -4151,7 +4151,7 @@ module.exports = {
             if (ShopID === null || ShopID === undefined || ShopID === "") return res.send({ message: "Invalid Query Data" })
             if (DateParam === null || DateParam === undefined || DateParam == 0 || DateParam === "") return res.send({ message: "Invalid Query Data" })
 
-            let [data] = await mysql2.pool.query(`SELECT CompanyID, ShopID, DATE, OpeningStock, AddPurchase, DeletePurchase, AddSale, DeleteSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock FROM creport WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}  ${DateParam}  `)
+            let [data] = await mysql2.pool.query(`SELECT creport.CompanyID, creport.ShopID, creport.DATE, creport.OpeningStock, creport.AddPurchase, creport.DeletePurchase, creport.AddSale, creport.DeleteSale, creport.OtherDeleteStock, creport.InitiateTransfer, creport.CancelTransfer, creport.AcceptTransfer, creport.ClosingStock, CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName FROM creport left join shop on shop.ID = creport.ShopID WHERE creport.CompanyID = ${CompanyID} and creport.ShopID IN (${ShopID})  ${DateParam}  `)
 
             if (data.length) {
                 response.calculation.OpeningStock = data[0].OpeningStock
@@ -4165,7 +4165,7 @@ module.exports = {
             SUM(OtherDeleteStock) AS TotalOtherDeleteStock,
             SUM(InitiateTransfer) AS TotalInitiateTransfer,
             SUM(CancelTransfer) AS TotalCancelTransfer,
-            SUM(AcceptTransfer) AS TotalAcceptTransfer FROM creport WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}  ${DateParam}  `)
+            SUM(AcceptTransfer) AS TotalAcceptTransfer FROM creport WHERE CompanyID = ${CompanyID} and ShopID IN (${ShopID})  ${DateParam}  `)
 
             if (datum) {
                 response.calculation.AddPurchase = datum[0].TotalAddPurchase
@@ -4295,7 +4295,7 @@ module.exports = {
             if (ShopID === null || ShopID === undefined || ShopID === "") return res.send({ message: "Invalid Query Data" })
             if (DateParam === null || DateParam === undefined || DateParam == 0 || DateParam === "") return res.send({ message: "Invalid Query Data" })
 
-            let [data] = await mysql2.pool.query(`SELECT CompanyID, ShopID, DATE, AmtOpeningStock, AmtAddPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock FROM creport WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}  ${DateParam}  `)
+            let [data] = await mysql2.pool.query(`SELECT creport.CompanyID, creport.ShopID, creport.DATE, creport.AmtOpeningStock, creport.AmtAddPurchase, creport.AmtDeletePurchase, creport.AmtAddSale, creport.AmtDeleteSale, creport.AmtOtherDeleteStock, creport.AmtInitiateTransfer, creport.AmtCancelTransfer, creport.AmtAcceptTransfer, creport.AmtClosingStock, CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName FROM creport left join shop on shop.ID = creport.ShopID WHERE creport.CompanyID = ${CompanyID} and creport.ShopID IN (${ShopID})  ${DateParam}  `)
 
             if (data.length) {
                 response.calculation.AmtOpeningStock = data[0].AmtOpeningStock
@@ -4309,7 +4309,7 @@ module.exports = {
             SUM(AmtOtherDeleteStock) AS TotalOtherDeleteStock,
             SUM(AmtInitiateTransfer) AS TotalInitiateTransfer,
             SUM(AmtCancelTransfer) AS TotalCancelTransfer,
-            SUM(AmtAcceptTransfer) AS TotalAcceptTransfer FROM creport WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}  ${DateParam}  `)
+            SUM(AmtAcceptTransfer) AS TotalAcceptTransfer FROM creport WHERE CompanyID = ${CompanyID} and ShopID IN (${ShopID})  ${DateParam}  `)
 
             if (datum) {
                 response.calculation.AmtAddPurchase = datum[0].TotalAddPurchase
