@@ -32,8 +32,7 @@
                                     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
                                         <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
                                             <mat-label>Shop Name</mat-label>
-                                            <mat-select name="ShopID" [(ngModel)]="data.ShopID" >
-                                                <mat-option [value]=0>All</mat-option>
+                                            <mat-select name="ShopID" [(ngModel)]="data.ShopID" required>
                                                 <mat-option [value]="Fs.ID" *ngFor="let Fs of shopList"> {{Fs.Name}}
                                                     <span [style.color]="'blue'"
                                                         *ngIf="Fs.AreaName !== 'null'">({{Fs.AreaName}})</span>
@@ -42,12 +41,12 @@
                                         </mat-form-field>
                                         <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
                                             <mat-label>Shop Name</mat-label>
-                                            <mat-select name="ShopID" [(ngModel)]="data.ShopID">
+                                            <mat-select name="ShopID" [(ngModel)]="data.ShopID" required>
                                                 <mat-option [value]="Fs.ID" *ngFor="let Fs of shopList"> {{Fs.Name}}
                                                     <span [style.color]="'blue'"
                                                         *ngIf="Fs.AreaName !== 'null'">({{Fs.AreaName}})</span>
                                                 </mat-option>
-                                            </mat-select>
+                                            </mat-select> 
                                         </mat-form-field>
                                     </div>
                                     <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
@@ -56,10 +55,10 @@
                                             <input type="text" placeholder="serach customer" aria-label="Text"
                                                 matInput name="CustomerID" [formControl]="myControl"
                                                 [matAutocomplete]="auto"
-                                                (input)="customerSearch(myControl.value, 'Name','Customer')">
+                                                (input)="customerSearch(myControl.value, 'Name','Customer')" required>
                                             <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                                                <mat-option (click)="CustomerSelection('All','0')"
-                                                    value='All'>All</mat-option>
+                                                <!-- <mat-option (click)="CustomerSelection('All','0')"
+                                                    value='All'>All</mat-option> -->
                                                 <mat-option (click)="CustomerSelection('customer',option.ID)"
                                                     *ngFor="let option of filteredOptions"
                                                     [value]="option.Name">
@@ -70,7 +69,7 @@
                                       </div>
                                     <!--  spec end -->
                                     <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-0 ">
-                                        <button class="me-3" type="submit" mat-raised-button color="primary">
+                                        <button class="me-3" type="submit" mat-raised-button color="primary" [disabled]="!f1.valid">
                                              Search
                                         </button>
                                         <button type="button" mat-raised-button color="warn" (click)="FromReset('customer')">
@@ -94,7 +93,7 @@
                             </div>
                         </div>
                         <div class="body">
-                            <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getSupplierLedgeReport()">
+                            <form class="p-3 pb-0" #f2="ngForm" (ngSubmit)="getSupplierLedgeReport()">
                                 <div class="row" >
                                     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp">
@@ -112,8 +111,7 @@
                                     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
                                         <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
                                             <mat-label>Shop Name</mat-label>
-                                            <mat-select name="ShopID" [(ngModel)]="supplier.ShopID" >
-                                                <mat-option [value]=0>All</mat-option>
+                                            <mat-select name="ShopID" [(ngModel)]="supplier.ShopID" required>
                                                 <mat-option [value]="Fs.ID" *ngFor="let Fs of shopList"> {{Fs.Name}}
                                                     <span [style.color]="'blue'"
                                                         *ngIf="Fs.AreaName !== 'null'">({{Fs.AreaName}})</span>
@@ -122,7 +120,7 @@
                                         </mat-form-field>
                                         <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
                                             <mat-label>Shop Name</mat-label>
-                                            <mat-select name="ShopID" [(ngModel)]="supplier.ShopID">
+                                            <mat-select name="ShopID" [(ngModel)]="supplier.ShopID" required>
                                                 <mat-option [value]="Fs.ID" *ngFor="let Fs of shopList"> {{Fs.Name}}
                                                     <span [style.color]="'blue'"
                                                         *ngIf="Fs.AreaName !== 'null'">({{Fs.AreaName}})</span>
@@ -133,7 +131,7 @@
                                     <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0" >
                                             <mat-label>Supplier</mat-label>
-                                            <mat-select name="SupplierID" [(ngModel)]="supplier.SupplierID">
+                                            <mat-select name="SupplierID" [(ngModel)]="supplier.SupplierID" required>
                                                 <mat-option [value]="sp.ID" *ngFor="let sp of supplierList"> {{sp.Name}}
                                                 </mat-option>
                                             </mat-select>
@@ -141,7 +139,7 @@
                                       </div>
                                     <!--  spec end -->
                                     <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-0 ">
-                                        <button class="me-3" type="submit" mat-raised-button color="primary">
+                                        <button class="me-3" type="submit" mat-raised-button color="primary" [disabled]="!f2.valid">
                                              Search
                                         </button>
                                         <button type="button" mat-raised-button color="warn" (click)="FromReset('supplier')">

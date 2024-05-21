@@ -12,11 +12,12 @@ import { SupplierService } from 'src/app/service/supplier.service';
 import { SupportService } from 'src/app/service/support.service';
 import { environment } from 'src/environments/environment';
 import { LedgeService } from 'src/app/service/ledge.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-ledge-report',
   templateUrl: './ledge-report.component.html',
-  styleUrls: ['./ledge-report.component.css']
+  styleUrls: ['./ledge-report.component.css'] 
 })
 export class LedgeReportComponent implements OnInit {
   env = environment;
@@ -26,7 +27,7 @@ export class LedgeReportComponent implements OnInit {
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
 
-  myControl = new FormControl('All');
+  myControl = new FormControl('');
   filteredOptions: any;
 
   constructor(
@@ -42,11 +43,11 @@ export class LedgeReportComponent implements OnInit {
   ) { }
 
   data: any = {
-    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID: 0,
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: '', CustomerID: '',
   };
 
   supplier: any = {
-    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: '', SupplierID: '',
   };
 
   shopList: any;
@@ -153,12 +154,12 @@ export class LedgeReportComponent implements OnInit {
   FromReset(mode:any) {
     if(mode === 'customer'){
       this.data = {
-        FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID: 0,
+        FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: '', CustomerID: '',
       };
     }
     if(mode === 'supplier'){
       this.supplier = {
-        FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,
+        FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: '', SupplierID: '',
       };
     }
   
@@ -168,13 +169,19 @@ export class LedgeReportComponent implements OnInit {
     this.sp.show()
     const subs: Subscription = this.ledge.getCustomerLedgeReport(this.data.FromDate,this.data.ToDate,this.data.CustomerID,this.data.ShopID).subscribe({
       next: (res: any) => {
-        if (res) {
+        if (res === "customer_ladger.pdf") {
           const url = this.env.apiUrl + "/uploads/" + res;
           this.pdfLink = url;
           window.open(url, "_blank");
 
         } else {
           this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showConfirmButton: true,
+          })
         }
         this.sp.hide()
       },
@@ -187,13 +194,19 @@ export class LedgeReportComponent implements OnInit {
     this.sp.show()
     const subs: Subscription = this.ledge.getSupplierLedgeReport(this.supplier.FromDate,this.supplier.ToDate,this.supplier.SupplierID,this.supplier.ShopID).subscribe({
       next: (res: any) => {
-        if (res) {
+        if (res === "supplier_ladger.pdf") {
           const url = this.env.apiUrl + "/uploads/" + res;
           this.pdfLink = url;
           window.open(url, "_blank");
 
         } else {
           this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showConfirmButton: true,
+          })
         }
         this.sp.hide()
       },
