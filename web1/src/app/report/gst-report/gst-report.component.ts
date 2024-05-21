@@ -12,6 +12,7 @@ import { SupplierService } from 'src/app/service/supplier.service';
 import { SupportService } from 'src/app/service/support.service';
 import { environment } from 'src/environments/environment';
 import { BillService } from 'src/app/service/bill.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-gst-report',
@@ -37,6 +38,8 @@ export class GstReportComponent implements OnInit {
     private sup: SupplierService,
     private supps: SupportService,
     private bill: BillService,
+    private modalService: NgbModal,
+
   ) { }
 
   data: any = {
@@ -56,21 +59,29 @@ export class GstReportComponent implements OnInit {
   totalUnitPrice:any = 0;
   totalPurchasePrice:any = 0;
   totalProfit:any = 0;
-  gst_details:any = 0;
+  gst_details:any = [];
 
   multiCheck: any 
   PendingCheck = false;
   ngOnInit(): void {
   }
 
+  PendingChecks(){
+   if(this.data.GSTStatus === 'GST-Pending'){
+     this.PendingCheck = true;
+   }else{
+    this.PendingCheck = false;
+   }
+  }
+
   getGstReport() {
     this.sp.show()
     let Parem = '';
-    this.PendingCheck = false;
+
     if (this.data.GSTStatus != '') {
        if(this.data.GSTStatus === 'GST-Pending'){
          Parem = Parem + ' and billdetail.IsGstFiled = 0 and billdetail.Status = 1' ;
-         this.PendingCheck = true;
+
        }
        if(this.data.GSTStatus === 'GST-Filed'){
          Parem = Parem + ' and billdetail.IsGstFiled = 1 and billdetail.Status = 1' ;
@@ -111,6 +122,10 @@ export class GstReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+  }
+
+  openModal(content1: any) {
+    this.modalService.open(content1, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
   }
 
   multicheck($event:any) {
@@ -160,6 +175,7 @@ export class GstReportComponent implements OnInit {
   // }
 
   submitGstFile() {
+    this.sp.show();
     this.GstData = this.dataList
       .map((e: any) => {
         return {
@@ -181,7 +197,16 @@ export class GstReportComponent implements OnInit {
           this.GstData = {
             Sel: 1, ID: null, IsGstFiled: 0
           }
-          this.dataList = []
+          this.dataList = [];
+          this.PendingCheck = false;
+          this.totalQty = 0;
+          this.totalGstAmount = 0;
+          this.totalAmount = 0;
+          this.totalDiscount = 0;
+          this.totalUnitPrice = 0;
+          this.totalPurchasePrice = 0;
+          this.totalProfit = 0;
+          this.gst_details = [];
         } else {
           this.as.errorToast(res.message);
         }
@@ -194,5 +219,51 @@ export class GstReportComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+  FromReset() {
+    this.data = {
+      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), GSTStatus: '', 
+    };
   
+    this.GstData = {
+      Sel: 1, ID: null, IsGstFiled: 0
+    }
+    this.dataList = []
+    this.PendingCheck = false;
+    this.totalQty = 0;
+    this.totalGstAmount = 0;
+    this.totalAmount = 0;
+    this.totalDiscount = 0;
+    this.totalUnitPrice = 0;
+    this.totalPurchasePrice = 0;
+    this.totalProfit = 0;
+    this.gst_details = [];
+  }
+
+  exportAsXLSX(): void {
+    let element = document.getElementById('GSTExcel');
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+    delete ws['A2'];
+    // Initialize column widths array
+    const colWidths: number[] = [];
+
+    // Iterate over all cells to determine maximum width for each column
+    XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any = []) => {
+      row.forEach((cell: any, index: number) => {
+        const cellValue = cell ? String(cell) : '';
+        colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+      });
+    });
+
+    // Set column widths in the worksheet
+    ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'GST_Report.xlsx');
+  }
+
+  dateFormat(date: any) {
+    return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
 }

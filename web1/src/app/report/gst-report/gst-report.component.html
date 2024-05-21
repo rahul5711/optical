@@ -32,7 +32,7 @@
                                       <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
                                         <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>GSTStatus</mat-label>
-                                            <mat-select name="GSTStatus" [(ngModel)]="data.GSTStatus" required>
+                                            <mat-select name="GSTStatus" [(ngModel)]="data.GSTStatus" required (selectionChange)="PendingChecks()">
                                                 <mat-option value="GST-Pending">GST-Pending</mat-option>
                                                 <mat-option value="GST-Filed"> GST-Filed</mat-option>
                                                 <mat-option value="Cancel Product">Cancel Product</mat-option>
@@ -53,10 +53,10 @@
                                         <button  type="submit" mat-raised-button color="primary" [disabled]="!f1.valid">
                                              Search
                                         </button>
-                                        <button class="me-3 ms-3" type="button" mat-raised-button color="warn" >
+                                        <button class="me-3 ms-3" type="button" mat-raised-button color="warn" (click)="FromReset()">
                                             Reset
                                         </button>
-                                        <button type="button" mat-raised-button color="primary" (click)=" submitGstFile()">
+                                        <button type="button" [disabled]="!PendingCheck" mat-raised-button color="primary" (click)=" submitGstFile()">
                                             GST File
                                         </button>
                                     </div>
@@ -64,9 +64,9 @@
                             </form>
                             <!-- TransfermasterList list -->
                              <div class="body p-2">
-                                <div id="print-content" class="col-sm-12" style="overflow: auto; height: 450px;">
+                                <div  class="col-sm-12" style="overflow: auto; height: 450px;">
                                     <table  class="table table-striped table-hover table-sm table-bordered"
-                                        style="border: 2px solid #fff !important;" id="SupplierCreditExcel">
+                                        style="border: 2px solid #fff !important;" id="GSTExcel">
                                         <thead>
                                         <tr>
                                             <th><mat-checkbox *ngIf="PendingCheck === true" class="example-margin" color="primary"
@@ -96,14 +96,15 @@
                                             <th>Barcode</th>
                                             <th>PurchasePrice</th>
                                             <th>Profit</th>
+                                            <th>GSTStatus</th>
                                             <th>ShopName</th>
                                         </tr>
                                            <tr class="totolRow">
                                             <td style="white-space: nowrap;">
-                                                <i class="fa fa-file-excel-o excel" title="ExportAsXLSX" aria-hidden="true" type="button"> </i>
-                                                 <button class="bg_none ms-2 me-2">
+                                                <i class="fa fa-file-excel-o excel" title="ExportAsXLSX" aria-hidden="true" type="button" (click)="exportAsXLSX()"> </i>
+                                                 <!-- <button class="bg_none ms-2 me-2">
                                                             <i class="far fa-file-pdf" style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
-                                                 </button>
+                                                 </button> -->
                                             </td>
                                             <td></td>
                                             <td></td>
@@ -121,12 +122,13 @@
                                             <td></td>
                                             <td>{{this.totalDiscount}}</td>
                                             <td></td>
-                                            <td>{{this.totalGstAmount}}</td>
+                                            <td style="cursor: pointer;" (click)="openModal(content1)">{{this.totalGstAmount}}</td>
                                             <td></td>
                                             <td>{{this.totalAmount}}</td>
                                             <td></td>
                                             <td>{{this.totalPurchasePrice}}</td>
                                             <td>{{this.totalProfit}}</td>
+                                            <td></td>
                                             <td></td>
                                            </tr>
                                         </thead>
@@ -138,8 +140,8 @@
                                                 value="{{g.Sel}}" style="width: 20px; height: 16px;  z-index: 999 !important;
                                                 position: relative !important; "> {{i+1}} </td>
                                               <td>{{g.BillInvoiceNo}}</td>
-                                              <td>{{g.BillDate}}</td>
-                                              <td>{{g.DeliveryDate}}</td>
+                                              <td>{{dateFormat(g.BillDate)}}</td>
+                                              <td>{{dateFormat(g.DeliveryDate)}}</td>
                                               <td>{{g.PaymentStatus}}</td>
                                               <td>{{g.CustomerName}}</td>
                                               <td>{{g.CustomerMoblieNo1}}</td>
@@ -159,6 +161,11 @@
                                               <td>{{g.Barcode}}</td>
                                               <td>{{g.PurchasePrice}}</td>
                                               <td>{{g.Profit}}</td>
+                                              <td>
+                                                <span *ngIf="g.IsGstFiled === 1"> GST-Filed</span>
+                                                <span *ngIf="g.Status === 0"> Cancel Product</span>
+                                                <span *ngIf="g.IsGstFiled === 0"> GST-Pending</span>
+                                              </td>
                                               <td>{{g.ShopName}}({{g.AreaName}})</td>
                                             </tr>
                                         </tbody>
@@ -173,3 +180,36 @@
     </div>
 </section>
 
+
+<!--Service model -->
+<ng-template #content1 role="document" let-modal>
+    <div class="modal-header" style="height: 50px;">
+        <h3 class="modal-title header pt-2" id="exampleModalLabel">TAX Amount List</h3>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <table class="table table-striped table-hover table-sm table-bordered"
+                style="border: 2px solid #fff !important;">
+                <thead>
+                    <tr>
+                        <th>TAXType</th>
+                        <th>TAXAmount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-center" *ngFor="let gst of gst_details let i = index;">
+                        <td>{{gst.GSTType}}</td>
+                        <td>{{gst.Amount.toFixed(2) }}</td>
+                    </tr>
+                </tbody>
+                <tfoot class="text-center">
+                    <tr>
+                        <th style="color: red; font-weight: 600;">Total Amt</th>
+                        <th style="color: red; font-weight: 600;">{{this.totalGstAmount }}</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</ng-template>
