@@ -1289,7 +1289,6 @@ module.exports = {
             next(err)
         }
     },
-
     deleteProduct: async (req, res, next) => {
         try {
             // return res.send({message: "coming soon !!!!"})
@@ -1381,8 +1380,18 @@ module.exports = {
 
                 }
 
+                let fetchbarcodeForPrice = []
                 if (bDetail.Manual === 0 && bDetail.PreOrder === 0) {
-                    const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus='Available', BillDetailID=0 where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Sold' limit ${bDetail.Quantity}`)
+
+                    [fetchbarcodeForPrice] = await mysql2.pool.query(`select * from barcodemasternew where CurrentStatus = 'Available' and Barcode = '${billDetailData.Barcode}' and CompanyID = ${CompanyID} limit 1`);
+
+                    if (!fetchbarcodeForPrice.length) {
+                        [fetchbarcodeForPrice] = await mysql2.pool.query(`select * from barcodemasternew where CurrentStatus = 'Sold' and Barcode = '${billDetailData.Barcode}' and BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} limit 1`);
+                    }
+
+                    console.log("fetchbarcodeForPrice ====>",fetchbarcodeForPrice);
+
+                    const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus='Available', BillDetailID=0, RetailPrice = ${fetchbarcodeForPrice[0].RetailPrice} , WholeSalePrice = ${fetchbarcodeForPrice[0].WholeSalePrice} where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Sold' limit ${bDetail.Quantity}`)
                     console.log(connected("Barcode Update SuccessFUlly !!!"));
 
                     // update c report setting
@@ -1468,6 +1477,7 @@ module.exports = {
 
 
         } catch (err) {
+            console.log(err);
             next(err)
         }
     },
@@ -1560,9 +1570,20 @@ module.exports = {
                     }
 
                 }
+                let fetchbarcodeForPrice = []
 
                 if (bDetail.Manual === 0 && bDetail.PreOrder === 0) {
-                    const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus='Available', BillDetailID=0 where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Sold' limit ${bDetail.Quantity}`)
+
+                    [fetchbarcodeForPrice] = await mysql2.pool.query(`select * from barcodemasternew where CurrentStatus = 'Available' and Barcode = '${billDetailData.Barcode}' and CompanyID = ${CompanyID} limit 1`);
+
+                    if (!fetchbarcodeForPrice.length) {
+                        [fetchbarcodeForPrice] = await mysql2.pool.query(`select * from barcodemasternew where CurrentStatus = 'Sold' and Barcode = '${billDetailData.Barcode}' and BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} limit 1`);
+                    }
+
+                    console.log("fetchbarcodeForPrice ====>",fetchbarcodeForPrice);
+
+                    const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus='Available', BillDetailID=0, RetailPrice = ${fetchbarcodeForPrice[0].RetailPrice} , WholeSalePrice = ${fetchbarcodeForPrice[0].WholeSalePrice} where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Sold' limit ${bDetail.Quantity}`)
+
                     console.log(connected("Barcode Update SuccessFUlly !!!"));
 
                     // update c report setting
@@ -8908,7 +8929,7 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const { GstData } = req.body;
-console.log(GstData);
+
             if (!GstData || GstData.length === 0) {
                 return res.send({ message: "Invalid GstData Data" })
             }
@@ -8918,9 +8939,9 @@ console.log(GstData);
                     if (!item.Sel || item.Sel === 0) {
                         return res.send({ message: "Invalid Sel Data" })
                     }
-                    // if (!item.IsGstFiled) {
-                    //     return res.send({ message: "Invalid IsGstFiled Data" })
-                    // }
+                    if (!item.IsGstFiled) {
+                        return res.send({ message: "Invalid IsGstFiled Data" })
+                    }
                     if (item.IsGstFiled !== 0) {
                         return res.send({ message: "Invalid IsGstFiled Data" })
                     }
