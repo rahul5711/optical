@@ -36,7 +36,7 @@ module.exports = {
                 AmountPaid: 0,
                 BalanceDue: 0,
                 data: null,
-                ShopDetails: null,
+                CompanyDetails: null,
                 SupplierDetails: null
             }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -44,11 +44,9 @@ module.exports = {
             const {
                 FromDate,
                 ToDate,
-                SupplierID,
-                ShopID
+                SupplierID
             } = req.body
 
-            if (ShopID === null || ShopID === undefined || ShopID === "") return res.send({ message: "Invalid Query Data" })
             if (SupplierID === null || SupplierID === undefined || SupplierID == 0 || SupplierID === "") return res.send({ message: "Invalid SupplierID Data" })
             if (FromDate === null || FromDate === undefined || FromDate == 0 || FromDate === "") return res.send({ message: "Invalid Query Data" })
             if (ToDate === null || ToDate === undefined || ToDate == 0 || ToDate === "") return res.send({ message: "Invalid Query Data" })
@@ -64,19 +62,14 @@ module.exports = {
                 dateParamsForOpening = ` and DATE_FORMAT(purchasemasternew.PurchaseDate,"%Y-%m-%d") between '2023-01-01' and '${fromDate}'`
             }
 
-            let shopParams = ``
 
-            if (ShopID !== 0) {
-                shopParams = ` and purchasemasternew.ShopID = ${ShopID}`
+            let [fetchCompany] = await mysql2.pool.query(`select * from company where Status = 1 and ID = ${CompanyID}`)
+
+            if (!fetchCompany.length) {
+                return res.send({ message: "Invalid CompanyID Data, Data not found !!!" })
             }
 
-            let [fetchShop] = await mysql2.pool.query(`select * from shop where Status = 1 and CompanyID = ${CompanyID} and ID = ${ShopID}`)
-
-            if (!fetchShop.length) {
-                return res.send({ message: "Invalid ShopID Data, Data not found !!!" })
-            }
-
-            response.ShopDetails = fetchShop[0]
+            response.CompanyDetails = fetchCompany[0]
 
             let [fetchSupplier] = await mysql2.pool.query(`select * from supplier where Status = 1 and CompanyID = ${CompanyID} and ID = ${SupplierID}`)
 
@@ -86,13 +79,13 @@ module.exports = {
 
             response.SupplierDetails = fetchSupplier[0]
 
-            let [fetchInvoiceForOpening] = await mysql2.pool.query(`select SUM(DueAmount) as OpeningBalance from purchasemasternew where Status = 1 and CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and Quantity != 0 ${dateParamsForOpening} ${shopParams}`)
+            let [fetchInvoiceForOpening] = await mysql2.pool.query(`select SUM(DueAmount) as OpeningBalance from purchasemasternew where Status = 1 and CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and Quantity != 0 ${dateParamsForOpening}`)
 
             if (fetchInvoiceForOpening.length) {
                response.OpeningBalance = Number(fetchInvoiceForOpening[0].OpeningBalance)
             }
 
-            let [fetchInvoice] = await mysql2.pool.query(`select ID as BillMasterID from purchasemasternew where Status = 1 and CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and Quantity != 0 ${dateParams} ${shopParams}`)
+            let [fetchInvoice] = await mysql2.pool.query(`select ID as BillMasterID from purchasemasternew where Status = 1 and CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and Quantity != 0 ${dateParams}`)
 
             if (!fetchInvoice.length) {
                 return res.send({ message: "Purchase Invoice not found !!!" })
@@ -139,9 +132,7 @@ module.exports = {
             response.AmountPaid = AmountPaid;
             response.BalanceDue = Number(response.OpeningBalance) + Number(InvoicedAmount) - Number(AmountPaid);
             response.message = "data fetch successfully"
-            // return res.send(response)
-
-            console.log(response.data);
+            return res.send(response)
 
             // Generate PDF
             const printdata = response;
@@ -197,7 +188,7 @@ module.exports = {
                 AmountPaid: 0,
                 BalanceDue: 0,
                 data: null,
-                ShopDetails: null,
+                CompanyDetails: null,
                 CustomerDetails: null
             }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -205,11 +196,9 @@ module.exports = {
             const {
                 FromDate,
                 ToDate,
-                CustomerID,
-                ShopID
+                CustomerID
             } = req.body
 
-            if (ShopID === null || ShopID === undefined || ShopID === "") return res.send({ message: "Invalid Query Data" })
             if (CustomerID === null || CustomerID === undefined || CustomerID == 0 || CustomerID === "") return res.send({ message: "Invalid CustomerID Data" })
             if (FromDate === null || FromDate === undefined || FromDate == 0 || FromDate === "") return res.send({ message: "Invalid Query Data" })
             if (ToDate === null || ToDate === undefined || ToDate == 0 || ToDate === "") return res.send({ message: "Invalid Query Data" })
@@ -224,19 +213,14 @@ module.exports = {
                 dateParamsForOpening = ` and DATE_FORMAT(billmaster.BillDate,"%Y-%m-%d") between '2023-01-01' and '${fromDate}'`
             }
 
-            let shopParams = ``
 
-            if (ShopID !== 0) {
-                shopParams = ` and billmaster.ShopID = ${ShopID}`
+            let [fetchCompany] = await mysql2.pool.query(`select * from company where Status = 1 and ID = ${CompanyID}`)
+
+            if (!fetchCompany.length) {
+                return res.send({ message: "Invalid CompanyID Data, Data not found !!!" })
             }
 
-            let [fetchShop] = await mysql2.pool.query(`select * from shop where Status = 1 and CompanyID = ${CompanyID} and ID = ${ShopID}`)
-
-            if (!fetchShop.length) {
-                return res.send({ message: "Invalid ShopID Data, Data not found !!!" })
-            }
-
-            response.ShopDetails = fetchShop[0]
+            response.CompanyDetails = fetchCompany[0]
 
             let [fetchCustomer] = await mysql2.pool.query(`select * from customer where Status = 1 and CompanyID = ${CompanyID} and ID = ${CustomerID}`)
 
@@ -246,13 +230,13 @@ module.exports = {
 
             response.CustomerDetails = fetchCustomer[0]
 
-            let [fetchInvoiceForOpening] = await mysql2.pool.query(`select SUM(DueAmount) as OpeningBalance from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Quantity != 0 ${dateParamsForOpening} ${shopParams}`)
+            let [fetchInvoiceForOpening] = await mysql2.pool.query(`select SUM(DueAmount) as OpeningBalance from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Quantity != 0 ${dateParamsForOpening}`)
 
             if (fetchInvoiceForOpening.length) {
                response.OpeningBalance = Number(fetchInvoiceForOpening[0].OpeningBalance)
             }
 
-            let [fetchInvoice] = await mysql2.pool.query(`select ID as BillMasterID from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Quantity != 0 ${dateParams} ${shopParams}`)
+            let [fetchInvoice] = await mysql2.pool.query(`select ID as BillMasterID from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Quantity != 0 ${dateParams}`)
 
             if (!fetchInvoice.length) {
                 return res.send({ message: "Bill Invoice not found !!!" })
@@ -301,7 +285,7 @@ module.exports = {
             response.BalanceDue = Number(response.OpeningBalance) + Number(InvoicedAmount) - Number(AmountPaid);
             response.message = "data fetch successfully"
 
-            // return res.send(response)
+            return res.send(response)
 
             // Generate PDF
             const printdata = response;
