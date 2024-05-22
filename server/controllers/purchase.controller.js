@@ -4354,7 +4354,7 @@ module.exports = {
                 }
                 if (!item.RetailPrice || item.RetailPrice === undefined || item.RetailPrice === null || item.RetailPrice === '') {
                     return res.send({ message: "Invalid Query RetailPrice" })
-                }
+                }  
                 if (!item.WholeSalePrice || item.WholeSalePrice === undefined || item.WholeSalePrice === null || item.WholeSalePrice === '') {
                     return res.send({ message: "Invalid Query WholeSalePrice" })
                 }

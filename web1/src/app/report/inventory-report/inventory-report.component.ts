@@ -13,6 +13,8 @@ import * as XLSX from 'xlsx';
 import { SupportService } from 'src/app/service/support.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl } from '@angular/forms';
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-inventory-report',
@@ -568,13 +570,11 @@ export class InventoryReportComponent implements OnInit {
     this.TtlR = 0
     this.TtlW = 0
   }
-
+  
   openModal(content: any) {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
   }
-  updatePurchasePriceModel(content: any) {
-    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
-  }
+
 
   // purchase product expiry
 
@@ -1117,6 +1117,7 @@ export class InventoryReportComponent implements OnInit {
       });
     }
   }
+
   getAmountInventoryReport() {
     if (this.FilterTypes1 === 'Date') {
 
@@ -1206,7 +1207,6 @@ export class InventoryReportComponent implements OnInit {
     }
   }
 
-
   ChangeDate(mode: any) {
     if (mode == 'Qty') {
         if (this.FilterTypes === 'Date') {
@@ -1253,7 +1253,6 @@ export class InventoryReportComponent implements OnInit {
     }
   }
 
-
   ChangeDateTo(mode: any) {
     if (mode === 'Qty') {
       if (this.QtyStock.ToDate) {
@@ -1274,7 +1273,19 @@ export class InventoryReportComponent implements OnInit {
     }
   }
 
-
+  updatePurchasePriceModel(content: any) {
+    if(this.inventoryList != undefined){
+      this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+    }else{
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Without Product You Can`t Change the Price',
+        showConfirmButton: true,
+      })
+    }
+   
+  }
 
   EditPrice(){
     this.UpdatePriceEdit = !this.UpdatePriceEdit
@@ -1285,20 +1296,44 @@ export class InventoryReportComponent implements OnInit {
   }
 
   UpdatePrice(){
+    if(this.temp.length != 0){
     this.sp.show()
      let ProductData = this.temp;
     const subs: Subscription = this.purchaseService.updateProductPrice(ProductData).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.modalService.dismissAll()
-          this.sp.hide()
+          this.temp = [];
+          this.UpdatePriceEdit = false;
         } else {
           this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showConfirmButton: true,
+          })
         }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+   }else{
+    Swal.fire({
+      title: 'No Price Changed.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Close'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.UpdatePriceEdit = false
+        this.modalService.dismissAll()
+      }
+    })
+   }
   }
 
 

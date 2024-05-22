@@ -13,6 +13,7 @@ import { SupportService } from 'src/app/service/support.service';
 import { environment } from 'src/environments/environment';
 import { BillService } from 'src/app/service/bill.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CustomerService } from 'src/app/service/customer.service';
 
 @Component({
   selector: 'app-gst-report',
@@ -27,6 +28,8 @@ export class GstReportComponent implements OnInit {
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   form: any | FormGroup;
   env = environment;
+  myControl = new FormControl('All');
+  filteredOptions: any;
 
   constructor(
     private purchaseService: PurchaseService,
@@ -39,17 +42,19 @@ export class GstReportComponent implements OnInit {
     private supps: SupportService,
     private bill: BillService,
     private modalService: NgbModal,
+    private customer: CustomerService,
 
   ) { }
 
   data: any = {
-    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), GSTStatus: '', 
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), GSTStatus: 0, ShopID:0,
+    CustomerID: 0, CustomerGSTNo: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0
   };
 
   GstData:any ={
     Sel: 1, ID: null, IsGstFiled: 0
   }
-  
+  searchValue:any
   Productsearch:any='';
   dataList:any = []
   totalQty:any = 0;
@@ -63,7 +68,26 @@ export class GstReportComponent implements OnInit {
 
   multiCheck: any 
   PendingCheck = false;
+  AllPendingCheck = false;
+  shopList:any=[];
+  shopLists: any = []
+  customerListGST: any = []
+  customerList: any = []
+  gstList: any = []
+  prodList: any = []
+  specList: any = []
+  selectedProduct:any
+
   ngOnInit(): void {
+    this.getGSTList();
+    this.dropdownCustomerGSTNo();
+    this.getProductList();
+    if (this.user.UserGroup === 'Employee') {
+      this.shopList = this.shop;
+      this.data.ShopID = this.shopList[0].ShopID
+    } else {
+      this.dropdownShoplist()
+    }
   }
 
   PendingChecks(){
@@ -74,22 +98,207 @@ export class GstReportComponent implements OnInit {
    }
   }
 
+  getProductList() {
+    const subs: Subscription = this.ps.getList().subscribe({
+      next: (res: any) => {
+        this.prodList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getFieldList() {
+    if (this.data.ProductCategory !== 0) {
+      this.prodList.forEach((element: any) => {
+        if (element.ID === this.data.ProductCategory) {
+          this.selectedProduct = element.Name;
+        }
+      })
+      const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
+        next: (res: any) => {
+          this.specList = res.data;
+          this.getSptTableData();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+    else {
+      this.specList = [];
+      this.data.ProductName = '';
+      this.data.ProductCategory = 0;
+    }
+  }
+
+  getSptTableData() {
+    this.specList.forEach((element: any) => {
+      if (element.FieldType === 'DropDown' && element.Ref === '0') {
+        const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
+          next: (res: any) => {
+            element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+            element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    });
+  }
+
+  getFieldSupportData(index: any) {
+    this.specList.forEach((element: any) => {
+      if (element.Ref === this.specList[index].FieldName.toString()) {
+        const subs: Subscription = this.ps.getProductSupportData(this.specList[index].SelectedValue, element.SptTableName).subscribe({
+          next: (res: any) => {
+            element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+            element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    });
+  }
+
+
+  filter() {
+    let productName = '';
+    this.specList.forEach((element: any) => {
+      if (productName === '') {
+        productName = element.SelectedValue;
+      } else if (element.SelectedValue !== '') {
+        productName += '/' + element.SelectedValue;
+      }
+    });
+    this.data.ProductName = productName;
+  }
+
+
+  dropdownShoplist() {
+    this.sp.show()
+    const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.shopList = res.data
+          let shop = res.data
+          this.shopLists = shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+          this.shopLists = '/ ' + this.shopLists[0].Name + ' (' + this.shopLists[0].AreaName + ')'
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getGSTList() {
+    const subs: Subscription = this.supps.getList('TaxType').subscribe({
+      next: (res: any) => {
+        this.gstList = res.data
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  dropdownCustomerlist() {
+    this.sp.show()
+    const subs: Subscription = this.customer.dropdownlist().subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.customerList = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  dropdownCustomerGSTNo() {
+    this.sp.show()
+    const subs: Subscription = this.customer.customerGSTNumber(this.customerList).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.customerListGST = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  customerSearch(searchKey: any, mode: any, type: any) {
+    this.filteredOptions = []
+
+    let dtm = { Type: '', Name: '' }
+
+    if (type === 'Customer') {
+      dtm = {
+        Type: 'Customer',
+        Name: this.data.CustomerID
+      };
+    }
+
+    if (searchKey.length >= 2) {
+      if (mode === 'Name') {
+        dtm.Name = searchKey;
+      }
+
+      const subs: Subscription = this.supps.dropdownlistBySearch(dtm).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.filteredOptions = res.data
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+  }
+
+  CustomerSelection(mode: any, ID: any) {
+
+    if (mode === 'customer') {
+      this.data.CustomerID = ID
+    }
+
+    if (mode === 'All') {
+      this.filteredOptions = []
+      this.data.CustomerID = 0
+    }
+  }
+
   getGstReport() {
     this.sp.show()
     let Parem = '';
 
-    if (this.data.GSTStatus != '') {
+    this.PendingCheck = false;
+       if(this.data.GSTStatus === 0){
+         Parem = Parem + ' and (billdetail.Status = 1 || billdetail.IsGstFiled = 1 || billdetail.IsGstFiled = 0 and billdetail.Status = 0)' ;
+       }
        if(this.data.GSTStatus === 'GST-Pending'){
          Parem = Parem + ' and billdetail.IsGstFiled = 0 and billdetail.Status = 1' ;
-
+         this.PendingCheck = true;
        }
        if(this.data.GSTStatus === 'GST-Filed'){
          Parem = Parem + ' and billdetail.IsGstFiled = 1 and billdetail.Status = 1' ;
        }
        if(this.data.GSTStatus === 'Cancel Product'){
-         Parem = Parem + ' and billdetail.IsGstFiled = 1 and billdetail.Status = 0' ;
+         Parem = Parem + ' and (billdetail.IsGstFiled = 1 and billdetail.Status = 0 || billdetail.IsGstFiled = 0 and billdetail.Status = 0)' ;
        }
-    }
+    
 
     if (this.data.FromDate !== '' && this.data.FromDate !== null) {
       let FromDate = moment(this.data.FromDate).format('YYYY-MM-DD')
@@ -99,6 +308,46 @@ export class GstReportComponent implements OnInit {
     if (this.data.ToDate !== '' && this.data.ToDate !== null) {
       let ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
+
+    if (this.data.ShopID != 0) {
+      Parem = Parem + ' and billmaster.ShopID IN ' + `(${this.data.ShopID})`;
+    }
+
+    if (this.data.CustomerID !== 0) {
+      Parem = Parem + ' and billmaster.CustomerID = ' + this.data.CustomerID;
+    }
+
+    if (this.data.CustomerGSTNo !== 0) {
+      Parem = Parem + ' and billmaster.GSTNo = ' + this.data.CustomerGSTNo;
+    }
+
+    if (this.data.ProductCategory !== 0) {
+      Parem = Parem + ' and billdetail.ProductTypeID = ' + this.data.ProductCategory;
+      this.filter();
+    }
+
+    if (this.data.ProductName !== '') {
+      Parem = Parem + ' and billdetail.ProductName Like ' + "'" + this.data.ProductName.trim() + "%'";
+    }
+
+    if (this.data.GSTPercentage !== 0) {
+      Parem = Parem + ' and billdetail.GSTPercentage = ' + `'${this.data.GSTPercentage}'`;
+    }
+
+    if (this.data.GSTType !== 0) {
+      Parem = Parem + ' and billdetail.GSTType = ' + `'${this.data.GSTType}'`;
+    }
+
+    if (this.data.Status !== '' && this.data.Status !== null && this.data.Status !== 0) {
+      if (this.data.Status === 'Manual' && this.data.Status !== 'All') {
+        Parem = Parem + ' and billdetail.Manual = ' + '1';
+      } else if (this.data.Status === 'PreOrder' && this.data.Status !== 'All') {
+        Parem = Parem + ' and billdetail.PreOrder = ' + '1';
+      } else if (this.data.Status === 'Barcode' && this.data.Status !== 'All') {
+        Parem = Parem + ' and billdetail.PreOrder = ' + '0';
+        Parem = Parem + ' and billdetail.Manual = ' + '0';
+      }
     }
 
     const subs: Subscription = this.bill.getGstReport(Parem,this.Productsearch).subscribe({
@@ -133,8 +382,11 @@ export class GstReportComponent implements OnInit {
       const index = this.dataList.findIndex(((x: any) => x === this.dataList[i]));
       if (this.dataList[index].Sel === 0 || this.dataList[index].Sel === null || this.dataList[index].Sel === undefined) {
         this.dataList[index].Sel = 1;
+        this.PendingCheck = true;
       } else {
         this.dataList[index].Sel = 0;
+      this.PendingCheck = false;
+
       }
     }
     console.log($event);
@@ -143,8 +395,10 @@ export class GstReportComponent implements OnInit {
   validate(v:any,event:any) {
     if (v.Sel === 0 || v.Sel === null || v.Sel === undefined) {
       v.Sel = 1;
+      this.PendingCheck = true;
     } else {
       v.Sel = 0;
+      this.PendingCheck = false;
     }
   }
 
@@ -265,5 +519,14 @@ export class GstReportComponent implements OnInit {
 
   dateFormat(date: any) {
     return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
+
+  onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
+    if (this.companySetting.DataFormat === '1') {
+      event = event.toUpperCase()
+    } else if (this.companySetting.DataFormat == '2') {
+      event = event.toTitleCase()
+    }
+    return event;
   }
 }
