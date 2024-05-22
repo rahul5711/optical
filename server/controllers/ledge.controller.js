@@ -100,7 +100,7 @@ module.exports = {
 
             var output = formatBillMasterIDs(fetchInvoice)
 
-            let [payment] = await mysql2.pool.query(`select paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Vendor' , 'Vendor Credit')  and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${SupplierID}`)
+            let [payment] = await mysql2.pool.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Vendor' , 'Vendor Credit')  and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${SupplierID}`)
 
             let balance = 0;
             let InvoicedAmount = 0
@@ -111,6 +111,7 @@ module.exports = {
                     if (item.PaymentMode === "Payment Initiated") {
                         item.Transactions = 'Invoice'
                         item.Description = `${item.InvoiceNo}`
+                        item.remark = ``
                         item.InvoiceAmount = Number(item.PayableAmount)
                         balance = Number(balance) + Number(item.InvoiceAmount);
                         InvoicedAmount = Number(InvoicedAmount) + Number(item.InvoiceAmount);
@@ -122,12 +123,14 @@ module.exports = {
                         item.PayableAmount = 0
                         item.Transactions = 'Payment Recieved'
                         item.Description = `${item.PaidAmount} ${item.PaymentMode} For Payment Of - ${item.InvoiceNo}`
+                        item.remark = `${item.PaymentReferenceNo}`
                         balance = Number(balance) - Number(item.PaidAmount);
                         item.balance = balance;
                         AmountPaid = Number(AmountPaid) + Number(item.PaidAmount);
                     }
 
                     delete item.PayableAmount
+                    delete item.PaymentReferenceNo
                 }
             }
 
@@ -137,6 +140,8 @@ module.exports = {
             response.BalanceDue = Number(response.OpeningBalance) + Number(InvoicedAmount) - Number(AmountPaid);
             response.message = "data fetch successfully"
             // return res.send(response)
+
+            console.log(response.data);
 
             // Generate PDF
             const printdata = response;
@@ -255,7 +260,7 @@ module.exports = {
 
             var output = formatBillMasterIDs(fetchInvoice)
 
-            let [payment] = await mysql2.pool.query(`select paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Customer' , 'Customer Credit')  and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${CustomerID}`)
+            let [payment] = await mysql2.pool.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Customer' , 'Customer Credit')  and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${CustomerID}`)
 
             let balance = 0;
             let InvoicedAmount = 0
@@ -266,6 +271,7 @@ module.exports = {
                     if (item.PaymentMode === "Payment Initiated") {
                         item.Transactions = 'Invoice'
                         item.Description = `${item.InvoiceNo}`
+                        item.remark = ``
                         item.InvoiceAmount = Number(item.PayableAmount)
                         balance = Number(balance) + Number(item.InvoiceAmount);
                         InvoicedAmount = Number(InvoicedAmount) + Number(item.InvoiceAmount);
@@ -277,12 +283,15 @@ module.exports = {
                         item.PayableAmount = 0
                         item.Transactions = 'Payment Recieved'
                         item.Description = `${item.PaidAmount} ${item.PaymentMode} For Payment Of - ${item.InvoiceNo}`
+                        item.remark = `${item.PaymentReferenceNo}`
                         balance = Number(balance) - Number(item.PaidAmount);
                         item.balance = balance;
                         AmountPaid = Number(AmountPaid) + Number(item.PaidAmount);
                     }
 
                     delete item.PayableAmount
+                    delete item.PaymentReferenceNo
+
                 }
             }
 
