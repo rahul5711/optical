@@ -2,16 +2,50 @@ const express = require('express')
 const router = express.Router()
 const Controller = require('../controllers/purchase.controller')
 const { verifyAccessTokenAdmin } = require('../helpers/jwt_helper');
+const { shopID } = require('../helpers/helper_function')
+const mysql2 = require('../database')
+const moment = require("moment");
+
+const checkCron = async (req, res, next) => {
+
+    const currentTime = req.headers.currenttime;
+    const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+    const shopid = await shopID(req.headers) || 0;
+
+    let date = moment(currentTime).format("YYYY-MM-DD");
+
+    const [fetch_company_wise] = await mysql2.pool.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = 0`)
+
+    if (!fetch_company_wise.length) {
+        return res.status(200).send({
+            success: false, message: `Hello,
+        We are facing some technical issues with your license. Don't use software please contact the OPTICALGURU Team.
+        (Cron)
+        Thankyou`})
+    }
+
+    const [fetch_shop_wise] = await mysql2.pool.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+
+    if (!fetch_shop_wise.length) {
+        return res.status(200).send({
+            success: false, message: `Hello,
+        We are facing some technical issues with your license. Don't use software please contact the OPTICALGURU Team.
+
+        Thankyou`})
+    }
+
+    next();
+}
 
 
-router.post('/create', verifyAccessTokenAdmin, Controller.create)
-router.post('/update', verifyAccessTokenAdmin, Controller.update)
+router.post('/create', verifyAccessTokenAdmin, checkCron, Controller.create)
+router.post('/update', verifyAccessTokenAdmin, checkCron, Controller.update)
 router.post('/getPurchaseById', verifyAccessTokenAdmin, Controller.getPurchaseById)
 router.post('/list', verifyAccessTokenAdmin, Controller.list)
 router.post('/purchaseHistoryBySupplier', verifyAccessTokenAdmin, Controller.purchaseHistoryBySupplier)
 router.post('/delete', verifyAccessTokenAdmin, Controller.delete)
-router.post('/deleteProduct', verifyAccessTokenAdmin, Controller.deleteProduct)
-router.post('/updateProduct', verifyAccessTokenAdmin, Controller.updateProduct)
+router.post('/deleteProduct', verifyAccessTokenAdmin, checkCron, Controller.deleteProduct)
+router.post('/updateProduct', verifyAccessTokenAdmin, checkCron, Controller.updateProduct)
 router.post('/deleteCharge', verifyAccessTokenAdmin, Controller.deleteCharge)
 router.post('/purchaseDetailPDF', verifyAccessTokenAdmin, Controller.purchaseDetailPDF)
 router.post('/purchaseRetrunPDF', verifyAccessTokenAdmin, Controller.purchaseRetrunPDF)
@@ -31,11 +65,11 @@ router.post('/barCodeListBySearchString', verifyAccessTokenAdmin, Controller.bar
 
 router.post('/productDataByBarCodeNo', verifyAccessTokenAdmin, Controller.productDataByBarCodeNo)
 
-router.post('/transferProduct', verifyAccessTokenAdmin, Controller.transferProduct)
+router.post('/transferProduct', verifyAccessTokenAdmin, checkCron, Controller.transferProduct)
 
-router.post('/acceptTransfer', verifyAccessTokenAdmin, Controller.acceptTransfer)
+router.post('/acceptTransfer', verifyAccessTokenAdmin, checkCron, Controller.acceptTransfer)
 
-router.post('/cancelTransfer', verifyAccessTokenAdmin, Controller.cancelTransfer)
+router.post('/cancelTransfer', verifyAccessTokenAdmin, checkCron, Controller.cancelTransfer)
 
 router.post('/getTransferList', verifyAccessTokenAdmin, Controller.getTransferList)
 
@@ -49,7 +83,7 @@ router.post('/barcodeDataByBarcodeNo', verifyAccessTokenAdmin, Controller.barcod
 
 router.post('/barCodeListBySearchStringSearch', verifyAccessTokenAdmin, Controller.barCodeListBySearchStringSearch)
 
-router.post('/updateBarcode', verifyAccessTokenAdmin, Controller.updateBarcode)
+router.post('/updateBarcode', verifyAccessTokenAdmin, checkCron, Controller.updateBarcode)
 
 // Inventory Summery
 
@@ -99,15 +133,15 @@ router.post('/barCodeListBySearchStringPR', verifyAccessTokenAdmin, Controller.b
 
 router.post('/productDataByBarCodeNoPR', verifyAccessTokenAdmin, Controller.productDataByBarCodeNoPR)
 
-router.post('/savePurchaseReturn', verifyAccessTokenAdmin, Controller.savePurchaseReturn)
+router.post('/savePurchaseReturn', verifyAccessTokenAdmin, checkCron, Controller.savePurchaseReturn)
 
-router.post('/updatePurchaseReturn', verifyAccessTokenAdmin, Controller.updatePurchaseReturn)
+router.post('/updatePurchaseReturn', verifyAccessTokenAdmin, checkCron, Controller.updatePurchaseReturn)
 
 router.post('/purchasereturnlist', verifyAccessTokenAdmin, Controller.purchasereturnlist)
 
 router.post('/getPurchaseReturnById', verifyAccessTokenAdmin, Controller.getPurchaseReturnById)
 
-router.post('/deleteProductPR', verifyAccessTokenAdmin, Controller.deleteProductPR)
+router.post('/deleteProductPR', verifyAccessTokenAdmin, checkCron, Controller.deleteProductPR)
 
 router.post('/searchByFeildPR', verifyAccessTokenAdmin, Controller.searchByFeildPR)
 
@@ -121,24 +155,24 @@ router.post('/supplierCnPR', verifyAccessTokenAdmin, Controller.supplierCnPR)
 router.post('/getPurchasereturnreports', verifyAccessTokenAdmin, Controller.getPurchasereturnreports)
 
 router.post('/getPurchasereturndetailreports', verifyAccessTokenAdmin, Controller.getPurchasereturndetailreports)
-router.post('/setProductExpiryDate',verifyAccessTokenAdmin, Controller.setProductExpiryDate)
+router.post('/setProductExpiryDate', verifyAccessTokenAdmin, Controller.setProductExpiryDate)
 
-router.post('/setbarcodemaster',verifyAccessTokenAdmin, Controller.setbarcodemaster)
+router.post('/setbarcodemaster', verifyAccessTokenAdmin, Controller.setbarcodemaster)
 
 // Payment
-router.post('/getInvoicePayment',verifyAccessTokenAdmin, Controller.getInvoicePayment)
-router.post('/paymentHistoryByPurchaseID',verifyAccessTokenAdmin, Controller.paymentHistoryByPurchaseID)
+router.post('/getInvoicePayment', verifyAccessTokenAdmin, Controller.getInvoicePayment)
+router.post('/paymentHistoryByPurchaseID', verifyAccessTokenAdmin, Controller.paymentHistoryByPurchaseID)
 
 // creport
 
-router.post('/getCountInventoryReport',verifyAccessTokenAdmin, Controller.getCountInventoryReport)
-router.post('/getCountInventoryReportMonthWise',verifyAccessTokenAdmin, Controller.getCountInventoryReportMonthWise)
-router.post('/getAmountInventoryReport',verifyAccessTokenAdmin, Controller.getAmountInventoryReport)
-router.post('/getAmountInventoryReportMonthWise',verifyAccessTokenAdmin, Controller.getAmountInventoryReportMonthWise)
+router.post('/getCountInventoryReport', verifyAccessTokenAdmin, Controller.getCountInventoryReport)
+router.post('/getCountInventoryReportMonthWise', verifyAccessTokenAdmin, Controller.getCountInventoryReportMonthWise)
+router.post('/getAmountInventoryReport', verifyAccessTokenAdmin, Controller.getAmountInventoryReport)
+router.post('/getAmountInventoryReportMonthWise', verifyAccessTokenAdmin, Controller.getAmountInventoryReportMonthWise)
 
 // update retail price && whole sale price
 
-router.post('/updateProductPrice',verifyAccessTokenAdmin, Controller.updateProductPrice)
+router.post('/updateProductPrice', verifyAccessTokenAdmin, Controller.updateProductPrice)
 
 
 module.exports = router

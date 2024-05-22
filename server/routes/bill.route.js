@@ -2,15 +2,49 @@ const express = require('express')
 const router = express.Router()
 const Controller = require('../controllers/bill.controller')
 const { verifyAccessTokenAdmin } = require('../helpers/jwt_helper');
+const { shopID } = require('../helpers/helper_function')
+const mysql2 = require('../database')
+const moment = require("moment");
+
+const checkCron = async (req, res, next) => {
+
+    const currentTime = req.headers.currenttime;
+    const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+    const shopid = await shopID(req.headers) || 0;
+
+    let date = moment(currentTime).format("YYYY-MM-DD");
+
+    const [fetch_company_wise] = await mysql2.pool.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = 0`)
+
+    if (!fetch_company_wise.length) {
+        return res.status(200).send({
+            success: false, message: `Hello,
+        We are facing some technical issues with your license. Don't use software please contact the OPTICALGURU Team.
+        (Cron)
+        Thankyou`})
+    }
+
+    const [fetch_shop_wise] = await mysql2.pool.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+
+    if (!fetch_shop_wise.length) {
+        return res.status(200).send({
+            success: false, message: `Hello,
+        We are facing some technical issues with your license. Don't use software please contact the OPTICALGURU Team.
+
+        Thankyou`})
+    }
+
+    next();
+}
 
 router.post('/getDoctor', verifyAccessTokenAdmin, Controller.getDoctor)
 router.post('/getEmployee', verifyAccessTokenAdmin, Controller.getEmployee)
 router.post('/getTrayNo', verifyAccessTokenAdmin, Controller.getTrayNo)
 router.post('/searchByBarcodeNo', verifyAccessTokenAdmin, Controller.searchByBarcodeNo)
 router.post('/searchByString', verifyAccessTokenAdmin, Controller.searchByString)
-router.post('/saveBill', verifyAccessTokenAdmin, Controller.saveBill)
+router.post('/saveBill', verifyAccessTokenAdmin, checkCron, Controller.saveBill)
 // router.post('/updateBill', verifyAccessTokenAdmin, Controller.updateBill)
-router.post('/updateBillCustomer', verifyAccessTokenAdmin, Controller.updateBillCustomer)
+router.post('/updateBillCustomer', verifyAccessTokenAdmin, checkCron, Controller.updateBillCustomer)
 router.post('/changeEmployee', verifyAccessTokenAdmin, Controller.changeEmployee)
 router.post('/changeProductStatus', verifyAccessTokenAdmin, Controller.changeProductStatus)
 router.post('/list', verifyAccessTokenAdmin, Controller.list)
@@ -21,8 +55,8 @@ router.post('/billHistoryByCustomer', verifyAccessTokenAdmin, Controller.billHis
 router.post('/billHistoryByCustomerOld', verifyAccessTokenAdmin, Controller.billHistoryByCustomerOld)
 router.post('/deleteBill', verifyAccessTokenAdmin, Controller.deleteBill)
 router.post('/updatePower', verifyAccessTokenAdmin, Controller.updatePower)
-router.post('/deleteProduct', verifyAccessTokenAdmin, Controller.deleteProduct)
-router.post('/cancelProduct', verifyAccessTokenAdmin, Controller.cancelProduct)
+router.post('/deleteProduct', verifyAccessTokenAdmin, checkCron, Controller.deleteProduct)
+router.post('/cancelProduct', verifyAccessTokenAdmin, checkCron, Controller.cancelProduct)
 router.post('/updateProduct', verifyAccessTokenAdmin, Controller.updateProduct)
 router.post('/billPrint', verifyAccessTokenAdmin, Controller.billPrint)
 router.post('/orderFormPrint', verifyAccessTokenAdmin, Controller.orderFormPrint)
