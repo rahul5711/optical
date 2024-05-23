@@ -1066,11 +1066,22 @@ module.exports = {
 
 
                 ele.ProductFullName = ele.ProductName;
-                ele.ProductBrandName = ProductBrandName.substring(0, 14);
-                ele.ProductModelName = ProductModelName !== undefined ? ProductModelName.substring(0, 18) : '';
+
+               
+                if(ProductBrandName !== undefined){
+                    ele.ProductBrandName  = ProductBrandName.substring(0, 18)
+                }else{
+                    ele.ProductBrandName =  ProductBrandName 
+                }
+                if(ProductModelName !== undefined){
+                    ele.ProductModelName  = ProductModelName.substring(0, 18)
+                }else{
+                    ele.ProductModelName =  ProductModelName 
+                }
                 ele.ProductUniqueBarcode = ele.UniqueBarcode;
                 ele.Barcode = ele.BaseBarCode;
                 ele.BarcodeName = shopdetails[0].BarcodeName;
+                
             });
 
             if (printdata.length > 0) {
@@ -1169,6 +1180,15 @@ module.exports = {
                                     options = {
                                         "height": "25mm",
                                         "width": "60mm",
+                                    };
+                                    console.log(options);
+                                }
+                            }
+                             if(printdata.CompanyID == 216) {
+                                if (printdata.CompanyBarcode == 5) {
+                                    options = {
+                                        "height": "24mm",
+                                        "width": "36mm",
                                     };
                                     console.log(options);
                                 }

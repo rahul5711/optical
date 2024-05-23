@@ -74,7 +74,7 @@ export class LedgeReportComponent implements OnInit {
   customerSearch(searchKey: any, mode: any, type: any) {
     this.filteredOptions = []
 
-    let dtm = { Type: '', Name: '' }
+    let dtm:any = { Type: '', Name: '', MobileNo1: ''}
 
     if (type === 'Customer') {
       dtm = {
@@ -86,6 +86,9 @@ export class LedgeReportComponent implements OnInit {
     if (searchKey.length >= 2) {
       if (mode === 'Name') {
         dtm.Name = searchKey;
+      }else if (mode === 'MobileNo1') {
+        this.filteredOptions = [];
+        dtm.MobileNo1 = searchKey;
       }
 
       const subs: Subscription = this.supps.dropdownlistBySearch(dtm).subscribe({

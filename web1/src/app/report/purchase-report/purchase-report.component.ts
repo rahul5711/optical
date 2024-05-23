@@ -49,15 +49,15 @@ export class PurchaseReportComponent implements OnInit {
   prodList:any;
   specList: any;
   gstList: any;
-  DetailtotalQty: any;
-  DetailtotalDiscount: any;
-  DetailtotalUnitPrice: any;
-  DetailtotalSubTotal: any;
-  DetailtotalAmount: any;
-  DetailtotalGstAmount: any;
-  DetailtotalWholeSalePrice: any;
-  DetailtotalRetailPrice: any;
-  gstdetails:any
+  DetailtotalQty: any = 0;
+  DetailtotalDiscount: any = 0;
+  DetailtotalUnitPrice: any = 0;
+  DetailtotalSubTotal: any = 0;
+  DetailtotalAmount: any = 0;
+  DetailtotalGstAmount: any = 0;
+  DetailtotalWholeSalePrice: any = 0;
+  DetailtotalRetailPrice: any = 0;
+  gstdetails:any=[]
   TtlR:any = 0
   TtlW:any = 0
 
@@ -498,7 +498,7 @@ export class PurchaseReportComponent implements OnInit {
     if (this.PurchaseDetail.GSTType !== 0){
       Parem = Parem + ' and purchasedetailnew.GSTType = '  + `'${this.PurchaseDetail.GSTType}'`; }
 
-    const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem,this.Productsearch).subscribe({
+    const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem,this.Productsearch.trim()).subscribe({
       next: (res: any) => {
         if(res.success){
           this.PurchaseDetailList = res.data

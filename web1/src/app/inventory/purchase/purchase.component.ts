@@ -97,7 +97,22 @@ export class PurchaseComponent implements OnInit {
   deletePurchase = false
   supplierGSTType = '';
   currentTime = '';
+
+  disabledWholeSale = false
   ngOnInit(): void {
+
+    if(this.company.WholeSale === 'true' || this.shop[0].WholesaleBill === 'true'){
+      this.item.WholeSale = true
+      this.disabledWholeSale = true
+    }else{
+      this.item.WholeSale = false
+    }
+
+    if((this.company.WholeSale === 'true' && this.company.RetailPrice === 'true' ) || (this.shop[0].WholesaleBill === 'true' && this.shop[0].RetailBill === 'true')){
+      this.item.WholeSale = false
+      this.disabledWholeSale = false
+    }
+
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'Purchase') {
         this.editPurchase = element.Edit;
@@ -455,6 +470,13 @@ export class PurchaseComponent implements OnInit {
           this.item = {
             ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: 0, ProductExpDate: '0000-00-00', UniqueBarcode: ''
           }
+        }
+
+        if (this.item.WholeSale === true) {
+          this.item.WholeSale = true;
+        }
+        if (this.item.WholeSale === false) {
+          this.item.WholeSale = false;
         }
 
         this.specList.forEach((element: any) => {
