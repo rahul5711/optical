@@ -16,13 +16,13 @@ export class LedgeService {
   constructor(private httpClient: HttpClient) { }
   private url = environment.apiUrl + '/ledge';
 
-  getCustomerLedgeReport(FromDate: any,ToDate: any,CustomerID: any,ShopID: any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getCustomerLedgeReport', {FromDate:FromDate,ToDate:ToDate,CustomerID:CustomerID,ShopID:ShopID}, httpOptions)
+  getCustomerLedgeReport(FromDate: any,ToDate: any,CustomerID: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getCustomerLedgeReport', {FromDate:FromDate,ToDate:ToDate,CustomerID:CustomerID}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
-  getSupplierLedgeReport(FromDate: any,ToDate: any,SupplierID: any,ShopID: any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getSupplierLedgeReport', {FromDate:FromDate,ToDate:ToDate,SupplierID:SupplierID,ShopID:ShopID}, httpOptions)
+  getSupplierLedgeReport(FromDate: any,ToDate: any,SupplierID: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getSupplierLedgeReport', {FromDate:FromDate,ToDate:ToDate,SupplierID:SupplierID}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 

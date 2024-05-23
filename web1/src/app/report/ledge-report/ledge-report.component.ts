@@ -43,11 +43,11 @@ export class LedgeReportComponent implements OnInit {
   ) { }
 
   data: any = {
-    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: '', CustomerID: '',
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), CustomerID: '',
   };
 
   supplier: any = {
-    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: '', SupplierID: '',
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'),  SupplierID: '',
   };
 
   shopList: any;
@@ -57,42 +57,7 @@ export class LedgeReportComponent implements OnInit {
   pdfLink:any;
 
   ngOnInit(): void {
-    this.dropdownShoplist()
     this.dropdownSupplierlist()
-    if (this.user.UserGroup === 'Employee') {
-      this.shopList = this.shop;
-      this.data.ShopID = this.shopList[0].ShopID
-    } else {
-      this.dropdownShoplist()
-    }
-  }
-
-  dropdownShoplist() {
-    this.sp.show()
-    const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.shopList = res.data
-          let shop = res.data
-          this.selectsShop = shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
-          this.selectsShop = '/ ' + this.selectsShop[0].Name + ' (' + this.selectsShop[0].AreaName + ')'
-
-          this.billerList = res.data.map((o: any) => {
-            return {
-              id: o.ID,
-              text: `${o.Name}`,
-              // text: `${o.blr_id}`,
-            };
-          });
-
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
   }
 
   dropdownSupplierlist() {
@@ -167,7 +132,7 @@ export class LedgeReportComponent implements OnInit {
 
   getCustomerLedgeReport() {
     this.sp.show()
-    const subs: Subscription = this.ledge.getCustomerLedgeReport(this.data.FromDate,this.data.ToDate,this.data.CustomerID,this.data.ShopID).subscribe({
+    const subs: Subscription = this.ledge.getCustomerLedgeReport(this.data.FromDate,this.data.ToDate,this.data.CustomerID).subscribe({
       next: (res: any) => {
         if (res === "customer_ladger.pdf") {
           const url = this.env.apiUrl + "/uploads/" + res;
@@ -192,7 +157,7 @@ export class LedgeReportComponent implements OnInit {
 
   getSupplierLedgeReport() {
     this.sp.show()
-    const subs: Subscription = this.ledge.getSupplierLedgeReport(this.supplier.FromDate,this.supplier.ToDate,this.supplier.SupplierID,this.supplier.ShopID).subscribe({
+    const subs: Subscription = this.ledge.getSupplierLedgeReport(this.supplier.FromDate,this.supplier.ToDate,this.supplier.SupplierID).subscribe({
       next: (res: any) => {
         if (res === "supplier_ladger.pdf") {
           const url = this.env.apiUrl + "/uploads/" + res;

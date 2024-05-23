@@ -46,17 +46,17 @@
             </tr>
             <tr style="font-size: 14px; ">
                 <td style="font-weight: 600; padding-top: 11px;"> FROM </td>
-                <td style="padding-top: 11px;">- <%=data.ShopDetails.Name%>
+                <td style="padding-top: 11px;">- <%=data.CompanyDetails.Name%>
                 </td>
             </tr>
             <tr style="font-size: 14px;vertical-align: top;">
                 <td> Address</td>
-                <td>- <%=data.ShopDetails.Address%>
+                <td>- <%=data.CompanyDetails.Address%>
                 </td>
             </tr>
             <tr style="font-size: 14px;">
                 <td> Mobile</td>
-                <td>- <%=data.ShopDetails.MobileNo1%>, <%=data.ShopDetails.MobileNo2%>
+                <td>- <%=data.CompanyDetails.MobileNo1%>, <%=data.CompanyDetails.MobileNo2%>
                 </td>
             </tr>
         </table>
@@ -108,6 +108,7 @@
                     <th style="padding: 5px 0px;">Amount</th>
                     <th style="padding: 5px 0px;">Payment</th>
                     <th style="padding: 5px 0px;">Balance</th>
+                    <th style="padding: 5px 0px;">Remark</th>
                 </tr>
             </thead>
             <tbody>
@@ -131,6 +132,9 @@
                         <td style="padding: 6px 0px;">
                             <%=i.balance%>
                         </td>
+                        <td style="padding: 6px 0px;">
+                            <%=i.remark%>
+                        </td>
                     </tr>
                     <%})%>
             </tbody>
@@ -140,6 +144,9 @@
                     <th style="border-top: 2px solid #c1c1c1;">Balance</th>
                     <th style="border-top: 2px solid #c1c1c1;">
                         <%=data.BalanceDue%>
+                    </th>
+                    <th style="border-top: 2px solid #c1c1c1;">
+                        
                     </th>
                 </tr>
             </tfoot>
