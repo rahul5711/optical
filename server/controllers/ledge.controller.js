@@ -132,7 +132,7 @@ module.exports = {
             response.AmountPaid = AmountPaid;
             response.BalanceDue = Number(response.OpeningBalance) + Number(InvoicedAmount) - Number(AmountPaid);
             response.message = "data fetch successfully"
-            return res.send(response)
+            // return res.send(response)
 
             // Generate PDF
             const printdata = response;
@@ -285,7 +285,7 @@ module.exports = {
             response.BalanceDue = Number(response.OpeningBalance) + Number(InvoicedAmount) - Number(AmountPaid);
             response.message = "data fetch successfully"
 
-            return res.send(response)
+            // return res.send(response)
 
             // Generate PDF
             const printdata = response;
