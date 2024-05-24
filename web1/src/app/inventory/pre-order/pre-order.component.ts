@@ -446,6 +446,7 @@ export class PreOrderComponent implements OnInit {
             timer: 1200
           })
         } else {
+          this.currentTime = ''
           this.as.errorToast(res.message)
         }
        this.sp.hide()
@@ -570,6 +571,7 @@ export class PreOrderComponent implements OnInit {
             timer: 1200
           })
         } else {
+          this.currentTime = ''
           this.as.errorToast(res.message)
         }
       this.sp.hide()

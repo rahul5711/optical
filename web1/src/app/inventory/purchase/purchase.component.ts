@@ -129,6 +129,7 @@ export class PurchaseComponent implements OnInit {
     } else {
       this.selectedPurchaseMaster.PurchaseDate = moment().format('yyyy-MM-DD');
     }
+
     this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23' })
 
 
@@ -593,6 +594,7 @@ export class PurchaseComponent implements OnInit {
             timer: 1200
           })
         } else {
+          this.currentTime = ''
           this.as.errorToast(res.message)
           Swal.fire({
             position: 'center',
@@ -784,6 +786,7 @@ export class PurchaseComponent implements OnInit {
             timer: 1200
           })
         } else {
+          this.currentTime = ''
           this.as.errorToast(res.message)
           Swal.fire({
             position: 'center',
