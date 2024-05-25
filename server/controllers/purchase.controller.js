@@ -1171,7 +1171,6 @@ module.exports = {
                                         "height": "0.70in",
                                         "width": "4.41in",
                                     };
-                                    console.log(options);
                                 }
                             }
 
@@ -1181,7 +1180,6 @@ module.exports = {
                                         "height": "25mm",
                                         "width": "60mm",
                                     };
-                                    console.log(options);
                                 }
                             }
                              if(printdata.CompanyID == 216) {
@@ -1190,10 +1188,17 @@ module.exports = {
                                         "height": "24mm",
                                         "width": "36mm",
                                     };
-                                    console.log(options);
                                 }
                             }
-
+                             if(printdata.CompanyID == 218) {
+                                if (printdata.CompanyBarcode == 5) {
+                                    options = {
+                                        "height": "27mm",
+                                        "width": "38mm",
+                                    };
+                                }
+                            }
+                           
 
                             options.timeout = 540000,  // in milliseconds
                                 pdf.create(data, options).toFile(fileName, function (err, data) {
