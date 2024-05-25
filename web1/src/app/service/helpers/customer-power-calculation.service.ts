@@ -90,8 +90,7 @@ export class CustomerPowerCalculationService {
           } else {
             spectacle.RENPSPH = spectacle.RENPSPH.toFixed(2).toString()
           }
-          spectacle.RENPCYL = spectacle.REDPCYL;
-          spectacle.RENPAxis = spectacle.REDPAxis;
+       
         } else {
           spectacle.RENPSPH = spectacle.REDPSPH
         }
@@ -112,13 +111,18 @@ export class CustomerPowerCalculationService {
           } else {
             spectacle.R_Addition = spectacle.R_Addition.toFixed(2).toString().replace("-", "+")
           }
-          spectacle.RENPCYL = spectacle.REDPCYL;
-          spectacle.RENPAxis = spectacle.REDPAxis;
+  
         } else {
           spectacle.R_Addition = ''
         }
       }
 
+      if (x === 'RCYL') {
+        spectacle.RENPCYL = spectacle.REDPCYL;
+      }
+      if (x === 'RAxis') {
+        spectacle.RENPAxis = spectacle.REDPAxis;
+      }
       // right spectacle calculate end
       // left spectacle calculate start
       if (x === 'LD') {
@@ -136,8 +140,7 @@ export class CustomerPowerCalculationService {
           } else {
             spectacle.L_Addition = spectacle.L_Addition.toFixed(2).toString().replace("-", "+")
           }
-          spectacle.LENPCYL = spectacle.LEDPCYL;
-          spectacle.LENPAxis = spectacle.LEDPAxis;
+
         }
       }
       if (x === 'L') {
@@ -153,8 +156,7 @@ export class CustomerPowerCalculationService {
           } else {
             spectacle.LENPSPH = spectacle.LENPSPH.toFixed(2).toString()
           }
-          spectacle.LENPCYL = spectacle.LEDPCYL;
-          spectacle.LENPAxis = spectacle.LEDPAxis;
+     
         } else {
           spectacle.LENPSPH = spectacle.LEDPSPH
         }
@@ -175,13 +177,17 @@ export class CustomerPowerCalculationService {
           } else {
             spectacle.L_Addition = spectacle.L_Addition.toFixed(2).toString().replace("-", "+")
           }
-          spectacle.LENPCYL = spectacle.LEDPCYL;
-          spectacle.LENPAxis = spectacle.LEDPAxis;
+   
         } else {
           spectacle.L_Addition = ''
         }
       }
-
+      if (x === 'LCYL') {
+        spectacle.LENPCYL = spectacle.LEDPCYL;
+      }
+      if (x === 'LAxis') {
+        spectacle.LENPAxis = spectacle.LEDPAxis;
+      }
       // left spectacle calculate end
     }
     else {
@@ -201,8 +207,7 @@ export class CustomerPowerCalculationService {
           } else {
             clens.R_Addition = clens.R_Addition.toFixed(2).toString().replace("-", "+")
           }
-          clens.RENPCYL = clens.REDPCYL;
-          clens.RENPAxis = clens.REDPAxis;
+     
         }
       }
       if (x === 'CR' && y === 0) {
@@ -219,8 +224,7 @@ export class CustomerPowerCalculationService {
           } else {
             clens.RENPSPH = clens.RENPSPH.toFixed(2).toString()
           }
-          clens.RENPCYL = clens.REDPCYL;
-          clens.RENPAxis = clens.REDPAxis;
+     
         } else {
           clens.RENPSPH = clens.REDPSPH
         }
@@ -240,13 +244,17 @@ export class CustomerPowerCalculationService {
           } else {
             clens.R_Addition = clens.R_Addition.toFixed(2).toString().replace("-", "+")
           }
-          clens.RENPCYL = clens.REDPCYL;
-          clens.RENPAxis = clens.REDPAxis;
+     
         } else {
           clens.R_Addition = ''
         }
       }
-      
+      if (x === 'CRCYL') {
+        clens.RENPCYL = clens.REDPCYL;
+      }
+      if (x === 'CRxis') {
+        clens.RENPAxis = clens.REDPAxis;
+      }
       // right contact calculate end
       // left contact calculate start
       if (x === 'CLD' && y === 0) {
@@ -264,8 +272,7 @@ export class CustomerPowerCalculationService {
           } else {
             clens.L_Addition = clens.L_Addition.toFixed(2).toString().replace("-", "+")
           }
-          clens.LENPCYL = clens.LEDPCYL;
-          clens.LENPAxis = clens.LEDPAxis;
+   
         }
 
       }
@@ -282,8 +289,7 @@ export class CustomerPowerCalculationService {
           } else {
             clens.LENPSPH = clens.LENPSPH.toFixed(2).toString()
           }
-          clens.LENPCYL = clens.LEDPCYL;
-          clens.LENPAxis = clens.LEDPAxis;
+      
         } else {
           spectacle.LENPSPH = spectacle.LEDPSPH
         }
@@ -304,13 +310,17 @@ export class CustomerPowerCalculationService {
           } else {
             clens.L_Addition = clens.L_Addition.toFixed(2).toString().replace("-", "+")
           }
-          clens.LENPCYL = clens.LEDPCYL;
-          clens.LENPAxis = clens.LEDPAxis;
+
         } else {
           clens.L_Addition = ''
         }
       }
-       
+      if (x === 'CLCYL') {
+        clens.LENPCYL = clens.LEDPCYL;
+      }
+      if (x === 'CLxis') {
+        clens.LENPAxis = clens.LEDPAxis;
+      }
       // left contact calculate end
     }
   }
