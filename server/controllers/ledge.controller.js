@@ -244,7 +244,7 @@ module.exports = {
 
             var output = formatBillMasterIDs(fetchInvoice)
 
-            let [payment] = await mysql2.pool.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Customer' , 'Customer Credit')  and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${CustomerID}`)
+            let [payment] = await mysql2.pool.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Customer' , 'Customer Credit') and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${CustomerID}`)
 
             let balance = 0;
             let InvoicedAmount = 0
@@ -263,6 +263,9 @@ module.exports = {
                     } else if (item.PaymentMode !== "Payment Initiated") {
                         if (item.PaymentType === 'Customer' && item.PayableAmount == 0) {
                             e.PaymentMode = 'Customer Credit'
+                        }
+                        if (item.Credit === 'Debit') {
+                            item.PaidAmount = - item.PaidAmount
                         }
                         item.PayableAmount = 0
                         item.Transactions = 'Payment Recieved'
