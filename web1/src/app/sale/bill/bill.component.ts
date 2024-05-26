@@ -1826,10 +1826,13 @@ export class BillComponent implements OnInit {
       const subs: Subscription = this.pay.customerPayment(this.applyPayment).subscribe({
         next: (res: any) => {
           if (res.success) {
+            
             this.paymentHistoryByMasterID(this.id, this.id2)
             this.billByCustomer(this.id)
             this.getBillById(this.id2)
+
             this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
+           
           } else {
             this.as.errorToast(res.message)
             Swal.fire({
@@ -2365,7 +2368,7 @@ export class BillComponent implements OnInit {
         `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A${this.loginShop.MobileNo1}%0A${this.loginShop.Website}`;
     } else if (mode === 'Fbill') {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill FinalDelivery');
-      var msg = `*Hi ${this.customer.Name},*%0A` +
+      var msg = `*Hi ${this.customer.Title} ${this.customer.Name},*%0A` +
         `${WhatsappMsg}%0A` +
         `*Open Bill* : ${this.BillLink}%0A` + `Reply *‘Hi’* to  download the BIll%0A%0A` +
         `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A` +
@@ -2375,7 +2378,7 @@ export class BillComponent implements OnInit {
 
     } else {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill Advance') || 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again';
-      var msg = `*Hi ${this.customer.Name},*%0A` +
+      var msg = `*Hi ${this.customer.Title} ${this.customer.Name},*%0A` +
         `${WhatsappMsg}%0A` +
         `*Open Bill* : ${this.BillLink}%0A` + `Reply *‘Hi’* to  download the BIll%0A%0A` +
         `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A` +

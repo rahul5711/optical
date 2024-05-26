@@ -119,12 +119,13 @@ export class CustomerPowerCalculationService {
         }
       }
 
-      if (x === 'RCYL') {
-        spectacle.RENPCYL = spectacle.REDPCYL;
+      if (x === 'RNCYL') {
+        spectacle.REDPCYL =  spectacle.RENPCYL ;
       }
-      if (x === 'RAxis') {
-        spectacle.RENPAxis = spectacle.REDPAxis;
+      if (x === 'RNAxis') {
+         spectacle.REDPAxis = spectacle.RENPAxis ;
       }
+   
       // right spectacle calculate end
       // left spectacle calculate start
       if (x === 'LD') {
@@ -182,16 +183,17 @@ export class CustomerPowerCalculationService {
             spectacle.L_Addition = spectacle.L_Addition.toFixed(2).toString().replace("-", "+")
           }
           spectacle.LENPCYL = spectacle.LEDPCYL;
-          spectacle.LENPAxis = spectacle.LEDPAxis;
+          spectacle.LENPAxis = spectacle.LEDPAxis; 
         } else {
           spectacle.L_Addition = ''
         }
       }
-      if (x === 'LCYL') {
-        spectacle.LENPCYL = spectacle.LEDPCYL;
+
+      if (x === 'LNCYL') {
+        spectacle.LEDPCYL = spectacle.LENPCYL;
       }
-      if (x === 'LAxis') {
-        spectacle.LENPAxis = spectacle.LEDPAxis;
+      if (x === 'LNAxis') {
+        spectacle.LEDPAxis =spectacle.LENPAxis ;
       }
       // left spectacle calculate end
     }
@@ -258,10 +260,10 @@ export class CustomerPowerCalculationService {
         }
       }
       if (x === 'CRCYL') {
-        clens.RENPCYL = clens.REDPCYL;
+        clens.REDPCYL = clens.RENPCYL ;
       }
-      if (x === 'CRxis') {
-        clens.RENPAxis = clens.REDPAxis;
+      if (x === 'CRAxis') {
+        clens.REDPAxis =  clens.RENPAxis;
       }
       // right contact calculate end
       // left contact calculate start
@@ -326,11 +328,12 @@ export class CustomerPowerCalculationService {
           clens.L_Addition = ''
         }
       }
+
       if (x === 'CLCYL') {
-        clens.LENPCYL = clens.LEDPCYL;
+       clens.LEDPCYL = clens.LENPCYL;
       }
-      if (x === 'CLxis') {
-        clens.LENPAxis = clens.LEDPAxis;
+      if (x === 'CLAxis') {
+        clens.LEDPAxis =  clens.LENPAxis;
       }
       // left contact calculate end
     }
