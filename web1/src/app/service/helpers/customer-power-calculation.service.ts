@@ -126,6 +126,16 @@ export class CustomerPowerCalculationService {
          spectacle.REDPAxis = spectacle.RENPAxis ;
       }
    
+      if (x === 'RCYL') {
+        if(spectacle.RENPSPH !== '' || spectacle.R_Addition !== ''){
+          spectacle.RENPCYL = spectacle.REDPCYL ;
+        }
+      }
+      if (x === 'RAxis') {
+        if(spectacle.RENPSPH !== '' || spectacle.R_Addition !== ''){
+          spectacle.RENPAxis = spectacle.REDPAxis;
+        }
+      }
       // right spectacle calculate end
       // left spectacle calculate start
       if (x === 'LD') {
@@ -194,6 +204,18 @@ export class CustomerPowerCalculationService {
       }
       if (x === 'LNAxis') {
         spectacle.LEDPAxis =spectacle.LENPAxis ;
+      }
+
+      if (x === 'RDSCYL') {
+        if(spectacle.LENPSPH !== '' || spectacle.L_Addition !== ''){
+           spectacle.LENPCYL = spectacle.LEDPCYL;
+        }
+      }
+
+      if (x === 'RDSAxis') {
+        if(spectacle.LENPSPH !== '' || spectacle.L_Addition !== ''){
+           spectacle.LENPAxis = spectacle.LEDPAxis;
+        }
       }
       // left spectacle calculate end
     }

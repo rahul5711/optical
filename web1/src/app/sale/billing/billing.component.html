@@ -351,16 +351,16 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box " type="text" name="REDPCYL"
-                                                            [(ngModel)]="spectacle.REDPCYL" id="REDPCYL" 
+                                                            [(ngModel)]="spectacle.REDPCYL" id="REDPCYL" (change)="calculate('Lens', 'RCYL', 0.00)"
                                                             list="dpcylList" >
                                                         <datalist id="dpcylList">
-                                                            <option [value]="c.Name" *ngFor="let c of dataCYL">
+                                                            <option [value]="c.Name" *ngFor="let c of dataCYL" >
                                                                 {{c.Name}} </option>
                                                         </datalist>
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box"  name="REDPAxis"
-                                                            [(ngModel)]="spectacle.REDPAxis" >
+                                                            [(ngModel)]="spectacle.REDPAxis" (change)="calculate('Lens', 'RAxis', 0.00)">
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box"  name="REDPVA"
@@ -387,7 +387,7 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box " type="text" name="LEDPCYL"
-                                                            [(ngModel)]="spectacle.LEDPCYL" id="LEDPCYL" 
+                                                            [(ngModel)]="spectacle.LEDPCYL" id="LEDPCYL" (change)="calculate('Lens', 'RDSCYL', 0.00)"
                                                             list="dpcylList" >
                                                         <datalist id="dpcylList">
                                                             <option [value]="c.Name" *ngFor="let c of dataCYL">
@@ -395,7 +395,7 @@
                                                         </datalist>
                                                     </div>
                                                     <div class="col-1">
-                                                        <input class="inputWidth box"  name="LEDPAxis"
+                                                        <input class="inputWidth box"  name="LEDPAxis" (change)="calculate('Lens', 'RDSAxis', 0.00)"
                                                             [(ngModel)]="spectacle.LEDPAxis" >
                                                     </div>
                                                     <div class="col-1">
