@@ -20,7 +20,7 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
-            const { Name, Sno, MobileNo1, MobileNo2, PhoneNo, Address, GSTNo, Email, PhotoURL, DOB, RefferedByDoc, Age, Anniversary, ReferenceType, Gender, Other, Remarks, VisitDate, spectacle_rx, contact_lens_rx, other_rx, tablename } = req.body
+            const { Title, Name, Sno, MobileNo1, MobileNo2, PhoneNo, Address, GSTNo, Email, PhotoURL, DOB, RefferedByDoc, Age, Anniversary, ReferenceType, Gender, Other, Remarks, VisitDate, spectacle_rx, contact_lens_rx, other_rx, tablename } = req.body
 
             if (Name.trim() == "" || Name === undefined) {
                 return res.send({ message: "Invalid Name" })
@@ -31,7 +31,7 @@ module.exports = {
 
 
             const Id = await Idd(req)
-            const [customer] = await mysql2.pool.query(`insert into customer(ShopID,Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Status,CreatedBy,CreatedOn,VisitDate) values(${shopid},'${Id}', '${Name}','${Sno}',${CompanyID},'${MobileNo1}','${MobileNo2}','${PhoneNo}','${Address}','${GSTNo}','${Email}','${PhotoURL}','${DOB}','${RefferedByDoc}','${Age}','${Anniversary}','${ReferenceType}','${Gender}','${Other}','${Remarks}',1,'${LoggedOnUser}',now(),'${VisitDate}')`);
+            const [customer] = await mysql2.pool.query(`insert into customer(ShopID,Idd,Title,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Status,CreatedBy,CreatedOn,VisitDate) values(${shopid},'${Id}','${Title}', '${Name}','${Sno}',${CompanyID},'${MobileNo1}','${MobileNo2}','${PhoneNo}','${Address}','${GSTNo}','${Email}','${PhotoURL}','${DOB}','${RefferedByDoc}','${Age}','${Anniversary}','${ReferenceType}','${Gender}','${Other}','${Remarks}',1,'${LoggedOnUser}',now(),'${VisitDate}')`);
 
             console.log(connected("Customer Added SuccessFUlly !!!"));
 
@@ -398,7 +398,7 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
-            const { ID, Name, Sno, MobileNo1, MobileNo2, PhoneNo, Address, GSTNo, Email, PhotoURL, DOB, RefferedByDoc, Age, Anniversary, ReferenceType, Gender, Other, Remarks, VisitDate, spectacle_rx, contact_lens_rx, other_rx, tablename } = req.body
+            const { ID, Title, Name, Sno, MobileNo1, MobileNo2, PhoneNo, Address, GSTNo, Email, PhotoURL, DOB, RefferedByDoc, Age, Anniversary, ReferenceType, Gender, Other, Remarks, VisitDate, spectacle_rx, contact_lens_rx, other_rx, tablename } = req.body
 
             if (Name.trim() === "" || Name === undefined) {
                 return res.send({ message: "Invalid Name" })
@@ -425,7 +425,7 @@ module.exports = {
             //     }
             // }
 
-            const [update] = await mysql2.pool.query(`update customer set Name='${Name}', Sno='${Sno}', MobileNo1='${MobileNo1}', MobileNo2='${MobileNo2}', PhoneNo='${PhoneNo}', Address='${Address}', GSTNo='${GSTNo}', Email='${Email}', PhotoURL='${PhotoURL}', DOB='${DOB}', RefferedByDoc='${RefferedByDoc}', Age='${Age}', Anniversary='${Anniversary}', ReferenceType='${ReferenceType}', Gender='${Gender}', Other='${Other}', Remarks='${Remarks}', VisitDate='${VisitDate}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and ID = ${ID}`)
+            const [update] = await mysql2.pool.query(`update customer set Name='${Name}', Title='${Title}', Sno='${Sno}', MobileNo1='${MobileNo1}', MobileNo2='${MobileNo2}', PhoneNo='${PhoneNo}', Address='${Address}', GSTNo='${GSTNo}', Email='${Email}', PhotoURL='${PhotoURL}', DOB='${DOB}', RefferedByDoc='${RefferedByDoc}', Age='${Age}', Anniversary='${Anniversary}', ReferenceType='${ReferenceType}', Gender='${Gender}', Other='${Other}', Remarks='${Remarks}', VisitDate='${VisitDate}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and ID = ${ID}`)
 
             console.log(connected("Customer Updated SuccessFUlly !!!"));
 
@@ -891,7 +891,7 @@ module.exports = {
             const { Name, MobileNo1, Address, Sno } = req.body
 
 
-            let qry = `select customer.ID as ID, customer.Idd, customer.Name as Name, customer.MobileNo1 as MobileNo1, customer.MobileNo2 as MobileNo2  , customer.Sno as Sno , customer.Address as Address from customer where customer.Status = 1 and customer.Name like '%${Name}%' and customer.MobileNo1 like'%${MobileNo1}%' and customer.Address like '%${Address}%' and customer.Sno like '%${Sno}%' and customer.CompanyID = '${CompanyID}'  order by customer.ID desc`
+            let qry = `select customer.ID as ID, customer.Idd, customer.Name as Name, customer.MobileNo1 as MobileNo1, customer.MobileNo2 as MobileNo2  , customer.Sno as Sno , customer.Address as Address from customer where customer.Status = 1 and  UPPER(customer.Name) LIKE UPPER('%${Name}') and customer.MobileNo1 like'%${MobileNo1}%' and customer.Address like '%${Address}%' and customer.Sno like '%${Sno}%' and customer.CompanyID = '${CompanyID}'  order by customer.ID desc`
 
 
 
