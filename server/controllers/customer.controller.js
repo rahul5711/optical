@@ -11,7 +11,16 @@ var TinyURL = require('tinyurl');
 const clientConfig = require("../helpers/constants");
 const mysql2 = require('../database')
 var moment = require("moment");
+function rearrangeString(str) {
+    // Split the input string into an array of words
+    let words = str.split(' ');
 
+    // Reverse the order of the words
+    let reversedWords = words.reverse();
+
+    // Join the words back into a single string
+    return reversedWords.join(' ');
+}
 module.exports = {
     save: async (req, res, next) => {
         try {
@@ -891,15 +900,12 @@ module.exports = {
             const { Name, MobileNo1, Address, Sno } = req.body
 
 
-            let qry = `select customer.ID as ID, customer.Idd, customer.Name as Name, customer.MobileNo1 as MobileNo1, customer.MobileNo2 as MobileNo2  , customer.Sno as Sno , customer.Address as Address from customer where customer.Status = 1 and  UPPER(customer.Name) LIKE UPPER('%${Name}') and customer.MobileNo1 like'%${MobileNo1}%' and customer.Address like '%${Address}%' and customer.Sno like '%${Sno}%' and customer.CompanyID = '${CompanyID}'  order by customer.ID desc`
+            let qry = `select customer.ID as ID, customer.Idd, customer.Name as Name, customer.MobileNo1 as MobileNo1, customer.MobileNo2 as MobileNo2  , customer.Sno as Sno , customer.Address as Address from customer where customer.Status = 1 and customer.Name LIKE '${Name}%' or customer.Name LIKE '%${rearrangeString(Name)}%' and customer.MobileNo1 like'%${MobileNo1}%' and customer.Address like '%${Address}%' and customer.Sno like '%${Sno}%' and customer.CompanyID = '${CompanyID}'  order by customer.ID desc`
 
 
 
             let finalQuery = qry;
-
-            console.log(finalQuery);
             let [data] = await mysql2.pool.query(finalQuery);
-            console.log(data);
 
             response.message = "data fetch sucessfully"
             response.data = data

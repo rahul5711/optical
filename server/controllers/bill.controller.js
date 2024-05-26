@@ -14,7 +14,16 @@ const clientConfig = require("../helpers/constants");
 const mysql2 = require('../database');
 const { log } = require('winston');
 const { json } = require('express');
+function rearrangeString(str) {
+    // Split the input string into an array of words
+    let words = str.split(' ');
 
+    // Reverse the order of the words
+    let reversedWords = words.reverse();
+
+    // Join the words back into a single string
+    return reversedWords.join(' ');
+}
 function discountAmount(item) {
     let discountAmount = 0
     discountAmount = (item.UnitPrice * item.Quantity) * item.DiscountPercentage / 100;
@@ -1019,7 +1028,9 @@ module.exports = {
             }
 
 
-            let qry = `SELECT billmaster.*, Customer1.Name AS CustomerName, Customer1.MobileNo1 AS CustomerMob,Customer1.Sno AS Sno,Customer1.Idd AS Idd, shop.Name AS ShopName, shop.AreaName AS AreaName, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser, User2.Name as SalePerson FROM billmaster LEFT JOIN shop ON shop.ID = billmaster.ShopID LEFT JOIN user ON user.ID = billmaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = billmaster.UpdatedBy LEFT JOIN user AS User2 ON User2.ID = billmaster.Employee LEFT JOIN customer AS Customer1 ON Customer1.ID = billmaster.CustomerID WHERE billmaster.CompanyID = ${CompanyID} and Customer1.Name like '${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID}  and  Customer1.MobileNo1 like '${searchQuery}%' ${shopId} OR billmaster.CompanyID = '${CompanyID}' and billmaster.InvoiceNo like '${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} and Customer1.Idd like '${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} and Customer1.Sno like '${searchQuery}%' ${shopId}`;
+            let qry = `SELECT billmaster.*, Customer1.Name AS CustomerName, Customer1.MobileNo1 AS CustomerMob,Customer1.Sno AS Sno,Customer1.Idd AS Idd, shop.Name AS ShopName, shop.AreaName AS AreaName, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser, User2.Name as SalePerson FROM billmaster LEFT JOIN shop ON shop.ID = billmaster.ShopID LEFT JOIN user ON user.ID = billmaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = billmaster.UpdatedBy LEFT JOIN user AS User2 ON User2.ID = billmaster.Employee LEFT JOIN customer AS Customer1 ON Customer1.ID = billmaster.CustomerID WHERE billmaster.CompanyID = ${CompanyID} and Customer1.Name LIKE '${searchQuery}%' ${shopId} OR Customer1.Name LIKE '%${rearrangeString(searchQuery)}%' ${shopId} OR billmaster.CompanyID = ${CompanyID}  and  Customer1.MobileNo1 like '${searchQuery}%' ${shopId} OR billmaster.CompanyID = '${CompanyID}' and billmaster.InvoiceNo like '%${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} and Customer1.Idd like '%${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} and Customer1.Sno like '%${searchQuery}%' ${shopId}`;
+
+            console.log(qry);
 
             let [data] = await mysql2.pool.query(qry);
             response.message = "data fetch sucessfully"
@@ -1030,6 +1041,7 @@ module.exports = {
 
 
         } catch (err) {
+            console.log(err);
             next(err)
         }
     },
@@ -1389,7 +1401,7 @@ module.exports = {
                         [fetchbarcodeForPrice] = await mysql2.pool.query(`select * from barcodemasternew where CurrentStatus = 'Sold' and Barcode = '${billDetailData.Barcode}' and BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} limit 1`);
                     }
 
-                    console.log("fetchbarcodeForPrice ====>",fetchbarcodeForPrice);
+                    console.log("fetchbarcodeForPrice ====>", fetchbarcodeForPrice);
 
                     const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus='Available', BillDetailID=0, RetailPrice = ${fetchbarcodeForPrice[0].RetailPrice} , WholeSalePrice = ${fetchbarcodeForPrice[0].WholeSalePrice} where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Sold' limit ${bDetail.Quantity}`)
                     console.log(connected("Barcode Update SuccessFUlly !!!"));
@@ -1580,7 +1592,7 @@ module.exports = {
                         [fetchbarcodeForPrice] = await mysql2.pool.query(`select * from barcodemasternew where CurrentStatus = 'Sold' and Barcode = '${billDetailData.Barcode}' and BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} limit 1`);
                     }
 
-                    console.log("fetchbarcodeForPrice ====>",fetchbarcodeForPrice);
+                    console.log("fetchbarcodeForPrice ====>", fetchbarcodeForPrice);
 
                     const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus='Available', BillDetailID=0, RetailPrice = ${fetchbarcodeForPrice[0].RetailPrice} , WholeSalePrice = ${fetchbarcodeForPrice[0].WholeSalePrice} where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Sold' limit ${bDetail.Quantity}`)
 
