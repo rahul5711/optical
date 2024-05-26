@@ -30,6 +30,7 @@
     transform: 0.5ms !important;
 }
 
+
 @media (max-width: 768px){
   .fit-picture{
     width: 100px;
