@@ -49,6 +49,7 @@ router.post('/changeEmployee', verifyAccessTokenAdmin, Controller.changeEmployee
 router.post('/changeProductStatus', verifyAccessTokenAdmin, Controller.changeProductStatus)
 router.post('/list', verifyAccessTokenAdmin, Controller.list)
 router.post('/searchByFeild', verifyAccessTokenAdmin, Controller.searchByFeild)
+router.post('/searchByRegNo', verifyAccessTokenAdmin, Controller.searchByRegNo)
 router.post('/getBillById', verifyAccessTokenAdmin, Controller.getBillById)
 router.post('/paymentHistory', verifyAccessTokenAdmin, Controller.paymentHistory)
 router.post('/billHistoryByCustomer', verifyAccessTokenAdmin, Controller.billHistoryByCustomer)

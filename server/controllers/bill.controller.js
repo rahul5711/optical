@@ -227,7 +227,7 @@ module.exports = {
             console.log("Invoice No ======>", billMaseterData.InvoiceNo);
             // save Bill master data
             let [bMaster] = await mysql2.pool.query(
-                `insert into billmaster (CustomerID,CompanyID, Sno,ShopID,BillDate, DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee, BillType, RoundOff, AddlDiscountPercentage, ProductStatus) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}','${billMaseterData.DeliveryDate}', '${paymentMode}',  '${billMaseterData.InvoiceNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.SubTotal}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount}, 1, ${LoggedOnUser}, '${req.headers.currenttime}','${req.headers.currenttime}', ${billMaseterData.Doctor ? billMaseterData.Doctor : 0}, '${billMaseterData.TrayNo}', ${billMaseterData.Employee ? billMaseterData.Employee : 0}, ${billType}, ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, '${productStatus}')`
+                `insert into billmaster (CustomerID,CompanyID, Sno,RegNo,ShopID,BillDate, DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee, BillType, RoundOff, AddlDiscountPercentage, ProductStatus) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}','${billMaseterData.RegNo}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}','${billMaseterData.DeliveryDate}', '${paymentMode}',  '${billMaseterData.InvoiceNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.SubTotal}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount}, 1, ${LoggedOnUser}, '${req.headers.currenttime}','${req.headers.currenttime}', ${billMaseterData.Doctor ? billMaseterData.Doctor : 0}, '${billMaseterData.TrayNo}', ${billMaseterData.Employee ? billMaseterData.Employee : 0}, ${billType}, ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, '${productStatus}')`
             );
 
             console.log(connected("BillMaster Add SuccessFUlly !!!"));
@@ -529,7 +529,7 @@ module.exports = {
             }
 
 
-            const [bMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}', ProductStatus = '${billMaseterData.ProductStatus}', BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, RoundOff = ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, AddlDiscountPercentage = ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', TrayNo = '${billMaseterData.TrayNo}' where ID = ${bMasterID}`)
+            const [bMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}', RegNo = '${billMaseterData.RegNo}', ProductStatus = '${billMaseterData.ProductStatus}', BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, RoundOff = ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, AddlDiscountPercentage = ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', TrayNo = '${billMaseterData.TrayNo}' where ID = ${bMasterID}`)
 
             console.log(connected("BillMaster Update SuccessFUlly !!!"));
 
@@ -1029,6 +1029,40 @@ module.exports = {
 
 
             let qry = `SELECT billmaster.*, Customer1.Name AS CustomerName, Customer1.MobileNo1 AS CustomerMob,Customer1.Sno AS Sno,Customer1.Idd AS Idd, shop.Name AS ShopName, shop.AreaName AS AreaName, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser, User2.Name as SalePerson FROM billmaster LEFT JOIN shop ON shop.ID = billmaster.ShopID LEFT JOIN user ON user.ID = billmaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = billmaster.UpdatedBy LEFT JOIN user AS User2 ON User2.ID = billmaster.Employee LEFT JOIN customer AS Customer1 ON Customer1.ID = billmaster.CustomerID WHERE billmaster.CompanyID = ${CompanyID} and Customer1.Name LIKE '${searchQuery}%' ${shopId} OR Customer1.Name LIKE '%${rearrangeString(searchQuery)}%' ${shopId} OR billmaster.CompanyID = ${CompanyID}  and  Customer1.MobileNo1 like '${searchQuery}%' ${shopId} OR billmaster.CompanyID = '${CompanyID}' and billmaster.InvoiceNo like '%${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} and Customer1.Idd like '%${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} and Customer1.Sno like '%${searchQuery}%' ${shopId}`;
+
+            console.log(qry);
+
+            let [data] = await mysql2.pool.query(qry);
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = data.length
+
+            return res.send(response);
+
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
+    searchByRegNo: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "", count: 0 }
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (Body.RegNo.trim() === "") return res.send({ message: "Invalid Query Data" })
+            let { RegNo } = Body;
+            let shopId = ``
+
+            if (shopid !== 0) {
+                shopId = `and billmaster.ShopID = ${shopid}`
+            }
+
+
+            let qry = `SELECT billmaster.*, Customer1.Name AS CustomerName, Customer1.MobileNo1 AS CustomerMob,Customer1.Sno AS Sno,Customer1.Idd AS Idd, shop.Name AS ShopName, shop.AreaName AS AreaName, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser, User2.Name as SalePerson FROM billmaster LEFT JOIN shop ON shop.ID = billmaster.ShopID LEFT JOIN user ON user.ID = billmaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = billmaster.UpdatedBy LEFT JOIN user AS User2 ON User2.ID = billmaster.Employee LEFT JOIN customer AS Customer1 ON Customer1.ID = billmaster.CustomerID WHERE billmaster.CompanyID = ${CompanyID} and billmaster.RegNo LIKE '%${RegNo}%' ${shopId}`;
 
             console.log(qry);
 
