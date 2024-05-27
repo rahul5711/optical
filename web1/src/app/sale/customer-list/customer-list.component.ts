@@ -207,7 +207,7 @@ export class CustomerListComponent implements OnInit {
 
    if(mode === 'Fbill') {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill OrderReady');
-        msg = `*Hi ${customer.Name},*%0A` +
+        msg = `*Hi ${customer.Title} ${customer.Name},*%0A` +
         `${WhatsappMsg}%0A` +
         `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A` +
         `${this.loginShop.MobileNo1}%0A` +

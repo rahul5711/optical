@@ -22,7 +22,7 @@ import { ProductService } from 'src/app/service/product.service';
 import { trigger, style, animate, transition } from '@angular/animations';
 import { DoctorService } from 'src/app/service/doctor.service';
 import { SupportService } from 'src/app/service/support.service';
-
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-billing',
@@ -50,6 +50,7 @@ export class BillingComponent implements OnInit {
       event.preventDefault();
     }
   }
+  @ViewChild('Csearching') Csearching: ElementRef | any;
   @ViewChild('UserNamecontrol') UserNamecontrol: ElementRef | any;
   company = JSON.parse(localStorage.getItem('company') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
@@ -107,8 +108,14 @@ export class BillingComponent implements OnInit {
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.id2 = this.route.snapshot.params['billid'];
-  }
 
+    this.searchKeySubject.pipe(
+      debounceTime(500)  // Adjust the debounce time as needed
+    ).subscribe(({ searchKey, mode }) => {
+      this.performSearch(searchKey, mode);
+    });
+  }
+  searchKeySubject: Subject<{searchKey: any, mode: any}> = new Subject();
   data: any = {
     ID: '', CompanyID: '', Idd: 0, Title:'', Name: '', Sno: '', TotalCustomer: '', VisitDate: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: null, DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
   };
@@ -1024,30 +1031,63 @@ srcCustomerBox = false
     this.getCustomerCategory()
   }
 
-  customerSearch(searchKey: any, mode: any) {
+  // customerSearch(searchKey: any, mode: any) {
 
+  //   this.filteredOptions = [];
+  //   this.param = { Name: '', MobileNo1: '', Address: '', Sno: '' };
+
+  //   if (searchKey.length >= 3) {
+  //     if (mode === 'Name') {
+  //       this.filteredOptions = [];
+  //       this.param.Name = searchKey.trim();
+  //     }else if (mode === 'MobileNo1') {
+  //       this.filteredOptions = [];
+  //       this.param.MobileNo1 = searchKey;
+  //     }else if (mode === 'Address') {
+  //       this.filteredOptions = [];
+  //       this.param.Address = searchKey;
+  //     }else if (mode === 'Sno') {
+  //       this.param.Sno = searchKey;
+  //     } 
+  //     const subs: Subscription = this.cs.customerSearch(this.param).subscribe({
+  //       next: (res: any) => {
+  //         if (res) {
+  //           this.filteredOptions = res.data;
+  //         } else {
+  //           this.as.errorToast(res.message)
+  //         }
+  //       },
+  //       error: (err: any) => console.log(err.message),
+  //       complete: () => subs.unsubscribe(),
+  //     });
+  //   }
+  // }
+  customerSearch(searchKey: any, mode: any) {
+    this.searchKeySubject.next({ searchKey, mode });
+  }
+  performSearch(searchKey: any, mode: any) {
     this.filteredOptions = [];
     this.param = { Name: '', MobileNo1: '', Address: '', Sno: '' };
-
+  
     if (searchKey.length >= 3) {
       if (mode === 'Name') {
         this.filteredOptions = [];
         this.param.Name = searchKey.trim();
-      }else if (mode === 'MobileNo1') {
+      } else if (mode === 'MobileNo1') {
         this.filteredOptions = [];
         this.param.MobileNo1 = searchKey;
-      }else if (mode === 'Address') {
+      } else if (mode === 'Address') {
         this.filteredOptions = [];
         this.param.Address = searchKey;
-      }else if (mode === 'Sno') {
+      } else if (mode === 'Sno') {
         this.param.Sno = searchKey;
-      } 
+      }
       const subs: Subscription = this.cs.customerSearch(this.param).subscribe({
         next: (res: any) => {
           if (res) {
             this.filteredOptions = res.data;
           } else {
-            this.as.errorToast(res.message)
+            this.as.errorToast(res.message);
           }
         },
         error: (err: any) => console.log(err.message),
@@ -1055,7 +1095,6 @@ srcCustomerBox = false
       });
     }
   }
-
   getCustomerSearchId(ID: any) {
     this.sp.show()
     this.filteredOptions = []
