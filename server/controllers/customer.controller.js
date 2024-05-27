@@ -900,7 +900,7 @@ module.exports = {
             const { Name, MobileNo1, Address, Sno } = req.body
 
 
-            let qry = `select customer.ID as ID, customer.Idd, customer.Name as Name, customer.MobileNo1 as MobileNo1, customer.MobileNo2 as MobileNo2  , customer.Sno as Sno , customer.Address as Address from customer where customer.Status = 1  and customer.CompanyID = '${CompanyID}' and customer.Name LIKE '${Name}%' or customer.Name LIKE '%${rearrangeString(Name)}%' and customer.MobileNo1 like'%${MobileNo1}%' and customer.Address like '%${Address}%' and customer.Sno like '%${Sno}%'  order by customer.ID desc`
+            let qry = `select customer.ID as ID, customer.Idd, customer.Name as Name, customer.MobileNo1 as MobileNo1, customer.MobileNo2 as MobileNo2  , customer.Sno as Sno , customer.Address as Address from customer where customer.Status = 1  and customer.CompanyID = '${CompanyID}' and customer.Name LIKE '${Name}%' and customer.MobileNo1 like'%${MobileNo1}%' and customer.Address like '%${Address}%' and customer.Sno like '%${Sno}%'  order by customer.ID desc`
 
 
 
@@ -1229,7 +1229,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query CustomerID Data, Customer not found" })
             }
 
-            const [fetchBill] = await mysql2.pool.query(`select SUM(TotalAmount) as Amount from billmaster where CompanyID = ${CompanyID} and Status = 1 and CustomerID = ${CustomerID}`)
+            const [fetchBill] = await mysql2.pool.query(`select MAX(TotalAmount) as Amount from billmaster where CompanyID = ${CompanyID} and Status = 1 and CustomerID = ${CustomerID}`)
 
             let amount = 0
 
