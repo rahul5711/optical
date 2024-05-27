@@ -56,7 +56,7 @@ export class InventoryReportComponent implements OnInit {
   supplierList: any;
   shopList: any;
   selectsShop: any;
-  inventoryList: any;
+  inventoryList: any = []
   selectedProduct: any;
   prodList: any;
   specList: any;
@@ -189,7 +189,11 @@ export class InventoryReportComponent implements OnInit {
     WholeSalePrice: true,
     ProductExpiryDate: true,
   };
-  temp:any = []
+  temp:any = [];
+  checked = false;
+  selectAllChecked = false;
+  barcodeListt: any = [];
+
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'InventoryReport') {
@@ -1302,9 +1306,16 @@ export class InventoryReportComponent implements OnInit {
     const subs: Subscription = this.purchaseService.updateProductPrice(ProductData).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.modalService.dismissAll()
-          this.temp = [];
+          // this.modalService.dismissAll()
+          // this.temp = [];
           this.UpdatePriceEdit = false;
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Update.',
+            showConfirmButton: false,
+            timer: 1200
+          })
         } else {
           this.as.errorToast(res.message)
           Swal.fire({
@@ -1334,6 +1345,96 @@ export class InventoryReportComponent implements OnInit {
       }
     })
    }
+  }
+
+  selectBarcode(type: any, toggleCheckbox: any = true) {
+    if (type === 'all') {
+      if (toggleCheckbox) {
+        this.checked = !this.checked; // Toggle the checked property if needed
+        this.sp.show();
+        this.barcodeListt = [];
+        this.inventoryList.forEach((ele: any, i: any) => {
+          if (this.checked && ele.Status !== 0) {
+            ele.Checked = 1;
+            ele.index = i;
+            this.barcodeListt.push(ele);
+          } else {
+            ele.Checked = 0;
+          }
+        });
+        this.sp.hide();
+      } else {
+        // If toggleCheckbox is false, uncheck all items
+        this.checked = false;
+        this.selectAllChecked = false
+        this.barcodeListt = [];
+        this.inventoryList.forEach((ele: any) => {
+          ele.Checked = 0;
+          ele.Checked = false
+        });
+      }
+    }
+  }
+  
+  
+
+  singleSelectBarcode(i: any) {
+    const currentItem = this.inventoryList[i];
+    currentItem.Checked = this.checked
+    if (currentItem.Checked === false || currentItem.Checked === 0) {
+      currentItem.index = i;
+      this.barcodeListt.push(currentItem);
+    } else if (currentItem.Checked === true || currentItem.Checked === 1) {
+      // Use filter to remove the item from barcodeListt based on the index
+      this.barcodeListt = this.barcodeListt.filter((el: any) => el.index !== i);
+    }
+  }
+
+  barcodePrintAll() {
+    if (this.barcodeListt.length != 0) {
+      this.sp.show();
+      let tempItem: any = [];
+      let Qty = 0;
+
+      this.barcodeListt.forEach((ele: any) => {
+        if (ele.Status !== 0 && ele.ID != null && ele.Barcode != null) {
+          Qty += ele.Count;
+          // Create a copy of 'ele' for each quantity and push it to 'tempItem'
+          for (let i = 0; i < ele.Count; i++) {
+            tempItem.push({ ...ele }); // Copy 'ele' using the spread operator
+          }
+        }else{
+            alert('This Page Refresh.')
+        }
+      });
+
+      const subs: Subscription = this.purchaseService.AllPrintBarcode(tempItem).subscribe({
+        next: (res: any) => {
+          if (res != '') { 
+            this.barcodeListt = [];
+            this.selectBarcode('all', false);
+            this.inventoryList.forEach((e: any) =>{
+              e.Checked = false
+            })
+            window.open(res, "_blank");
+           
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    } else {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: `' Check if there are checkboxes on the page and make sure you've selected the appropriate ones.'`,
+        showConfirmButton: true,
+        backdrop: false,
+      })
+    }
   }
 
 

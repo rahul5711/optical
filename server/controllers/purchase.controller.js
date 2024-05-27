@@ -1079,7 +1079,14 @@ module.exports = {
                     ele.ProductModelName =  ProductModelName 
                 }
                 ele.ProductUniqueBarcode = ele.UniqueBarcode;
-                ele.Barcode = ele.BaseBarCode;
+                
+
+                if(ele.BaseBarCode == null){
+                    ele.Barcode = ele.Barcode;
+                }else{
+                    ele.Barcode = ele.BaseBarCode;
+                }
+
                 ele.BarcodeName = shopdetails[0].BarcodeName;
                 
             });
