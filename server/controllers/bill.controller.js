@@ -1965,6 +1965,9 @@ module.exports = {
             const User = req.body.User;
             const Customer = req.body.customer;
             const BillMaster = req.body.billMaster;
+            BillMaster.DeliveryDate  = moment(req.body.billMaster.DeliveryDate).format('DD-MM-YYYY')
+            BillMaster.BillDate  = moment(req.body.billMaster.BillDate).format('DD-MM-YYYY')
+            
             req.body.billItemList = req.body.billItemList.filter((element) => {
                 return element.Status !== 0;
             });
