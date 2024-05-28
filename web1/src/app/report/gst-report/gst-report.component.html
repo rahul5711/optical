@@ -283,6 +283,7 @@
                                             <th>GSTStatus</th>
                                             <th>PaymentStatus</th>
                                             <th>ShopName</th>
+                                            <th>GSTNo</th>
                                         </tr>
                                            <tr class="totolRow">
                                             <td style="white-space: nowrap;">
@@ -309,6 +310,7 @@
                                             <td style="cursor: pointer;" (click)="openModal(content1)">{{this.totalGstAmount}}</td>
                                             <td></td>
                                             <td>{{this.totalAmount}}</td>
+                                            <td></td>
                                             <td></td>
                                             <td></td>
                                             <td></td>
@@ -355,6 +357,7 @@
                                               </td>
                                               <td>{{g.PaymentStatus}}</td>
                                               <td>{{g.ShopName}}({{g.AreaName}})</td>
+                                              <td>{{g.GSTNo}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
