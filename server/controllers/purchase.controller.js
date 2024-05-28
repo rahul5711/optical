@@ -4385,10 +4385,10 @@ module.exports = {
                 if (!item.Barcode || item.Barcode === 0 || item.Barcode === null || item.Barcode === '') {
                     return res.send({ message: "Invalid Query Barcode no" })
                 }
-                if (!item.RetailPrice || item.RetailPrice === undefined || item.RetailPrice === null || item.RetailPrice === '') {
+                if (item.RetailPrice === undefined || item.RetailPrice === null || item.RetailPrice === '') {
                     return res.send({ message: "Invalid Query RetailPrice" })
                 }
-                if (!item.WholeSalePrice || item.WholeSalePrice === undefined || item.WholeSalePrice === null || item.WholeSalePrice === '') {
+                if (item.WholeSalePrice === undefined || item.WholeSalePrice === null || item.WholeSalePrice === '') {
                     return res.send({ message: "Invalid Query WholeSalePrice" })
                 }
 
