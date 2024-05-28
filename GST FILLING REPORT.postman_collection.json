@@ -534,6 +534,125 @@
 					"body": "{\n    \"data\": [\n        {\n            \"Sel\": 1,\n            \"ID\": 509991,\n            \"IsGstFiled\": 0\n        },\n        {\n            \"Sel\": 1,\n            \"ID\": 509993,\n            \"IsGstFiled\": 0\n        }\n    ],\n    \"success\": true,\n    \"message\": \"data update successfully\"\n}"
 				}
 			]
+		},
+		{
+			"name": "generateInvoiceNo",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTY5MDk5ODgsImV4cCI6MTcxNjk5NjM4OCwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.T7A7Y7NIERqu21Vuy3l5mMKIqpFz0ybtHb2_P1bEJDw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "SelectedShop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Parem\": \" and billdetail.IsGstFiled = 0 and billdetail.Status = 1\",\r\n    \"Productsearch\": \"\",\r\n    \"ShopID\": 1,\r\n    \"FromDate\": \"2024-03-28\",\r\n    \"ToDate\": \"2024-03-28\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/bill/generateInvoiceNo",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"bill",
+						"generateInvoiceNo"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "generateInvoiceNo",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "SelectedShop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Parem\": \" and billdetail.IsGstFiled = 0 and billdetail.Status = 1\",\r\n    \"Productsearch\": \"\",\r\n    \"ShopID\": 1,\r\n    \"FromDate\": \"2024-03-28\",\r\n    \"ToDate\": \"2024-03-28\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/bill/generateInvoiceNo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"bill",
+								"generateInvoiceNo"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "3014"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"bc6-aWPpl6GiDlm/aUSDyXkS1RZfO/o\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 28 May 2024 18:37:18 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Sel\": 0,\n            \"IsGstFiled\": 0,\n            \"ID\": 502927,\n            \"ProductName\": \"FULL FRAME/RAYBAN/AS\",\n            \"ProductTypeID\": 6,\n            \"ProductTypeName\": \"FRAME\",\n            \"HSNCode\": \"90031100\",\n            \"UnitPrice\": 500,\n            \"Quantity\": 1,\n            \"SubTotal\": 446.43,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 12,\n            \"GSTType\": \"CGST-SGST\",\n            \"TotalAmount\": 500,\n            \"WholeSale\": 0,\n            \"Manual\": 0,\n            \"PreOrder\": 0,\n            \"BaseBarCode\": \"10000008\",\n            \"Barcode\": \"10000008\",\n            \"Status\": 1,\n            \"CancelStatus\": 1,\n            \"ProductStatus\": 0,\n            \"GSTAmount\": 53.57,\n            \"PurchasePrice\": 100.8,\n            \"CompanyID\": 1,\n            \"CustomerName\": \"SANTOSASDASD\",\n            \"CustomerMoblieNo1\": \"\",\n            \"GSTNo\": \"\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"BillInvoiceNo\": \"2403-R1-1-283\",\n            \"BillDate\": \"2024-03-28T10:58:40.000Z\",\n            \"DeliveryDate\": \"2024-03-28T10:58:40.000Z\",\n            \"EmployeeName\": \"OPTICALGURU BETA\",\n            \"ShopName\": \"OPTICALGURU BETA\",\n            \"AreaName\": \"1\",\n            \"Profit\": 345.63,\n            \"ModifyPurchasePrice\": 100.8,\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 26.785\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 26.785\n                }\n            ]\n        },\n        {\n            \"Sel\": 0,\n            \"IsGstFiled\": 0,\n            \"ID\": 503092,\n            \"ProductName\": \"FULL FRAME/RAYBAN/TEEN AGER\",\n            \"ProductTypeID\": 6,\n            \"ProductTypeName\": \"FRAME\",\n            \"HSNCode\": \"90031100\",\n            \"UnitPrice\": 1200,\n            \"Quantity\": 1,\n            \"SubTotal\": 1071.43,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 12,\n            \"GSTType\": \"CGST-SGST\",\n            \"TotalAmount\": 1200,\n            \"WholeSale\": 0,\n            \"Manual\": 0,\n            \"PreOrder\": 0,\n            \"BaseBarCode\": \"10000060\",\n            \"Barcode\": \"10000060\",\n            \"Status\": 1,\n            \"CancelStatus\": 1,\n            \"ProductStatus\": 0,\n            \"GSTAmount\": 128.57,\n            \"PurchasePrice\": 90,\n            \"CompanyID\": 1,\n            \"CustomerName\": \"SDFSDSDG\",\n            \"CustomerMoblieNo1\": \"\",\n            \"GSTNo\": \"\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"BillInvoiceNo\": \"2403-R1-1-284\",\n            \"BillDate\": \"2024-03-28T12:38:21.000Z\",\n            \"DeliveryDate\": \"2024-03-28T12:38:21.000Z\",\n            \"EmployeeName\": \"OPTICALGURU BETA\",\n            \"ShopName\": \"OPTICALGURU BETA\",\n            \"AreaName\": \"1\",\n            \"Profit\": 981.4300000000001,\n            \"ModifyPurchasePrice\": 90,\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 64.285\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 64.285\n                }\n            ]\n        },\n        {\n            \"Sel\": 0,\n            \"IsGstFiled\": 0,\n            \"ID\": 503114,\n            \"ProductName\": \"FULL FRAME/RAYBAN/3012\",\n            \"ProductTypeID\": 6,\n            \"ProductTypeName\": \"FRAME\",\n            \"HSNCode\": \"90031100\",\n            \"UnitPrice\": 2500,\n            \"Quantity\": 1,\n            \"SubTotal\": 2232.14,\n            \"DiscountPercentage\": 0,\n            \"DiscountAmount\": 0,\n            \"GSTPercentage\": 12,\n            \"GSTType\": \"CGST-SGST\",\n            \"TotalAmount\": 2500,\n            \"WholeSale\": 0,\n            \"Manual\": 0,\n            \"PreOrder\": 0,\n            \"BaseBarCode\": \"10000122\",\n            \"Barcode\": \"10000122\",\n            \"Status\": 1,\n            \"CancelStatus\": 1,\n            \"ProductStatus\": 0,\n            \"GSTAmount\": 267.86,\n            \"PurchasePrice\": 50,\n            \"CompanyID\": 1,\n            \"CustomerName\": \"SDFSDF\",\n            \"CustomerMoblieNo1\": \"\",\n            \"GSTNo\": \"\",\n            \"PaymentStatus\": \"Unpaid\",\n            \"BillInvoiceNo\": \"2403-R1-1-285\",\n            \"BillDate\": \"2024-03-28T12:55:46.000Z\",\n            \"DeliveryDate\": \"2024-03-28T12:55:46.000Z\",\n            \"EmployeeName\": \"OPTICALGURU BETA\",\n            \"ShopName\": \"OPTICALGURU BETA\",\n            \"AreaName\": \"1\",\n            \"Profit\": 2182.14,\n            \"ModifyPurchasePrice\": 50,\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 133.93\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 133.93\n                }\n            ]\n        }\n    ],\n    \"InvoiceNo\": \"HVD/24/Mar-1\",\n    \"calculation\": [\n        {\n            \"totalQty\": \"3\",\n            \"totalGstAmount\": \"450.00\",\n            \"totalAmount\": \"4200.00\",\n            \"totalDiscount\": 0,\n            \"totalUnitPrice\": \"3750.00\",\n            \"totalPurchasePrice\": \"240.80\",\n            \"totalProfit\": \"3509.20\",\n            \"gst_details\": [\n                {\n                    \"GSTType\": \"CGST\",\n                    \"Amount\": 225\n                },\n                {\n                    \"GSTType\": \"SGST\",\n                    \"Amount\": 225\n                },\n                {\n                    \"GSTType\": \"IGST\",\n                    \"Amount\": 0\n                }\n            ]\n        }\n    ],\n    \"success\": true,\n    \"message\": \"success\"\n}"
+				}
+			]
 		}
 	]
 }

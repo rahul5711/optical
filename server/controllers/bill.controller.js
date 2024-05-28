@@ -42,6 +42,42 @@ function gstAmount(SubTotal, GSTPercentage) {
     return gstAmount
 }
 
+async function validateSameMonthAndYear(fromDate, toDate) {
+    // Create Date objects from the input dates
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+
+    // Check if both dates have the same month and year
+    const isSameMonth = from.getMonth() === to.getMonth();
+    const isSameYear = from.getFullYear() === to.getFullYear();
+
+    // Return true if both conditions are met, otherwise false
+    return isSameMonth && isSameYear;
+}
+
+function numberToMonth(number) {
+    const months =  {
+        1: "Jan",
+        2: "Feb",
+        3: "Mar",
+        4: "Apr",
+        5: "May",
+        6: "Jun",
+        7: "Jul",
+        8: "Aug",
+        9: "Sep",
+        10: "Oct",
+        11: "Nov",
+        12: "Dec"
+    };;
+
+    if (months.hasOwnProperty(number)) {
+        return months[number];
+    } else {
+        return "Invalid month number";
+    }
+}
+
 module.exports = {
     getDoctor: async (req, res, next) => {
         try {
@@ -1999,9 +2035,9 @@ module.exports = {
             const User = req.body.User;
             const Customer = req.body.customer;
             const BillMaster = req.body.billMaster;
-            BillMaster.DeliveryDate  = moment(req.body.billMaster.DeliveryDate).format('DD-MM-YYYY')
-            BillMaster.BillDate  = moment(req.body.billMaster.BillDate).format('DD-MM-YYYY')
-            
+            BillMaster.DeliveryDate = moment(req.body.billMaster.DeliveryDate).format('DD-MM-YYYY')
+            BillMaster.BillDate = moment(req.body.billMaster.BillDate).format('DD-MM-YYYY')
+
             req.body.billItemList = req.body.billItemList.filter((element) => {
                 return element.Status !== 0;
             });
@@ -8792,6 +8828,213 @@ module.exports = {
             next(error)
         }
     },
+    generateInvoiceNo: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, InvoiceNo: "", calculation: [{
+                    "totalQty": 0,
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalDiscount": 0,
+                    "totalUnitPrice": 0,
+                    "totalPurchasePrice": 0,
+                    "totalProfit": 0,
+                    "gst_details": []
+                }], success: true, message: ""
+            }
+            const { Parem, Productsearch, FromDate, ToDate, ShopID } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            if (ShopID === null || ShopID === undefined || ShopID === "" || ShopID.toString().toUpperCase() === "ALL") return res.send({ message: "Invalid Query ShopID Data" })
+            if (FromDate === null || FromDate === undefined || FromDate == 0 || FromDate === "") return res.send({ message: "Invalid Query FromDate Data" })
+            if (ToDate === null || ToDate === undefined || ToDate == 0 || ToDate === "") return res.send({ message: "Invalid Query ToDate Data" })
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            if (Productsearch === undefined || Productsearch === null) {
+                return res.send({ success: false, message: "Invalid Query Data" })
+            }
+
+            let searchString = ``
+            if (Productsearch) {
+                searchString = ` and billdetail.ProductName like '%${Productsearch}%'`
+            }
+
+            let shopParams = ``
+
+            if (ShopID) {
+                shopParams = ` and billmaster.ShopID = ${ShopID}`
+            }
+
+            let dateCheck = await validateSameMonthAndYear(FromDate, ToDate);
+
+            if (!dateCheck) {
+                return res.send({ success: false, message: `This GST PDF will not work in this date range, please select correct date` })
+            }
+            let fromDate = moment(FromDate).format("YYYY-MM-DD")
+            let toDate = moment(ToDate).format("YYYY-MM-DD")
+            let dateParams = ` and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between '${fromDate}' and '${toDate}'`
+
+            const [fetchShop] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and Status = 1 and ID = ${ShopID}`)
+
+            if (!fetchShop.length) {
+                return res.send({ success: false, message: `Shop not found` })
+            }
+
+            let InvoiceNo = `HVD/${new Date(FromDate).getFullYear().toString().slice(-2)}/${numberToMonth(new Date(FromDate).getMonth() + 1 )}-${fetchShop[0].Sno}`
+
+            response.InvoiceNo = InvoiceNo
+
+            qry = `SELECT 0 as Sel, billdetail.IsGstFiled, billdetail.ID,billdetail.ProductName,billdetail.ProductTypeID,billdetail.ProductTypeName,billdetail.HSNCode,billdetail.UnitPrice,billdetail.Quantity,billdetail.SubTotal,billdetail.DiscountPercentage,billdetail.DiscountAmount,billdetail.GSTPercentage,billdetail.GSTType,billdetail.TotalAmount,billdetail.WholeSale,billdetail.Manual,billdetail.PreOrder,billdetail.BaseBarCode,billdetail.Barcode, billdetail.Status, billdetail.CancelStatus, billdetail.ProductStatus,billdetail.GSTAmount,billdetail.PurchasePrice,billmaster.CompanyID,customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName, shop.Name as ShopName, shop.AreaName,0 AS Profit , 0 AS ModifyPurchasePrice  FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.CompanyID = '${CompanyID}' ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 ${shopParams} ${dateParams} ` + Parem
+
+            let [datum] = await mysql2.pool.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
+            left join user on user.ID = billmaster.Employee
+            LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.CompanyID = ${CompanyID}  ${searchString} ${shopParams} ${dateParams} ` + Parem)
+
+            let [data] = await mysql2.pool.query(qry);
+
+            let [data2] = await mysql2.pool.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE  billdetail.CompanyID = ${CompanyID} ${searchString} ${shopParams} ${dateParams} ` + Parem);
+
+            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            const values = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        values.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        values.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+
+            if (data2.length && values.length) {
+                for (const item of data2) {
+                    values.forEach(e => {
+                        if (e.GSTType === item.GSTType) {
+                            e.Amount += item.GSTAmount
+                        }
+
+                        // CGST-SGST
+
+                        if (item.GSTType === 'CGST-SGST') {
+
+                            if (e.GSTType === 'CGST') {
+                                e.Amount += item.GSTAmount / 2
+                            }
+
+                            if (e.GSTType === 'SGST') {
+                                e.Amount += item.GSTAmount / 2
+                            }
+                        }
+                    })
+
+                }
+
+            }
+            const values2 = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        values2.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        values2.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+
+            if (data.length && values2.length) {
+                for (let item of data) {
+                    item.gst_details = []
+                    values2.forEach(e => {
+                        if (e.GSTType === item.GSTType) {
+                            e.Amount += item.GSTAmount
+                            item.gst_details.push({
+                                GSTType: item.GSTType,
+                                Amount: item.GSTAmount
+                            })
+                        }
+
+                        // CGST-SGST
+
+                        if (item.GSTType === 'CGST-SGST') {
+
+                            if (e.GSTType === 'CGST') {
+                                e.Amount += item.GSTAmount / 2
+
+                                item.gst_details.push({
+                                    GSTType: 'CGST',
+                                    Amount: item.GSTAmount / 2
+                                })
+                            }
+
+                            if (e.GSTType === 'SGST') {
+                                e.Amount += item.GSTAmount / 2
+
+                                item.gst_details.push({
+                                    GSTType: 'SGST',
+                                    Amount: item.GSTAmount / 2
+                                })
+                            }
+                        }
+                    })
+
+                    // profit calculation
+                    item.ModifyPurchasePrice = item.PurchasePrice * item.Quantity;
+                    item.Profit = item.SubTotal - (item.PurchasePrice * item.Quantity)
+
+                    response.calculation[0].totalPurchasePrice += item.ModifyPurchasePrice
+                    response.calculation[0].totalProfit += item.Profit
+                }
+
+
+
+            }
+            response.calculation[0].gst_details = values2;
+            response.calculation[0].totalPurchasePrice = response.calculation[0].totalPurchasePrice.toFixed(2) || 0
+            response.calculation[0].totalProfit = response.calculation[0].totalProfit.toFixed(2) || 0
+            response.calculation[0].totalQty = datum[0].totalQty ? datum[0].totalQty : 0
+            response.calculation[0].totalGstAmount = datum[0].totalGstAmount ? datum[0].totalGstAmount.toFixed(2) : 0
+            response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount.toFixed(2) : 0
+            response.calculation[0].totalDiscount = datum[0].totalDiscount ? datum[0].totalDiscount.toFixed(2) : 0
+            response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice.toFixed(2) : 0
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+
+    },
     getGstReport: async (req, res, next) => {
         try {
             const response = {
@@ -8830,7 +9073,7 @@ module.exports = {
 
             let [data] = await mysql2.pool.query(qry);
 
-            let [data2] = await mysql2.pool.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE  billdetail.CompanyID = ${CompanyID} ` + Parem);
+            let [data2] = await mysql2.pool.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE  billdetail.CompanyID = ${CompanyID} ${searchString} ` + Parem);
 
             let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 

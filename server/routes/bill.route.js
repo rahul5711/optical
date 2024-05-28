@@ -121,6 +121,6 @@ router.post('/getLoyalityDetailReport',verifyAccessTokenAdmin, Controller.getLoy
 
 router.post('/getGstReport', verifyAccessTokenAdmin, Controller.getGstReport)
 router.post('/submitGstFile', verifyAccessTokenAdmin, Controller.submitGstFile)
-
+router.post('/generateInvoiceNo', verifyAccessTokenAdmin, Controller.generateInvoiceNo)
 
 module.exports = router
