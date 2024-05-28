@@ -73,6 +73,10 @@ export class BillService {
     return this.httpClient.post<any>(this.url + '/searchByFeild', searchQuery, httpOptions)
     .pipe(catchError(this.handleError));
   }
+  searchByRegNo(RegNo: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/searchByRegNo', RegNo, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
   getBillById(ID:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/getBillById', {ID: ID}, httpOptions)

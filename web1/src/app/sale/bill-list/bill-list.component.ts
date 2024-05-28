@@ -35,6 +35,7 @@ export class BillListComponent implements OnInit {
   }
   
   @ViewChild('searching') searching: ElementRef | any;
+  @ViewChild('RegNo') RegNo: ElementRef | any;
   company = JSON.parse(localStorage.getItem('company') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
@@ -46,6 +47,7 @@ export class BillListComponent implements OnInit {
 
   gridview = true
   term = "";
+  term1 = "";
   dataList: any = [];
   currentPage = 1;
   itemsPerPage = 10;
@@ -563,6 +565,49 @@ export class BillListComponent implements OnInit {
           }
           this.sp.show()
           const subs: Subscription = this.bill.searchByFeild(dtm).subscribe({
+            next: (res: any) => {
+              if (res.success) {
+                this.collectionSize = 1;
+                this.page = 1;
+                this.dataList = res.data;
+                this.as.successToast(res.message)
+              } else {
+                this.as.errorToast(res.message)
+              }
+              this.sp.hide();
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subs.unsubscribe(),
+          });
+        } else {
+          this.sp.hide()
+          this.getList()
+        }
+      });
+    }
+
+    if (this.RegNo) {
+      const nativeElem = this.RegNo.nativeElement
+      fromEvent(nativeElem, 'keyup').pipe(
+        map((event: any) => {
+          return event.target.value;
+        }),
+        debounceTime(1000),
+        distinctUntilChanged(),
+      ).subscribe((text: string) => {
+        //  const name = e.target.value;
+        let data = {
+          searchQuery: text.trim(),
+        }
+
+        if (data.searchQuery !== "") {
+          const dtm = {
+            currentPage: 1,
+            itemsPerPage: 50000,
+            RegNo: data.searchQuery
+          }
+          this.sp.show()
+          const subs: Subscription = this.bill.searchByRegNo(dtm).subscribe({
             next: (res: any) => {
               if (res.success) {
                 this.collectionSize = 1;

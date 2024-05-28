@@ -32,12 +32,19 @@
                     (pageChange)="getList()" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
                   </ngb-pagination>
                 </div>
-                <div class="col-md-2 col-6 ms-auto order-0 order-md-1">
+                <div class="col-md-1 col-6 order-0 order-md-1 ms-auto">
+                  <div class="input-group">
+                    <input placeholder="RegNo"  [(ngModel)]="term1" #RegNo mdbInput type="search" id="form1"
+                      class="form-control" />
+                  </div>
+                </div>
+                <div class="col-md-2 col-6  order-0 order-md-1">
                   <div class="input-group">
                     <input placeholder="Search"  [(ngModel)]="term" #searching mdbInput type="search" id="form1"
                       class="form-control" />
                   </div>
                 </div>
+               
                 <div *ngIf="addBillingSearch" [routerLink]="['/sale/billing',0,0]"
                   class="col-md-1 col-1  order-1 order-md-1" style="width: 40px; padding: 0; cursor: pointer;">
                   <mat-icon class="col-white plus_icon me-1">
@@ -99,6 +106,7 @@
                           <th>Cust_ID</th>
                           <th>Customer</th>
                           <th>MoblieNo.</th>
+                          <th>RegNo</th>
                           <th>Invoice#</th>
                           <th>InvoiceDate</th>
                           <th>ProductStatus</th>
@@ -151,6 +159,7 @@
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.Idd}}</td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.CustomerName}}</td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.CustomerMob}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.RegNo}}</td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.InvoiceNo}}</td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{dateFormat(Bdata.BillDate)}}</td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.ProductStatus }}</td>

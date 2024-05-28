@@ -99,6 +99,17 @@
                                     </div>
                                     <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                         <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>TAX Percentage</mat-label>
+                                            <mat-select name="GSTPercentage"
+                                                [(ngModel)]="data.B2BTOB2C">
+                                                <mat-option [value]=0>All</mat-option>
+                                                <mat-option value=" and customer.GSTNo != ''">B2B</mat-option>
+                                                <mat-option value=" and customer.GSTNo = ''">B2C</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                                        <mat-form-field class="example-full-width mb-0">
                                             <mat-label>TAX Type</mat-label>
                                             <mat-select name="GSTType" [(ngModel)]="data.GSTType"
                                                 #singleSelect>

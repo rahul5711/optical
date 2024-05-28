@@ -48,7 +48,7 @@ export class GstReportComponent implements OnInit {
 
   data: any = {
     FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), GSTStatus: 0, ShopID:0,
-    CustomerID: 0, CustomerGSTNo: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0
+    CustomerID: 0, CustomerGSTNo: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0,B2BTOB2C:0
   };
 
   GstData:any ={
@@ -348,6 +348,10 @@ export class GstReportComponent implements OnInit {
         Parem = Parem + ' and billdetail.PreOrder = ' + '0';
         Parem = Parem + ' and billdetail.Manual = ' + '0';
       }
+    }
+
+    if (this.data.B2BTOB2C !== 0) {
+      Parem = Parem + this.data.B2BTOB2C;
     }
 
     const subs: Subscription = this.bill.getGstReport(Parem,this.Productsearch).subscribe({
