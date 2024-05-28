@@ -1015,7 +1015,7 @@ module.exports = {
                     employeeFilter = `and spectacle_rx.CreatedBy = ${Employee}`
                 }
 
-                qry = `select spectacle_rx.*, customer.Name as CustomerName, customer.MobileNo1 as CustomerMobileNo1, shop.Name as ShopName, shop.AreaName, user.Name as CreatedPerson from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID left join shop on shop.ID = customer.ShopID left join user on user.ID = spectacle_rx.CreatedBy where spectacle_rx.Status = 1 and spectacle_rx.CompanyID = ${CompanyID} ${shopFilter}  ${employeeFilter} and spectacle_rx.VisitDate between '${From}' and '${To}'`;
+                qry = `select spectacle_rx.*, customer.Name as CustomerName, customer.MobileNo1 as CustomerMobileNo1, shop.Name as ShopName, shop.AreaName, user.Name as CreatedPerson from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID left join shop on shop.ID = customer.ShopID left join user on user.ID = spectacle_rx.CreatedBy where spectacle_rx.Status = 1 and customer.Status = 1 and spectacle_rx.CompanyID = ${CompanyID} ${shopFilter}  ${employeeFilter} and spectacle_rx.VisitDate between '${From}' and '${To}'`;
 
             } else if (Type === 'contact_lens_rx') {
                 if (Employee === 'All') {
@@ -1024,7 +1024,7 @@ module.exports = {
                     employeeFilter = `contact_lens_rx.CreatedBy = ${Employee}`
                 }
 
-                qry = `select contact_lens_rx.*, customer.Name as CustomerName, customer.MobileNo1 as CustomerMobileNo1, shop.Name as ShopName, shop.AreaName, user.Name as CreatedPerson from contact_lens_rx left join customer on customer.ID = contact_lens_rx.CustomerID left join shop on shop.ID = customer.ShopID left join user on user.ID = contact_lens_rx.CreatedBy where contact_lens_rx.Status = 1 and contact_lens_rx.CompanyID = ${CompanyID} ${shopFilter}  ${employeeFilter} and contact_lens_rx.VisitDate between '${From}' and '${To}'`;
+                qry = `select contact_lens_rx.*, customer.Name as CustomerName, customer.MobileNo1 as CustomerMobileNo1, shop.Name as ShopName, shop.AreaName, user.Name as CreatedPerson from contact_lens_rx left join customer on customer.ID = contact_lens_rx.CustomerID left join shop on shop.ID = customer.ShopID left join user on user.ID = contact_lens_rx.CreatedBy where contact_lens_rx.Status = 1 and customer.Status = 1 and contact_lens_rx.CompanyID = ${CompanyID} ${shopFilter}  ${employeeFilter} and contact_lens_rx.VisitDate between '${From}' and '${To}'`;
 
             } else if (Type === 'contact_lens_rx') {
                 if (Employee === 'All') {
@@ -1033,7 +1033,7 @@ module.exports = {
                     employeeFilter = `contact_lens_rx.CreatedBy = ${Employee}`
                 }
 
-                qry = `select contact_lens_rx.*, customer.Name as CustomerName, customer.MobileNo1 as CustomerMobileNo1, shop.Name as ShopName, shop.AreaName, user.Name as CreatedPerson from contact_lens_rx left join customer on customer.ID = contact_lens_rx.CustomerID left join shop on shop.ID = customer.ShopID left join user on user.ID = contact_lens_rx.CreatedBy where contact_lens_rx.Status = 1 and contact_lens_rx.CompanyID = ${CompanyID} ${shopFilter}  ${employeeFilter} and contact_lens_rx.VisitDate between '${From}' and '${To}'`;
+                qry = `select contact_lens_rx.*, customer.Name as CustomerName, customer.MobileNo1 as CustomerMobileNo1, shop.Name as ShopName, shop.AreaName, user.Name as CreatedPerson from contact_lens_rx left join customer on customer.ID = contact_lens_rx.CustomerID left join shop on shop.ID = customer.ShopID left join user on user.ID = contact_lens_rx.CreatedBy where contact_lens_rx.Status = 1 and customer.Status = 1 and contact_lens_rx.CompanyID = ${CompanyID} ${shopFilter}  ${employeeFilter} and contact_lens_rx.VisitDate between '${From}' and '${To}'`;
 
             } else {
                 return res.send({ message: "Invalid Type Data" })
