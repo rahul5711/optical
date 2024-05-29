@@ -1205,16 +1205,13 @@ srcCustomerBox = false
       });
     }
     if(mode === 'other'){
-
-
-
       let body = { customer: this.data, spectacle: this.spectacle, contact: this.clens, other: this.other, mode }
       this.sp.show();
       const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
         next: (res: any) => {
           if (res) {
-            this.clens.FileURL = this.env.apiUrl + "/uploads/" + res; 
-            const url = this.clens.FileURL;
+            this.other.FileURL = this.env.apiUrl + "/uploads/" + res; 
+            const url = this.other.FileURL;
             window.open(url, "_blank");
           } else {
             this.as.errorToast(res.message)
@@ -1312,8 +1309,8 @@ srcCustomerBox = false
           this.otherContant = false
           this.otherNoPower = false
           this.modalService.dismissAll()
-          this.otherselect.FileURL = this.env.apiUrl + "/uploads/" + res;
-          const url = this.otherselect.FileURL
+          this.other.FileURL = this.env.apiUrl + "/uploads/" + res;
+          const url = this.other.FileURL
           window.open(url, "_blank");
         } else {
           this.as.errorToast(res.message)
