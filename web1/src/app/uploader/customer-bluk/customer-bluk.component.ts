@@ -80,6 +80,9 @@ export class CustomerBlukComponent implements OnInit {
     'Remarks' : '',
     'Category' : '',
     'SR_MRD_No' : '',
+    'GSTNo' : '',
+    'ReferenceType' : '',
+    'Other' : '',
     }
   ]
 

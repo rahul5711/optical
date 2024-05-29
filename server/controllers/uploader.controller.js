@@ -420,11 +420,11 @@ module.exports = {
                 newData.Sno = fd[14] ? fd[14] : `${CompanyID}-${fd[0]}`
                 newData.PhotoURL = ""
                 newData.RefferedByDoc = ""
-                newData.ReferenceType = ""
-                newData.Other = ""
+                newData.ReferenceType = fd[16] ? fd[16] : ''
+                newData.Other = fd[17] ? fd[17] : ''
                 newData.Remarks = fd[12] ? fd[12] : ''
                 newData.Category = fd[13] ? fd[13] : ''
-                newData.GSTNo = ""
+                newData.GSTNo = fd[15] ? fd[15] : ''
                 // console.log(newData);
                 processedFileData.push(newData)
             }
