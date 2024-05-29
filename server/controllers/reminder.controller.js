@@ -45,7 +45,7 @@ module.exports = {
             }
 
             if (type === 'Customer') {
-                qry = `select Name, MobileNo1, DOB from customer where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}' ${shopId}`
+                qry = `select Name, MobileNo1, DOB, Title from customer where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}' ${shopId}`
             } else if (type === 'Supplier') {
                 qry = `select Name, MobileNo1, DOB from supplier where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
             } else if (type === 'Employee') {
@@ -106,7 +106,7 @@ module.exports = {
             }
 
             if (type === 'Customer') {
-                qry = `select Name, MobileNo1, Anniversary from customer where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d')  = '${date}'  ${shopId}`
+                qry = `select Name, MobileNo1, Anniversary, Title from customer where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d')  = '${date}'  ${shopId}`
             } else if (type === 'Supplier') {
                 qry = `select Name, MobileNo1, Anniversary from supplier where CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
             } else if (type === 'Employee') {
@@ -164,7 +164,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
 
-            let qry = `select billmaster.InvoiceNo, customer.Name, customer.MobileNo1, DeliveryDate  from billmaster left join customer on customer.ID = billmaster.CustomerID where billmaster.CompanyID = ${CompanyID} ${shopId} and DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') = '${date}'`
+            let qry = `select billmaster.InvoiceNo, customer.Title, customer.Name, customer.MobileNo1, DeliveryDate  from billmaster left join customer on customer.ID = billmaster.CustomerID where billmaster.CompanyID = ${CompanyID} ${shopId} and DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') = '${date}'`
 
 
             const [datum] = await mysql2.pool.query(qry)
@@ -212,7 +212,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
 
-            let qry = `select customer.Name, customer.MobileNo1, ExpiryDate  from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID where spectacle_rx.CompanyID = ${CompanyID} ${shopId} and DATE_FORMAT(spectacle_rx.ExpiryDate, '%Y-%m-%d') = '${date}'`
+            let qry = `select customer.Title, customer.Name, customer.MobileNo1, ExpiryDate  from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID where spectacle_rx.CompanyID = ${CompanyID} ${shopId} and DATE_FORMAT(spectacle_rx.ExpiryDate, '%Y-%m-%d') = '${date}'`
 
 
             const [datum] = await mysql2.pool.query(qry)
@@ -262,7 +262,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
 
-            let qry = `select DISTINCT(billmaster.ID),customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') ${shopId} 
+            let qry = `select DISTINCT(billmaster.ID),customer.Title, customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') ${shopId} 
             and DATE(billmaster.BillDate) = DATE_SUB('${date}', INTERVAL ${feedbackDays} DAY)`
 
             const [datum] = await mysql2.pool.query(qry)
@@ -313,7 +313,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
 
-            let qry = `select DISTINCT(billmaster.ID), customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  ${shopId} and 
+            let qry = `select DISTINCT(billmaster.ID), customer.Title, customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  ${shopId} and 
             DATE_FORMAT(DATE_SUB(billmaster.BillDate, INTERVAL ${serviceDays} DAY), '%Y-%m-%d') = '${date}'`
             
 
@@ -370,7 +370,7 @@ module.exports = {
             let qry = ``
 
             if (type === "Customer") {
-                qry = `select customer.Name, customer.MobileNo1, billdetail.ProductExpDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'SOLUTION' and billmaster.ShopID = ${shopId} and billdetail.ProductExpDate = '${date}'`
+                qry = `select customer.Title, customer.Name, customer.MobileNo1, billdetail.ProductExpDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'SOLUTION' and billmaster.ShopID = ${shopId} and billdetail.ProductExpDate = '${date}'`
             } else if (type === "Supplier") {
                 qry = `select supplier.Name, supplier.MobileNo1, purchasedetailnew.ProductExpDate from purchasedetailnew left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID left join supplier on supplier.ID = purchasemasternew.SupplierID where purchasedetailnew.CompanyID = ${CompanyID} and purchasedetailnew.ProductTypeName = 'SOLUTION' and purchasemasternew.ShopID = ${shopId} and purchasedetailnew.ProductExpDate = '${date}'`
             } else {
@@ -431,7 +431,7 @@ module.exports = {
             let qry = ``
 
             if (type === "Customer") {
-                qry = `select customer.Name, customer.MobileNo1, billdetail.ProductExpDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'CONTACT LENS' and billmaster.ShopID = ${shopId} and billdetail.ProductExpDate = '${date}'`
+                qry = `select customer.Title, customer.Name, customer.MobileNo1, billdetail.ProductExpDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'CONTACT LENS' and billmaster.ShopID = ${shopId} and billdetail.ProductExpDate = '${date}'`
             } else if (type === "Supplier") {
                 qry = `select supplier.Name, supplier.MobileNo1, purchasedetailnew.ProductExpDate from purchasedetailnew left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID left join supplier on supplier.ID = purchasemasternew.SupplierID where purchasedetailnew.CompanyID = ${CompanyID} and purchasedetailnew.ProductTypeName = 'CONTACT LENS' and purchasemasternew.ShopID = ${shopId} and purchasedetailnew.ProductExpDate = '${date}'`
             } else {

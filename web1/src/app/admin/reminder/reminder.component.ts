@@ -340,7 +340,14 @@ export class ReminderComponent implements OnInit {
       p = ''
      }
 
-    const msg = `*Hi ${data.Title} ${data.Name},*%0A` +
+    let Titles = ''
+    if( mode === 'SupplierBday' || mode === 'EmployeeBday' || mode === 'FitterBday' || mode === 'DoctorBday' || mode === 'SupplierAnniversary' || mode === 'EmployeeAnniversary' || mode === 'FitterAnniversary' || mode === 'DoctorAnniversary' || mode === 'SupplierContactlens' || mode === 'SupplierSolution'){
+      Titles = ' '
+     }else{
+      Titles = data.Title
+     }
+
+    const msg = `*Hi ${Titles} ${data.Name},*%0A` +
       `${WhatsappMsg}%0A` +
       `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A${p}`;
   
