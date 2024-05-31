@@ -14,6 +14,8 @@ import { environment } from 'src/environments/environment';
 import { BillService } from 'src/app/service/bill.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CustomerService } from 'src/app/service/customer.service';
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-gst-report',
@@ -30,7 +32,7 @@ export class GstReportComponent implements OnInit {
   env = environment;
   myControl = new FormControl('All');
   filteredOptions: any;
-
+  FilterTypes: any = 'Date'
   constructor(
     private purchaseService: PurchaseService,
     private ss: ShopService,
@@ -48,7 +50,7 @@ export class GstReportComponent implements OnInit {
 
   data: any = {
     FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), GSTStatus: 0, ShopID:0,
-    CustomerID: 0, CustomerGSTNo: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0,B2BTOB2C:0
+    CustomerID: 0, CustomerGSTNo: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0,B2BTOB2C:0,Discount:0
   };
 
   GstData:any ={
@@ -77,10 +79,11 @@ export class GstReportComponent implements OnInit {
   prodList: any = []
   specList: any = []
   selectedProduct:any
+  lastDayOfMonth: any
+  pdfLink:any;
 
   ngOnInit(): void {
     this.getGSTList();
-    this.dropdownCustomerGSTNo();
     this.getProductList();
     if (this.user.UserGroup === 'Employee') {
       this.shopList = this.shop;
@@ -220,21 +223,6 @@ export class GstReportComponent implements OnInit {
     });
   }
 
-  dropdownCustomerGSTNo() {
-    this.sp.show()
-    const subs: Subscription = this.customer.customerGSTNumber(this.customerList).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.customerListGST = res.data
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
 
   customerSearch(searchKey: any, mode: any, type: any) {
     this.filteredOptions = []
@@ -352,6 +340,10 @@ export class GstReportComponent implements OnInit {
 
     if (this.data.B2BTOB2C !== 0) {
       Parem = Parem + this.data.B2BTOB2C;
+    }
+
+    if (this.data.Discount !== 0) {
+      Parem = Parem + this.data.Discount;
     }
 
     const subs: Subscription = this.bill.getGstReport(Parem,this.Productsearch).subscribe({
@@ -523,6 +515,130 @@ export class GstReportComponent implements OnInit {
 
   dateFormat(date: any) {
     return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
+
+  ChangeDate(mode: any) {
+    if (mode == 'Qty') {
+        if (this.FilterTypes === 'Date') {
+          this.data = {
+           FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), GSTStatus: 0, ShopID:0,
+           CustomerID: 0, CustomerGSTNo: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0,B2BTOB2C:0,Discount:0
+        }
+      } else {
+          this.data = {
+            FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment(this.data.FromDate).endOf('month').format('YYYY-MM-DD'), GSTStatus: 0, ShopID: Number(this.selectedShop[0]) ,
+            CustomerID: 0, CustomerGSTNo: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0,B2BTOB2C:0,Discount:0
+        }
+      }
+    } 
+  }
+
+
+  ChangeDateTo(mode: any) {
+    if (mode === 'Qty') {
+      if (this.data.ToDate) {
+        // Get the last day of the selected month
+        this.lastDayOfMonth = moment(this.data.ToDate).endOf('month').format('YYYY-MM-DD');
+      } else {
+        // Handle case when no date is selected
+        this.data.ToDate = null; // or any other default value
+      }
+    }
+  }
+
+  generateInvoiceNo() {
+    this.sp.show()
+    let Parem = '';
+    let FromDate = '';
+    let ToDate = '';
+
+    if (this.data.FromDate !== '' && this.data.FromDate !== null) {
+      FromDate = moment(this.data.FromDate).format('YYYY-MM-DD')
+    }
+
+    if (this.data.ToDate !== '' && this.data.ToDate !== null) {
+      this.data.ToDate = this.lastDayOfMonth
+      ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
+    }
+
+       if(this.data.GSTStatus === 0){
+         Parem = Parem + ' and (billdetail.Status = 1 || billdetail.IsGstFiled = 1 || billdetail.IsGstFiled = 0 and billdetail.Status = 0)' ;
+       }
+       if(this.data.GSTStatus === 'GST-Pending'){
+         Parem = Parem + ' and billdetail.IsGstFiled = 0 and billdetail.Status = 1' ;
+       }
+       if(this.data.GSTStatus === 'GST-Filed'){
+         Parem = Parem + ' and billdetail.IsGstFiled = 1 and billdetail.Status = 1' ;
+       }
+       if(this.data.GSTStatus === 'Cancel Product'){
+         Parem = Parem + ' and (billdetail.IsGstFiled = 1 and billdetail.Status = 0 || billdetail.IsGstFiled = 0 and billdetail.Status = 0)' ;
+       }
+    
+    if (this.data.CustomerID !== 0) {
+      Parem = Parem + ' and billmaster.CustomerID = ' + this.data.CustomerID;
+    }
+
+    if (this.data.CustomerGSTNo !== 0) {
+      Parem = Parem + ' and billmaster.GSTNo = ' + this.data.CustomerGSTNo;
+    }
+
+    if (this.data.ProductCategory !== 0) {
+      Parem = Parem + ' and billdetail.ProductTypeID = ' + this.data.ProductCategory;
+      this.filter();
+    }
+
+    if (this.data.ProductName !== '') {
+      Parem = Parem + ' and billdetail.ProductName Like ' + "'" + this.data.ProductName.trim() + "%'";
+    }
+
+    if (this.data.GSTPercentage !== 0) {
+      Parem = Parem + ' and billdetail.GSTPercentage = ' + `'${this.data.GSTPercentage}'`;
+    }
+
+    if (this.data.GSTType !== 0) {
+      Parem = Parem + ' and billdetail.GSTType = ' + `'${this.data.GSTType}'`;
+    }
+
+    if (this.data.Status !== '' && this.data.Status !== null && this.data.Status !== 0) {
+      if (this.data.Status === 'Manual' && this.data.Status !== 'All') {
+        Parem = Parem + ' and billdetail.Manual = ' + '1';
+      } else if (this.data.Status === 'PreOrder' && this.data.Status !== 'All') {
+        Parem = Parem + ' and billdetail.PreOrder = ' + '1';
+      } else if (this.data.Status === 'Barcode' && this.data.Status !== 'All') {
+        Parem = Parem + ' and billdetail.PreOrder = ' + '0';
+        Parem = Parem + ' and billdetail.Manual = ' + '0';
+      }
+    }
+
+    if (this.data.B2BTOB2C !== 0) {
+      Parem = Parem + this.data.B2BTOB2C;
+    }
+
+    if (this.data.Discount !== 0) {
+      Parem = Parem + this.data.Discount;
+    }
+
+    const subs: Subscription = this.bill.generateInvoiceNo(Parem,this.Productsearch,this.data.ShopID,FromDate,ToDate).subscribe({
+      next: (res: any) => {
+        if (res === "GST_Invoice.pdf") {
+          const url = this.env.apiUrl + "/uploads/" + res;
+          this.pdfLink = url;
+          window.open(url, "_blank");
+
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showConfirmButton: true,
+          })
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {

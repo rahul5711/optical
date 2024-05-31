@@ -16,19 +16,42 @@
                         <div class="body">
                             <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getGstReport()">
                                 <div class="row" >
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0">
+                                          <mat-label>Filter Types</mat-label>
+                                          <mat-select name="FilterTypes" [(ngModel)]="FilterTypes" (selectionChange)="ChangeDate('Qty')"
+                                            required>
+                                            <mat-option value="Month">Month</mat-option>
+                                            <mat-option value="Date">Date</mat-option>
+                                          </mat-select>
+                                        </mat-form-field>
+                                      </div>
+                                    <div *ngIf="FilterTypes === 'Date'" class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>From</mat-label>
                                             <input matInput name="FromDate" type="date" [(ngModel)]="data.FromDate"
                                                 #DOBcontrol />
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                    <div *ngIf="FilterTypes === 'Date'" class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp ">
                                             <mat-label>To</mat-label>
                                             <input matInput type="date" name="ToDate" [(ngModel)]="data.ToDate"  />
                                         </mat-form-field>
                                     </div>
+                                    <div *ngIf="FilterTypes === 'Month'" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0">
+                                          <mat-label>From</mat-label>
+                                          <input matInput name="FromDate" type="month" [(ngModel)]="data.FromDate" #Fromcontrol>
+                                        </mat-form-field>
+                                      </div>
+                                      <div *ngIf="FilterTypes === 'Month'" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0">
+                                          <mat-label>To</mat-label>
+                                          <input matInput name="ToDate" type="month" [(ngModel)]="data.ToDate"
+                                            (change)="ChangeDateTo('Qty')" #Fromcontrol>
+                                        </mat-form-field>
+                                      </div>
                                       <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
                                         <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>GSTStatus</mat-label>
@@ -40,12 +63,12 @@
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                    <div *ngIf="FilterTypes === 'Date'"  class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0"
                                             *ngIf="user.UserGroup === 'CompanyAdmin'">
                                             <mat-label>Shop Name</mat-label>
                                             <mat-select name="shopID" [(ngModel)]="data.ShopID" multiple>
-                                                <mat-option [value]=0>All</mat-option>
+                                                <mat-option [value]=0 >All</mat-option>
                                                 <mat-option [value]="s.ID" *ngFor="let s of shopList">
                                                     {{s.Name}}
                                                     <span [style.color]="'blue'"
@@ -62,6 +85,18 @@
                                                     {{s.Name}}
                                                     <span [style.color]="'blue'"
                                                         *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div *ngIf="FilterTypes === 'Month'" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0" >
+                                            <mat-label>Shop Name</mat-label>
+                                            <mat-select name="shopID" [(ngModel)]="data.ShopID" >
+                                                <mat-option [value]="s.ID" *ngFor="let s of shopList">
+                                                    {{s.Name}}
+                                                    <span [style.color]="'blue'"
+                                                        *ngIf="s.AreaName != 'null' || s.AreaName !== ''">({{s.AreaName}})</span>
                                                 </mat-option>
                                             </mat-select>
                                         </mat-form-field>
@@ -84,27 +119,25 @@
                                             </mat-autocomplete>
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
-                                        <mat-form-field class="example-full-width mb-0">
-                                            <mat-label>Customer TAXNo</mat-label>
-                                            <mat-select name="CustomerGSTNo"
-                                                [(ngModel)]="data.CustomerGSTNo">
-                                                <mat-option [value]=0>All</mat-option>
-                                                <mat-option [value]="c.GSTNumber"
-                                                    *ngFor="let c of customerListGST let i = index;">
-                                                    {{c.GSTNumber}}
-                                                </mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                    </div>
                                     <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                         <mat-form-field class="example-full-width mb-0">
-                                            <mat-label>GSTNo</mat-label>
+                                            <mat-label>B2B/B2C</mat-label>
                                             <mat-select name="B2BTOB2C"
                                                 [(ngModel)]="data.B2BTOB2C">
                                                 <mat-option [value]=0>All</mat-option>
                                                 <mat-option value=" and customer.GSTNo != ''">B2B</mat-option>
                                                 <mat-option value=" and customer.GSTNo = ''">B2C</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Discount</mat-label>
+                                            <mat-select name="Discount"
+                                                [(ngModel)]="data.Discount">
+                                                <mat-option [value]=0>All</mat-option>
+                                                <mat-option value=" and billdetail.DiscountPercentage = '100%'">100%</mat-option>
+                                                <mat-option value=" and billdetail.DiscountPercentage != '100%'">Without 100%</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
@@ -236,7 +269,7 @@
                                         </mat-form-field>
                                       </div>
                                     <!--  spec end -->
-                                    <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0 ">
                                         <button  type="submit" mat-raised-button color="primary" [disabled]="!f1.valid">
                                              Search
                                         </button>
@@ -245,6 +278,9 @@
                                         </button>
                                         <button type="button" [disabled]="!PendingCheck" mat-raised-button color="primary" (click)=" submitGstFile()">
                                             GST File
+                                        </button>
+                                        <button class="me-3 ms-3"  *ngIf="FilterTypes === 'Month'" type="button"  mat-raised-button color="primary" (click)=" generateInvoiceNo()">
+                                            GST-PDF
                                         </button>
                                     </div>
                                 </div>

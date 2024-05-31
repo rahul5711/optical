@@ -150,15 +150,15 @@ export class ExpenseComponent implements OnInit {
     }
 
     if (this.data.PaymentMode !== 'All') {
-      Parem = Parem + ' and Expense.PaymentMode = ' + `'${this.data.PaymentMode}'`
+      Parem = Parem + ' and Expense.PaymentMode = ' + `'${this.data.PaymentMode.trim()}'`
     }
     
     if (this.data.ExpenseType !== 'All') {
-      Parem = Parem + ' and Expense.Category = ' + `'${this.data.ExpenseType}'`
+      Parem = Parem + ' and Expense.Category = ' + `'${this.data.ExpenseType.trim()}'`
     }
 
     if (this.data.CashType !== 'All') {
-      Parem = Parem + ' and Expense.CashType = ' + `'${this.data.CashType}'`
+      Parem = Parem + ' and Expense.CashType = ' + `'${this.data.CashType.trim()}'`
     }
 
     const subs: Subscription = this.expen.getExpenseReport(Parem).subscribe({

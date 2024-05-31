@@ -7,12 +7,27 @@
                         <div class="header p-2 py-0 pt-1">
                             <div class="row">
                                 <div class="col-lg-12 col-md-12 col-12 p-0 ps-3">
-                                    <h2 style="color: #ffea00;">Opticalguru New Updates 
+                                    <h2 >Opticalguru New Updates 
                                     </h2>
                                 </div>
                             </div>
                         </div>
-                        <div class="row mt-md-2 mt-5 p-md-2 p-3 ">
+                          
+                 
+                            <div class="row m-3 ">
+                                <div class="col-md-12 ">
+                                   <div *ngFor="let item of data;let i = index;">
+                                       <button class="accordion" (click)="toggleAccordian($event, i)"> {{item.parentName}} </button>
+                                       <div class="panel" hide="!item.isActive">
+                                         <p class="m-0 p-0 h3" *ngFor="let child of item.childProperties" > {{child.propertyName}} </p>
+                                       </div>
+                                     </div> 
+                                </div>
+                             </div>
+                        
+                       
+
+                        <!-- <div class="row mt-md-2 mt-5 p-md-2 p-3 ">
                            <div class="col-12" style="font-size: 20px; line-height: 30px;">
                                <h2 style="color: #ffea00;"> New Updates Date 27-04-2024 </h2>
                                <P>1. Universal Language integration with WhatsApp messages. Now you can send sms in Hindi, Marathi, Arabic etc.</P>
@@ -102,7 +117,7 @@
                                     </ul>
                                     <P>3. Report : with all reports there is a Filter option with red colour.  You can print reports with your needs.</P>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>

@@ -272,6 +272,10 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  generateInvoiceNo(Parem:any,Productsearch:any,ShopID:any,FromDate:any,ToDate:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/generateInvoiceNo',{Parem:Parem,Productsearch:Productsearch,ShopID:ShopID,FromDate:FromDate,ToDate:ToDate}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

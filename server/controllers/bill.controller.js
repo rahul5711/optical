@@ -8884,7 +8884,7 @@ module.exports = {
 
             response.InvoiceNo = InvoiceNo
 
-            qry = `SELECT 0 as Sel, billdetail.IsGstFiled, billdetail.ID,billdetail.ProductName,billdetail.ProductTypeID,billdetail.ProductTypeName,billdetail.HSNCode,billdetail.UnitPrice,billdetail.Quantity,billdetail.SubTotal,billdetail.DiscountPercentage,billdetail.DiscountAmount,billdetail.GSTPercentage,billdetail.GSTType,billdetail.TotalAmount,billdetail.WholeSale,billdetail.Manual,billdetail.PreOrder,billdetail.BaseBarCode,billdetail.Barcode, billdetail.Status, billdetail.CancelStatus, billdetail.ProductStatus,billdetail.GSTAmount,billdetail.PurchasePrice,billmaster.CompanyID,customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName, shop.Name as ShopName, shop.AreaName,0 AS Profit , 0 AS ModifyPurchasePrice  FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.CompanyID = '${CompanyID}' ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 ${shopParams} ${dateParams} ` + Parem
+            qry = `SELECT 0 as Sel, billdetail.IsGstFiled, billdetail.ID,billdetail.ProductName,billdetail.ProductTypeID,billdetail.ProductTypeName,billdetail.HSNCode,billdetail.UnitPrice,billdetail.Quantity,billdetail.SubTotal,billdetail.DiscountPercentage,billdetail.DiscountAmount,billdetail.GSTPercentage,billdetail.GSTType,billdetail.TotalAmount,billdetail.WholeSale,billdetail.Manual,billdetail.PreOrder,billdetail.BaseBarCode,billdetail.Barcode, billdetail.Status, billdetail.CancelStatus, billdetail.ProductStatus,billdetail.GSTAmount,billdetail.PurchasePrice,billmaster.CompanyID,customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName, shop.Address as ShopAddress, shop.Name as ShopName, shop.AreaName,0 AS Profit , 0 AS ModifyPurchasePrice  FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.CompanyID = '${CompanyID}' ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 ${shopParams} ${dateParams} ` + Parem
 
             let [datum] = await mysql2.pool.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
             left join user on user.ID = billmaster.Employee
@@ -9028,7 +9028,79 @@ module.exports = {
             response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice.toFixed(2) : 0
             response.data = data
             response.message = "success";
-            return res.send(response);
+            
+            // return res.send(response);
+              // Generate PDF
+              const printdata = response;
+              const invoiceNo = printdata.InvoiceNo;
+              const invoiceDate = moment().format('DD-MM-YYYY');
+              const dataList = printdata.data;
+              const totalQty =  printdata.calculation[0].totalQty;
+              const totalGstAmount =  printdata.calculation[0].totalGstAmount;
+              const totalAmount =  printdata.calculation[0].totalAmount;
+              const totalDiscount =  printdata.calculation[0].totalDiscount;
+              const totalUnitPrice =  printdata.calculation[0].totalUnitPrice;
+              const totalPurchasePrice =  printdata.calculation[0].totalPurchasePrice;
+              const totalProfit =  printdata.calculation[0].totalProfit;
+              const gst_details =  printdata.calculation[0].gst_details;
+
+              let gst = []
+              gst_details.forEach((e)=>{
+               if(e.Amount != 0){
+                gst.push(e)
+               }
+              })
+  
+               dataList.forEach((s)=>{
+                s.UnitPrice = s.SubTotal / s.Quantity
+              })
+
+              printdata.invoiceNo = invoiceNo;
+              printdata.invoiceDate = invoiceDate;
+              printdata.dataList = dataList;
+              printdata.ShopName = dataList[0].ShopName;
+              printdata.AreaName = dataList[0].AreaName;
+              printdata.ShopAddress = dataList[0].ShopAddress;
+              printdata.totalQty = totalQty;
+              printdata.totalGstAmount = totalGstAmount;
+              printdata.totalAmount = totalAmount;
+              printdata.totalDiscount = totalDiscount;
+              printdata.totalUnitPrice = totalUnitPrice;
+              printdata.totalPurchasePrice = totalPurchasePrice;
+              printdata.totalProfit = totalProfit;
+              printdata.gst_details = gst;
+
+              
+  
+               var formatName = "GSTInvoice.ejs";
+               var file = "GST" +"_"+ "Invoice" +  ".pdf";
+               var fileName = "uploads/" + file;
+               
+               ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                   if (err) {
+                       res.send(err);
+                   } else {
+                       let options = {
+                           "height": "11.25in",
+                           "width": "8.5in",
+                           "header": {
+                               "height": "0mm"
+                           },
+                           "footer": {
+                               "height": "0mm",
+                           },
+                       };
+                       pdf.create(data, options).toFile(fileName, function (err, data) {
+                           if (err) {
+                               res.send(err);
+                           } else {
+                               res.json(file);
+                           }
+                       });
+                   }
+               });
+
+            
         } catch (err) {
             console.log(err);
             next(err)

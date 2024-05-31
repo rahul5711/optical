@@ -4392,10 +4392,10 @@ module.exports = {
                     return res.send({ message: "Invalid Query WholeSalePrice" })
                 }
 
-                let [fetchBarcode] = await mysql2.pool.query(`select * from barcodemasternew where CompanyID = ${CompanyID} and PurchaseDetailID = ${item.PurchaseDetailID} and Status = 1 and CurrentStatus = 'Available' and Barcode = '${item.Barcode}'`)
+                let [fetchBarcode] =  await mysql2.pool.query(`select * from barcodemasternew where CompanyID = ${CompanyID} and PurchaseDetailID = ${item.PurchaseDetailID} and ShopID = ${item.ShopID} and Status = 1 and CurrentStatus = 'Available' and Barcode = '${item.Barcode}'`)
 
                 if (fetchBarcode.length !== item.Count) {
-                    return res.send({ message: "Invalid Query Count/Available Barcode" })
+                    return res.send({ message: `Invalid Query Count/Available Barcode :- ${item.Barcode}` })
                 }
 
                 const [update] = await mysql2.pool.query(`update barcodemasternew set RetailPrice = ${item.RetailPrice}, WholeSalePrice = ${item.WholeSalePrice}, UpdatedOn=now() where CompanyID = ${CompanyID} and PurchaseDetailID = ${item.PurchaseDetailID} and Status = 1 and CurrentStatus = 'Available' and Barcode = '${item.Barcode}' `)

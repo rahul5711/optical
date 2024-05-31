@@ -366,7 +366,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify" *ngIf="this.PurchasePriceInput">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify" *ngIf="this.PurchasePriceInput && BillItem.Manual === false">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>PurchasePrice</mat-label>
                         <input matInput type="number" min="0" name="PurchasePrice" [(ngModel)]="BillItem.PurchasePrice"
