@@ -866,7 +866,7 @@ module.exports = {
             for (let item of productDataSpec) {
                 item.CompanyID = newCompanyID
                 if (item.Type === 'DropDown') {
-                    item.SptTableName = item.SptTableName + item.CompanyID;
+                    item.SptTableName = item.SptTableName + item.CompanyID + item.CompanyID;
                 } else {
                     item.SptTableName = '0'
                 }
@@ -915,7 +915,7 @@ module.exports = {
 
             for (const item of productDataSpecSpt) {
                 item.CompanyID = newCompanyID
-                item.TableName = item.TableName + item.CompanyID
+                item.TableName = item.TableName + item.CompanyID + item.CompanyID;
                 console.log(`insert into specspttable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.TableName}','${item.RefID}','${item.TableValue}',${item.Status},now(),0)`);
                 let [saveData] = await mysql2.pool.query(`insert into specspttable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.TableName}','${item.RefID}','${item.TableValue}',${item.Status},now(),0)`)
             }
