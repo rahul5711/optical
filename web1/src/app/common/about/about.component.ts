@@ -11,7 +11,7 @@ export class AboutComponent implements OnInit {
 
   data: any = [
     {
-      "parentName": "31-05-2024",
+      "parentName": "1-06-2024",
       "childProperties":
         [
           { "propertyName": `1. Customer Category: Now you can find your customer category wise` },

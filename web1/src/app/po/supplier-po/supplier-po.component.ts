@@ -505,6 +505,7 @@ export class SupplierPoComponent implements OnInit {
   }
 
   updateUnitPriceValue(v:any, i:any){
+    this.orderList[i].DiscountAmount = 0
     this.orderList[i].GSTAmount = (+this.orderList[i].UnitPrice * +this.orderList[i].Quantity - (this.orderList[i].DiscountAmount ? this.orderList[i].DiscountAmount : 0)) * +this.orderList[i].GSTPercentage / 100;
     this.orderList[i].TotalAmount = (+this.orderList[i].UnitPrice * +this.orderList[i].Quantity - (this.orderList[i].DiscountAmount ? this.orderList[i].DiscountAmount : 0)) + +this.orderList[i].GSTAmount;
   }

@@ -275,7 +275,7 @@
                                                                                             (data.shopdetails.Total==="true"
                                                                                             ){%>
                                                                                             <th>
-                                                                                                <%= data.TotalValue %>
+                                                                                                <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%>  <%= data.TotalValue %>
                                                                                             </th>
                                                                                             <%}%>
 
@@ -475,13 +475,13 @@
                                     <!-- <li><%=data.billMaster.SubTotal%></li> -->
                                     <% if (data.shopdetails.SubTotal==="true" ){%>
                                         <li>
-                                            <%= data.subtotals %>
+                                           <span style="text-align:right;"><% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> </span>   <%= data.subtotals %>
                                         </li>
                                         <%}%>
 
                                             <% if (data.shopdetails.Discounts==="true" ){%>
                                                 <li>
-                                                    <%= data.billMaster.DiscountAmount %>
+                                                    <span style="text-align:right;"><% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> </span>  <%= data.billMaster.DiscountAmount %>
                                                 </li>
                                                 <%}%>
 
@@ -498,20 +498,20 @@
                                                         <%}%>
 
                                                             <li>
-                                                                <%= data.billMaster.AddlDiscount %>
+                                                                <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%>  <%= data.billMaster.AddlDiscount %>
                                                             </li>
-                                                            <li <% %> style="border: 1px solid <%= data.Color %>;"><%=
-                                                                        data.billMaster.TotalAmount %>
-                                                            </li>
-                                                            <li>
-                                                                <%= data.recivePayment %>
+                                                            <li <% %> style="border: 1px solid <%= data.Color %>;">
+                                                                <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <%=data.billMaster.TotalAmount %>
                                                             </li>
                                                             <li>
-                                                                <%= data.CurrentInvoiceBalance %>
+                                                                <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <%= data.recivePayment %>
+                                                            </li>
+                                                            <li>
+                                                                <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <%= data.CurrentInvoiceBalance %>
                                                             </li>
                                                             <% if (data.unpaidlist.length == 0 ){%>
                                                             <li>
-                                                                <%= data.DueAmount %>
+                                                                <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <%= data.DueAmount %>
                                                             </li>
                                                             <%}%>
                                                             <li>
@@ -538,7 +538,7 @@
                     <thead>
                         <tr>
                             <th
-                            <% %>  style="font-size:<%= data.CustomerFont %> ; line-height:<%= data.CustomerLineSpace %>; border: 1px solid <%= data.Color %>; padding: 0px; margin:0px "> You've Saved <%=data.SavedDiscount%> Rs on this Invoice!
+                            <% %>  style="font-size:<%= data.CustomerFont %> ; line-height:<%= data.CustomerLineSpace %>; border: 1px solid <%= data.Color %>; padding: 0px; margin:0px "> You've Saved <%=data.SavedDiscount%> <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <% if (data.shopdetails.CompanyID !== 19 ){%> Rs <%}%> on this Invoice!
                         </th>
                         </tr>
                     </thead>
