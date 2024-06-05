@@ -127,9 +127,9 @@
                         [disabled]="BillItem.PreOrder === true">Manual</mat-slide-toggle>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 p-0 pt-3">
-                    <span *ngIf="company.WholeSale === 'true' || this.loginShop.WholesaleBill === 'true'">
+                    <span *ngIf="this.loginShop.WholesaleBill === 'true'">
                     <mat-slide-toggle name="WholeSale" color="primary" [(ngModel)]="BillItem.WholeSale" 
-                        class="example-margin" #WholeSalecontrol style="color:#ff651e;">
+                        class="example-margin" #WholeSalecontrol style="color:#ff651e;"  [disabled]="WholeSaleDisabled">
                         WholeSale</mat-slide-toggle>
                     </span>
                 </div>

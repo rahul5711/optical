@@ -190,6 +190,7 @@ export class BillComponent implements OnInit {
   currentTime = '';
 
   CreditPDF = '';
+  WholeSaleDisabled = false
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
@@ -206,6 +207,20 @@ export class BillComponent implements OnInit {
     this.BillMaster.DeliveryDate = moment(new Date()).add(this.companySetting.DeliveryDay, 'days').format('YYYY-MM-DD');
     [this.loginShop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
     this.currentTime = new Date().toLocaleTimeString('en-IN', { hourCycle: 'h23' })
+
+    if(this.loginShop.WholesaleBill === 'true'){
+      this.BillItem.WholeSale = true
+      this.WholeSaleDisabled = true
+    }else{
+      this.BillItem.WholeSale = false
+    }
+
+    if(this.loginShop.RetailBill === 'true'){
+      if(this.loginShop.WholesaleBill === 'true'){
+        this.BillItem.WholeSale = false
+        this.WholeSaleDisabled = false
+      }
+    }
 
     if (this.id2 != 0) {
       this.getPaymentModesList()

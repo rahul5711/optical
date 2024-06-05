@@ -580,10 +580,22 @@ export class SaleReportComponent implements OnInit {
           })
           this.totalBalance = 0
           this.totalPaid = 0
+      
           for (const billMaster of this.BillMasterList) {
+            let totalDueAmountPlus = 0; 
+            this.BillMasterList.forEach((e:any) => {
+                if (e.CustomerID === billMaster.CustomerID) {
+                    totalDueAmountPlus += e.DueAmount; 
+                }
+            });
+            billMaster.TotalDueAmount = totalDueAmountPlus; 
             this.totalBalance = this.totalBalance + billMaster.DueAmount;
-          }
-
+        }
+        
+        
+          
+        console.log(this.BillMasterList);
+        
           this.totalQty = res.calculation[0].totalQty;
           this.totalDiscount = (parseFloat(res.calculation[0].totalDiscount)).toFixed(2);
           this.totalUnitPrice = (parseFloat(res.calculation[0].totalSubTotalPrice)).toFixed(2);
@@ -1815,7 +1827,7 @@ export class SaleReportComponent implements OnInit {
     let Cusmob = ''
     if (mode === 'bill') {
       Cusmob = data.MobileNo1
-      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Credit Noteaa') || 'This is a Gentle Reminder for your Balance Amount' + ` ${data.DueAmount}` + '/- Please clear Today.';
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Credit Noteaa') || 'This is a Gentle Reminder for your Balance Amount' + ` ${data.TotalDueAmount}` + '/- Please clear Today.';
       msg = `*Hi ${data.Title} ${data.CustomerName},*%0A` +
         `${WhatsappMsg}%0A` +
         `*${this.shopList[0].Name}* - ${this.shopList[0].AreaName}%0A${this.shopList[0].MobileNo1}%0A${this.shopList[0].Website}`;
