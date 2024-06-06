@@ -11,10 +11,12 @@ export class AboutComponent implements OnInit {
 
   data: any = [
     {
-      "parentName": "1-06-2024",
+      "parentName": "1-06-2024 - 9 Updates",
       "childProperties":
         [
-          { "propertyName": `1. Customer Category: Now you can find your customer category wise` },
+          {
+            "propertyName": "Customer Category: Now you can find your customer category wise"
+          },
           { "propertyName": "* Follow steps " },
           { "propertyName": "(A) Administration > Shop > Customer Category" },
           { "propertyName": "(B) Category will auto show on customer page, beside customer id" },
@@ -43,7 +45,7 @@ export class AboutComponent implements OnInit {
         ]
     },
     {
-      "parentName": "27-04-2024",
+      "parentName": "27-04-2024 - 5 Updates",
       "childProperties":
         [
           { "propertyName": "1. Universal Language integration with WhatsApp messages. Now you can send sms in Hindi, Marathi, Arabic etc." },
@@ -54,7 +56,7 @@ export class AboutComponent implements OnInit {
         ]
     },
     {
-      "parentName": "19-02-2024 ",
+      "parentName": "19-02-2024 - 1 Updates",
       "childProperties":
         [
           { "propertyName": "1. Customer Order Ready WhatsApp message integration." },
@@ -65,7 +67,7 @@ export class AboutComponent implements OnInit {
         ]
     },
     {
-      "parentName": "08-02-2024",
+      "parentName": "08-02-2024 - 1 Updates",
       "childProperties":
         [
           { "propertyName": "1. WhatsApp SMS format done with your software, Please read and cross check." },
@@ -74,7 +76,7 @@ export class AboutComponent implements OnInit {
         ]
     },
     {
-      "parentName": "28-01-2024",
+      "parentName": "28-01-2024 - 2 Updates",
       "childProperties":
         [
           { "propertyName": "1. Watermark on Bill." },
@@ -86,7 +88,7 @@ export class AboutComponent implements OnInit {
         ]
     },
     {
-      "parentName": "26-01-2024",
+      "parentName": "26-01-2024 - 2 Updates",
       "childProperties":
         [
           { "propertyName": "1. Employee profile added with logout button. check in employee login." },
@@ -99,7 +101,7 @@ export class AboutComponent implements OnInit {
         ]
     },
     {
-      "parentName": "17-01-2024",
+      "parentName": "17-01-2024 - 4 Updates",
       "childProperties":
         [
           { "propertyName": "1. Expenses Report Total Calculation Done." },
@@ -110,7 +112,7 @@ export class AboutComponent implements OnInit {
         ]
     },
     {
-      "parentName": "12-01-2024",
+      "parentName": "12-01-2024 - 3 Updates",
       "childProperties":
         [
           { "propertyName": "1. Add the WhatsApp button on the billing page for the final delivery message." },

@@ -17,6 +17,7 @@ import { RoleService } from '../service/role.service';
 import { DataStorageServiceService } from '../service/helpers/data-storage-service.service';
 import { environment } from 'src/environments/environment';
 import * as moment from 'moment';
+import { style } from '@angular/animations';
 
 @Component({
   selector: 'app-login',
@@ -232,7 +233,7 @@ export class LoginComponent implements OnInit {
               if (differenceDay <= 30 || differenceDay <= 1) {
                 // alert("Your key will expire in the next " + differenceDay + " days");
                 Swal.fire({
-                  title: 'Your Server Plan Expired In Next ' + differenceDay + " Days.",
+                  title: 'Your data is at risk. Please renew today ! <br> Your Server Plan Expired In Next ' + differenceDay + " Days.",
                   icon: 'warning',
                   showCancelButton: true,
                   confirmButtonColor: '#3085d6',
@@ -269,7 +270,7 @@ export class LoginComponent implements OnInit {
                 position: 'center',
                 iconHtml: '<i class="fas fa-exclamation-circle"></i>',
                 iconColor: '#FF0000',
-                title: 'Your Server Plan Expired !',
+                title: 'Your data is at risk. Please renew today ! <br> Your Server Plan Expired !',
                 showConfirmButton: true,
                 backdrop: false
               });
@@ -291,7 +292,7 @@ export class LoginComponent implements OnInit {
               if (differenceDay <= 30 || differenceDay <= 1) {
                 // alert("Your key will expire in the next " + differenceDay + " days");
                 Swal.fire({
-                  title: 'Your Server Plan Expired In Next ' + differenceDay + " Days.",
+                  title: 'Your data is at risk. Please renew today ! <br> Your Server Plan Expired In Next  ' + differenceDay + " Days.",
                   icon: 'warning',
                   showCancelButton: true,
                   confirmButtonColor: '#3085d6',
@@ -312,7 +313,7 @@ export class LoginComponent implements OnInit {
                 position: 'center',
                 iconHtml: '<i class="fas fa-exclamation-circle"></i>',
                 iconColor: '#FF0000',
-                title: 'Your Server Plan Expired !',
+                title: 'Your data is at risk. Please renew today ! Your Server Plan Expired !',
                 showConfirmButton: true,
                 backdrop: false
               });
