@@ -2478,7 +2478,7 @@ module.exports = {
 
             //  save purchase detail data
             for (const item of purchaseDetail) {
-                const doesProduct = 0
+                const doesProduct = await doesExistProduct(CompanyID, item)
 
                 // generate unique barcode
                 item.UniqueBarcode = await generateUniqueBarcode(CompanyID, supplierId, item)
