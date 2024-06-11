@@ -3209,7 +3209,7 @@ module.exports = {
 
     getSupplierPo: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "" }
+            const response = { data: null, success: true, message: "", sumQty : 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
@@ -3235,7 +3235,11 @@ module.exports = {
             const [data] = await mysql2.pool.query(qry)
             response.data = data
             response.message = "success";
-
+            if (data) {
+              data.forEach(x => {
+                response.sumQty += x.Quantity
+              })
+            }
             return res.send(response);
 
 
@@ -3317,7 +3321,7 @@ module.exports = {
     },
     getSupplierPoList: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "" }
+            const response = { data: null, success: true, message: "", sumQty : 0  }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
@@ -3347,6 +3351,7 @@ module.exports = {
                     Item.SubTotal = Item.UnitPrice * Item.Quantity - Item.DiscountAmount
                     Item.GSTAmount = gstAmount(Item.SubTotal, Item.GSTPercentage)
                     Item.TotalAmount = Item.SubTotal + Item.GSTAmount
+                    response.sumQty += Item.Quantity
                 }
             }
 
@@ -3639,7 +3644,7 @@ module.exports = {
 
     getFitterPo: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "" }
+            const response = { data: null, success: true, message: "", sumQty : 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
@@ -3663,6 +3668,11 @@ module.exports = {
 
             const [data] = await mysql2.pool.query(qry)
             response.data = data
+            if (data) {
+                data.forEach(x => {
+                  response.sumQty += x.Quantity
+                })
+              }
             response.message = "success";
 
             return res.send(response);
@@ -3867,7 +3877,7 @@ module.exports = {
     },
     getFitterPoList: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "" }
+            const response = { data: null, success: true, message: "", sumQty : 0  }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
@@ -3891,6 +3901,11 @@ module.exports = {
 
             const [data] = await mysql2.pool.query(qry)
             response.data = data
+            if (data) {
+                data.forEach(x => {
+                  response.sumQty += x.Quantity
+                })
+              }
             response.message = "success";
 
             return res.send(response);
@@ -8842,6 +8857,9 @@ module.exports = {
                     "totalUnitPrice": 0,
                     "totalPurchasePrice": 0,
                     "totalProfit": 0,
+                    "iGstAmount": 0,
+                    "cGstAmount": 0,
+                    "sGstAmount": 0,
                     "gst_details": []
                 }], success: true, message: ""
             }
@@ -8977,9 +8995,14 @@ module.exports = {
             if (data.length && values2.length) {
                 for (let item of data) {
                     item.gst_details = []
+                    item.iGstAmount = 0
+                    item.cGstAmount = 0
+                    item.sGstAmount = 0
                     values2.forEach(e => {
                         if (e.GSTType === item.GSTType) {
                             e.Amount += item.GSTAmount
+                            response.calculation[0].iGstAmount += item.GSTAmount
+                            item.iGstAmount = item.GSTAmount
                             item.gst_details.push({
                                 GSTType: item.GSTType,
                                 Amount: item.GSTAmount
@@ -8992,7 +9015,8 @@ module.exports = {
 
                             if (e.GSTType === 'CGST') {
                                 e.Amount += item.GSTAmount / 2
-
+                                response.calculation[0].cGstAmount += item.GSTAmount / 2
+                                item.cGstAmount = item.GSTAmount / 2
                                 item.gst_details.push({
                                     GSTType: 'CGST',
                                     Amount: item.GSTAmount / 2
@@ -9001,7 +9025,8 @@ module.exports = {
 
                             if (e.GSTType === 'SGST') {
                                 e.Amount += item.GSTAmount / 2
-
+                                response.calculation[0].sGstAmount += item.GSTAmount / 2
+                                item.sGstAmount = item.GSTAmount / 2
                                 item.gst_details.push({
                                     GSTType: 'SGST',
                                     Amount: item.GSTAmount / 2
@@ -9032,7 +9057,7 @@ module.exports = {
             response.data = data
             response.message = "success";
             
-            // return res.send(response);
+            return res.send(response);
               // Generate PDF
               const printdata = response;
               const invoiceNo = printdata.InvoiceNo;
