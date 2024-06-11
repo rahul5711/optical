@@ -247,7 +247,7 @@ export class ProductTransferComponent implements OnInit {
         searchString = searchString + element.SelectedValue.trim() + "/" ;
       }
     });
-    const subs: Subscription =  this.purchaseService.barCodeListBySearchString(this.shopMode,this.selectedProduct, searchString).subscribe({
+    const subs: Subscription =  this.purchaseService.barCodeListBySearchString(this.shopMode,this.selectedProduct, searchString.toString()).subscribe({
       next: (res: any) => {
         if(res.success){
           this.barCodeList = res.data;

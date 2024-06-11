@@ -963,7 +963,7 @@ export class PurchaseComponent implements OnInit {
 
       this.barcodeListt.forEach((ele: any) => {
         if (ele.Status !== 0 && ele.ID != null && ele.BaseBarCode != null) {
-          Qty += ele.Quantity;
+          Qty = Qty + ele.Quantity;
           // Create a copy of 'ele' for each quantity and push it to 'tempItem'
           for (let i = 0; i < ele.Quantity; i++) {
             tempItem.push({ ...ele }); // Copy 'ele' using the spread operator

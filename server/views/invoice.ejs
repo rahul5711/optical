@@ -511,7 +511,7 @@
                                                             </li>
                                                             <% if (data.unpaidlist.length == 0 ){%>
                                                             <li>
-                                                                <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <%= data.DueAmount %>
+                                                                <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <%= (data.DueAmount).toFixed(2) %>
                                                             </li>
                                                             <%}%>
                                                             <li>
@@ -525,27 +525,28 @@
                                                                             <%})}%>
                                                             </li>
                         </ul>
+                        <% if (data.shopdetails.CompanyID !== 20){%>
+                            <% if (data.SavedDiscount !== 0){%>
+                            <div style="width: 100%; height: auto;">
+                                <table style="width:100%; float:right">
+                                    <thead>
+                                        <tr>
+                                            <th
+                                            <% %>  style="font-size:<%= data.CustomerFont %> ; line-height:<%= data.CustomerLineSpace %>; border: 1px solid <%= data.Color %>; padding: 0px; margin:0px "> You've Saved <%=data.SavedDiscount%> <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <% if (data.shopdetails.CompanyID !== 19 ){%> Rs <%}%> on this Invoice!
+                                        </th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <%}%>
+                            <%}%>
                     </div>
                 </div>
             </section>
             <!-- improtant note billtotal end -->
 
             <!-- You've Saved  start -->
-            <% if (data.shopdetails.CompanyID !== 20){%>
-            <% if (data.SavedDiscount !== 0){%>
-            <div style="width: 100%; height: 50px;">
-                <table style="width:30%; float:right">
-                    <thead>
-                        <tr>
-                            <th
-                            <% %>  style="font-size:<%= data.CustomerFont %> ; line-height:<%= data.CustomerLineSpace %>; border: 1px solid <%= data.Color %>; padding: 0px; margin:0px "> You've Saved <%=data.SavedDiscount%> <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <% if (data.shopdetails.CompanyID !== 19 ){%> Rs <%}%> on this Invoice!
-                        </th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-            <%}%>
-            <%}%>
+          
             <% if (data.company.ID === 93 || data.company.ID === 195){%>
             <div style="width: 100%; height: 50px; margin-top: 10px;">
                 <table style="width:30%; float:right">

@@ -799,7 +799,11 @@ module.exports = {
             if (!printdata.companysetting.LogoURL) {
                 printdata.LogoURL = clientConfig.appURL + '../assest/no-image.png';
             } else {
-                printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
+                if(CompanyID === 1){
+                    printdata.LogoURL = clientConfig.appURL + 'assest/hvd.jpeg';
+                }else{
+                    printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
+                }
             }
             // printdata.LogoURL1 = clientConfig.appURL + '../assest/relinksyslogo.png';
             // printdata.web = clientConfig.appURL + '../assest/web.png';
@@ -1301,7 +1305,7 @@ module.exports = {
                 shopMode = " ";
             }
 
-            const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, purchasedetailnew.ProductName, barcodemasternew.* FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE purchasedetailnew.ProductTypeName = '${ProductName}' ${shopMode} AND purchasedetailnew.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus = "Available"   AND purchasedetailnew.Status = 1  and shop.Status = 1 and purchasemasternew.PStatus = 0  And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
+            const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, purchasedetailnew.ProductName, barcodemasternew.* FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE purchasedetailnew.ProductTypeName = '${ProductName}' ${shopMode} AND purchasedetailnew.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus = "Available"   AND purchasedetailnew.Status = 1  and shop.Status = 1   And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
 
             console.log(qry);
             let [purchaseData] = await mysql2.pool.query(qry);

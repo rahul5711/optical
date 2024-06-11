@@ -72,6 +72,7 @@ export class PerorderDummyListComponent implements OnInit {
     this.dropdownlistForPreOrder();
     this.getProductList();
     this.getList();
+
   }
 
   // dropdownSupplierlist() {
@@ -97,6 +98,7 @@ export class PerorderDummyListComponent implements OnInit {
       next: (res: any) => {
         if(res.success){
           this.supplierList = res.data;
+          this.data1.SupplierID = this.supplierList[0].ID
           this.as.successToast(res.message)
         }else{
           this.as.errorToast(res.message)
@@ -235,15 +237,12 @@ export class PerorderDummyListComponent implements OnInit {
       this.filter();
     }
 
-    if (this.data1.ProductName !== '') {
-      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + '"' + this.data1.ProductName.trim()+ '%"';
-    }
   
 
     const dtm = {
       currentPage: 1,
       itemsPerPage: 50000,
-      Productsearch :this.data1.Productsearch,
+      Productsearch :this.Productsearch,
       Parem: Parem
 
     }

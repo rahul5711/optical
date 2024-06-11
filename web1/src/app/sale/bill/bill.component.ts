@@ -152,6 +152,7 @@ export class BillComponent implements OnInit {
   BarcodeList: any;
   disableAddButtons = false;
   PurchasePriceInput = false;
+  PerOrderBtn = false;
   loginShop: any;
   BarcodeListShow = false
   gst_detail: any = [];
@@ -977,6 +978,14 @@ export class BillComponent implements OnInit {
               this.BarcodeList = res.data;
               this.PurchasePriceInput = this.BarcodeList == '' || this.BarcodeList.length == 0 ? true : false;
               this.showProductExpDate = this.BarcodeList != '' || this.BarcodeList.length != 0 ? true : false;
+              if(this.company.ID == 184){
+                 if(this.BarcodeList == '' || this.BarcodeList.length == 0){
+                  this.PurchasePriceInput = false
+                  this.PerOrderBtn = true
+                 }else{
+                  this.PerOrderBtn = false
+                 }
+              }
 
             } else {
               this.as.errorToast(res.message)

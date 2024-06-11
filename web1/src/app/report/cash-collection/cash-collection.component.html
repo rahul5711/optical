@@ -96,12 +96,12 @@
                                                 <th *ngIf="columnVisibility.CustomerName"   >Customer Name</th>
                                                 <th *ngIf="columnVisibility.MobileNo"       >MobileNo</th>
                                                 <th *ngIf="columnVisibility.PaymentMode"    >Payment Mode</th>
-                                                <th *ngIf="columnVisibility.Amount"         >Amount</th>
-                                                <th *ngIf="columnVisibility.DueAmount"      >DueAmount</th>
+                                                <th *ngIf="columnVisibility.Amount"         >Pay Amount</th>
+                                                <!-- <th *ngIf="columnVisibility.DueAmount"      >DueAmount</th>
                                                 <th *ngIf="columnVisibility.PayableAmount"  >Payable Amount</th>
                                                 <th *ngIf="columnVisibility.BillAmount"     >Bill Amount</th>
                                                 <th *ngIf="columnVisibility.PaymentStatus"  >Payment Status</th>
-                                                <th *ngIf="columnVisibility.DeliveryDate"   >DeliveryDate</th>
+                                                <th *ngIf="columnVisibility.DeliveryDate"   >DeliveryDate</th> -->
                                                 <th *ngIf="columnVisibility.ShopName"       >ShopName</th>
                                             </tr>
                                             <tr class="totolRow hide-on-print">
@@ -147,7 +147,7 @@
                                                                     <mat-checkbox class="me-2" name="Amount" [(ngModel)]="columnVisibility.Amount"></mat-checkbox>
                                                                      Amount
                                                                 </button>
-                                                                <button (click)="toggleColumnVisibility('DueAmount')">
+                                                                <!-- <button (click)="toggleColumnVisibility('DueAmount')">
                                                                     <mat-checkbox class="me-2" name="DueAmount" [(ngModel)]="columnVisibility.DueAmount"></mat-checkbox>
                                                                      DueAmount
                                                                 </button>
@@ -166,7 +166,7 @@
                                                                 <button (click)="toggleColumnVisibility('DeliveryDate')">
                                                                     <mat-checkbox class="me-2" name="DeliveryDate" [(ngModel)]="columnVisibility.DeliveryDate"></mat-checkbox>
                                                                      DeliveryDate
-                                                                </button>
+                                                                </button> -->
                                                                 <button (click)="toggleColumnVisibility('ShopName')">
                                                                     <mat-checkbox class="me-2" name="ShopName" [(ngModel)]="columnVisibility.ShopName"></mat-checkbox>
                                                                      ShopName
@@ -181,11 +181,11 @@
                                                 <td *ngIf="columnVisibility.MobileNo"     ></td>
                                                 <td *ngIf="columnVisibility.PaymentMode"  ></td>
                                                 <td *ngIf="columnVisibility.Amount"       ></td>
-                                                <td *ngIf="columnVisibility.DueAmount"    ></td>
+                                                <!-- <td *ngIf="columnVisibility.DueAmount"    ></td>
                                                 <td *ngIf="columnVisibility.PayableAmount"></td>
                                                 <td *ngIf="columnVisibility.BillAmount"   ></td>
                                                 <td *ngIf="columnVisibility.PaymentStatus"></td>
-                                                <td *ngIf="columnVisibility.DeliveryDate" ></td>
+                                                <td *ngIf="columnVisibility.DeliveryDate" ></td> -->
                                                 <td *ngIf="columnVisibility.ShopName"     ></td>
                                             </tr>
                                         </thead>
@@ -199,11 +199,11 @@
                                                 <td *ngIf="columnVisibility.MobileNo"     > {{ d.MobileNo1 }} </td>
                                                 <td *ngIf="columnVisibility.PaymentMode"  > {{ d.PaymentMode }} {{d.CreditType === 'Debit' ? '(' + d.CreditType + ')' : ''}} </td>
                                                 <td *ngIf="columnVisibility.Amount"       > {{ d.Amount }} </td>
-                                                <td *ngIf="columnVisibility.DueAmount"    > {{ d.DueAmount }} </td>
+                                                <!-- <td *ngIf="columnVisibility.DueAmount"    > {{ d.DueAmount }} </td>
                                                 <td *ngIf="columnVisibility.PayableAmount"> {{ d.PayableAmount }} </td>
                                                 <td *ngIf="columnVisibility.BillAmount"   > {{ d.TotalAmount }} </td>
                                                 <td *ngIf="columnVisibility.PaymentStatus"> {{ d.PaymentStatus}} <span *ngIf="d.PaymentStatus === 'Paid'">(Deliverd)</span> <span *ngIf="d.PaymentStatus === 'Unpaid'">(Pending)</span></td>
-                                                <td *ngIf="columnVisibility.DeliveryDate" > {{dateFormat(d.DeliveryDate) }}</td>
+                                                <td *ngIf="columnVisibility.DeliveryDate" > {{dateFormat(d.DeliveryDate) }}</td> -->
                                                 <td *ngIf="columnVisibility.ShopName"     > {{ d.ShopName }}<span [style.color]="'blue'" *ngIf="d.AreaName !== 'null'">({{d.AreaName}})</span> </td>
                                             </tr>
                                         </tbody>

@@ -71,9 +71,6 @@ body{
     width: 40%;float: left !important;
 }
 
-.row1 .col-1 .logo{
-    width: 100px; height: 100px; object-fit: cover;
-}
 
 .row2{
     padding-top: 0%; width: 50% !important; float: right !important; font-size: 12px ; height: 100px; 

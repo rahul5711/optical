@@ -471,7 +471,7 @@
                         mat-raised-button color="primary"
                         (click)="calculations('GSTPercentage', 'gst');notifyGst();">Add</button>
                     <button *ngIf=" BillItem.PreOrder === true" type="submit"
-                        [disabled]="!f1.valid || this.GstTypeDis || !fp.valid" mat-raised-button
+                        [disabled]="!f1.valid || this.GstTypeDis || !fp.valid || PerOrderBtn" mat-raised-button
                         color="primary">PreOder</button>
                     <button *ngIf="BillItem.Manual" type="submit"
                         [disabled]="!f1.valid || !fp.valid  || this.GstTypeDis " mat-raised-button
@@ -865,7 +865,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-2 col-4  mb-0 col-1ModifyB" *ngFor="let gst of gst_detail">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">{{gst.GSTType}}</mat-label>
-                        <input matInput name="igstAmt" value="{{gst.Amount.toFixed(2)}}" disabled>
+                        <input matInput name="igstAmt" value="{{gst.Amount}}" disabled>
                         <mat-error>
                             TAX Amt is required
                         </mat-error>
@@ -956,7 +956,7 @@
                         [disabled]="BillMaster.ID === null && !f2.valid" (click)="update()">Update</button>
                     <button type="button" class="  me-md-3 me-0" mat-raised-button color="primary"
                         [disabled]="BillMaster.ID === null" (click)="openModal1(content1)">Payment</button>
-                    <button type="button" class="  me-md-3 me-0" mat-raised-button color="primary"
+                    <button  type="button" class="  me-md-3 me-0" mat-raised-button color="primary"
                         [disabled]="BillMaster.ID === null" (click)="openModal12(content12)">Lens Order</button>
                     <button type="button" class="  me-md-3 me-0" mat-raised-button color="primary"
                         [disabled]="BillMaster.ID === null" (click)="openModal13(content13)">Fitter Order</button>
