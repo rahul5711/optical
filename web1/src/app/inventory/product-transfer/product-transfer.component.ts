@@ -209,7 +209,8 @@ export class ProductTransferComponent implements OnInit {
 
   getProductDataByBarCodeNo(){
     this.sp.show()
-    this.Req.SupplierID = this.barCodeList[0]?.SupplierID ?? 0;
+    this.Req.SupplierID = (this.barCodeList != null && this.barCodeList.Length > 0) ? this.barCodeList[0]?.SupplierID ?? 0 : 0;
+
     const subs: Subscription =  this.purchaseService.productDataByBarCodeNo(this.Req, 'false', 'false').subscribe({
       next: (res: any) => {
         if(res.success){
