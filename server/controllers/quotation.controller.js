@@ -1,6 +1,6 @@
 const createError = require('http-errors')
 const _ = require("lodash")
-const { generateBarcode, generateUniqueBarcode, doesExistProduct, shopID, gstDetail, doesExistProduct2, update_c_report_setting, update_c_report, amt_update_c_report, getTotalAmountByBarcode } = require('../helpers/helper_function')
+const { generateBarcode, generateUniqueBarcode, doesExistProduct, shopID, gstDetail, gstDetailQuotation, doesExistProduct2, update_c_report_setting, update_c_report, amt_update_c_report, getTotalAmountByBarcode } = require('../helpers/helper_function')
 const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
@@ -230,7 +230,7 @@ module.exports = {
 
             const [PurchaseDetail] = await mysql2.pool.query(`select * from purchasedetailnewpo where  PurchaseID = ${ID} and CompanyID = ${CompanyID}  order by purchasedetailnewpo.ID desc`)
 
-            const gst_detail = []
+            const gst_detail = await gstDetailQuotation(CompanyID, ID) || []
 
             response.message = "data fetch sucessfully"
             response.result.PurchaseMaster = PurchaseMaster

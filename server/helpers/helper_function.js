@@ -228,6 +228,42 @@ module.exports = {
     }
     return values
   },
+  gstDetailQuotation: async (CompanyID, PurchaseID) => {
+    let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+    gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+    const values = []
+    if (gstTypes.length) {
+      for (const item of gstTypes) {
+        let [value] = await mysql2.pool.query(`select SUM(GSTAmount) as Amount, GSTType from purchasedetailnewpo where CompanyID = ${CompanyID} and PurchaseID = ${PurchaseID} and Status = 1 and GSTType = '${item.Name}'`)
+        value = JSON.parse(JSON.stringify(value)) || []
+        if (value.length) {
+          if ((item.Name).toUpperCase() === 'CGST-SGST') {
+            values.push(
+              {
+                GSTType: `CGST`,
+                Amount: Number(value[0].Amount) / 2
+              },
+              {
+                GSTType: `SGST`,
+                Amount: Number(value[0].Amount) / 2
+              }
+            )
+          } else if (value[0].Amount !== null) {
+            values.push({
+              GSTType: `${item.Name}`,
+              Amount: Number(value[0].Amount)
+            })
+          } else if (value[0].Amount === null) {
+            values.push({
+              GSTType: `${item.Name}`,
+              Amount: 0
+            })
+          }
+        }
+      }
+    }
+    return values
+  },
   gstDetailBill: async (CompanyID, BillID) => {
     let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
     gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
