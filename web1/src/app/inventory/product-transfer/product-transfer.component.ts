@@ -39,7 +39,7 @@ export class ProductTransferComponent implements OnInit {
   showAdd = false;
   shopMode = 'false';
   item: any;
-  Req :any= {SearchBarCode : ''}
+  Req :any= {SearchBarCode : '',SupplierID:0}
 
   ID:any
   currentPage = 1;
@@ -209,6 +209,7 @@ export class ProductTransferComponent implements OnInit {
 
   getProductDataByBarCodeNo(){
     this.sp.show()
+    this.Req.SupplierID = this.barCodeList[0]?.SupplierID ?? 0;
     const subs: Subscription =  this.purchaseService.productDataByBarCodeNo(this.Req, 'false', 'false').subscribe({
       next: (res: any) => {
         if(res.success){
