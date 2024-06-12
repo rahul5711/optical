@@ -32,7 +32,8 @@ import { PoNameFilter} from './../filterDropDown/nameFilter';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { QuotationComponent } from './quotation/quotation.component';
 import { QuotationListComponent } from './quotation-list/quotation-list.component';
-
+import { ProductTypeNameq} from './../filterDropDown/nameFilter';
+import { ProductItemFilterq} from './../filterDropDown/nameFilter';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { QuotationListComponent } from './quotation-list/quotation-list.componen
     PoNameFilter,
     QuotationComponent,
     QuotationListComponent,
- 
+    ProductItemFilterq,
+    ProductTypeNameq
   ],
   imports: [
     CommonModule,
