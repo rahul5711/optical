@@ -33,8 +33,8 @@ export class QuotationComponent implements OnInit {
   addDis: any
   GstTypeDis = false
   searchValue: any = '';
-  checked = false;
-  selectAllChecked = false
+  checked = 0;
+  selectAllChecked = 0;
 
   constructor(
     private router: Router,
@@ -347,19 +347,19 @@ export class QuotationComponent implements OnInit {
 
         if (this.gstLock === false && this.gstperLock === false) {
           this.item = {
-            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: 0, RetailPrice: '', WholeSalePrice: 0, Ledger: 1, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: ''
+            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: 0, RetailPrice: 0, WholeSalePrice: 0, Ledger: 1, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: ''
           };
         } else if (this.gstLock === true && this.gstperLock === false) {
           this.item = {
-            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: 0, RetailPrice: '', WholeSalePrice: 0, Ledger: 1, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: ''
+            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: 0, RetailPrice: 0, WholeSalePrice: 0, Ledger: 1, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: ''
           };
         } else if (this.gstLock === false && this.gstperLock === true) {
           this.item = {
-            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: 0, RetailPrice: '', WholeSalePrice: 0, Ledger: 1, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: ''
+            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: 0, RetailPrice: 0, WholeSalePrice: 0, Ledger: 1, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: ''
           };
         } else {
           this.item = {
-            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: 0, RetailPrice: '', WholeSalePrice: 0, Ledger: 1, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: ''
+            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: 0, RetailPrice: 0, WholeSalePrice: 0, Ledger: 1, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: ''
           }
         }
 
@@ -369,15 +369,15 @@ export class QuotationComponent implements OnInit {
           }
         } else {
           this.item = {
-            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: 0, RetailPrice: '', WholeSalePrice: 0, Ledger: 1, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: 0, ProductExpDate: '0000-00-00', UniqueBarcode: ''
+            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: 0, RetailPrice: 0, WholeSalePrice: 0, Ledger: 1, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: 0, ProductExpDate: '0000-00-00', UniqueBarcode: ''
           }
         }
 
-        if (this.item.WholeSale === true) {
-          this.item.WholeSale = true;
+        if (this.item.WholeSale === 1) {
+          this.item.WholeSale = 1;
         }
-        if (this.item.WholeSale === false) {
-          this.item.WholeSale = false;
+        if (this.item.WholeSale === 0) {
+          this.item.WholeSale = 0;
         }
 
         this.specList.forEach((element: any) => {
@@ -436,7 +436,7 @@ export class QuotationComponent implements OnInit {
           this.selectedPurchaseMaster = res.result.PurchaseMaster[0]
           this.selectedPurchaseMaster.PurchaseDate = moment(res.result.PurchaseMaster[0].PurchaseDate).format('YYYY-MM-DD')
           this.itemList = res.result.PurchaseDetail
-          this.gst_detail = this.selectedPurchaseMaster.gst_detail
+          this.gst_detail = this.selectedPurchaseMaster?.gst_detail ?? {};
           this.calculateGrandTotal();
           this.as.successToast(res.message)
         } else {
@@ -502,7 +502,7 @@ export class QuotationComponent implements OnInit {
     this.selectedPurchaseMaster.PurchaseDate = this.selectedPurchaseMaster.PurchaseDate + ' ' + this.currentTime;
     this.data.PurchaseMaster = this.selectedPurchaseMaster;
     let items: any = [];
-    this.selectAllChecked = false;
+    this.selectAllChecked = 0;
     this.itemList.forEach((ele: any) => {
       if (ele.ID !== null || ele.ID === null || ele.Status == 0 && ele.UpdatedBy === null) {
         ele.UpdatedBy = this.user.ID;
