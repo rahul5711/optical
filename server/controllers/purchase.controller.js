@@ -799,9 +799,9 @@ module.exports = {
             if (!printdata.companysetting.LogoURL) {
                 printdata.LogoURL = clientConfig.appURL + '../assest/no-image.png';
             } else {
-                if(CompanyID === 1){
+                if (CompanyID === 1) {
                     printdata.LogoURL = clientConfig.appURL + 'assest/hvd.jpeg';
-                }else{
+                } else {
                     printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
                 }
             }
@@ -1071,28 +1071,28 @@ module.exports = {
 
                 ele.ProductFullName = ele.ProductName;
 
-               
-                if(ProductBrandName !== undefined){
-                    ele.ProductBrandName  = ProductBrandName.substring(0, 18)
-                }else{
-                    ele.ProductBrandName =  ProductBrandName 
+
+                if (ProductBrandName !== undefined) {
+                    ele.ProductBrandName = ProductBrandName.substring(0, 18)
+                } else {
+                    ele.ProductBrandName = ProductBrandName
                 }
-                if(ProductModelName !== undefined){
-                    ele.ProductModelName  = ProductModelName.substring(0, 18)
-                }else{
-                    ele.ProductModelName =  ProductModelName 
+                if (ProductModelName !== undefined) {
+                    ele.ProductModelName = ProductModelName.substring(0, 18)
+                } else {
+                    ele.ProductModelName = ProductModelName
                 }
                 ele.ProductUniqueBarcode = ele.UniqueBarcode;
-                
 
-                if(ele.BaseBarCode == null){
+
+                if (ele.BaseBarCode == null) {
                     ele.Barcode = ele.Barcode;
-                }else{
+                } else {
                     ele.Barcode = ele.BaseBarCode;
                 }
 
                 ele.BarcodeName = shopdetails[0].BarcodeName;
-                
+
             });
 
             if (printdata.length > 0) {
@@ -1155,7 +1155,7 @@ module.exports = {
                             res.send(err);
                         } else {
                             let options;
-                            
+
                             if (printdata.CompanyID == 20 || printdata.CompanyID == 19 || printdata.CompanyID == 64) {
                                 if (printdata.CompanyBarcode == 5) {
                                     options = {
@@ -1185,7 +1185,7 @@ module.exports = {
                                 }
                             }
 
-                             if(printdata.CompanyID == 193) {
+                            if (printdata.CompanyID == 193) {
                                 if (printdata.CompanyBarcode == 5) {
                                     options = {
                                         "height": "25mm",
@@ -1193,7 +1193,7 @@ module.exports = {
                                     };
                                 }
                             }
-                             if(printdata.CompanyID == 216) {
+                            if (printdata.CompanyID == 216) {
                                 if (printdata.CompanyBarcode == 5) {
                                     options = {
                                         "height": "24mm",
@@ -1201,7 +1201,7 @@ module.exports = {
                                     };
                                 }
                             }
-                             if(printdata.CompanyID == 218) {
+                            if (printdata.CompanyID == 218) {
                                 if (printdata.CompanyBarcode == 5) {
                                     options = {
                                         "height": "27mm",
@@ -1209,7 +1209,7 @@ module.exports = {
                                     };
                                 }
                             }
-                           
+
 
                             options.timeout = 540000,  // in milliseconds
                                 pdf.create(data, options).toFile(fileName, function (err, data) {
@@ -1305,7 +1305,7 @@ module.exports = {
                 shopMode = " ";
             }
 
-            const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, purchasedetailnew.ProductName, barcodemasternew.* FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE purchasedetailnew.ProductTypeName = '${ProductName}' ${shopMode} AND purchasedetailnew.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus = "Available"   AND purchasedetailnew.Status = 1  and shop.Status = 1   And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
+            const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, purchasedetailnew.ProductName, barcodemasternew.*, purchasemasternew.SupplierID FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE purchasedetailnew.ProductTypeName = '${ProductName}' ${shopMode} AND purchasedetailnew.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus = "Available"   AND purchasedetailnew.Status = 1  and shop.Status = 1   And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
 
             console.log(qry);
             let [purchaseData] = await mysql2.pool.query(qry);
@@ -1333,12 +1333,17 @@ module.exports = {
             let qry = "";
             if (PreOrder === "false") {
                 let shopMode = "";
+                let supplierParams = ``
+                if (Req?.SupplierID !== null && Req?.SupplierID !== 0 && Req?.SupplierID !== undefined) {
+                    supplierParams = ` and purchasemasternew.SupplierID = ${Req.SupplierID} `
+                }
+
                 if (ShopMode === "false") {
                     shopMode = " And barcodemasternew.ShopID = " + shopid;
                 } else {
                     shopMode = " Group By barcodemasternew.ShopID ";
                 }
-                qry = `SELECT COUNT(PurchaseDetailID) AS BarCodeCount, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName,purchasedetailnew.ProductTypeID, barcodemasternew.*  FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE CurrentStatus = "Available" AND barcodemasternew.Barcode = '${barCode}' and purchasedetailnew.Status = 1  and purchasedetailnew.PurchaseID != 0 and  purchasedetailnew.CompanyID = '${CompanyID}' ${shopMode}`;
+                qry = `SELECT COUNT(PurchaseDetailID) AS BarCodeCount, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName,purchasedetailnew.ProductTypeID, barcodemasternew.*  FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID Left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID WHERE CurrentStatus = "Available" AND barcodemasternew.Barcode = '${barCode}' ${supplierParams} and purchasedetailnew.Status = 1  and purchasedetailnew.PurchaseID != 0 and  purchasedetailnew.CompanyID = '${CompanyID}' ${shopMode}`;
             } else {
                 qry = `SELECT COUNT(PurchaseDetailID) AS BarCodeCount, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage,purchasedetailnew.GSTAmount, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice, purchasedetailnew.ProductTypeID, barcodemasternew.*  FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.Barcode = '${barCode}' and PurchaseDetail.Status = 1 AND barcodemasternew.CurrentStatus = 'Pre Order'  and purchasedetailnew.CompanyID = '${CompanyID}'`;
             }
@@ -1602,13 +1607,13 @@ module.exports = {
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             if (Productsearch === undefined || Productsearch === null) {
-                return res.send({success: false, message: "Invalid Query Data"})
-             }
+                return res.send({ success: false, message: "Invalid Query Data" })
+            }
 
-             let searchString = ``
-             if (Productsearch) {
-                 searchString = ` and transfermaster.ProductName like '%${Productsearch}%'`
-             }
+            let searchString = ``
+            if (Productsearch) {
+                searchString = ` and transfermaster.ProductName like '%${Productsearch}%'`
+            }
 
             qry = `SELECT transfermaster.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, shop.AreaName AS AreaName, ShopTo.AreaName AS ToAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID}  ${searchString}` + Parem + ` Order By transfermaster.ID Desc`;
 
@@ -1834,13 +1839,13 @@ module.exports = {
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             if (Productsearch === undefined || Productsearch === null) {
-                return res.send({success: false, message: "Invalid Query Data"})
-             }
+                return res.send({ success: false, message: "Invalid Query Data" })
+            }
 
-             let searchString = ``
-             if (Productsearch) {
-                 searchString = ` and purchasedetailnew.ProductName like '%${Productsearch}%'`
-             }
+            let searchString = ``
+            if (Productsearch) {
+                searchString = ` and purchasedetailnew.ProductName like '%${Productsearch}%'`
+            }
 
 
             qry = `SELECT COUNT(barcodemasternew.ID) AS Count,purchasedetailnew.BrandType, purchasedetailnew.ID as PurchaseDetailID , purchasedetailnew.UnitPrice, purchasedetailnew.Quantity, purchasedetailnew.ID, purchasedetailnew.DiscountAmount, purchasedetailnew.TotalAmount, supplier.Name AS SupplierName, shop.Name AS ShopName, shop.AreaName AS AreaName, purchasedetailnew.ProductName, purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice, purchasedetailnew.SubTotal, purchasedetailnew.DiscountPercentage, purchasedetailnew.GSTPercentage as GSTPercentagex, purchasedetailnew.GSTAmount, purchasedetailnew.GSTType as GSTTypex, purchasedetailnew.WholeSalePrice, purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.PaymentStatus,  barcodemasternew.*, purchasemasternew.SupplierID FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID  LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} AND purchasemasternew.PStatus =0 and purchasedetailnew.Status = 1  ${searchString} ` + Parem + " Group By barcodemasternew.PurchaseDetailID, barcodemasternew.ShopID" + " HAVING barcodemasternew.Status = 1";
@@ -2039,13 +2044,13 @@ module.exports = {
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             if (Productsearch === undefined || Productsearch === null) {
-                return res.send({success: false, message: "Invalid Query Data"})
-             }
+                return res.send({ success: false, message: "Invalid Query Data" })
+            }
 
-             let searchString = ``
-             if (Productsearch) {
-                 searchString = ` and purchasedetailnew.ProductName like '%${Productsearch}%'`
-             }
+            let searchString = ``
+            if (Productsearch) {
+                searchString = ` and purchasedetailnew.ProductName like '%${Productsearch}%'`
+            }
 
             qry = `SELECT purchasedetailnew.*,purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.PaymentStatus, shop.Name AS ShopName,  shop.AreaName AS AreaName, supplier.Name AS SupplierName,supplier.GSTNo AS SupplierGSTNo,product.HSNCode AS HSNcode  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier'  AND purchasedetailnew.CompanyID = ${CompanyID}  ${searchString}` + Parem;
 
@@ -2585,13 +2590,13 @@ module.exports = {
             }
 
             if (Productsearch === undefined || Productsearch === null) {
-                return res.send({success: false, message: "Invalid Query Data"})
-             }
+                return res.send({ success: false, message: "Invalid Query Data" })
+            }
 
-             let searchString = ``
-             if (Productsearch) {
-                 searchString = ` and purchasedetailnew.ProductName like '%${Productsearch}%'`
-             }
+            let searchString = ``
+            if (Productsearch) {
+                searchString = ` and purchasedetailnew.ProductName like '%${Productsearch}%'`
+            }
 
             let qry = `select purchasedetailnew.*, supplier.Name as SupplierName,  supplier.GSTNo as GSTNo, users1.Name as CreatedPerson,shop.Name as ShopName, shop.AreaName as AreaName, users.Name as UpdatedPerson from purchasedetailnew LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID left join user as users1 on users1.ID = purchasedetailnew.CreatedBy left join user as users on users.ID = purchasedetailnew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and purchasemasternew.PStatus = 1 and purchasedetailnew.Status = 1 and purchasemasternew.CompanyID = ${CompanyID} ${searchString} ${shopId}  ${Parem} order by purchasedetailnew.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
@@ -3050,7 +3055,7 @@ module.exports = {
             }
 
             if (Productsearch === undefined || Productsearch === null) {
-               return res.send({success: false, message: "Invalid Query Data"})
+                return res.send({ success: false, message: "Invalid Query Data" })
             }
 
             let searchString = ``
@@ -4369,7 +4374,7 @@ module.exports = {
     },
     updateProductPrice: async (req, res, next) => {
         try {
-            const response = {data: null, success: true, message: ""}
+            const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
@@ -4378,7 +4383,7 @@ module.exports = {
             if (!ProductData) return res.send({ message: "Invalid Query Data" })
             if (ProductData.length === 0) return res.send({ message: "Invalid Query Data" })
 
-            for(let item of ProductData) {
+            for (let item of ProductData) {
                 if (!item.PurchaseDetailID || item.PurchaseDetailID === 0 || item.PurchaseDetailID === null) {
                     return res.send({ message: "Invalid Query PurchaseDetailID" })
                 }
@@ -4396,7 +4401,7 @@ module.exports = {
                     return res.send({ message: "Invalid Query WholeSalePrice" })
                 }
 
-                let [fetchBarcode] =  await mysql2.pool.query(`select * from barcodemasternew where CompanyID = ${CompanyID} and PurchaseDetailID = ${item.PurchaseDetailID} and ShopID = ${item.ShopID} and Status = 1 and CurrentStatus = 'Available' and Barcode = '${item.Barcode}'`)
+                let [fetchBarcode] = await mysql2.pool.query(`select * from barcodemasternew where CompanyID = ${CompanyID} and PurchaseDetailID = ${item.PurchaseDetailID} and ShopID = ${item.ShopID} and Status = 1 and CurrentStatus = 'Available' and Barcode = '${item.Barcode}'`)
 
                 if (fetchBarcode.length !== item.Count) {
                     return res.send({ message: `Invalid Query Count/Available Barcode :- ${item.Barcode}` })
