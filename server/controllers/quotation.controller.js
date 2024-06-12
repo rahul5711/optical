@@ -228,7 +228,7 @@ module.exports = {
 
             const [PurchaseMaster] = await mysql2.pool.query(`select * from purchasemasternewpo  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} `)
 
-            const [PurchaseDetail] = await mysql2.pool.query(`select * from purchasedetailnewpo where  PurchaseID = ${ID} and CompanyID = ${CompanyID}  order by purchasedetailnew.ID desc`)
+            const [PurchaseDetail] = await mysql2.pool.query(`select * from purchasedetailnewpo where  PurchaseID = ${ID} and CompanyID = ${CompanyID}  order by purchasedetailnewpo.ID desc`)
 
             const gst_detail = []
 
