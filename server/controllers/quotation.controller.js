@@ -367,4 +367,35 @@ module.exports = {
             next(err)
         }
     },
+    searchByFeild: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "", count: 0 }
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
+
+            let shopId = ``
+
+            if (shopid !== 0) {
+                shopId = `and purchasemasternewpo.ShopID = ${shopid}`
+            }
+
+
+            let qry = `select purchasemasternewpo.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasemasternewpo left join user as users1 on users1.ID = purchasemasternewpo.CreatedBy left join user as users on users.ID = purchasemasternewpo.UpdatedBy left join supplier on supplier.ID = purchasemasternewpo.SupplierID left join shop on shop.ID = purchasemasternewpo.ShopID where purchasemasternewpo.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternewpo.CompanyID = '${CompanyID}' ${shopId} and purchasemasternewpo.InvoiceNo like '%${Body.searchQuery}%' OR purchasemasternewpo.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternewpo.CompanyID = '${CompanyID}' ${shopId}  and supplier.Name like '%${Body.searchQuery}%' OR purchasemasternewpo.Status = 1 and supplier.Name != 'PreOrder Supplier'  and purchasemasternewpo.CompanyID = '${CompanyID}' ${shopId}  and supplier.GSTNo like '%${Body.searchQuery}%' `
+
+            let [data] = await mysql2.pool.query(qry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = data.length
+            return res.send(response);
+
+
+        } catch (err) {
+            next(err)
+        }
+    },
 }
