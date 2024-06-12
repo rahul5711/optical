@@ -9057,7 +9057,7 @@ module.exports = {
             response.data = data
             response.message = "success";
             
-            return res.send(response);
+            // return res.send(response);
               // Generate PDF
               const printdata = response;
               const invoiceNo = printdata.InvoiceNo;

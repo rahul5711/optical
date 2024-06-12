@@ -125,14 +125,17 @@
                     <th>Amount</th>
                     <th>Discount</th>
                     <th>Taxable Value</th>
-                    <% if(data.gst_details.length !==0 ){ data.gst_details.forEach(function (i, index) { %>
-                        <th colspan="2"> <%=i.GSTType%></th>
-                        <%})}%>
+                    <th colspan="2"> CGST</th>
+                    <th colspan="2"> SGST</th>
+                    <th colspan="2"> IGST</th>
+                      
                     <th>Total</th>
                 </tr>
                 <tr style="text-align: center; white-space: nowrap; font-size: 12px;">
                     <th colspan="8"></th>
                  
+                    <th>Rate</th>
+                    <th>Amount</th>
                     <th>Rate</th>
                     <th>Amount</th>
                     <th>Rate</th>
@@ -152,10 +155,14 @@
                     <td>  <%=i.SubTotal%></td>
                     <td>  <%=i.DiscountAmount%></td>
                     <td>  <%=i.GSTAmount%></td>
-                    <% if(i.gst_details.length !==0 ){ i.gst_details.forEach(function (i, index) { %>
+                   
                     <td >  6%</td>
-                    <td >  <%=i.Amount%></td>
-                    <%})}%>
+                    <td >  <%=i.cGstAmount%></td>
+                    <td >  6%</td>
+                    <td >  <%=i.sGstAmount%></td>
+                    <td >  6%</td>
+                    <td >  <%=i.iGstAmount%></td>
+                    
                     <td>  <%=i.TotalAmount%></td>
                 </tr>
                 <%})}%>
@@ -172,39 +179,40 @@
                 <td></td>
                 <td></td>
                 <td></td>
+                <td></td>
+                <td></td>
                 <td><%=data.totalAmount%></td>
             </tr>
             <tr style="line-height: 20px;">
-                <td colspan="8" style="border: none;text-align: center;font-size: 18px; border-bottom: 1px solid;"> Total Invoice amount in words</td> 
+                <td colspan="10" style="border: none;text-align: center;font-size: 18px; border-bottom: 1px solid;"> Total Invoice amount in words</td> 
                 <td colspan="4" style="text-align: left;">Total Amount before Tax</td> 
                 <td><%=data.totalUnitPrice%></td>
             </tr>
             <% if(data.gst_details.length !==0 ){ data.gst_details.forEach(function (i, index) { %>
             <tr style="line-height: 20px;">
-                <td colspan="8"  style="border: none;"> </td>
+                <td colspan="10"  style="border: none;"> </td>
                 <td colspan="4" style="text-align: left;">Add:<%=i.GSTType%></td> 
                 <td><%= (i.Amount).toFixed(2)%></td></tr>
             <%})}%>
             <tr style="line-height: 20px;">
-                <td colspan="8" style="border: none;line-height: 20px; vertical-align: middle;text-align: center;font-size: 18px; border-top: 1px solid; padding-top: 5px;"><%= numberToWords(data.totalAmount ) %></td>
+                <td colspan="10" style="border: none;line-height: 20px; vertical-align: middle;text-align: center;font-size: 18px; border-top: 1px solid; padding-top: 5px;"><%= numberToWords(data.totalAmount ) %></td>
                 <td colspan="4" style="text-align: left;">Total Amount Tax</td> 
                 <td><%=data.totalGstAmount%></td>
             </tr>
             <tr style="line-height: 20px;">
-                <td colspan="8" style="border: none;"></td>
+                <td colspan="10" style="border: none;"></td>
                 <td colspan="4" style="text-align: left;">Total Amount After Tax</td> 
                 <td><%=data.totalAmount%></td>
             </tr>
 
             <tr style="padding: 0;">
-                <td colspan="5" style=" border: none !important; padding: 0;">
+                <td colspan="7" style=" border: none !important; padding: 0;">
                     <table style="width: 100%; border: none !important; padding: 0;">
                         <tr> <td style="border-left: none !important;"> Bank Details</td> </tr>
                         <tr> <td style="border-left: none !important;"> Cheque issued in the name of PBMA'S H. V. DESAI EYE HOSPITAL </td></tr>
                         <tr> <td style="border-left: none !important;"> Bank NEFT :   HDFC BANK, Mohammedwadi, Pune Branch</td></tr>
                         <tr> <td style="border-left: none !important;"> Saving A/c No: 2 4 5 4 1 4 5 0 0 0 0 0 3 2  / IFSC CODE- HDFC0002454</td></tr>
                         <tr> <td style="border-left: none !important;"> Terms & conditions</td></tr> 
-                      
                     </table>
                     
                 </td>
@@ -218,7 +226,6 @@
                 </td>
                 <td colspan="5"  style=" border: none !important; padding: 0;">
                     <table style="width: 100%; border: none !important; padding: 0;margin: 0;">
-                        
                         <tr style="padding: 0;"> 
                             <td style="height: 20px; font-size: 8px;padding: 0;"> Ceritified that the particulars given above are true and correct</td>
                         </tr>
@@ -230,7 +237,7 @@
             </tr>
              <tr style="padding: 0 !important;">
                 <td colspan="2" style="text-align: left; font-size: 9px !important;padding: 0 !important;border-top: none !important;">Declaration</td>
-                <td colspan="11" style="text-align: left; font-size: 9px !important;padding: 0 !important;border-top: none !important;">I hereby declare that the goods being purchased from the seller, as per description mentioned above, 
+                <td colspan="13" style="text-align: left; font-size: 9px !important;padding: 0 !important;border-top: none !important;">I hereby declare that the goods being purchased from the seller, as per description mentioned above, 
                     would be used within Maharashtra.</td>
              </tr>
             </tfoot>

@@ -30,6 +30,9 @@ import { FitterInvoiceListComponent } from './fitter-invoice-list/fitter-invoice
 import { FitterInvoiceDetailComponent } from './fitter-invoice-detail/fitter-invoice-detail.component';
 import { PoNameFilter} from './../filterDropDown/nameFilter';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { QuotationComponent } from './quotation/quotation.component';
+import { QuotationListComponent } from './quotation-list/quotation-list.component';
+
 
 @NgModule({
   declarations: [
@@ -40,7 +43,10 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     FitterInvoiceComponent,
     FitterInvoiceListComponent,
     FitterInvoiceDetailComponent,
-    PoNameFilter
+    PoNameFilter,
+    QuotationComponent,
+    QuotationListComponent,
+ 
   ],
   imports: [
     CommonModule,

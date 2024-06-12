@@ -256,8 +256,6 @@ export class PurchaseListComponent implements OnInit {
     });
   }
 
-
-
   purchaseHsitory() {
     this.sp.show();
     let SupplierID = Number(this.id)

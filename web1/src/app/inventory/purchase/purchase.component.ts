@@ -275,7 +275,6 @@ export class PurchaseComponent implements OnInit {
   }
 
   saveFieldData(i: any) {
-
     this.specList[i].DisplayAdd = 0;
     let count = 0;
     this.specList[i].SptTableData.forEach((element: { TableValue: string; }) => {
@@ -384,7 +383,6 @@ export class PurchaseComponent implements OnInit {
   }
 
   addItem() {
-
     if (this.category === 'Product') {
       if ((this.item.GSTType === 'None' && this.item.GSTPercentage !== 0) || (this.item.GSTPercentage === 0 && this.item.GSTType !== 'None') || (this.item.GSTPercentage === null && this.item.GSTType !== 'None')) {
         Swal.fire({
