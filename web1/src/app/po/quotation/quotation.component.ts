@@ -99,8 +99,11 @@ export class QuotationComponent implements OnInit {
     this.getProductList();
     this.getdropdownSupplierlist();
     this.getGSTList();
-
-    this.selectedPurchaseMaster.PurchaseDate = moment().format('yyyy-MM-DD');
+    if (this.id != 0) {
+      this.getPurchaseById();
+    } else {
+      this.selectedPurchaseMaster.PurchaseDate = moment().format('yyyy-MM-DD');
+    }
     this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23' })
   }
 
@@ -513,6 +516,57 @@ export class QuotationComponent implements OnInit {
     //   error: (err: any) => console.log(err.message),
     //   complete: () => subs.unsubscribe(),
     // });
+  }
+
+  updatedPurchase() {
+    this.sp.show()
+    this.data.UpdateProduct = true
+    this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
+    this.selectedPurchaseMaster.PurchaseDate = this.selectedPurchaseMaster.PurchaseDate + ' ' + this.currentTime;
+    this.data.PurchaseMaster = this.selectedPurchaseMaster;
+    let items: any = [];
+    this.selectAllChecked = false;
+    this.itemList.forEach((ele: any) => {
+      if (ele.ID !== null || ele.ID === null || ele.Status == 0 && ele.UpdatedBy === null) {
+        ele.UpdatedBy = this.user.ID;
+        ele.Checked = false
+        items.push(ele);
+      }
+    })
+    this.data.PurchaseDetail = JSON.stringify(items);
+    const subs: Subscription = this.purchaseService.updateQuotation(this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          if (res.data !== 0) {
+            this.getPurchaseById();
+            this.selectedProduct = "";
+            this.specList = [];
+          }
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Update.',
+            showConfirmButton: false,
+            timer: 1200
+          })
+        } else {
+          this.currentTime = ''
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {

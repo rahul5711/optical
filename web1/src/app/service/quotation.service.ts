@@ -21,6 +21,11 @@ export class QuotationService {
     .pipe(catchError(this.handleError));
   }
 
+  updateQuotation( Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/update', Body, httpOptions )
+    .pipe(catchError(this.handleError));
+  }
+
   getPurchaseById(ID:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/getPurchaseById', {ID: ID}, httpOptions )
     .pipe(catchError(this.handleError));
