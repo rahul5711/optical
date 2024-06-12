@@ -26,6 +26,22 @@ export class QuotationService {
     .pipe(catchError(this.handleError));
   }
 
+  getList(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/list', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  deleteData(ID:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/delete', {ID: ID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  searchByFeild(searchQuery: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/searchByFeild', searchQuery,httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+  
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

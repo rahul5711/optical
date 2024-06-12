@@ -16,6 +16,7 @@ import { MomentInput } from 'moment';
 import * as moment from 'moment';
 import { SupportService } from 'src/app/service/support.service';
 import { PaymentService } from 'src/app/service/payment.service';
+import { QuotationService } from 'src/app/service/quotation.service';
 
 
 @Component({
@@ -56,7 +57,7 @@ export class QuotationListComponent implements OnInit {
     public as: AlertService,
     private sp: NgxSpinnerService,
     private excelService: ExcelService,
-    private purchaseService: PurchaseService,
+    private purchaseService: QuotationService,
     private modalService: NgbModal,
     private supps: SupportService,
     private payment: PaymentService,
@@ -78,6 +79,115 @@ export class QuotationListComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.getList()
   }
 
+  getList() {
+    this.sp.show()
+    const dtm = {
+      currentPage: this.currentPage,
+      itemsPerPage: this.itemsPerPage
+    }
+    const subs: Subscription = this.purchaseService.getList(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.collectionSize = res.count;
+          this.dataList = res.data;
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  deleteItem(i: any) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.sp.show()
+        const subs: Subscription = this.purchaseService.deleteData(this.dataList[i].ID).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.dataList.splice(i, 1);
+              this.as.successToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been deleted.',
+                showConfirmButton: false,
+                timer: 1000
+              })
+            } else {
+              this.as.errorToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: res.message,
+                showCancelButton: true,
+              })
+            }
+            this.sp.hide()
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    })
+  }
+
+  dateFormat(date: any) {
+    return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
+
+  ngAfterViewInit() {
+    if (this.searching) {
+      const nativeElem = this.searching.nativeElement
+      fromEvent(nativeElem, 'keyup').pipe(
+        map((event: any) => {
+          return event.target.value;
+        }),
+        debounceTime(1000),
+        distinctUntilChanged(),
+      ).subscribe((text: string) => {
+        let data = {
+          searchQuery: text.trim(),
+        }
+        if (data.searchQuery !== "") {
+          const dtm = {
+            currentPage: 1,
+            itemsPerPage: 50000,
+            searchQuery: data.searchQuery
+          }
+          this.sp.show()
+          const subs: Subscription = this.purchaseService.searchByFeild(dtm).subscribe({
+            next: (res: any) => {
+              if (res.success) {
+                this.collectionSize = 1;
+                this.page = 1;
+                this.dataList = res.data
+                this.as.successToast(res.message)
+              } else {
+                this.as.errorToast(res.message)
+              }
+              this.sp.hide();
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subs.unsubscribe(),
+          });
+        } else {
+          this.getList();
+        }
+      });
+    }
+  }
 }

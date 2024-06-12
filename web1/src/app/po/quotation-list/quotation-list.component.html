@@ -15,10 +15,10 @@
                                         </button>
                                     </h2>
                                 </div>
-                                <!-- <div class="col-md-1 col-3 ps-md-0 ps-3 order-1 order-md-1">
+                                <div class="col-md-1 col-3 ps-md-0 ps-3 order-1 order-md-1">
                                     <select class=" form-control"
                                         style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
-                                        [(ngModel)]="itemsPerPage">
+                                        [(ngModel)]="itemsPerPage" (change)="getList();">
                                         <option [ngValue]="10">Show 10 Row</option>
                                         <option [ngValue]="25">Show 25 Row</option>
                                         <option [ngValue]="50">Show 50 Row</option>
@@ -29,11 +29,11 @@
                                 </div>
                                 <div class="col-md-3 col-6 mx-md-auto order-2 order-md-1" style="margin-top:0px;">
                                     <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false"
-                                        ngbPaginationEllipsis [collectionSize]="collectionSize" #numPages
+                                        ngbPaginationEllipsis [collectionSize]="collectionSize" #numPages (pageChange)="getList()"
                                         [pageSize]="itemsPerPage" [(page)]="currentPage" [maxSize]="5" [rotate]="true"
                                         [ellipses]="false" [boundaryLinks]="true">
                                     </ngb-pagination>
-                                </div> -->
+                                </div>
                                 <div class="col-md-2 col-5 ms-auto order-0 order-md-1">
                                     <div class="input-group">
                                         <input placeholder="Search" [(ngModel)]="term" #searching mdbInput type="search"
@@ -75,33 +75,35 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr class="text-center"
-                                                    style="white-space: nowrap;">
-                                                    <td style="width: 5%;">
-                                                        <button class="bg-btn"
-                                                            [routerLink]="['/po/quotation',0]">
-                                                            <mat-icon class="edit_icon ms-1">edit
-                                                            </mat-icon>
-                                                        </button>
-                                                        <button class="bg-btn">
-                                                            <mat-icon class="delete_icon ms-1">delete_forever</mat-icon>
-                                                        </button>
-
-                                                    </td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                </tr>
+                                              
+                                                <tr class="text-center" *ngFor="let data of dataList let i = index;"
+                                                style="white-space: nowrap;">
+                                                <td style="width: 5%;">
+                                                  <button class="bg-btn"
+                                                    [routerLink]="['/po/quotation',data.ID]" >
+                                                    <mat-icon class="edit_icon ms-1">edit
+                                                    </mat-icon>
+                                                  </button>
+                                                  <button  class="bg-btn" (click)="deleteItem(i)">
+                                                    <mat-icon class="delete_icon ms-1">delete_forever</mat-icon>
+                                                  </button>
+                                              
+                                                </td>
+                                                <td>{{dataList.length - i }}</td>
+                                                <td>{{data.SupplierName}}</td>
+                                                <td>{{data.InvoiceNo}}</td>
+                                                <td>{{data.ShopName}}<span [style.color]="'blue'"
+                                                    *ngIf="data.AreaName !== 'null'">({{data.AreaName}})</span></td>
+                                                <td>{{dateFormat(data.PurchaseDate)}}</td>
+                                                <td>{{data.PaymentStatus}}</td>
+                                                <td>{{(data.GSTNo !== 'null')? data.GSTNo: ''}}</td>
+                                                <td>{{data.Quantity}}</td>
+                                                <td>{{data.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                                <td>{{data.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                                <td>{{data.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                                <td>{{data.CreatedPerson}}</td>
+                                                <td>{{data.UpdatedPerson}}</td>
+                                              </tr>
                                             </tbody>
                                         </table>
                                     </div>
