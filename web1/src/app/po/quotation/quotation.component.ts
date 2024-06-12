@@ -12,6 +12,7 @@ import { CalculationService } from 'src/app/service/helpers/calculation.service'
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { QuotationService } from 'src/app/service/quotation.service';
 
 @Component({
   selector: 'app-quotation',
@@ -41,7 +42,7 @@ export class QuotationComponent implements OnInit {
     private ps: ProductService,
     private ss: SupplierService,
     private supps: SupportService,
-    private purchaseService: PurchaseService,
+    private purchaseService: QuotationService,
     public as: AlertService,
     public calculation: CalculationService,
     public modalService: NgbModal,
@@ -54,12 +55,12 @@ export class QuotationComponent implements OnInit {
   selectedPurchaseMaster: any = {
     ID: null, SupplierID: null, SupplierName: null, CompanyID: null, GSTNo: null, ShopID: null, ShopName: null, PurchaseDate: null,
     PaymentStatus: null, InvoiceNo: null, Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0,
-    GSTAmount: 0, TotalAmount: 0, RoundOff: 0, preOrder: false,
+    GSTAmount: 0, TotalAmount: 0, RoundOff: 0, preOrder: 0,
   };
 
   item: any = {
     ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, UnitPrice: 0.00,
-    Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: 0.00, WholeSalePrice: 0.00, Ledger: false, WholeSale: false, BaseBarCode: '', NewBarcode: '', Status: 1, BrandType: 0, ProductExpDate: '0000-00-00', UpdateProduct: false
+    Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: 0, RetailPrice: 0.00, WholeSalePrice: 0.00, Ledger: 0, WholeSale: 0, BaseBarCode: '', NewBarcode: '', Status: 1, BrandType: 0, ProductExpDate: '0000-00-00', UpdateProduct: 0
   };
 
   data: any = { PurchaseMaster: null, Product: null, PurchaseDetail: null, Charge: null };
@@ -423,6 +424,73 @@ export class QuotationComponent implements OnInit {
 
   }
 
+  getPurchaseById() {
+    this.sp.show();
+    const subs: Subscription = this.purchaseService.getPurchaseById(this.id).subscribe({
+      next: (res: any) => {
+        if (res.success === true) {
+          this.selectedPurchaseMaster = res.result.PurchaseMaster[0]
+          this.selectedPurchaseMaster.PurchaseDate = moment(res.result.PurchaseMaster[0].PurchaseDate).format('YYYY-MM-DD')
+          this.itemList = res.result.PurchaseDetail
+          this.gst_detail = this.selectedPurchaseMaster.gst_detail
+          this.calculateGrandTotal();
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
+  }
+
+  onSumbit() {
+    this.sp.show();
+    this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
+    this.selectedPurchaseMaster.PurchaseDate = this.selectedPurchaseMaster.PurchaseDate + ' ' + this.currentTime;
+
+    this.data.PurchaseMaster = this.selectedPurchaseMaster;
+    this.data.PurchaseDetail = JSON.stringify(this.itemList);
+    const subs: Subscription = this.purchaseService.saveQuotation(this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          if (res.data !== 0) {
+            this.id = res.data;
+            this.router.navigate(['/po/quotation', this.id]);
+            this.getPurchaseById()
+            this.selectedProduct = "";
+            this.specList = [];
+          }
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Save.',
+            showConfirmButton: false,
+            timer: 1200
+          })
+        } else {
+          this.currentTime = ''
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
   PurchaseDetailPDF() {
     let itemList2: any = []
     this.itemList.forEach((ele: any) => {
@@ -431,20 +499,20 @@ export class QuotationComponent implements OnInit {
       }
     });
     let body = { PurchaseMaster: this.selectedPurchaseMaster, PurchaseDetails: itemList2, PurchaseCharge: '' }
-    this.sp.show();
-    const subs: Subscription = this.purchaseService.purchaseDetailPDF(body).subscribe({
-      next: (res: any) => {
-        if (res) {
-          const url = this.env.apiUrl + "/uploads/" + res;
-          window.open(url, "_blank");
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+    // this.sp.show();
+    // const subs: Subscription = this.purchaseService.purchaseDetailPDF(body).subscribe({
+    //   next: (res: any) => {
+    //     if (res) {
+    //       const url = this.env.apiUrl + "/uploads/" + res;
+    //       window.open(url, "_blank");
+    //     } else {
+    //       this.as.errorToast(res.message)
+    //     }
+    //     this.sp.hide();
+    //   },
+    //   error: (err: any) => console.log(err.message),
+    //   complete: () => subs.unsubscribe(),
+    // });
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {

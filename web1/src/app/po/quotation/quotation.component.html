@@ -323,7 +323,7 @@
 
                         </form>
                         <!-- save purchase end -->
-                        <form #f2="ngForm" >
+                        <form #f2="ngForm" (ngSubmit)="onSumbit()">
                             <!-- Add item List start -->
                             <div class="row mt-3">
                                 <div class="col-sm-12 p-0"
