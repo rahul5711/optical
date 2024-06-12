@@ -9104,8 +9104,10 @@ module.exports = {
               printdata.totalProfit = totalProfit;
               printdata.gst_details = gst;
 
-              if(CompanyID === 1){
+              if(CompanyID === 184){
                 printdata.LogoURL = clientConfig.appURL + 'assest/HVD_logo.png';
+            }else{
+                printdata.LogoURL = clientConfig.appURL + ''
             }
   
                var formatName = "GSTInvoice.ejs";
