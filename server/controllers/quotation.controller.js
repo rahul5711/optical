@@ -109,6 +109,7 @@ module.exports = {
 
 
         } catch (err) {
+            console.log(err);
             next(err)
         }
     },
