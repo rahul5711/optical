@@ -9,6 +9,6 @@ router.post('/update', verifyAccessTokenAdmin, Controller.update)
 router.post('/getPurchaseById', verifyAccessTokenAdmin, Controller.getPurchaseById)
 router.post('/list', verifyAccessTokenAdmin, Controller.list)
 router.post('/delete', verifyAccessTokenAdmin, Controller.delete)
-router.post('/deleteProduct', verifyAccessTokenAdmin, checkCron, Controller.deleteProduct)
+router.post('/deleteProduct', verifyAccessTokenAdmin, Controller.deleteProduct)
 
 module.exports = router
