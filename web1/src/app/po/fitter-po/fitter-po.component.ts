@@ -79,6 +79,7 @@ export class FitterPoComponent implements OnInit {
   Orderpower: any = []
   multiCheck: any;
   supllierPDF= ''
+  totalQty:any = 0;
   // call Api ngOnInit start 
   ngOnInit(): void {
     this.sp.show()
@@ -173,6 +174,7 @@ export class FitterPoComponent implements OnInit {
           this.orderList = res.data;
 
           this.orderList = res.data
+          this.totalQty = res.sumQty
           this.multiCheck = false
         } else {
           this.as.errorToast(res.message)
@@ -305,6 +307,7 @@ export class FitterPoComponent implements OnInit {
         if (res.success) {
           this.collectionSize = res.count;
           this.orderList = res.data;
+          this.totalQty = res.sumQty
           this.multiCheck = false
           this.as.successToast(res.message)
         } else {
@@ -572,6 +575,7 @@ export class FitterPoComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.orderList = res.data
+            this.totalQty = res.sumQty
             this.as.successToast(res.message)
           } else {
             this.as.errorToast(res.message)
@@ -589,6 +593,7 @@ export class FitterPoComponent implements OnInit {
             this.collectionSize = 1;
             this.page = 1;
             this.orderList = res.data;
+            this.totalQty = res.sumQty
             this.as.successToast(res.message)
           } else {
             this.as.errorToast(res.message)

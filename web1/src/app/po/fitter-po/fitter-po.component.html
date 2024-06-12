@@ -301,6 +301,13 @@
                             </div>
                         </div>
                         <div class="row" style="border-top: 1px solid #00000047;">
+                            <div class="col-xl-1 col-lg-2 col-md-4 col-12 mb-0 pt-2">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label style="color:red;">Total Qty</mat-label>
+                                    <input matInput name="totalQty" [(ngModel)]="totalQty"
+                                        #totalQtycontrol disabled style="color:red;font-size: 20px;">
+                                </mat-form-field>
+                            </div>
                             <div class="col-md-2 mx-auto p-3" *ngIf="this.orderFitter">
                                 <button class="hover mx-auto" [disabled]="this.assginfitterbtn"
                                     (click)="openModal(content)" type="button" mat-raised-button color="primary">

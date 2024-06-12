@@ -76,6 +76,7 @@ export class SupplierPoComponent implements OnInit {
   ChangeUnitPrice = false;
   editlist = false;
   UrlunitPricePDF = '';
+  totalQty:any = 0;
 
   ngOnInit(): void {
     this.sp.show()
@@ -156,6 +157,7 @@ export class SupplierPoComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.orderList = res.data
+          this.totalQty = res.sumQty
           this.multiCheck = false
         } else {
           this.as.errorToast(res.message)
@@ -215,6 +217,7 @@ export class SupplierPoComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.orderList = res.data
+            this.totalQty = res.sumQty
             this.as.successToast(res.message)
           } else {
             this.as.errorToast(res.message)
@@ -237,6 +240,7 @@ export class SupplierPoComponent implements OnInit {
             this.collectionSize = 1;
             this.page = 1;
             this.orderList = res.data;
+            this.totalQty = res.sumQty
             this.as.successToast(res.message)
           } else {
             this.as.errorToast(res.message)
@@ -348,6 +352,7 @@ export class SupplierPoComponent implements OnInit {
         if (res.success) {
           this.collectionSize = res.count;
           this.orderList = res.data;
+          this.totalQty = res.sumQty
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
