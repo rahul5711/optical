@@ -40,6 +40,10 @@
 .dataTbl , th, td{
  padding: 0px 2px ;
 }
+
+.logo1{
+        width: 60%;
+    }
 </style>
 
 <body>
@@ -48,7 +52,7 @@
             <table style="width: 100%; ">
                 <tr>
                     <td style="width: 15%;border: 1px solid;">
-                        <img src="" alt="logo">
+                        <img src="<%=data.LogoURL%>" alt="logo" class="logo1">
                     </td>
                     <td style="width: 65%;">
                         <h1><b style="font-weight: bolder !important;">The Poona Blind Men's Association</b> </h1>
@@ -156,11 +160,11 @@
                     <td>  <%=i.DiscountAmount%></td>
                     <td>  <%=i.GSTAmount%></td>
                    
-                    <td >  6%</td>
+                    <td >  <%=i.cGstPercentage%></td>
                     <td >  <%=i.cGstAmount%></td>
-                    <td >  6%</td>
+                    <td > <%=i.sGstPercentage%></td>
                     <td >  <%=i.sGstAmount%></td>
-                    <td >  6%</td>
+                    <td >  <%=i.iGstPercentage%></td>
                     <td >  <%=i.iGstAmount%></td>
                     
                     <td>  <%=i.TotalAmount%></td>

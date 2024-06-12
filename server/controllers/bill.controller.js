@@ -9063,7 +9063,7 @@ module.exports = {
             response.data = data
             response.message = "success";
             
-            return res.send(response);
+            // return res.send(response);
               // Generate PDF
               const printdata = response;
               const invoiceNo = printdata.InvoiceNo;
@@ -9104,7 +9104,11 @@ module.exports = {
               printdata.totalProfit = totalProfit;
               printdata.gst_details = gst;
 
-              
+              if(CompanyID === 184){
+                printdata.LogoURL = clientConfig.appURL + 'assest/HVD_logo.png';
+            }else{
+                printdata.LogoURL = clientConfig.appURL + ''
+            }
   
                var formatName = "GSTInvoice.ejs";
                var file = "GST" +"_"+ "Invoice" +  ".pdf";
