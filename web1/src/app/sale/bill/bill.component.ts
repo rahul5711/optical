@@ -141,7 +141,7 @@ export class BillComponent implements OnInit {
   prodList: any
   specList: any;
   searchList: any = [];
-  Req: any = { SearchBarCode: '', searchString: '', }
+  Req: any = { SearchBarCode: '', searchString: '', SupplierID : 0 }
   PreOrder = "false";
   ShopMode = false;
   showProductExpDate = false;
@@ -698,7 +698,12 @@ export class BillComponent implements OnInit {
   }
 
   getSearchByBarcodeNo() {
-
+    if(this.BarcodeList !== undefined){
+      this.Req.SupplierID = this.BarcodeList[0]?.SupplierID;
+    }else{
+      this.Req.SupplierID = 0
+    }
+  
     if (this.Req.SearchBarCode !== '') {
       this.sp.show();
       if (this.BillItem.Manual == false) {
