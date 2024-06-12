@@ -352,7 +352,8 @@
                                                     <!-- <td style="z-index: -999 !important;" *ngIf="data.Status === 0"></td> -->
                                                     <td class="text-center" style="white-space: nowrap;">
                                                         <button class="bg_none" type="button"
-                                                            *ngIf="data.Status !== 0 ">
+                                                        *ngIf="data.Status !== 0 "
+                                                        (click)="deleteItem('Product',i)">
                                                             <mat-icon class="delete_icons ms-1">delete_forever</mat-icon>
                                                         </button>
                                                     </td>
