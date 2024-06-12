@@ -8996,13 +8996,17 @@ module.exports = {
                 for (let item of data) {
                     item.gst_details = []
                     item.iGstAmount = 0
+                    item.iGstPercentage = 0
                     item.cGstAmount = 0
+                    item.cGstPercentage = 0
                     item.sGstAmount = 0
+                    item.sGstPercentage = 0
                     values2.forEach(e => {
                         if (e.GSTType === item.GSTType) {
                             e.Amount += item.GSTAmount
                             response.calculation[0].iGstAmount += item.GSTAmount
                             item.iGstAmount = item.GSTAmount
+                            item.iGstPercentage = item.GSTPercentage
                             item.gst_details.push({
                                 GSTType: item.GSTType,
                                 Amount: item.GSTAmount
@@ -9017,6 +9021,7 @@ module.exports = {
                                 e.Amount += item.GSTAmount / 2
                                 response.calculation[0].cGstAmount += item.GSTAmount / 2
                                 item.cGstAmount = item.GSTAmount / 2
+                                item.cGstPercentage = item.GSTPercentage / 2
                                 item.gst_details.push({
                                     GSTType: 'CGST',
                                     Amount: item.GSTAmount / 2
@@ -9027,6 +9032,7 @@ module.exports = {
                                 e.Amount += item.GSTAmount / 2
                                 response.calculation[0].sGstAmount += item.GSTAmount / 2
                                 item.sGstAmount = item.GSTAmount / 2
+                                item.sGstPercentage = item.GSTPercentage / 2
                                 item.gst_details.push({
                                     GSTType: 'SGST',
                                     Amount: item.GSTAmount / 2
@@ -9057,7 +9063,7 @@ module.exports = {
             response.data = data
             response.message = "success";
             
-            // return res.send(response);
+            return res.send(response);
               // Generate PDF
               const printdata = response;
               const invoiceNo = printdata.InvoiceNo;
