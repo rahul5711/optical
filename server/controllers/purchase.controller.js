@@ -1393,8 +1393,8 @@ module.exports = {
             let [xferData] = await mysql2.pool.query(qry);
             let xferID = xferData.insertId;
 
-            let [selectedRows] = await mysql2.pool.query(
-                `SELECT ID FROM barcodemasternew WHERE CurrentStatus = "Available" AND ShopID = ${TransferFromShop} AND Barcode = '${Barcode}' AND PreOrder = '0' and CompanyID ='${CompanyID}' LIMIT ${TransferCount}`
+            let [selectedRows] = await mysql2.pool.query(`
+                SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CurrentStatus = "Available" AND barcodemasternew.ShopID = ${TransferFromShop} AND barcodemasternew.Barcode = '${Barcode}' AND barcodemasternew.PreOrder = '0' and CONCAT(purchasedetailnew.ProductTypeName,"/",purchasedetailnew.ProductName ) = '${ProductName}' and barcodemasternew.CompanyID ='${CompanyID}' LIMIT ${TransferCount}`
             );
 
             await Promise.all(
@@ -1776,7 +1776,7 @@ module.exports = {
     updateBarcode: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
-            const { ID, Barcode, Remark, CurrentStatus, CompanyID, ShopID } = req.body;
+            const { ID, Barcode, Remark, CurrentStatus, CompanyID, ShopID, ProductName } = req.body;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
 
@@ -3448,6 +3448,7 @@ module.exports = {
         try {
 
             const response = { data: null, success: true, message: "" }
+            return res.send({success: false, message: "We are facing some technical issue, please try again after some time."})
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -3517,7 +3518,14 @@ module.exports = {
                 let count = 0;
                 count = item.Quantity;
 
-                let [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus = 'Return To Supplier', BillDetailID = ${savePurchaseDetail.insertId} where Status = 1 and Barcode = '${item.Barcode}' and CurrentStatus = 'Available' and CompanyID = ${CompanyID} and ShopID = ${shopid} limit ${count}`)
+                let [fetch] = await mysql2.pool.query(`select barcodemasternew.ID from barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID where barcodemasternew.Status = 1 and barcodemasternew.Barcode = '${item.Barcode}' and purchasedetailnew.ProductName = '${item.ProductName}' and barcodemasternew.CurrentStatus = 'Available' and barcodemasternew.CompanyID = ${CompanyID} and barcodemasternew.ShopID = ${shopid} limit ${count}`)
+
+                for (const ele of fetch) {
+                    let [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus = 'Return To Supplier', BillDetailID = ${savePurchaseDetail.insertId} where Status = 1 and Barcode = '${item.Barcode}' and CurrentStatus = 'Available' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${ele.ID}`)
+                }
+
+
+
 
                 // update c report setting
 
@@ -3545,6 +3553,7 @@ module.exports = {
         try {
 
             const response = { data: null, success: true, message: "" }
+            return res.send({success: false, message: "We are facing some technical issue, please try again after some time."})
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -3575,6 +3584,15 @@ module.exports = {
             }
 
             const [doesExistSupplierCn] = await mysql2.pool.query(`select * from purchasereturn where Status = 1 and SystemCn = '${PurchaseMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${PurchaseMaster.ID}`)
+
+            console.log(PurchaseMaster.ShopID);
+            console.log(shopid);
+            console.log(typeof (PurchaseMaster.ShopID));
+            console.log(typeof (shopid));
+
+            if (PurchaseMaster.ShopID !== shopid) {
+                return res.send({ message: " Selected Shop Should Be Header Shop" })
+            }
 
 
             if (doesExistSupplierCn[0].SupplierCn !== "") {
@@ -3618,7 +3636,12 @@ module.exports = {
                     let count = 0;
                     count = item.Quantity;
 
-                    let [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus = 'Return To Supplier', BillDetailID = ${savePurchaseDetail.insertId} where Status = 1 and Barcode = '${item.Barcode}' and CurrentStatus = 'Available' limit ${count}`)
+                    let [fetch] = await mysql2.pool.query(`select barcodemasternew.ID from barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID where barcodemasternew.Status = 1 and barcodemasternew.Barcode = '${item.Barcode}' and purchasedetailnew.ProductName = '${item.ProductName}' and barcodemasternew.CurrentStatus = 'Available' and barcodemasternew.CompanyID = ${CompanyID} and barcodemasternew.ShopID = ${shopid} limit ${count}`)
+
+
+                    for (const ele of fetch) {
+                        let [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus = 'Return To Supplier', BillDetailID = ${savePurchaseDetail.insertId} where Status = 1 and Barcode = '${item.Barcode}' and CurrentStatus = 'Available' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${ele.ID}`)
+                    }
 
                     // update c report setting
 
