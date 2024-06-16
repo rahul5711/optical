@@ -210,7 +210,7 @@ export class ProductTransferComponent implements OnInit {
   getProductDataByBarCodeNo(){
     this.sp.show()
     if(this.barCodeList !== undefined){
-      this.Req.SupplierID = this.barCodeList[0]?.SupplierID;
+      this.Req.SupplierID = this.barCodeList[0].SupplierID;
     }else{
       this.Req.SupplierID = 0
     }

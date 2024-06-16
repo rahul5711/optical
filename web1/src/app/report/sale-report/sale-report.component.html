@@ -740,6 +740,7 @@
                                                         <th *ngIf="columnVisibility1.DeliveryDate">DeliveryDate</th>
                                                         <th *ngIf="columnVisibility1.InvoiceNo">InvoiceNo</th>
                                                         <th *ngIf="columnVisibility1.CustomerName">Customer Name</th>
+                                                        <th >MRDNo</th>
                                                         <th *ngIf="columnVisibility1.MobileNo">MobileNo</th>
                                                         <th *ngIf="columnVisibility1.ProductTypeName">ProductType Name
                                                         </th>
@@ -994,6 +995,7 @@
                                                         <td *ngIf="columnVisibility1.DeliveryDate"></td>
                                                         <td *ngIf="columnVisibility1.InvoiceNo"></td>
                                                         <td *ngIf="columnVisibility1.CustomerName"></td>
+                                                        <td ></td>
                                                         <td *ngIf="columnVisibility1.MobileNo"></td>
                                                         <td *ngIf="columnVisibility1.ProductTypeName"></td>
                                                         <td *ngIf="columnVisibility1.Option"></td>
@@ -1053,6 +1055,9 @@
                                                         <td *ngIf="columnVisibility1.CustomerName"
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
                                                             {{t.CustomerName}}</td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{t.MrdNo}}</td>
                                                         <td *ngIf="columnVisibility1.MobileNo"
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
                                                             {{t.CustomerMoblieNo1}}</td>

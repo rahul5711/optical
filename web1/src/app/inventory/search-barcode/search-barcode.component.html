@@ -158,7 +158,7 @@
                                                     <td *ngIf="UpdateBarcode" style=" width: 120px;text-align: center;">
                                                         <select style="height: 26px;" name="CurrentStatus"
                                                             [(ngModel)]="data.CurrentStatus" #name="ngModel"
-                                                            [ngModelOptions]="{standalone: true}" name="data{{i}}" [disabled]="data.CurrentStatus ==='Sold'" #CurrentStatuscontrol>
+                                                            [ngModelOptions]="{standalone: true}" name="data{{i}}" [disabled]="data.CurrentStatus ==='Sold' || data.CurrentStatus ==='Return To Supplier'" #CurrentStatuscontrol>
                                                             <option value="Available">Available</option>
                                                             <!-- <option value="Sold" [disabled]="true">Sold</option> -->
                                                             <!-- <option value="Pre Order">Pre Order</option> -->
@@ -182,10 +182,10 @@
                                                         <input [(ngModel)]="data.Remark"
                                                             (ngModelChange)="data.Remark = onChange($event)"
                                                             #name="ngModel" [ngModelOptions]="{standalone: true}"
-                                                            name="data{{i}}" [disabled]="data.CurrentStatus ==='Sold'" #CurrentStatuscontrol>
+                                                            name="data{{i}}" [disabled]="data.CurrentStatus ==='Sold' || data.CurrentStatus ==='Return To Supplier'" #CurrentStatuscontrol>
                                                     </td>
                                                     <td *ngIf="UpdateBarcode">
-                                                        <button class="barcodeUpBtn" (click)="updateBarcode(data)" [disabled]="data.CurrentStatus ==='Sold'">
+                                                        <button class="barcodeUpBtn" (click)="updateBarcode(data)" [disabled]="data.CurrentStatus ==='Sold' || data.CurrentStatus ==='Return To Supplier'">
                                                             Save
                                                         </button>
                                                     </td>
