@@ -164,7 +164,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
 
-            let qry = `select billmaster.InvoiceNo, customer.Title, customer.Name, customer.MobileNo1, DeliveryDate  from billmaster left join customer on customer.ID = billmaster.CustomerID where billmaster.CompanyID = ${CompanyID} ${shopId} and DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') = '${date}'`
+            let qry = `select billmaster.InvoiceNo, customer.Title, customer.Name, customer.MobileNo1, DeliveryDate  from billmaster left join customer on customer.ID = billmaster.CustomerID where billmaster.CompanyID = ${CompanyID} ${shopId} and billmaster.Status = 1 and DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') = '${date}'`
 
 
             const [datum] = await mysql2.pool.query(qry)

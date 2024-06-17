@@ -496,7 +496,7 @@ srcCustomerBox = false
 
     this.doctorList()
     this.srcBox = true;
-    [this.shop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
+    this.shop = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
   }
 
  
@@ -710,7 +710,7 @@ srcCustomerBox = false
 
           this.data = res.data[0]
           this.data.Idd = res.data[0].Idd;
-          
+          this.getScoList()
           this.data.VisitDate = moment(res.data[0].VisitDate).format('YYYY-MM-DD');
           if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
             this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
@@ -757,7 +757,7 @@ srcCustomerBox = false
             this.other = res.other_rx[0]
             this.other.VisitDate = moment(this.other.VisitDate).format('YYYY-MM-DD');
           }
-          this.getScoList()
+          
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
@@ -839,8 +839,13 @@ srcCustomerBox = false
 
     this.sp.show();
     this.Check = { SpectacleCheck: true, ContactCheck: false, OtherCheck: false, };
+
     this.id = 0;
-    this.router.navigate(['/sale/billing', 0, 0]);
+     
+    // this.router.navigate(['/sale/billing', 0, 0]);
+    this.router.navigateByUrl('', { skipLocationChange: true }).then(() => {
+      this.router.navigate(['/sale/billing', 0, 0]); 
+    });
     this.spectacleLists = [];
     this.contactList = [];
     this.otherList = [];
