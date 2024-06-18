@@ -38,7 +38,14 @@ input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
-
+input[type="date"] {
+    /* padding: 0.5rem; */
+    height: 1rem;
+    font-size: 14px;
+    line-height: 1.5;
+    box-sizing: border-box;
+    padding-top: 16px;
+}
 .mat-form-field {
     font-size: inherit;
     font-weight: 400;

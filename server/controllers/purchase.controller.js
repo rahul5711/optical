@@ -1063,14 +1063,14 @@ module.exports = {
                 let ProductBrandName, ProductModelName;
 
                 if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
-                    [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(1, 3);
+                    [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(1,6);
                 } else {
-                    [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(0, 2);
+                    [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(0, 4);
                 }
 
 
+                // ele.ProductFullName = ele.ProductName.split("/").slice(2,6);
                 ele.ProductFullName = ele.ProductName;
-
 
                 if (ProductBrandName !== undefined) {
                     ele.ProductBrandName = ProductBrandName.substring(0, 18)
