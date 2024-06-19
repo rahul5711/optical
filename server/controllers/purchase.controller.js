@@ -1394,13 +1394,15 @@ module.exports = {
             let xferID = xferData.insertId;
 
             let [selectedRows] = await mysql2.pool.query(`
-                SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CurrentStatus = "Available" AND barcodemasternew.ShopID = ${TransferFromShop} AND barcodemasternew.Barcode = '${Barcode}' AND barcodemasternew.PreOrder = '0' and CONCAT(purchasedetailnew.ProductTypeName,"/",purchasedetailnew.ProductName ) = '${ProductName}' and barcodemasternew.CompanyID ='${CompanyID}' LIMIT ${TransferCount}`
+                SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CurrentStatus = "Available" and barcodemasternew.Status = 1  AND barcodemasternew.ShopID = ${TransferFromShop} AND barcodemasternew.Barcode = '${Barcode}' AND barcodemasternew.PreOrder = '0' and CONCAT(purchasedetailnew.ProductTypeName,"/",purchasedetailnew.ProductName ) = '${ProductName}' and barcodemasternew.CompanyID ='${CompanyID}' LIMIT ${TransferCount}`
             );
+
+            console.log("transferProduct ====> ",selectedRows);
 
             await Promise.all(
                 selectedRows.map(async (ele) => {
                     await mysql2.pool.query(
-                        `UPDATE barcodemasternew SET TransferID= ${xferID}, CurrentStatus = 'Transfer Pending', TransferStatus = 'Transfer Pending', TransferToShop=${ToShopID}, UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID}`
+                        `UPDATE barcodemasternew SET TransferID= ${xferID}, CurrentStatus = 'Transfer Pending', TransferStatus = 'Transfer Pending', TransferToShop=${ToShopID}, UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1`
                     );
                 })
             );
@@ -1456,13 +1458,13 @@ module.exports = {
             let xferID = xferData.insertId;
 
             let [selectedRows] = await mysql2.pool.query(
-                `SELECT * FROM barcodemasternew WHERE TransferID = ${ID} and CurrentStatus = 'Transfer Pending' and ShopID = ${TransferFromShop} and CompanyID =${CompanyID}`
+                `SELECT * FROM barcodemasternew WHERE TransferID = ${ID} and CurrentStatus = 'Transfer Pending' and ShopID = ${TransferFromShop} and Status = 1 and CompanyID =${CompanyID}`
             );
 
             await Promise.all(
                 selectedRows.map(async (ele) => {
                     await mysql2.pool.query(
-                        `UPDATE barcodemasternew SET ShopID = ${TransferToShop}, CurrentStatus = 'Available', TransferStatus = 'Available', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID}`
+                        `UPDATE barcodemasternew SET ShopID = ${TransferToShop}, CurrentStatus = 'Available', TransferStatus = 'Available', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1`
                     );
                 })
             );
@@ -1513,13 +1515,13 @@ module.exports = {
             let xferID = xferData.insertId;
 
             let [selectedRows] = await mysql2.pool.query(
-                `SELECT * FROM barcodemasternew WHERE TransferID = ${ID} and CurrentStatus = 'Transfer Pending' and ShopID = ${TransferFromShop} and CompanyID =${CompanyID}`
+                `SELECT * FROM barcodemasternew WHERE TransferID = ${ID} and CurrentStatus = 'Transfer Pending' and ShopID = ${TransferFromShop} and CompanyID =${CompanyID} and Status = 1`
             );
 
             await Promise.all(
                 selectedRows.map(async (ele) => {
                     await mysql2.pool.query(
-                        `UPDATE barcodemasternew SET TransferID= 0, CurrentStatus = 'Available', TransferStatus = 'Transfer Cancelled', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID}`
+                        `UPDATE barcodemasternew SET TransferID= 0, CurrentStatus = 'Available', TransferStatus = 'Transfer Cancelled', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1`
                     );
                 })
             );
