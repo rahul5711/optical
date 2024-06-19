@@ -144,7 +144,7 @@ module.exports = {
                 let shopMode = "";
                 let supplierParams = ``
                 if (Req?.SupplierID !== null && Req?.SupplierID !== 0 && Req?.SupplierID !== undefined) {
-                    supplierParams = ` and purchasemasternew.SupplierID = ${Req.SupplierID} `
+                    // supplierParams = ` and purchasemasternew.SupplierID = ${Req.SupplierID} `
                 }
 
                 if (ShopMode === false) {
