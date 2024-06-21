@@ -496,7 +496,7 @@ srcCustomerBox = false
 
     this.doctorList()
     this.srcBox = true;
-    this.shop = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
+    [this.shop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
   }
 
  

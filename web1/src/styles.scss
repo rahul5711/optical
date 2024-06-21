@@ -39,12 +39,12 @@ input::-webkit-inner-spin-button {
     margin: 0;
 }
 input[type="date"] {
-    /* padding: 0.5rem; */
+    padding: 0rem !important;
     height: 1rem;
     font-size: 14px;
-    line-height: 1.5;
+    line-height: 1.5 !important;
     box-sizing: border-box;
-    padding-top: 16px;
+    padding-top: 16px !important;
 }
 .mat-form-field {
     font-size: inherit;

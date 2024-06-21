@@ -1364,6 +1364,9 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.bill.saveBill(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
+          this.BillMaster = []
+          this.billItemList = []
+          this.serviceLists = []
           this.BillMaster.ID = res.data.ID;
           this.id2 = res.data.ID;
           this.id = res.data.CustomerID;
@@ -1416,6 +1419,9 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.bill.updateBill(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
+          this.BillMaster = []
+          this.billItemList = []
+          this.serviceLists = []
           this.id2 = res.data.ID;
           this.getCustomerById1();
           this.getBillById(this.id2)
@@ -1855,7 +1861,8 @@ export class BillComponent implements OnInit {
       const subs: Subscription = this.pay.customerPayment(this.applyPayment).subscribe({
         next: (res: any) => {
           if (res.success) {
-            
+            this.invoiceList = []
+            this.applyPayment = []
             this.paymentHistoryByMasterID(this.id, this.id2)
             this.billByCustomer(this.id)
             this.getBillById(this.id2)

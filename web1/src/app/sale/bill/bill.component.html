@@ -613,7 +613,7 @@
                                     <button class="bgRemove" type="button">
 
                                         <button class="bgRemove p-0" type="button"
-                                            *ngIf="deleteCustomerBill  &&  data.ID !== null &&  data.CancelStatus === 1"
+                                            *ngIf="deleteCustomerBill  &&  data.ID !== null"
                                             [disabled]="data.Status === 0 " (click)="deleteItem('Product', i)">
                                             <mat-icon class="deletes_icon " title="Delete">delete_forever</mat-icon>
                                         </button>
@@ -623,13 +623,13 @@
                                             <mat-icon class="deletes_icon " title="Delete">delete_forever</mat-icon>
                                         </button>
 
-                                        <button
+                                        <!-- <button
                                             *ngIf="data.ID != null && data.Status === 0  && data.CancelStatus === 0 || (data.Status === 1  && data.CancelStatus === 1)"
                                             class="bgRemove p-0 ms-1"  type="button"
                                             [disabled]="data.CancelStatus === 0 || data.Status === 0"
                                             (click)="cancelProduct('Product', i)">
                                             <mat-icon class="deletes_icon  " title="Cancel">cancel</mat-icon>
-                                        </button>
+                                        </button> -->
 
                                         <button *ngIf="data.ID != null" class="bgRemove p-0 ms-1"  type="button"
                                             (click)="OrderPrint(data)">
