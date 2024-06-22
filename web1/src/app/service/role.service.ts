@@ -26,7 +26,9 @@ export class RoleService {
   }
 
   getList(Body:any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getList',Body)
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/getList', { headers, params })
     .pipe(catchError(this.handleError));
   }
 

@@ -12,7 +12,7 @@ export class EmployeeService {
   constructor(private httpClient: HttpClient) { }
   private url = environment.apiUrl + '/employee';
 
-  
+
   saveUser( Body: any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams()
@@ -29,7 +29,7 @@ export class EmployeeService {
   dropdownUserlist(Body: any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/dropdownlist',Body)
+    return this.httpClient.post<any>(this.url + '/dropdownlist', { headers, params })
     .pipe(catchError(this.handleError));
   }
 
