@@ -371,7 +371,8 @@
             <mat-form-field class="example-full-width mb-0">
               <mat-label>Payment Mode</mat-label>
               <mat-select name="PayMode" [(ngModel)]="applyCreditPayment.PaymentMode" required #GSTTypecontrol1>
-                <mat-option [value]="p.Name" *ngFor="let p of PaymentModesList"> {{p.Name}} </mat-option>
+                
+                <mat-option value="AMOUNT RETURN"> AMOUNT RETURN</mat-option>
               </mat-select>
             </mat-form-field>
           </div>

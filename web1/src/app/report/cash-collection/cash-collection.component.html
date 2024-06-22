@@ -191,20 +191,20 @@
                                         </thead>
                                         <tbody class="text-center">
                                             <tr *ngFor="let d of dataList; let i = index" text="left">
-                                                <td> {{ i+1 }} </td>
-                                                <td *ngIf="columnVisibility.InvoiceNo"    > {{ d.InvoiceNo }} </td>
-                                                <td *ngIf="columnVisibility.InvoiceDate"  > {{dateFormat(d.BillDate) }}</td>
-                                                <td *ngIf="columnVisibility.PaymentDate"  > {{dateFormat(d.PaymentDate) }}</td>
-                                                <td *ngIf="columnVisibility.CustomerName" > {{ d.CustomerName }} </td>
-                                                <td *ngIf="columnVisibility.MobileNo"     > {{ d.MobileNo1 }} </td>
-                                                <td *ngIf="columnVisibility.PaymentMode"  > {{ d.PaymentMode }} {{d.CreditType === 'Debit' ? '(' + d.CreditType + ')' : ''}} </td>
-                                                <td *ngIf="columnVisibility.Amount"       > {{ d.Amount }} </td>
+                                                <td  [ngClass]="{'my_class': d.PaymentMode === 'AMOUNT RETURN'}"> {{ i+1 }} </td>
+                                                <td *ngIf="columnVisibility.InvoiceNo"    [ngClass]="{'my_class': d.PaymentMode === 'AMOUNT RETURN'}"> {{ d.InvoiceNo }} </td>
+                                                <td *ngIf="columnVisibility.InvoiceDate"   [ngClass]="{'my_class': d.PaymentMode === 'AMOUNT RETURN'}"> {{dateFormat(d.BillDate) }}</td>
+                                                <td *ngIf="columnVisibility.PaymentDate"   [ngClass]="{'my_class': d.PaymentMode === 'AMOUNT RETURN'}"> {{dateFormat(d.PaymentDate) }}</td>
+                                                <td *ngIf="columnVisibility.CustomerName"  [ngClass]="{'my_class': d.PaymentMode === 'AMOUNT RETURN'}"> {{ d.CustomerName }} </td>
+                                                <td *ngIf="columnVisibility.MobileNo"      [ngClass]="{'my_class': d.PaymentMode === 'AMOUNT RETURN'}"> {{ d.MobileNo1 }} </td>
+                                                <td *ngIf="columnVisibility.PaymentMode"   [ngClass]="{'my_class': d.PaymentMode === 'AMOUNT RETURN'}"> {{ d.PaymentMode }}  </td>
+                                                <td *ngIf="columnVisibility.Amount"        [ngClass]="{'my_class': d.PaymentMode === 'AMOUNT RETURN'}"> {{ d.Amount }} </td>
                                                 <!-- <td *ngIf="columnVisibility.DueAmount"    > {{ d.DueAmount }} </td>
                                                 <td *ngIf="columnVisibility.PayableAmount"> {{ d.PayableAmount }} </td>
                                                 <td *ngIf="columnVisibility.BillAmount"   > {{ d.TotalAmount }} </td>
                                                 <td *ngIf="columnVisibility.PaymentStatus"> {{ d.PaymentStatus}} <span *ngIf="d.PaymentStatus === 'Paid'">(Deliverd)</span> <span *ngIf="d.PaymentStatus === 'Unpaid'">(Pending)</span></td>
                                                 <td *ngIf="columnVisibility.DeliveryDate" > {{dateFormat(d.DeliveryDate) }}</td> -->
-                                                <td *ngIf="columnVisibility.ShopName"     > {{ d.ShopName }}<span [style.color]="'blue'" *ngIf="d.AreaName !== 'null'">({{d.AreaName}})</span> </td>
+                                                <td *ngIf="columnVisibility.ShopName"      [ngClass]="{'my_class': d.PaymentMode === 'AMOUNT RETURN'}"> {{ d.ShopName }}<span [style.color]="'blue'" *ngIf="d.AreaName !== 'null'">({{d.AreaName}})</span> </td>
                                             </tr>
                                         </tbody>
                                     </table>

@@ -1745,7 +1745,7 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.supps.getList('PaymentModeType').subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.PaymentModesList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+          this.PaymentModesList = res.data.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
         } else {
           this.as.errorToast(res.message)
         }
@@ -1862,7 +1862,7 @@ export class BillComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.invoiceList = []
-            this.applyPayment = []
+
             this.paymentHistoryByMasterID(this.id, this.id2)
             this.billByCustomer(this.id)
             this.getBillById(this.id2)

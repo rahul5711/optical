@@ -202,6 +202,8 @@ export class BillListComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.PaymentModesList = res.data
+          .filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN')
+          .sort((a: { Name: string }, b: { Name: string }) => a.Name.localeCompare(b.Name));
         } else {
           this.as.errorToast(res.message)
         }

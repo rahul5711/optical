@@ -203,9 +203,19 @@ export class SupplierPoComponent implements OnInit {
       Parem = Parem + ' and barcodemasternew.SupplierID = ' + this.supplierID;
     }
 
-    if (this.data.ShopID !== null && this.data.ShopID !== 'All') {
+    if (this.data.ShopID !== null && this.data.ShopID !== 'All' && this.data.ShopID !== 'Main' && this.data.ShopID !== 'Other') {
       Parem = Parem + ' and barcodemasternew.ShopID = ' + this.data.ShopID;
     }
+
+    if (this.data.ShopID === 'Main') {
+      Parem = Parem + ' and barcodemasternew.ShopID = 242';
+    }
+
+    if (this.data.ShopID === 'Other') {
+      Parem = Parem + ' and barcodemasternew.ShopID != 242' ;
+    }
+
+
 
     if (this.data.stringProductName !== '') {
       Parem = Parem + ' and billdetail.ProductName = ' +  `'${this.data.stringProductName}'`;
@@ -365,9 +375,11 @@ export class SupplierPoComponent implements OnInit {
   }
 
   Unassigned() {
-    this.getSupplierPo()
+    // this.getSupplierPo()
     this.orderSupplier = true
     this.orderComplete = false
+    this.orderList = []
+    this.totalQty = 0;
     if(this.user.UserGroup === 'Employee'){
       this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: this.data.ShopID, stringProductName: '' }
     }else{
@@ -378,6 +390,8 @@ export class SupplierPoComponent implements OnInit {
   Assigned() {
     this.orderSupplier = false
     this.orderComplete = true
+    this.orderList = []
+    this.totalQty = 0;
     if(this.user.UserGroup === 'Employee'){
       this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: this.data.ShopID, stringProductName: '' }
     }else{

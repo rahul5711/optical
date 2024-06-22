@@ -62,6 +62,8 @@
                                         <mat-select name="Supplier" editable="true" [(ngModel)]="data.ShopID"
                                             [ngModelOptions]="{standalone: true}" #singleSelect>
                                             <mat-option value="All">All</mat-option>
+                                            <mat-option *ngIf="company.ID == 184" value="Main">Main</mat-option>
+                                            <mat-option *ngIf="company.ID == 184" value="Other">Other</mat-option>
                                             <mat-option *ngFor="let sup of shopList  let i = index;" [value]="sup.ID">
                                                 {{sup.Name}} <span [style.color]="'blue'"
                                                     *ngIf="sup.AreaName !== 'null'">({{sup.AreaName}})</span>

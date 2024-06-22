@@ -46,6 +46,8 @@
                                         <mat-select name="Supplier" editable="true" [(ngModel)]="data.ShopID"
                                             [ngModelOptions]="{standalone: true}" #singleSelect required>
                                             <mat-option [value]=0>All</mat-option>
+                                            <mat-option *ngIf="company.ID == 184" value="Main">Main</mat-option>
+                                            <mat-option *ngIf="company.ID == 184" value="Other">Other</mat-option>
                                             <mat-option *ngFor="let sup of shopList  let i = index;" [value]="sup.ID">
                                                 {{sup.Name}} <span [style.color]="'blue'"
                                                     *ngIf="sup.AreaName !== 'null'">({{sup.AreaName}})</span>
@@ -56,6 +58,8 @@
                                         <mat-label>Shop Name</mat-label>
                                         <mat-select name="Supplier" editable="true" [(ngModel)]="data.ShopID"
                                             [ngModelOptions]="{standalone: true}" #singleSelect required>
+                                            <mat-option *ngIf="company.ID == 184" value="Main">Main</mat-option>
+                                            <mat-option *ngIf="company.ID == 184" value="Other">Other</mat-option>
                                             <mat-option *ngFor="let sup of shopList  let i = index;" [value]="sup.ID">
                                                 {{sup.Name}} <span [style.color]="'blue'"
                                                     *ngIf="sup.AreaName !== 'null'">({{sup.AreaName}})</span>
@@ -71,7 +75,7 @@
                                     <button type="button" (click)="Reset()" mat-raised-button color="warn">
                                         Reset
                                     </button>
-                                    <button class="ms-2" type="button" mat-raised-button>PDF</button>
+                                    <button class="ms-2" (click)="AssignSupplierPDF()" type="button" mat-raised-button>PDF</button>
                                 </div>
                             </div>
                         </form>

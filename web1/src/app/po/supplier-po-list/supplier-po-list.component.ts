@@ -23,6 +23,7 @@ import { SupportService } from 'src/app/service/support.service';
 export class SupplierPoListComponent implements OnInit {
 
   evn = environment
+  company = JSON.parse(localStorage.getItem('company') || '');
   shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
@@ -45,7 +46,7 @@ export class SupplierPoListComponent implements OnInit {
   data: any = {
     FromDate:'',ToDate:'', SupplierID: 0, ShopID: 0, 
   };
-
+  supllierPDF:any = ''
   shopList: any = []
   supplierList: any = []
 
@@ -131,9 +132,17 @@ export class SupplierPoListComponent implements OnInit {
       let ToDate =  moment(this.data.ToDate).format('YYYY-MM-DD')
       parem = parem + ' and ' +  `'${ToDate}'`;}
 
-    if (this.data.ShopID != 0){
+    if (this.data.ShopID != 0 && this.data.ShopID !== 'Main' && this.data.ShopID !== 'Other'){
       parem = parem + ' and barcodemasternew.ShopID = ' +  `(${this.data.ShopID})`;}
   
+      if (this.data.ShopID === 'Main') {
+        parem = parem + ' and barcodemasternew.ShopID = 242';
+      }
+  
+      if (this.data.ShopID === 'Other') {
+        parem = parem + ' and barcodemasternew.ShopID != 242' ;
+      }
+
     if (this.data.SupplierID !== 0){
       parem = parem + ' and barcodemasternew.SupplierID = '  + `'${this.data.SupplierID}'`;}
 
@@ -180,4 +189,25 @@ export class SupplierPoListComponent implements OnInit {
     return event;
   }
 
-}
+  AssignSupplierPDF(){
+    this.sp.show();
+
+        let body: any = { productList: this.dataList }
+         const subs: Subscription = this.bill.AssignSupplierPDF(body).subscribe({
+           next: (res: any) => {
+             if (res) {
+               const url = this.evn.apiUrl + "/uploads/" + res;
+               this.supllierPDF = url
+               window.open(url, "_blank");
+             } else {
+               this.as.errorToast(res.message)
+             }
+             this.sp.hide();
+           },
+           error: (err: any) => console.log(err.message),
+           complete: () => subs.unsubscribe(),
+         });
+      }
+  }
+
+

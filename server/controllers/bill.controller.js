@@ -3450,9 +3450,9 @@ module.exports = {
                 printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
             }
 
-            if (CompanyID === 1) {
-                printdata.LogoURL = clientConfig.appURL + 'assest/hvd.jpeg';
-                console.log( printdata.LogoURL );
+            if (CompanyID === 184) {
+                printdata.LogoURL = clientConfig.appURL + '../assest/hvd.jpeg';
+                console.log( printdata.LogoURL ,'lllll');
                 var formatName = "AssignSupplierPDF.ejs"
             } else {
                 var formatName = "AssignLensPDF.ejs";

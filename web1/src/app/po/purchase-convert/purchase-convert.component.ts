@@ -24,12 +24,12 @@ import { SupportService } from 'src/app/service/support.service';
 })
 export class PurchaseConvertComponent implements OnInit {
   evn = environment
-  shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
-  user:any =JSON.parse(localStorage.getItem('user') || '') ;
+  shop: any = JSON.parse(localStorage.getItem('shop') || '');
+  user: any = JSON.parse(localStorage.getItem('user') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   company = JSON.parse(localStorage.getItem('company') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
-  searchValue:any
+  searchValue: any
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -49,7 +49,7 @@ export class PurchaseConvertComponent implements OnInit {
 
   PurchaseMaster: any = {
     ID: 0, SupplierID: null, SupplierName: null, CompanyID: null, GSTNo: null, ShopID: 0, ShopName: null, PurchaseDate: null,
-    PaymentStatus: 'Unpaid', InvoiceNo: null, Status: 1,  Quantity: 0, SubTotal: 0, DiscountAmount: 0,
+    PaymentStatus: 'Unpaid', InvoiceNo: null, Status: 1, Quantity: 0, SubTotal: 0, DiscountAmount: 0,
     GSTAmount: 0, TotalAmount: 0, DueAmount: 0, PStatus: 1, FromDate: '', ToDate: '',
     CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
   };
@@ -63,7 +63,7 @@ export class PurchaseConvertComponent implements OnInit {
   pageSize!: number;
   collectionSize = 0
   page = 4;
-  dataList:any =[]
+  dataList: any = []
   gst_detail: any = [];
   filterList: any = [];
   currentTime = ''
@@ -73,15 +73,15 @@ export class PurchaseConvertComponent implements OnInit {
     // this.PurchaseMaster.FromDate = moment().format('YYYY-MM-DD');
     // this.PurchaseMaster.ToDate = moment().format('YYYY-MM-DD');
     // this.getList();
-    if(this.user.UserGroup === 'Employee'){
-      this.shopList  = this.shop;
-    }else{
+    if (this.user.UserGroup === 'Employee') {
+      this.shopList = this.shop;
+    } else {
       this.dropdownShoplist();
     }
 
     this.dropdownSupplierlist();
     this.getGSTList();
-     this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23'})
+    this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23' })
   }
 
   dropdownShoplist() {
@@ -142,7 +142,7 @@ export class PurchaseConvertComponent implements OnInit {
 
   }
 
-  validate(v:any, event: any) {
+  validate(v: any, event: any) {
     if (v.Sel === 0 || v.Sel === null || v.Sel === undefined) {
       v.Sel = 1;
     } else {
@@ -179,50 +179,62 @@ export class PurchaseConvertComponent implements OnInit {
     });
   }
 
-  getParem(){
+  getParem() {
     this.sp.show()
 
     let parem = ''
-    if (this.PurchaseMaster.FromDate !== '' && this.PurchaseMaster.FromDate !== null){
-      let FromDate =  moment(this.PurchaseMaster.FromDate).format('YYYY-MM-DD')
-      parem = parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between ' +  `'${FromDate}'`;}
+    if (this.PurchaseMaster.FromDate !== '' && this.PurchaseMaster.FromDate !== null) {
+      let FromDate = moment(this.PurchaseMaster.FromDate).format('YYYY-MM-DD')
+      parem = parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+    }
 
-    if (this.PurchaseMaster.ToDate !== '' && this.PurchaseMaster.ToDate !== null){
-      let ToDate =  moment(this.PurchaseMaster.ToDate).format('YYYY-MM-DD')
-      parem = parem + ' and ' +  `'${ToDate}'`;}
+    if (this.PurchaseMaster.ToDate !== '' && this.PurchaseMaster.ToDate !== null) {
+      let ToDate = moment(this.PurchaseMaster.ToDate).format('YYYY-MM-DD')
+      parem = parem + ' and ' + `'${ToDate}'`;
+    }
 
-    if (this.PurchaseMaster.ShopID != 0){
-      parem = parem + ' and barcodemasternew.ShopID = ' +  `'${this.PurchaseMaster.ShopID}'`;}
+    if (this.PurchaseMaster.ShopID != 0 && this.PurchaseMaster.ShopID !== 'Main' && this.PurchaseMaster.ShopID !== 'Other') {
+      parem = parem + ' and barcodemasternew.ShopID = ' + `'${this.PurchaseMaster.ShopID}'`;
+    }
 
-    if (this.PurchaseMaster.SupplierID !== 0){
-      parem = parem + ' and barcodemasternew.SupplierID = '  + `'${this.PurchaseMaster.SupplierID}'`;}
+    if (this.PurchaseMaster.ShopID === 'Main') {
+      parem = parem + ' and barcodemasternew.ShopID = 242';
+    }
 
-      const dtm = {
-        currentPage: 1,
-        itemsPerPage: 5000,
-        Parem: parem
-      }
+    if (this.PurchaseMaster.ShopID === 'Other') {
+      parem = parem + ' and barcodemasternew.ShopID != 242';
+    }
 
-      const subs: Subscription = this.bill.getSupplierPoList(dtm).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.collectionSize = res.count;
-            this.page = 1;
-            this.dataList = res.data;
-            this.as.successToast(res.message)
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
+    if (this.PurchaseMaster.SupplierID !== 0) {
+      parem = parem + ' and barcodemasternew.SupplierID = ' + `'${this.PurchaseMaster.SupplierID}'`;
+    }
+
+    const dtm = {
+      currentPage: 1,
+      itemsPerPage: 5000,
+      Parem: parem
+    }
+
+    const subs: Subscription = this.bill.getSupplierPoList(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.collectionSize = res.count;
+          this.page = 1;
+          this.dataList = res.data;
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
-  calculateFields(fieldName: any, mode: any, item:any) {
-    if(item.GSTType === 'None'){
-      if(item.GSTPercentage != 0){
+  calculateFields(fieldName: any, mode: any, item: any) {
+    if (item.GSTType === 'None') {
+      if (item.GSTPercentage != 0) {
         Swal.fire({
           position: 'center',
           icon: 'warning',
@@ -232,18 +244,18 @@ export class PurchaseConvertComponent implements OnInit {
         })
         item.UpdateProduct = true
       }
-    } 
+    }
     this.calculation.calculateFields(fieldName, mode, item, '')
   }
 
   calculateGrandTotal() {
     let selectList: any = []
-    this.dataList.forEach((el: any)=>{
-       if(el.Sel === 1){
+    this.dataList.forEach((el: any) => {
+      if (el.Sel === 1) {
         selectList.push(el)
-       }
+      }
     })
-    this.calculation.calculateGrandTotals(this.PurchaseMaster, selectList, '', this.gst_detail )
+    this.calculation.calculateGrandTotals(this.PurchaseMaster, selectList, '', this.gst_detail)
   }
 
   onSubmit() {
@@ -258,22 +270,22 @@ export class PurchaseConvertComponent implements OnInit {
         text: ' Enter Vendor Invoice No ',
         footer: ''
       });
-    }else{
+    } else {
       this.calculateGrandTotal();
       this.PurchaseMaster.ShopID = Number(this.selectedShop[0]);
       this.PurchaseMaster.SupplierID = Number(this.PurchaseMaster.SupplierID);
       this.PurchaseMaster.CompanyID = this.company.ID;
-      this.PurchaseMaster.PurchaseDate = moment(this.PurchaseMaster.PurchaseDate).format('yyyy-MM-DD') +  ' ' + this.currentTime;
+      this.PurchaseMaster.PurchaseDate = moment(this.PurchaseMaster.PurchaseDate).format('yyyy-MM-DD') + ' ' + this.currentTime;
       this.PurchaseMaster.DueAmount = this.PurchaseMaster.TotalAmount;
       delete this.PurchaseMaster.FromDate
       delete this.PurchaseMaster.ToDate
       this.data.PurchaseMaster = this.PurchaseMaster;
-      this.filterList.forEach((el: any) =>{
-         if(el.WholeSale === 0){
-            el.WholeSalePrice = 0
-         }
+      this.filterList.forEach((el: any) => {
+        if (el.WholeSale === 0) {
+          el.WholeSalePrice = 0
+        }
       })
-      this.data.PurchaseDetail =JSON.stringify(this.filterList);
+      this.data.PurchaseDetail = JSON.stringify(this.filterList);
       const subs: Subscription = this.bill.saveConvertPurchase(this.data).subscribe({
         next: (res: any) => {
           if (res.success) {
@@ -289,7 +301,7 @@ export class PurchaseConvertComponent implements OnInit {
     }
   }
 
-  dateFormat(date:any){
+  dateFormat(date: any) {
     return moment(date).format(`${this.companySetting.DateFormat}`);
   }
 
