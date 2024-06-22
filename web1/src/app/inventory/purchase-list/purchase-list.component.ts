@@ -98,7 +98,7 @@ export class PurchaseListComponent implements OnInit {
     const subs: Subscription = this.supps.getList('PaymentModeType').subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.PaymentModesList = res.data
+          this.PaymentModesList = res.data .filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN')
         } else {
           this.as.errorToast(res.message)
         }
