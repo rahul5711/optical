@@ -133,7 +133,7 @@ export class SupplierPoListComponent implements OnInit {
       parem = parem + ' and ' +  `'${ToDate}'`;}
 
     if (this.data.ShopID != 0 && this.data.ShopID !== 'Main' && this.data.ShopID !== 'Other'){
-      parem = parem + ' and barcodemasternew.ShopID = ' +  `(${this.data.ShopID})`;}
+      parem = parem + ' and barcodemasternew.ShopID = ' +  `${this.data.ShopID}`;}
   
       if (this.data.ShopID === 'Main') {
         parem = parem + ' and barcodemasternew.ShopID = 242';
@@ -153,7 +153,7 @@ export class SupplierPoListComponent implements OnInit {
         Parem: parem
       }
   
-      const subs: Subscription = this.bill.getSupplierPoList(dtm).subscribe({
+      const subs: Subscription = this.bill.getSupplierPoPurchaseList(dtm).subscribe({
         next: (res: any) => {
           if (res.success) {
             this.collectionSize = res.count;
