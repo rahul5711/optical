@@ -706,6 +706,7 @@ export class BillComponent implements OnInit {
     }
     this.getSearchByBarcodeNo()
   }
+  
   getSearchByBarcodeNo() {
     if (this.Req.SearchBarCode !== '') {
       this.sp.show();

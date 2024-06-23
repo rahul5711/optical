@@ -39,7 +39,7 @@ export class ProductTransferComponent implements OnInit {
   showAdd = false;
   shopMode = 'false';
   item: any;
-  Req :any= {SearchBarCode : '',SupplierID:0}
+  Req :any= {SearchBarCode : '', searchString: '', SupplierID:0}
 
   ID:any
   currentPage = 1;
@@ -207,14 +207,18 @@ export class ProductTransferComponent implements OnInit {
     });
   }
 
-  getProductDataByBarCodeNo(){
-    this.sp.show()
-    if(this.barCodeList !== undefined){
-      this.Req.SupplierID = this.barCodeList[0].SupplierID;
+  productSelect(data:any){
+    this.Req.searchString = data.ProductName
+    if(data !== undefined){
+      this.Req.SupplierID = data.SupplierID;
     }else{
       this.Req.SupplierID = 0
     }
-  
+    this.getProductDataByBarCodeNo()
+  }
+
+  getProductDataByBarCodeNo(){
+    this.sp.show()
     const subs: Subscription =  this.purchaseService.productDataByBarCodeNo(this.Req, 'false', 'false').subscribe({
       next: (res: any) => {
         if(res.success){

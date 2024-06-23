@@ -33,7 +33,9 @@ export class SearchBarcodeComponent implements OnInit {
   searchList: any;
   ShopMode = 'false';
   UpdateBarcode = false;
-  searchValue:any
+  searchValue:any;
+  Req: any = { SearchBarCode: '', searchString: '', SupplierID : 0 }
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -153,9 +155,22 @@ export class SearchBarcodeComponent implements OnInit {
     });
   }
 
+
+  productSelect(data:any){
+    this.Req.searchString = data.ProductName
+
+    if(data !== undefined){
+      this.Req.SupplierID = data.SupplierID;
+    }else{
+      this.Req.SupplierID = 0
+    }
+    this.getBarcodeDataByBarcodeNo('search')
+  }
+
   getBarcodeDataByBarcodeNo(mode:any){
     this.sp.show()
-    const subs: Subscription =  this.purchaseService.barcodeDataByBarcodeNo(this.SearchBarCode, mode, this.ShopMode).subscribe({
+    this.Req.SearchBarCode = this.SearchBarCode
+    const subs: Subscription =  this.purchaseService.barcodeDataByBarcodeNo(this.Req, mode, this.ShopMode).subscribe({
       next: (res: any) => {
         if(res.success){
           this.searchList = res.data;      

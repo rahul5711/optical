@@ -45,10 +45,10 @@
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Select Barcode</mat-label>
                                         <mat-select name="FieldType" [(ngModel)]="SearchBarCode"
-                                            (selectionChange)="getBarcodeDataByBarcodeNo('search')" required
+                                             required
                                             #Typecontrol>
                                             <mat-option *ngFor="let bc of barCodeList  let i = index;"
-                                                [value]="bc.Barcode">
+                                                [value]="bc.Barcode" (click)="productSelect(bc)">
                                                 {{bc.Barcode}} # {{bc.BarCodeCount}} | {{bc.ProductName | uppercase}}
                                             </mat-option>
                                         </mat-select>
