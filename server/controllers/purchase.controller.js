@@ -1063,7 +1063,7 @@ module.exports = {
                 let ProductBrandName, ProductModelName;
 
                 if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
-                    [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(1,6);
+                    [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(1, 6);
                 } else {
                     [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(0, 4);
                 }
@@ -1397,7 +1397,7 @@ module.exports = {
                 SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CurrentStatus = "Available" and barcodemasternew.Status = 1  AND barcodemasternew.ShopID = ${TransferFromShop} AND barcodemasternew.Barcode = '${Barcode}' AND barcodemasternew.PreOrder = '0' and CONCAT(purchasedetailnew.ProductTypeName,"/",purchasedetailnew.ProductName ) = '${ProductName}' and barcodemasternew.CompanyID ='${CompanyID}' LIMIT ${TransferCount}`
             );
 
-            console.log("transferProduct ====> ",selectedRows);
+            console.log("transferProduct ====> ", selectedRows);
 
             await Promise.all(
                 selectedRows.map(async (ele) => {
@@ -1688,15 +1688,20 @@ module.exports = {
         try {
 
             const response = { data: null, success: true, message: "" }
-            const { Barcode, mode, ShopMode } = req.body;
+            const { Barcode, mode, ShopMode, searchString } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
 
             let shopMode = ``;
             let mode1 = ``;
+            let searchParam = ``;
 
             if (Barcode === "" || Barcode === undefined || Barcode === null) return res.send({ message: "Invalid Query Data" })
+
+            if (searchString !== null && searchString !== "" && searchString !== undefined) {
+                searchParam = ` and purchasedetailnew.ProductName = '${searchString}' `
+            }
 
             if (mode === 'search') {
                 mode1 = `And barcodemasternew.Barcode = '${Barcode}'`;
@@ -1710,7 +1715,7 @@ module.exports = {
                 shopMode = `And barcodemasternew.ShopID = '${shopid}'`;
             }
 
-            qry = `SELECT barcodemasternew.* , company.Name AS CompanyName, shop.Name AS ShopName, shop.AreaName AS AreaName, shop.BarcodeName AS BarcodeShopName, purchasedetailnew.ProductName , purchasedetailnew.ProductTypeName, purchasedetailnew.BaseBarCode AS BarCode, purchasedetailnew.UniqueBarcode, purchasedetailnew.UnitPrice, purchasedetailnew.ProductName, purchasedetailnew.Quantity ,purchasemasternew.InvoiceNo,supplier.Name AS SupplierName   FROM barcodemasternew LEFT JOIN company ON company.ID = barcodemasternew.CompanyID LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID WHERE barcodemasternew.CurrentStatus != 'Pre Order' and  purchasedetailnew.Status = 1 AND barcodemasternew.CompanyID = ${CompanyID}  ${shopMode} ${mode1}`;
+            qry = `SELECT barcodemasternew.* , company.Name AS CompanyName, shop.Name AS ShopName, shop.AreaName AS AreaName, shop.BarcodeName AS BarcodeShopName, purchasedetailnew.ProductName , purchasedetailnew.ProductTypeName, purchasedetailnew.BaseBarCode AS BarCode, purchasedetailnew.UniqueBarcode, purchasedetailnew.UnitPrice, purchasedetailnew.ProductName, purchasedetailnew.Quantity ,purchasemasternew.InvoiceNo,supplier.Name AS SupplierName   FROM barcodemasternew LEFT JOIN company ON company.ID = barcodemasternew.CompanyID LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID WHERE barcodemasternew.CurrentStatus != 'Pre Order' and  purchasedetailnew.Status = 1 AND barcodemasternew.CompanyID = ${CompanyID}  ${shopMode} ${searchParam} ${mode1}`;
 
             let [barcodelist] = await mysql2.pool.query(qry);
             response.data = barcodelist;
@@ -3450,7 +3455,7 @@ module.exports = {
         try {
 
             const response = { data: null, success: true, message: "" }
-            return res.send({success: false, message: "We are facing some technical issue, please try again after some time."})
+            return res.send({ success: false, message: "We are facing some technical issue, please try again after some time." })
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -3555,7 +3560,7 @@ module.exports = {
         try {
 
             const response = { data: null, success: true, message: "" }
-            return res.send({success: false, message: "We are facing some technical issue, please try again after some time."})
+            return res.send({ success: false, message: "We are facing some technical issue, please try again after some time." })
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
