@@ -1333,9 +1333,9 @@ module.exports = {
             let qry = "";
             if (PreOrder === "false") {
                 let shopMode = "";
-                let supplierParams = ``
-                if (Req?.SupplierID !== null && Req?.SupplierID !== 0 && Req?.SupplierID !== undefined) {
-                    // supplierParams = ` and purchasemasternew.SupplierID = ${Req.SupplierID} `
+                let searchParams = ``
+                if (Req?.searchString !== null && Req?.searchString !== "" && Req?.searchString !== undefined) {
+                    searchParams = ` and purchasemasternew.ProductName = '${Req.searchString}' `
                 }
 
                 if (ShopMode === "false") {
