@@ -110,8 +110,8 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
-  barcodeDataByBarcodeNo(Barcode:any, mode:any, ShopMode:any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/barcodeDataByBarcodeNo', {Barcode:Barcode, mode:mode, ShopMode:ShopMode}, httpOptions)
+  barcodeDataByBarcodeNo(Barcode:any, searchString:any, mode:any, ShopMode:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/barcodeDataByBarcodeNo', {Barcode:Barcode,searchString:searchString, mode:mode, ShopMode:ShopMode}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
