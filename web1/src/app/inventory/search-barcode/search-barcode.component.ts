@@ -26,6 +26,7 @@ export class SearchBarcodeComponent implements OnInit {
   Productsearch:any = '';
   id: any;
   SearchBarCode: any;
+  searchString:any='';
   selectedProduct: any;
   prodList:any;
   specList: any;
@@ -157,7 +158,7 @@ export class SearchBarcodeComponent implements OnInit {
 
 
   productSelect(data:any){
-    this.Req.searchString = data.ProductName
+    this.searchString = data.ProductName
 
     if(data !== undefined){
       this.Req.SupplierID = data.SupplierID;
@@ -169,8 +170,7 @@ export class SearchBarcodeComponent implements OnInit {
 
   getBarcodeDataByBarcodeNo(mode:any){
     this.sp.show()
-    this.Req.SearchBarCode = this.SearchBarCode
-    const subs: Subscription =  this.purchaseService.barcodeDataByBarcodeNo(this.Req, mode, this.ShopMode).subscribe({
+    const subs: Subscription =  this.purchaseService.barcodeDataByBarcodeNo(this.SearchBarCode, this.searchString, mode, this.ShopMode).subscribe({
       next: (res: any) => {
         if(res.success){
           this.searchList = res.data;      
