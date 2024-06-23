@@ -144,7 +144,7 @@ module.exports = {
                 let shopMode = "";
                 let searchParams = ``
                 if (Req?.searchString !== null && Req?.searchString !== "" && Req?.searchString !== undefined) {
-                    searchParams = ` and purchasemasternew.ProductName = '${Req.searchString}' `
+                    searchParams = ` and purchasedetailnew.ProductName = '${Req.searchString}' `
                 }
 
                 if (ShopMode === false) {
