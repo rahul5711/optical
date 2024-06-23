@@ -197,10 +197,10 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Select Barcode</mat-label>
                         <mat-select name="SearchBarCode" [(ngModel)]="Req.SearchBarCode" #SearchBarCodecontrol
-                            (selectionChange)="getSearchByBarcodeNo()">
-                            <mat-option [disabled]="this.loginShop?.ID !== bc.ShopID && BarcodeListShow"
+                            >
+                            <mat-option  [disabled]="this.loginShop?.ID !== bc.ShopID && BarcodeListShow"
                                 [ngClass]="{'otherShopClass': this.loginShop?.ID !== bc.ShopID }"
-                                *ngFor="let bc of BarcodeList ; let i = index;" [value]="bc.Barcode">
+                                *ngFor="let bc of BarcodeList ; let i = index;" [value]="bc.Barcode" (click)="productSelect(bc)">
                                 {{bc.Barcode}} <a> # {{bc.BarCodeCount }}</a>  | {{bc.ProductName | uppercase}} |
                                 {{bc.ShopName | titlecase }} <span [style.color]="'blue'"
                                     *ngIf="bc.AreaName !== 'null'">({{bc.AreaName | titlecase}})</span>

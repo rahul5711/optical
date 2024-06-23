@@ -697,13 +697,16 @@ export class BillComponent implements OnInit {
     this.getBarCodeList('')
   }
 
-  getSearchByBarcodeNo() {
-    if(this.BarcodeList !== undefined){
-      this.Req.SupplierID = this.BarcodeList[0]?.SupplierID;
+  productSelect(data:any){
+    this.Req.searchString = data.ProductName
+    if(data !== undefined){
+      this.Req.SupplierID = data.SupplierID;
     }else{
       this.Req.SupplierID = 0
     }
-  
+    this.getSearchByBarcodeNo()
+  }
+  getSearchByBarcodeNo() {
     if (this.Req.SearchBarCode !== '') {
       this.sp.show();
       if (this.BillItem.Manual == false) {
@@ -712,6 +715,7 @@ export class BillComponent implements OnInit {
         } else {
           this.PreOrder = "false"
         }
+        
         const subs: Subscription = this.bill.searchByBarcodeNo(this.Req, this.PreOrder, this.ShopMode).subscribe({
           next: (res: any) => {
             if (res.success) {
@@ -815,6 +819,7 @@ export class BillComponent implements OnInit {
         } else {
           this.PreOrder = "false"
         }
+
         const subs: Subscription = this.bill.searchByBarcodeNo(this.Req, this.PreOrder, this.ShopMode).subscribe({
           next: (res: any) => {
             if (res.success) {
