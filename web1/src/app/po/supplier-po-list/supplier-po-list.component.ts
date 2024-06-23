@@ -126,7 +126,7 @@ export class SupplierPoListComponent implements OnInit {
   
     if (this.data.FromDate !== '' && this.data.FromDate !== null){
       let FromDate =  moment(this.data.FromDate).format('YYYY-MM-DD')
-      parem = parem + ' and DATE_FORMAT(barcodemasternew.CreatedOn, "%Y-%m-%d") between ' +  `'${FromDate}'`;}
+      parem = parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between ' +  `'${FromDate}'`;}
 
     if (this.data.ToDate !== '' && this.data.ToDate !== null){
       let ToDate =  moment(this.data.ToDate).format('YYYY-MM-DD')
