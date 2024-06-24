@@ -809,8 +809,10 @@ export class BillComponent implements OnInit {
     }
   }
 
-  getSearchByBarcodeNoS(barcode: any) {
-    this.Req.SearchBarCode = barcode
+  getSearchByBarcodeNoS(data: any) {
+    this.Req.SearchBarCode = data.Barcode
+    this.Req.searchString = data.ProductName
+    this.Req.SupplierID = data.SupplierID;
     if (this.Req.SearchBarCode !== '') {
 
       this.sp.show();

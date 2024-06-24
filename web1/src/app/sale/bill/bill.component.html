@@ -157,7 +157,7 @@
                                (input)="getSearchByString(myControl.value, 'Name')">
                         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'560px'">
                           <!-- <mat-option (click)="CustomerSelection('All','0')" value='All'>All</mat-option> -->
-                          <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="getSearchByBarcodeNoS(option.Barcode)"  *ngFor="let option of BarcodeList" [value]="option.FullProductName">
+                          <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="getSearchByBarcodeNoS(option)"  *ngFor="let option of BarcodeList" [value]="option.FullProductName">
                              {{option.FullProductName}}  <b class="redclass">#{{option.BarCodeCount}}  </b> 
                             
                           </mat-option>
