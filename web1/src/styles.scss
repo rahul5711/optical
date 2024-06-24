@@ -674,3 +674,15 @@ thead :not([scope=row]):first-child {
         font-size: 65% ;
   }
  }
+
+
+ @media only screen and (max-width: 512px) and (min-width: 300px)  {
+    input[type=date][_ngcontent-dpd-c165] {
+        padding: 0rem !important;
+        height: 1rem !important;
+        font-size: 14px;
+        line-height: 1.5 !important;
+        box-sizing: border-box;
+        padding-top: 0px !important;
+    }
+ }
