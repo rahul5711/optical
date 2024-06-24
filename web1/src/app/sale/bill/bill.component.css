@@ -6,6 +6,16 @@
     padding-top: 15px;
 }
 
+
+input[type=date] {
+    padding: 0rem !important;
+    height: 1rem !important;
+    font-size: 14px;
+    line-height: 1.5 !important;
+    box-sizing: border-box;
+    padding-top: 18px !important;
+  }
+  
 .mat-select.disabled {
     color: #868686;
     /* Change the color to your desired disabled text color */
