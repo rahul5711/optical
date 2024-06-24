@@ -56,7 +56,7 @@ async function validateSameMonthAndYear(fromDate, toDate) {
 }
 
 function numberToMonth(number) {
-    const months =  {
+    const months = {
         1: "Jan",
         2: "Feb",
         3: "Mar",
@@ -153,11 +153,11 @@ module.exports = {
                     shopMode = " Group By barcodemasternew.ShopID ";
                 }
                 qry = `SELECT COUNT(PurchaseDetailID) AS BarCodeCount, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName,purchasedetailnew.ProductTypeID,purchasedetailnew.ProductExpDate, barcodemasternew.*,shop.Name as ShopName, shop.AreaName as AreaName,purchasedetailnew.UnitPrice, purchasedetailnew.BaseBarCode, barcodemasternew.RetailPrice as RetailPrice, barcodemasternew.WholeSalePrice as WholeSalePrice   FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID left join shop on shop.ID = barcodemasternew.ShopID Left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE CurrentStatus = "Available" AND Barcode = '${barCode}' ${searchParams}  and purchasedetailnew.Status = 1 and purchasedetailnew.PurchaseID != 0 and  purchasedetailnew.CompanyID = '${CompanyID}' ${shopMode}`;
-                console.log(`SELECT COUNT(PurchaseDetailID) AS BarCodeCount, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName,purchasedetailnew.ProductTypeID, barcodemasternew.*,shop.Name as ShopName, shop.AreaName as AreaName,purchasedetailnew.BaseBarCode, barcodemasternew.RetailPrice as RetailPrice, barcodemasternew.WholeSalePrice as WholeSalePrice   FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID left join shop on shop.ID = barcodemasternew.ShopID WHERE CurrentStatus = "Available" AND Barcode = '${barCode}' and purchasedetailnew.Status = 1 and purchasedetailnew.PurchaseID != 0 and  purchasedetailnew.CompanyID = '${CompanyID}' ${shopMode}`);
             } else {
                 qry = `SELECT COUNT(PurchaseDetailID) AS BarCodeCount, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage,purchasedetailnew.GSTAmount, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice, purchasedetailnew.ProductTypeID, barcodemasternew.*,shop.Name as ShopName, shop.AreaName as AreaName,purchasedetailnew.BaseBarCode, barcodemasternew.RetailPrice as RetailPrice, barcodemasternew.WholeSalePrice as WholeSalePrice FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID left join shop on shop.ID = barcodemasternew.ShopID WHERE barcodemasternew.Barcode = '${barCode}' and purchasedetailnew.Status = 1 AND barcodemasternew.CurrentStatus = 'Pre Order'  and purchasedetailnew.CompanyID = '${CompanyID}'`;
 
             }
+
 
             let [data] = await mysql2.pool.query(qry);
             response.message = "data fetch sucessfully"
@@ -2654,6 +2654,7 @@ module.exports = {
             if (data.length) {
                 for (const item of data) {
                     item.gst_detailssss = []
+                    item.paymentDetail = []
                     item.gst_details = [{ InvoiceNo: item.InvoiceNo, }]
                     if (item.BillType === 0) {
                         // service bill
@@ -2756,6 +2757,12 @@ module.exports = {
                             }
                         }
 
+                    }
+
+                    const [fetchpayment] = await mysql2.pool.query(`select paymentmaster.PaymentMode, DATE_FORMAT(paymentmaster.PaymentDate, '%Y-%m-%d %H:%i:%s') as PaymentDate, paymentmaster.PaidAmount as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where BillMasterID = ${item.ID} and paymentmaster.PaymentMode != 'Payment Initiated'`)
+
+                    if (fetchpayment.length) {
+                        item.paymentDetail = fetchpayment
                     }
 
                     response.calculation[0].totalAmount = response.calculation[0].totalAmount - item.AddlDiscount
@@ -3214,7 +3221,7 @@ module.exports = {
 
     getSupplierPo: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "", sumQty : 0 }
+            const response = { data: null, success: true, message: "", sumQty: 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
@@ -3241,9 +3248,9 @@ module.exports = {
             response.data = data
             response.message = "success";
             if (data) {
-              data.forEach(x => {
-                response.sumQty += x.Quantity
-              })
+                data.forEach(x => {
+                    response.sumQty += x.Quantity
+                })
             }
             return res.send(response);
 
@@ -3326,7 +3333,7 @@ module.exports = {
     },
     getSupplierPoList: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "", sumQty : 0  }
+            const response = { data: null, success: true, message: "", sumQty: 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
@@ -3452,7 +3459,7 @@ module.exports = {
 
             if (CompanyID === 184) {
                 printdata.LogoURL = clientConfig.appURL + '../assest/hvd.jpeg';
-                console.log( printdata.LogoURL ,'lllll');
+                console.log(printdata.LogoURL, 'lllll');
                 var formatName = "AssignSupplierPDF.ejs"
             } else {
                 var formatName = "AssignLensPDF.ejs";
@@ -3649,7 +3656,7 @@ module.exports = {
 
     getFitterPo: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "", sumQty : 0 }
+            const response = { data: null, success: true, message: "", sumQty: 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
@@ -3675,9 +3682,9 @@ module.exports = {
             response.data = data
             if (data) {
                 data.forEach(x => {
-                  response.sumQty += x.Quantity
+                    response.sumQty += x.Quantity
                 })
-              }
+            }
             response.message = "success";
 
             return res.send(response);
@@ -3882,7 +3889,7 @@ module.exports = {
     },
     getFitterPoList: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "", sumQty : 0  }
+            const response = { data: null, success: true, message: "", sumQty: 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
@@ -3908,9 +3915,9 @@ module.exports = {
             response.data = data
             if (data) {
                 data.forEach(x => {
-                  response.sumQty += x.Quantity
+                    response.sumQty += x.Quantity
                 })
-              }
+            }
             response.message = "success";
 
             return res.send(response);
@@ -8906,7 +8913,7 @@ module.exports = {
                 return res.send({ success: false, message: `Shop not found` })
             }
 
-            let InvoiceNo = `HVD/${new Date(FromDate).getFullYear().toString().slice(-2)}/${numberToMonth(new Date(FromDate).getMonth() + 1 )}-${fetchShop[0].Sno}`
+            let InvoiceNo = `HVD/${new Date(FromDate).getFullYear().toString().slice(-2)}/${numberToMonth(new Date(FromDate).getMonth() + 1)}-${fetchShop[0].Sno}`
 
             response.InvoiceNo = InvoiceNo
 
@@ -9067,83 +9074,83 @@ module.exports = {
             response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice.toFixed(2) : 0
             response.data = data
             response.message = "success";
-            
+
             // return res.send(response);
-              // Generate PDF
-              const printdata = response;
-              const invoiceNo = printdata.InvoiceNo;
-              const invoiceDate = moment().format('DD-MM-YYYY');
-              const dataList = printdata.data;
-              const totalQty =  printdata.calculation[0].totalQty;
-              const totalGstAmount =  printdata.calculation[0].totalGstAmount;
-              const totalAmount =  printdata.calculation[0].totalAmount;
-              const totalDiscount =  printdata.calculation[0].totalDiscount;
-              const totalUnitPrice =  printdata.calculation[0].totalUnitPrice;
-              const totalPurchasePrice =  printdata.calculation[0].totalPurchasePrice;
-              const totalProfit =  printdata.calculation[0].totalProfit;
-              const gst_details =  printdata.calculation[0].gst_details;
+            // Generate PDF
+            const printdata = response;
+            const invoiceNo = printdata.InvoiceNo;
+            const invoiceDate = moment().format('DD-MM-YYYY');
+            const dataList = printdata.data;
+            const totalQty = printdata.calculation[0].totalQty;
+            const totalGstAmount = printdata.calculation[0].totalGstAmount;
+            const totalAmount = printdata.calculation[0].totalAmount;
+            const totalDiscount = printdata.calculation[0].totalDiscount;
+            const totalUnitPrice = printdata.calculation[0].totalUnitPrice;
+            const totalPurchasePrice = printdata.calculation[0].totalPurchasePrice;
+            const totalProfit = printdata.calculation[0].totalProfit;
+            const gst_details = printdata.calculation[0].gst_details;
 
-              let gst = []
-              gst_details.forEach((e)=>{
-               if(e.Amount != 0){
-                gst.push(e)
-               }
-              })
-  
-               dataList.forEach((s)=>{
+            let gst = []
+            gst_details.forEach((e) => {
+                if (e.Amount != 0) {
+                    gst.push(e)
+                }
+            })
+
+            dataList.forEach((s) => {
                 s.UnitPrice = s.SubTotal / s.Quantity
-              })
+            })
 
-              printdata.invoiceNo = invoiceNo;
-              printdata.invoiceDate = invoiceDate;
-              printdata.dataList = dataList;
-              printdata.ShopName = dataList[0].ShopName;
-              printdata.AreaName = dataList[0].AreaName;
-              printdata.ShopAddress = dataList[0].ShopAddress;
-              printdata.totalQty = totalQty;
-              printdata.totalGstAmount = totalGstAmount;
-              printdata.totalAmount = totalAmount;
-              printdata.totalDiscount = totalDiscount;
-              printdata.totalUnitPrice = totalUnitPrice;
-              printdata.totalPurchasePrice = totalPurchasePrice;
-              printdata.totalProfit = totalProfit;
-              printdata.gst_details = gst;
+            printdata.invoiceNo = invoiceNo;
+            printdata.invoiceDate = invoiceDate;
+            printdata.dataList = dataList;
+            printdata.ShopName = dataList[0].ShopName;
+            printdata.AreaName = dataList[0].AreaName;
+            printdata.ShopAddress = dataList[0].ShopAddress;
+            printdata.totalQty = totalQty;
+            printdata.totalGstAmount = totalGstAmount;
+            printdata.totalAmount = totalAmount;
+            printdata.totalDiscount = totalDiscount;
+            printdata.totalUnitPrice = totalUnitPrice;
+            printdata.totalPurchasePrice = totalPurchasePrice;
+            printdata.totalProfit = totalProfit;
+            printdata.gst_details = gst;
 
-              if(CompanyID === 184){
+            if (CompanyID === 184) {
                 printdata.LogoURL = clientConfig.appURL + 'assest/HVD_logo.png';
-            }else{
+            } else {
                 printdata.LogoURL = clientConfig.appURL + ''
             }
-  
-               var formatName = "GSTInvoice.ejs";
-               var file = "GST" +"_"+ "Invoice" +  ".pdf";
-               var fileName = "uploads/" + file;
-               
-               ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
-                   if (err) {
-                       res.send(err);
-                   } else {
-                       let options = {
-                           "height": "11.25in",
-                           "width": "8.5in",
-                           "header": {
-                               "height": "0mm"
-                           },
-                           "footer": {
-                               "height": "0mm",
-                           },
-                       };
-                       pdf.create(data, options).toFile(fileName, function (err, data) {
-                           if (err) {
-                               res.send(err);
-                           } else {
-                               res.json(file);
-                           }
-                       });
-                   }
-               });
 
-            
+            var formatName = "GSTInvoice.ejs";
+            var file = "GST" + "_" + "Invoice" + ".pdf";
+            var fileName = "uploads/" + file;
+
+            ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                if (err) {
+                    res.send(err);
+                } else {
+                    let options = {
+                        "height": "11.25in",
+                        "width": "8.5in",
+                        "header": {
+                            "height": "0mm"
+                        },
+                        "footer": {
+                            "height": "0mm",
+                        },
+                    };
+                    pdf.create(data, options).toFile(fileName, function (err, data) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            res.json(file);
+                        }
+                    });
+                }
+            });
+
+
         } catch (err) {
             console.log(err);
             next(err)
