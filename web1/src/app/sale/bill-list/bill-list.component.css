@@ -142,7 +142,7 @@
   color: red !important;
   text-decoration: line-through;
 }
-
+/* 
 input[type=date] {
   padding: 0rem !important;
   height: 1.5rem !important;
@@ -150,4 +150,4 @@ input[type=date] {
   line-height: 1.5 !important;
   box-sizing: border-box;
   padding-top: 0px !important;
-}
+} */

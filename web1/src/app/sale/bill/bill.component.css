@@ -6,7 +6,7 @@
     padding-top: 15px;
 }
 
-
+/* 
 input[type=date] {
     padding: 0rem !important;
     height: 1rem !important;
@@ -14,7 +14,7 @@ input[type=date] {
     line-height: 1.5 !important;
     box-sizing: border-box;
     padding-top: 18px !important;
-  }
+  } */
   
 .mat-select.disabled {
     color: #868686;
