@@ -207,6 +207,30 @@
                                                         <th *ngIf="columnVisibility.DeliveryDate">DeliveryDate</th>
                                                         <th *ngIf="columnVisibility.Cust_GSTNo">Cust_GSTNo</th>
                                                         <th *ngIf="columnVisibility.ShopName">ShopName</th>
+                                                        <th style="display: none;">Date</th>
+                                                        <th style="display: none;">Mode</th>
+                                                        <th style="display: none;">INT-1(AMT)</th>
+                                                        <th style="display: none;">Date</th>
+                                                        <th style="display: none;">Mode</th>
+                                                        <th style="display: none;">INT-2(AMT)</th>
+                                                        <th style="display: none;">Date</th>
+                                                        <th style="display: none;">Mode</th>
+                                                        <th style="display: none;">INT-3(AMT)</th>
+                                                        <th style="display: none;">Date</th>
+                                                        <th style="display: none;">Mode</th>
+                                                        <th style="display: none;">INT-4(AMT)</th>
+                                                        <th style="display: none;">Date</th>
+                                                        <th style="display: none;">Mode</th>
+                                                        <th style="display: none;">INT-5(AMT)</th>
+                                                        <th style="display: none;">Date</th>
+                                                        <th style="display: none;">Mode</th>
+                                                        <th style="display: none;">INT-6(AMT)</th>
+                                                        <th style="display: none;">Date</th>
+                                                        <th style="display: none;">Mode</th>
+                                                        <th style="display: none;">INT-7(AMT)</th>
+                                                        <th style="display: none;">Date</th> 
+                                                        <th style="display: none;">Mode</th>
+                                                        <th style="display: none;">INT-8(AMT)</th>
                                                     </tr>
                                                     <tr class="totolRow">
                                                         <td style="white-space: nowrap;">
@@ -372,7 +396,7 @@
                                                         <td *ngIf="columnVisibility.DeliveryDate"></td>
                                                         <td *ngIf="columnVisibility.Cust_GSTNo"></td>
                                                         <td *ngIf="columnVisibility.ShopName"></td>
-
+                                                      
                                                     </tr>
                                                 </thead>
                                                 <tbody class="text-center">
@@ -458,6 +482,24 @@
                                                             d.ShopName }} <span [style.color]="'blue'"
                                                                 *ngIf="d.AreaName !== 'null'">({{d.AreaName}})</span>
                                                         </td>
+                                                        <td style="display: none;" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">{{d.paymentDetail[0]?.PaymentDate}} </td>
+                                                        <td style="display: none;" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">{{d.paymentDetail[0]?.PaymentMode}} </td>
+                                                        <td style="display: none;" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">{{d.paymentDetail[0]?.Amount}} </td>
+                                                        <td style="display: none;" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">{{d.paymentDetail[1]?.PaymentDate}} </td>
+                                                        <td style="display: none;" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">{{d.paymentDetail[1]?.PaymentMode}} </td>
+                                                        <td style="display: none;" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">{{d.paymentDetail[1]?.Amount}}</td>
+                                                        <td style="display: none;" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">{{d.paymentDetail[2]?.PaymentDate}}  </td>
+                                                        <td style="display: none;" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">{{d.paymentDetail[2]?.PaymentMode}} </td>
+                                                        <td style="display: none;" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">{{d.paymentDetail[2]?.Amount}} </td>
+                                                        <td style="display: none;" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">{{d.paymentDetail[3]?.PaymentDate}}</td>
+                                                        <td style="display: none;" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">{{d.paymentDetail[3]?.PaymentMode}} </td>
+                                                        <td style="display: none;" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">{{d.paymentDetail[3]?.Amount}}</td>
+                                                        <td style="display: none;" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">{{d.paymentDetail[4]?.PaymentDate}}</td>
+                                                        <td style="display: none;" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">{{d.paymentDetail[4]?.PaymentMode}} </td>
+                                                        <td style="display: none;" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">{{d.paymentDetail[4]?.Amount}} </td>
+                                                        <td style="display: none;" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">{{d.paymentDetail[5]?.PaymentDate}} </td>
+                                                        <td style="display: none;" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">{{d.paymentDetail[5]?.PaymentMode}} </td>
+                                                        <td style="display: none;" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">{{d.paymentDetail[5]?.Amount}} </td>
                                                     </tr>
                                                 </tbody>
                                             </table>

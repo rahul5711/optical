@@ -151,3 +151,12 @@ input[type=date] {
   box-sizing: border-box;
   padding-top: 0px !important;
 } */
+
+input[type="date"] {
+  padding: 0rem !important;
+  height: 20px;
+  font-size: 14px;
+  line-height: 11px !important;
+  box-sizing: border-box;
+  padding-top: 0px !important;
+}

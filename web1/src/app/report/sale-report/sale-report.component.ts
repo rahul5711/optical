@@ -59,6 +59,7 @@ export class SaleReportComponent implements OnInit {
   customerList: any = [];
   customerListGST: any = [];
   BillMasterList: any = [];
+  maxPaymentDetails = 8; 
   totalQty: any;
   totalDiscount: any;
   totalUnitPrice: any;
@@ -591,10 +592,6 @@ export class SaleReportComponent implements OnInit {
             billMaster.TotalDueAmount = totalDueAmountPlus; 
             this.totalBalance = this.totalBalance + billMaster.DueAmount;
         }
-        
-        
-          
-        console.log(this.BillMasterList);
         
           this.totalQty = res.calculation[0].totalQty;
           this.totalDiscount = (parseFloat(res.calculation[0].totalDiscount)).toFixed(2);
