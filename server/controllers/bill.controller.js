@@ -3359,7 +3359,8 @@ module.exports = {
 
             if (data.length) {
                 for (let Item of data) {
-                    Item.DiscountAmount = discountAmount(Item)
+                    Item.DiscountAmount = 0
+                    Item.DiscountPercentage = 0
                     Item.SubTotal = Item.UnitPrice * Item.Quantity - Item.DiscountAmount
                     Item.GSTAmount = gstAmount(Item.SubTotal, Item.GSTPercentage)
                     Item.TotalAmount = Item.SubTotal + Item.GSTAmount
@@ -3386,39 +3387,61 @@ module.exports = {
 
             const printdata = req.body
             const productList = req.body.productList;
-            printdata.productListHVD = req.body.productList;
+            const productListHVD = req.body.productList;
+
             printdata.todaydate = moment().format("DD/MM/YYYY");
-
-            let modifyList = [];
-            let invoiceNos = [];
-
-            productList.forEach(ell => {
-                ell.InvoiceDate = moment(ell.InvoiceDate).format("DD-MM-YYYY")
-                ell.DeliveryDate = moment(ell.DeliveryDate).format("DD-MM-YYYY")
-                ell.s = [ell.ProductName];
-                ell.R = [ell.Remark];
-                ell.o = [ell.Optionsss];
-
-                if (!invoiceNos.includes(ell.InvoiceNo)) {
-                    invoiceNos.push(ell.InvoiceNo);
-                    modifyList.push(ell);
-                } else {
-                    const existingItem = modifyList.find(item => item.InvoiceNo === ell.InvoiceNo);
-
-                    if (!existingItem.s.some(obj => obj.ProductName === ell.ProductName)) {
-                        existingItem.s.push(ell.ProductName);
+            
+             if(CompanyID !== 184){
+                let modifyList = [];
+                let invoiceNos = [];
+    
+                productList.forEach(ell => {
+                    ell.InvoiceDate = moment(ell.InvoiceDate).format("DD-MM-YYYY")
+                    ell.DeliveryDate = moment(ell.DeliveryDate).format("DD-MM-YYYY")
+                    ell.s = [ell.ProductName];
+                    ell.R = [ell.Remark];
+                    ell.o = [ell.Optionsss];
+    
+                    if (!invoiceNos.includes(ell.InvoiceNo)) {
+                        invoiceNos.push(ell.InvoiceNo);
+                        modifyList.push(ell);
+                    } else {
+                        const existingItem = modifyList.find(item => item.InvoiceNo === ell.InvoiceNo);
+    
+                        if (!existingItem.s.some(obj => obj.ProductName === ell.ProductName)) {
+                            existingItem.s.push(ell.ProductName);
+                        }
+                        if (!existingItem.R.some(obj => obj.Remark === ell.Remark)) {
+                            existingItem.R.push(ell.Remark);
+                        }
+                        if (!existingItem.o.some(obj => obj.Optionsss === ell.Optionsss)) {
+                            existingItem.o.push(ell.Optionsss);
+                        }
                     }
-                    if (!existingItem.R.some(obj => obj.Remark === ell.Remark)) {
-                        existingItem.R.push(ell.Remark);
-                    }
-                    if (!existingItem.o.some(obj => obj.Optionsss === ell.Optionsss)) {
-                        existingItem.o.push(ell.Optionsss);
-                    }
+    
+                });
+    
+                printdata.productList = modifyList
+             }else{
+                printdata.productListHVD = productListHVD
+
+                let totalQty = 0
+                let gstTotal = 0
+                let totalAmount = 0
+                let totalPurchaseRate = 0
+        
+                for (var i = 0; i < printdata.productListHVD.length; i++) {
+                    totalQty = totalQty + printdata.productListHVD[i].Quantity;
+                    gstTotal = gstTotal + printdata.productListHVD[i].GSTAmount;
+                    totalAmount = totalAmount + printdata.productListHVD[i].TotalAmount;
+                    totalPurchaseRate = totalPurchaseRate + printdata.productListHVD[i].UnitPrice * printdata.productListHVD[i].Quantity;
                 }
-
-            });
-
-            printdata.productList = modifyList
+    
+                printdata.totalQty = totalQty;
+                printdata.gstTotal = gstTotal;
+                printdata.totalAmount = totalAmount;
+                printdata.totalPurchaseRate = totalPurchaseRate;
+             }
 
             const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
             const [companysetting] = await mysql2.pool.query(`select * from companysetting where CompanyID = ${CompanyID}`)
@@ -3458,8 +3481,7 @@ module.exports = {
             }
 
             if (CompanyID === 184) {
-                printdata.LogoURL = clientConfig.appURL + '../assest/hvd.jpeg';
-                console.log(printdata.LogoURL, 'lllll');
+                printdata.LogoURL = clientConfig.appURL + 'assest/hvd.jpeg';
                 var formatName = "AssignSupplierPDF.ejs"
             } else {
                 var formatName = "AssignLensPDF.ejs";
@@ -3475,19 +3497,52 @@ module.exports = {
                     console.log(err);
                     res.send(err);
                 } else {
-                    let options = {
-                        "height": "11.25in",
-                        "width": "8.5in",
-                        header: {
-                            height: "0mm"
-                        },
-                        footer: {
-                            height: "0mm",
-                            contents: {
-                                last: ``,
+                    let options;
+                    if(CompanyID == 184){
+                    options = {
+                            "height": "11.25in",
+                            "width": "8.5in",
+                            header: {
+                                height: "0mm"
                             },
-                        },
-                    };
+                            footer: {
+                                height: "30mm",
+                                contents: {
+                                    last: ` <section style="width: 96%; border-top:1px solid #000;">
+                                    <div style="width: 10%; float:right;line-height: 25px; text-align: right;">
+                                        <div  >  ${printdata.totalQty}</div>
+                                        <div  >   ${parseFloat(printdata.gstTotal).toFixed(2)}</div>
+                                        <div  >  ${printdata.totalPurchaseRate}</div>
+                                        <div  >   ${parseFloat(printdata.totalAmount).toFixed(2)}</div>
+                                      </div>
+                                     <div style="width: 20%; float:right; line-height: 25px;">
+                                       <div style="text-align: left; font-weight: bold;font-size: 16px;"> Total Qty </div>
+                                       <div style="text-align: left; font-weight: bold;font-size: 16px;"> Total GSTAmt </div>
+                                       <div style="text-align: left; font-weight: bold;font-size: 16px;"> Total Purchase Rate </div>
+                                       <div style="text-align: left; font-weight: bold;font-size: 16px;"> Total Amount </div>
+                                     </div>
+        
+        
+                                 </section>`,
+                                },
+                            },
+                        };
+                    }else{
+                         options = {
+                            "height": "11.25in",
+                            "width": "8.5in",
+                            header: {
+                                height: "0mm"
+                            },
+                            footer: {
+                                height: "0mm",
+                                contents: {
+                                    last: ``,
+                                },
+                            },
+                        };
+                    }
+                   
                     pdf.create(data, options).toFile(fileName, function (err, data) {
                         if (err) {
                             res.send(err);
