@@ -422,7 +422,7 @@ module.exports = {
                 newData.RefferedByDoc = ""
                 newData.ReferenceType = fd[16] ? fd[16] : ''
                 newData.Other = fd[17] ? fd[17] : ''
-                newData.Remarks = fd[12] ? fd[12] : ''
+                newData.Remarks = fd[12] ? fd[12].toString().replace(/[\r\n]+/g, '\\n') : ''
                 newData.Category = fd[13] ? fd[13] : ''
                 newData.GSTNo = fd[15] ? fd[15] : ''
                 // console.log(newData);
