@@ -406,7 +406,7 @@ module.exports = {
                     "MobileNo1": fd[2] ? fd[2] : "",
                     "MobileNo2": fd[3] ? fd[3] : "",
                     "PhoneNo": fd[4] ? fd[4] : "",
-                    "Address": fd[5] ? fd[5] : "",
+                    "Address": fd[5] ? fd[5].toString().replace(/[\r\n]+/g, '\\n') : '',
                     "Email": fd[6] ? fd[6] : "",
                     "DOB": fd[7] ? fd[7] : '"0000-00-00"',
                     "Age": fd[8] ? fd[8] : 0,
