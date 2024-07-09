@@ -2655,7 +2655,7 @@ module.exports = {
                 for (const item of data) {
                     item.gst_detailssss = []
                     item.paymentDetail = []
-                    item.gst_details = [{ InvoiceNo: item.InvoiceNo, }]
+                    item.gst_details = []
                     if (item.BillType === 0) {
                         // service bill
                         const [fetchService] = await mysql2.pool.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
@@ -2676,6 +2676,28 @@ module.exports = {
                                             e.Amount += item2.GSTAmount / 2
                                         }
                                     })
+
+                                    if (item.gst_details.length === 0) {
+                                        item.gst_details.push(
+                                            {
+                                                GSTType: `CGST`,
+                                                Amount: item2.GSTAmount / 2
+                                            },
+                                            {
+                                                GSTType: `SGST`,
+                                                Amount: item2.GSTAmount / 2
+                                            }
+                                        )
+                                    } else {
+                                        item.gst_details.forEach(e => {
+                                            if (e.GSTType === 'CGST') {
+                                                e.Amount += item2.GSTAmount / 2
+                                            }
+                                            if (e.GSTType === 'SGST') {
+                                                e.Amount += item2.GSTAmount / 2
+                                            }
+                                        })
+                                    }
                                 }
 
                                 if (item2.GSTType !== 'CGST-SGST') {
@@ -2684,6 +2706,13 @@ module.exports = {
                                             e.Amount += item2.GSTAmount
                                         }
                                     })
+
+                                    item.gst_details.push(
+                                        {
+                                            GSTType: `${item2.GSTType}`,
+                                            Amount: item2.GSTAmount
+                                        },
+                                    )
                                 }
                             }
                         }
@@ -2712,6 +2741,28 @@ module.exports = {
                                             e.Amount += item2.GSTAmount / 2
                                         }
                                     })
+
+                                    if (item.gst_details.length === 0) {
+                                        item.gst_details.push(
+                                            {
+                                                GSTType: `CGST`,
+                                                Amount: item2.GSTAmount / 2
+                                            },
+                                            {
+                                                GSTType: `SGST`,
+                                                Amount: item2.GSTAmount / 2
+                                            }
+                                        )
+                                    } else {
+                                        item.gst_details.forEach(e => {
+                                            if (e.GSTType === 'CGST') {
+                                                e.Amount += item2.GSTAmount / 2
+                                            }
+                                            if (e.GSTType === 'SGST') {
+                                                e.Amount += item2.GSTAmount / 2
+                                            }
+                                        })
+                                    }
                                 }
 
                                 if (item2.GSTType !== 'CGST-SGST') {
@@ -2720,6 +2771,14 @@ module.exports = {
                                             e.Amount += item2.GSTAmount
                                         }
                                     })
+
+                                    item.gst_details.push(
+                                        {
+                                            GSTType: `${item2.GSTType}`,
+                                            Amount: item2.GSTAmount
+                                        },
+                                    )
+
                                 }
                             }
                         }
@@ -2745,6 +2804,29 @@ module.exports = {
                                             e.Amount += item2.GSTAmount / 2
                                         }
                                     })
+
+                                    if (item.gst_details.length === 0) {
+                                        item.gst_details.push(
+                                            {
+                                                GSTType: `CGST`,
+                                                Amount: item2.GSTAmount / 2
+                                            },
+                                            {
+                                                GSTType: `SGST`,
+                                                Amount: item2.GSTAmount / 2
+                                            }
+                                        )
+                                    } else {
+                                        item.gst_details.forEach(e => {
+                                            if (e.GSTType === 'CGST') {
+                                                e.Amount += item2.GSTAmount / 2
+                                            }
+                                            if (e.GSTType === 'SGST') {
+                                                e.Amount += item2.GSTAmount / 2
+                                            }
+                                        })
+                                    }
+
                                 }
 
                                 if (item2.GSTType !== 'CGST-SGST') {
@@ -2753,6 +2835,13 @@ module.exports = {
                                             e.Amount += item2.GSTAmount
                                         }
                                     })
+
+                                    item.gst_details.push(
+                                        {
+                                            GSTType: `${item2.GSTType}`,
+                                            Amount: item2.GSTAmount
+                                        },
+                                    )
                                 }
                             }
                         }
@@ -3390,24 +3479,24 @@ module.exports = {
             const productListHVD = req.body.productList;
 
             printdata.todaydate = moment().format("DD/MM/YYYY");
-            
-             if(CompanyID !== 184){
+
+            if (CompanyID !== 184) {
                 let modifyList = [];
                 let invoiceNos = [];
-    
+
                 productList.forEach(ell => {
                     ell.InvoiceDate = moment(ell.InvoiceDate).format("DD-MM-YYYY")
                     ell.DeliveryDate = moment(ell.DeliveryDate).format("DD-MM-YYYY")
                     ell.s = [ell.ProductName];
                     ell.R = [ell.Remark];
                     ell.o = [ell.Optionsss];
-    
+
                     if (!invoiceNos.includes(ell.InvoiceNo)) {
                         invoiceNos.push(ell.InvoiceNo);
                         modifyList.push(ell);
                     } else {
                         const existingItem = modifyList.find(item => item.InvoiceNo === ell.InvoiceNo);
-    
+
                         if (!existingItem.s.some(obj => obj.ProductName === ell.ProductName)) {
                             existingItem.s.push(ell.ProductName);
                         }
@@ -3418,30 +3507,30 @@ module.exports = {
                             existingItem.o.push(ell.Optionsss);
                         }
                     }
-    
+
                 });
-    
+
                 printdata.productList = modifyList
-             }else{
+            } else {
                 printdata.productListHVD = productListHVD
 
                 let totalQty = 0
                 let gstTotal = 0
                 let totalAmount = 0
                 let totalPurchaseRate = 0
-        
+
                 for (var i = 0; i < printdata.productListHVD.length; i++) {
                     totalQty = totalQty + printdata.productListHVD[i].Quantity;
                     gstTotal = gstTotal + printdata.productListHVD[i].GSTAmount;
                     totalAmount = totalAmount + printdata.productListHVD[i].TotalAmount;
                     totalPurchaseRate = totalPurchaseRate + printdata.productListHVD[i].UnitPrice * printdata.productListHVD[i].Quantity;
                 }
-    
+
                 printdata.totalQty = totalQty;
                 printdata.gstTotal = gstTotal;
                 printdata.totalAmount = totalAmount;
                 printdata.totalPurchaseRate = totalPurchaseRate;
-             }
+            }
 
             const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
             const [companysetting] = await mysql2.pool.query(`select * from companysetting where CompanyID = ${CompanyID}`)
@@ -3498,8 +3587,8 @@ module.exports = {
                     res.send(err);
                 } else {
                     let options;
-                    if(CompanyID == 184){
-                    options = {
+                    if (CompanyID == 184) {
+                        options = {
                             "height": "11.25in",
                             "width": "8.5in",
                             header: {
@@ -3527,8 +3616,8 @@ module.exports = {
                                 },
                             },
                         };
-                    }else{
-                         options = {
+                    } else {
+                        options = {
                             "height": "11.25in",
                             "width": "8.5in",
                             header: {
@@ -3542,7 +3631,7 @@ module.exports = {
                             },
                         };
                     }
-                   
+
                     pdf.create(data, options).toFile(fileName, function (err, data) {
                         if (err) {
                             res.send(err);
