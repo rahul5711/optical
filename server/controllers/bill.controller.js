@@ -2653,6 +2653,9 @@ module.exports = {
 
             if (data.length) {
                 for (const item of data) {
+                    item.cGstAmount = 0
+                    item.iGstAmount = 0
+                    item.sGstAmount = 0
                     item.gst_detailssss = []
                     item.paymentDetail = []
                     item.gst_details = []
@@ -2677,27 +2680,30 @@ module.exports = {
                                         }
                                     })
 
-                                    if (item.gst_details.length === 0) {
-                                        item.gst_details.push(
-                                            {
-                                                GSTType: `CGST`,
-                                                Amount: item2.GSTAmount / 2
-                                            },
-                                            {
-                                                GSTType: `SGST`,
-                                                Amount: item2.GSTAmount / 2
-                                            }
-                                        )
-                                    } else {
-                                        item.gst_details.forEach(e => {
-                                            if (e.GSTType === 'CGST') {
-                                                e.Amount += item2.GSTAmount / 2
-                                            }
-                                            if (e.GSTType === 'SGST') {
-                                                e.Amount += item2.GSTAmount / 2
-                                            }
-                                        })
-                                    }
+                                    item.cGstAmount += item2.GSTAmount / 2
+                                    item.sGstAmount += item2.GSTAmount / 2
+
+                                    // if (item.gst_details.length === 0) {
+                                    //     item.gst_details.push(
+                                    //         {
+                                    //             GSTType: `CGST`,
+                                    //             Amount: item2.GSTAmount / 2
+                                    //         },
+                                    //         {
+                                    //             GSTType: `SGST`,
+                                    //             Amount: item2.GSTAmount / 2
+                                    //         }
+                                    //     )
+                                    // } else {
+                                    //     item.gst_details.forEach(e => {
+                                    //         if (e.GSTType === 'CGST') {
+                                    //             e.Amount += item2.GSTAmount / 2
+                                    //         }
+                                    //         if (e.GSTType === 'SGST') {
+                                    //             e.Amount += item2.GSTAmount / 2
+                                    //         }
+                                    //     })
+                                    // }
                                 }
 
                                 if (item2.GSTType !== 'CGST-SGST') {
@@ -2707,12 +2713,14 @@ module.exports = {
                                         }
                                     })
 
-                                    item.gst_details.push(
-                                        {
-                                            GSTType: `${item2.GSTType}`,
-                                            Amount: item2.GSTAmount
-                                        },
-                                    )
+                                    item.iGstAmount += item2.GSTAmount
+
+                                    // item.gst_details.push(
+                                    //     {
+                                    //         GSTType: `${item2.GSTType}`,
+                                    //         Amount: item2.GSTAmount
+                                    //     },
+                                    // )
                                 }
                             }
                         }
@@ -2741,28 +2749,29 @@ module.exports = {
                                             e.Amount += item2.GSTAmount / 2
                                         }
                                     })
-
-                                    if (item.gst_details.length === 0) {
-                                        item.gst_details.push(
-                                            {
-                                                GSTType: `CGST`,
-                                                Amount: item2.GSTAmount / 2
-                                            },
-                                            {
-                                                GSTType: `SGST`,
-                                                Amount: item2.GSTAmount / 2
-                                            }
-                                        )
-                                    } else {
-                                        item.gst_details.forEach(e => {
-                                            if (e.GSTType === 'CGST') {
-                                                e.Amount += item2.GSTAmount / 2
-                                            }
-                                            if (e.GSTType === 'SGST') {
-                                                e.Amount += item2.GSTAmount / 2
-                                            }
-                                        })
-                                    }
+                                    item.cGstAmount += item2.GSTAmount / 2
+                                    item.sGstAmount += item2.GSTAmount / 2
+                                    // if (item.gst_details.length === 0) {
+                                    //     item.gst_details.push(
+                                    //         {
+                                    //             GSTType: `CGST`,
+                                    //             Amount: item2.GSTAmount / 2
+                                    //         },
+                                    //         {
+                                    //             GSTType: `SGST`,
+                                    //             Amount: item2.GSTAmount / 2
+                                    //         }
+                                    //     )
+                                    // } else {
+                                    //     item.gst_details.forEach(e => {
+                                    //         if (e.GSTType === 'CGST') {
+                                    //             e.Amount += item2.GSTAmount / 2
+                                    //         }
+                                    //         if (e.GSTType === 'SGST') {
+                                    //             e.Amount += item2.GSTAmount / 2
+                                    //         }
+                                    //     })
+                                    // }
                                 }
 
                                 if (item2.GSTType !== 'CGST-SGST') {
@@ -2772,12 +2781,13 @@ module.exports = {
                                         }
                                     })
 
-                                    item.gst_details.push(
-                                        {
-                                            GSTType: `${item2.GSTType}`,
-                                            Amount: item2.GSTAmount
-                                        },
-                                    )
+                                    item.iGstAmount += item2.GSTAmount
+                                    // item.gst_details.push(
+                                    //     {
+                                    //         GSTType: `${item2.GSTType}`,
+                                    //         Amount: item2.GSTAmount
+                                    //     },
+                                    // )
 
                                 }
                             }
@@ -2804,28 +2814,29 @@ module.exports = {
                                             e.Amount += item2.GSTAmount / 2
                                         }
                                     })
-
-                                    if (item.gst_details.length === 0) {
-                                        item.gst_details.push(
-                                            {
-                                                GSTType: `CGST`,
-                                                Amount: item2.GSTAmount / 2
-                                            },
-                                            {
-                                                GSTType: `SGST`,
-                                                Amount: item2.GSTAmount / 2
-                                            }
-                                        )
-                                    } else {
-                                        item.gst_details.forEach(e => {
-                                            if (e.GSTType === 'CGST') {
-                                                e.Amount += item2.GSTAmount / 2
-                                            }
-                                            if (e.GSTType === 'SGST') {
-                                                e.Amount += item2.GSTAmount / 2
-                                            }
-                                        })
-                                    }
+                                    item.cGstAmount += item2.GSTAmount / 2
+                                    item.sGstAmount += item2.GSTAmount / 2
+                                    // if (item.gst_details.length === 0) {
+                                    //     item.gst_details.push(
+                                    //         {
+                                    //             GSTType: `CGST`,
+                                    //             Amount: item2.GSTAmount / 2
+                                    //         },
+                                    //         {
+                                    //             GSTType: `SGST`,
+                                    //             Amount: item2.GSTAmount / 2
+                                    //         }
+                                    //     )
+                                    // } else {
+                                    //     item.gst_details.forEach(e => {
+                                    //         if (e.GSTType === 'CGST') {
+                                    //             e.Amount += item2.GSTAmount / 2
+                                    //         }
+                                    //         if (e.GSTType === 'SGST') {
+                                    //             e.Amount += item2.GSTAmount / 2
+                                    //         }
+                                    //     })
+                                    // }
 
                                 }
 
@@ -2835,13 +2846,13 @@ module.exports = {
                                             e.Amount += item2.GSTAmount
                                         }
                                     })
-
-                                    item.gst_details.push(
-                                        {
-                                            GSTType: `${item2.GSTType}`,
-                                            Amount: item2.GSTAmount
-                                        },
-                                    )
+                                    item.iGstAmount += item2.GSTAmount
+                                    // item.gst_details.push(
+                                    //     {
+                                    //         GSTType: `${item2.GSTType}`,
+                                    //         Amount: item2.GSTAmount
+                                    //     },
+                                    // )
                                 }
                             }
                         }
