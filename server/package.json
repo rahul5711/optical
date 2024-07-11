@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "prod_start": "pm2 start app.js",
+    "stop": "pm2 stop all"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -29,6 +31,7 @@
     "node-cron": "^3.0.2",
     "node-xlsx": "^0.21.0",
     "nodemon": "^2.0.19",
+    "pm2": "^5.4.2",
     "pug": "^3.0.2",
     "redis": "^4.3.1",
     "tinyurl": "^1.1.7",
