@@ -190,15 +190,19 @@
                                                         <th *ngIf="columnVisibility.InvoiceNo">InvoiceNo</th>
                                                         <th *ngIf="columnVisibility.CustomerName">CustomerName</th>
                                                         <th *ngIf="columnVisibility.MobileNo">MobileNo</th>
+                                                        <th style="display: none;">Age</th>
+                                                        <th style="display: none;">Gender</th>
                                                         <th *ngIf="columnVisibility.PaymentStatus">PaymentStatus</th>
                                                         <th *ngIf="columnVisibility.Qty">Qty</th>
                                                         <th *ngIf="columnVisibility.Discount">Discount</th>
                                                         <th *ngIf="columnVisibility.SubTotal">SubTotal</th>
-                                                        <th *ngIf="columnVisibility.TAXType">TAXType</th>
+                                                        <!-- <th *ngIf="columnVisibility.TAXType">TAXType</th> -->
                                                         <th *ngIf="columnVisibility.TAXAmount">TAXAmount</th>
-                                                        <th *ngIf="columnVisibility.CGSTAmt">CGSTAmt</th>
-                                                        <th *ngIf="columnVisibility.SGSTAmt">SGSTAmt</th>
-                                                        <th *ngIf="columnVisibility.IGSTAmt">IGSTAmt</th>
+
+                                                        <th *ngIf="companySetting.CompanyCurrency === 'INR' && columnVisibility.CGSTAmt">CGSTAmt</th>
+                                                        <th *ngIf="companySetting.CompanyCurrency === 'INR' && columnVisibility.SGSTAmt">SGSTAmt</th>
+                                                        <th *ngIf="companySetting.CompanyCurrency === 'INR' && columnVisibility.IGSTAmt">IGSTAmt</th>
+                                                        
                                                         <th *ngIf="columnVisibility.GrandTotal">GrandTotal</th>
                                                         <th *ngIf="columnVisibility.AddDiscount">AddDiscount</th>
                                                         <th *ngIf="columnVisibility.Paid">Paid</th>
@@ -373,19 +377,21 @@
                                                         <td *ngIf="columnVisibility.InvoiceNo"></td>
                                                         <td *ngIf="columnVisibility.CustomerName"></td>
                                                         <td *ngIf="columnVisibility.MobileNo"></td>
+                                                        <td style="display: none;"></td>
+                                                        <td style="display: none;"></td>
                                                         <td *ngIf="columnVisibility.PaymentStatus"></td>
                                                         <td *ngIf="columnVisibility.Qty">{{this.totalQty}}</td>
                                                         <td *ngIf="columnVisibility.Discount">{{this.totalDiscount}}
                                                         </td>
                                                         <td *ngIf="columnVisibility.SubTotal">{{this.totalUnitPrice}}
                                                         </td>
-                                                        <td *ngIf="columnVisibility.TAXType"></td>
+                                                        <!-- <td *ngIf="columnVisibility.TAXType"></td> -->
                                                         <td *ngIf="columnVisibility.TAXAmount"
                                                             (click)="openModalSale(content3)">{{this.totalGstAmount}}
                                                         </td>
-                                                        <td *ngIf="columnVisibility.CGSTAmt"></td>
-                                                        <td *ngIf="columnVisibility.SGSTAmt"></td>
-                                                        <td *ngIf="columnVisibility.IGSTAmt"></td>
+                                                        <td *ngIf="companySetting.CompanyCurrency === 'INR' && columnVisibility.CGSTAmt"></td>
+                                                        <td *ngIf="companySetting.CompanyCurrency === 'INR' && columnVisibility.SGSTAmt"></td>
+                                                        <td *ngIf="companySetting.CompanyCurrency === 'INR' && columnVisibility.IGSTAmt"></td>
                                                         <td *ngIf="columnVisibility.GrandTotal">{{this.totalAmount}}
                                                         </td>
                                                         <td *ngIf="columnVisibility.AddDiscount">
@@ -423,6 +429,8 @@
                                                         <td *ngIf="columnVisibility.MobileNo"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.MobileNo1 }} </td>
+                                                        <td style="display: none;"> {{d.Age }} </td>
+                                                        <td style="display: none;"> {{d.Gender }} </td>
                                                         <td *ngIf="columnVisibility.PaymentStatus"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.PaymentStatus }} </td>
@@ -435,21 +443,25 @@
                                                         <td *ngIf="columnVisibility.SubTotal"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.SubTotal }} </td>
-                                                        <td *ngIf="columnVisibility.TAXType"
+                                                        <!-- <td *ngIf="columnVisibility.TAXType"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
-                                                            {{d.GSTType}} </td>
+                                                            {{d.GSTType}} </td> -->
                                                         <td *ngIf="columnVisibility.TAXAmount"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.GSTAmount }} </td>
-                                                        <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"
-                                                            *ngIf="d.gst_detailssss[0][1].type === 'cGST-sGST' && columnVisibility.CGSTAmt">
-                                                            {{d.gst_detailssss[0][1].amt }}</td>
-                                                        <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"
-                                                            *ngIf="d.gst_detailssss[0][1].type === 'cGST-sGST' && columnVisibility.SGSTAmt">
-                                                            {{d.gst_detailssss[0][1].amt }}</td>
-                                                        <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"
-                                                            *ngIf="d.gst_detailssss[0][0].type === 'iGST' && columnVisibility.IGSTAmt">
-                                                            {{d.gst_detailssss[0][0].amt }}</td>
+                                                           
+                                                        <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}" *ngIf="companySetting.CompanyCurrency === 'INR' && columnVisibility.CGSTAmt">
+                                                            {{d.cGstAmount }}
+                                                        </td>
+
+                                                        <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"  *ngIf="companySetting.CompanyCurrency === 'INR' && columnVisibility.SGSTAmt">
+                                                            {{d.sGstAmount }}
+                                                        </td>
+
+                                                        <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}" *ngIf="companySetting.CompanyCurrency === 'INR' && columnVisibility.IGSTAmt">
+                                                            {{d.iGstAmount }}
+                                                        </td>
+                                           
                                                         <td *ngIf="columnVisibility.GrandTotal"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             {{d.TotalAmount}} </td>

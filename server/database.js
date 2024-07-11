@@ -11,12 +11,21 @@ const mysql = require("mysql2");
 
 // for paliwal ji
 
+// const pool = mysql.createPool({
+//     host: '198.38.93.60',
+//     user: 'relinksys_optica',
+//     password: 'RELinksys@_$123',
+//     database: 'relinksys_optical'
+// }).promise()
+
+
 const pool = mysql.createPool({
-    host: '198.38.93.60',
+    host: '103.180.121.103',
     user: 'relinksys_optica',
-    password: 'RELinksys@_$123',
+    password: '4Fn!616wm',
     database: 'relinksys_optical'
 }).promise()
+
 
 
 // for himanshu ji

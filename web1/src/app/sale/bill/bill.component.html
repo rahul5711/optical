@@ -638,9 +638,11 @@
 
                                         <mat-icon *ngIf="data.Status !== 0" class="edit_icon ms-1"  type="button"
                                             (click)="openModal(content,data)">remove_red_eye</mat-icon>
-                                        <mat-icon 
+
+                                        <mat-icon *ngIf="this.editCustomerBill"
                                             class="edit_icon1 ms-1" (click)="showInput(data)">edit
                                         </mat-icon>
+
                                         <mat-icon class="edit_icon1 ms-1" (click)="showInput(data)"  
                                             *ngIf="data.UpdateProduct" (click)="updataEditProdcut('', '', data)">save
                                         </mat-icon>

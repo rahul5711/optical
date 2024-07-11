@@ -1869,9 +1869,15 @@ module.exports = {
             });
 
             printdata.subtotals = subtotals
-            printdata.EyeMeasurement = x[0];
+            // printdata.EyeMeasurement = x[0];
+
+            if (Array.isArray(x[0])) {
+                printdata.EyeMeasurement = x[0];
+            } else if (typeof x[0] === 'object') {
+                printdata.EyeMeasurement = [x[0]];
+            }
+
             const BillItemList = req.body.billItemList;
-            console.log(BillItemList);
             const ServiceList = req.body.serviceList;
             const PaidList = req.body.paidList;
             const UnpaidList = req.body.unpaidList;

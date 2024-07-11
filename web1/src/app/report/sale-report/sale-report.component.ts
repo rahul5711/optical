@@ -336,6 +336,8 @@ export class SaleReportComponent implements OnInit {
     ShopName: true,
   };
 
+  gstdividelist:any = []
+  IGstShow = false
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'SaleReport') {
@@ -561,30 +563,13 @@ export class SaleReportComponent implements OnInit {
         if (res.success) {
           this.as.successToast(res.message)
           this.BillMasterList = res.data;
-          this.BillMasterList.forEach((e: any) => {
-            let g: any = { type: 'iGST', amt: 0 }
-            let gs: any = { type: 'cGST-sGST', amt: 0 }
-            let c: any[] = []
-
-            e.gst_details.forEach((el: any) => {
-              if (el.InvoiceNo === e.InvoiceNo) {
-                if (el.GSTType === 'IGST') {
-                  g.amt = g.amt + el.Amount;
-                } else if (el.GSTType === 'CGST') {
-                  gs.amt = gs.amt + el.Amount;
-                }
-              }
-            })
-            c.push(g)
-            c.push(gs)
-            e.gst_detailssss.push(c)
-          })
           this.totalBalance = 0
           this.totalPaid = 0
-      
+
           for (const billMaster of this.BillMasterList) {
             let totalDueAmountPlus = 0; 
             this.BillMasterList.forEach((e:any) => {
+
                 if (e.CustomerID === billMaster.CustomerID) {
                     totalDueAmountPlus += e.DueAmount; 
                 }
