@@ -222,7 +222,7 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
-            console.log("current time =====> ",req.headers.currenttime, typeof req.headers.currenttime);
+            console.log("current time =====> ", req.headers.currenttime, typeof req.headers.currenttime);
 
             const { PaymentType, CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PayableAmount, CreditNumber } = req.body
             console.log('<============= applyPayment =============>');
@@ -782,12 +782,12 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
-            const { CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PaymentDate, PayableAmount } = req.body
+            const { CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PaymentDate, PayableAmount, BillMasterID } = req.body
 
 
             console.log("customerPayment================================>", req.body);
 
-            console.log("currenttime =============>",req.headers.currenttime);
+            console.log("currenttime =============>", req.headers.currenttime);
 
             if (!CustomerID || CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
             if (ApplyReturn === null || ApplyReturn === undefined) return res.send({ message: "Invalid ApplyReturn Data" })
@@ -804,6 +804,24 @@ module.exports = {
             let customerCredit = CustomerCredit;
             let tempAmount = PaidAmount;
             let paymentType = 'Customer'
+
+            let payAbleAmount = 0;
+            let param = ``
+            if (BillMasterID === null || BillMasterID === undefined || BillMasterID === 0 || BillMasterID === "") {
+                param = ` `
+            } else {
+                param = ` and billmaster.ID = ${BillMasterID}`
+            }
+
+            const [totalDueAmount] = await mysql2.pool.query(`select SUM(billmaster.DueAmount) as totalDueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and ShopID = ${shopid}  ${param}  order by ID desc`)
+
+            if (totalDueAmount[0].totalDueAmount !== null) {
+                payAbleAmount = totalDueAmount[0].totalDueAmount
+            }
+            console.log(PaidAmount , payAbleAmount);
+            if (PaidAmount > payAbleAmount) {
+                return res.send({ success: false, message: `Your Due Amount is ${payAbleAmount}` });
+            }
 
             if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
                 let [pMaster] = await mysql2.pool.query(
@@ -888,7 +906,7 @@ module.exports = {
 
             console.log("customerPayment================================>", req.body);
 
-            console.log("currenttime =============>",req.headers.currenttime);
+            console.log("currenttime =============>", req.headers.currenttime);
 
             if (!CustomerID || CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
             if (ApplyReturn === null || ApplyReturn === undefined) return res.send({ message: "Invalid ApplyReturn Data" })
