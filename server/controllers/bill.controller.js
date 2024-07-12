@@ -1341,7 +1341,7 @@ module.exports = {
         }
     },
     updatePower: async (req, res, next) => {
-        const connection = await mysql.connection();
+        // const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
