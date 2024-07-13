@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node app.js",
     "prod_start": "pm2 start app.js",
-    "stop": "pm2 stop all"
+    "stop": "pm2 stop all",
+    "log": "pm2 logs"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",

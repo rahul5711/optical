@@ -293,11 +293,14 @@
                                                 <%= i.HSNCode %>
                                             </td>
                                             <%}%>
-                                                <td>
+                                                <td style="width: 30%;"> 
                                                     <%= i.ProductName %>  
-                                                    <% if (i.Warranty != '' ){%>
+                                                    <% if (i.Warranty != '' && i.Warranty != "undefined"){%>
                                                     /<%= i.Warranty %>
                                                     <%}%>
+                                                    <% if (i.Remark != '' && i.Remark != "undefined"){%>
+                                                        /<%= i.Remark %>
+                                                        <%}%>
                                                 </td>
                                                 <td>
                                                     <%= i.Quantity %>
