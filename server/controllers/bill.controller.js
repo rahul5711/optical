@@ -4119,81 +4119,154 @@ module.exports = {
             next(err)
         }
     },
+    // cashcollectionreport: async (req, res, next) => {
+    //     try {
+    //         const response = { data: null, success: true, message: "", paymentMode: [], sumOfPaymentMode: 0, AmountReturnByDebit: 0, AmountReturnByCredit: 0, totalAmount: 0 }
+    //         const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+    //         const shopid = await shopID(req.headers) || 0;
+
+
+    //         const { Date, ShopID, PaymentMode, PaymentStatus } = req.body;
+    //         let shop = ``
+    //         let shop2 = ``
+    //         let paymentType = ``
+    //         let paymentStatus = ``
+
+    //         if (ShopID) {
+    //             shop = ` and billmaster.ShopID = ${ShopID}`
+    //             shop2 = ` and paymentmaster.ShopID = ${ShopID}`
+    //         }
+    //         if (PaymentMode) {
+    //             paymentType = ` and paymentmaster.PaymentMode = '${PaymentMode}' `
+    //         }
+    //         if (PaymentStatus) {
+    //             paymentStatus = ` and billmaster.PaymentStatus = '${PaymentStatus}'`
+    //         }
+
+
+    //         let qry = `select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, billmaster.BillDate,billmaster.DeliveryDate, billmaster.PaymentStatus, billmaster.TotalAmount, shop.Name as ShopName, shop.AreaName, customer.Name as CustomerName, customer.MobileNo1, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID left join shop on shop.ID = paymentmaster.ShopID left join customer on customer.ID = paymentmaster.CustomerID where  paymentmaster.CompanyID = '${CompanyID}' and paymentdetail.PaymentType IN ( 'Customer', 'Customer Credit' ) and paymentmaster.CreditType = 'Credit' and paymentmaster.PaymentMode != 'Payment Initiated'  ${shop} ${paymentStatus} ${paymentType} ` + Date + ` order by paymentdetail.BillMasterID desc`
+
+    //         console.log(qry);
+    //         const [data] = await mysql2.pool.query(qry)
+
+    //         const [paymentMode] = await mysql2.pool.query(`select supportmaster.Name, 0 as Amount from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = 'PaymentModeType' order by ID desc`)
+
+    //         response.paymentMode = paymentMode
+
+    //         if (data) {
+    //             for (let item of data) {
+    //                 response.paymentMode.forEach(x => {
+    //                     if (item.PaymentMode === x.Name && item.CreditType === 'Credit') {
+    //                         x.Amount += item.Amount
+    //                         response.sumOfPaymentMode += item.Amount
+    //                     }
+    //                 })
+
+    //                 if (item.PaymentMode === 'Customer Credit') {
+    //                     console.log('hii');
+    //                     delete item
+    //                 }
+
+    //             }
+    //         }
+
+    //         const [debitReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer' and paymentdetail.Credit = 'Debit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date)
+    //         const [creditReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer Credit' and paymentdetail.Credit = 'Credit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date)
+
+    //         if (debitReturn[0].Amount !== null) {
+    //             response.AmountReturnByDebit = debitReturn[0].Amount
+    //         }
+    //         if (creditReturn[0].Amount !== null) {
+    //             response.AmountReturnByCredit = creditReturn[0].Amount
+    //         }
+
+
+    //         response.totalAmount = response.sumOfPaymentMode - response.AmountReturnByDebit - response.AmountReturnByCredit
+    //         // response.sumOfPaymentMode = response.sumOfPaymentMode - response.AmountReturnByCredit
+    //         response.data = data
+    //         response.message = "success";
+    //         return res.send(response);
+    //     } catch (err) {
+    //         console.log(err);
+    //         next(err)
+    //     }
+    // },
     cashcollectionreport: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "", paymentMode: [], sumOfPaymentMode: 0, AmountReturnByDebit: 0, AmountReturnByCredit: 0, totalAmount: 0 }
+            const response = { data: null, success: true, message: "", paymentMode: [], sumOfPaymentMode: 0, AmountReturnByDebit: 0, AmountReturnByCredit: 0, totalAmount: 0 };
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
-
             const { Date, ShopID, PaymentMode, PaymentStatus } = req.body;
-            let shop = ``
-            let shop2 = ``
-            let paymentType = ``
-            let paymentStatus = ``
+            let shop = ``;
+            let shop2 = ``;
+            let paymentType = ``;
+            let paymentStatus = ``;
 
             if (ShopID) {
-                shop = ` and billmaster.ShopID = ${ShopID}`
-                shop2 = ` and paymentmaster.ShopID = ${ShopID}`
+                shop = ` and billmaster.ShopID = ${ShopID}`;
+                shop2 = ` and paymentmaster.ShopID = ${ShopID}`;
             }
             if (PaymentMode) {
-                paymentType = ` and paymentmaster.PaymentMode = '${PaymentMode}' `
+                paymentType = ` and paymentmaster.PaymentMode = '${PaymentMode}' `;
             }
             if (PaymentStatus) {
-                paymentStatus = ` and billmaster.PaymentStatus = '${PaymentStatus}'`
+                paymentStatus = ` and billmaster.PaymentStatus = '${PaymentStatus}'`;
             }
 
-
-            let qry = `select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, billmaster.BillDate,billmaster.DeliveryDate, billmaster.PaymentStatus, billmaster.TotalAmount, shop.Name as ShopName, shop.AreaName, customer.Name as CustomerName, customer.MobileNo1, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID left join shop on shop.ID = paymentmaster.ShopID left join customer on customer.ID = paymentmaster.CustomerID where  paymentmaster.CompanyID = '${CompanyID}' and paymentdetail.PaymentType IN ( 'Customer', 'Customer Credit' ) and paymentmaster.CreditType = 'Credit' and paymentmaster.PaymentMode != 'Payment Initiated'  ${shop} ${paymentStatus} ${paymentType} ` + Date + ` order by paymentdetail.BillMasterID desc`
+            let qry = `select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, billmaster.BillDate,billmaster.DeliveryDate, billmaster.PaymentStatus, billmaster.TotalAmount, shop.Name as ShopName, shop.AreaName, customer.Name as CustomerName, customer.MobileNo1, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID left join shop on shop.ID = paymentmaster.ShopID left join customer on customer.ID = paymentmaster.CustomerID where  paymentmaster.CompanyID = '${CompanyID}' and paymentdetail.PaymentType IN ( 'Customer', 'Customer Credit' ) and paymentmaster.CreditType = 'Credit' and paymentmaster.PaymentMode != 'Payment Initiated'  ${shop} ${paymentStatus} ${paymentType} ` + Date + ` order by paymentdetail.BillMasterID desc`;
 
             console.log(qry);
-            const [data] = await mysql2.pool.query(qry)
+            const [data] = await mysql2.pool.query(qry);
 
-            const [paymentMode] = await mysql2.pool.query(`select supportmaster.Name, 0 as Amount from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = 'PaymentModeType' order by ID desc`)
+            const [paymentMode] = await mysql2.pool.query(`select supportmaster.Name, 0 as Amount from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = 'PaymentModeType' order by ID desc`);
 
-            response.paymentMode = paymentMode
-
-            let returnAmount = 0
+            response.paymentMode = paymentMode;
 
             if (data) {
-                for (const item of data) {
+                // Iterate through the array in reverse to avoid index issues when removing items
+                for (let i = data.length - 1; i >= 0; i--) {
+                    let item = data[i];
+
                     response.paymentMode.forEach(x => {
                         if (item.PaymentMode === x.Name && item.CreditType === 'Credit') {
-                            x.Amount += item.Amount
-                            response.sumOfPaymentMode += item.Amount
+                            x.Amount += item.Amount;
+                            // response.sumOfPaymentMode += item.Amount;
                         }
+                    });
 
-                        if (item.PaymentMode === x.Name && item.CreditType === 'Credit' && item.PaymentMode.toUpperCase() === 'AMOUNT RETURN') {
-                            returnAmount += item.Amount
-                        }
-                    })
+                    if (item.PaymentMode === 'Customer Credit') {
+                        data.splice(i, 1); // Remove 1 element at index i
+                    }
 
+                    if (item.PaymentMode.toUpperCase() == 'AMOUNT RETURN') {
+                       response.sumOfPaymentMode -= item.Amount;
+                    } else if (item.PaymentMode !== 'Customer Credit') {
+                        response.sumOfPaymentMode += item.Amount;
+                    }
                 }
             }
 
-            // const [debitReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer' and paymentdetail.Credit = 'Debit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date)
-            // const [creditReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer Credit' and paymentdetail.Credit = 'Credit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date)
+            // const [debitReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer' and paymentdetail.Credit = 'Debit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date);
+            // const [creditReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer Credit' and paymentdetail.Credit = 'Credit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date);
 
             // if (debitReturn[0].Amount !== null) {
-            //     response.AmountReturnByDebit = debitReturn[0].Amount
+            //     response.AmountReturnByDebit = debitReturn[0].Amount;
             // }
             // if (creditReturn[0].Amount !== null) {
-            //     response.AmountReturnByCredit = creditReturn[0].Amount
+            //     response.AmountReturnByCredit = creditReturn[0].Amount;
             // }
 
-
-            response.totalAmount = response.sumOfPaymentMode - returnAmount
-            // response.totalAmount = response.sumOfPaymentMode - response.AmountReturnByDebit - response.AmountReturnByCredit
-            // response.sumOfPaymentMode = response.sumOfPaymentMode - response.AmountReturnByCredit
-            response.AmountReturnByCredit = 0
-            response.data = data
+            response.totalAmount = response.sumOfPaymentMode
+            response.data = data;
             response.message = "success";
             return res.send(response);
         } catch (err) {
             console.log(err);
-            next(err)
+            next(err);
         }
     },
+
     updateProductTypeNameOnBill: async (req, res, next) => {
         try {
 
