@@ -4153,6 +4153,8 @@ module.exports = {
 
             response.paymentMode = paymentMode
 
+            let returnAmount = 0
+
             if (data) {
                 for (const item of data) {
                     response.paymentMode.forEach(x => {
@@ -4160,23 +4162,30 @@ module.exports = {
                             x.Amount += item.Amount
                             response.sumOfPaymentMode += item.Amount
                         }
+
+                        if (item.PaymentMode === x.Name && item.CreditType === 'Credit' && item.PaymentMode.toUpperCase() === 'AMOUNT RETURN') {
+                            returnAmount += item.Amount
+                        }
                     })
 
                 }
             }
 
-            const [debitReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer' and paymentdetail.Credit = 'Debit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date)
-            const [creditReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer Credit' and paymentdetail.Credit = 'Credit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date)
+            // const [debitReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer' and paymentdetail.Credit = 'Debit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date)
+            // const [creditReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer Credit' and paymentdetail.Credit = 'Credit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date)
 
-            if (debitReturn[0].Amount !== null) {
-                response.AmountReturnByDebit = debitReturn[0].Amount
-            }
-            if (creditReturn[0].Amount !== null) {
-                response.AmountReturnByCredit = creditReturn[0].Amount
-            }
+            // if (debitReturn[0].Amount !== null) {
+            //     response.AmountReturnByDebit = debitReturn[0].Amount
+            // }
+            // if (creditReturn[0].Amount !== null) {
+            //     response.AmountReturnByCredit = creditReturn[0].Amount
+            // }
 
 
-            response.totalAmount = response.sumOfPaymentMode - response.AmountReturnByDebit - response.AmountReturnByCredit
+            response.totalAmount = response.sumOfPaymentMode - returnAmount
+            // response.totalAmount = response.sumOfPaymentMode - response.AmountReturnByDebit - response.AmountReturnByCredit
+            // response.sumOfPaymentMode = response.sumOfPaymentMode - response.AmountReturnByCredit
+            response.AmountReturnByCredit = 0
             response.data = data
             response.message = "success";
             return res.send(response);
