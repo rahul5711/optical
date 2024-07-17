@@ -16,7 +16,7 @@ export class BillService {
   loggedInUser:any = localStorage.getItem('LoggedINUser');
   private url = environment.apiUrl + '/bill';
   constructor(private httpClient: HttpClient) { }
-  
+
 
   getDoctor(): Observable<any> {
     return this.httpClient.post<any>(this.url + '/getDoctor',  httpOptions)
@@ -221,7 +221,7 @@ export class BillService {
     return this.httpClient.post<any>(this.url + '/changeProductStatus', Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
-  
+
   billPrint(Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/billPrint', Body, httpOptions)
     .pipe(catchError(this.handleError));
@@ -275,6 +275,13 @@ export class BillService {
   generateInvoiceNo(Parem:any,Productsearch:any,ShopID:any,FromDate:any,ToDate:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/generateInvoiceNo',{Parem:Parem,Productsearch:Productsearch,ShopID:ShopID,FromDate:FromDate,ToDate:ToDate}, httpOptions)
     .pipe(catchError(this.handleError));
+  }
+
+  getBillMasterExport(data: any) {
+    return this.httpClient.post(`${this.url}/getSalereportExport`, {Parem : data}, {
+      observe: 'response',
+      responseType: 'arraybuffer'
+    });
   }
 
   private handleError(errorResponse: HttpErrorResponse) {

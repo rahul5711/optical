@@ -168,6 +168,10 @@
                                                     (click)="billMasterFromReset()">
                                                     Reset
                                                 </button>
+                                                <button type="button" class=" ms-2 me-2" mat-raised-button color="primary"
+                                                    (click)="getBillMasterExport()">
+                                                    Export
+                                                </button>
                                                 <!-- <button mat-raised-button color="primary"
                                                     printTitle="sale Report {{this.shopLists}}"
                                                     printSectionId="PurchasePDF" ngxPrint
@@ -202,7 +206,7 @@
                                                         <th *ngIf="companySetting.CompanyCurrency === 'INR' && columnVisibility.CGSTAmt">CGSTAmt</th>
                                                         <th *ngIf="companySetting.CompanyCurrency === 'INR' && columnVisibility.SGSTAmt">SGSTAmt</th>
                                                         <th *ngIf="companySetting.CompanyCurrency === 'INR' && columnVisibility.IGSTAmt">IGSTAmt</th>
-                                                        
+
                                                         <th *ngIf="columnVisibility.GrandTotal">GrandTotal</th>
                                                         <th *ngIf="columnVisibility.AddDiscount">AddDiscount</th>
                                                         <th *ngIf="columnVisibility.Paid">Paid</th>
@@ -232,7 +236,7 @@
                                                         <th style="display: none;">Date</th>
                                                         <th style="display: none;">Mode</th>
                                                         <th style="display: none;">INT-7(AMT)</th>
-                                                        <th style="display: none;">Date</th> 
+                                                        <th style="display: none;">Date</th>
                                                         <th style="display: none;">Mode</th>
                                                         <th style="display: none;">INT-8(AMT)</th>
                                                     </tr>
@@ -402,19 +406,19 @@
                                                         <td *ngIf="columnVisibility.DeliveryDate"></td>
                                                         <td *ngIf="columnVisibility.Cust_GSTNo"></td>
                                                         <td *ngIf="columnVisibility.ShopName"></td>
-                                                      
+
                                                     </tr>
                                                 </thead>
                                                 <tbody class="text-center">
                                                     <tr *ngFor="let d of BillMasterList; let i = index" text="left">
 
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
-                                                         {{i+1 }} 
-                                                         
+                                                         {{i+1 }}
+
                                                          <button *ngIf="d.PaymentStatus === 'Unpaid' && this.company.WhatsappMsg == 'true'" (click)="sendWhatsapp(d,'bill')" class="bg_none whatsappfBill ms-lg-2 me-lg-1 ms-3 me-3">
                                                             <i  class="fa-brands fa-whatsapp "></i>
                                                         </button>
-                                                             
+
 
                                                         </td>
                                                         <td *ngIf="columnVisibility.InvoiceDate"
@@ -449,7 +453,7 @@
                                                         <td *ngIf="columnVisibility.TAXAmount"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.GSTAmount }} </td>
-                                                           
+
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}" *ngIf="companySetting.CompanyCurrency === 'INR' && columnVisibility.CGSTAmt">
                                                             {{d.cGstAmount }}
                                                         </td>
@@ -461,7 +465,7 @@
                                                         <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}" *ngIf="companySetting.CompanyCurrency === 'INR' && columnVisibility.IGSTAmt">
                                                             {{d.iGstAmount }}
                                                         </td>
-                                           
+
                                                         <td *ngIf="columnVisibility.GrandTotal"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             {{d.TotalAmount}} </td>
@@ -1109,7 +1113,7 @@
                                                         <td *ngIf="columnVisibility1.CustomerName"
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
                                                             {{t.CustomerName}}</td>
-                                                        <td 
+                                                        <td
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
                                                             {{t.MrdNo}}</td>
                                                         <td *ngIf="columnVisibility1.MobileNo"

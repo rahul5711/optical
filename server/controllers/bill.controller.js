@@ -14,6 +14,7 @@ const clientConfig = require("../helpers/constants");
 const mysql2 = require('../database');
 const { log } = require('winston');
 const { json } = require('express');
+const ExcelJS = require('exceljs');
 function rearrangeString(str) {
     // Split the input string into an array of words
     let words = str.split(' ');
@@ -2890,6 +2891,356 @@ module.exports = {
         }
 
     },
+    getSalereportExport: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, calculation: [{
+                    "totalQty": 0,
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalAddlDiscount": 0,
+                    "totalDiscount": 0,
+                    "totalPaidAmount": 0,
+                    "totalUnitPrice": 0,
+                    "totalSubTotalPrice": 0,
+                    "gst_details": []
+                }], success: true, message: ""
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Title AS Title , customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, customer.Age, customer.Gender,  billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 ` +
+                Parem + " GROUP BY billmaster.ID ORDER BY billmaster.ID DESC"
+
+            let [data] = await mysql2.pool.query(qry);
+
+
+            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        response.calculation[0].gst_details.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        response.calculation[0].gst_details.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+
+            if (data.length) {
+                for (const item of data) {
+                    response.calculation[0].totalPaidAmount += item.TotalAmount - item.DueAmount
+                    item.cGstAmount = 0
+                    item.iGstAmount = 0
+                    item.sGstAmount = 0
+                    item.paymentDetail = []
+                    if (item.BillType === 0) {
+                        // service bill
+                        const [fetchService] = await mysql2.pool.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+
+                        if (fetchService.length) {
+                            for (const item2 of fetchService) {
+                                response.calculation[0].totalAmount += item2.TotalAmount
+                                response.calculation[0].totalGstAmount += item2.GSTAmount
+                                response.calculation[0].totalSubTotalPrice += item2.SubTotal
+                                response.calculation[0].totalUnitPrice += item2.Price
+
+                                if (item2.GSTType === 'CGST-SGST') {
+                                    response.calculation[0].gst_details.forEach(e => {
+                                        if (e.GSTType === 'CGST') {
+                                            e.Amount += item2.GSTAmount / 2
+                                        }
+                                        if (e.GSTType === 'SGST') {
+                                            e.Amount += item2.GSTAmount / 2
+                                        }
+                                    })
+
+                                    item.cGstAmount += item2.GSTAmount / 2
+                                    item.sGstAmount += item2.GSTAmount / 2
+                                }
+
+                                if (item2.GSTType !== 'CGST-SGST') {
+                                    response.calculation[0].gst_details.forEach(e => {
+                                        if (e.GSTType === item2.GSTType) {
+                                            e.Amount += item2.GSTAmount
+                                        }
+                                    })
+
+                                    item.iGstAmount += item2.GSTAmount
+                                }
+                            }
+                        }
+                    }
+
+                    if (item.BillType === 1) {
+                        // product & service bill
+
+                        // service bill
+                        const [fetchService] = await mysql2.pool.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+
+                        if (fetchService.length) {
+                            for (const item2 of fetchService) {
+
+                                response.calculation[0].totalAmount += item2.TotalAmount
+                                response.calculation[0].totalGstAmount += item2.GSTAmount
+                                response.calculation[0].totalSubTotalPrice += item2.SubTotal
+                                response.calculation[0].totalUnitPrice += item2.Price
+                                if (item2.GSTType === 'CGST-SGST') {
+                                    response.calculation[0].gst_details.forEach(e => {
+
+                                        if (e.GSTType === 'CGST') {
+                                            e.Amount += item2.GSTAmount / 2
+                                        }
+                                        if (e.GSTType === 'SGST') {
+                                            e.Amount += item2.GSTAmount / 2
+                                        }
+                                    })
+                                    item.cGstAmount += item2.GSTAmount / 2
+                                    item.sGstAmount += item2.GSTAmount / 2
+                                }
+
+                                if (item2.GSTType !== 'CGST-SGST') {
+                                    response.calculation[0].gst_details.forEach(e => {
+                                        if (e.GSTType === item2.GSTType) {
+                                            e.Amount += item2.GSTAmount
+                                        }
+                                    })
+
+                                    item.iGstAmount += item2.GSTAmount
+                                }
+                            }
+                        }
+
+                        // product bill
+                        const [fetchProduct] = await mysql2.pool.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+
+                        if (fetchProduct.length) {
+                            for (const item2 of fetchProduct) {
+                                response.calculation[0].totalQty += item2.Quantity
+                                response.calculation[0].totalAmount += item2.TotalAmount
+                                response.calculation[0].totalGstAmount += item2.GSTAmount
+                                response.calculation[0].totalUnitPrice += item2.UnitPrice
+                                response.calculation[0].totalDiscount += item2.DiscountAmount
+                                response.calculation[0].totalSubTotalPrice += item2.SubTotal
+
+                                if (item2.GSTType === 'CGST-SGST') {
+                                    response.calculation[0].gst_details.forEach(e => {
+                                        if (e.GSTType === 'CGST') {
+                                            e.Amount += item2.GSTAmount / 2
+                                        }
+                                        if (e.GSTType === 'SGST') {
+                                            e.Amount += item2.GSTAmount / 2
+                                        }
+                                    })
+                                    item.cGstAmount += item2.GSTAmount / 2
+                                    item.sGstAmount += item2.GSTAmount / 2
+                                }
+
+                                if (item2.GSTType !== 'CGST-SGST') {
+                                    response.calculation[0].gst_details.forEach(e => {
+                                        if (e.GSTType === item2.GSTType) {
+                                            e.Amount += item2.GSTAmount
+                                        }
+                                    })
+                                    item.iGstAmount += item2.GSTAmount
+                                }
+                            }
+                        }
+
+                    }
+
+                    const [fetchpayment] = await mysql2.pool.query(`select paymentmaster.PaymentMode, DATE_FORMAT(paymentmaster.PaymentDate, '%Y-%m-%d %H:%i:%s') as PaymentDate, paymentmaster.PaidAmount as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where BillMasterID = ${item.ID} and paymentmaster.PaymentMode != 'Payment Initiated'`)
+
+                    if (fetchpayment.length) {
+                        item.paymentDetail = fetchpayment
+                    }
+
+                    response.calculation[0].totalAmount = response.calculation[0].totalAmount - item.AddlDiscount
+                    response.calculation[0].totalAddlDiscount += item.AddlDiscount
+
+                }
+            }
+
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet(`salereport_export`);
+
+            worksheet.columns = [
+                { header: 'S.no', key: 'S_no', width: 8 },
+                { header: 'InvoiceDate', key: 'BillDate', width: 15 },
+                { header: 'InvoiceNo', key: 'InvoiceNo', width: 20 },
+                { header: 'CustomerName', key: 'CustomerName', width: 25 },
+                { header: 'MobileNo', key: 'MobileNo1', width: 15 },
+                { header: 'Age', key: 'Age', width: 5 },
+                { header: 'Gender', key: 'Gender', width: 10 },
+                { header: 'PaymentStatus', key: 'PaymentStatus', width: 10 },
+                { header: 'Quantity', key: 'Quantity', width: 5 },
+                { header: 'Discount', key: 'DiscountAmount', width: 10 },
+                { header: 'SubTotal', key: 'SubTotal', width: 10 },
+                { header: 'TAXAmount', key: 'GSTAmount', width: 10 },
+                { header: 'CGSTAmt', key: 'cGstAmount', width: 10 },
+                { header: 'SGSTAmt', key: 'sGstAmount', width: 10 },
+                { header: 'IGSTAmt', key: 'iGstAmount', width: 10 },
+                { header: 'GrandTotal', key: 'TotalAmount', width: 12 },
+                { header: 'AddDiscount', key: 'AddlDiscount', width: 10 },
+                { header: 'Paid', key: 'Paid', width: 10 },
+                { header: 'Balance', key: 'Balance', width: 10 },
+                { header: 'ProductStatus', key: 'ProductStatus', width: 12 },
+                { header: 'DeliveryDate', key: 'DeliveryDate', width: 15 },
+                { header: 'Cust_GSTNo', key: 'GSTNo', width: 15 },
+                { header: 'ShopName', key: 'ShopName', width: 20 },
+                { header: 'INT_1_Date', key: 'INT_1_Date', width: 15 },
+                { header: 'INT_1_Mode', key: 'INT_1_Mode', width: 15 },
+                { header: 'INT_1_Amount', key: 'INT_1_Amount', width: 15 },
+                { header: 'INT_2_Date', key: 'INT_2_Date', width: 15 },
+                { header: 'INT_2_Mode', key: 'INT_2_Mode', width: 15 },
+                { header: 'INT_2_Amount', key: 'INT_2_Amount', width: 15 },
+                { header: 'INT_3_Date', key: 'INT_3_Date', width: 15 },
+                { header: 'INT_3_Mode', key: 'INT_3_Mode', width: 15 },
+                { header: 'INT_3_Amount', key: 'INT_3_Amount', width: 15 },
+                { header: 'INT_4_Date', key: 'INT_4_Date', width: 15 },
+                { header: 'INT_4_Mode', key: 'INT_4_Mode', width: 15 },
+                { header: 'INT_4_Amount', key: 'INT_4_Amount', width: 15 },
+                { header: 'INT_5_Date', key: 'INT_5_Date', width: 15 },
+                { header: 'INT_5_Mode', key: 'INT_5_Mode', width: 15 },
+                { header: 'INT_5_Amount', key: 'INT_5_Amount', width: 15 },
+                { header: 'INT_6_Date', key: 'INT_6_Date', width: 15 },
+                { header: 'INT_6_Mode', key: 'INT_6_Mode', width: 15 },
+                { header: 'INT_6_Amount', key: 'INT_6_Amount', width: 15 },
+                { header: 'INT_7_Date', key: 'INT_7_Date', width: 15 },
+                { header: 'INT_7_Mode', key: 'INT_7_Mode', width: 15 },
+                { header: 'INT_7_Amount', key: 'INT_7_Amount', width: 15 },
+                { header: 'INT_8_Date', key: 'INT_8_Date', width: 15 },
+                { header: 'INT_8_Mode', key: 'INT_8_Mode', width: 15 },
+                { header: 'INT_8_Amount', key: 'INT_8_Amount', width: 10 },
+
+            ];
+
+            let count = 1;
+            const datum = {
+                "S_no": '',
+                "InvoiceDate": '',
+                "InvoiceNo": '',
+                "CustomerName": '',
+                "MobileNo": '',
+                "Age": '',
+                "Gender": '',
+                "PaymentStatus": '',
+                "Quantity": response.calculation[0].totalQty,
+                "DiscountAmount": response.calculation[0].totalDiscount,
+                "SubTotal": response.calculation[0].totalSubTotalPrice,
+                "GSTAmount": response.calculation[0].totalGstAmount,
+                "CGSTAmt": '',
+                "SGSTAmt": '',
+                "IGSTAmt": '',
+                "TotalAmount": response.calculation[0].totalAmount,
+                "AddlDiscount": response.calculation[0].totalAddlDiscount,
+                "Paid": response.calculation[0].totalPaidAmount,
+                "Balance": response.calculation[0].totalAmount - response.calculation[0].totalPaidAmount,
+                "ProductStatus": '',
+                "DeliveryDate": '',
+                "Cust_GSTNo": '',
+                "ShopName": '',
+                "INT_1_Date": '',
+                "INT_1_Mode": '',
+                "INT_1_Amount": '',
+                "INT_2_Date": '',
+                "INT_2_Mode": '',
+                "INT_2_Amount": '',
+                "INT_3_Date": '',
+                "INT_3_Mode": '',
+                "INT_3_Amount": '',
+                "INT_4_Date": '',
+                "INT_4_Mode": '',
+                "INT_4_Amount": '',
+                "INT_5_Date": '',
+                "INT_5_Mode": '',
+                "INT_5_Amount": '',
+                "INT_6_Date": '',
+                "INT_6_Mode": '',
+                "INT_6_Amount": '',
+                "INT_7_Date": '',
+                "INT_7_Mode": '',
+                "INT_7_Amount": '',
+                "INT_8_Date": '',
+                "INT_8_Mode": '',
+                "INT_8_Amount": '',
+            }
+            worksheet.addRow(datum);
+            console.log("Start Exporting...");
+            data.forEach((x) => {
+                x.S_no = count++;
+                x.InvoiceDate = moment(x.BillDate).format('YYYY-MM-DD HH:mm a');
+                x.DeliveryDate = moment(x.DeliveryDate).format('YYYY-MM-DD HH:mm a');
+                x.INT_1_Date = x.paymentDetail[0]?.PaymentDate ? x.paymentDetail[0]?.PaymentDate : ''
+                x.INT_1_Mode = x.paymentDetail[0]?.PaymentMode ? x.paymentDetail[0]?.PaymentMode : ''
+                x.INT_1_Amount = x.paymentDetail[0]?.Amount ? x.paymentDetail[0]?.Amount : ''
+                x.INT_2_Date = x.paymentDetail[1]?.PaymentDate ? x.paymentDetail[1]?.PaymentDate : ''
+                x.INT_2_Mode = x.paymentDetail[1]?.PaymentMode ? x.paymentDetail[1]?.PaymentMode : ''
+                x.INT_2_Amount = x.paymentDetail[1]?.Amount ? x.paymentDetail[1]?.Amount : ''
+                x.INT_3_Date = x.paymentDetail[2]?.PaymentDate ? x.paymentDetail[2]?.PaymentDate : ''
+                x.INT_3_Mode = x.paymentDetail[2]?.PaymentMode ? x.paymentDetail[2]?.PaymentMode : ''
+                x.INT_3_Amount = x.paymentDetail[2]?.Amount ? x.paymentDetail[2]?.Amount : ''
+                x.INT_4_Date = x.paymentDetail[3]?.PaymentDate ? x.paymentDetail[3]?.PaymentDate : ''
+                x.INT_4_Mode = x.paymentDetail[3]?.PaymentMode ? x.paymentDetail[3]?.PaymentMode : ''
+                x.INT_4_Amount = x.paymentDetail[3]?.Amount ? x.paymentDetail[3]?.Amount : ''
+                x.INT_5_Date = x.paymentDetail[4]?.PaymentDate ? x.paymentDetail[4]?.PaymentDate : ''
+                x.INT_5_Mode = x.paymentDetail[4]?.PaymentMode ? x.paymentDetail[4]?.PaymentMode : ''
+                x.INT_5_Amount = x.paymentDetail[4]?.Amount ? x.paymentDetail[4]?.Amount : ''
+                x.INT_6_Date = x.paymentDetail[5]?.PaymentDate ? x.paymentDetail[5]?.PaymentDate : ''
+                x.INT_6_Mode = x.paymentDetail[5]?.PaymentMode ? x.paymentDetail[5]?.PaymentMode : ''
+                x.INT_6_Amount = x.paymentDetail[5]?.Amount ? x.paymentDetail[5]?.Amount : ''
+                x.INT_7_Date = x.paymentDetail[6]?.PaymentDate ? x.paymentDetail[6]?.PaymentDate : ''
+                x.INT_7_Mode = x.paymentDetail[6]?.PaymentMode ? x.paymentDetail[6]?.PaymentMode : ''
+                x.INT_7_Amount = x.paymentDetail[6]?.Amount ? x.paymentDetail[6]?.Amount : ''
+                x.INT_8_Date = x.paymentDetail[7]?.PaymentDate ? x.paymentDetail[7]?.PaymentDate : ''
+                x.INT_8_Mode = x.paymentDetail[7]?.PaymentMode ? x.paymentDetail[7]?.PaymentMode : ''
+                x.INT_8_Amount = x.paymentDetail[7]?.Amount ? x.paymentDetail[7]?.Amount : ''
+                x.Paid = x.TotalAmount - x.DueAmount
+                x.Balance = x.DueAmount
+                worksheet.addRow(x);
+            });
+
+            // worksheet.autoFilter = {
+            //     from: 'A1',
+            //     to: 'Z1',
+            // };
+
+            worksheet.getRow(1).eachCell((cell) => {
+                cell.font = { bold: true };
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } };
+            });
+
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', `attachment; filename=salereport_export.xlsx`);
+            res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+            console.log("Export...");
+            await workbook.xlsx.write(res);
+            return res.end();
+
+        } catch (err) {
+            console.log(err)
+            next(err)
+        }
+
+    },
     getOldSalereport: async (req, res, next) => {
         try {
             const response = {
@@ -3627,8 +3978,8 @@ module.exports = {
                                        <div style="text-align: left; font-weight: bold;font-size: 16px;"> Total Purchase Rate </div>
                                        <div style="text-align: left; font-weight: bold;font-size: 16px;"> Total Amount </div>
                                      </div>
-        
-        
+
+
                                  </section>`,
                                 },
                             },
@@ -4240,7 +4591,7 @@ module.exports = {
                     }
 
                     if (item.PaymentMode.toUpperCase() == 'AMOUNT RETURN') {
-                       response.sumOfPaymentMode -= item.Amount;
+                        response.sumOfPaymentMode -= item.Amount;
                     } else if (item.PaymentMode !== 'Customer Credit') {
                         response.sumOfPaymentMode += item.Amount;
                     }

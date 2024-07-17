@@ -19,7 +19,7 @@ import { BillService } from 'src/app/service/bill.service';
 import { CustomerService } from 'src/app/service/customer.service';
 import { FormControl } from '@angular/forms';
 import Swal from 'sweetalert2';
-
+import * as saveAs from 'file-saver';
 @Component({
   selector: 'app-sale-report',
   templateUrl: './sale-report.component.html',
@@ -39,7 +39,7 @@ export class SaleReportComponent implements OnInit {
   filteredOptions: any;
   filteredOption2: any;
   searchValue: any = '';
-  Productsearch:any = '';
+  Productsearch: any = '';
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -59,7 +59,7 @@ export class SaleReportComponent implements OnInit {
   customerList: any = [];
   customerListGST: any = [];
   BillMasterList: any = [];
-  maxPaymentDetails = 8; 
+  maxPaymentDetails = 8;
   totalQty: any;
   totalDiscount: any;
   totalUnitPrice: any;
@@ -336,7 +336,7 @@ export class SaleReportComponent implements OnInit {
     ShopName: true,
   };
 
-  gstdividelist:any = []
+  gstdividelist: any = []
   IGstShow = false
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
@@ -567,17 +567,17 @@ export class SaleReportComponent implements OnInit {
           this.totalPaid = 0
 
           for (const billMaster of this.BillMasterList) {
-            let totalDueAmountPlus = 0; 
-            this.BillMasterList.forEach((e:any) => {
+            let totalDueAmountPlus = 0;
+            this.BillMasterList.forEach((e: any) => {
 
-                if (e.CustomerID === billMaster.CustomerID) {
-                    totalDueAmountPlus += e.DueAmount; 
-                }
+              if (e.CustomerID === billMaster.CustomerID) {
+                totalDueAmountPlus += e.DueAmount;
+              }
             });
-            billMaster.TotalDueAmount = totalDueAmountPlus; 
+            billMaster.TotalDueAmount = totalDueAmountPlus;
             this.totalBalance = this.totalBalance + billMaster.DueAmount;
-        }
-        
+          }
+
           this.totalQty = res.calculation[0].totalQty;
           this.totalDiscount = (parseFloat(res.calculation[0].totalDiscount)).toFixed(2);
           this.totalUnitPrice = (parseFloat(res.calculation[0].totalSubTotalPrice)).toFixed(2);
@@ -595,6 +595,75 @@ export class SaleReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+  }
+  getBillMasterExport() {
+    this.sp.show()
+    let Parem = '';
+
+    if (this.BillMaster.FromDate !== '' && this.BillMaster.FromDate !== null && this.BillMaster.FilterTypes === 'BillDate') {
+
+      let FromDate = moment(this.BillMaster.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
+    }
+
+    if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null && this.BillMaster.FilterTypes === 'BillDate') {
+      let ToDate = moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
+
+    if (this.BillMaster.FromDate !== '' && this.BillMaster.FromDate !== null && this.BillMaster.FilterTypes === 'DeliveryDate') {
+      let FromDate = moment(this.BillMaster.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and DATE_FORMAT(billmaster.DeliveryDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+    }
+
+    if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null && this.BillMaster.FilterTypes === 'DeliveryDate') {
+      let ToDate = moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
+
+    if (this.BillMaster.ShopID != 0) {
+      Parem = Parem + ' and billmaster.ShopID IN ' + `(${this.BillMaster.ShopID})`;
+    }
+
+    if (this.BillMaster.EmployeeID !== 0) {
+      Parem = Parem + ' and billmaster.Employee = ' + this.BillMaster.EmployeeID;
+    }
+
+    if (this.BillMaster.CustomerID != 0) {
+      Parem = Parem + ' and billmaster.CustomerID = ' + this.BillMaster.CustomerID;
+    }
+
+    if (this.BillMaster.CustomerGSTNo !== 0) {
+      Parem = Parem + ' and billmaster.GSTNo = ' + this.BillMaster.CustomerGSTNo;
+    }
+
+    if (this.BillMaster.PaymentStatus !== 0 && this.BillMaster.PaymentStatus !== null && this.BillMaster.PaymentStatus !== 'All') {
+      Parem = Parem + ' and billmaster.PaymentStatus = ' + `'${this.BillMaster.PaymentStatus}'`;
+    }
+
+    if (this.BillMaster.ProductStatus !== '' && this.BillMaster.ProductStatus !== null && this.BillMaster.ProductStatus !== 'All') {
+      Parem = Parem + ' and billmaster.ProductStatus = ' + `'${this.BillMaster.ProductStatus}'`;
+    }
+
+    if (this.BillMaster.BillType !== '' && this.BillMaster.BillType !== null && this.BillMaster.BillType !== 'All') {
+      Parem = Parem + ' and billmaster.BillType = ' + `'${this.BillMaster.BillType}'`;
+    }
+
+    const subs: Subscription = this.bill.getBillMasterExport(Parem).subscribe({
+      next: (res: any) => {
+        this.downloadFile(res);
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  public downloadFile(response: any, fileName: any = '') {
+    const blob = new Blob([response.body], { type: response.headers.get('content-type') });
+    fileName = fileName || response.headers.get('Content-Disposition').split(';')[1].split('=')[1].replace(/\"/g, '')
+    const file = new File([blob], fileName, { type: response.headers.get('content-type') });
+    saveAs(file);
   }
 
   convertToDecimal(num: any, x: any) {
@@ -803,7 +872,7 @@ export class SaleReportComponent implements OnInit {
         Parem = Parem + ' and billdetail.Manual = ' + '0';
       }
     }
-    const subs: Subscription = this.bill.getSalereportsDetail(Parem,this.Productsearch).subscribe({
+    const subs: Subscription = this.bill.getSalereportsDetail(Parem, this.Productsearch).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)
@@ -1310,7 +1379,7 @@ export class SaleReportComponent implements OnInit {
       Parem = Parem + ' and billdetail.ProductStatus = ' + `'${this.pending.ProductStatus}'`;
     }
 
-    const subs: Subscription = this.bill.getSalereportsDetail(Parem,this.Productsearch).subscribe({
+    const subs: Subscription = this.bill.getSalereportsDetail(Parem, this.Productsearch).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)
@@ -1373,7 +1442,7 @@ export class SaleReportComponent implements OnInit {
     this.gstpending = [];
   }
 
-  // customer search 
+  // customer search
   dateFormat(date: any) {
     return moment(date).format(`${this.companySetting.DateFormat}`);
   }
@@ -1433,9 +1502,9 @@ export class SaleReportComponent implements OnInit {
       this.Billdetail.EmployeeID = 0
     }
   }
-  // customer search 
+  // customer search
 
-  // sale prodcut Expiry 
+  // sale prodcut Expiry
   getProductList3() {
     const subs: Subscription = this.ps.getList().subscribe({
       next: (res: any) => {
@@ -1568,7 +1637,7 @@ export class SaleReportComponent implements OnInit {
     }
 
 
-    const subs: Subscription = this.bill.getSalereportsDetail(Parem,this.Productsearch).subscribe({
+    const subs: Subscription = this.bill.getSalereportsDetail(Parem, this.Productsearch).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)
