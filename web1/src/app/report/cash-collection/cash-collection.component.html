@@ -213,11 +213,11 @@
                                     <tfoot class="hide-on-print">
                                         <tr style="background-color: #dcdcdc;">
                                             <th style="border: 1px solid #ff1d1d;" *ngFor="let p of paymentMode">{{p.Name | uppercase}} - {{p.Amount}}</th>
-                                            <th style="border: 1px solid #ff1d1d;"> AMTRETURNByCREDIT - {{this.AmountReturnByCredit}}</th>
-                                            <th style="border: 1px solid #ff1d1d;"> AMTRETURNByDEBIT - {{this.AmountReturnByDebit}}</th>
+                                            <!-- <th style="border: 1px solid #ff1d1d;"> AMTRETURNByCREDIT - {{this.AmountReturnByCredit}}</th>
+                                            <th style="border: 1px solid #ff1d1d;"> AMTRETURNByDEBIT - {{this.AmountReturnByDebit}}</th> -->
                                             <th style="border: 1px solid #ff1d1d;"> TOTALAMOUNT - {{this.totalAmount}}</th>
                                             <th style="border: 1px solid #ff1d1d;"> OLD AMOUNT - {{this.oldPayment}}</th>
-                                            <th style="border: 1px solid #ff1d1d;"> ADVANCE AMOUNT - {{this.newPayment - this.AmountReturnByCredit}}</th>
+                                            <th style="border: 1px solid #ff1d1d;"> ADVANCE AMOUNT - {{this.newPayment}}</th>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -228,11 +228,11 @@
                                     <thead >
                                         <tr>
                                             <th *ngFor="let p of paymentMode">{{p.Name | uppercase}} - {{p.Amount}}</th>
-                                            <th> AMTRETURNByCREDIT - {{this.AmountReturnByCredit}}</th>
-                                            <th> AMTRETURNByDEBIT - {{this.AmountReturnByDebit}}</th>
-                                            <th> TOTALAMOUNT - {{this.totalAmount}}</th>
+                                            <!-- <th> AMTRETURNByCREDIT - {{this.AmountReturnByCredit}}</th>
+                                            <th> AMTRETURNByDEBIT - {{this.AmountReturnByDebit}}</th> -->
+                                            <th> TOTALAMOUNT - {{this.totalAmount }}</th>
                                             <th> OLD AMOUNT - {{this.oldPayment}}</th>
-                                            <th> ADVANCE AMOUNT - {{this.newPayment - this.AmountReturnByCredit}}</th>
+                                            <th> ADVANCE AMOUNT - {{this.newPayment}}</th>
                                         </tr>
                                     </thead>
                                 </table>

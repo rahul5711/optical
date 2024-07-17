@@ -69,6 +69,7 @@ export class CashCollectionComponent implements OnInit {
   totalAmount = 0
   oldPayment = 0
   newPayment = 0
+  AmountReturn = 0
 
   viewCashCollectionReport = false
   editCashCollectionReport = false
@@ -176,17 +177,31 @@ export class CashCollectionComponent implements OnInit {
   totalCalculation(data: any) {
     this.newPayment = 0;
     this.oldPayment = 0;
+    this.AmountReturn = 0;
 
     for (var i = 0; i < data.length; i++) {
       const billDate = moment(data[i].BillDate).format('YYYY-MM-DD');
       const fromDate = moment(this.data.FromDate).format('YYYY-MM-DD');
       const toDate = moment(this.data.ToDate).format('YYYY-MM-DD');
 
-      if (billDate !== 'Invalid date' && data[i].PaymentStatus !== null && new Date(billDate) >= new Date(fromDate) && new Date(billDate) <= new Date(toDate)) {
-        this.newPayment += Number(data[i].Amount);
+      if (billDate !== 'Invalid date' && data[i].PaymentStatus !== null && new Date(billDate) >= new Date(fromDate) && new Date(billDate) <= new Date(toDate)) 
+      {
+        if(data[i].PaymentMode !== 'AMOUNT RETURN' && data[i].PaymentMode !== 'Customer Credit'){
+          this.newPayment += Number(data[i].Amount);
+        }
+        if(data[i].PaymentMode === 'AMOUNT RETURN'){
+          this.AmountReturn += Number(data[i].Amount);
+        }
+       
+
       } else {
+        if(data[i].PaymentMode !== 'AMOUNT RETURN' && data[i].PaymentMode !== 'Customer Credit'){
         this.oldPayment += Number(data[i].Amount);
+        }
       }
+
+
+   
 
     }
   }

@@ -200,9 +200,9 @@
 <ng-template #content role="document" let-modal>
   <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
     <h2 class="modal-title header pt-2" id="exampleModalLabel">Payment Detail</h2>
-    <button *ngIf="this.paymentHistoryList[0]?.PaymentMode == 'Payment Initiated' && this.user.UserGroup === 'CompanyAdmin'" type="button" class="ms-1 ms-md-5" mat-raised-button
+    <!-- <button *ngIf="this.paymentHistoryList[0]?.PaymentMode == 'Payment Initiated' && this.user.UserGroup === 'CompanyAdmin'" type="button" class="ms-1 ms-md-5" mat-raised-button
       color="primary" (click)="openModal12(content12)">Customer Debit (ReturnAmt)
-    </button>
+    </button> -->
 
     <button *ngIf="this.applyPayment.PayableAmount !== 0" type="button" class="ms-1 ms-md-5" mat-raised-button
       color="primary" (click)="openModal14(content14)">Customer Credit (ReturnAmt)
