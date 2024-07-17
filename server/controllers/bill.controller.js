@@ -2908,8 +2908,6 @@ module.exports = {
             }
             const { Parem } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const shopid = await shopID(req.headers) || 0;
-            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
 
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
