@@ -96,7 +96,7 @@ export class BillComponent implements OnInit {
   }
 
   BillMaster: any = {
-    ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "",RegNo:'', BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, GSTNo: '', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", RegNo: '', BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, GSTNo: '', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
   }
 
   BillItem: any = {
@@ -123,7 +123,7 @@ export class BillComponent implements OnInit {
 
   body = {
     customer: null, billMaster: null, billItemList: null, serviceList: null, employeeList: null, paidList: null, unpaidList: null, Shop: null,
-    Company: null, CompanySetting: null, User: null, mode: null, ShowPower: false, CustomerCredit: null
+    Company: null, CompanySetting: null, User: null, mode: null, ShowPower: false, CustomerCredit: null, zoom: ''
   };
   ShowPower = false
   billItemCheckList: any
@@ -141,7 +141,7 @@ export class BillComponent implements OnInit {
   prodList: any
   specList: any;
   searchList: any = [];
-  Req: any = { SearchBarCode: '', searchString: '', SupplierID : 0 }
+  Req: any = { SearchBarCode: '', searchString: '', SupplierID: 0 }
   PreOrder = "false";
   ShopMode = false;
   showProductExpDate = false;
@@ -209,15 +209,15 @@ export class BillComponent implements OnInit {
     [this.loginShop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
     this.currentTime = new Date().toLocaleTimeString('en-IN', { hourCycle: 'h23' })
 
-    if(this.loginShop.WholesaleBill === 'true'){
+    if (this.loginShop.WholesaleBill === 'true') {
       this.BillItem.WholeSale = true
       this.WholeSaleDisabled = true
-    }else{
+    } else {
       this.BillItem.WholeSale = false
     }
 
-    if(this.loginShop.RetailBill === 'true'){
-      if(this.loginShop.WholesaleBill === 'true'){
+    if (this.loginShop.RetailBill === 'true') {
+      if (this.loginShop.WholesaleBill === 'true') {
         this.BillItem.WholeSale = false
         this.WholeSaleDisabled = false
       }
@@ -697,16 +697,16 @@ export class BillComponent implements OnInit {
     this.getBarCodeList('')
   }
 
-  productSelect(data:any){
+  productSelect(data: any) {
     this.Req.searchString = data.ProductName
-    if(data !== undefined){
+    if (data !== undefined) {
       this.Req.SupplierID = data.SupplierID;
-    }else{
+    } else {
       this.Req.SupplierID = 0
     }
     this.getSearchByBarcodeNo()
   }
-  
+
   getSearchByBarcodeNo() {
     if (this.Req.SearchBarCode !== '') {
       this.sp.show();
@@ -716,7 +716,7 @@ export class BillComponent implements OnInit {
         } else {
           this.PreOrder = "false"
         }
-        
+
         const subs: Subscription = this.bill.searchByBarcodeNo(this.Req, this.PreOrder, this.ShopMode).subscribe({
           next: (res: any) => {
             if (res.success) {
@@ -991,13 +991,13 @@ export class BillComponent implements OnInit {
               this.BarcodeList = res.data;
               this.PurchasePriceInput = this.BarcodeList == '' || this.BarcodeList.length == 0 ? true : false;
               this.showProductExpDate = this.BarcodeList != '' || this.BarcodeList.length != 0 ? true : false;
-              if(this.company.ID == 184){
-                 if(this.BarcodeList == '' || this.BarcodeList.length == 0){
+              if (this.company.ID == 184) {
+                if (this.BarcodeList == '' || this.BarcodeList.length == 0) {
                   this.PurchasePriceInput = false
                   this.PerOrderBtn = true
-                 }else{
+                } else {
                   this.PerOrderBtn = false
-                 }
+                }
               }
 
             } else {
@@ -1166,7 +1166,7 @@ export class BillComponent implements OnInit {
           }
         }
       }
-      
+
 
 
       this.billItemList.unshift(this.BillItem);
@@ -1866,17 +1866,20 @@ export class BillComponent implements OnInit {
       this.applyPayment.ShopID = Number(this.selectedShop);
       this.applyPayment.PaymentDate = moment().format('YYYY-MM-DD') + ' ' + this.currentTime;
       this.applyPayment.pendingPaymentList = this.invoiceList;
-      const subs: Subscription = this.pay.customerPayment(this.applyPayment).subscribe({
+      let data = this.applyPayment
+      this.applyPayment = {
+        ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
+        CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
+        pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
+      };
+      const subs: Subscription = this.pay.customerPayment(data).subscribe({
         next: (res: any) => {
           if (res.success) {
             this.invoiceList = []
-
             this.paymentHistoryByMasterID(this.id, this.id2)
             this.billByCustomer(this.id)
             this.getBillById(this.id2)
-
             this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
-           
           } else {
             this.as.errorToast(res.message)
             Swal.fire({
@@ -2286,10 +2289,7 @@ export class BillComponent implements OnInit {
     this.body.User = this.user;
     this.body.mode = mode
     this.body.ShowPower = this.ShowPower
-
     // this.body.billMaster.showPower = this.showPower;
-
-
     const subs: Subscription = this.bill.billPrint(this.body).subscribe({
       next: async (res: any) => {
         if (res) {
@@ -2332,10 +2332,6 @@ export class BillComponent implements OnInit {
     this.body.Company = this.company;
     this.body.CompanySetting = this.companySetting;
     this.body.User = this.user;
-
-    // this.body.billMaster.showPower = this.showPower;
-
-
     const subs: Subscription = this.bill.orderFormPrint(this.body).subscribe({
       next: (res: any) => {
         if (res) {
