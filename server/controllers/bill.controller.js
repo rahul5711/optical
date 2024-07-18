@@ -2905,7 +2905,7 @@ module.exports = {
                     "totalPaidAmount": 0,
                     "totalUnitPrice": 0,
                     "totalSubTotalPrice": 0,
-                    "gst_details": []
+                    // "gst_details": []
                 }], success: true, message: ""
             }
             const { Parem } = req.body;
@@ -2919,31 +2919,31 @@ module.exports = {
             let [data] = await mysql2.pool.query(qry);
 
 
-            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            // let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
-            gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
-            if (gstTypes.length) {
-                for (const item of gstTypes) {
-                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
-                        response.calculation[0].gst_details.push(
-                            {
-                                GSTType: `CGST`,
-                                Amount: 0
-                            },
-                            {
-                                GSTType: `SGST`,
-                                Amount: 0
-                            }
-                        )
-                    } else {
-                        response.calculation[0].gst_details.push({
-                            GSTType: `${item.Name}`,
-                            Amount: 0
-                        })
-                    }
-                }
+            // gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            // if (gstTypes.length) {
+            //     for (const item of gstTypes) {
+            //         if ((item.Name).toUpperCase() === 'CGST-SGST') {
+            //             response.calculation[0].gst_details.push(
+            //                 {
+            //                     GSTType: `CGST`,
+            //                     Amount: 0
+            //                 },
+            //                 {
+            //                     GSTType: `SGST`,
+            //                     Amount: 0
+            //                 }
+            //             )
+            //         } else {
+            //             response.calculation[0].gst_details.push({
+            //                 GSTType: `${item.Name}`,
+            //                 Amount: 0
+            //             })
+            //         }
+            //     }
 
-            }
+            // }
 
             if (data.length) {
                 for (const item of data) {
@@ -2964,25 +2964,25 @@ module.exports = {
                                 response.calculation[0].totalUnitPrice += item2.Price
 
                                 if (item2.GSTType === 'CGST-SGST') {
-                                    response.calculation[0].gst_details.forEach(e => {
-                                        if (e.GSTType === 'CGST') {
-                                            e.Amount += item2.GSTAmount / 2
-                                        }
-                                        if (e.GSTType === 'SGST') {
-                                            e.Amount += item2.GSTAmount / 2
-                                        }
-                                    })
+                                    // response.calculation[0].gst_details.forEach(e => {
+                                    //     if (e.GSTType === 'CGST') {
+                                    //         e.Amount += item2.GSTAmount / 2
+                                    //     }
+                                    //     if (e.GSTType === 'SGST') {
+                                    //         e.Amount += item2.GSTAmount / 2
+                                    //     }
+                                    // })
 
                                     item.cGstAmount += item2.GSTAmount / 2
                                     item.sGstAmount += item2.GSTAmount / 2
                                 }
 
                                 if (item2.GSTType !== 'CGST-SGST') {
-                                    response.calculation[0].gst_details.forEach(e => {
-                                        if (e.GSTType === item2.GSTType) {
-                                            e.Amount += item2.GSTAmount
-                                        }
-                                    })
+                                    // response.calculation[0].gst_details.forEach(e => {
+                                    //     if (e.GSTType === item2.GSTType) {
+                                    //         e.Amount += item2.GSTAmount
+                                    //     }
+                                    // })
 
                                     item.iGstAmount += item2.GSTAmount
                                 }
@@ -3004,25 +3004,25 @@ module.exports = {
                                 response.calculation[0].totalSubTotalPrice += item2.SubTotal
                                 response.calculation[0].totalUnitPrice += item2.Price
                                 if (item2.GSTType === 'CGST-SGST') {
-                                    response.calculation[0].gst_details.forEach(e => {
+                                    // response.calculation[0].gst_details.forEach(e => {
 
-                                        if (e.GSTType === 'CGST') {
-                                            e.Amount += item2.GSTAmount / 2
-                                        }
-                                        if (e.GSTType === 'SGST') {
-                                            e.Amount += item2.GSTAmount / 2
-                                        }
-                                    })
+                                    //     if (e.GSTType === 'CGST') {
+                                    //         e.Amount += item2.GSTAmount / 2
+                                    //     }
+                                    //     if (e.GSTType === 'SGST') {
+                                    //         e.Amount += item2.GSTAmount / 2
+                                    //     }
+                                    // })
                                     item.cGstAmount += item2.GSTAmount / 2
                                     item.sGstAmount += item2.GSTAmount / 2
                                 }
 
                                 if (item2.GSTType !== 'CGST-SGST') {
-                                    response.calculation[0].gst_details.forEach(e => {
-                                        if (e.GSTType === item2.GSTType) {
-                                            e.Amount += item2.GSTAmount
-                                        }
-                                    })
+                                    // response.calculation[0].gst_details.forEach(e => {
+                                    //     if (e.GSTType === item2.GSTType) {
+                                    //         e.Amount += item2.GSTAmount
+                                    //     }
+                                    // })
 
                                     item.iGstAmount += item2.GSTAmount
                                 }
@@ -3042,24 +3042,24 @@ module.exports = {
                                 response.calculation[0].totalSubTotalPrice += item2.SubTotal
 
                                 if (item2.GSTType === 'CGST-SGST') {
-                                    response.calculation[0].gst_details.forEach(e => {
-                                        if (e.GSTType === 'CGST') {
-                                            e.Amount += item2.GSTAmount / 2
-                                        }
-                                        if (e.GSTType === 'SGST') {
-                                            e.Amount += item2.GSTAmount / 2
-                                        }
-                                    })
+                                    // response.calculation[0].gst_details.forEach(e => {
+                                    //     if (e.GSTType === 'CGST') {
+                                    //         e.Amount += item2.GSTAmount / 2
+                                    //     }
+                                    //     if (e.GSTType === 'SGST') {
+                                    //         e.Amount += item2.GSTAmount / 2
+                                    //     }
+                                    // })
                                     item.cGstAmount += item2.GSTAmount / 2
                                     item.sGstAmount += item2.GSTAmount / 2
                                 }
 
                                 if (item2.GSTType !== 'CGST-SGST') {
-                                    response.calculation[0].gst_details.forEach(e => {
-                                        if (e.GSTType === item2.GSTType) {
-                                            e.Amount += item2.GSTAmount
-                                        }
-                                    })
+                                    // response.calculation[0].gst_details.forEach(e => {
+                                    //     if (e.GSTType === item2.GSTType) {
+                                    //         e.Amount += item2.GSTAmount
+                                    //     }
+                                    // })
                                     item.iGstAmount += item2.GSTAmount
                                 }
                             }
@@ -3084,7 +3084,7 @@ module.exports = {
 
             worksheet.columns = [
                 { header: 'S.no', key: 'S_no', width: 8 },
-                { header: 'InvoiceDate', key: 'BillDate', width: 15 },
+                { header: 'InvoiceDate', key: 'InvoiceDate', width: 15 },
                 { header: 'InvoiceNo', key: 'InvoiceNo', width: 20 },
                 { header: 'CustomerName', key: 'CustomerName', width: 25 },
                 { header: 'MobileNo', key: 'MobileNo1', width: 15 },
