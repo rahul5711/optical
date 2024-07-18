@@ -164,13 +164,13 @@
                                                 <button type="submit" mat-raised-button color="primary">
                                                     Search
                                                 </button>
-                                                <button type="button" class=" ms-2 me-2" mat-raised-button color="warn"
+                                                <button type="button" class="ms-2 me-2" mat-raised-button color="warn"
                                                     (click)="billMasterFromReset()">
                                                     Reset
                                                 </button>
-                                                <button type="button" class=" ms-2 me-2" mat-raised-button color="primary"
+                                                <button type="button" mat-raised-button color="primary"
                                                     (click)="getBillMasterExport()">
-                                                    Export
+                                                    Quick Download
                                                 </button>
                                                 <!-- <button mat-raised-button color="primary"
                                                     printTitle="sale Report {{this.shopLists}}"
@@ -777,9 +777,13 @@
                                                 <button class="me-3" type="submit" mat-raised-button color="primary">
                                                     Search
                                                 </button>
-                                                <button type="button" mat-raised-button color="warn"
+                                                <button type="button" class="me-3" mat-raised-button color="warn"
                                                     (click)="BillDetailsFromReset()">
                                                     Reset
+                                                </button>
+                                                <button type="button" mat-raised-button color="primary"
+                                                    (click)="getBillDetailsExport()">
+                                                    Quick Download
                                                 </button>
 
                                             </div>

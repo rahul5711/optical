@@ -122,6 +122,13 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  getSalereportsDetailExport(Parem:any,Productsearch:any) {
+    return this.httpClient.post(`${this.url}/getSalereportsDetailExport`, {Parem:Parem,Productsearch:Productsearch}, {
+      observe: 'response',
+      responseType: 'arraybuffer'
+    });
+  }
+
   getCancelProductReport(Parem:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/getCancelProductReport',{Parem:Parem}, httpOptions)
     .pipe(catchError(this.handleError));

@@ -896,6 +896,92 @@ export class SaleReportComponent implements OnInit {
     });
   }
 
+  getBillDetailsExport() {
+    this.sp.show()
+    let Parem = '';
+
+    if (this.Billdetail.FromDate !== '' && this.Billdetail.FromDate !== null && this.Billdetail.FilterTypes === 'BillDate') {
+      let FromDate = moment(this.Billdetail.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+    }
+
+    if (this.Billdetail.ToDate !== '' && this.Billdetail.ToDate !== null && this.Billdetail.FilterTypes === 'BillDate') {
+      let ToDate = moment(this.Billdetail.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
+
+    if (this.Billdetail.FromDate !== '' && this.Billdetail.FromDate !== null && this.Billdetail.FilterTypes === 'DeliveryDate') {
+      let FromDate = moment(this.Billdetail.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and DATE_FORMAT(billmaster.DeliveryDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+    }
+
+    if (this.Billdetail.ToDate !== '' && this.Billdetail.ToDate !== null && this.Billdetail.FilterTypes === 'DeliveryDate') {
+      let ToDate = moment(this.Billdetail.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
+
+    if (this.Billdetail.ShopID != 0) {
+      Parem = Parem + ' and billmaster.ShopID IN ' + `(${this.Billdetail.ShopID})`;
+    }
+
+    if (this.Billdetail.CustomerID !== 0) {
+      Parem = Parem + ' and billmaster.CustomerID = ' + this.Billdetail.CustomerID;
+    }
+
+    if (this.Billdetail.CustomerGSTNo !== 0) {
+      Parem = Parem + ' and billmaster.GSTNo = ' + this.Billdetail.CustomerGSTNo;
+    }
+
+    if (this.Billdetail.PaymentStatus !== 0 && this.Billdetail.PaymentStatus !== null && this.Billdetail.PaymentStatus !== 'All') {
+      Parem = Parem + ' and billmaster.PaymentStatus = ' + `'${this.Billdetail.PaymentStatus}'`;
+    }
+
+    if (this.Billdetail.ProductStatus !== '' && this.Billdetail.ProductStatus !== null && this.Billdetail.ProductStatus !== 'All') {
+      Parem = Parem + ' and billdetail.ProductStatus = ' + `'${this.Billdetail.ProductStatus}'`;
+    }
+
+    if (this.Billdetail.ProductCategory !== 0) {
+      Parem = Parem + ' and billdetail.ProductTypeID = ' + this.Billdetail.ProductCategory;
+      this.filter();
+    }
+
+    if (this.Billdetail.ProductName !== '') {
+      Parem = Parem + ' and billdetail.ProductName Like ' + "'" + this.Billdetail.ProductName.trim() + "%'";
+    }
+
+    if (this.Billdetail.Option !== '' && this.Billdetail.Option !== null && this.Billdetail.Option !== 0) {
+      Parem = Parem + ' and barcodemasternew.Option = ' + `'${this.Billdetail.Option}'`;
+    }
+
+    if (this.Billdetail.GSTPercentage !== 0) {
+      Parem = Parem + ' and billdetail.GSTPercentage = ' + `'${this.Billdetail.GSTPercentage}'`;
+    }
+
+    if (this.Billdetail.GSTType !== 0) {
+      Parem = Parem + ' and billdetail.GSTType = ' + `'${this.Billdetail.GSTType}'`;
+    }
+
+    if (this.Billdetail.Status !== '' && this.Billdetail.Status !== null && this.Billdetail.Status !== 0) {
+      if (this.Billdetail.Status === 'Manual' && this.Billdetail.Status !== 'All') {
+        Parem = Parem + ' and billdetail.Manual = ' + '1';
+      } else if (this.Billdetail.Status === 'PreOrder' && this.Billdetail.Status !== 'All') {
+        Parem = Parem + ' and billdetail.PreOrder = ' + '1';
+      } else if (this.Billdetail.Status === 'Barcode' && this.Billdetail.Status !== 'All') {
+        Parem = Parem + ' and billdetail.PreOrder = ' + '0';
+        Parem = Parem + ' and billdetail.Manual = ' + '0';
+      }
+    }
+    const subs: Subscription = this.bill.getSalereportsDetailExport(Parem, this.Productsearch).subscribe({
+      next: (res: any) => {
+        this.downloadFile(res);
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+
   exportAsXLSXDetail(): void {
     let element = document.getElementById('saleDetailExcel');
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);

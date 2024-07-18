@@ -3218,10 +3218,10 @@ module.exports = {
                 worksheet.addRow(x);
             });
 
-            // worksheet.autoFilter = {
-            //     from: 'A1',
-            //     to: 'Z1',
-            // };
+            worksheet.autoFilter = {
+                from: 'A1',
+                to: 'AU1',
+            };
 
             worksheet.getRow(1).eachCell((cell) => {
                 cell.font = { bold: true };
@@ -3497,6 +3497,319 @@ module.exports = {
             response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount.toFixed(2) : 0
             response.calculation[0].totalDiscount = datum[0].totalDiscount ? datum[0].totalDiscount.toFixed(2) : 0
             response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice.toFixed(2) : 0
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+
+
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+
+    },
+    getSalereportsDetailExport: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, calculation: [{
+                    "totalQty": 0,
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalDiscount": 0,
+                    "totalUnitPrice": 0,
+                    "totalPurchasePrice": 0,
+                    "totalProfit": 0,
+                    // "gst_details": []
+                }], success: true, message: ""
+            }
+            const { Parem, Productsearch } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            if (Productsearch === undefined || Productsearch === null) {
+                return res.send({ success: false, message: "Invalid Query Data" })
+            }
+
+            let searchString = ``
+            if (Productsearch) {
+                searchString = ` and billdetail.ProductName like '%${Productsearch}%'`
+            }
+
+            qry = `SELECT billdetail.*, customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.Title AS Title, customer.Sno AS MrdNo, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName, shop.Name as ShopName, shop.AreaName,0 AS Profit , 0 AS ModifyPurchasePrice  FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.Status = 1 AND billdetail.CompanyID = '${CompanyID}' ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 ` + Parem
+
+            let [datum] = await mysql2.pool.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
+            left join user on user.ID = billmaster.Employee
+            LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.Status = 1  ${searchString} AND billdetail.CompanyID = ${CompanyID} ` + Parem)
+
+            let [data] = await mysql2.pool.query(qry);
+
+
+            // let [data2] = await mysql2.pool.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE billdetail.Status = 1 ${searchString}  AND billdetail.CompanyID = ${CompanyID} ` + Parem);
+
+            // let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            // gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            // const values = []
+
+            // if (gstTypes.length) {
+            //     for (const item of gstTypes) {
+            //         if ((item.Name).toUpperCase() === 'CGST-SGST') {
+            //             values.push(
+            //                 {
+            //                     GSTType: `CGST`,
+            //                     Amount: 0
+            //                 },
+            //                 {
+            //                     GSTType: `SGST`,
+            //                     Amount: 0
+            //                 }
+            //             )
+            //         } else {
+            //             values.push({
+            //                 GSTType: `${item.Name}`,
+            //                 Amount: 0
+            //             })
+            //         }
+            //     }
+
+            // }
+
+            // if (data2.length && values.length) {
+            //     for (const item of data2) {
+            //         values.forEach(e => {
+            //             if (e.GSTType === item.GSTType) {
+            //                 e.Amount += item.GSTAmount
+            //             }
+
+            //             // CGST-SGST
+
+            //             if (item.GSTType === 'CGST-SGST') {
+
+            //                 if (e.GSTType === 'CGST') {
+            //                     e.Amount += item.GSTAmount / 2
+            //                 }
+
+            //                 if (e.GSTType === 'SGST') {
+            //                     e.Amount += item.GSTAmount / 2
+            //                 }
+            //             }
+            //         })
+
+            //     }
+
+            // }
+            const values2 = []
+
+            // if (gstTypes.length) {
+            //     for (const item of gstTypes) {
+            //         if ((item.Name).toUpperCase() === 'CGST-SGST') {
+            //             values2.push(
+            //                 {
+            //                     GSTType: `CGST`,
+            //                     Amount: 0
+            //                 },
+            //                 {
+            //                     GSTType: `SGST`,
+            //                     Amount: 0
+            //                 }
+            //             )
+            //         } else {
+            //             values2.push({
+            //                 GSTType: `${item.Name}`,
+            //                 Amount: 0
+            //             })
+            //         }
+            //     }
+
+            // }
+            // && values2.length
+            if (data.length) {
+                for (let item of data) {
+                    item.cGstAmount = 0
+                    item.iGstAmount = 0
+                    item.sGstAmount = 0
+                    item.cGstPercentage = 0
+                    item.iGstPercentage = 0
+                    item.sGstPercentage = 0
+                    if (item.GSTType === 'CGST-SGST') {
+                        item.cGstAmount = item.GSTAmount / 2
+                        item.sGstAmount = item.GSTAmount / 2
+                        item.cGstPercentage = item.GSTPercentage / 2
+                        item.sGstPercentage = item.GSTPercentage / 2
+                    }
+                    if (item.GSTType === 'IGST') {
+                        item.iGstAmount = item.GSTAmount
+                        item.iGstPercentage = item.GSTPercentage
+                    }
+                    // item.gst_details = []
+                    // values2.forEach(e => {
+                    //     if (e.GSTType === item.GSTType) {
+                    //         e.Amount += item.GSTAmount
+                    //         item.gst_details.push({
+                    //             GSTType: item.GSTType,
+                    //             Amount: item.GSTAmount
+                    //         })
+                    //     }
+
+                    //     // CGST-SGST
+
+                    //     if (item.GSTType === 'CGST-SGST') {
+
+                    //         if (e.GSTType === 'CGST') {
+                    //             e.Amount += item.GSTAmount / 2
+
+                    //             item.gst_details.push({
+                    //                 GSTType: 'CGST',
+                    //                 Amount: item.GSTAmount / 2
+                    //             })
+                    //         }
+
+                    //         if (e.GSTType === 'SGST') {
+                    //             e.Amount += item.GSTAmount / 2
+
+                    //             item.gst_details.push({
+                    //                 GSTType: 'SGST',
+                    //                 Amount: item.GSTAmount / 2
+                    //             })
+                    //         }
+                    //     }
+                    // })
+
+                    // profit calculation
+                    item.ModifyPurchasePrice = item.PurchasePrice * item.Quantity;
+                    item.Profit = item.SubTotal - (item.PurchasePrice * item.Quantity)
+
+                    response.calculation[0].totalPurchasePrice += item.ModifyPurchasePrice
+                    response.calculation[0].totalProfit += item.Profit
+                }
+
+
+
+            }
+            // response.calculation[0].gst_details = values2;
+            response.calculation[0].totalPurchasePrice = response.calculation[0].totalPurchasePrice.toFixed(2) || 0
+            response.calculation[0].totalProfit = response.calculation[0].totalProfit.toFixed(2) || 0
+            response.calculation[0].totalQty = datum[0].totalQty ? datum[0].totalQty : 0
+            response.calculation[0].totalGstAmount = datum[0].totalGstAmount ? datum[0].totalGstAmount.toFixed(2) : 0
+            response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount.toFixed(2) : 0
+            response.calculation[0].totalDiscount = datum[0].totalDiscount ? datum[0].totalDiscount.toFixed(2) : 0
+            response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice.toFixed(2) : 0
+
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet(`sale_detailreport_export`);
+
+            worksheet.columns = [
+                { header: 'S.No', key: 'S_no', width: 8 },
+                { header: 'InvoiceDate', key: 'InvoiceDate', width: 20 },
+                { header: 'DeliveryDate', key: 'DeliveryDate', width: 20 },
+                { header: 'InvoiceNo', key: 'BillInvoiceNo', width: 20 },
+                { header: 'Customer Name', key: 'CustomerName', width: 30 },
+                { header: 'MRDNo', key: 'MrdNo', width: 15 },
+                { header: 'MobileNo', key: 'CustomerMoblieNo1', width: 15 },
+                { header: 'ProductType Name', key: 'ProductTypeName', width: 20 },
+                { header: 'Option', key: 'Optionsss', width: 15 },
+                { header: 'HSNCode', key: 'HSNCode', width: 15 },
+                { header: 'Product Name', key: 'ProductName', width: 30 },
+                { header: 'Unit Price', key: 'UnitPrice', width: 15 },
+                { header: 'Quantity', key: 'Quantity', width: 10 },
+                { header: 'Discount Amount', key: 'DiscountAmount', width: 15 },
+                { header: 'Sub Total', key: 'SubTotal', width: 15 },
+                { header: 'TAX Type', key: 'GSTType', width: 10 },
+                { header: 'TAX%', key: 'GSTPercentage', width: 10 },
+                { header: 'TAX Amount', key: 'GSTAmount', width: 15 },
+                { header: 'CGST%', key: 'cGstPercentage', width: 10 },
+                { header: 'CGSTAmt', key: 'cGstAmount', width: 15 },
+                { header: 'SGST%', key: 'sGstPercentage', width: 10 },
+                { header: 'SGSTAmt', key: 'sGstAmount', width: 15 },
+                { header: 'IGST%', key: 'iGstPercentage', width: 10 },
+                { header: 'IGSTAmt', key: 'iGstAmount', width: 15 },
+                { header: 'Grand Total', key: 'TotalAmount', width: 15 },
+                { header: 'Barcode', key: 'Barcode', width: 15 },
+                { header: 'Payment Status', key: 'PaymentStatus', width: 15 },
+                { header: 'Product Status', key: 'ProductStatus', width: 15 },
+                { header: 'Product DeliveryDate', key: 'ProductDeliveryDate', width: 20 },
+                { header: 'Cust_TAXNo', key: 'Cust_TAXNo', width: 15 },
+                { header: 'Status', key: 'Status', width: 10 },
+                { header: 'Shop Name', key: 'ShopName', width: 30 },
+                { header: 'PurchasePrice', key: 'ModifyPurchasePrice', width: 15 },
+                { header: 'Profit', key: 'Profit', width: 10 }
+            ];
+
+
+            const d = {
+                "S_no": '',
+                "InvoiceDate": '',
+                "DeliveryDate": '',
+                "InvoiceNo": '',
+                "CustomerName": '',
+                "MRDNo": '',
+                "MobileNo": '',
+                "ProductTypeName": '',
+                "Option": '',
+                "HSNCode": '',
+                "ProductName": '',
+                "UnitPrice": '',
+                "Quantity": Number(response.calculation[0].totalQty),
+                "DiscountAmount": Number(response.calculation[0].totalDiscount),
+                "SubTotal": Number(response.calculation[0].totalUnitPrice),
+                "TAXType": '',
+                "TAXPercentage": '',
+                "GSTAmount": Number(response.calculation[0].totalGstAmount),
+                "CGSTPercentage": '',
+                "CGSTAmt": '',
+                "SGSTPercentage": '',
+                "SGSTAmt": '',
+                "IGSTPercentage": '',
+                "IGSTAmt": '',
+                "TotalAmount": Number(response.calculation[0].totalAmount),
+                "Barcode": '',
+                "PaymentStatus": '',
+                "ProductStatus": '',
+                "ProductDeliveryDate": '',
+                "Cust_TAXNo": '',
+                "Status": '',
+                "ShopName": '',
+                "ModifyPurchasePrice": Number(response.calculation[0].totalPurchasePrice),
+                "Profit": Number(response.calculation[0].totalProfit)
+            };
+            worksheet.addRow(d);
+            let count = data.length;
+            console.log("Start Exporting...");
+            data.forEach((x) => {
+                x.S_no = count--;
+                x.InvoiceDate = moment(x.BillDate).format('YYYY-MM-DD HH:mm a');
+                x.DeliveryDate = moment(x.DeliveryDate).format('YYYY-MM-DD HH:mm a');
+                x.ProductStatus = x.ProductStatus === 0 ? 'Pending' : 'Deliverd'
+                x.Status = ``
+                if (x.Manual === 1) {
+                    x.Status = 'Manual'
+                } else if (x.PreOrder === 1) {
+                    x.Status = 'PreOrder'
+                } else {
+                    x.Status = 'Stock'
+                }
+                worksheet.addRow(x);
+            });
+
+            worksheet.autoFilter = {
+                from: 'A1',
+                to: 'AH1',
+            };
+
+            worksheet.getRow(1).eachCell((cell) => {
+                cell.font = { bold: true };
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } };
+            });
+
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', `attachment; filename=sale_detailreport_export.xlsx`);
+            res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+            console.log("Export...");
+            await workbook.xlsx.write(res);
+            return res.end();
+
             response.data = data
             response.message = "success";
             return res.send(response);
