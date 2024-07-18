@@ -1848,6 +1848,7 @@ module.exports = {
             const User = req.body.User;
             const Customer = req.body.customer;
             const BillMaster = req.body.billMaster;
+            const Zoom = req.body.zoom;
 
             req.body.billItemList = req.body.billItemList.filter((element) => {
                 return element.Status !== 0;
@@ -1911,6 +1912,7 @@ module.exports = {
             printdata.WaterMarkLeft = `${Number(printdata.billformate.WaterMarkLeft)}%`;
             printdata.WaterMarkRight = `${Number(printdata.billformate.WaterMarkRight)}%`;
 
+            printdata.zoom = Zoom
             printdata.company = Company
             printdata.companysetting = CompanySetting
             printdata.companyWelComeNote = CompanyWelComeNote

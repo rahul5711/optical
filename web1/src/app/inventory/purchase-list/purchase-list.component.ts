@@ -401,9 +401,16 @@ export class PurchaseListComponent implements OnInit {
       this.sp.show()
       this.applyPayment.pendingPaymentList = this.invoiceList;
       this.applyPayment.ShopID = this.selectShop[0];
-      const subs: Subscription = this.payment.vendorPayment(this.applyPayment).subscribe({
+      let data = this.applyPayment
+      this.applyPayment = {
+        ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
+        CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
+        pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
+      };
+      const subs: Subscription = this.payment.vendorPayment(data).subscribe({
         next: (res: any) => {
           if (res.success) {
+            this.applyPayment = data 
             this.getInvoicePayment()
             this.paymentHistoryByPurchaseID()
             this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.PaymentReferenceNo = '';

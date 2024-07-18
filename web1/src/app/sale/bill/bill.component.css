@@ -297,7 +297,14 @@ button:disabled.whatsappfBill {
     box-shadow: 1px 1px 10px #0003;
 }
 
-
+.small_big_Btn{
+    background: #3f51b5;
+    color: #fff;
+    border: none;
+    padding: 8px 10px;
+    font-size: 16px;
+    border-radius: 5px;
+}
 
 @media screen and (min-width: 768px) and (max-width: 1300px) {
     .card {

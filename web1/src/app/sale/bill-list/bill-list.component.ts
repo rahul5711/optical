@@ -474,12 +474,17 @@ export class BillListComponent implements OnInit {
       this.applyPayment.PaymentDate = moment().format('YYYY-MM-DD');
       this.applyPayment.PaymentDate =  moment().format('YYYY-MM-DD') +  ' ' + this.currentTime;
       this.applyPayment.pendingPaymentList = this.invoiceList;
-      console.log(this.applyPayment);
-      const subs: Subscription = this.pay.customerPayment(this.applyPayment).subscribe({
+      let data = this.applyPayment
+      this.applyPayment = {
+        ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
+        CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
+        pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
+      };
+      const subs: Subscription = this.pay.customerPayment(data).subscribe({
         next: (res: any) => {
           if (res.success) {
-            this.paymentHistoryByMasterID(this.applyPayment.CustomerID, this.applyPayment.BillMasterID)
-            this.billByCustomer(this.applyPayment.CustomerID, this.applyPayment.BillMasterID)
+            this.paymentHistoryByMasterID(data.CustomerID, data.BillMasterID)
+            this.billByCustomer(data.CustomerID, data.BillMasterID)
             this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
             if (this.id != 0) {
               this.paymentHistory()
