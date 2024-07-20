@@ -81,11 +81,6 @@ router.post('/getSalereportExport', verifyAccessTokenAdmin, Controller.getSalere
 router.post('/getSalereportsDetail', verifyAccessTokenAdmin, Controller.getSalereportsDetail)
 
 router.post('/getSalereportsDetailExport', verifyAccessTokenAdmin, Controller.getSalereportsDetailExport)
-
-router.get('/getTest', Controller.getTest)
-
-
-
 router.post('/getOldSalereport', verifyAccessTokenAdmin, Controller.getOldSalereport)
 router.post('/getOldSaleDetailreport', verifyAccessTokenAdmin, Controller.getOldSalereDetailport)
 

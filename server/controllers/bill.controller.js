@@ -3822,13 +3822,6 @@ module.exports = {
         }
 
     },
-    getTest: async (req, res, next) => {
-        try {
-           res.send({success: true, message: "testing route"})
-        } catch (error) {
-            next(error)
-        }
-    },
     getCancelProductReport: async (req, res, next) => {
         try {
             const response = {
