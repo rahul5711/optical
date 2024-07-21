@@ -2276,6 +2276,176 @@ module.exports = {
             next(err)
         }
     },
+    getPurchasereportsDetailExport: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, calculation: [{
+                    "totalQty": 0,
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalDiscount": 0,
+                    "totalUnitPrice": 0,
+                    "totalRetailPrice": 0,
+                    "totalWholeSalePrice": 0,
+                    "totalSubTotalPrice": 0,
+                }], success: true, message: ""
+            }
+            const { Parem, Productsearch } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            if (Productsearch === undefined || Productsearch === null) {
+                return res.send({ success: false, message: "Invalid Query Data" })
+            }
+
+            let searchString = ``
+            if (Productsearch) {
+                searchString = ` and purchasedetailnew.ProductName like '%${Productsearch}%'`
+            }
+
+            qry = `SELECT purchasedetailnew.*,purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.PaymentStatus, shop.Name AS ShopName,  shop.AreaName AS AreaName, supplier.Name AS SupplierName,supplier.GSTNo AS SupplierGSTNo,product.HSNCode AS HSNcode  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier'  AND purchasedetailnew.CompanyID = ${CompanyID}  ${searchString}` + Parem;
+
+            let [datum] = await mysql2.pool.query(`SELECT SUM(purchasedetailnew.Quantity) as totalQty, SUM(purchasedetailnew.GSTAmount) as totalGstAmount, SUM(purchasedetailnew.TotalAmount) as totalAmount, SUM(purchasedetailnew.DiscountAmount) as totalDiscount, SUM(purchasedetailnew.UnitPrice) as totalUnitPrice, SUM(purchasedetailnew.RetailPrice) as totalRetailPrice,SUM(purchasedetailnew.SubTotal) as totalSubTotalPrice, SUM(purchasedetailnew.WholeSalePrice) as totalWholeSalePrice FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier' AND purchasedetailnew.CompanyID = ${CompanyID} ${searchString}` + Parem)
+
+            let [data] = await mysql2.pool.query(qry);
+
+
+            response.calculation[0].totalQty = datum[0].totalQty ? datum[0].totalQty : 0
+            response.calculation[0].totalGstAmount = datum[0].totalGstAmount ? datum[0].totalGstAmount.toFixed(2) : 0
+            response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount.toFixed(2) : 0
+            response.calculation[0].totalDiscount = datum[0].totalDiscount ? datum[0].totalDiscount.toFixed(2) : 0
+            response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice.toFixed(2) : 0
+            response.calculation[0].totalSubTotalPrice = datum[0].totalSubTotalPrice ? datum[0].totalSubTotalPrice.toFixed(2) : 0
+
+            if (data.length) {
+                for (let item of data) {
+                    response.calculation[0].totalRetailPrice += item.Quantity * item.RetailPrice
+                    response.calculation[0].totalWholeSalePrice += item.Quantity * item.WholeSalePrice
+                    item.cGstAmount = 0
+                    item.iGstAmount = 0
+                    item.sGstAmount = 0
+                    item.cGstPercentage = 0
+                    item.iGstPercentage = 0
+                    item.sGstPercentage = 0
+                    if (item.GSTType === 'CGST-SGST') {
+                        item.cGstAmount = item.GSTAmount / 2
+                        item.sGstAmount = item.GSTAmount / 2
+                        item.cGstPercentage = item.GSTPercentage / 2
+                        item.sGstPercentage = item.GSTPercentage / 2
+                    }
+                    if (item.GSTType === 'IGST') {
+                        item.iGstAmount = item.GSTAmount
+                        item.iGstPercentage = item.GSTPercentage
+                    }
+                }
+            }
+
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet(`purchase_productType_report_export`);
+            worksheet.columns = [
+                { header: 'S.No', key: 'S_no', width: 8 },
+                { header: 'InvoiceNo', key: 'InvoiceNo', width: 20 },
+                { header: 'Invoice Date', key: 'InvoiceDate', width: 25 },
+                { header: 'Supplier', key: 'SupplierName', width: 30 },
+                { header: 'TAX No', key: 'SupplierGSTNo', width: 30 },
+                { header: 'Product Type', key: 'ProductTypeName', width: 20 },
+                { header: 'HSN Code', key: 'HSNcode', width: 15 },
+                { header: 'Product', key: 'ProductName', width: 30 },
+                { header: 'Qty', key: 'Quantity', width: 10 },
+                { header: 'Unit Price', key: 'UnitPrice', width: 15 },
+                { header: 'Dis', key: 'DiscountAmount', width: 15 },
+                { header: 'Sub Total (Price Before Tax)', key: 'SubTotal', width: 30 },
+                { header: 'TAX Type', key: 'GSTType', width: 15 },
+                { header: 'TAX%', key: 'GSTPercentage', width: 10 },
+                { header: 'TAX Amt', key: 'GSTAmount', width: 15 },
+                { header: 'CGST%', key: 'cGstPercentage', width: 10 },
+                { header: 'CGST Amt', key: 'cGstAmount', width: 15 },
+                { header: 'SGST%', key: 'sGstPercentage', width: 10 },
+                { header: 'SGST Amt', key: 'sGstAmount', width: 15 },
+                { header: 'IGST%', key: 'iGstPercentage', width: 10 },
+                { header: 'IGST Amt', key: 'iGstAmount', width: 15 },
+                { header: 'Grand Total', key: 'TotalAmount', width: 15 },
+                { header: 'Bar Code', key: 'BaseBarCode', width: 15 },
+                { header: 'Payment Status', key: 'PaymentStatus', width: 15 },
+                { header: 'Retail Per_Pc Price', key: 'RetailPrice', width: 20 },
+                { header: 'Retail Total Price', key: 'RetailTotalPrice', width: 20 },
+                { header: 'Whole Sale Per_Pc Price', key: 'WholeSalePrice', width: 20 },
+                { header: 'Whole Sale Total Price', key: 'WholeSaleTotalPrice', width: 20 },
+                { header: 'Current Shop', key: 'CurrentShop', width: 35 }
+            ];
+
+            const d = {
+                "S_no": '',
+                "InvoiceNo": '',
+                "InvoiceDate": '',
+                "Supplier": '',
+                "TAXNo": '',
+                "ProductType": '',
+                "HSNCode": '',
+                "Product": '',
+                "Quantity": Number(response.calculation[0].totalQty),
+                "UnitPrice": Number(response.calculation[0].totalUnitPrice),
+                "DiscountAmount": Number(response.calculation[0].totalDiscount),
+                "SubTotal": Number(response.calculation[0].totalSubTotalPrice),
+                "TAXType": '',
+                "TAXPercentage": '',
+                "GSTAmount": Number(response.calculation[0].totalGstAmount),
+                "CGSTPercentage": '',
+                "CGSTAmt": '',
+                "SGSTPercentage": '',
+                "SGSTAmt": '',
+                "IGSTPercentage": '',
+                "IGSTAmt": '',
+                "TotalAmount": Number(response.calculation[0].totalAmount),
+                "BarCode": '',
+                "PaymentStatus": '',
+                "RetailPerPcPrice": '',
+                "RetailTotalPrice": Number(response.calculation[0].totalRetailPrice),
+                "WholeSalePerPcPrice": '',
+                "WholeSaleTotalPrice": Number(response.calculation[0].totalWholeSalePrice),
+                "CurrentShop": ''
+            };
+
+            worksheet.addRow(d);
+            let count = 1
+            console.log("Start Exporting...");
+            data.forEach((x) => {
+                x.S_no = count++;
+                x.CurrentShop = `${x.ShopName}(${x.AreaName})`
+                x.RetailTotalPrice = x.Quantity * x.RetailPrice
+                x.WholeSaleTotalPrice = x.Quantity * x.WholeSalePrice
+                x.InvoiceDate = moment(x.PurchaseDate).format('YYYY-MM-DD HH:mm a');
+                worksheet.addRow(x);
+            });
+
+            worksheet.autoFilter = {
+                from: 'A1',
+                to: 'AC1',
+            };
+
+            worksheet.getRow(1).eachCell((cell) => {
+                cell.font = { bold: true };
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } };
+            });
+
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', `attachment; filename=purchase_productType_report_export.xlsx`);
+            res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+            console.log("Export...");
+            await workbook.xlsx.write(res);
+            return res.end();
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+
+
+        } catch (err) {
+            next(err)
+        }
+    },
 
 
     // Purchase return report

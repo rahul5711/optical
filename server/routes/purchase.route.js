@@ -99,6 +99,8 @@ router.post('/getPurchasereportsExport', verifyAccessTokenAdmin, Controller.getP
 
 router.post('/getPurchasereportsDetail', verifyAccessTokenAdmin, Controller.getPurchasereportsDetail)
 
+router.post('/getPurchasereportsDetailExport', verifyAccessTokenAdmin, Controller.getPurchasereportsDetailExport)
+
 
 // pre order product
 router.post('/createPreOrder', verifyAccessTokenAdmin, Controller.createPreOrder)

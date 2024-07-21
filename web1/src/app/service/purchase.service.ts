@@ -344,6 +344,12 @@ export class PurchaseService {
       responseType: 'arraybuffer'
     });
   }
+  getPurchasereportsDetailExport(Parem: any, Productsearch: any) {
+    return this.httpClient.post(`${this.url}/getPurchasereportsDetailExport`, { Parem: Parem, Productsearch: Productsearch }, {
+      observe: 'response',
+      responseType: 'arraybuffer'
+    });
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

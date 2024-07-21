@@ -72,12 +72,12 @@ export class PurchaseReportComponent implements OnInit {
 
   ProductExpiryList:any = [];
   specList1:any
-  ExpirytotalQty :any 
-  ExpirytotalDiscount :any 
+  ExpirytotalQty :any
+  ExpirytotalDiscount :any
   ExpirytotalUnitPrice :any
   ExpirytotalGstAmount :any
-  ExpirytotalAmount :any 
-  gstExpirys :any 
+  ExpirytotalAmount :any
+  gstExpirys :any
   todaydate: any;
 
   columnVisibility: any = {
@@ -97,7 +97,7 @@ export class PurchaseReportComponent implements OnInit {
     GrandTotal: true,
     SupplierTAXNo: true,
   };
-  
+
   columnVisibility1: any = {
     SNo: true,
     InvoiceNo: true,
@@ -171,22 +171,22 @@ export class PurchaseReportComponent implements OnInit {
     private sp: NgxSpinnerService,
   ) { }
 
-  PurchaseMaster: any =  { 
-    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
+  PurchaseMaster: any =  {
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,
     SupplierGSTNo:'All', PaymentStatus: 0,
   };
 
   PurchaseDetail: any =  {
-    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,
     PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
   };
 
-  charge: any =  { 
+  charge: any =  {
     FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0
   };
 
   ProductExpiry: any =  {
-    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,
     PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
   };
 
@@ -284,7 +284,7 @@ export class PurchaseReportComponent implements OnInit {
     if (this.PurchaseMaster.ToDate !== '' && this.PurchaseMaster.ToDate !== null){
       let ToDate =  moment(this.PurchaseMaster.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' +  `'${ToDate}'`; }
-      
+
     if (this.PurchaseMaster.ShopID != 0  ){
       Parem = Parem + ' and purchasemasternew.ShopID IN ' +  `(${this.PurchaseMaster.ShopID})`;}
 
@@ -299,10 +299,10 @@ export class PurchaseReportComponent implements OnInit {
         if(res.success){
           this.as.successToast(res.message)
           // res.data.forEach((el: any) =>{
-            
+
           // })
           this.PurchaseMasterList = res.data;
- 
+
           this.PurchaseMasterList.forEach((e: any) => {
             let g :any = {type: 'iGST' , amt : 0}
             let gs : any = {type: 'cGST-sGST' , amt : 0}
@@ -349,7 +349,7 @@ export class PurchaseReportComponent implements OnInit {
     if (this.PurchaseMaster.ToDate !== '' && this.PurchaseMaster.ToDate !== null){
       let ToDate =  moment(this.PurchaseMaster.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' +  `'${ToDate}'`; }
-      
+
     if (this.PurchaseMaster.ShopID != 0  ){
       Parem = Parem + ' and purchasemasternew.ShopID IN ' +  `(${this.PurchaseMaster.ShopID})`;}
 
@@ -377,8 +377,8 @@ export class PurchaseReportComponent implements OnInit {
   }
 
   purchaseFromReset(){
-    this.PurchaseMaster =  { 
-        FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
+    this.PurchaseMaster =  {
+        FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,
         SupplierGSTNo:'All', PaymentStatus: 0,
     };
     this.PurchaseMasterList = [];
@@ -406,7 +406,7 @@ export class PurchaseReportComponent implements OnInit {
 
     // Set column widths in the worksheet
     ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
-    
+
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
       XLSX.writeFile(wb, 'Purchase Report.xlsx');
@@ -450,13 +450,13 @@ export class PurchaseReportComponent implements OnInit {
     }
   }
 
-  getSptTableData() { 
+  getSptTableData() {
     this.specList.forEach((element: any) => {
      if (element.FieldType === 'DropDown' && element.Ref === '0') {
        const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
          next: (res: any) => {
           element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-          element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));       
+          element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
@@ -471,7 +471,7 @@ export class PurchaseReportComponent implements OnInit {
        const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
          next: (res: any) => {
           element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-          element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));       
+          element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
@@ -559,6 +559,49 @@ export class PurchaseReportComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+  getPurchaseDetailsExport(){
+    this.sp.show()
+    let Parem = '';
+    this.TtlR = 0
+    this.TtlW = 0
+    this.PurchaseDetailList = []
+
+    if (this.PurchaseDetail.FromDate !== '' && this.PurchaseDetail.FromDate !== null){
+      let FromDate =  moment(this.PurchaseDetail.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and DATE_FORMAT(purchasemasternew.PurchaseDate, "%Y-%m-%d")  between ' +  `'${FromDate}'`; }
+
+    if (this.PurchaseDetail.ToDate !== '' && this.PurchaseDetail.ToDate !== null){
+      let ToDate =  moment(this.PurchaseDetail.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' +  `'${ToDate}'`; }
+
+    if (this.PurchaseDetail.ProductCategory  !== 0){
+      Parem = Parem + ' and purchasedetailnew.ProductTypeID = ' +  this.PurchaseDetail.ProductCategory;
+      this.filter();}
+
+    if (this.PurchaseDetail.ProductName !== '' ) {
+      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.PurchaseDetail.ProductName.trim() + "%'"; }
+
+    if (this.PurchaseDetail.ShopID != 0){
+      Parem = Parem + ' and purchasemasternew.ShopID IN ' +  `(${this.PurchaseDetail.ShopID})`;}
+
+    if (this.PurchaseDetail.SupplierID !== 0){
+      Parem = Parem + ' and purchasemasternew.SupplierID = ' +  this.PurchaseDetail.SupplierID; }
+
+    if (this.PurchaseDetail.GSTPercentage !== 0){
+      Parem = Parem + ' and purchasedetailnew.GSTPercentage = '  + `'${this.PurchaseDetail.GSTPercentage}'`; }
+
+    if (this.PurchaseDetail.GSTType !== 0){
+      Parem = Parem + ' and purchasedetailnew.GSTType = '  + `'${this.PurchaseDetail.GSTType}'`; }
+
+    const subs: Subscription =  this.purchaseService.getPurchasereportsDetailExport(Parem,this.Productsearch.trim()).subscribe({
+      next: (res: any) => {
+        this.downloadFile(res)
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
 
   exportAsXLSXDetail(): void {
     let element = document.getElementById('purchaseDetailExcel');
@@ -574,10 +617,10 @@ export class PurchaseReportComponent implements OnInit {
                   colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
               });
           });
-      
+
           // Set column widths in the worksheet
           ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
-          
+
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'Purchase ProductType Report.xlsx');
@@ -597,8 +640,8 @@ export class PurchaseReportComponent implements OnInit {
   }
 
   purchaseDetailsFromReset(){
-    this.PurchaseDetail =  { 
-      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
+    this.PurchaseDetail =  {
+      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,
       PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
     };
     this.PurchaseDetailList = [];
@@ -645,7 +688,7 @@ export class PurchaseReportComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
-    })       
+    })
   }
 
   exportAsXLSXcharge(): void {
@@ -662,17 +705,17 @@ export class PurchaseReportComponent implements OnInit {
                   colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
               });
           });
-      
+
           // Set column widths in the worksheet
           ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
-          
+
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'PurchaseCharge_Report.xlsx');
   }
 
   purchaseChargeFromReset(){
-    this.charge =  { 
+    this.charge =  {
       FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0
     };
     this.PurchaseChargeList = [];
@@ -710,13 +753,13 @@ export class PurchaseReportComponent implements OnInit {
     }
   }
 
-  getSptTableData1() { 
+  getSptTableData1() {
     this.specList1.forEach((element: any) => {
      if (element.FieldType === 'DropDown' && element.Ref === '0') {
        const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
          next: (res: any) => {
            element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-           element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));       
+           element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
@@ -731,7 +774,7 @@ export class PurchaseReportComponent implements OnInit {
        const subs: Subscription =  this.ps.getProductSupportData( this.specList1[index].SelectedValue,element.SptTableName).subscribe({
          next: (res: any) => {
           element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-          element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));       
+          element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
          },
          error: (err: any) => console.log(err.message),
          complete: () => subs.unsubscribe(),
@@ -815,7 +858,7 @@ export class PurchaseReportComponent implements OnInit {
   openModal2(content2: any) {
     this.modalService.open(content2, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
   }
-  
+
   exportAsXLSXExpiry(): void {
     let element = document.getElementById('ProductExpiry');
     const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
@@ -830,10 +873,10 @@ export class PurchaseReportComponent implements OnInit {
                   colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
               });
           });
-      
+
           // Set column widths in the worksheet
           ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
-          
+
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'PurchaseProductExpiry_Report.xlsx');
@@ -841,7 +884,7 @@ export class PurchaseReportComponent implements OnInit {
 
   productExpiryFromReset(){
     this.ProductExpiry =  {
-      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,  
+      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,
       PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
     };
     this.ProductExpiryList= [];
