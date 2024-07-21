@@ -95,6 +95,8 @@ router.post('/updateInventorySummary', verifyAccessTokenAdmin, Controller.update
 
 router.post('/getPurchasereports', verifyAccessTokenAdmin, Controller.getPurchasereports)
 
+router.post('/getPurchasereportsExport', verifyAccessTokenAdmin, Controller.getPurchasereportsExport)
+
 router.post('/getPurchasereportsDetail', verifyAccessTokenAdmin, Controller.getPurchasereportsDetail)
 
 

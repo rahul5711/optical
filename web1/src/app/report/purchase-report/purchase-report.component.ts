@@ -15,6 +15,7 @@ import { SupportService } from 'src/app/service/support.service';
 import html2canvas from 'html2canvas';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl } from '@angular/forms';
+import * as saveAs from 'file-saver';
 
 @Component({
   selector: 'app-purchase-report',
@@ -336,6 +337,43 @@ export class PurchaseReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+  }
+  getPurchaseMasterExport(){
+    this.sp.show()
+    let Parem = '';
+    this.PurchaseMasterList = []
+    if (this.PurchaseMaster.FromDate !== '' && this.PurchaseMaster.FromDate !== null){
+      let FromDate =  moment(this.PurchaseMaster.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and DATE_FORMAT(purchasemasternew.PurchaseDate, "%Y-%m-%d")  between ' +  `'${FromDate}'`; }
+
+    if (this.PurchaseMaster.ToDate !== '' && this.PurchaseMaster.ToDate !== null){
+      let ToDate =  moment(this.PurchaseMaster.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' +  `'${ToDate}'`; }
+      
+    if (this.PurchaseMaster.ShopID != 0  ){
+      Parem = Parem + ' and purchasemasternew.ShopID IN ' +  `(${this.PurchaseMaster.ShopID})`;}
+
+    if (this.PurchaseMaster.SupplierID !== 0){
+      Parem = Parem + ' and purchasemasternew.SupplierID = ' +  this.PurchaseMaster.SupplierID ; }
+
+    if (this.PurchaseMaster.PaymentStatus !== 0 && this.PurchaseMaster.PaymentStatus !== null &&  this.PurchaseMaster.PaymentStatus !== 'All'){
+      Parem = Parem + ' and purchasemasternew.PaymentStatus = '  + `'${this.PurchaseMaster.PaymentStatus}'`; }
+
+    const subs: Subscription =  this.purchaseService.getPurchaseMasterExport(Parem).subscribe({
+      next: (res: any) => {
+        this.downloadFile(res);
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  public downloadFile(response: any, fileName: any = '') {
+    const blob = new Blob([response.body], { type: response.headers.get('content-type') });
+    fileName = fileName || response.headers.get('Content-Disposition').split(';')[1].split('=')[1].replace(/\"/g, '')
+    const file = new File([blob], fileName, { type: response.headers.get('content-type') });
+    saveAs(file);
   }
 
   purchaseFromReset(){

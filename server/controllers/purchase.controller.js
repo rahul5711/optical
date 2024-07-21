@@ -2030,6 +2030,134 @@ module.exports = {
             next(err)
         }
     },
+    getPurchasereportsExport: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, calculation: [{
+                    "totalQty": 0,
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalDiscount": 0,
+                    "totalUnitPrice": 0
+                }], success: true, message: ""
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            qry = `SELECT purchasemasternew.*,'CGST-SGST' as GSTType, purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.PaymentStatus, shop.Name AS ShopName,  shop.AreaName AS AreaName, supplier.Name AS SupplierName,supplier.GSTNo AS SupplierGSTNo FROM purchasemasternew  LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID WHERE purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier'  AND purchasemasternew.CompanyID = ${CompanyID}  ` + Parem;
+
+            let [data] = await mysql2.pool.query(qry);
+
+
+            let [datum] = await mysql2.pool.query(`SELECT SUM(purchasedetailnew.Quantity) as totalQty, SUM(purchasedetailnew.GSTAmount) as totalGstAmount, SUM(purchasedetailnew.TotalAmount) as totalAmount, SUM(purchasedetailnew.DiscountAmount) as totalDiscount, SUM(purchasedetailnew.SubTotal) as totalUnitPrice  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier' AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem)
+
+            if (data.length) {
+                for (let item of data) {
+                    let [fetchGstType] = await mysql2.pool.query(`select * from purchasedetailnew where CompanyID = ${CompanyID} and PurchaseID = ${item.ID} LIMIT 1`)
+
+                    if (fetchGstType) {
+                        item.GSTType = fetchGstType[0].GSTType
+                    }
+
+                    item.cGstAmount = 0
+                    item.iGstAmount = 0
+                    item.sGstAmount = 0
+
+                    if (item.GSTType === 'CGST-SGST') {
+                        item.cGstAmount += item.GSTAmount / 2
+                        item.sGstAmount += item.GSTAmount / 2
+                    }
+
+                    if (item.GSTType !== 'CGST-SGST') {
+                        item.iGstAmount += item.GSTAmount
+                    }
+                }
+            }
+
+
+
+            response.calculation[0].totalQty = datum[0].totalQty ? datum[0].totalQty : 0
+            response.calculation[0].totalGstAmount = datum[0].totalGstAmount ? datum[0].totalGstAmount.toFixed(2) : 0
+            response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount.toFixed(2) : 0
+            response.calculation[0].totalDiscount = datum[0].totalDiscount ? datum[0].totalDiscount.toFixed(2) : 0
+            response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice.toFixed(2) : 0
+
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet(`purchasereport_export`);
+
+            worksheet.columns = [
+                { header: 'S.No', key: 'S_no', width: 8 },
+                { header: 'Supplier', key: 'SupplierName', width: 30 },
+                { header: 'Current Shop', key: 'CurrentShop', width: 35 },
+                { header: 'InvoiceNo', key: 'InvoiceNo', width: 20 },
+                { header: 'Invoice Date', key: 'InvoiceDate', width: 25 },
+                { header: 'Payment Status', key: 'PaymentStatus', width: 25 },
+                { header: 'Quantity', key: 'Quantity', width: 10 },
+                { header: 'Discount', key: 'DiscountAmount', width: 15 },
+                { header: 'Sub Total', key: 'SubTotal', width: 15 },
+                { header: 'TAX Amount', key: 'GSTAmount', width: 15 },
+                { header: 'IGST', key: 'iGstAmount', width: 10 },
+                { header: 'SGST', key: 'sGstAmount', width: 10 },
+                { header: 'CGST', key: 'cGstAmount', width: 10 },
+                { header: 'Grand Total', key: 'TotalAmount', width: 15 },
+                { header: 'Supplier TAX No', key: 'SupplierGSTNo', width: 20 }
+            ];
+            let count = 1;
+            const d = {
+                "S_no": '',
+                "Supplier": '',
+                "CurrentShop": '',
+                "InvoiceNo": '',
+                "InvoiceDate": '',
+                "PaymentStatus": '',
+                "Quantity": Number(response.calculation[0].totalQty),
+                "DiscountAmount": Number(response.calculation[0].totalDiscount),
+                "SubTotal": Number(response.calculation[0].totalUnitPrice),
+                "GSTAmount": Number(response.calculation[0].totalGstAmount),
+                "IGST": '',
+                "SGST": '',
+                "CGST": '',
+                "TotalAmount": Number(response.calculation[0].totalAmount),
+                "SupplierTAXNo": ''
+            };
+
+            worksheet.addRow(d);
+            console.log("Start Exporting...");
+            data.forEach((x) => {
+                x.S_no = count++;
+                x.CurrentShop = `${x.ShopName}(${x.AreaName})`
+                x.InvoiceDate = moment(x.PurchaseDate).format('YYYY-MM-DD HH:mm a');
+                worksheet.addRow(x);
+            });
+
+            worksheet.autoFilter = {
+                from: 'A1',
+                to: 'O1',
+            };
+
+            worksheet.getRow(1).eachCell((cell) => {
+                cell.font = { bold: true };
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } };
+            });
+
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', `attachment; filename=Purchase_report_export.xlsx`);
+            res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+            console.log("Export...");
+            await workbook.xlsx.write(res);
+            return res.end();
+
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+
+
+        } catch (err) {
+            next(err)
+        }
+    },
 
     getPurchasereportsDetail: async (req, res, next) => {
         try {

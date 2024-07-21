@@ -88,11 +88,15 @@
                           </mat-select>
                         </mat-form-field>
                       </div>
-                      <div class="col-xl-2 col-lg-4 col-md-4 col-12 mb-0 ">
-                        <button type="submit" mat-raised-button color="primary">
+                      <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-0 ">
+                        <button type="submit" class="me-2" mat-raised-button color="primary">
                           Search
                         </button>
-                        <button type="button" class=" ms-1 me-1" mat-raised-button color="warn"
+                        <button type="button" class="me-2" mat-raised-button color="primary"
+                          (click)="getPurchaseMasterExport()">
+                          Quick Download
+                        </button>
+                        <button type="button" mat-raised-button color="warn"
                           (click)="purchaseFromReset()">
                           Reset
                         </button>
@@ -136,7 +140,7 @@
                                   <i class="fa-solid fa-filter" style="font-size: 20px; color: #f44336;"></i>
                               </button>
                               <div class="hover-box">
-                                  
+
                                   <button (click)="toggleColumnVisibility('Supplier')">
                                       <mat-checkbox class="me-2" name="Supplier" [(ngModel)]="columnVisibility.Supplier"></mat-checkbox>
                                        Supplier
@@ -300,7 +304,7 @@
                               <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
                             </mat-option>
                           </mat-select>
-                        </mat-form-field> 
+                        </mat-form-field>
                       </div>
                       <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
                         <mat-form-field class="example-full-width mb-0">
@@ -408,7 +412,7 @@
                         <button type="button" mat-raised-button color="warn" (click)="purchaseDetailsFromReset()">
                           Reset
                         </button>
-                       
+
                       </div>
                     </div>
                   </form>
@@ -463,7 +467,7 @@
                                   <i class="fa-solid fa-filter" style="font-size: 20px; color: #f44336;"></i>
                               </button>
                               <div class="hover-box">
-                                  
+
                                   <button (click)="toggleColumnVisibility1('InvoiceNo')">
                                       <mat-checkbox class="me-2" name="InvoiceNo" [(ngModel)]="columnVisibility1.InvoiceNo"></mat-checkbox>
                                        InvoiceNo
@@ -667,7 +671,7 @@
                         <button class="me-3" mat-raised-button color="primary">Search</button>
                         <button class="mr-0" type="button" mat-raised-button color="warn"
                           (click)="purchaseChargeFromReset()">Reset</button>
-                       
+
                       </div>
                     </div>
                   </form>
@@ -734,7 +738,7 @@
                                   <mat-checkbox class="me-2" name="GrandTotal" [(ngModel)]="columnVisibility2.GrandTotal"></mat-checkbox>
                                      GrandTotal
                               </button>
-                                 
+
                               </div>
                           </div>
                             </td>
@@ -912,7 +916,7 @@
                         <button class="me-2" type="submit" mat-raised-button color="primary"> Search </button>
                         <button type="button" mat-raised-button color="warn" (click)="productExpiryFromReset()"> Reset
                         </button>
-                      
+
                       </div>
                     </div>
                   </form>
@@ -957,7 +961,7 @@
                                   <i class="fa-solid fa-filter" style="font-size: 20px; color: #f44336;"></i>
                               </button>
                               <div class="hover-box">
-                                  
+
                                   <button (click)="toggleColumnVisibility3('InvoiceNo')">
                                       <mat-checkbox class="me-2" name="InvoiceNo" [(ngModel)]="columnVisibility3.InvoiceNo"></mat-checkbox>
                                        InvoiceNo
@@ -966,7 +970,7 @@
                                       <mat-checkbox class="me-2" name="InvoiceDate" [(ngModel)]="columnVisibility3.InvoiceDate"></mat-checkbox>
                                        InvoiceDate
                                   </button>
-                                 
+
                                   <button (click)="toggleColumnVisibility3('ProductCategory')">
                                       <mat-checkbox class="me-2" name="ProductCategory" [(ngModel)]="columnVisibility3.ProductCategory"></mat-checkbox>
                                        ProductCategory
@@ -1031,8 +1035,8 @@
                                       <mat-checkbox class="me-2" name="ProductExpiryDate" [(ngModel)]="columnVisibility3.ProductExpiryDate"></mat-checkbox>
                                        ProductExpiryDate
                                   </button>
-                                 
-                                
+
+
                               </div>
                           </div>
                             </td>
