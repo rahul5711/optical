@@ -816,9 +816,9 @@ module.exports = {
             const [totalDueAmount] = await mysql2.pool.query(`select SUM(billmaster.DueAmount) as totalDueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and ShopID = ${shopid}  ${param}  order by ID desc`)
 
             if (totalDueAmount[0].totalDueAmount !== null) {
-                payAbleAmount = totalDueAmount[0].totalDueAmount
+                payAbleAmount = totalDueAmount[0].totalDueAmount.toFixed(2)
             }
-            console.log(PaidAmount , payAbleAmount);
+            console.log(PaidAmount, payAbleAmount);
             if (PaidAmount > payAbleAmount) {
                 return res.send({ success: false, message: `Your Due Amount is ${payAbleAmount}` });
             }
