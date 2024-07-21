@@ -11,6 +11,8 @@ var TinyURL = require('tinyurl');
 const clientConfig = require("../helpers/constants");
 const { log } = require('console')
 const mysql2 = require('../database')
+const ExcelJS = require('exceljs');
+var moment = require("moment");
 
 function isValidDate(dateString) {
     // First check for the pattern
@@ -3115,8 +3117,8 @@ module.exports = {
                     response.calculation[0].totalDiscount += item.DiscountAmount
                     response.calculation[0].totalUnitPrice += item.UnitPrice
                     response.calculation[0].totalSubTotal += item.SubTotal
-                    response.calculation[0].totalRetailPrice += item.Quantity * item.RetailPrice
-                    response.calculation[0].totalWholeSalePrice += item.Quantity * item.WholeSalePrice
+                    response.calculation[0].totalRetailPrice += item.Count * item.RetailPrice
+                    response.calculation[0].totalWholeSalePrice += item.Count * item.WholeSalePrice
 
 
                     if (values) {
@@ -3146,6 +3148,215 @@ module.exports = {
             }
 
             response.calculation[0].gst_details = values;
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+
+
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+
+    },
+    getProductInventoryReportExport: async (req, res, next) => {
+        try {
+
+            const response = {
+                data: null, success: true, message: "", calculation: [{
+                    "totalQty": 0,
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalDiscount": 0,
+                    "totalUnitPrice": 0,
+                    "totalSubTotal": 0,
+                    "totalRetailPrice": 0,
+                    "totalWholeSalePrice": 0,
+                    "gst_details": []
+                }]
+            }
+            const { Parem, Productsearch } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const Body = req.body;
+
+            let shopId = ``
+
+            if (Parem === "" || Parem === undefined || Parem === null) {
+                if (shopid !== 0) {
+                    shopId = `and purchasemasternew.ShopID = ${shopid}`
+                }
+            }
+
+            if (Productsearch === undefined || Productsearch === null) {
+                return res.send({ success: false, message: "Invalid Query Data" })
+            }
+
+            let searchString = ``
+            if (Productsearch) {
+                searchString = ` and purchasedetailnew.ProductName like '%${Productsearch}%'`
+            }
+
+            qry = `SELECT COUNT(barcodemasternew.ID) AS Count, purchasedetailnew.BrandType, purchasedetailnew.ID as PurchaseDetailID , purchasedetailnew.UnitPrice, purchasedetailnew.Quantity, purchasedetailnew.ID, purchasedetailnew.DiscountAmount, purchasedetailnew.TotalAmount, supplier.Name AS SupplierName, shop.Name AS ShopName, shop.AreaName AS AreaName, purchasedetailnew.ProductName, purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice, purchasedetailnew.SubTotal, purchasedetailnew.DiscountPercentage, purchasedetailnew.GSTPercentage as GSTPercentagex, purchasedetailnew.GSTAmount, purchasedetailnew.GSTType as GSTTypex, purchasedetailnew.WholeSalePrice, purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.PaymentStatus,  barcodemasternew.*, purchasemasternew.SupplierID FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID  LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} ${searchString} AND purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier'  ` + Parem + " Group By barcodemasternew.PurchaseDetailID, barcodemasternew.ShopID" + " HAVING barcodemasternew.Status = 1";
+            let [data] = await mysql2.pool.query(qry);
+
+            // let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            // gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            // const values = []
+
+            // if (gstTypes.length) {
+            //     for (const item of gstTypes) {
+            //         if ((item.Name).toUpperCase() === 'CGST-SGST') {
+            //             values.push(
+            //                 {
+            //                     GSTType: `CGST`,
+            //                     Amount: 0
+            //                 },
+            //                 {
+            //                     GSTType: `SGST`,
+            //                     Amount: 0
+            //                 }
+            //             )
+            //         } else {
+            //             values.push({
+            //                 GSTType: `${item.Name}`,
+            //                 Amount: 0
+            //             })
+            //         }
+            //     }
+
+            // }
+
+            if (data.length) {
+                for (const item of data) {
+                    item.DiscountAmount = item.UnitPrice * item.Count * item.DiscountPercentage / 100
+                    item.SubTotal = (item.Count * item.UnitPrice) - item.DiscountAmount
+                    item.GSTAmount = (item.UnitPrice * item.Count - item.DiscountAmount) * item.GSTPercentage / 100
+                    item.TotalAmount = item.SubTotal + item.GSTAmount
+
+                    response.calculation[0].totalQty += item.Count
+                    response.calculation[0].totalGstAmount += item.GSTAmount
+                    response.calculation[0].totalAmount += item.TotalAmount
+                    response.calculation[0].totalDiscount += item.DiscountAmount
+                    response.calculation[0].totalUnitPrice += item.UnitPrice
+                    response.calculation[0].totalSubTotal += item.SubTotal
+                    response.calculation[0].totalRetailPrice += item.Count * item.RetailPrice
+                    response.calculation[0].totalWholeSalePrice += item.Count * item.WholeSalePrice
+
+
+                    // if (values) {
+                    //     values.forEach(e => {
+                    //         if (e.GSTType === item.GSTType) {
+                    //             e.Amount += item.GSTAmount
+                    //         }
+
+                    //         // CGST-SGST
+
+                    //         if (item.GSTType === 'CGST-SGST') {
+
+                    //             if (e.GSTType === 'CGST') {
+                    //                 e.Amount += item.GSTAmount / 2
+                    //             }
+
+                    //             if (e.GSTType === 'SGST') {
+                    //                 e.Amount += item.GSTAmount / 2
+                    //             }
+                    //         }
+                    //     })
+                    // }
+
+                }
+
+
+            }
+
+
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet(`inventory_report_export`);
+
+            worksheet.columns = [
+                { header: 'S.No', key: 'S_no', width: 8 },
+                { header: 'InvoiceNo', key: 'InvoiceNo', width: 25 },
+                { header: 'Invoice Date', key: 'InvoiceDate', width: 20 },
+                { header: 'Current Shop', key: 'CurrentShop', width: 30 },
+                { header: 'Supplier', key: 'SupplierName', width: 25 },
+                { header: 'Product Category', key: 'ProductTypeName', width: 20 },
+                { header: 'Product Name', key: 'ProductName', width: 30 },
+                { header: 'Status', key: 'CurrentStatus', width: 15 },
+                { header: 'Barcode', key: 'Barcode', width: 15 },
+                { header: 'Quantity', key: 'Quantity', width: 10 },
+                { header: 'Unit Price', key: 'UnitPrice', width: 15 },
+                { header: 'Discount', key: 'DiscountAmount', width: 15 },
+                { header: 'Sub Total', key: 'SubTotal', width: 15 },
+                { header: 'TAX Type', key: 'GSTType', width: 10 },
+                { header: 'TAX%', key: 'GSTPercentage', width: 10 },
+                { header: 'TAX Amount', key: 'GSTAmount', width: 15 },
+                { header: 'Grand Total', key: 'TotalAmount', width: 15 },
+                { header: 'Retail Per_Pc Price', key: 'RetailPrice', width: 20 },
+                { header: 'Retail Total Price', key: 'RetailTotalPrice', width: 20 },
+                { header: 'WholeSale Per_Pc Price', key: 'WholeSalePrice', width: 20 },
+                { header: 'WholeSale Total Price', key: 'WholeSaleTotalPrice', width: 20 }
+            ];
+
+            const d = {
+                "S_no": '',
+                "InvoiceNo": '',
+                "InvoiceDate": '',
+                "CurrentShop": '',
+                "Supplier": '',
+                "ProductCategory": '',
+                "ProductName": '',
+                "Status": '',
+                "Barcode": '',
+                "Quantity": response.calculation[0].totalQty,
+                "UnitPrice": response.calculation[0].totalUnitPrice,
+                "DiscountAmount": response.calculation[0].totalDiscount,
+                "SubTotal": response.calculation[0].totalSubTotal,
+                "TAXType": '',
+                "TAXPercentage": '',
+                "GSTAmount": response.calculation[0].totalGstAmount,
+                "TotalAmount": response.calculation[0].totalAmount,
+                "RetailPerPcPrice": '',
+                "RetailTotalPrice": response.calculation[0].totalRetailPrice,
+                "WholeSalePerPcPrice": '',
+                "WholeSaleTotalPrice": response.calculation[0].totalWholeSalePrice
+            };
+
+
+            worksheet.addRow(d);
+            let count = 1;
+            console.log("Start Exporting...");
+            data.forEach((x) => {
+                x.S_no = count++;
+                x.CurrentShop = `${x.ShopName}(${x.AreaName})`
+                x.RetailTotalPrice = x.Count * x.RetailPrice
+                x.WholeSaleTotalPrice = x.Count * x.WholeSalePrice
+                x.InvoiceDate = moment(x.PurchaseDate).format('YYYY-MM-DD HH:mm a');
+                worksheet.addRow(x);
+            });
+
+            worksheet.autoFilter = {
+                from: 'A1',
+                to: 'U1',
+            };
+
+            worksheet.getRow(1).eachCell((cell) => {
+                cell.font = { bold: true };
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } };
+            });
+
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', `attachment; filename=Inventory_report_export.xlsx`);
+            res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+            console.log("Export...");
+            await workbook.xlsx.write(res);
+            return res.end();
+
+
+            // response.calculation[0].gst_details = values;
             response.data = data
             response.message = "success";
             return res.send(response);

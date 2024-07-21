@@ -14,6 +14,7 @@ import { SupportService } from 'src/app/service/support.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl } from '@angular/forms';
 import Swal from 'sweetalert2';
+import * as saveAs from 'file-saver';
 
 
 @Component({
@@ -455,6 +456,75 @@ export class InventoryReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+  }
+  getInventoryExport() {
+    this.sp.show()
+    let Parem = '';
+    this.TtlR = 0
+    this.TtlW = 0
+
+    if (this.inventory.FromDate !== '' && this.inventory.FromDate !== null) {
+      let FromDate = moment(this.inventory.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and  DATE_FORMAT(purchasemasternew.PurchaseDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
+    }
+
+    if (this.inventory.ToDate !== '' && this.inventory.ToDate !== null) {
+      let ToDate = moment(this.inventory.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
+
+    if (this.inventory.SupplierID !== 0) {
+      Parem = Parem + ' and purchasemasternew.SupplierID = ' + this.inventory.SupplierID;
+    }
+
+    if (this.inventory.ShopID != 0) {
+      Parem = Parem + ' and barcodemasternew.ShopID IN ' + `(${this.inventory.ShopID})`;
+    }
+
+    if (this.inventory.Barcode !== '') {
+      Parem = Parem + ' and barcodemasternew.Barcode Like ' + '"' + this.inventory.Barcode + '%"';
+    }
+
+    // if (this.inventory.StringProductName !== '' ) {
+    //   Parem = Parem + ' and purchasedetailnew.ProductName LIKE ' + "'" + this.inventory.StringProductName + "%'"; }
+
+    if (this.inventory.CurrentStatus !== 0) {
+      Parem = Parem + ' and barcodemasternew.CurrentStatus = ' + '"' + this.inventory.CurrentStatus + '"';
+    }
+
+    if (this.inventory.GSTPercentage !== 0) {
+      Parem = Parem + ' and purchasedetailnew.GSTPercentage = ' + `'${this.inventory.GSTPercentage}'`;
+    }
+
+    if (this.inventory.GSTType !== 0) {
+      Parem = Parem + ' and purchasedetailnew.GSTType = ' + `'${this.inventory.GSTType}'`;
+    }
+
+    if (this.inventory.ProductCategory !== 0) {
+      Parem = Parem + ' and purchasedetailnew.ProductTypeID = ' + this.inventory.ProductCategory;
+      this.filter();
+    }
+
+    if (this.inventory.ProductName !== '') {
+      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.inventory.ProductName.trim() + "%'";
+    }
+
+
+    const subs: Subscription = this.purchaseService.getProductInventoryReportExport(Parem,this.Productsearch).subscribe({
+      next: (res: any) => {
+        this.downloadFile(res);
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  public downloadFile(response: any, fileName: any = '') {
+    const blob = new Blob([response.body], { type: response.headers.get('content-type') });
+    fileName = fileName || response.headers.get('Content-Disposition').split(';')[1].split('=')[1].replace(/\"/g, '')
+    const file = new File([blob], fileName, { type: response.headers.get('content-type') });
+    saveAs(file);
   }
   
   inventoryAll() {

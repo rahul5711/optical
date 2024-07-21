@@ -331,6 +331,13 @@ export class PurchaseService {
     .pipe(catchError(this.handleError));
   }
 
+  getProductInventoryReportExport(Parem:any,Productsearch:any) {
+    return this.httpClient.post(`${this.url}/getProductInventoryReportExport`, {Parem:Parem,Productsearch:Productsearch}, {
+      observe: 'response',
+      responseType: 'arraybuffer'
+    });
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

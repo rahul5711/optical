@@ -117,6 +117,8 @@ router.post('/searchByFeildPreOrder', verifyAccessTokenAdmin, Controller.searchB
 
 router.post('/getProductInventoryReport', verifyAccessTokenAdmin, Controller.getProductInventoryReport)
 
+router.post('/getProductInventoryReportExport', verifyAccessTokenAdmin, Controller.getProductInventoryReportExport)
+
 
 // product expiry report
 

@@ -207,22 +207,24 @@
                         </div>
                       </div>
                       <!--  spec end -->
-                      <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-0 ">
-                        <button type="submit" mat-raised-button color="primary">
+                      <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-0">
+                        <button type="submit" class="me-2" mat-raised-button color="primary">
                           Search
                         </button>
-                        <button class="me-2 ms-2" type="button" mat-raised-button color="warn"
+                        <button class="me-2" type="button" mat-raised-button color="warn"
                           (click)="inventorysFromReset()">
                           Reset
                         </button>
-                        <button type="button" mat-raised-button color="warn" (click)="inventoryAll()">
+                        <button type="button" class="me-2" mat-raised-button color="warn" (click)="inventoryAll()">
                           All Stock
                         </button>
-                        <button class="me-2 ms-2" type="button" mat-raised-button color="warn" data-mdb-toggle="modal"
+                        <button class="me-2" type="button" mat-raised-button color="warn" data-mdb-toggle="modal"
                           data-mdb-target="#exampleModal" (click)="updatePurchasePriceModel(content3)" >
                           Purchase Price
                         </button>
-
+                        <button type="button" class="me-2" mat-raised-button color="primary" (click)="getInventoryExport()">
+                          Quick Download
+                        </button>
                       </div>
                     </div>
                   </form>
