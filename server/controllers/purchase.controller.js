@@ -2057,8 +2057,8 @@ module.exports = {
                 for (let item of data) {
                     let [fetchGstType] = await mysql2.pool.query(`select * from purchasedetailnew where CompanyID = ${CompanyID} and PurchaseID = ${item.ID} LIMIT 1`)
 
-                    if (fetchGstType) {
-                        item.GSTType = fetchGstType[0].GSTType
+                    if (fetchGstType.length) {
+                        item.GSTType = fetchGstType[0]?.GSTType
                     }
 
                     item.cGstAmount = 0
