@@ -1219,7 +1219,7 @@
                                                         </td>
                                                         <td *ngIf="columnVisibility1.PurchasePrice && user.UserGroup === 'CompanyAdmin'"
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
-                                                            {{t.PurchasePrice | number : '1.2-2'}}</td>
+                                                            {{t.ModifyPurchasePrice | number : '1.2-2'}}</td>
 
                                                         <td *ngIf="columnVisibility1.Profit && user.UserGroup === 'CompanyAdmin' "
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
