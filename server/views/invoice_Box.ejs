@@ -1,5 +1,6 @@
 <html>
 <link rel="stylesheet" href="http://localhost:3000/assest/invoice.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
     * {
         border-bottom: 1xp solid;
@@ -12,22 +13,93 @@
          margin-top: 0px;
          font-size: 16px !important;
       }
-
-        html { zoom: 1;}
-
+    /* html body{
+        zoom: 100%;
+    } */
     .watermark{
         position: absolute;
         z-index: -11;
         top: 10px;
         /* background-color: blue; */
     }
+    .tbl0,
+.tbl0 th,
+.tbl0 td {
+  border: solid 1px;
+  border-collapse: collapse;
+}.tbl1,
+.tbl1 th,
+.tbl1 td {
+  border: solid 1px;
+  border-collapse: collapse;
+}
+.tbl2,
+.tbl2 th,
+.tbl2 td {
+  border: solid 1px;
+  border-collapse: collapse;
+}
+.Prod_tbl,
+.Prod_tbl th,
+.Prod_tbl td {
+  border: solid 1px;
+  border-collapse: collapse;
+}
+
+.billTotalRow .col2 .ul1 li, .billTotalRow .col2 .ul2 li{
+    border: solid 1px;
+    border-collapse: collapse; 
+    border-bottom:  none !important;
+}
+.billTotalRow .col2 .ul1 li{
+    border-right:  none !important;
+}
 
 </style>
 
-<body>
+<body <% %> style="zoom: <%= data.zoom %>" >
   
     <!-- header section start -->
     <%- include('./header.ejs', {pageNumber: 1}) %>
+    
+    <!-- <% if (data.billformate.BillHeader==3){%>
+        <header class="headerSize" <% %> style='width:<%= data.HeaderWidth %>; height: <%= data.HeaderHeight %>;'>
+                        <div class="row">
+                            <div class="col1" <% %> style="text-align: <%= data.ImageAlign %>;">
+                                    <img src=<%=data.LogoURL%> alt="LOGO" style='width:<%= data.ImageWidth %>; height:
+                                        <%= data.ImageHeight %>;'>
+                            </div>
+                            <div class="col2">
+                                <span <% %> style='font-size:<%= data.ShopNameFont %>; font-weight: <%=
+                                            data.ShopNameBold %>; color: <%= data.Color %>;'>
+                                                <%=data.shopdetails.Name%>
+                                </span> <br>
+                                <span <% %> style='line-height:<%= data.LineSpace %>;font-size:<%= data.ShopDetailFont
+                                            %>;'>
+                                            <span>
+                                                <%=data.shopdetails.Address%>
+                                            </span> <br>
+                                            <span>
+                                                <%=data.shopdetails.MobileNo1%>
+                                                    <% if (data.shopdetails.MobileNo2){%>
+                                                        ,
+                                                        <%}%>
+                                                            <%=(data.shopdetails.MobileNo2 !=='null' ) ?
+                                                                data.shopdetails.MobileNo2 : '' %>
+                                            </span><br>
+                                            <span>
+                                                <%=data.shopdetails.Email%>
+                                            </span><br>
+                                            <span>
+                                                <%=(data.shopdetails.PhoneNo !=='null' ) ? data.shopdetails.PhoneNo : ''
+                                                    %>
+                                            </span>
+                                </span>
+                            </div>
+                        </div>
+        </header>
+        <%}%> -->
+            <!-- header section  end -->
   <section style="position: relative;">
     <img src=<%=data.WaterMark%> alt="LOGO" class="watermark"  style="width:<%= data.WaterMarkWidth %>;height:<%= data.WaterMarkHeigh %>;opacity:<%= data.WaterMarkOpecity %>;left:<%= data.WaterMarkLeft %>;right:<%= data.WaterMarkRight %>; ">
 
@@ -119,30 +191,26 @@
             <% if (data.ShowPower === true){%>
                 <section class="power_spec" style="zoom: 120%;">
                     <% if(data.EyeMeasurement !== null && data.EyeMeasurement.length !== 0){ data.EyeMeasurement.forEach(function (i, index) { %>
-                    <table class="tbl0">
-                       <tr style="background-color: rgb(211, 211, 211);">
-                          <th> </th> 
+                    <table class="tbl0" style="border-right: none;">
+                       <tr >
+                          <th style="border-right: none;"> </th> 
                         </tr>
                        <tr>
-                          <th></th>
+                          <th style="border-right: none;"></th>
                        </tr>
                        <tr>
-                         <td class="top_btm"> DP-</td> 
+                         <td class="top_btm" style="border-right: none;"> DP-</td> 
                        </tr>
-                       <tr>
-                          <td> NP- </td> 
+                       <tr >
+                          <td style="border-right: none;"> NP- </td> 
                         </tr>
                     </table>
                     <table class="tbl1">
                        <tr style="background-color: rgb(211, 211, 211);">
-                          <th> </th> 
-                          <th> </th> 
-                          <th>Right </th> 
-                          <th> </th> 
-                          <th> </th> 
+                          <th colspan="5" >Right </th> 
                         </tr>
                        <tr>
-                          <th>SPH</th>
+                          <th style="border-left: none !important;">SPH</th>
                           <th>CYL</th>
                           <th>AXIS</th>
                           <th>VA</th>
@@ -166,11 +234,7 @@
               
                    <table class="tbl2">
                     <tr style="background-color: rgb(211, 211, 211);"> 
-                       <th> </th> 
-                       <th> </th> 
-                       <th>Left </th> 
-                       <th> </th> 
-                       <th> </th> 
+                        <th colspan="5">Left </th> 
                     </tr>
                     <tr>
                       <th>SPH</th>
@@ -200,7 +264,7 @@
             <!-- customer power end -->
             <!-- Product list start  -->
             <section>
-                <table <% %> style="width:100%; border-bottom: 1px solid <%= data.Color %>;padding-top: 1%;">
+                <table class="Prod_tbl" <% %> style="width:100%; border-bottom: 1px solid <%= data.Color %>;padding-top: 1%;">
                         <thead style="background-color: rgb(228, 228, 228); text-align: center; font-weight: 600;">
                             <tr <% %> style="text-align: center; font-size: <%= data.TableHeading %> ; height: 30px;">
                                     <th>SNo.</th>
@@ -432,7 +496,10 @@
                                                             <% if (data.unpaidlist.length == 0 ){%>
                                                             <li>Total Balance </li>
                                                             <%}%>
+
+                                                         
                                                             <li>Payment By </li>
+                                                            
                         </ul>
                         <ul class="ul2" <% %> style="font-size:<%= data.CustomerFont %> ; line-height:<%=
                                     data.CustomerLineSpace %>;">
@@ -478,9 +545,8 @@
                                                                 <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <%= (data.DueAmount).toFixed(2) %>
                                                             </li>
                                                             <%}%>
-                                                            <li>
-                                                                <% if(data.paidlist.length !==0){
-                                                                    data.paidlist.forEach(function (i, index) { %>
+                                                            <li style="border: 1px solid;">
+                                                                <% if(data.paidlist.length !==0){ data.paidlist.forEach(function (i, index) { %>
                                                                     <% if (i.PaymentMode !=='Payment Initiated' ){%>
                                                                         <span style="font-size: 12px;">
                                                                             <%=i.PaymentMode%>/

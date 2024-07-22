@@ -70,7 +70,7 @@ body{
 /* CUSTOMER POWER CSS START */
 
 .power_spec{
-    width: 100% !important; height: 90px; text-align: center;   
+    width: 100% !important; height: 90px; text-align: center;    margin-bottom: 2%;
 }
 
 .power_spec .tbl0{
@@ -115,7 +115,7 @@ table  {
 }
 
 .billTotalRow .col1 {
-    max-width:60%; float: left;padding-right: 5%;
+    max-width:70%; float: left;padding-right: 5%;
 }
 
 .billTotalRow .col2 {
