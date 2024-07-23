@@ -306,10 +306,10 @@ export class PerorderDummyListComponent implements OnInit {
   }
 
   calculatesss(data: any) {
-    data.PurchaseMasterData.DiscountAmount = 0
-    data.PurchaseMasterData.SubTotal = 0
-    data.PurchaseMasterData.GSTAmount = 0
-    data.PurchaseMasterData.TotalAmount = 0
+      data.PurchaseMasterData.SubTotal = 0;
+      data.PurchaseMasterData.GSTAmount = 0;
+      data.PurchaseMasterData.TotalAmount = 0;
+      data.PurchaseMasterData.DiscountAmount = 0;
 
     this.dataList.forEach((ele: any) => {
       if (ele.PurchaseID === data.PurchaseMasterData.ID) {
@@ -327,11 +327,18 @@ export class PerorderDummyListComponent implements OnInit {
     this.sp.show()
     this.calculate(fieldName, mode, data)
     this.calculatesss(data)
-    const dtm: any = {
-      PurchaseMaster: data.PurchaseMasterData,
-    }
-    delete data.PurchaseMasterData
-    dtm.PurchaseDetail = data
+ // Create a deep copy of data
+ const dataCopy = JSON.parse(JSON.stringify(data));
+  
+ // Extract PurchaseMasterData
+ const purchaseMasterData = data.PurchaseMasterData;
+ 
+ // Prepare the data to be sent
+ const dtm: any = {
+   PurchaseMaster: purchaseMasterData,
+   PurchaseDetail: dataCopy
+ };
+ delete dtm.PurchaseDetail.PurchaseMasterData;
 
     const subs: Subscription = this.purchaseService.updatePreOrderDummy(dtm).subscribe({
       next: (res: any) => {
@@ -354,6 +361,7 @@ export class PerorderDummyListComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     });
+    data.PurchaseMasterData = purchaseMasterData;
   }
 
   deleteItem(Category: any, i: any, data: any) {
