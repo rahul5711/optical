@@ -3044,6 +3044,9 @@ module.exports = {
 
             console.log("Product Update SuccessFUlly !!!");
 
+            const [updateBarcodeMaster] = await mysql2.pool.query(`update barcodemasternew set RetailPrice=${PurchaseDetail.RetailPrice}, WholeSalePrice=${PurchaseDetail.WholeSalePrice} where CompanyID = ${CompanyID} and PurchaseDetailID = ${PurchaseDetail.ID}`)
+
+            console.log("Barcode Master Update SuccessFUlly !!!");
 
             response.message = "data update sucessfully"
             response.data = []
