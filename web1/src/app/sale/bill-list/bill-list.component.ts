@@ -483,8 +483,9 @@ export class BillListComponent implements OnInit {
       const subs: Subscription = this.pay.customerPayment(data).subscribe({
         next: (res: any) => {
           if (res.success) {
-            this.paymentHistoryByMasterID(data.CustomerID, data.BillMasterID)
-            this.billByCustomer(data.CustomerID, data.BillMasterID)
+            this.applyPayment = data
+            this.paymentHistoryByMasterID(this.applyPayment.CustomerID, this.applyPayment.BillMasterID)
+            this.billByCustomer(this.applyPayment.CustomerID, this.applyPayment.BillMasterID)
             this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
             if (this.id != 0) {
               this.paymentHistory()

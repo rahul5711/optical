@@ -37,7 +37,7 @@ import { ProductItemFilterBill} from './../filterDropDown/nameFilter';
 import { OldBillListComponent } from './old-bill-list/old-bill-list.component';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {NgTinyUrlModule} from 'ng-tiny-url';
-
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 @NgModule({
   declarations: [
@@ -81,7 +81,8 @@ import {NgTinyUrlModule} from 'ng-tiny-url';
     NgSelectModule,
     NgxMatSelectSearchModule,
     MatAutocompleteModule,
-    NgTinyUrlModule
+    NgTinyUrlModule,
+    PdfViewerModule
   ]
 })
 export class SaleModule { }
