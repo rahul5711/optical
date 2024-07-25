@@ -9,6 +9,7 @@ router.post('/delete',verifyAccessTokenAdmin, Controller.delete)
 router.post('/getById',verifyAccessTokenAdmin, Controller.getById)
 router.post('/update',verifyAccessTokenAdmin, Controller.update)
 router.post('/getPettyCashBalance',verifyAccessTokenAdmin, Controller.getPettyCashBalance)
+router.post('/getCashCounterCashBalance',verifyAccessTokenAdmin, Controller.getCashCounterCashBalance)
 
 // Regex search
 router.post('/searchByFeild',verifyAccessTokenAdmin, Controller.searchByFeild)

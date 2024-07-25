@@ -45,6 +45,18 @@ module.exports = {
                 }
             }
 
+            if (datum.CashType === 'CashCounter' && datum.CreditType === 'Withdrawal') {
+                const [DepositBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Deposit'`)
+
+                const [WithdrawalBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Withdrawal'`)
+
+                const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
+
+                if (Balance < datum.Amount) {
+                    return res.send({ message: `you can not withdrawal greater than ${Balance}` })
+                }
+            }
+
             var newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
             let rw = "P";
 
@@ -139,6 +151,10 @@ module.exports = {
                 return res.send({ message: "pettycash doesnot exist from this id " })
             }
 
+            if (doesExist.length && doesExist[0].RefID !== 0) {
+                return res.send({ message: "You can not delete this Invoice" })
+            }
+
             const [payment] = await mysql2.pool.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'PettyCash'`)
 
 
@@ -191,6 +207,10 @@ module.exports = {
                 return res.send({ message: "pettycash doesnot exist from this id " })
             }
 
+            if (doesExist.length && doesExist[0].RefID !== 0) {
+                return res.send({ message: "You can not update this Invoice" })
+            }
+
             const datum = {
                 Name: Body.Name ? Body.Name : '',
                 ShopID: Body.ShopID ? Body.ShopID : 0,
@@ -204,6 +224,17 @@ module.exports = {
             }
 
             if (datum.CashType === 'PettyCash' && datum.CreditType === 'Withdrawal') {
+                const [DepositBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Deposit'`)
+
+                const [WithdrawalBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Withdrawal'`)
+
+                const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
+
+                if (Balance < datum.Amount) {
+                    return res.send({ message: `you can not withdrawal greater than ${Balance}` })
+                }
+            }
+            if (datum.CashType === 'CashCounter' && datum.CreditType === 'Withdrawal') {
                 const [DepositBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Deposit'`)
 
                 const [WithdrawalBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Withdrawal'`)
@@ -286,6 +317,34 @@ module.exports = {
             if (!Body.CreditType || Body.CreditType.trim() === "" || Body.CreditType === undefined) return res.send({ message: "Invalid Query Data" })
             if (Body.CreditType !== "Deposit") return res.send({ message: "Invalid Query Data" })
             if (Body.CashType !== "PettyCash") return res.send({ message: "Invalid Query Data" })
+            if (shopid == 0) return res.send({ message: "Invalid Shop" })
+
+            const [DepositBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='${Body.CreditType}'`)
+
+            const [WithdrawalBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='Withdrawal'`)
+
+            response.message = "data fetch sucessfully"
+            response.data = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        }
+    },
+    getCashCounterCashBalance: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const Body = req.body;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers)
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (!Body.CashType || Body.CashType.trim() === "" || Body.CashType === undefined) return res.send({ message: "Invalid Query Data" })
+            if (!Body.CreditType || Body.CreditType.trim() === "" || Body.CreditType === undefined) return res.send({ message: "Invalid Query Data" })
+            if (Body.CreditType !== "Deposit") return res.send({ message: "Invalid Query Data" })
+            if (Body.CashType !== "CashCounter") return res.send({ message: "Invalid Query Data" })
             if (shopid == 0) return res.send({ message: "Invalid Shop" })
 
             const [DepositBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${shopid} and CashType='${Body.CashType}' and CreditType='${Body.CreditType}'`)

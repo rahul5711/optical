@@ -49,6 +49,32 @@ module.exports = {
 
             datum.InvoiceNo = newInvoiceID;
 
+            if (datum.PaymentMode.toUpperCase() === "CASH" && datum.CashType === "PettyCash") {
+
+                const [DepositBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='PettyCash' and CreditType='Deposit'`)
+
+                const [WithdrawalBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='PettyCash' and CreditType='Withdrawal'`)
+
+                const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
+
+                if (Balance < datum.Amount) {
+                    return res.send({ message: `you can not withdrawal greater than ${Balance}` })
+                }
+            }
+
+            if (datum.PaymentMode.toUpperCase() === "CASH" && datum.CashType === "CashCounter") {
+
+                const [DepositBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='CashCounter' and CreditType='Deposit'`)
+
+                const [WithdrawalBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='CashCounter' and CreditType='Withdrawal'`)
+
+                const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
+
+                if (Balance < datum.Amount) {
+                    return res.send({ message: `you can not withdrawal greater than ${Balance}` })
+                }
+            }
+
 
             const [saveData] = await mysql2.pool.query(`insert into expense (CompanyID,  ShopID, Name, Category, InvoiceNo, SubCategory,  Amount,  PaymentMode, CashType,  PaymentRefereceNo, Comments, ExpenseDate, Status, CreatedBy , CreatedOn ) values (${CompanyID}, '${datum.ShopID}', '${datum.Name}', '${datum.Category}', '${datum.InvoiceNo}', '${datum.SubCategory}', ${datum.Amount}, '${datum.PaymentMode}', '${datum.CashType}', '${datum.PaymentRefereceNo}','${datum.Comments}', '${datum.ExpenseDate}', 1 , ${LoggedOnUser}, now())`)
 
@@ -58,12 +84,15 @@ module.exports = {
 
             console.log(connected("Data Save SuccessFUlly !!!"));
             response.message = "data save sucessfully"
+
+            const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo ) values (${CompanyID},${datum.ShopID}, ${LoggedOnUser},${saveData.insertId}, '${datum.CashType}', 'Withdrawal', ${datum.Amount},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${datum.InvoiceNo}')`);
+
             const [data] = await mysql2.pool.query(`select * from expense where CompanyID = ${CompanyID} and Status = 1 order by ID desc`)
             response.data = data
             return res.send(response);
 
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -99,7 +128,7 @@ module.exports = {
             response.count = count.length
             return res.send(response);
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -131,12 +160,16 @@ module.exports = {
 
             const [deletePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where BillMasterID = ${Body.ID} and CompanyID = ${CompanyID} and PaymentType = 'Expense' and BillID = '${doesExist[0].InvoiceNo}'`)
 
+            if (doesExist[0].PaymentMode.toUpperCase() === "CASH") {
+                const [delPettyCash] = await mysql2.pool.query(`update pettycash set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where RefID = ${Body.ID} and CompanyID = ${CompanyID} and  InvoiceNo = '${doesExist[0].InvoiceNo}'`)
+            }
+
             console.log("Expense Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
             return res.send(response);
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -155,7 +188,7 @@ module.exports = {
             response.data = Expense
             return res.send(response);
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -190,15 +223,58 @@ module.exports = {
                 ExpenseDate: Body.ExpenseDate ? Body.ExpenseDate : now(),
             }
 
+
+            if (datum.PaymentMode.toUpperCase() === "CASH" && datum.CashType === "PettyCash") {
+
+                const [DepositBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='PettyCash' and CreditType='Deposit'`)
+
+                const [WithdrawalBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='PettyCash' and CreditType='Withdrawal'`)
+
+                const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
+
+                if (Balance < datum.Amount) {
+                    return res.send({ message: `you can not withdrawal greater than ${Balance}` })
+                }
+            }
+
+            if (datum.PaymentMode.toUpperCase() === "CASH" && datum.CashType === "CashCounter") {
+
+                const [DepositBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='CashCounter' and CreditType='Deposit'`)
+
+                const [WithdrawalBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='CashCounter' and CreditType='Withdrawal'`)
+
+                const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
+
+                if (Balance < datum.Amount) {
+                    return res.send({ message: `you can not withdrawal greater than ${Balance}` })
+                }
+            }
+
             const [update] = await mysql2.pool.query(`update expense set ShopID='${datum.ShopID}',Name='${datum.Name}', Category='${datum.Category}',SubCategory='${datum.SubCategory}',Amount=${datum.Amount},PaymentMode='${datum.PaymentMode}',CashType='${datum.CashType}',PaymentRefereceNo='${datum.PaymentRefereceNo}',Comments='${datum.Comments}', ExpenseDate = '${datum.ExpenseDate}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
 
             const [payment] = await mysql2.pool.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'Expense'`)
 
 
-            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PaymentMode='${datum.PaymentMode}',PaymentReferenceNo='${datum.PaymentRefereceNo}',PayableAmount=${datum.Amount},PaidAmount=${datum.Amount},Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now(), PaymentDate = '${datum.ExpenseDate}' where CustomerID=${Body.ID} and PaymentType = 'Expense' and CompanyID = ${CompanyID} and ID = ${payment[0].PaymentMasterID}`)
+            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set ShopID=${datum.ShopID}, PaymentMode='${datum.PaymentMode}',PaymentReferenceNo='${datum.PaymentRefereceNo}',PayableAmount=${datum.Amount},PaidAmount=${datum.Amount},Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now(), PaymentDate = '${datum.ExpenseDate}' where CustomerID=${Body.ID} and PaymentType = 'Expense' and CompanyID = ${CompanyID} and ID = ${payment[0].PaymentMasterID}`)
 
             const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount=${datum.Amount}, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where BillMasterID =${Body.ID} and PaymentType = 'Expense' and CompanyID = ${CompanyID} and BillID = '${doesExist[0].InvoiceNo}'`)
+
+            const [doesExistPettyCash] = await mysql2.pool.query(`select * from pettycash where CompanyID = ${CompanyID} and InvoiceNo = '${doesExist[0].InvoiceNo}' and RefID = ${Body.ID} and Status = 1`)
+
+            if (doesExistPettyCash.length && datum.PaymentMode.toUpperCase() === "CASH") {
+
+                const [updatePettycash] = await mysql2.pool.query(`update pettycash set ShopID=${datum.ShopID}, CashType='${datum.CashType}',Amount='${datum.Amount}',Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser},ShopID=${datum.ShopID}, UpdatedOn=now() where RefID = ${Body.ID} and CompanyID = ${CompanyID} and InvoiceNo = '${doesExist[0].InvoiceNo}'`)
+            } else if (!doesExistPettyCash.length && datum.PaymentMode.toUpperCase() === "CASH") {
+
+                const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo ) values (${CompanyID},${datum.ShopID}, ${LoggedOnUser},${Body.ID}, '${datum.CashType}', 'Withdrawal', ${datum.Amount},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${doesExist[0].InvoiceNo}')`);
+            }
+
+
+
+            if (datum.PaymentMode.toUpperCase() !== "CASH") {
+                const [updatePettycash] = await mysql2.pool.query(`update pettycash set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where RefID = ${Body.ID} and CompanyID = ${CompanyID} and InvoiceNo = '${doesExist[0].InvoiceNo}'`)
+            }
 
             console.log("Expense Updated SuccessFUlly !!!");
 
@@ -207,7 +283,7 @@ module.exports = {
             return res.send(response);
 
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -230,7 +306,7 @@ module.exports = {
             return res.send(response);
 
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -252,7 +328,7 @@ module.exports = {
             response.data = data
             return res.send(response);
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
