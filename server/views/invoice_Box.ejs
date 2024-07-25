@@ -39,12 +39,12 @@
   border: solid 1px;
   border-collapse: collapse;
 }
-.Prod_tbl,
-.Prod_tbl th,
-.Prod_tbl td {
-  border: solid 1px;
-  border-collapse: collapse;
+
+.Prod_tbl td:nth-child(even) {
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
 }
+
 
 .billTotalRow .col2 .ul1 li, .billTotalRow .col2 .ul2 li{
     border: solid 1px;
@@ -206,7 +206,7 @@
                         </tr>
                     </table>
                     <table class="tbl1">
-                       <tr style="background-color: rgb(211, 211, 211);">
+                       <tr style="background-color: rgb(228, 228, 228);">
                           <th colspan="5" >Right </th> 
                         </tr>
                        <tr>
@@ -233,7 +233,7 @@
                     </table>
               
                    <table class="tbl2">
-                    <tr style="background-color: rgb(211, 211, 211);"> 
+                    <tr style="background-color: rgb(228, 228, 228);"> 
                         <th colspan="5">Left </th> 
                     </tr>
                     <tr>
@@ -264,7 +264,7 @@
             <!-- customer power end -->
             <!-- Product list start  -->
             <section>
-                <table class="Prod_tbl" <% %> style="width:100%; border-bottom: 1px solid <%= data.Color %>;padding-top: 1%;">
+                <table class="Prod_tbl" <% %> style="width:100%;padding-top: 1%; border-bottom:1px solid;">
                         <thead style="background-color: rgb(228, 228, 228); text-align: center; font-weight: 600;">
                             <tr <% %> style="text-align: center; font-size: <%= data.TableHeading %> ; height: 30px;">
                                     <th>SNo.</th>
@@ -309,8 +309,8 @@
                         <tbody <% %> style="text-align: center; font-size: <%= data.TableBody %> ;">
                                 <% if(data.billItemList.length != 0 ){ data.billItemList.forEach(function (i, index) {
                                     %>
-                                    <tr>
-                                        <td>
+                                    <tr style="height: 25px;">
+                                        <td style="    border-left: 1px solid #000000;">
                                             <%= index+1 %>
                                         </td>
                                         <% if (data.shopdetails.HSNCode==="true" ){%>
@@ -351,18 +351,15 @@
                                                                             <% if
                                                                                 (data.GSTTypes=="CGST-SGST"
                                                                                 ) { %>
-                                                                                <td>
-                                                                                    <%= i.GSTAmount %> <br> @ <%=
-                                                                                            i.GSTPercentage %>
+                                                                                <td >
+                                                                                    <%= i.GSTAmount %> <br> @ <%= i.GSTPercentage %>
                                                                                 </td>
-                                                                                <td>
-                                                                                    <%= i.GSTAmount %> <br> @ <%=
-                                                                                            i.GSTPercentage %>
+                                                                                <td >
+                                                                                    <%= i.GSTAmount %> <br> @ <%= i.GSTPercentage %>
                                                                                 </td>
                                                                                 <%} else { %>
                                                                                     <td>
-                                                                                        <%= i.GSTAmount %> <br> @ <%=
-                                                                                                i.GSTPercentage %>
+                                                                                        <%= i.GSTAmount %> <br> @ <%= i.GSTPercentage %>
                                                                                     </td>
                                                                                     <% } %>
                                                                                         <%}%>
@@ -498,7 +495,7 @@
                                                             <%}%>
 
                                                          
-                                                            <li>Payment By </li>
+                                                            <li style="   border-bottom:  1px solid !important;">Payment By </li>
                                                             
                         </ul>
                         <ul class="ul2" <% %> style="font-size:<%= data.CustomerFont %> ; line-height:<%=
@@ -545,14 +542,17 @@
                                                                 <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <%= (data.DueAmount).toFixed(2) %>
                                                             </li>
                                                             <%}%>
-                                                            <li style="border: 1px solid;">
+                                                            <li style="   border-bottom:  1px solid !important;">
                                                                 <% if(data.paidlist.length !==0){ data.paidlist.forEach(function (i, index) { %>
                                                                     <% if (i.PaymentMode !=='Payment Initiated' ){%>
                                                                         <span style="font-size: 12px;">
                                                                             <%=i.PaymentMode%>/
                                                                         </span>
-                                                                        <%}%>
+                                                                        <% }else { %>
+                                                                            <span>* </span>
+                                                                        <% } %>
                                                                             <%})}%>
+                                                                            
                                                             </li>
                         </ul>
                         <% if (data.shopdetails.CompanyID !== 20){%>
@@ -560,7 +560,7 @@
                             <div style="width: 100%; height: auto;">
                                 <table style="width:100%; float:right">
                                     <thead>
-                                        <tr>
+                                        <tr >
                                             <th
                                             <% %>  style="font-size:<%= data.CustomerFont %> ; line-height:<%= data.CustomerLineSpace %>; border: 1px solid <%= data.Color %>; padding: 0px; margin:0px "> You've Saved <%=data.SavedDiscount%> <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <% if (data.shopdetails.CompanyID !== 19 ){%> Rs <%}%> on this Invoice!
                                         </th>
