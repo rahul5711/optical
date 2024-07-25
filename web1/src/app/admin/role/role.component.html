@@ -14,7 +14,7 @@
                         <form #f="ngForm" (ngSubmit)="savePermission()">
                             <div class="row" *ngIf="!showAdd">
                                 <div class="col-xl-2 col-lg-2 col-md-4 col-8 mb-0" style=" height: 60px;">
-                                    <ng-select bindLabel="Shop" name="Role" placeholder="Select Role" [(ngModel)]="selectedRole.ID"  (change)="setdata()" [required]="true" #Role="ngModel" [closeOnSelect]="true" [searchable]="true">
+                                    <ng-select  id="roleSelect" bindLabel="Shop" name="Role" placeholder="Select Role" [(ngModel)]="selectedRole.ID"  (change)="setdata()" [required]="true" #Role="ngModel" [closeOnSelect]="true" [searchable]="true">
                                         <ng-option [value]=""></ng-option>
                                         <ng-option [value]="role.ID" *ngFor="let role of roleList">{{role.Name | uppercase}} </ng-option>
                                      </ng-select>

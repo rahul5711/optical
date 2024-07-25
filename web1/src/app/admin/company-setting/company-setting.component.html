@@ -41,14 +41,15 @@
                                                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Company Language</mat-label>
-                                                            <mat-select name="CompanyLanguage"
+                                                            <mat-select id="company-language-select" name="CompanyLanguage"
                                                                 [(ngModel)]="data.CompanyLanguage" required
                                                                 #name="ngModel">
                                                                 <mat-option value="English">English</mat-option>
                                                             </mat-select>
-                                                            <mat-error>Select </mat-error>
+                                                            <mat-error>Select a language</mat-error>
                                                         </mat-form-field>
                                                     </div>
+                                                    
                                                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Country</mat-label>

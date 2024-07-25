@@ -214,7 +214,7 @@ export class VendorCreditComponent implements OnInit {
 
   FromReset() {
     this.data = {
-      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,
+      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'),ShopID: 0, SupplierID: 0, VendorStatus: 0,
     };
     this.dataList = [];
   }

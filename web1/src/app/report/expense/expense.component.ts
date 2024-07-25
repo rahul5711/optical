@@ -226,9 +226,10 @@ export class ExpenseComponent implements OnInit {
 
   FromReset() {
     this.data = {
-      FromDate: moment().format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, PaymentMode: 'All', CashType: 'All'
+      FromDate: moment().format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, PaymentMode: 'All',ExpenseType:'All', CashType: 'All'
     };
     this.ExpenseList = [];
+    this.totalAmt = 0
   }
 
   print() {

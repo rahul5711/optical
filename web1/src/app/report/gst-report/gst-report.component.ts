@@ -472,7 +472,8 @@ export class GstReportComponent implements OnInit {
 
   FromReset() {
     this.data = {
-      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), GSTStatus: '', 
+      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), GSTStatus: 0, ShopID:0,
+      CustomerID: 0, CustomerGSTNo: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0,B2BTOB2C:0,Discount:0
     };
   
     this.GstData = {

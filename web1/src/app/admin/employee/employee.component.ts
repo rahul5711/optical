@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { pipe, Subscription } from 'rxjs';
@@ -22,14 +22,14 @@ import * as moment from 'moment';
   styleUrls: ['./employee.component.css']
 })
 export class EmployeeComponent implements OnInit {
-  loggedInCompany:any = (localStorage.getItem('LoggedINCompany') || '');
+  loggedInCompany: any = (localStorage.getItem('LoggedINCompany') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   user = (localStorage.getItem('user') || '');
   env: { production: boolean; apiUrl: string; appUrl: string; };
-  userImage :any;
+  userImage: any;
   id: any;
   img: any;
-  roleList:any
+  roleList: any
   dropShoplist: any;
   userList: any;
   saveUpdateHide = false
@@ -49,13 +49,14 @@ export class EmployeeComponent implements OnInit {
     this.env = environment
   }
 
-  data: any  = { ID : null, CompanyID : null , Name : null, UserGroup : "Employee", DOB : null, Anniversary : null, MobileNo1 : null,
-  MobileNo2 : null, PhoneNo : null, Email : null, Address : null, Branch : '', FaxNo : null, Website : null, PhotoURL : null, Document: null,
-  LoginName : "", Password : "", Status : 1, CreatedBy : null, UpdatedBy : null, CreatedOn : "", UpdatedOn : null, CommissionType: 0, CommissionMode: 0,
-  CommissionValue: 0, CommissionValueNB: 0, DiscountPermission: false
+  data: any = {
+    ID: null, CompanyID: null, Name: null, UserGroup: "Employee", DOB: null, Anniversary: null, MobileNo1: null,
+    MobileNo2: null, PhoneNo: null, Email: null, Address: null, Branch: '', FaxNo: null, Website: null, PhotoURL: null, Document: null,
+    LoginName: "", Password: "", Status: 1, CreatedBy: null, UpdatedBy: null, CreatedOn: "", UpdatedOn: null, CommissionType: 0, CommissionMode: 0,
+    CommissionValue: 0, CommissionValueNB: 0, DiscountPermission: false
   };
-
-  UserShop: any = {ID: null, UserID: null, ShopID: null, RoleID: null, Status: 1};
+  
+  UserShop: any = { ID: null, UserID: null, ShopID: null, RoleID: null, Status: 1 };
 
   editEmployee = false
   addEmployee = false
@@ -80,15 +81,15 @@ export class EmployeeComponent implements OnInit {
 
   }
 
-  onSubmit(){
+  onSubmit() {
     this.sp.show();
     this.data.Document = JSON.stringify(this.imgArray);
-    const subs: Subscription =  this.es.saveUser(this.data).subscribe({
+    const subs: Subscription = this.es.saveUser(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
-          if(res.data !== 0) {
+          if (res.data !== 0) {
             this.id = res.data;
-            this.router.navigate(['/admin/employee/' , this.id]);
+            this.router.navigate(['/admin/employee/', this.id]);
             Swal.fire({
               position: 'center',
               icon: 'success',
@@ -117,33 +118,33 @@ export class EmployeeComponent implements OnInit {
     });
   }
 
-  uploadImage(e:any, mode:any){
+  uploadImage(e: any, mode: any) {
 
-  this.img = e.target.files[0];
-   const subs: Subscription = this.compressImage.compress(this.img).pipe(take(1)).subscribe({
-    next: (compressedImage: any) => {
-      const subss: Subscription = this.fu.uploadFileComapny(compressedImage).subscribe({
-        next: (data: any) => {
-          if (data.body !== undefined && mode === 'company') {
-            this.userImage = this.env.apiUrl + data.body?.download;
-            this.data.PhotoURL = data.body?.download
-            this.as.successToast(data.body.message)
-           }
-        },
-        error: (err: any) => {
-          console.log(err.message);
-        },
-        complete: () => subss.unsubscribe(),
-      })
-    },
-    error: (err: any) => {
-      console.log(err.message);
-    },
-    complete: () => subs.unsubscribe(),
-  })
+    this.img = e.target.files[0];
+    const subs: Subscription = this.compressImage.compress(this.img).pipe(take(1)).subscribe({
+      next: (compressedImage: any) => {
+        const subss: Subscription = this.fu.uploadFileComapny(compressedImage).subscribe({
+          next: (data: any) => {
+            if (data.body !== undefined && mode === 'company') {
+              this.userImage = this.env.apiUrl + data.body?.download;
+              this.data.PhotoURL = data.body?.download
+              this.as.successToast(data.body.message)
+            }
+          },
+          error: (err: any) => {
+            console.log(err.message);
+          },
+          complete: () => subss.unsubscribe(),
+        })
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
   }
 
-  getUserById(){
+  getUserById() {
     this.sp.show()
     const subs: Subscription = this.es.getUserById(this.id).subscribe({
       next: (res: any) => {
@@ -152,18 +153,24 @@ export class EmployeeComponent implements OnInit {
           this.as.successToast(res.message)
           this.data = res.data[0]
           let document = JSON.parse(res.data[0].Document);
-          for(var i = 0; i < document.length; i++) {
-            let Obj: any = {ImageName: '' , Src: ''};
+          for (var i = 0; i < document.length; i++) {
+            let Obj: any = { ImageName: '', Src: '' };
             Obj.ImageName = document[i].ImageName;
             this.imgArray.push(Obj);
           }
           this.data.DiscountPermission = this.data.DiscountPermission === 'true';
-            if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
-              this.userImage = this.env.apiUrl + res.data[0].PhotoURL;;
-            } else {
-              this.userImage = "/assets/images/userEmpty.png"
-            }
-         
+          if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
+            this.userImage = this.env.apiUrl + res.data[0].PhotoURL;;
+          } else {
+            this.userImage = "/assets/images/userEmpty.png"
+          }
+          // Handle other fields potentially having "null" or null values
+          this.data.Anniversary = this.data.Anniversary === "null" ? null : this.data.Anniversary;
+          this.data.DOB = this.data.DOB === "null" ? null : this.data.DOB;
+          this.data.MobileNo1 = this.data.MobileNo1 === "null" ? null : this.data.MobileNo1;
+          this.data.MobileNo2 = this.data.MobileNo2 === "null" ? null : this.data.MobileNo2;
+          this.data.PhoneNo = this.data.PhoneNo === "null" ? null : this.data.PhoneNo;
+
         } else {
           this.as.errorToast(res.message)
         }
@@ -176,20 +183,20 @@ export class EmployeeComponent implements OnInit {
     })
   }
 
-  updateUser(){
+  updateUser() {
     this.sp.show()
     this.data.Document = this.imgArray;
-    const subs: Subscription =  this.es.updateUser(this.data).subscribe({
+    const subs: Subscription = this.es.updateUser(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
-            this.router.navigate(['/admin/employee/' , this.id]);
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'Your file has been Update.',
-              showConfirmButton: false,
-              timer: 1200
-            })
+          this.router.navigate(['/admin/employee/', this.id]);
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Update.',
+            showConfirmButton: false,
+            timer: 1200
+          })
         } else {
           this.as.errorToast(res.message)
         }
@@ -203,13 +210,13 @@ export class EmployeeComponent implements OnInit {
 
   }
 
-  dropdownShoplist(){
+  dropdownShoplist() {
     this.sp.show()
     const subs: Subscription = this.ss.dropdownShoplist(this.user).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.dropShoplist = res.data
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -219,21 +226,21 @@ export class EmployeeComponent implements OnInit {
     });
   }
 
-  saveUserShop(){
+  saveUserShop() {
     this.sp.show()
     this.UserShop.UserID = Number(this.id)
-    const subs: Subscription =  this.ss.saveUserShop(this.UserShop).subscribe({
+    const subs: Subscription = this.ss.saveUserShop(this.UserShop).subscribe({
       next: (res: any) => {
         if (res.success) {
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'Your file has been Save.',
-              showConfirmButton: false,
-              timer: 1200
-            })
-            this.UserShop = {ID: null, UserID: null, ShopID: null, RoleID: null, Status: 1};
-            this.getUserById()
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Save.',
+            showConfirmButton: false,
+            timer: 1200
+          })
+          this.UserShop = { ID: null, UserID: null, ShopID: null, RoleID: null, Status: 1 };
+          this.getUserById()
         } else {
           this.as.errorToast(res.message)
           Swal.fire({
@@ -252,21 +259,21 @@ export class EmployeeComponent implements OnInit {
     });
   }
 
-  updateUserShop(){
+  updateUserShop() {
     this.sp.show()
-    const subs: Subscription =  this.ss.updateUserShop(this.UserShop).subscribe({
+    const subs: Subscription = this.ss.updateUserShop(this.UserShop).subscribe({
       next: (res: any) => {
         if (res.success) {
-            this.getUserById();
-            this.UserShop = {ID: null, UserID: null, ShopID: null, RoleID: null, Status: 1};
-            this.saveUpdateHide = false;
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'Your file has been Save.',
-              showConfirmButton: false,
-              timer: 1200
-            })
+          this.getUserById();
+          this.UserShop = { ID: null, UserID: null, ShopID: null, RoleID: null, Status: 1 };
+          this.saveUpdateHide = false;
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Save.',
+            showConfirmButton: false,
+            timer: 1200
+          })
         } else {
           this.as.errorToast(res.message)
           Swal.fire({
@@ -286,13 +293,13 @@ export class EmployeeComponent implements OnInit {
     });
   }
 
-  rolesList(){
+  rolesList() {
     this.sp.show()
     const subs: Subscription = this.role.getList('').subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.roleList = res.data
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -302,7 +309,7 @@ export class EmployeeComponent implements OnInit {
     });
   }
 
-  deleteItem(i:any){
+  deleteItem(i: any) {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -316,7 +323,7 @@ export class EmployeeComponent implements OnInit {
         this.sp.show();
         const subs: Subscription = this.ss.deleteUserShop(this.userList[i].ID).subscribe({
           next: (res: any) => {
-            if(res.success){
+            if (res.success) {
               this.userList.splice(i, 1);
               this.as.successToast(res.message)
               Swal.fire({
@@ -326,7 +333,7 @@ export class EmployeeComponent implements OnInit {
                 showConfirmButton: false,
                 timer: 1000
               })
-            }else{
+            } else {
               this.as.errorToast(res.message)
             }
             this.sp.hide();
@@ -339,30 +346,30 @@ export class EmployeeComponent implements OnInit {
   }
 
   editUserShop(data: any) {
-   this.UserShop = {ID: data.ID, UserID: data.UserID, ShopID: data.ShopID, RoleID: data.RoleID, Status: 1};
-   this.saveUpdateHide = true
+    this.UserShop = { ID: data.ID, UserID: data.UserID, ShopID: data.ShopID, RoleID: data.RoleID, Status: 1 };
+    this.saveUpdateHide = true
   }
 
   add() {
-    this.imgArray.push({ImageName: '' });
-  } 
+    this.imgArray.push({ ImageName: '' });
+  }
 
-  download(imgArray:any) {
+  download(imgArray: any) {
     const url = 'http://opticalguru.relinksys.com:50080/zip?id=' + JSON.stringify(imgArray);
     window.open(url, '_blank');
   }
 
-  uploadImage1(e:any,  i:any){
+  uploadImage1(e: any, i: any) {
 
     this.img = e.target.files[0];
-     const subs: Subscription = this.compressImage.compress(this.img).pipe(take(1)).subscribe({
+    const subs: Subscription = this.compressImage.compress(this.img).pipe(take(1)).subscribe({
       next: (compressedImage: any) => {
         const subss: Subscription = this.fu.uploadFileEmployee(compressedImage).subscribe({
           next: (data: any) => {
             if (data.body !== undefined) {
               this.imgArray[i].ImageName = this.env.apiUrl + data.body?.download;
               this.as.successToast(data.body.message)
-             }
+            }
           },
           error: (err: any) => {
             console.log(err.message);
@@ -375,7 +382,7 @@ export class EmployeeComponent implements OnInit {
       },
       complete: () => subs.unsubscribe(),
     })
-    }
+  }
 
 
 

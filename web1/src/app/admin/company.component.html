@@ -23,7 +23,7 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Mobile No1</mat-label>
                                                 <input matInput name="MobileNo1" type="number"
-                                                    [(ngModel)]="data.MobileNo1" required #MobileNo1control>
+                                                    [(ngModel)]="data.MobileNo1" required #MobileNo1control >
                                                 <mat-error>
                                                     Invalid Mobile no.
                                                 </mat-error>
@@ -33,13 +33,13 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Mobile No2</mat-label>
                                                 <input matInput name="MobileNo2" type="number"
-                                                    [(ngModel)]="data.MobileNo2">
+                                                    [(ngModel)]="data.MobileNo2" >
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Phone No</mat-label>
-                                                <input matInput name="PhoneNo" type="number" autocomplete="off"
+                                                <input matInput name="PhoneNo" type="number" 
                                                     [(ngModel)]="data.PhoneNo" #PhoneNocontrol>
                                             </mat-form-field>
                                         </div>
@@ -59,18 +59,19 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Address</mat-label>
                                                 <input matInput name="Address" minlength="2" [(ngModel)]="data.Address"
-                                                    required #Addresscontrol>
+                                                    required #Addresscontrol autocomplete="street-address">
                                                 <mat-error>
-                                                    Address atleast 2 characters is required.
+                                                    Address at least 2 characters is required.
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
+                                        
                                         <div class="col-xl-2 col-lg-0 col-md-0 col-sm-0 mb-0"></div>
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Country</mat-label>
                                                 <input matInput name="Country" [(ngModel)]="data.Country" required
-                                                    #Countrycontrol [disabled]="user?.UserGroup !== 'SuperAdmin'">
+                                                    #Countrycontrol [disabled]="user?.UserGroup !== 'SuperAdmin'" autocomplete="country">
                                                 <mat-error>
                                                     Country is required
                                                 </mat-error>
@@ -283,7 +284,7 @@
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Owner Name</mat-label>
                                                     <input matInput name="Name" [(ngModel)]="data1.Name" required
-                                                        #Namecontrol [autocomplete]="false">
+                                                        #Namecontrol autocomplete="name">
                                                     <mat-error>
                                                         Company ID is required
                                                     </mat-error>
@@ -336,7 +337,7 @@
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Email</mat-label>
                                                     <input matInput name="Email"  ngModel email="true"
-                                                    pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"  [(ngModel)]="data1.Email"  [disabled]=" id != 0" required #Emailcontrol1>
+                                                    pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"  [(ngModel)]="data1.Email"  [disabled]="!id" required #Emailcontrol1>
                                                     <mat-error>
                                                         Invalid Email Id
                                                     </mat-error>
@@ -358,8 +359,8 @@
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>LoginName</mat-label>
                                                     <input matInput name="LoginName" [(ngModel)]="data1.LoginName"
-                                                        autocomplete="off" required #LoginNamecontrol
-                                                        autocomplete="nope">
+                                                        required #LoginNamecontrol
+                                                        autocomplete="username">
                                                     <mat-error>
                                                         Login Name is required
                                                     </mat-error>

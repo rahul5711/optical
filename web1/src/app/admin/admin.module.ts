@@ -46,7 +46,6 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { ReminderComponent } from './reminder/reminder.component';
 import { BulkSmsComponent } from './bulk-sms/bulk-sms.component';
 
-
 @NgModule({
     declarations: [
         CompanyComponent,
@@ -103,7 +102,9 @@ import { BulkSmsComponent } from './bulk-sms/bulk-sms.component';
         NgbModule,
         NgSelectModule,
         SharedModule,
-
+        MatFormFieldModule,
+        MatSelectModule,
+        MatInputModule,
     ]
 })
 

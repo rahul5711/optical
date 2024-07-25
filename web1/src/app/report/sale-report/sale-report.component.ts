@@ -698,7 +698,7 @@ export class SaleReportComponent implements OnInit {
 
   billMasterFromReset() {
     this.BillMaster = {
-      FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, EmployeeID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All'
+      FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, EmployeeID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All',  BillType: 'All'
     };
     this.BillMasterList = []
     this.totalQty = 0;
@@ -707,6 +707,10 @@ export class SaleReportComponent implements OnInit {
     this.totalAmount = 0;
     this.totalGstAmount = 0;
     this.gstMaster = [];
+    this.totalBalance = 0
+    this.totalPaid = 0;
+    this.totalAddlDiscount= 0;
+    this.maxPaymentDetails = 8;
   }
   // billmaster
 
@@ -1020,6 +1024,8 @@ export class SaleReportComponent implements OnInit {
     this.DetailtotalGstAmount = 0;
     this.DetailtotalAmount = 0;
     this.specList = [];
+    this.DetailtotalPorfit = 0
+    this.DetailtotalPrice = 0
   }
 
   // BillService
@@ -1096,12 +1102,16 @@ export class SaleReportComponent implements OnInit {
 
   BillServiceFromReset() {
     this.service = {
-      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0
+      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, BillType: 'All'
     };
     this.BillServiceList = [];
-    this.ServiceAmount = ''
-    this.ServicetotalGstAmount = ''
-    this.gstService = ''
+    this.ServiceAmount = '';
+    this.ServicetotalGstAmount = '';
+    this.gstService = '';
+    this.ServicetotalAmount= 0;
+    this.ServicetotalSUBTOTAL = 0;
+    this.ServiceGtotalAmount=0;
+
   }
 
   // bill product cancel

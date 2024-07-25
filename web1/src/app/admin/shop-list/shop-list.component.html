@@ -11,7 +11,7 @@
                                             type="button" (click)="exportAsXLSX()"></i> </h2>
                                 </div>
                                 <div class="col-md-2 col-3 ps-md-0 ps-1 order-1 order-md-1">
-                                    <select class=" form-control"
+                                    <select class="form-control" id="itemsPerPage"   name="itemsPerPage"  
                                         style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
                                         [(ngModel)]="itemsPerPage" (change)="getList();">
                                         <option [ngValue]="10">Show 10 Row</option>
@@ -179,7 +179,7 @@
                         <div class="col-md-3 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Shop Name</mat-label>
-                                <input matInput name="Name" [(ngModel)]="data.Name" required #Namecontrol minlength="2">
+                                <input matInput name="Name" [(ngModel)]="data.Name" required #Namecontrol minlength="2" autocomplete="organization">
                                 <mat-error>
                                     Shop Name is required
                                 </mat-error>
@@ -230,7 +230,7 @@
                         <div class="col-md-6 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Address</mat-label>
-                                <input matInput name="Address" [(ngModel)]="data.Address" minlength="2" required
+                                <input matInput name="Address" [(ngModel)]="data.Address" minlength="2" required autocomplete="street-address"
                                     #Addresscontrol>
                                 <mat-error>
                                     Atleast 2 characters is required
@@ -241,7 +241,7 @@
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Email</mat-label>
                                 <input matInput name="email" type="email" ngModel [email]="true"
-                                    pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" [(ngModel)]="data.Email"
+                                    pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" [(ngModel)]="data.Email" autocomplete="email"
                                     #Emailcontrol>
                                 <mat-error>
                                     Invalid EmailId.
