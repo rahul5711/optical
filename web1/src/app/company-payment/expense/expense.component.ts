@@ -314,7 +314,12 @@ export class ExpenseComponent implements OnInit {
 
   openEditModal(content: any, datas: any) {
     this.suBtn = true;
-    this.data = datas
+    this.data = datas;
+    if( this.data.CashType == 'PettyCash'){
+      this.getPettyCashBalance();
+    }else{
+      this.getCashCounterCashBalance();
+    }
     this.data.ExpenseDate = moment(datas.ExpenseDate).format('YYYY-MM-DD')
     this.data.ShopID = Number(datas.ShopID);
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });

@@ -264,11 +264,6 @@ export class PettyCashComponent implements OnInit {
       this.getCashCounterCashBalance();
     }
     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'xl'});
-
-     
-
-
-
   }
 
   openModal(content: any) {

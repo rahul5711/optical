@@ -275,8 +275,11 @@ export class PayrollComponent implements OnInit {
   openEditModal(content: any,datas:any) {
     this.suBtn = true;
     this.data = datas;
-    this.getPettyCashBalance();
-    this.getCashCounterCashBalance();
+    if( this.data.CashType == 'PettyCash'){
+      this.getPettyCashBalance();
+    }else{
+      this.getCashCounterCashBalance();
+    }
     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'xl'});
   }
 
