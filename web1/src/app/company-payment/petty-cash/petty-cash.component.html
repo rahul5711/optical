@@ -129,8 +129,8 @@
                                 <mat-label>Cash Type</mat-label>
                                 <mat-select name="Duration" [(ngModel)]="data.CashType" required>
                                     <mat-option ></mat-option>
-                                    <mat-option value="CashCounter" >Cash Counter</mat-option>
-                                    <mat-option value="PettyCash" >Petty Cash</mat-option>
+                                    <mat-option value="CashCounter" (click)="getCashCounterCashBalance()">Cash Counter</mat-option>
+                                    <mat-option value="PettyCash" (click)="getPettyCashBalance()">Petty Cash</mat-option>
                                 </mat-select>
                                 <mat-error>
                                     CashType is required
@@ -149,10 +149,11 @@
                                 <mat-error>Credit Type is required</mat-error>
                             </mat-form-field>
                         </div>
-                        <div *ngIf="this.data.CreditType === 'Withdrawal'" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                        <div *ngIf="this.data.CashType === 'CashCounter' || this.data.CashType === 'PettyCash'" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                             <mat-form-field class="example-full-width mb-0">
-                                <mat-label>PettyCashBalance</mat-label>
-                                <input matInput  name="PettyCashBalance" value="{{this.PettyCashBalance}}" [disabled]="true" />
+                                <mat-label *ngIf="this.data.CashType === 'PettyCash'">PettyCashBalance</mat-label>
+                                <mat-label *ngIf="this.data.CashType === 'CashCounter'">CashCounterBalance</mat-label>
+                                <input matInput style="color: red;" name="PettyCashBalance" value="{{this.PettyCashBalance}}" [disabled]="true" />
                                 <mat-error>Amount is required</mat-error>
                             </mat-form-field>
                         </div>

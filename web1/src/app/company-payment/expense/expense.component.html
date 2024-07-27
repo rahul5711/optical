@@ -183,8 +183,8 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Cash Type</mat-label>
                         <mat-select name="Duration" [(ngModel)]="data.CashType" required>
-                            <mat-option value="CashCounter">Cash Counter</mat-option>
-                            <mat-option value="PettyCash">Petty Cash</mat-option>
+                            <mat-option value="CashCounter">Cash Counter <b style="float: right; color: red;"> {{this.CashCounterBalance}}</b></mat-option>
+                            <mat-option value="PettyCash">Petty Cash <b style="float: right; color: red;">{{this.PettyCashBalance}} </b> </mat-option>
                         </mat-select>
                         <mat-error>
                             CashType is required

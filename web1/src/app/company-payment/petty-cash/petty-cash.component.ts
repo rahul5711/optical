@@ -69,7 +69,8 @@ export class PettyCashComponent implements OnInit {
       }
     });
     this.dropdownUserlist();
-    this.getPettyCashBalance();
+    // this.getPettyCashBalance();
+    // this.getCashCounterCashBalance();
     this.getList();
   }
 
@@ -89,9 +90,28 @@ export class PettyCashComponent implements OnInit {
   }
 
   getPettyCashBalance(){
+    this.PettyCashBalance = 0
     this.data.CashType = 'PettyCash'
     this.data.CreditType = 'Deposit'
     const subs: Subscription = this.petty.getPettyCashBalance(this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.PettyCashBalance = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getCashCounterCashBalance(){
+    this.PettyCashBalance = 0
+    this.data.CashType = 'CashCounter'
+    this.data.CreditType = 'Deposit'
+    const subs: Subscription = this.petty.getCashCounterCashBalance(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.PettyCashBalance = res.data
@@ -135,6 +155,7 @@ export class PettyCashComponent implements OnInit {
           this.formReset();
           this.modalService.dismissAll();
           this.getPettyCashBalance();
+          this.getCashCounterCashBalance();
           this.getList();
           Swal.fire({
             position: 'center',
@@ -237,7 +258,17 @@ export class PettyCashComponent implements OnInit {
   openEditModal(content: any,datas:any) {
     this.suBtn = true;
     this.data = datas
+    if( this.data.CashType == 'PettyCash'){
+      this.getPettyCashBalance();
+    }else{
+      this.getCashCounterCashBalance();
+    }
     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'xl'});
+
+     
+
+
+
   }
 
   openModal(content: any) {

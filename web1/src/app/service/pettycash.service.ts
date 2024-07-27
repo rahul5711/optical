@@ -57,6 +57,13 @@ export class PettycashService {
     .pipe(catchError(this.handleError));
   }
 
+
+  getCashCounterCashBalance(Body: any): Observable<any> {
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/getCashCounterCashBalance', Body, { params })
+    .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

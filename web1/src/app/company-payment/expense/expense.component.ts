@@ -16,6 +16,7 @@ import { SupportService } from 'src/app/service/support.service';
 import { ExpenseModel } from 'src/app/interface/Expense';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import * as moment from 'moment';
+import { PettycashService } from 'src/app/service/pettycash.service';
 
 @Component({
   selector: 'app-expense',
@@ -54,6 +55,7 @@ export class ExpenseComponent implements OnInit {
     private excelService: ExcelService,
     private ss: ShopService,
     private supps: SupportService,
+    private petty: PettycashService,
 
   ) { this.id = this.route.snapshot.params['id']; }
 
@@ -65,7 +67,8 @@ export class ExpenseComponent implements OnInit {
   deleteExpenseList = false
   shopId:any =[]
   currentTime = '';
-
+  PettyCashBalance = 0;
+  CashCounterBalance=0;
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'ExpenseList') {
@@ -78,7 +81,42 @@ export class ExpenseComponent implements OnInit {
     this.dropdownShoplist();
     this.getPaymentModesList();
     this.getExpenseTypeList();
+    this.getPettyCashBalance();
+    this.getCashCounterCashBalance();
+  }
 
+  getPettyCashBalance(){
+    this.data.CashType = 'PettyCash'
+    this.data.CreditType = 'Deposit'
+    const subs: Subscription = this.petty.getPettyCashBalance(this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.PettyCashBalance = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getCashCounterCashBalance(){
+    this.data.CashType = 'CashCounter'
+    this.data.CreditType = 'Deposit'
+    const subs: Subscription = this.petty.getCashCounterCashBalance(this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.CashCounterBalance = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   dropdownShoplist() {
@@ -162,6 +200,8 @@ export class ExpenseComponent implements OnInit {
         if (res.success) {
           this.formReset();
           this.modalService.dismissAll();
+          this.getPettyCashBalance();
+          this.getCashCounterCashBalance();
           this.getList();
           Swal.fire({
             position: 'center',
@@ -232,6 +272,8 @@ export class ExpenseComponent implements OnInit {
         if (res.success) {
           this.formReset();
           this.modalService.dismissAll();
+          this.getPettyCashBalance();
+          this.getCashCounterCashBalance();
           this.getList();
           Swal.fire({
             position: 'center',
