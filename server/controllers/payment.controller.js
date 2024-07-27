@@ -224,9 +224,9 @@ module.exports = {
 
             console.log("current time =====> ", req.headers.currenttime, typeof req.headers.currenttime);
 
-            const { PaymentType, CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PayableAmount, CreditNumber } = req.body
+            const { PaymentType, CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PayableAmount, CreditNumber, CashType } = req.body
             console.log('<============= applyPayment =============>');
-            console.table({ PaymentType, CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, CustomerCredit, ShopID, PayableAmount, CreditNumber })
+            console.table({ PaymentType, CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, CustomerCredit, ShopID, PayableAmount, CreditNumber, CashType })
 
             if (!CustomerID || CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
             if (ApplyReturn === null || ApplyReturn === undefined) return res.send({ message: "Invalid ApplyReturn Data" })
@@ -240,6 +240,47 @@ module.exports = {
             if (PaymentType === null || PaymentType === undefined) return res.send({ message: "Invalid PaymentType Data" })
             if (!pendingPaymentList || pendingPaymentList.length === 0) return res.send({ message: "Invalid pendingPaymentList Data" })
             if (PayableAmount === null || PayableAmount === undefined) return res.send({ message: "Invalid PaymentType Data" })
+
+            if (PaymentType !== "Customer" && PaymentMode.toUpperCase() === "CASH") {
+                if (!CashType || CashType === '') {
+                    return res.send({ message: "Invalid CashType Data" })
+                }
+                if ((CashType !== 'PettyCash' || CashType !== 'CashCounter')) {
+                    return res.send({ message: "Invalid CashType Data" })
+                }
+
+            }
+
+            if (PaymentType !== "Customer" && PaymentMode.toUpperCase() === "CASH" && (CashType === "PettyCash" || CashType === "CashCounter")) {
+                if (CashType === "PettyCash") {
+
+                    const [DepositBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and CashType='PettyCash' and CreditType='Deposit'`)
+
+                    const [WithdrawalBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and CashType='PettyCash' and CreditType='Withdrawal'`)
+
+                    const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
+
+                    if (Balance < PaidAmount) {
+                        return res.send({ message: `you can not withdrawal greater than ${Balance}` })
+                    }
+                } else if (CashType === "CashCounter") {
+
+                    const [DepositBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and CashType='CashCounter' and CreditType='Deposit'`)
+
+                    const [WithdrawalBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and CashType='CashCounter' and CreditType='Withdrawal'`)
+
+                    const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
+
+                    if (Balance < PaidAmount) {
+                        return res.send({ message: `you can not withdrawal greater than ${Balance}` })
+                    }
+                }
+            }
+
+
+
+
+
 
             let unpaidList = pendingPaymentList;
             let customerCredit = CustomerCredit;
@@ -332,6 +373,12 @@ module.exports = {
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Vendor', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                             let [pDetail] = await mysql2.pool.query(qry);
                             let [bMaster] = await mysql2.pool.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}' where ID = ${item.ID}`);
+
+                            if (PaymentMode.toUpperCase() === "CASH") {
+
+                                const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo ) values (${CompanyID},${ShopID}, ${LoggedOnUser},${pMasterID}, '${CashType}', 'Withdrawal', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}')`);
+
+                            }
                         }
 
                     }
@@ -409,6 +456,12 @@ module.exports = {
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Fitter', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                             let [pDetail] = await mysql2.pool.query(qry);
                             let [bMaster] = await mysql2.pool.query(`Update fittermaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}' where ID = ${item.ID}`);
+
+                            if (PaymentMode.toUpperCase() === "CASH") {
+
+                                const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo ) values (${CompanyID},${ShopID}, ${LoggedOnUser},${pMasterID}, '${CashType}', 'Withdrawal', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}')`);
+
+                            }
                         }
 
                     }
@@ -470,6 +523,12 @@ module.exports = {
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Employee', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                             let [pDetail] = await mysql2.pool.query(qry);
                             let [bMaster] = await mysql2.pool.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID}`);
+
+                            if (PaymentMode.toUpperCase() === "CASH") {
+
+                                const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo ) values (${CompanyID},${ShopID}, ${LoggedOnUser},${pMasterID}, '${CashType}', 'Withdrawal', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}')`);
+
+                            }
                         }
 
                     }
@@ -531,6 +590,12 @@ module.exports = {
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Doctor', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                             let [pDetail] = await mysql2.pool.query(qry);
                             let [bMaster] = await mysql2.pool.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID}`);
+
+                            if (PaymentMode.toUpperCase() === "CASH") {
+
+                                const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo ) values (${CompanyID},${ShopID}, ${LoggedOnUser},${pMasterID}, '${CashType}', 'Withdrawal', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}')`);
+
+                            }
                         }
 
                     }
