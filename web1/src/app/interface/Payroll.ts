@@ -15,4 +15,5 @@ export class PayrollModel {
   'UpdatedOn': any;
   'InvoiceNo': number | string;
   'CashType': string;
+  'CreditType': string;
 }

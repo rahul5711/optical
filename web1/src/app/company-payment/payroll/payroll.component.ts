@@ -15,6 +15,7 @@ import { PayrollService } from 'src/app/service/payroll.service';
 import { EmployeeService } from 'src/app/service/employee.service';
 import { PayrollModel} from 'src/app/interface/Payroll';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
+import { PettycashService } from 'src/app/service/pettycash.service';
 
 @Component({
   selector: 'app-payroll',
@@ -51,16 +52,20 @@ export class PayrollComponent implements OnInit {
     private excelService: ExcelService,
     private supps: SupportService,
     private es: EmployeeService,
+    private petty: PettycashService,
   ) {this.id = this.route.snapshot.params['id']; }
 
 
   data: PayrollModel = { ID : '', CompanyID : '' , EmployeeID : '', Month : '', Year : '', LeaveDays : '', Salary : '',
   Comments : '',  PaymentMode: '', Status : 1, CreatedBy: '', UpdatedBy:'' , CreatedOn: '', UpdatedOn: '',
-  InvoiceNo:'', CashType:'' };
+  InvoiceNo:'', CashType:'' , CreditType: ''};
 
   editpayrollList = false
   addpayrollList = false
   deletepayrollList = false
+
+  PettyCashBalance = 0;
+  CashCounterBalance=0;
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
@@ -73,6 +78,42 @@ export class PayrollComponent implements OnInit {
     this.getList();
     this.dropdownUserlist();
     this.getPaymentModesList();
+    this.getPettyCashBalance();
+    this.getCashCounterCashBalance();
+  }
+
+  getPettyCashBalance(){
+    this.data.CashType = 'PettyCash'
+    this.data.CreditType = 'Deposit'
+    const subs: Subscription = this.petty.getPettyCashBalance(this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.PettyCashBalance = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getCashCounterCashBalance(){
+    this.data.CashType = 'CashCounter'
+    this.data.CreditType = 'Deposit'
+    const subs: Subscription = this.petty.getCashCounterCashBalance(this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.CashCounterBalance = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   dropdownUserlist(){
@@ -134,6 +175,8 @@ export class PayrollComponent implements OnInit {
         if (res.success) {
           this.formReset();
           this.modalService.dismissAll();
+          this.getPettyCashBalance();
+          this.getCashCounterCashBalance();
           this.getList();
           Swal.fire({
             position: 'center',
@@ -197,6 +240,8 @@ export class PayrollComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.formReset();
+          this.getPettyCashBalance();
+          this.getCashCounterCashBalance();
           this.modalService.dismissAll();
           this.getList();
           Swal.fire({
@@ -229,7 +274,9 @@ export class PayrollComponent implements OnInit {
 
   openEditModal(content: any,datas:any) {
     this.suBtn = true;
-    this.data = datas
+    this.data = datas;
+    this.getPettyCashBalance();
+    this.getCashCounterCashBalance();
     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'xl'});
   }
 
@@ -315,7 +362,7 @@ export class PayrollComponent implements OnInit {
   formReset() {
     this.data = { ID : '', CompanyID : '' , EmployeeID : '', Month : '', Year : '', LeaveDays : '', Salary : '',
     Comments : '',  PaymentMode: '', Status : 1, CreatedBy: '', UpdatedBy:'' , CreatedOn: '', UpdatedOn: '',
-    InvoiceNo:'', CashType:'' }
+    InvoiceNo:'', CashType:'',CreditType:'' }
   }
 
 }
