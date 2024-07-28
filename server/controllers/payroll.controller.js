@@ -268,10 +268,10 @@ module.exports = {
 
             if (doesExistPettyCash.length && datum.PaymentMode.toUpperCase() === "CASH") {
 
-                const [updatePettycash] = await mysql2.pool.query(`update pettycash set ShopID=${shopid}, CashType='${datum.CashType}',Amount='${datum.Salary}',Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser},ShopID=${shopid}, UpdatedOn=now() where RefID = ${Body.ID} and CompanyID = ${CompanyID} and InvoiceNo = '${doesExist[0].InvoiceNo}'`)
+                const [updatePettycash] = await mysql2.pool.query(`update pettycash set ShopID=${shopid}, EmployeeID=${datum.EmployeeID}, CashType='${datum.CashType}',Amount='${datum.Salary}',Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser},ShopID=${shopid}, UpdatedOn=now() where RefID = ${Body.ID} and CompanyID = ${CompanyID} and InvoiceNo = '${doesExist[0].InvoiceNo}'`)
             } else if (!doesExistPettyCash.length && datum.PaymentMode.toUpperCase() === "CASH") {
 
-                const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo ) values (${CompanyID},${shopid}, ${LoggedOnUser},${Body.ID}, '${datum.CashType}', 'Withdrawal', ${datum.Salary},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${doesExist[0].InvoiceNo}')`);
+                const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo ) values (${CompanyID},${shopid}, ${datum.EmployeeID},${Body.ID}, '${datum.CashType}', 'Withdrawal', ${datum.Salary},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${doesExist[0].InvoiceNo}')`);
             }
 
 
