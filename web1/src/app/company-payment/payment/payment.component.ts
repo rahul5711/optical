@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { environment } from 'src/environments/environment';
@@ -16,6 +16,7 @@ import { CustomerService } from 'src/app/service/customer.service';
 import { PaymentService } from 'src/app/service/payment.service';
 import * as moment from 'moment';
 import { DoctorService } from 'src/app/service/doctor.service';
+import { PettycashService } from 'src/app/service/pettycash.service';
 
 @Component({
   selector: 'app-payment',
@@ -48,11 +49,12 @@ export class PaymentComponent implements OnInit {
     private customer: CustomerService,
     private doctor: DoctorService,
     private pay: PaymentService,
-
+    private petty: PettycashService,
+    private cdr: ChangeDetectorRef,
   ) { }
 
   data: any = {
-    ID: null, CompanyID: null, BillMasterID: null, ShopID: null, PaymentType: null, CustomerID: null, PayableAmount: 0, CustomerCredit: 0, PaidAmount: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', CreditType: 'Debit', PaymentDate: null, Comments: 0, Status: 1, pendingPaymentList: {}, ApplyReturn: false, CreditNumber: ''
+    ID: null, CompanyID: null, BillMasterID: null, ShopID: null, PaymentType: null, CustomerID: null, PayableAmount: 0, CustomerCredit: 0, PaidAmount: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', CreditType: 'Debit', PaymentDate: null, Comments: 0, Status: 1, pendingPaymentList: {}, ApplyReturn: false, CreditNumber: '',CashType:'',
   };
 
   searchValue: any
@@ -63,10 +65,15 @@ export class PaymentComponent implements OnInit {
   vendorCredit: any
   currentTime: any;
 
+  PettyCashBalance = 0;
+  CashCounterBalance=0;
+
   ngOnInit(): void {
     this.getPaymentModesList()
+
     this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23' })
   }
+
 
   getPaymentModesList() {
     const subs: Subscription = this.supps.getList('PaymentModeType').subscribe({
@@ -76,6 +83,54 @@ export class PaymentComponent implements OnInit {
         } else {
           this.as.errorToast(res.message)
         }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  paymodeCash(){
+    if(this.data.PaymentType !== 'Customer' && this.data.PaymentMode === 'CASH'){
+      this.getPettyCashBalance();
+      this.getCashCounterCashBalance();
+    }
+  }
+
+  
+  getPettyCashBalance(){
+    this.PettyCashBalance = 0;
+    this.data.CashType = 'PettyCash'
+    this.data.CreditType = 'Deposit'
+    const subs: Subscription = this.petty.getPettyCashBalance(this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.PettyCashBalance = res.data
+           this.data.CreditType = 'Debit'
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+        this.cdr.detectChanges();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getCashCounterCashBalance(){
+    this.CashCounterBalance = 0;
+    this.data.CashType = 'CashCounter'
+    this.data.CreditType = 'Deposit'
+    const subs: Subscription = this.petty.getCashCounterCashBalance(this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.CashCounterBalance = res.data
+           this.data.CreditType = 'Debit'
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+        this.cdr.detectChanges();
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -253,6 +308,7 @@ export class PaymentComponent implements OnInit {
       this.data.ShopID = Number(this.selectedShop);
       this.data.PaymentDate = moment().format('YYYY-MM-DD') + ' ' + this.currentTime;
       this.data.pendingPaymentList = this.invoiceList;
+
       const subs: Subscription = this.pay.applyPayment(this.data).subscribe({
         next: (res: any) => {
           if (res.success) {
