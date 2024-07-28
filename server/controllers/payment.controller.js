@@ -241,7 +241,7 @@ module.exports = {
             if (!pendingPaymentList || pendingPaymentList.length === 0) return res.send({ message: "Invalid pendingPaymentList Data" })
             if (PayableAmount === null || PayableAmount === undefined) return res.send({ message: "Invalid PaymentType Data" })
 
-            if (PaymentType !== "Customer" && PaymentMode.toUpperCase() !== "CASH") {
+            if (PaymentType !== "Customer" && PaymentMode.toUpperCase() === "CASH") {
                 if (!CashType || CashType === '') {
                     return res.send({ message: "Invalid CashType Data" })
                 }
