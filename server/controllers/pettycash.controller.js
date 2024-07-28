@@ -119,7 +119,7 @@ module.exports = {
                 shop = ` and pettycash.ShopID = ${shopid}`
             }
 
-            let qry = `SELECT pettycash.*, shop.Name as ShopName, shop.AreaName as AreaName, users2.Name AS EmployeeName, users1.Name AS CreatedPerson, users.Name AS UpdatedPerson FROM pettycash  LEFT JOIN user AS users1 ON users1.ID = pettycash.CreatedBy left join shop on shop.ID = pettycash.ShopID  LEFT JOIN user AS users ON users.ID = pettycash.UpdatedBy  LEFT JOIN user AS users2 ON users2.ID = pettycash.EmployeeID WHERE pettycash.Status = 1 AND pettycash.CompanyID = ${CompanyID} ${shop} ORDER BY pettycash.ID DESC`
+            let qry = `SELECT pettycash.*, shop.Name as ShopName, shop.AreaName as AreaName, users2.Name AS EmployeeName, users1.Name AS CreatedPerson, users.Name AS UpdatedPerson FROM pettycash  LEFT JOIN user AS users1 ON users1.ID = pettycash.CreatedBy left join shop on shop.ID = pettycash.ShopID  LEFT JOIN user AS users ON users.ID = pettycash.UpdatedBy  LEFT JOIN user AS users2 ON users2.ID = pettycash.EmployeeID WHERE pettycash.Status = 1 and RefID = 0 AND pettycash.CompanyID = ${CompanyID} ${shop} ORDER BY pettycash.ID DESC`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -292,7 +292,7 @@ module.exports = {
                 shop = ` and pettycash.ShopID = ${shopid}`
             }
 
-            let qry = `select pettycash.*, shop.Name as ShopName, shop.AreaName as AreaName, users2.Name as EmployeeName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from pettycash left join shop on shop.ID = pettycash.ShopID left join user as users1 on users1.ID = pettycash.CreatedBy left join user as users on users.ID = pettycash.UpdatedBy left join user as users2 on users2.ID = pettycash.EmployeeID where pettycash.Status = 1 and  pettycash.CompanyID = ${CompanyID} ${shop} and users2.Name like '%${Body.searchQuery}%' OR pettycash.Status = 1 and pettycash.CompanyID = ${CompanyID} ${shop} and pettycash.CashType like '%${Body.searchQuery}%' OR pettycash.Status = 1 and pettycash.CompanyID = ${CompanyID} ${shop} and pettycash.CreditType like '%${Body.searchQuery}%' `
+            let qry = `select pettycash.*, shop.Name as ShopName, shop.AreaName as AreaName, users2.Name as EmployeeName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from pettycash left join shop on shop.ID = pettycash.ShopID left join user as users1 on users1.ID = pettycash.CreatedBy left join user as users on users.ID = pettycash.UpdatedBy left join user as users2 on users2.ID = pettycash.EmployeeID where pettycash.Status = 1 and RefID = 0 and  pettycash.CompanyID = ${CompanyID} ${shop} and users2.Name like '%${Body.searchQuery}%' OR pettycash.Status = 1 and pettycash.CompanyID = ${CompanyID} ${shop} and pettycash.CashType like '%${Body.searchQuery}%' OR pettycash.Status = 1 and pettycash.CompanyID = ${CompanyID} ${shop} and pettycash.CreditType like '%${Body.searchQuery}%' `
 
 
             let [data] = await mysql2.pool.query(qry);
