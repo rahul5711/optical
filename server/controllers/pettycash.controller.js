@@ -76,7 +76,7 @@ module.exports = {
 
             datum.InvoiceNo = newInvoiceID;
 
-            const [saveData] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo ) values (${CompanyID},${datum.ShopID}, ${datum.EmployeeID}, '${datum.CashType}', '${datum.CreditType}', ${datum.Amount},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${datum.InvoiceNo}')`)
+            const [saveData] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${datum.ShopID}, ${datum.EmployeeID}, '${datum.CashType}', '${datum.CreditType}', ${datum.Amount},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${datum.InvoiceNo}', 'CashBox')`)
 
             let CreditType
             if (datum.CreditType === 'Withdrawal') {

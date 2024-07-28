@@ -85,7 +85,7 @@ module.exports = {
             console.log(connected("Data Save SuccessFUlly !!!"));
             response.message = "data save sucessfully"
 
-            const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo ) values (${CompanyID},${datum.ShopID}, ${LoggedOnUser},${saveData.insertId}, '${datum.CashType}', 'Withdrawal', ${datum.Amount},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${datum.InvoiceNo}')`);
+            const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${datum.ShopID}, ${LoggedOnUser},${saveData.insertId}, '${datum.CashType}', 'Withdrawal', ${datum.Amount},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${datum.InvoiceNo}', 'Expense')`);
 
             const [data] = await mysql2.pool.query(`select * from expense where CompanyID = ${CompanyID} and Status = 1 order by ID desc`)
             response.data = data
