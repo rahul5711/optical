@@ -79,9 +79,9 @@ module.exports = {
 
             const [saveData] = await mysql2.pool.query(`insert into payroll (CompanyID, ShopID, EmployeeID, Month, Year, LeaveDays,  Salary,  PaymentMode, Comments, Status, CreatedBy , CreatedOn,InvoiceNo,CashType ) values (${CompanyID}, ${shopid} , ${datum.EmployeeID}, '${datum.Month}', '${datum.Year}', ${datum.LeaveDays}, ${datum.Salary}, '${datum.PaymentMode}', '${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${datum.InvoiceNo}','${datum.CashType}')`)
 
-            const [paymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID,CompanyID,ShopID,PaymentType,CreditType,PaymentDate,PaymentMode,CardNo,PaymentReferenceNo,PayableAmount,PaidAmount,Comments,Status,CreatedBy,CreatedOn) values (${saveData.insertId}, ${CompanyID},${shopid},'Employee','Debit',now(),'${datum.PaymentMode}','','',${datum.Salary},${datum.Salary},'${datum.Comments}',1, ${LoggedOnUser}, now())`)
+            const [paymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID,CompanyID,ShopID,PaymentType,CreditType,PaymentDate,PaymentMode,CardNo,PaymentReferenceNo,PayableAmount,PaidAmount,Comments,Status,CreatedBy,CreatedOn) values (${datum.EmployeeID}, ${CompanyID},${shopid},'Employee','Debit',now(),'${datum.PaymentMode}','','',${datum.Salary},${datum.Salary},'${datum.Comments}',1, ${LoggedOnUser}, now())`)
 
-            const [paymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn) values (${paymentMaster.insertId},'${datum.InvoiceNo}',${saveData.insertId},${saveData.insertId},${CompanyID},${datum.Salary},0,'Employee','Debit',1,${LoggedOnUser}, now())`)
+            const [paymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn) values (${paymentMaster.insertId},'${datum.InvoiceNo}',${saveData.insertId},${datum.EmployeeID},${CompanyID},${datum.Salary},0,'Employee','Debit',1,${LoggedOnUser}, now())`)
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
@@ -257,7 +257,7 @@ module.exports = {
             const [payment] = await mysql2.pool.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'Employee'`)
 
 
-            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set ShopID = ${shopid}, PaymentMode='${datum.PaymentMode}',PayableAmount=${datum.Salary},PaidAmount=${datum.Salary},Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where CustomerID=${Body.ID} and PaymentType = 'Employee' and CompanyID = ${CompanyID} and ID =${payment[0].PaymentMasterID}`)
+            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set ShopID = ${shopid}, PaymentMode='${datum.PaymentMode}',PayableAmount=${datum.Salary},PaidAmount=${datum.Salary},Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where CustomerID=${Body.ID} and PaymentType = 'Employee'  and ID =${payment[0].PaymentMasterID}`)
 
             const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount=${datum.Salary}, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where BillMasterID =${Body.ID} and PaymentType = 'Employee' and CompanyID = ${CompanyID} and BillID = '${doesExist[0].InvoiceNo}'`)
 
