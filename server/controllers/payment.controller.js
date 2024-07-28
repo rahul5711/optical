@@ -245,7 +245,7 @@ module.exports = {
                 if (!CashType || CashType === '') {
                     return res.send({ message: "Invalid CashType Data" })
                 }
-                if ((CashType !== 'PettyCash' || CashType !== 'CashCounter')) {
+                if ((CashType !== 'PettyCash' && CashType !== 'CashCounter')) {
                     return res.send({ message: "Invalid CashType Data" })
                 }
 
