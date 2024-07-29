@@ -1,0 +1,397 @@
+<html>
+<link rel="stylesheet" href="http://localhost:3000/assest/customerPower.css">
+
+<head>
+   <style>
+      html body {
+         zoom: 100%;
+         padding-left: 15%;
+         padding-right: 15%;
+      }
+
+      .top-table-01 {
+         width: 50%;
+         float: left;
+         margin: 0;
+         padding: 0;
+         font-size: 12px;
+      }
+
+      .top-table-01 tr {
+         width: 100%;
+      }
+
+      .top-table-01 tr th:nth-child(1) {
+         width: 25%;
+         float: left;
+         text-align: left;
+      }
+
+      .top-table-01 tr th:nth-child(2) {
+         width: 55%;
+         float: right;
+         text-align: left;
+      }
+
+      .top-table-02 {
+         width: 45%;
+         float: right;
+         margin: 0;
+         padding: 0;
+         font-size: 12px;
+      }
+
+      .top-table-02 tr {
+         width: 100%;
+      }
+
+      .top-table-02 tr th:nth-child(1) {
+         width: 45%;
+         float: left;
+         text-align: left !important;
+      }
+
+      .top-table-02 tr th:nth-child(2) {
+         width: 55%;
+         float: right;
+         text-align: left !important;
+      }
+
+      .top-table-03 {
+         width: 100%;
+         font-size: 10px;
+      }
+
+      .top-table-03 tr {
+         width: 100%;
+      }
+
+      .top-table-03 tr th:nth-child(1) {
+         width: 23%;
+         float: left;
+         text-align: left !important;
+      }
+
+      .top-table-03 tr th:nth-child(2) {
+         width: 77%;
+         float: right;
+         text-align: left !important;
+      }
+
+      .power-table-01 {
+         width: 100%;
+      }
+
+      .power-table-01,
+      .power-table-01 th,
+      .power-table-01 td {
+         border: 1px solid black;
+         border-collapse: collapse;
+         font-size: 12px;
+
+      }
+
+      .customer-table-01 {
+         width: 100%;
+         text-align: center;
+         font-size: 14px;
+      }
+
+      .customer-table-02 {
+         width: 60%;
+         float: left;
+         margin: 0;
+         padding: 0;
+         font-size: 12px;
+      }
+
+      .customer-table-02 tr {
+         width: 100%;
+      }
+
+      .customer-table-02 tr th:nth-child(1) {
+         width: 30%;
+         float: left;
+         text-align: left;
+      }
+
+      .customer-table-02 tr th:nth-child(2) {
+         width: 65%;
+         float: right;
+         text-align: left;
+      }
+
+      .customer-table-03 {
+         width: 35%;
+         float: right;
+         margin: 0;
+         padding: 0;
+         font-size: 12px;
+      }
+
+      .customer-table-03 tr {
+         width: 100%;
+      }
+
+      .customer-table-03 tr th:nth-child(1) {
+         width: 65%;
+         float: left;
+         text-align: left !important;
+      }
+
+      .customer-table-03 tr th:nth-child(2) {
+         width: 35%;
+         float: right;
+         text-align: left !important;
+      }
+
+      .customer-table-04 {
+         width: 100%;
+         text-align: center;
+         font-size: 12px;
+         float: left;
+      }
+
+      .customer-table-05 {
+         width: 100%;
+         text-align: center;
+         font-size: 12px;
+         border-top: 1px solid #000;
+         border-bottom: 1px solid #000;
+      }
+   </style>
+</head>
+
+
+<body>
+
+   <section style="width: 100%;">
+      <table class="top-table-01">
+         <tr>
+            <th>OrderNo.:-</th>
+            <th><%=data.billMaster.InvoiceNo%></th>
+         </tr>
+         <tr>
+            <th>CustomerName:-</th>
+            <th><%=data.customer.Title%> <%=data.customer.Name%></th>
+         </tr>
+         <tr>
+            <th>PrecribedBy:-</th>
+            <th> <%=data.customer.RefferedByDoc%></th>
+         </tr>
+         <tr>
+            <th>BookedBy:-</th>
+            <th><%=data.employee%></th>
+         </tr>
+      </table>
+
+      <table class="top-table-02">
+         <tr>
+            <th>Customer Mob:-</th>
+            <th><%=data.customer.MobileNo1%></th>
+         </tr>
+         <tr>
+            <th>Date:-</th>
+            <th><%=data.billMaster.BillDate%></th>
+         </tr>
+         <tr>
+            <th>Delivery Date:-</th>
+            <th><%=data.billMaster.DeliveryDate%></th>
+         </tr>
+         <tr>
+            <th>IPD:-</th>
+            <th><%=data.EyeMeasurement[0].Shade%></th>
+         </tr>
+      </table>
+
+      <table class="top-table-03">
+         <tr>
+            <th>Glass Detail:-</th>
+            <th><%=data.GlassDetail%></th>
+         </tr>
+      </table>
+   </section>
+
+   <% if (data.ShowPower === true){%>
+   <section style="width: 100%; margin: 1% 0;   ">
+      <% if(data.EyeMeasurement !== null && data.EyeMeasurement.length !== 0){ data.EyeMeasurement.forEach(function (i, index) { %>
+         <table class="power-table-01">
+            <thead>
+               <tr>
+                  <th colspan="1" style="border: none !important;"></th>
+                  <th colspan="4">Right</th>
+                  <th colspan="4">Left</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td style="border: none !important;"></td>
+                  <td>SPH</td>
+                  <td>CYL</td>
+                  <td>AXIS</td>
+                  <td>VP</td>
+                  <td>SPH</td>
+                  <td>CYL</td>
+                  <td>AXIS</td>
+                  <td>VP</td>
+               </tr>
+               <tr>
+                  <td>Distance</td>
+                  <td>
+                     <%=i.REDPSPH%>
+                  </td>
+                  <td>
+                     <%=i.REDPCYL%>
+                  </td>
+                  <td>
+                     <%=i.REDPAxis%>
+                  </td>
+                  <td>
+                     <%=i.REDPVA%>
+                  </td>
+                  <td>
+                     <%=i.LEDPSPH%>
+                  </td>
+                  <td>
+                     <%=i.LEDPCYL%>
+                  </td>
+                  <td>
+                     <%=i.LEDPAxis%>
+                  </td>
+                  <td>
+                     <%=i.LEDPVA%>
+                  </td>
+               </tr>
+               <tr>
+                  <td>Near</td>
+                  <td>
+                     <%=i.RENPSPH%>
+                  </td>
+                  <td>
+                     <%=i.RENPCYL%>
+                  </td>
+                  <td>
+                     <%=i.RENPAxis%>
+                  </td>
+                  <td>
+                     <%=i.RENPVA%>
+                  </td>
+                  <td>
+                     <%=i.LENPSPH%>
+                  </td>
+                  <td>
+                     <%=i.LENPCYL%>
+                  </td>
+                  <td>
+                     <%=i.LENPAxis%>
+                  </td>
+                  <td>
+                     <%=i.LENPVA%>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+      <%})}%>
+   </section>
+   <%}%>
+
+   <section style="width: 100%; padding-top: 1%; border-top: 1px dotted;">
+      <table class="customer-table-01">
+         <tr>
+            <th style="font-weight: 700 !important;">Arihant Optical</th>
+         </tr>
+         <tr>
+            <th>Tel No. : 02186225377, Mobile No. : 8432225377</th>
+         </tr>
+      </table>
+
+      <table class="customer-table-02 " style="padding-top: 1%;">
+         <tr>
+            <th>OrderNo.:-</th>
+            <th><%=data.billMaster.InvoiceNo%></th>
+         </tr>
+         <tr>
+            <th>CustomerName:-</th>
+            <th><%=data.customer.Title%> <%=data.customer.Name%></th>
+         </tr>
+         <tr>
+            <th>Date:-</th>
+            <th><%=data.billMaster.BillDate%></th>
+         </tr>
+         <tr>
+            <th>Delivery Date:-</th>
+            <th><%=data.billMaster.DeliveryDate%></th>
+         </tr>
+      </table>
+
+      <table class="customer-table-03" style="padding-top: 1%;">
+
+         <tr>
+            <th>Total:-</th>
+            <th><%=data.billMaster.TotalAmount %></th>
+         </tr>
+         <tr>
+            <th>Discount:-</th>
+            <th> <%= data.billMaster.DiscountAmount %></th>
+         </tr>
+         <tr>
+            <th>AdvanceAmt:-</th>
+            <th><%= data.recivePayment %></th>
+         </tr>
+         <tr>
+            <th>TotalBalance :-</th>
+            <th><%= data.CurrentInvoiceBalance %></th>
+         </tr>
+         <tr>
+            <th>PaymentBY:-</th>
+            <% if(data.paidlist.length !==0){data.paidlist.forEach(function (i, index) { %>
+               <% if (i.PaymentMode !=='Payment Initiated' ){%>
+            <th style="font-size: 10px !important;"><%=i.PaymentMode%> /</th>
+               <%}%>
+            <%})}%>
+         </tr>
+      </table>
+
+
+
+   </section>
+
+   <section style="width: 100%; margin-top: 1%;">
+      <table class="customer-table-05">
+         <tr>
+
+            <th> <b> *You have saved <%=data.SavedDiscount%> Rs on this invoice* </b> </th>
+         </tr>
+      </table>
+      <table class="customer-table-04" style=" margin-top: 1%;">
+         <thead>
+            <tr style="border: 1px solid #000; background-color: rgb(234, 234, 234);">
+               <th>S.No</th>
+               <th>Item Name </th>
+               <th>Quantity </th>
+
+            </tr>
+         </thead>
+         <tbody>
+            <% if(data.billItemList.length != 0 ){ data.billItemList.forEach(function (i, index) { %>
+            <tr>
+               <td> <%= index+1 %></td>
+               <td> <%= i.ProductName %>  
+                  <% if (i.Warranty != '' && i.Warranty != "undefined"){%>
+                     /<%= i.Warranty %>
+                  <%}%>
+                  <% if (i.Remark != '' && i.Remark != "undefined"){%>
+                      /<%= i.Remark %>
+                   <%}%>
+               </td>
+               <td><%= i.Quantity %></td>
+            </tr>
+            <%})}%>
+         </tbody>
+      </table>
+
+   </section>
+
+</body>
+
+</html>

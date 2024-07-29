@@ -1878,7 +1878,6 @@ module.exports = {
             } else if (typeof x[0] === 'object') {
                 printdata.EyeMeasurement = [x[0]];
             }
-
             const BillItemList = req.body.billItemList;
             const ServiceList = req.body.serviceList;
             const PaidList = req.body.paidList;
@@ -1943,6 +1942,8 @@ module.exports = {
                 return total;
             }, 0);
 
+
+
             printdata.DueAmount = printdata.unpaidlist.reduce((total, item) => total + item.DueAmount, 0);
             printdata.SavedDiscount = printdata.billMaster.DiscountAmount + printdata.billMaster.AddlDiscount
             printdata.billMaster.BillDate = moment(printdata.billMaster.BillDate).format("DD-MM-YYYY")
@@ -2002,12 +2003,27 @@ module.exports = {
             printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
             printdata.WaterMark = clientConfig.appURL + printdata.shopdetails.WaterMark;
 
+            printdata.GlassDetail = '';
+            printdata.billItemList.forEach((g) =>{
+                
+                if(g.ProductTypeName == 'LENS'){
+                    printdata.GlassDetail = g.ProductName
+                }
+            })
+
             let BillFormat = ''
-            BillFormat = printdata.CompanySetting.BillFormat;
-            // BillFormat = "invoiceSapphire.ejs";
+         
+            if(CompanyID === 256){
+                BillFormat = "arihantPowerPdf.ejs";
+            }else{
+                BillFormat = printdata.CompanySetting.BillFormat;
+            }
+
             let fileName = "";
             const file = 'Bill' + '-' + printdata.billMaster.ID + '-' + CompanyID + ".pdf";
+            
             const formatName = BillFormat;
+            console.log(formatName);
             fileName = "uploads/" + file;
 
 
@@ -2015,11 +2031,45 @@ module.exports = {
                 if (err) {
                     res.send(err);
                 } else {
-                    let options = {
-                        format: "A4",
-                        orientation: "portrait",
-                    };
+                    
+                    let options
+                     if (CompanyID == 1) {
+                        options = {
+                            // height: "110mm",
+                            // width: "145mm",
+                            header: {
+                                height: "0mm",
+                                contents: ''
+                            },
+                            footer: {
+                                height: "0mm",
+                                contents: ''
+                            },
+                            margin: {
+                                left: '0mm',
+                                top: '0mm',
+                                right: '0mm',
+                                bottom: '0mm'
+                            },
+                            padding: {
+                                left: '0mm',
+                                top: '0mm',
+                                right: '0mm',
+                                bottom: '0mm'
+                            },
+                            format: "A4",
+                            orientation: "portrait",
+                        };
+                        
+                    }else {
+                        options = {
+                            format: "A4",
+                            orientation: "portrait",
+                        };
+                    }
+                   
                     pdf.create(data, options).toFile(fileName, function (err, data) {
+                        console.log(data,'html');
                         if (err) {
                             res.send(err);
                         } else {

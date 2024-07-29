@@ -838,7 +838,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">Sub Total</mat-label>
                         <input style=" color: red !important;" matInput class="cust-input redclass" type="number"
-                            min="0" name="SubTotal" [(ngModel)]="BillMaster.SubTotal" disabled #SubTotaltcontrol
+                            min="0" name="SubTotal" [(ngModel)]="BillMaster.SubTotal " disabled #SubTotaltcontrol
                             [autocomplete]="false">
                         <mat-error>
                             Sub Total is required
@@ -987,6 +987,7 @@
                     <button *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="this.BillLink == ''" (click)="sendWhatsapp('bill')" class="bgRemove whatsappBill ms-lg-2 me-lg-1 ms-md-3 me-md-3 ms-0 me-0"><i  class="fa-brands fa-whatsapp "></i></button>
                     <button class="bgRemove ms-0 me-0"><i class="fa-solid fa-envelope EmailBill"></i></button>
                     <button *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="this.BillLink == ''" (click)="sendWhatsapp('Fbill')" class="bgRemove whatsappfBill ms-lg-2 me-lg-1 ms-md-3 me-md-3 ms-0 me-0"><i  class="fa-brands fa-whatsapp "></i> Final</button>
+                    <button *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="!this.BillMaster.InvoiceNo" (click)="sendWhatsapp('Textbill')" class="bgRemove whatsappfBill ms-lg-2 me-lg-1 ms-md-3 me-md-3 ms-0 me-0"><i  class="fa-brands fa-whatsapp "></i> Text</button>
                 </div>
             </div>
         </form>

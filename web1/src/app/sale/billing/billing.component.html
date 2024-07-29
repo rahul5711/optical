@@ -19,7 +19,7 @@
                                 <button class="extra" (click)="openModal(customer)">EXTRA</button>
                             </div>
                             </div>
-                            <div class="col-lg-6 col-md-12 col-12 ms-auto d-lg-block d-none">
+                            <div class="col-xl-6 col-lg-12 col-md-12 col-12 ms-auto d-xl-block d-none">
                                 <!-- nav-tabs start -->
                                 <ul class="nav nav-tabs mb-3" id="ex1" role="tablist"
                                     style="justify-content: space-between;">
@@ -59,7 +59,7 @@
                         <form #f="ngForm" autocomplete="off">
                             <div class="row">
                                 <!-- Customer from start  -->
-                                <div class="col-lg-6 col-md-12 col-12">
+                                <div class="col-xl-6 col-lg-12 col-md-12 col-12">
                                     <div class="row">
                                         <div class="col-xl-2 col-lg-2 col-md-3  col-4 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
@@ -243,7 +243,7 @@
                                 </div>
                                 <!-- Customer from end  -->
                                 <!-- power box start  -->
-                                <div class="col-lg-6 col-md-12 col-12 ms-auto d-lg-none d-block">
+                                <div class="col-xl-6 col-lg-12 col-md-12 col-12 ms-auto d-xl-none d-block">
                                     <!-- nav-tabs start -->
                                     <ul class="nav nav-tabs mb-3" id="ex1" role="tablist"
                                         style="justify-content: space-between;">
@@ -277,7 +277,7 @@
                                     </ul>
                                     <!-- nav-tabs end -->
                                 </div>
-                                <div class="col-lg-6 col-md-12 col-12">
+                                <div class="col-xl-6 col-lg-12 col-md-12 col-12">
                                     <div class="row p-0 m-0">
                                         <!-- Tabs content -->
                                         <div class="tab-content mt-1 p-0 pe-2 ps-0 mostly-customized-scrollbar"
@@ -359,11 +359,12 @@
                                                     <div class="col-1">
                                                         <input class="inputWidth box " type="text" name="REDPCYL"
                                                             [(ngModel)]="spectacle.REDPCYL" id="REDPCYL" (change)="calculate('Lens', 'RCYL', 0.00)"
-                                                            list="dpcylList" >
+                                                            list="dpcylList" (blur)="validateInput()">
                                                         <datalist id="dpcylList">
                                                             <option [value]="c.Name" *ngFor="let c of dataCYL" >
                                                                 {{c.Name}} </option>
                                                         </datalist>
+                                                      
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box"  name="REDPAxis"
