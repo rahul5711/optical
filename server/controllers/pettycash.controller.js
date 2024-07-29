@@ -44,7 +44,7 @@ module.exports = {
                 const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
 
                 if (Balance < datum.Amount) {
-                    return res.send({ message: `you can not withdrawal greater than ${Balance}` })
+                    return res.send({ message: `You cannot pay more than available Amount Rs  ${Balance}` })
                 }
             }
 
@@ -56,7 +56,7 @@ module.exports = {
                 const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
 
                 if (Balance < datum.Amount) {
-                    return res.send({ message: `you can not withdrawal greater than ${Balance}` })
+                    return res.send({ message: `You cannot pay more than available Amount Rs  ${Balance}` })
                 }
             }
 
@@ -234,7 +234,7 @@ module.exports = {
                 const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
 
                 if (Balance < datum.Amount) {
-                    return res.send({ message: `you can not withdrawal greater than ${Balance}` })
+                    return res.send({ message: `You cannot pay more than available Amount Rs  ${Balance}` })
                 }
             }
             if (datum.CashType === 'CashCounter' && datum.CreditType === 'Withdrawal') {
@@ -245,7 +245,7 @@ module.exports = {
                 const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
 
                 if (Balance < datum.Amount) {
-                    return res.send({ message: `you can not withdrawal greater than ${Balance}` })
+                    return res.send({ message: `You cannot pay more than available Amount Rs  ${Balance}` })
                 }
             }
 
