@@ -13,6 +13,8 @@ const { log } = require('console')
 const mysql2 = require('../database')
 const ExcelJS = require('exceljs');
 var moment = require("moment");
+const puppeteer = require('puppeteer');
+const { PDFDocument } = require('pdf-lib');
 
 function isValidDate(dateString) {
     // First check for the pattern
@@ -1025,213 +1027,345 @@ module.exports = {
         }
     },
 
-    AllPrintBarcode: async (req, res, next) => {
-        try {
-            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const shopid = await shopID(req.headers) || 0;
-            let printdata = req.body
-            const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
+    // AllPrintBarcode: async (req, res, next) => {
+    //     try {
+    //         const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+    //         const shopid = await shopID(req.headers) || 0;
+    //         let printdata = req.body
+    //         const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
 
-            // printdata.forEach(ele => {
-            //     if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
-            //         let ProductBrandName = ele.ProductName.split("/")[1];
-            //         let ProductModelName = ele.ProductName.split("/")[2];
-            //         let ProductFullName = ele.ProductName
-            //         let Barcode = ele.BaseBarCode
-            //         let BarcodeName = shopdetails[0].BarcodeName
+    //         // printdata.forEach(ele => {
+    //         //     if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
+    //         //         let ProductBrandName = ele.ProductName.split("/")[1];
+    //         //         let ProductModelName = ele.ProductName.split("/")[2];
+    //         //         let ProductFullName = ele.ProductName
+    //         //         let Barcode = ele.BaseBarCode
+    //         //         let BarcodeName = shopdetails[0].BarcodeName
 
-            //         ele.ProductBrandName = ProductBrandName;
-            //         ele.ProductModelName = ProductModelName;
-            //         ele.ProductFullName = ProductFullName;
-            //         ele.Barcode = Barcode;
-            //         ele.BarcodeName = BarcodeName;
+    //         //         ele.ProductBrandName = ProductBrandName;
+    //         //         ele.ProductModelName = ProductModelName;
+    //         //         ele.ProductFullName = ProductFullName;
+    //         //         ele.Barcode = Barcode;
+    //         //         ele.BarcodeName = BarcodeName;
 
-            //     } else {
-            //         let ProductBrandName = ele.ProductName.split("/")[0];
-            //         let ProductModelName = ele.ProductName.split("/")[1];
-            //         let ProductFullName = ele.ProductName
-            //         let Barcode = ele.BaseBarCode
-            //         let BarcodeName = shopdetails[0].BarcodeName
+    //         //     } else {
+    //         //         let ProductBrandName = ele.ProductName.split("/")[0];
+    //         //         let ProductModelName = ele.ProductName.split("/")[1];
+    //         //         let ProductFullName = ele.ProductName
+    //         //         let Barcode = ele.BaseBarCode
+    //         //         let BarcodeName = shopdetails[0].BarcodeName
 
-            //         ele.ProductFullName = ProductFullName;
-            //         ele.ProductBrandName = ProductBrandName;
-            //         ele.ProductModelName = ProductModelName;
-            //         ele.Barcode = Barcode;
-            //         ele.BarcodeName = BarcodeName;
-            //     }
-            // })
+    //         //         ele.ProductFullName = ProductFullName;
+    //         //         ele.ProductBrandName = ProductBrandName;
+    //         //         ele.ProductModelName = ProductModelName;
+    //         //         ele.Barcode = Barcode;
+    //         //         ele.BarcodeName = BarcodeName;
+    //         //     }
+    //         // })
 
-            printdata.forEach(ele => {
+    //         printdata.forEach(ele => {
 
-                let ProductBrandName, ProductModelName;
+    //             let ProductBrandName, ProductModelName;
 
-                if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
-                    [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(1, 6);
-                } else {
-                    [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(0, 4);
-                }
-
-
-                // ele.ProductFullName = ele.ProductName.split("/").slice(2,6);
-                ele.ProductFullName = ele.ProductName;
-
-                if (ProductBrandName !== undefined) {
-                    ele.ProductBrandName = ProductBrandName.substring(0, 18)
-                } else {
-                    ele.ProductBrandName = ProductBrandName
-                }
-                if (ProductModelName !== undefined) {
-                    ele.ProductModelName = ProductModelName.substring(0, 18)
-                } else {
-                    ele.ProductModelName = ProductModelName
-                }
-                ele.ProductUniqueBarcode = ele.UniqueBarcode;
+    //             if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
+    //                 [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(1, 6);
+    //             } else {
+    //                 [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(0, 4);
+    //             }
 
 
-                if (ele.BaseBarCode == null) {
-                    ele.Barcode = ele.Barcode;
-                } else {
-                    ele.Barcode = ele.BaseBarCode;
-                }
+    //             // ele.ProductFullName = ele.ProductName.split("/").slice(2,6);
+    //             ele.ProductFullName = ele.ProductName;
 
-                ele.BarcodeName = shopdetails[0].BarcodeName;
+    //             if (ProductBrandName !== undefined) {
+    //                 ele.ProductBrandName = ProductBrandName.substring(0, 18)
+    //             } else {
+    //                 ele.ProductBrandName = ProductBrandName
+    //             }
+    //             if (ProductModelName !== undefined) {
+    //                 ele.ProductModelName = ProductModelName.substring(0, 18)
+    //             } else {
+    //                 ele.ProductModelName = ProductModelName
+    //             }
+    //             ele.ProductUniqueBarcode = ele.UniqueBarcode;
 
+
+    //             if (ele.BaseBarCode == null) {
+    //                 ele.Barcode = ele.Barcode;
+    //             } else {
+    //                 ele.Barcode = ele.BaseBarCode;
+    //             }
+
+    //             ele.BarcodeName = shopdetails[0].BarcodeName;
+
+    //         });
+
+    //         if (printdata.length > 0) {
+    //             const [barcodeFormate] = await mysql2.pool.query(`select * from barcodesetting where CompanyID = ${CompanyID}`)
+    //             printdata.barcodeFormate = barcodeFormate[0];
+    //             printdata.BillHeader = `${Number(printdata.barcodeFormate.billHeader)}`;
+    //             printdata.BarcodeHeight = `${Number(printdata.barcodeFormate.barcodeHeight)}in`;
+    //             printdata.barcodeWidth = `${Number(printdata.barcodeFormate.barcodeWidth)}in`;
+    //             printdata.barcodePadding = `${Number(printdata.barcodeFormate.barcodePadding)}px`;
+    //             printdata.barcodeMargin = `${Number(printdata.barcodeFormate.barcodeMargin)}px`;
+    //             printdata.barcodeNameFontSize = `${Number(printdata.barcodeFormate.barcodeNameFontSize)}px`;
+    //             printdata.floatLeftSide = printdata.barcodeFormate.floatLeftSide;
+    //             printdata.floatRightSide = printdata.barcodeFormate.floatRightSide;
+    //             printdata.incTaxFontSize = `${Number(printdata.barcodeFormate.incTaxFontSize)}px`;
+    //             printdata.leftWidth = `${Number(printdata.barcodeFormate.leftWidth)}%`;
+    //             printdata.rightWidth = `${Number(printdata.barcodeFormate.rightWidth)}%`;
+    //             printdata.barHeight = `${Number(printdata.barcodeFormate.barHeight)}px`;
+    //             printdata.barWidth = `${Number(printdata.barcodeFormate.barWidth)}px`;
+    //             printdata.barFontSize = `${Number(printdata.barcodeFormate.barFontSize)}px`;
+    //             printdata.barMarginTop = `${Number(printdata.barcodeFormate.barMarginTop)}px`;
+    //             printdata.mrpFontSize = `${Number(printdata.barcodeFormate.mrpFontSize)}px`;
+    //             printdata.mrpLineHeight = `${Number(printdata.barcodeFormate.mrpLineHeight)}px`;
+    //             printdata.productBrandFontSize = `${Number(printdata.barcodeFormate.productBrandFontSize)}px`;
+    //             printdata.productModelFontSize = `${Number(printdata.barcodeFormate.productModelFontSize)}px`;
+    //             printdata.marginBottom = `${Number(printdata.barcodeFormate.marginBottom)}px`;
+    //             printdata.marginLeft = `${Number(printdata.barcodeFormate.marginLeft)}px`;
+    //             printdata.marginRight = `${Number(printdata.barcodeFormate.marginRight)}px`;
+    //             printdata.marginTop = `${Number(printdata.barcodeFormate.marginTop)}px`;
+    //             printdata.paddingBottom = `${Number(printdata.barcodeFormate.paddingBottom)}px`;
+    //             printdata.paddingLeft = `${Number(printdata.barcodeFormate.paddingLeft)}px`;
+    //             printdata.paddingRight = `${Number(printdata.barcodeFormate.paddingRight)}px`;
+    //             printdata.paddingTop = `${Number(printdata.barcodeFormate.paddingTop)}px`;
+
+    //             printdata.MRPHide = printdata.barcodeFormate.MRPHide;
+    //             printdata.taxHide = printdata.barcodeFormate.taxHide;
+    //             printdata.productNameHide = printdata.barcodeFormate.productNameHide;
+    //             printdata.specialCodeHide = printdata.barcodeFormate.specialCodeHide;
+    //             printdata.modelName = printdata.barcodeFormate.modelName;
+
+    //             printdata.CompanyID = CompanyID;
+    //             printdata.CompanyBarcode = 5
+    //             // let files = "barcode" + CompanyID + ".png";
+    //             let file = "barcode" + CompanyID  + ".pdf";
+    //             let formatName = "barcode.ejs";
+    //             let appURL = clientConfig.appURL;
+
+    //             // var appURL = clientConfig.appURL;
+    //             let fileName = "";
+    //             fileName = "uploads/" + file;
+    //             let url = appURL + "/uploads/" + file;
+    //             let updateUrl = '';
+    //             TinyURL.shorten(url, function (res) {
+    //                 updateUrl = res;
+    //             });
+
+    //             ejs.renderFile(
+    //                 path.join(appRoot, "./views/", formatName), { data: printdata },
+    //                 async (err, data) => {
+    //                     if (err) {
+    //                         res.send(err);
+    //                     } else {
+    //                         let options;
+
+    //                         if (printdata.CompanyID == 20 || printdata.CompanyID == 19 || printdata.CompanyID == 64) {
+    //                             if (printdata.CompanyBarcode == 5) {
+    //                                 options = {
+    //                                     //    printdata.CompanyID == 64 only this company ke liye option he
+    //                                     height: "1.00in",
+    //                                     width: "5.00in",
+    //                                     margin: {
+    //                                         top: "0in",
+    //                                         right: "0in",
+    //                                         bottom: "0in",
+    //                                         left: "0in"
+    //                                     },
+    //                                     // "height": "0.70in",
+    //                                     // "width": "4.90in",
+    //                                 };
+    //                                 //    options = {
+    //                                 //    height: "0.70in",
+    //                                 //    width: "4.90in",
+    //                                 // };
+    //                             }
+    //                         } else {
+    //                             if (printdata.CompanyBarcode == 5) {
+    //                                 options = {
+    //                                     "height": "0.70in",
+    //                                     "width": "4.41in",
+    //                                 };
+                                  
+    //                             }
+    //                         }
+
+    //                         if (printdata.CompanyID == 193) {
+    //                             if (printdata.CompanyBarcode == 5) {
+    //                                 options = {
+    //                                     "height": "25mm",
+    //                                     "width": "60mm",
+    //                                 };
+    //                             }
+    //                         }
+    //                         if (printdata.CompanyID == 216) {
+    //                             if (printdata.CompanyBarcode == 5) {
+    //                                 options = {
+    //                                     "height": "24mm",
+    //                                     "width": "36mm",
+    //                                 };
+    //                             }
+    //                         }
+    //                         if (printdata.CompanyID == 218) {
+    //                             if (printdata.CompanyBarcode == 5) {
+    //                                 options = {
+    //                                     "height": "27mm",
+    //                                     "width": "38mm",
+    //                                 };
+    //                             }
+    //                         }
+
+                            
+                           
+    //                         let imagePaths = [];
+    //                         console.log(data.length);
+    //                         for (let i = 0; i < data.table; i++) {
+    //                             const row = data[i];
+    //                             console.log(row);
+    //                             const imagePath = `${outputPath}/row_${i}.png`;
+    //                             await row.screenshot({ path: imagePath });
+    //                             imagePaths.push(imagePath);
+    //                         }
+    //                         console.log(imagePaths,imagePaths);
+    //                         options.timeout = 540000,  // in milliseconds
+    //                             pdf.create(data, options).toFile(fileName, function (err, data) {
+    //                                 if (err) {
+    //                                     console.log(err, 'err');
+    //                                     res.send(err);
+    //                                 } else {
+    //                                     res.json(updateUrl);
+    //                                 }
+    //                             });
+    //                     }
+    //                 }
+    //             );
+    //             return
+    //         }
+    //     } catch (err) {
+    //         next(err)
+    //     }
+    // },
+
+ 
+ AllPrintBarcode : async (req, res, next) => {
+    try {
+        const CompanyID = req.user.CompanyID || 0;
+        const shopid = await shopID(req.headers) || 0;
+        let printdata = req.body;
+        const [shopdetails] = await mysql2.pool.query(`SELECT * FROM shop WHERE ID = ${shopid}`);
+
+        printdata.forEach(ele => {
+            let [ProductBrandName, ProductModelName] = ele.ProductName.split("/");
+            if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
+                [ProductBrandName, ProductModelName] = [ProductBrandName, ProductModelName].slice(1, 6);
+            } else {
+                [ProductBrandName, ProductModelName] = [ProductBrandName, ProductModelName].slice(0, 4);
+            }
+            ele.ProductFullName = ele.ProductName;
+            ele.ProductBrandName = ProductBrandName ? ProductBrandName.substring(0, 18) : '';
+            ele.ProductModelName = ProductModelName ? ProductModelName.substring(0, 18) : '';
+            ele.ProductUniqueBarcode = ele.UniqueBarcode;
+            ele.Barcode = ele.BaseBarCode || ele.Barcode;
+            ele.BarcodeName = shopdetails[0].BarcodeName;
+        });
+
+        if (printdata.length > 0) {
+            const [barcodeFormate] = await mysql2.pool.query(`SELECT * FROM barcodesetting WHERE CompanyID = ${CompanyID}`);
+            printdata.barcodeFormate = barcodeFormate[0];
+            Object.assign(printdata, {
+                BillHeader: `${Number(printdata.barcodeFormate.billHeader)}`,
+                BarcodeHeight: `${Number(printdata.barcodeFormate.barcodeHeight)}in`,
+                barcodeWidth: `${Number(printdata.barcodeFormate.barcodeWidth)}in`,
+                barcodePadding: `${Number(printdata.barcodeFormate.barcodePadding)}px`,
+                barcodeMargin: `${Number(printdata.barcodeFormate.barcodeMargin)}px`,
+                barcodeNameFontSize: `${Number(printdata.barcodeFormate.barcodeNameFontSize)}px`,
+                floatLeftSide: printdata.barcodeFormate.floatLeftSide,
+                floatRightSide: printdata.barcodeFormate.floatRightSide,
+                incTaxFontSize: `${Number(printdata.barcodeFormate.incTaxFontSize)}px`,
+                leftWidth: `${Number(printdata.barcodeFormate.leftWidth)}%`,
+                rightWidth: `${Number(printdata.barcodeFormate.rightWidth)}%`,
+                barHeight: `${Number(printdata.barcodeFormate.barHeight)}px`,
+                barWidth: `${Number(printdata.barcodeFormate.barWidth)}px`,
+                barFontSize: `${Number(printdata.barcodeFormate.barFontSize)}px`,
+                barMarginTop: `${Number(printdata.barcodeFormate.barMarginTop)}px`,
+                mrpFontSize: `${Number(printdata.barcodeFormate.mrpFontSize)}px`,
+                mrpLineHeight: `${Number(printdata.barcodeFormate.mrpLineHeight)}px`,
+                productBrandFontSize: `${Number(printdata.barcodeFormate.productBrandFontSize)}px`,
+                productModelFontSize: `${Number(printdata.barcodeFormate.productModelFontSize)}px`,
+                marginBottom: `${Number(printdata.barcodeFormate.marginBottom)}px`,
+                marginLeft: `${Number(printdata.barcodeFormate.marginLeft)}px`,
+                marginRight: `${Number(printdata.barcodeFormate.marginRight)}px`,
+                marginTop: `${Number(printdata.barcodeFormate.marginTop)}px`,
+                paddingBottom: `${Number(printdata.barcodeFormate.paddingBottom)}px`,
+                paddingLeft: `${Number(printdata.barcodeFormate.paddingLeft)}px`,
+                paddingRight: `${Number(printdata.barcodeFormate.paddingRight)}px`,
+                paddingTop: `${Number(printdata.barcodeFormate.paddingTop)}px`,
+                MRPHide: printdata.barcodeFormate.MRPHide,
+                taxHide: printdata.barcodeFormate.taxHide,
+                productNameHide: printdata.barcodeFormate.productNameHide,
+                specialCodeHide: printdata.barcodeFormate.specialCodeHide,
+                modelName: printdata.barcodeFormate.modelName
             });
 
-            if (printdata.length > 0) {
-                const [barcodeFormate] = await mysql2.pool.query(`select * from barcodesetting where CompanyID = ${CompanyID}`)
-                printdata.barcodeFormate = barcodeFormate[0];
-                printdata.BillHeader = `${Number(printdata.barcodeFormate.billHeader)}`;
-                printdata.BarcodeHeight = `${Number(printdata.barcodeFormate.barcodeHeight)}in`;
-                printdata.barcodeWidth = `${Number(printdata.barcodeFormate.barcodeWidth)}in`;
-                printdata.barcodePadding = `${Number(printdata.barcodeFormate.barcodePadding)}px`;
-                printdata.barcodeMargin = `${Number(printdata.barcodeFormate.barcodeMargin)}px`;
-                printdata.barcodeNameFontSize = `${Number(printdata.barcodeFormate.barcodeNameFontSize)}px`;
-                printdata.floatLeftSide = printdata.barcodeFormate.floatLeftSide;
-                printdata.floatRightSide = printdata.barcodeFormate.floatRightSide;
-                printdata.incTaxFontSize = `${Number(printdata.barcodeFormate.incTaxFontSize)}px`;
-                printdata.leftWidth = `${Number(printdata.barcodeFormate.leftWidth)}%`;
-                printdata.rightWidth = `${Number(printdata.barcodeFormate.rightWidth)}%`;
-                printdata.barHeight = `${Number(printdata.barcodeFormate.barHeight)}px`;
-                printdata.barWidth = `${Number(printdata.barcodeFormate.barWidth)}px`;
-                printdata.barFontSize = `${Number(printdata.barcodeFormate.barFontSize)}px`;
-                printdata.barMarginTop = `${Number(printdata.barcodeFormate.barMarginTop)}px`;
-                printdata.mrpFontSize = `${Number(printdata.barcodeFormate.mrpFontSize)}px`;
-                printdata.mrpLineHeight = `${Number(printdata.barcodeFormate.mrpLineHeight)}px`;
-                printdata.productBrandFontSize = `${Number(printdata.barcodeFormate.productBrandFontSize)}px`;
-                printdata.productModelFontSize = `${Number(printdata.barcodeFormate.productModelFontSize)}px`;
-                printdata.marginBottom = `${Number(printdata.barcodeFormate.marginBottom)}px`;
-                printdata.marginLeft = `${Number(printdata.barcodeFormate.marginLeft)}px`;
-                printdata.marginRight = `${Number(printdata.barcodeFormate.marginRight)}px`;
-                printdata.marginTop = `${Number(printdata.barcodeFormate.marginTop)}px`;
-                printdata.paddingBottom = `${Number(printdata.barcodeFormate.paddingBottom)}px`;
-                printdata.paddingLeft = `${Number(printdata.barcodeFormate.paddingLeft)}px`;
-                printdata.paddingRight = `${Number(printdata.barcodeFormate.paddingRight)}px`;
-                printdata.paddingTop = `${Number(printdata.barcodeFormate.paddingTop)}px`;
+            const browser = await puppeteer.launch();
+            const page = await browser.newPage();
+            const images = [];
+            const formatName = "barcode.ejs";
+            const templatePath = path.join(appRoot, "./views/", formatName);
+           
+            for (let i = 0; i < printdata.length; i++) {
+                const row = printdata[i];
+                // const html = await ejs.renderFile(templatePath, { data: row });
+                let html;
 
-                printdata.MRPHide = printdata.barcodeFormate.MRPHide;
-                printdata.taxHide = printdata.barcodeFormate.taxHide;
-                printdata.productNameHide = printdata.barcodeFormate.productNameHide;
-                printdata.specialCodeHide = printdata.barcodeFormate.specialCodeHide;
-                printdata.modelName = printdata.barcodeFormate.modelName;
-
-                console.log(printdata.MRPHide);
-                printdata.CompanyID = CompanyID;
-                printdata.CompanyBarcode = 5
-                var file = "barcode" + CompanyID + ".pdf";
-                var formatName = "barcode.ejs";
-                var appURL = clientConfig.appURL;
-
-                // var appURL = clientConfig.appURL;
-                var fileName = "";
-                fileName = "uploads/" + file;
-                let url = appURL + "/uploads/" + file;
-                let updateUrl = '';
-                TinyURL.shorten(url, function (res) {
-                    updateUrl = res;
-                });
-
-                ejs.renderFile(
-                    path.join(appRoot, "./views/", formatName), { data: printdata },
-                    (err, data) => {
-                        if (err) {
-                            res.send(err);
-                        } else {
-                            let options;
-
-                            if (printdata.CompanyID == 20 || printdata.CompanyID == 19 || printdata.CompanyID == 64) {
-                                if (printdata.CompanyBarcode == 5) {
-                                    options = {
-                                        //    printdata.CompanyID == 64 only this company ke liye option he
-                                        height: "1.00in",
-                                        width: "5.00in",
-                                        margin: {
-                                            top: "0in",
-                                            right: "0in",
-                                            bottom: "0in",
-                                            left: "0in"
-                                        },
-                                        // "height": "0.70in",
-                                        // "width": "4.90in",
-                                    };
-                                    //    options = {
-                                    //    height: "0.70in",
-                                    //    width: "4.90in",
-                                    // };
-                                }
-                            } else {
-                                if (printdata.CompanyBarcode == 5) {
-                                    options = {
-                                        "height": "0.70in",
-                                        "width": "4.41in",
-                                    };
-                                }
-                            }
-
-                            if (printdata.CompanyID == 193) {
-                                if (printdata.CompanyBarcode == 5) {
-                                    options = {
-                                        "height": "25mm",
-                                        "width": "60mm",
-                                    };
-                                }
-                            }
-                            if (printdata.CompanyID == 216) {
-                                if (printdata.CompanyBarcode == 5) {
-                                    options = {
-                                        "height": "24mm",
-                                        "width": "36mm",
-                                    };
-                                }
-                            }
-                            if (printdata.CompanyID == 218) {
-                                if (printdata.CompanyBarcode == 5) {
-                                    options = {
-                                        "height": "27mm",
-                                        "width": "38mm",
-                                    };
-                                }
-                            }
-
-
-                            options.timeout = 540000,  // in milliseconds
-                                pdf.create(data, options).toFile(fileName, function (err, data) {
-                                    if (err) {
-                                        console.log(err, 'err');
-                                        res.send(err);
-                                    } else {
-                                        res.json(updateUrl);
-                                    }
-                                });
-                        }
-                    }
-                );
-                return
+                try {
+                    // Try to render the EJS template
+                    html = await ejs.renderFile(templatePath, { data: row });
+                } catch (ejsError) {
+                    console.error(`Failed to render EJS template for row ${i}:`, ejsError);
+                    continue; // Skip this iteration and continue with the next
+                }
+                console.log(html);
+                 
+              p =  await page.setContent(html, { waitUntil: 'networkidle0' });
+              console.error(p)
+                const imageBuffer = await page.screenshot();
+                fs.writeFileSync(`uploads/row_${i}.png`, imageBuffer);
+                images.push(`uploads/row_${i}.png`);
             }
-        } catch (err) {
-            next(err)
+            
+            await browser.close();
+
+            const pdfDoc = await PDFDocument.create();
+
+            for (const imagePath of images) {
+                const imageBuffer = fs.readFileSync(imagePath);
+                const img = await pdfDoc.embedPng(imageBuffer);
+                const { width, height } = img;
+                const page = pdfDoc.addPage([width, height]);
+                page.drawImage(img, {
+                    x: 0,
+                    y: 0,
+                    width: width,
+                    height: height,
+                });
+            }
+
+            const pdfBytes = await pdfDoc.save();
+            fs.writeFileSync(`uploads/barcode${CompanyID}.pdf`, pdfBytes);
+
+            // Cleanup images
+            images.forEach(imagePath => fs.unlinkSync(imagePath));
+
+            const fileUrl = `${appURL}/uploads/barcode${CompanyID}.pdf`;
+            const tinyUrl = await TinyURL.shorten(fileUrl);
+            res.json({ url: tinyUrl });
         }
-    },
+    } catch (err) {
+        next(err);
+    }
+},
 
     searchByFeild: async (req, res, next) => {
         try {

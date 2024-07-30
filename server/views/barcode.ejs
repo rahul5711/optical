@@ -17,303 +17,72 @@
         zoom: 90%;
     }
 </style>
+
+
 <body>
-    <% if(data.length !==0){ data.forEach(function (i, index) { %>
-        <% if (data.CompanyBarcode == 5 ){%>
-            <% if (data.CompanyID == 20 || data.CompanyID == 19 && data.CompanyID !== 64 && data.CompanyID !== 163 ){%>
-                <table style="margin-left: -10px; margin-top: -9px; ">
-                    <tr>
-                        <th  style="width: 140px; padding: 0;">
-                            <div
-                                style="font-size: 16px; font-weight: 600; font-family: verdana;margin-top: 0px; text-align: center; margin-top:6px; padding-bottom:1px; ">
-                                <%=i.BarcodeName%>
-                            </div>
-                            <div>
-                                <svg class="barcode" jsbarcode-format="CODE128" jsbarcode-value="<%=i.Barcode%>"
-                                    jsbarcode-textmargin="0" jsbarcode-height="45" jsbarcode-marginTop="-15"
-                                    jsbarcode-fontSize="15" jsbarcode-marginBottom="0" jsbarcode-width="2"
-                                    jsbarcode-fontoptions="bold">
-                                </svg>
-                                <script>
-                                    JsBarcode(".barcode").init();
-                                </script>
-                            </div>
-                        </th>
-                        <th  style="width: 300px;">
-                            <div
-                                style="text-align: left; font-size: 22px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 130px;">
-                                           ADE  <%=i.RetailPrice%>    
-                                     
-                            </div>
-                            <div
-                                style="text-align: left; font-size: 14px; font-weight: 600;letter-spacing: 0.1px;margin-left: 130px; font-family: verdana ;">
-                                (Inc. of all Taxes) </div>
-                            <div
-                                style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 130px;">
-                                <%=i.ProductBrandName%>
-                            </div>
-                            <div
-                                style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 130px;">
-                                <%=i.ProductModelName%>
-                            </div>
-                        </th>
-                    </tr>
-                </table>
-                 <%}%>
-
-                 <% if (data.CompanyID == 64 && data.CompanyID !== 163 ){%> 
-                    <table style="margin-left: -10px; margin-top: 0px;  ">
+    <% if (Array.isArray(data)) { %>
+        <% data.forEach(function (i, index) { %>
+            <% if (data.CompanyBarcode == 5) { %>
+                <% if (data.CompanyID == 20 || data.CompanyID == 19 && data.CompanyID !== 64 && data.CompanyID !== 163) { %>
+                    <table style="margin-left: -10px; margin-top: -9px; zoom: 80% !important;">
                         <tr>
-                            <th  style="width: 180px; padding: 0;">
-                                <div style="height: 120px; padding-top: 0px;">
-
-                               
+                            <th  style="width: 140px; padding: 0;">
                                 <div
-                                    style=" font-size: 18px; font-weight: 600; font-family: verdana;margin-top: 0px; text-align: center; margin-top:6px; padding-bottom:1px; ">
+                                    style="font-size: 16px; font-weight: 600; font-family: verdana;margin-top: 0px; text-align: center; margin-top:6px; padding-bottom:1px; ">
                                     <%=i.BarcodeName%>
                                 </div>
-                                <div>
-                                    <svg class="barcode" jsbarcode-format="CODE128" jsbarcode-value="<%=i.Barcode%>"
-                                        jsbarcode-textmargin="0" jsbarcode-height="60" jsbarcode-marginTop="-15"
-                                        jsbarcode-fontSize="20" jsbarcode-marginBottom="0" jsbarcode-width="2"
-                                        jsbarcode-fontoptions="bold">
-                                    </svg>
-                                    <script>
-                                        JsBarcode(".barcode").init();
-                                    </script>
-                                </div>
-                            </div>
-                            </th>
-                            <th  style="width:800px;  padding: 0 !important; margin: 0 !important; ">
-                                <div style="padding-left: 280px; height: 125px; padding-top: 2px;">
-                                <div
-                                    style="text-align: left; font-size: 26px; font-weight: 600; font-family: verdana; letter-spacing: 0px; ">
-                                               MRP  <%=i.RetailPrice%>    
-                                         
-                                </div>
-                                <div
-                                    style="text-align: left; font-size: 14px; font-weight: 600;letter-spacing: 0.1px; font-family: verdana ;">
-                                    (Inc. of all Taxes) </div>
-                                <div
-                                    style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;">
-                                    <%=i.ProductBrandName%>
-                                </div>
-                                <div
-                                    style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;">
-                                    <%=i.ProductModelName%>
-                                    <!-- <%=i.ProductFullName%> -->
-                                </div>
-                            </div>
-                            </th>
-                        </tr>
-                    </table>
-                    <%}%>
-
-                 <% if (data.CompanyID !== 20 && data.CompanyID !== 19 && data.CompanyID !== 64 && data.CompanyID !== 163 && data.CompanyID !== 193 && data.CompanyID !== 216 && data.CompanyID !== 218){%> 
-            <table style="margin-left: -10px; margin-top: -9px; zoom: 80% !important;">
-                <tr>
-                    <th  style="width: 140px; padding: 0;">
-                        <div
-                            style="font-size: 16px; font-weight: 600; font-family: verdana;margin-top: 0px; text-align: center; margin-top:6px; padding-bottom:1px; ">
-                            <%=i.BarcodeName%>
-                        </div>
-                        <div>
-                            <svg class="barcode" jsbarcode-format="CODE128" jsbarcode-value="<%=i.Barcode%>"
-                                jsbarcode-textmargin="0" jsbarcode-height="45" jsbarcode-marginTop="-15"
-                                jsbarcode-fontSize="15" jsbarcode-marginBottom="0" jsbarcode-width="2"
-                                jsbarcode-fontoptions="bold">
-                            </svg>
-                            <script>
-                                JsBarcode(".barcode").init();
-                            </script>
-                        </div>
-                    </th>
-                    <th  style="width: 200px;">
-                       
-                        <div 
-                            style="text-align: left; font-size: 22px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 18px;">
-                            <% if (data.MRPHide == 'true' ){%>
-                            <% if (data.CompanyID !== 2){%>
-                                       MRP  <%=i.RetailPrice%>    
-                              <%}%>
-                            <% if (data.CompanyID == 2){%>
-                                       OMR  <%=i.RetailPrice%>    
-                              <%}%>    
-                              <%}%>         
-                        </div>
-                       
-                        <div
-                            style="text-align: left; font-size: 14px; font-weight: 600;letter-spacing: 0.1px;margin-left: 18px; font-family: verdana ;">
-                            (Inc. of all Taxes) 
-                        </div>
-                        
-                        <div style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 18px;">
-                            <% if (data.CompanyID !== 63 && data.CompanyID !== 153){%>
-                                 <%=i.ProductBrandName%>
-                            <%}%>
-                            <% if (data.CompanyID === 63 || data.CompanyID === 153){%>
-                                <%=i.ProductUniqueBarcode%>
-                            <%}%>
-                        </div>
-
-                        <div
-                            style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 18px;">
-                            <%=i.ProductModelName%>
-                        </div>
-                    </th>
-                </tr>
-            </table>
-            <%}%>
-
-            <% if (data.CompanyID == 163 ){%> 
-                <table style="margin-left: -10px; margin-top: -9px; ">
-                    <tr>
-                        <th  style="width: 140px; padding: 0;">
-                            <div
-                                style="font-size: 16px; font-weight: 600; font-family: verdana;margin-top: 0px; text-align: center; margin-top:6px; padding-bottom:1px; ">
-                                <%=i.BarcodeName%>
-                            </div>
-                            <div>
-                                <svg class="barcode" jsbarcode-format="CODE128" jsbarcode-value="<%=i.Barcode%>"
-                                    jsbarcode-textmargin="0" jsbarcode-height="45" jsbarcode-marginTop="-15"
-                                    jsbarcode-fontSize="15" jsbarcode-marginBottom="0" jsbarcode-width="2"
-                                    jsbarcode-fontoptions="bold">
-                                </svg>
-                                <script>
-                                    JsBarcode(".barcode").init();
-                                </script>
-                            </div>
-                        </th>
-                        <th  style="width: 250px;">
-                           
-                            <div 
-                                style="text-align: left; font-size: 22px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 18px;">
-                                <% if (data.MRPHide == 'true' ){%>
-                                    MRP  <%=i.RetailPrice%>  
-                                  <%}%>         
-                            </div>
-                            <div style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 18px;">
-                                 <%=i.ProductBrandName%>
-                            </div>
-    
-                            <div
-                            style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 18px;height: 43px;">
-                            Mkd By Eystella <br> International Pvt.Ltd
-                        </div>
-                        </th>
-                    </tr>
-                </table>
-                <%}%>
-            <% if (data.CompanyID == 193){%> 
-                <table style="margin-left: -10px; margin-top: -9px; width:100%;zoom:100%">
-                 <tr>
-                        <th  style="width: 250px; padding: 0;width:100%;zoom:100%">
-                            <div
-                                style="font-size: 18px; font-weight: 600; font-family: verdana;margin-top: 0px; text-align: center; margin-top:6px; padding-bottom:1px; ">
-                                <%=i.BarcodeName%>
-                            </div>
-
-                            <div>
-                                <svg class="barcode" jsbarcode-format="CODE128" jsbarcode-value="<%=i.Barcode%>"
-                                    jsbarcode-textmargin="0" jsbarcode-height="45" jsbarcode-marginTop="-15"
-                                    jsbarcode-fontSize="18" jsbarcode-marginBottom="0" jsbarcode-width="2"
-                                    jsbarcode-fontoptions="bold">
-                                </svg>
-                                <script>
-                                    JsBarcode(".barcode").init();
-                                </script>
-                            </div>
-
-                            <div style="text-align: center; font-size: 12px; font-weight: 600; font-family: verdana;">
-                                <%=i.ProductFullName%>
-                           </div>
-
-                            <div style="text-align: center; font-size: 20px; font-weight: 600; font-family: verdana; letter-spacing: 0px; ">
-                            <% if (data.MRPHide == 'true' ){%>
-                                MRP  <%=i.RetailPrice%>  
-                              <%}%>         
-                        </div>
-                       
-                        </th>
-                      
-                    </tr>
-               
-                     
-               
-                </table>
-                <%}%>
-            <% if (data.CompanyID == 216){%> 
-                <table style="margin-left: -2px; margin-top: -9px; width:100%;zoom:100%;text-align: center;">
-                 <tr>
-                        <th  style=" padding: 0;width:100%;zoom:100%">
-                            <div
-                                style="font-size: 18px; font-weight: 600; font-family: verdana;margin-top: 0px; text-align: center; margin-top:6px; padding-bottom:1px; ">
-                                <%=i.BarcodeName%>
-                            </div>
-
-                            <div>
-                                <svg class="barcode" jsbarcode-format="CODE128" jsbarcode-value="<%=i.Barcode%>"
-                                    jsbarcode-textmargin="0" jsbarcode-height="45" jsbarcode-marginTop="-15"
-                                    jsbarcode-fontSize="18" jsbarcode-marginBottom="0" jsbarcode-width="2"
-                                    jsbarcode-fontoptions="bold">
-                                </svg>
-                                <script>
-                                    JsBarcode(".barcode").init();
-                                </script>
-                            </div>
-
-                            <div style="text-align: center; font-size: 10px; font-weight: 600; font-family: verdana;">
-                                <%=i.ProductFullName%>
-                           </div>
-
-                            <div style="text-align: center; font-size: 20px; font-weight: 600; font-family: verdana; letter-spacing: 0px; ">
-                            <% if (data.MRPHide == 'true' ){%>
-                                OMR  <%=i.WholeSalePrice%>  
-                              <%}%>         
-                        </div>
-                       
-                        </th>
-                      
-                    </tr>
-                </table>
-                <%}%>
-
-                <% if (data.CompanyID == 218){%> 
-                    <table style="margin-left: -2px; margin-top: -9px; width:100%;zoom:100%;text-align: center;">
-                     <tr>
-                            <th  style=" padding: 0;width:100%;zoom:100%">
-                                <div
-                                    style="font-size: 18px; font-weight: 600; font-family: verdana;margin-top: 0px; text-align: center; margin-top:6px; padding-bottom:1px; ">
-                                    <%=i.BarcodeName%>
-                                </div>
-    
                                 <div>
                                     <svg class="barcode" jsbarcode-format="CODE128" jsbarcode-value="<%=i.Barcode%>"
                                         jsbarcode-textmargin="0" jsbarcode-height="45" jsbarcode-marginTop="-15"
-                                        jsbarcode-fontSize="18" jsbarcode-marginBottom="0" jsbarcode-width="2"
+                                        jsbarcode-fontSize="15" jsbarcode-marginBottom="0" jsbarcode-width="2"
                                         jsbarcode-fontoptions="bold">
                                     </svg>
                                     <script>
                                         JsBarcode(".barcode").init();
                                     </script>
                                 </div>
-    
-                                <div style="text-align: center; font-size: 10px; font-weight: 600; font-family: verdana;height: 30px;">
-                                    <%=i.ProductFullName%>
-                               </div>
-    
-                                <div style="text-align: center; font-size: 20px; font-weight: 600; font-family: verdana; letter-spacing: 0px; ">
-                                <% if (data.MRPHide == 'true' ){%>
-                                    MRP  <%=i.RetailPrice%>  
-                                  <%}%>         
-                            </div>
-                           
                             </th>
-                          
+                            <th  style="width: 200px;">
+                               
+                                <div 
+                                    style="text-align: left; font-size: 22px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 18px;">
+                                    <% if (data.MRPHide == 'true' ){%>
+                                    <% if (data.CompanyID !== 2){%>
+                                               MRP  <%=i.RetailPrice%>    
+                                      <%}%>
+                                    <% if (data.CompanyID == 2){%>
+                                               OMR  <%=i.RetailPrice%>    
+                                      <%}%>    
+                                      <%}%>         
+                                </div>
+                               
+                                <div
+                                    style="text-align: left; font-size: 14px; font-weight: 600;letter-spacing: 0.1px;margin-left: 18px; font-family: verdana ;">
+                                    (Inc. of all Taxes) 
+                                </div>
+                                
+                                <div style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 18px;">
+                                    <% if (data.CompanyID !== 63 && data.CompanyID !== 153){%>
+                                         <%=i.ProductBrandName%>
+                                    <%}%>
+                                    <% if (data.CompanyID === 63 || data.CompanyID === 153){%>
+                                        <%=i.ProductUniqueBarcode%>
+                                    <%}%>
+                                </div>
+        
+                                <div
+                                    style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 18px;">
+                                    <%=i.ProductModelName%>
+                                </div>
+                            </th>
                         </tr>
                     </table>
-                    <%}%>
-            <%}%>
-                <%})}%>
+                <% } %>
+            <% } %>
+        <% }); %>
+    <% } else { %>
+        <p>No data available</p>
+    <% } %>
+    
 </body>
 </html>
