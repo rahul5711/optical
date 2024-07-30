@@ -85,7 +85,11 @@ module.exports = {
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
-            const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${shopid}, ${datum.EmployeeID},${saveData.insertId}, '${datum.CashType}', 'Withdrawal', ${datum.Salary},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${datum.InvoiceNo}', 'Employee')`);
+            if (PaymentMode.toUpperCase() === "CASH") {
+                const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${shopid}, ${datum.EmployeeID},${saveData.insertId}, '${datum.CashType}', 'Withdrawal', ${datum.Salary},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${datum.InvoiceNo}', 'Employee')`);
+            }
+
+
 
             response.message = "data save sucessfully"
             const [data] = await mysql2.pool.query(`select * from payroll where CompanyID = ${CompanyID} and ShopID = ${shopid} and Status = 1 order by ID desc`)
@@ -276,7 +280,7 @@ module.exports = {
 
 
 
-            if (datum.PaymentMode.toUpperCase() !== "CASH") {
+            if (doesExistPettyCash.length && datum.PaymentMode.toUpperCase() !== "CASH") {
                 const [updatePettycash] = await mysql2.pool.query(`update pettycash set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where RefID = ${Body.ID} and CompanyID = ${CompanyID} and InvoiceNo = '${doesExist[0].InvoiceNo}'`)
             }
 
