@@ -9,12 +9,12 @@
 
 <style>
   html body {
-    zoom: 150%;
+    zoom: 120%;
   }
 
   .header {
     width: 100%;
-    height: 90px;
+    height: 100px;
   }
 
   .row .col1 {
@@ -203,14 +203,15 @@
   <header class="header">
     <div class="row">
       <div class="col1">
+        <p>Al Hareem Perfumes</p> 
         <p>Phone Number +968 92177074 <br> <b style="font-size: 13px;">NASEEM PERFUME  </b>  <br> Mall of Oman, Muscat, Oman</p>
         <p>1485824  : رقم السجل التجاري </p> 
         <p>VAT IN: OM1100368033</p> 
       </div>
       <div class="col2">
-        <img src=<%=data.LogoURL%> alt="logo"  width='100%' >
-        <p style="font-size: 15px;margin: 0;"> الحريم للعطور</p>
-         <p style="font-size: 15px;margin: 0;">Al Hareem Perfumes</p>
+        <img src=<%=data.LogoURL%> alt="logo"  width='90%' >
+        <!-- <p style="font-size: 15px;margin: 0;"> الحريم للعطور</p>
+         <p style="font-size: 15px;margin: 0;">Al Hareem Perfumes</p> -->
       </div>
       <div class="col3">
         
@@ -243,7 +244,7 @@
           <%=data.billMaster.BillDate%>
         </p>
         <p>
-          <%=data.customer.Title%> <%=data.customer.Name%>
+          <%=data.customer.Name%>
         </p>
         <p>
           <%=data.customer.MobileNo1%>
@@ -257,7 +258,7 @@
   </section>
 
   <section class="powerRow">
-    <% if (data.ShowPower===true){%>
+    <% if (data.ShowPower === true){%>
       <div class="footEndPower">
         <% if(data.EyeMeasurement !==null && data.EyeMeasurement.length !==0){ data.EyeMeasurement.forEach(function (i,
           index) { %>
@@ -519,12 +520,13 @@
   <section class="totals " style="margin-top: 2%; border-top: 1px solid;">
     <div class="row">
       <div class="col1">
-        <h5 style="margin: 0; margin-bottom: 5px;font-weight: normal;">Thank you for shopping!</h5>
+       
         <p>سياسة اإلرجاع: يمكن إرجاع العناصر المباعة في غضون 15 يو ًما
         .يجب تقديم الفاتورة ويجب أن يكون العنصر في حالة التعبئة األصلية وغير التالفة</p>
 
         <p><b>Return Policy:</b>  Sold items can be returned within  15 days, invoice to be presented and the item</p>
         <p> <b> Must be in the Orignal Packaging and in an Undamaged Condition. </b></p>
+        <h5 style="margin: 0; margin-bottom: 5px;font-weight: normal;">Thank you for shopping!</h5>
       </div>
       <div class="col2">
         <div class="col2_11">

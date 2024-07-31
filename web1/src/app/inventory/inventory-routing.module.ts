@@ -15,6 +15,7 @@ import { SupplierComponent } from './supplier/supplier.component';
 import { PerorderDummyListComponent } from './perorder-dummy-list/perorder-dummy-list.component';
 import { LocationTrackerComponent } from './location-tracker/location-tracker.component';
 import { PhysicalStockComponent } from './physical-stock/physical-stock.component';
+import { LensGridViewComponent } from './lens-grid-view/lens-grid-view.component';
 
 const routes: Routes = [
   { path: '',
@@ -34,7 +35,8 @@ const routes: Routes = [
     { path: 'purchase-returnList', component: PurchaseReturnListComponent },  
     { path: 'location-tracker', component: LocationTrackerComponent },  
     { path: 'physical-stock', component: PhysicalStockComponent },  
-  ]}
+    { path: 'lens-grid-view/:id', component: LensGridViewComponent },  
+  ]} 
   ]
 
 @NgModule({

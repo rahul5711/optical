@@ -39,6 +39,7 @@ import { ProductItemFilterPurchase} from './../filterDropDown/nameFilter';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { PhysicalStockComponent } from './physical-stock/physical-stock.component';
 import { LocationTrackerComponent } from './location-tracker/location-tracker.component';
+import { LensGridViewComponent } from './lens-grid-view/lens-grid-view.component';
 
 
 @NgModule({
@@ -59,7 +60,8 @@ import { LocationTrackerComponent } from './location-tracker/location-tracker.co
     ProductNameFilter,
     ProductItemFilterPurchase,
     PhysicalStockComponent,
-    LocationTrackerComponent
+    LocationTrackerComponent,
+    LensGridViewComponent
   ],
   imports: [
     CommonModule,

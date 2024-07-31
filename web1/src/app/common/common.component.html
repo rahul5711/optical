@@ -87,11 +87,12 @@
               <a *ngIf="viewFlag.viewSearchOrderPriceList" href="javascript:void(0)" [routerLink]="['/inventory/dummyPreorderList']" id="collapseExample2">Search Order (PriceList)</a>
               <a *ngIf="viewFlag.viewStockAdjustment" href="javascript:void(0)" [routerLink]="['/inventory/search-barcode']" id="collapseExample2">Stock Adjustment</a>
               <a *ngIf="viewFlag.viewBrandNonBrandAssign" href="javascript:void(0)" [routerLink]="['/inventory/inventory-summary']" id="collapseExample2">Brand/NonBrand (Assign)</a>
+              <a *ngIf="viewFlag.viewBrandNonBrandAssign" href="javascript:void(0)" [routerLink]="['/inventory/lens-grid-view',0]" id="collapseExample2">Lens Grid View</a>
             </div>
           </div>
           <!-- companyadmin end Purchseing -->
           <!-- companyadmin  Bliing -->
-          <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown" (click)="myFunctionS('D')">
+          <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown" (click)="myFunctionS('D')"> 
             <a class="dropBtn" data-target="#collapseExample3">Billing <i class="fa fa-caret-down"
                 aria-hidden="true"></i></a>
             <div class="drop-content" id="collapseExample3">
