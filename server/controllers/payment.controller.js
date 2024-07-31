@@ -1138,7 +1138,7 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
-            const { PaymentMasterID, PaymentMode } = req.body
+            const { PaymentMasterID, PaymentMode, InvoiceNo } = req.body
 
             if (!PaymentMasterID || PaymentMasterID === undefined) return res.send({ message: "Invalid PaymentMasterID Data" })
             if (!PaymentMode || PaymentMode === undefined) return res.send({ message: "Invalid PaymentMode Data" })
@@ -1152,11 +1152,23 @@ module.exports = {
                 return res.send({ message: "Invalid PaymentMasterID Data" })
             }
 
-            if (paymentMaster[0].PaymentMode === 'Payment Initiated' || paymentMaster[0].PaymentMode === 'Customer Credit') {
-                return res.send({ message: `We can't update Payment Mode, Payment Initiated || Customer Credit` })
+            if (paymentMaster[0].PaymentMode === 'Payment Initiated' || paymentMaster[0].PaymentMode === 'Customer Credit' || paymentMaster[0].PaymentMode.toUpperCase() === 'AMOUNT RETURN') {
+                return res.send({ message: `We can't update Payment Mode, Payment Initiated || Customer Credit || AMOUNT RETURN` })
             }
 
             const [updatePaymentMode] = await mysql2.pool.query(`update paymentmaster set PaymentMode = '${PaymentMode}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${PaymentMasterID} and CompanyID = ${CompanyID} `)
+
+            const [fetchPettyCash] = await mysql2.pool.query(`select * from pettycash where CompanyID = ${CompanyID} and ShopID = ${paymentMaster[0].ShopID} and RefID = ${paymentMaster[0].ID} and ActionType = 'Customer' and Status = 1 `)
+            if (paymentMaster[0].PaymentMode.toUpperCase() === 'CASH' && PaymentMode.toUpperCase() !== "CASH") {
+               // update 
+               if (fetchPettyCash.length) {
+                const [update] = await mysql2.pool.query(`update pettycash set Status = 0, UpdatedOn = now(), UpdatedBy=${LoggedOnUser} where ID = ${fetchPettyCash[0].ID}`)
+               }
+            }
+            if (paymentMaster[0].PaymentMode.toUpperCase() !== 'CASH' && PaymentMode.toUpperCase() === "CASH") {
+              // insert 
+              const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${paymentMaster[0].ShopID}, ${paymentMaster[0].CustomerID},${paymentMaster[0].ID}, 'CashCounter', 'Deposit', ${paymentMaster[0].PaidAmount},'', 1 , ${LoggedOnUser}, now(),'${InvoiceNo}', 'Customer')`);
+            }
 
 
             response.message = "data update sucessfully"
