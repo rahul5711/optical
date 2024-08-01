@@ -501,20 +501,20 @@ srcCustomerBox = false
     [this.shop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
   }
 
-  validateInput() {
-    const validValues = this.dataCYL.map((c: { Name: any; }) => c.Name);
-    this.inputError = !validValues.includes(this.spectacle.REDPCYL);
-    if (this.inputError) {
-        this.spectacle.REDPCYL = 0.00;  // Clear the input if invalid
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: 'Please select a dropdown valid value.',
-          showConfirmButton: true,
-          backdrop:false
-        })
-    }
-}
+//   validateInput() {
+//     const validValues = this.dataCYL.map((c: { Name: any; }) => c.Name);
+//     this.inputError = !validValues.includes(this.spectacle.REDPCYL);
+//     if (this.inputError) {
+//         this.spectacle.REDPCYL = 0.00;  // Clear the input if invalid
+//         Swal.fire({
+//           position: 'center',
+//           icon: 'warning',
+//           title: 'Please select a dropdown valid value.',
+//           showConfirmButton: true,
+//           backdrop:false
+//         })
+//     }
+// }
 
   op1(){
     this.x = document.getElementById("u");

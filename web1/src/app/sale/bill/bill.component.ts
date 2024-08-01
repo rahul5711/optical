@@ -2426,7 +2426,7 @@ export class BillComponent implements OnInit {
         `*Please give your valuable Review for us !*`
 
     } else if (mode === 'Textbill') {
-      let PaidAmt = this.invoiceList[0].TotalAmount - this.invoiceList[0].DueAmount
+      let PaidAmt = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill FinalDelivery');
       var msg = `*Hi ${this.customer.Title} ${this.customer.Name},*%0A` +
         `${WhatsappMsg}%0A` +

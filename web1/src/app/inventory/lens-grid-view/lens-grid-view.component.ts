@@ -13,7 +13,11 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FLAGS } from 'html2canvas/dist/types/dom/element-container';
-
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+interface LensData {
+  cyl: string;
+  [key: string]: any;
+}
 @Component({
   selector: 'app-lens-grid-view',
   templateUrl: './lens-grid-view.component.html',
@@ -34,7 +38,22 @@ export class LensGridViewComponent implements OnInit {
   GstTypeDis = false
   searchValue: any = '';
   checked = false;
-  selectAllChecked = false
+  selectAllChecked = false;
+
+  sphMin: number = 0.25;
+  sphMax: number = 4.00;
+  sphStep: number = 0.25;
+  cylMin: number = 0.25;
+  cylMax: number = 4.00;
+  cylStep: number = 0.25;
+
+  sphValues: string[] = [];
+  cylValues: string[] = [];
+
+  displayedColumns: string[] = ['cyl'];
+  dataSource: LensData[] = [];
+
+  quantities: { [key: string]: { [key: string]: number } } = {};
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -46,9 +65,13 @@ export class LensGridViewComponent implements OnInit {
     public calculation: CalculationService,
     public modalService: NgbModal,
     public sp: NgxSpinnerService,
+    private fb: FormBuilder
+
+
 
   ) {
     this.id = this.route.snapshot.params['id'];
+ 
   }
 
   selectedPurchaseMaster: any = {
@@ -1002,4 +1025,50 @@ export class LensGridViewComponent implements OnInit {
     }
   }
 
+  openModalS(content: any) {
+    this.BarcodeQuantity = 0
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+      this. generateGrid()
+  }
+
+  generateGrid() {
+    this.sphValues = this.generateRange(this.sphMin, this.sphMax, this.sphStep);
+    this.cylValues = this.generateRange(this.cylMin, this.cylMax, this.cylStep);
+    this.displayedColumns = ['cyl', ...this.sphValues];
+    this.dataSource = this.initializeGrid();
+  }
+
+  generateRange(min: number, max: number, step: number): string[] {
+    const range = [];
+    for (let i = min; i <= max; i += step) {
+      range.push(`+${i.toFixed(2)}`);
+    }
+    return range;
+  }
+
+  initializeGrid(): LensData[] {
+    const grid:any = [];
+    this.cylValues.forEach(cyl => {
+      const row: LensData = { cyl };
+      this.sphValues.forEach(sph => {
+        row[sph] = 0;
+      });
+      grid.push(row);
+    });
+    return grid;
+  }
+
+  get totalQty(): number {
+    return this.dataSource.reduce((sum, row) => {
+      return sum + this.sphValues.reduce((sphSum, sph) => {
+        return sphSum + parseInt(row[sph], 10);
+      }, 0);
+    }, 0);
+  }
+
+  purchase() {
+    console.log('Purchasing', this.dataSource);
+  }
+
+ 
 }

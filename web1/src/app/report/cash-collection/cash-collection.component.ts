@@ -288,11 +288,17 @@ exportAsXLSX(): void {
 
 
   print() {
-    let shop = this.shopList
-    this.selectsShop = shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
 
+    let shopID = this.data.ShopID
+    let shop = this.shopList
+    this.selectsShop = shop.filter((s: any) => s.ID === Number(shopID));
+    if (this.selectsShop == '' || this.selectsShop == undefined) {
+      this.selectsShop = shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+    }
     let printContent: any = document.getElementById('print-content');
     let printWindow: any = window.open('pp', '_blank');
+
+  
 
     printWindow.document.write(`
       <html>

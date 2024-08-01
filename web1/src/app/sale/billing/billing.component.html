@@ -359,7 +359,7 @@
                                                     <div class="col-1">
                                                         <input class="inputWidth box " type="text" name="REDPCYL"
                                                             [(ngModel)]="spectacle.REDPCYL" id="REDPCYL" (change)="calculate('Lens', 'RCYL', 0.00)"
-                                                            list="dpcylList" (blur)="validateInput()">
+                                                            list="dpcylList" >
                                                         <datalist id="dpcylList">
                                                             <option [value]="c.Name" *ngFor="let c of dataCYL" >
                                                                 {{c.Name}} </option>

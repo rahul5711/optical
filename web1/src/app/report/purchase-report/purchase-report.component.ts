@@ -977,28 +977,39 @@ onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
 
 
 print(mode: any) {
-  let shop = this.shopList
-  this.selectsShop = shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+
   let printContent: any = '';
   let printTitle: any = '';
+  let shopID = '';
 
   if (mode === 'Purchase-content') {
     printContent = document.getElementById('Purchase-content');
     printTitle = 'Purchase Report'
+    shopID = this.PurchaseMaster.ShopID
   }
   if (mode === 'PurchaseDetail-content') {
     printContent = document.getElementById('PurchaseDetail-content');
     printTitle = 'Purchase Detail Report'
+    shopID = this.PurchaseDetail.ShopID
   }
   if (mode === 'PurchaseService-content') {
     printContent = document.getElementById('PurchaseService-content');
     printTitle = 'Purchase Charge Report'
+    shopID = this.charge.ShopID
   }
   if (mode === 'ProductExpiry-content') {
     printContent = document.getElementById('ProductExpiry-content');
     printTitle = 'Purchase (Product Expiry) Report'
+    shopID = this.ProductExpiry.ShopID
+  
   }
 
+  let shop = this.shopList
+  this.selectsShop = shop.filter((s: any) => s.ID === Number(shopID));
+  if (this.selectsShop == '' || this.selectsShop == undefined) {
+    this.selectsShop = shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+  }
+  
   let printWindow: any = window.open('pp', '_blank');
   printWindow.document.write(`
   <html>

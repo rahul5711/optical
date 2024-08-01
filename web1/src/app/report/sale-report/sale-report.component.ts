@@ -698,7 +698,7 @@ export class SaleReportComponent implements OnInit {
 
   billMasterFromReset() {
     this.BillMaster = {
-      FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, EmployeeID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All',  BillType: 'All'
+      FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, EmployeeID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', BillType: 'All'
     };
     this.BillMasterList = []
     this.totalQty = 0;
@@ -709,7 +709,7 @@ export class SaleReportComponent implements OnInit {
     this.gstMaster = [];
     this.totalBalance = 0
     this.totalPaid = 0;
-    this.totalAddlDiscount= 0;
+    this.totalAddlDiscount = 0;
     this.maxPaymentDetails = 8;
   }
   // billmaster
@@ -1108,9 +1108,9 @@ export class SaleReportComponent implements OnInit {
     this.ServiceAmount = '';
     this.ServicetotalGstAmount = '';
     this.gstService = '';
-    this.ServicetotalAmount= 0;
+    this.ServicetotalAmount = 0;
     this.ServicetotalSUBTOTAL = 0;
-    this.ServiceGtotalAmount=0;
+    this.ServiceGtotalAmount = 0;
 
   }
 
@@ -1811,34 +1811,46 @@ export class SaleReportComponent implements OnInit {
   }
 
   print(mode: any) {
-    let shop = this.shopList
-    this.shopLists = shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+
     let printContent: any = '';
     let printTitle: any = '';
+    let shopID = '';
 
     if (mode === 'sale-content') {
       printContent = document.getElementById('sale-content');
       printTitle = 'Sale Report'
+      shopID = this.BillMaster.ShopID
     }
     if (mode === 'saleDetail-content') {
       printContent = document.getElementById('saleDetail-content');
       printTitle = 'Sale Detail Report'
+      shopID = this.Billdetail.ShopID
     }
     if (mode === 'saleService-content') {
       printContent = document.getElementById('saleService-content');
       printTitle = 'Sale Service Report'
+      shopID = this.service.ShopID
     }
     if (mode === 'ProductCancel-content') {
       printContent = document.getElementById('ProductCancel-content');
       printTitle = 'Product Cancel Report'
+      shopID = this.cancel.ShopID
     }
     if (mode === 'ProductPending-content') {
       printContent = document.getElementById('ProductPending-content');
       printTitle = 'Product Pending Report'
+      shopID = this.pending.ShopID
     }
     if (mode === 'ProductExpiry-content') {
       printContent = document.getElementById('ProductExpiry-content');
       printTitle = 'Sale (Product Expiry) Report'
+      shopID = this.BillExpiry.ShopID
+    }
+
+    let shop = this.shopList
+    this.shopLists = shop.filter((s: any) => s.ID === Number(shopID));
+    if (this.shopLists == '' || this.shopLists == undefined) {
+      this.shopLists = shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
     }
 
     let printWindow: any = window.open('pp', '_blank');
