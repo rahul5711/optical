@@ -69,6 +69,7 @@ export class ExpenseComponent implements OnInit {
   currentTime = '';
   PettyCashBalance = 0;
   CashCounterBalance=0;
+
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'ExpenseList') {
@@ -212,11 +213,13 @@ export class ExpenseComponent implements OnInit {
           })
         } else {
           this.as.errorToast(res.message)
+          this.data.ExpenseDate = moment(this.data.ExpenseDate).format('YYYY-MM-DD')
           Swal.fire({
             position: 'center',
             icon: 'warning',
             title: res.message,
           })
+         
         }
         this.sp.hide();
       },
@@ -284,6 +287,12 @@ export class ExpenseComponent implements OnInit {
           })
         } else {
           this.as.errorToast(res.message)
+          this.data.ExpenseDate = moment(this.data.ExpenseDate).format('YYYY-MM-DD')
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+          })
         }
         this.sp.hide();
       },
