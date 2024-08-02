@@ -4090,7 +4090,7 @@ module.exports = {
         try {
 
             const response = { data: null, success: true, message: "" }
-            return res.send({ success: false, message: "We are facing some technical issue, please try again after some time." })
+            // return res.send({ success: false, message: "We are facing some technical issue, please try again after some time." })
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
