@@ -241,7 +241,7 @@ const c_report_init_set_opening_closing = async () => {
         let date = moment(new Date()).format("YYYY-MM-DD")
         let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
 
-        const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1 and ID != 241`)
+        const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1`)
         let result = []
         if (company) {
             result = JSON.parse(JSON.stringify(company))
