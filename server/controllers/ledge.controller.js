@@ -37,7 +37,9 @@ module.exports = {
                 BalanceDue: 0,
                 data: null,
                 CompanyDetails: null,
-                SupplierDetails: null
+                SupplierDetails: null,
+                FromDate:null,
+                ToDate:null,
             }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
@@ -50,8 +52,6 @@ module.exports = {
             if (SupplierID === null || SupplierID === undefined || SupplierID == 0 || SupplierID === "") return res.send({ message: "Invalid SupplierID Data" })
             if (FromDate === null || FromDate === undefined || FromDate == 0 || FromDate === "") return res.send({ message: "Invalid Query Data" })
             if (ToDate === null || ToDate === undefined || ToDate == 0 || ToDate === "") return res.send({ message: "Invalid Query Data" })
-
-            console.log(req.body);
 
             let dateParams = ``
             let dateParamsForOpening = ``
@@ -128,6 +128,8 @@ module.exports = {
             }
 
             response.data = payment
+            response.FromDate = req.body.FromDate
+            response.ToDate = req.body.ToDate
             response.InvoicedAmount = InvoicedAmount;
             response.AmountPaid = AmountPaid;
             response.BalanceDue = Number(response.OpeningBalance) + Number(InvoicedAmount) - Number(AmountPaid);
@@ -138,8 +140,8 @@ module.exports = {
             const printdata = response;
             const Details = printdata.SupplierDetails;
             const paymentList = printdata.data;
-            const From = moment(printdata.From).format('DD-MM-YYYY')
-            const To = moment(printdata.To).format('DD-MM-YYYY')
+            const From = moment(printdata.FromDate).format('DD-MM-YYYY')
+            const To = moment(printdata.ToDate).format('DD-MM-YYYY')
  
             printdata.From = From
             printdata.To = To

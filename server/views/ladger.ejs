@@ -73,25 +73,25 @@
             <tr>
                 <td> Opening Balance</td>
                 <td style="text-align: right;">
-                    <%=data.OpeningBalance%>
+                    <%=data.OpeningBalance.toFixed(2)%>
                 </td>
             </tr>
             <tr>
                 <td> Invoiced Amount </td>
                 <td style="text-align: right;">
-                    <%=data.InvoicedAmount%>
+                    <%=data.InvoicedAmount.toFixed(2)%>
                 </td>
             </tr>
             <tr>
                 <td> Amount Paid </td>
                 <td style="text-align: right;">
-                    <%=data.AmountPaid%>
+                    <%=data.AmountPaid.toFixed(2)%>
                 </td>
             </tr>
             <tr>
                 <td style="border-top: 1px Solid #b2b2b2 !important;"> Balance Due </td>
                 <td style="text-align: right;border-top: 1px Solid #b2b2b2 !important;">
-                    <%=data.BalanceDue%>
+                    <%=data.BalanceDue.toFixed(2)%>
                 </td>
             </tr>
         </table>
@@ -124,13 +124,13 @@
                             <%=i.Description%>
                         </td>
                         <td style="padding: 6px 0px;">
-                            <%=i.InvoiceAmount%>
+                            <%=i.InvoiceAmount.toFixed(2)%>
                         </td>
                         <td style="padding: 6px 0px;">
-                            <%=i.PaidAmount%>
+                            <%=i.PaidAmount.toFixed(2)%>
                         </td>
                         <td style="padding: 6px 0px;">
-                            <%=i.balance%>
+                            <%=i.balance.toFixed(2)%>
                         </td>
                         <td style="padding: 6px 0px;">
                             <%=i.remark%>
@@ -143,7 +143,7 @@
                     <th colspan="4" style="border-top: 2px solid #c1c1c1;"></th>
                     <th style="border-top: 2px solid #c1c1c1;">Balance</th>
                     <th style="border-top: 2px solid #c1c1c1;">
-                        <%=data.BalanceDue%>
+                        <%=data.BalanceDue.toFixed(2)%>
                     </th>
                     <th style="border-top: 2px solid #c1c1c1;">
                         

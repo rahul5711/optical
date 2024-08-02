@@ -41,7 +41,7 @@ module.exports = {
                     creditDebitAmount = debit[0].CreditAmount
                 }
 
-                const [due] = await mysql2.pool.query(`select SUM(purchasemasternew.DueAmount) as due from purchasemasternew where CompanyID = ${CompanyID} and SupplierID = ${PayeeName} and PStatus = 0 and Status = 1`)
+                const [due] = await mysql2.pool.query(`select SUM(purchasemasternew.DueAmount) as due from purchasemasternew where CompanyID = ${CompanyID} and SupplierID = ${PayeeName} and Status = 1`)
 
                 if (due[0].due !== null) {
                     totalDueAmount = due[0].due
