@@ -170,11 +170,11 @@ export class PettycashReportComponent implements OnInit {
     }
 
     if (this.data.CashType != 0) {
-      Parem = Parem + 'and pettycash.CashType = ' + this.data.CashType;
+      Parem = Parem + '  and pettycash.CashType = ' +  `'${this.data.CashType}'`;
     }
 
     if (this.data.CreditType != 0) {
-      Parem = Parem + 'and pettycash.CreditType = '+ this.data.CreditType;
+      Parem = Parem + ' and pettycash.CreditType = '+ `'${this.data.CreditType}'`;
     }
 
     console.log(Parem);
