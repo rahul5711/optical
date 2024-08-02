@@ -307,7 +307,11 @@ module.exports = {
     },
     pettyCashReport: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "" }
+            const response = { data: null, success: true, message: "", calculation: [{
+                "WithdrawalAmount": 0,
+                "DepositAmount": 0,
+                "TotalAmount": 0,
+            }] }
             const { Parem } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers)
@@ -319,6 +323,14 @@ module.exports = {
             let qry = `SELECT pettycash.ID, COALESCE(c.Name, u.Name, s.Name, u2.Name, u3.Name, d.Name, f.Name) AS NAME, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, pettycash.CashType, pettycash.CreditType, CASE WHEN pettycash.CreditType = 'Deposit' THEN pettycash.Amount ELSE 0 END AS DepositAmount, CASE WHEN pettycash.CreditType = 'Withdrawal' THEN pettycash.Amount ELSE 0 END AS WithdrawalAmount, pettycash.Amount AS TotalAmount, CASE WHEN pettycash.Comments = '0' THEN '' ELSE pettycash.Comments END AS Comments, pettycash.Status, u4.Name AS CreatedBy, pettycash.CreatedOn, pettycash.InvoiceNo, pettycash.ActionType FROM pettycash LEFT JOIN customer c ON pettycash.ActionType = 'Customer' AND c.ID = pettycash.EmployeeID LEFT JOIN USER u ON pettycash.ActionType = 'CashBox' AND u.ID = pettycash.EmployeeID LEFT JOIN supplier s ON pettycash.ActionType = 'Supplier' AND s.ID = pettycash.EmployeeID LEFT JOIN USER u2 ON pettycash.ActionType = 'Expense' AND u2.ID = pettycash.EmployeeID LEFT JOIN USER u3 ON pettycash.ActionType = 'Employee' AND u3.ID = pettycash.EmployeeID LEFT JOIN doctor d ON pettycash.ActionType = 'Doctor' AND d.ID = pettycash.EmployeeID LEFT JOIN fitter f ON pettycash.ActionType = 'Fitter' AND f.ID = pettycash.EmployeeID LEFT JOIN shop AS ss ON ss.ID = pettycash.ShopID LEFT JOIN USER u4 ON u4.ID = pettycash.CreatedBy WHERE pettycash.Status = 1 and pettycash.CompanyID = ${CompanyID}  ${Parem}`
 
             let [data] = await mysql2.pool.query(qry);
+
+            if (data) {
+                for(let item of data) {
+                    response.calculation[0].TotalAmount += item.TotalAmount
+                    response.calculation[0].WithdrawalAmount += item.WithdrawalAmount
+                    response.calculation[0].DepositAmount += item.DepositAmount
+                } 
+            }
             response.message = "data fetch sucessfully"
             response.data = data
             return res.send(response);
