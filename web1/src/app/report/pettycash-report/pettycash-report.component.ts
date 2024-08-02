@@ -56,6 +56,7 @@ export class PettycashReportComponent implements OnInit {
   payeeList: any = []
   shopList: any = []
   dataList: any = []
+  calculation: any = []
 
   ngOnInit(): void {
     this.dropdownShoplist()
@@ -184,6 +185,7 @@ export class PettycashReportComponent implements OnInit {
         if (res.success) {
           this.as.successToast(res.message)
           this.dataList = res.data
+          this.calculation = res.calculation
 
         } else {
           this.as.errorToast(res.message)
