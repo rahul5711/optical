@@ -41,6 +41,7 @@ import { CustomerReportComponent } from './customer-report/customer-report.compo
 import { LoyalityReportComponent } from './loyality-report/loyality-report.component';
 import { LedgeReportComponent } from './ledge-report/ledge-report.component';
 import { GstReportComponent } from './gst-report/gst-report.component';
+import { PettycashReportComponent } from './pettycash-report/pettycash-report.component';
 
 
 @NgModule({
@@ -61,6 +62,7 @@ import { GstReportComponent } from './gst-report/gst-report.component';
     LoyalityReportComponent,
     LedgeReportComponent,
     GstReportComponent,
+    PettycashReportComponent,
 
   ],
   imports: [

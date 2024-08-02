@@ -14,6 +14,7 @@ import { CustomerReportComponent } from './customer-report/customer-report.compo
 import { LoyalityReportComponent } from './loyality-report/loyality-report.component';
 import { LedgeReportComponent } from './ledge-report/ledge-report.component';
 import { GstReportComponent } from './gst-report/gst-report.component';
+import { PettycashReportComponent } from './pettycash-report/pettycash-report.component';
 
 
 const routes: Routes = [
@@ -33,6 +34,7 @@ const routes: Routes = [
     { path: 'loyality', component: LoyalityReportComponent },
     { path: 'ledger', component: LedgeReportComponent },
     { path: 'GST-filling', component: GstReportComponent },
+    { path: 'petty-cash', component: PettycashReportComponent },
 
   ]}
   ]
