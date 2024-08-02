@@ -184,8 +184,8 @@ const product_support = async () => {
 }
 const c_report_init = async () => {
     try {
-        let date = moment(new Date('2024-04-23')).format("YYYY-MM-DD")
-        const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1`)
+        let date = moment(new Date('2024-07-31')).format("YYYY-MM-DD")
+        const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1 and ID = 241`)
         let result = []
         if (company) {
             result = JSON.parse(JSON.stringify(company))
@@ -241,7 +241,7 @@ const c_report_init_set_opening_closing = async () => {
         let date = moment(new Date()).format("YYYY-MM-DD")
         let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
 
-        const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1`)
+        const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1 and ID != 241`)
         let result = []
         if (company) {
             result = JSON.parse(JSON.stringify(company))
