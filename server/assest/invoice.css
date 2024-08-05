@@ -122,8 +122,8 @@ table  {
     width:30%; float: right;
 }
 .billTotalRow .col2 .ul1{
-    width:50%; float: left; list-style: none;  padding: 0;margin: 0; 
+    width:40%; float: left; list-style: none;  padding: 0;margin: 0; 
 }
 .billTotalRow .col2 .ul2{
-    width:50%; float: right;  list-style: none; text-align: right;  padding: 0;margin: 0; 
+    width:60%; float: right;  list-style: none; text-align: right;  padding: 0;margin: 0; 
 }
