@@ -92,7 +92,7 @@
                         <ul class="ul2" <% %> style="font-size:<%= data.CustomerFont %> ; line-height:<%=
                                     data.CustomerLineSpace %>;">
                                     <li>
-                                        <%=data.billMaster.BillDate%>
+                                        <%=data.billDatePrint%>
                                     </li>
                                     <li>
                                         <%=data.billMaster.DeliveryDate%>
@@ -409,7 +409,7 @@
                                         <li>Total</li>
                                         <%}%>
 
-                                            <% if (data.shopdetails.Discounts==="true" ){%>
+                                            <% if (data.shopdetails.Discounts==="true" && data.billMaster.DiscountAmount != 0){%>
                                                 <li>Discount </li>
                                                 <%}%>
 
@@ -423,8 +423,10 @@
                                                                         <% } %>
                                                         </li>
                                                         <%}%>
-
-                                                            <li>A Discount</li>
+                                                        <% if (data.shopdetails.AdminDiscount==="true" && data.billMaster.AddlDiscount != 0){%>
+                                                            <li>A Discount </li>
+                                                            <%}%>
+                                                           
                                                             <li <% %> style="border: 1px solid <%= data.Color %>;">Grand
                                                                     Total </li>
                                                             <li>Advance </li>
@@ -443,7 +445,7 @@
                                         </li>
                                         <%}%>
 
-                                            <% if (data.shopdetails.Discounts==="true" ){%>
+                                            <% if (data.shopdetails.Discounts==="true" && data.billMaster.DiscountAmount != 0){%>
                                                 <li>
                                                     <span style="text-align:right;"><% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> </span>  <%= data.billMaster.DiscountAmount %>
                                                 </li>
@@ -460,10 +462,11 @@
                                                                                 <% } %>
                                                         </li>
                                                         <%}%>
-
+                                                        <% if (data.shopdetails.AdminDiscount==="true" && data.billMaster.AddlDiscount != 0){%>
                                                             <li>
                                                                 <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%>  <%= data.billMaster.AddlDiscount %>
                                                             </li>
+                                                            <%}%>
                                                             <li <% %> style="border: 1px solid <%= data.Color %>;">
                                                                 <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <%=data.billMaster.TotalAmount %>
                                                             </li>

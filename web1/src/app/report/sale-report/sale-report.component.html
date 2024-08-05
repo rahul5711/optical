@@ -194,6 +194,7 @@
                                                         <th *ngIf="columnVisibility.InvoiceNo">InvoiceNo</th>
                                                         <th *ngIf="columnVisibility.CustomerName">CustomerName</th>
                                                         <th *ngIf="columnVisibility.MobileNo">MobileNo</th>
+                                                        <th style="display: none;">Reg No.</th>
                                                         <th style="display: none;">Age</th>
                                                         <th style="display: none;">Gender</th>
                                                         <th *ngIf="columnVisibility.PaymentStatus">PaymentStatus</th>
@@ -383,6 +384,7 @@
                                                         <td *ngIf="columnVisibility.MobileNo"></td>
                                                         <td style="display: none;"></td>
                                                         <td style="display: none;"></td>
+                                                        <td style="display: none;"></td>
                                                         <td *ngIf="columnVisibility.PaymentStatus"></td>
                                                         <td *ngIf="columnVisibility.Qty">{{this.totalQty}}</td>
                                                         <td *ngIf="columnVisibility.Discount">{{this.totalDiscount}}
@@ -433,6 +435,7 @@
                                                         <td *ngIf="columnVisibility.MobileNo"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.MobileNo1 }} </td>
+                                                        <td style="display: none;"> {{d.RegNo }} </td>
                                                         <td style="display: none;"> {{d.Age }} </td>
                                                         <td style="display: none;"> {{d.Gender }} </td>
                                                         <td *ngIf="columnVisibility.PaymentStatus"

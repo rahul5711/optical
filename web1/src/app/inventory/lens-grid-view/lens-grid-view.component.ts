@@ -53,6 +53,11 @@ export class LensGridViewComponent implements OnInit {
   displayedColumns: string[] = ['cyl'];
   dataSource: LensData[] = [];
 
+  lens:any ={
+   productname:'', purchasePrice: 0, quantity:0, GSTtype:'None',GSTPercent:0,retailPrice:0
+  }
+  
+  lenslist:any=[]
   quantities: { [key: string]: { [key: string]: number } } = {};
   constructor(
     private router: Router,
@@ -1025,10 +1030,9 @@ export class LensGridViewComponent implements OnInit {
     }
   }
 
-  openModalS(content: any) {
-    this.BarcodeQuantity = 0
-    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
-      this. generateGrid()
+  openModalS(content1: any) {
+    this.modalService.open(content1, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
+      this.generateGrid()
   }
 
   generateGrid() {
@@ -1067,8 +1071,30 @@ export class LensGridViewComponent implements OnInit {
   }
 
   purchase() {
-    console.log('Purchasing', this.dataSource);
+     this.specList.forEach((element: any) => {
+          this.prodList.forEach((elements: any) => {
+            if (elements.Name === element.ProductName) {
+              this.item.ProductTypeID = elements.ID
+              this.item.ProductTypeName = elements.Name
+            }
+          });
+          if (element.SelectedValue !== "") {
+            this.item.ProductName = this.item.ProductName + element.SelectedValue + "/";
+          }
+          if (element.FieldType === "Date") {
+            this.item.ProductExpDate = element.SelectedValue;
+          }
+        });
+
+    this.lens.productname = this.item.ProductName + this.lens.productname
+    this.lenslist.unshift(this.lens);
+    console.log('Purchasing', this.lenslist);
+    this.lens = {productname:'', purchasePrice: 0, quantity:0, GSTtype:'None',GSTPercent:0,retailPrice:0}
   }
 
- 
+  qtyAdd(shp:any,cyl:any,qty:number){
+    this.lens.productname = 'Sph'+ ' ' + shp + '/' +'Cyl' + ' ' + cyl
+    this.lens.quantity = qty
+    qty = 0
+  }
 }

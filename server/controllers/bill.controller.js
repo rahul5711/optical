@@ -1849,7 +1849,8 @@ module.exports = {
             const Customer = req.body.customer;
             const BillMaster = req.body.billMaster;
             const Zoom = req.body.zoom;
-
+            const BillDatePrint =  moment(req.body.BillDatePrint).format('DD-MM-YYYY hh:mm:ss A');
+            
             req.body.billItemList = req.body.billItemList.filter((element) => {
                 return element.Status !== 0;
             });
@@ -1911,6 +1912,7 @@ module.exports = {
             printdata.WaterMarkLeft = `${Number(printdata.billformate.WaterMarkLeft)}%`;
             printdata.WaterMarkRight = `${Number(printdata.billformate.WaterMarkRight)}%`;
 
+            printdata.billDatePrint = BillDatePrint;
             printdata.zoom = Zoom
             printdata.company = Company
             printdata.companysetting = CompanySetting

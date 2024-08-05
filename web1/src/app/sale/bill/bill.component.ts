@@ -123,7 +123,7 @@ export class BillComponent implements OnInit {
 
   body = {
     customer: null, billMaster: null, billItemList: null, serviceList: null, employeeList: null, paidList: null, unpaidList: null, Shop: null,
-    Company: null, CompanySetting: null, User: null, mode: null, ShowPower: false, CustomerCredit: null, zoom: ''
+    Company: null, CompanySetting: null, User: null, mode: null, ShowPower: false, CustomerCredit: null, zoom: '',BillDatePrint:null
   };
   ShowPower = false
   billItemCheckList: any
@@ -292,7 +292,9 @@ export class BillComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.BillMaster = res.result.billMaster[0]
+          this.body.BillDatePrint = res.result.billMaster[0].BillDate
           this.BillMaster.BillDate = moment(res.result.billMaster[0].BillDate).format('YYYY-MM-DD')
+    
           this.BillMaster.DeliveryDate = moment(res.result.billMaster[0].DeliveryDate).format('YYYY-MM-DD')
           this.gst_detail = this.BillMaster.gst_detail
           res.result.billDetail.forEach((e: any) => {
@@ -2298,7 +2300,7 @@ export class BillComponent implements OnInit {
     this.body.User = this.user;
     this.body.mode = mode
     this.body.ShowPower = this.ShowPower
-    // this.body.billMaster.showPower = this.showPower;
+    this.body.BillDatePrint 
     const subs: Subscription = this.bill.billPrint(this.body).subscribe({
       next: async (res: any) => {
         if (res) {

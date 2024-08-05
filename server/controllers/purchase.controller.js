@@ -1077,12 +1077,12 @@ module.exports = {
                 ele.ProductFullName = ele.ProductName;
 
                 if (ProductBrandName !== undefined) {
-                    ele.ProductBrandName = ProductBrandName.substring(0, 18)
+                    ele.ProductBrandName = ProductBrandName.substring(0, 15)
                 } else {
                     ele.ProductBrandName = ProductBrandName
                 }
                 if (ProductModelName !== undefined) {
-                    ele.ProductModelName = ProductModelName.substring(0, 18)
+                    ele.ProductModelName = ProductModelName.substring(0, 15)
                 } else {
                     ele.ProductModelName = ProductModelName
                 }
