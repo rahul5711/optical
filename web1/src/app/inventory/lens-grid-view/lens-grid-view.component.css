@@ -119,11 +119,14 @@ input::-webkit-inner-spin-button {
   table {
     width: 100%;
     margin-bottom: 0px;
+    text-align: center !important;
   }
   
-  input[type="number"] {
+  .inputBoxTD[type="number"] {
     width: 100%;
     text-align: center;
   }
   
-  
+  .mat-elevation-z8 {
+    box-shadow: 0px 5px 5px -3px rgb(0 0 0 / 0%), 0px 8px 10px 1px rgb(0 0 0 / 0%), 0px 3px 14px 2px rgb(0 0 0 / 0%) !important; 
+}

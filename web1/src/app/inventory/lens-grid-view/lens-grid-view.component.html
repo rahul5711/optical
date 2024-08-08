@@ -121,9 +121,8 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-lg-1 col-md-6 col-6 ms-auto pt-2 p-0">
-                                    <button (click)="openModalS(content1)">S</button>
-                                    <button>B</button>
-                                    <button>P</button>
+                                    <button (click)="openModalS(content1)">Lens Grid</button>
+                                   
                                 </div>
                                 <div class="col-lg-2 col-md-6 col-6 ms-auto pt-2 p-0" *ngIf="category !== 'Charges'">
 
@@ -877,34 +876,37 @@
             <div class="col-2">
                 <h2 class="modal-title header pt-2" id="exampleModalLabel">Lens Grid</h2>  
             </div>
-            <div class="col-2 pt-2">
-                <button>+/+</button>
-                <button class="ms-2 me-2">-/-</button>
-                <button>+/-</button>
+            <div class="col-3 pt-2">
+                <button mat-raised-button color="primary" (click)="plusToplus('+sph+cyl')">+/+</button>
+                <button mat-raised-button color="primary" (click)="plusToplus('-sph-cyl')"class="ms-2 me-2">-/-</button>
+                <button mat-raised-button color="primary" (click)="plusToplus('+sph-cyl')">+/-</button>
             </div>
-            <div class="col-1 pt-2">
-                <!-- <label >SPH</label > -->
+            <div class="col-1 pt-1">
+                <label >SPH-Min</label>
                <input type="number" placeholder="SPH-Min" style="width: 70px;" [(ngModel)]="sphMin">
             </div>
-            <div class="col-1 pt-2">
+            <div class="col-1 pt-1">
+                <label >SPH-Max</label>
                <input type="number" placeholder="SPH-Max" style="width: 70px;" [(ngModel)]="sphMax">
             </div>
-            <div class="col-1 pt-2">
-                <label for="sph-step">SPH Step:</label>
+            <div class="col-1 pt-1">
+                <label for="sph-step">SPH Step</label>
                       <input id="sph-step" type="number" [(ngModel)]="sphStep">
             </div>
-            <div class="col-1 pt-2">
+            <div class="col-1 pt-1">
+                <label for="cyl-step">CYL-Min</label>
                <input type="number" placeholder="CLY-Min" style="width: 70px;" [(ngModel)]="cylMin">
             </div>
-            <div class="col-1 pt-2">
+            <div class="col-1 pt-1">
+                <label for="cyl-step">CYL-Max</label>
                <input type="number" placeholder="CLY-Max" style="width: 70px;" [(ngModel)]="cylMax">
             </div>
-            <div class="col-1 ">
-                <label for="cyl-step">CYL Step:</label>
+            <div class="col-1 pt-1">
+                <label for="cyl-step">CYL Step</label>
                 <input id="cyl-step" type="number" style="width: 70px;" [(ngModel)]="cylStep">
             </div>
-            <div class="col-1 pt-2">
-                <button (click)="generateGrid()">Show</button>
+            <div class="col-1 pt-3">
+                <button mat-raised-button color="primary" (click)="generateGrid()">Show</button>
                
             </div>
         </div>
@@ -913,26 +915,55 @@
     </div>
     <div class="modal-body p-0">
         <div class="row">
-            <div class="col-12 mx-auto">
+            <div class="col-12 mx-auto" style="overflow: auto; height: 530px; width: 100%;">
                 <!-- product-quantity-grid.component.html -->
-                <div class="settings">
-                  
+                <div class="row ms-3">
+                    <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                            <mat-label>Axis</mat-label>
+                            <mat-select name="axis" [(ngModel)]="lens.axis"  #axiscontrol>
+                                <mat-option value="180">180</mat-option>
+                                <mat-option value="120">120</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                    </div>
+                    <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
+                       
+                        <mat-form-field class="example-full-width mb-0">
+                            <mat-label>Addtion</mat-label>
+                            <mat-select name="addtion" [(ngModel)]="lens.addtion"  #addtioncontrol>
+                                <mat-option value="1">1</mat-option>
+                                <mat-option value="2">2</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                            <mat-label>Eye</mat-label>
+                            <mat-select name="eye" [(ngModel)]="lens.eye"  #eyecontrol>
+                                <mat-option value="R">R</mat-option>
+                                <mat-option value="L">L</mat-option>
+                                <mat-option value="RL">RL</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
             
                   </div>
                   
                   <div class="container p-0" *ngIf="dataSource.length">
-                    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" style=" width: 99%;">
                       <!-- CYL Column -->
                       <ng-container matColumnDef="cyl" >
-                        <th mat-header-cell *matHeaderCellDef style="font-size: 18px;color:rgb(0 0 0); border: 1px solid;"> SPH <br> CYL </th>
-                        <td mat-cell *matCellDef="let element" style="font-size: 16px;"> {{element.cyl}} </td>
+                        <th mat-header-cell *matHeaderCellDef style="font-size: 18px;color:rgb(0 0 0); border: 1px solid; padding: 0;text-align: center !important;"> SPH <br> CYL </th>
+                        <td mat-cell *matCellDef="let element" style="font-size: 16px;border: 1px solid   ;  padding: 3px;  text-align: center !important; font-weight: 500;background-color: #dddddd;"> {{element.cyl}} </td>
                       </ng-container>
                   
                       <!-- Dynamic Columns for SPH -->
                       <ng-container *ngFor="let sph of sphValues" [matColumnDef]="sph">
-                        <th mat-header-cell *matHeaderCellDef style="font-size: 16px; padding-top: 10px; color: rgb(0 0 0); border: 1px solid;"> {{sph}} </th>
-                        <td mat-cell *matCellDef="let element" style="font-size: 16px;color: rgb(0 0 0); border: 1px solid;">
-                          <input type="number" [(ngModel)]="element[sph]" min="0" (change)="qtyAdd(sph, element.cyl,element[sph])"/>
+                        <th mat-header-cell *matHeaderCellDef style="font-size: 16px; padding-top: 10px; color: rgb(0 0 0); border: 1px solid; text-align: center !important; background-color: #dddddd;"> {{sph}} </th>
+                        <td mat-cell *matCellDef="let element" style="font-size: 16px;color: rgb(0 0 0); border: 1px solid">
+                          <input class="inputBoxTD" type="number" [(ngModel)]="element[sph]" min="0" (change)="qtyAdd(sph, element.cyl,element[sph],lens)" style="border: none !important;background: none;" />
                         </td>
                       </ng-container>
                   
@@ -947,10 +978,7 @@
 
             </div>
 
-             <div class="row mt-5">
-
-                 
-
+             <div class="row m-4">
                 <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Purchase Price</mat-label>
@@ -963,7 +991,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>qty</mat-label>
-                        <input matInput name = "quantity" [(ngModel)]="lens.quantity"  #quantitycontrol [autocomplete]="false">
+                        <input matInput name = "quantity"  value="{{totalQty}}"  #quantitycontrol [autocomplete]="false" disabled>
                         <mat-error>
                             Total Amount is required
                         </mat-error>
@@ -979,12 +1007,25 @@
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
-                    <mat-form-field class="example-full-width mb-0">
-                        <mat-label>Gst Type</mat-label>
-                        <input matInput name = "GSTtype" [(ngModel)]="lens.GSTtype" #GSTtypecontrol [autocomplete]="false">
-                        <mat-error>
-                            Total Amount is required
-                        </mat-error>
+
+                    <mat-form-field *ngIf="lens.GSTPercent !== 0" class="example-full-width mb-0">
+                        <mat-label>TAX Type</mat-label>
+                        <mat-select name="GSTtype" [(ngModel)]="lens.GSTtype" #GSTTypeacontrol required>
+                            <span>
+                                <mat-option [value]="g.Name" *ngFor="let g of gstList">
+                                    {{g.Name}}
+                                </mat-option>
+                            </span>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field *ngIf="lens.GSTPercent  === 0" class="example-full-width mb-0">
+                        <mat-label>TAX Type</mat-label>
+                        <mat-select name="GSTtype" [(ngModel)]="lens.GSTtype" #GSTTypeacontrol required>
+                            <mat-option value="None">None</mat-option>
+                            <mat-option value="{{this.supplierGSTType}}"
+                                *ngIf="this.supplierGSTType !== '' && this.supplierGSTType != undefined">{{this.supplierGSTType}}</mat-option>
+                        </mat-select>
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
@@ -997,11 +1038,9 @@
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
-                    <button mat-raised-button (click)="purchase()">Purchase</button>
+                    <button mat-raised-button color="primary" (click)="purchase()">Purchase</button>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
-                    <p>Total qty: {{totalQty}}</p>
-                </div>
+             
                
             </div>  
             

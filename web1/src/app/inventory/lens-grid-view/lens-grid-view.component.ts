@@ -52,13 +52,16 @@ export class LensGridViewComponent implements OnInit {
 
   displayedColumns: string[] = ['cyl'];
   dataSource: LensData[] = [];
-
+  plustoplus:any = '+sph+cyl';
   lens:any ={
-   productname:'', purchasePrice: 0, quantity:0, GSTtype:'None',GSTPercent:0,retailPrice:0
+   productname:'', purchasePrice: 0, quantity:0, GSTtype:'None', GSTPercent:0, retailPrice:0 ,axis:'',addtion:'',eye:''
+
+
   }
   
   lenslist:any=[]
   quantities: { [key: string]: { [key: string]: number } } = {};
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -600,10 +603,10 @@ export class LensGridViewComponent implements OnInit {
     this.sp.show();
     this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
     this.selectedPurchaseMaster.PurchaseDate = this.selectedPurchaseMaster.PurchaseDate + ' ' + this.currentTime;
-
     this.data.PurchaseMaster = this.selectedPurchaseMaster;
     this.data.PurchaseDetail = JSON.stringify(this.itemList);
     this.data.Charge = this.chargeList;
+    console.log(this.data);
     const subs: Subscription = this.purchaseService.savePurchase(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -969,8 +972,6 @@ export class LensGridViewComponent implements OnInit {
     }
   }
   
-  
-
   singleSelectBarcode(i: any) {
     const currentItem = this.itemList[i];
 
@@ -1033,19 +1034,37 @@ export class LensGridViewComponent implements OnInit {
   openModalS(content1: any) {
     this.modalService.open(content1, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
       this.generateGrid()
+      this.plusToplus('+sph+cyl')
   }
 
+  plusToplus(mode:any){
+    this.plustoplus = mode;
+    this.generateGrid()
+  }
+  
   generateGrid() {
-    this.sphValues = this.generateRange(this.sphMin, this.sphMax, this.sphStep);
-    this.cylValues = this.generateRange(this.cylMin, this.cylMax, this.cylStep);
-    this.displayedColumns = ['cyl', ...this.sphValues];
-    this.dataSource = this.initializeGrid();
+    this.sphValues = this.generateRange(this.sphMin, this.sphMax, this.sphStep, 'sph');
+    this.cylValues = this.generateRange(this.cylMin, this.cylMax, this.cylStep, 'cyl');
+    this.displayedColumns = ['cyl', ...this.sphValues]; // Include 'cyl' as the first column
+    this.dataSource = this.initializeGrid(); // Initialize grid data
   }
 
-  generateRange(min: number, max: number, step: number): string[] {
+  generateRange(min: number, max: number, step: number, type: 'sph' | 'cyl'): string[] {
     const range = [];
     for (let i = min; i <= max; i += step) {
-      range.push(`+${i.toFixed(2)}`);
+      let value = i.toFixed(2);
+      switch (this.plustoplus) {
+        case '+sph+cyl':
+          value = `+${value}`;
+          break;
+        case '-sph-cyl':
+          value = `-${value}`;
+          break;
+        case '+sph-cyl':
+          value = type === 'sph' ? `+${value}` : `-${value}`;
+          break;
+      }
+      range.push(value);
     }
     return range;
   }
@@ -1071,30 +1090,92 @@ export class LensGridViewComponent implements OnInit {
   }
 
   purchase() {
-     this.specList.forEach((element: any) => {
-          this.prodList.forEach((elements: any) => {
-            if (elements.Name === element.ProductName) {
-              this.item.ProductTypeID = elements.ID
-              this.item.ProductTypeName = elements.Name
-            }
-          });
-          if (element.SelectedValue !== "") {
-            this.item.ProductName = this.item.ProductName + element.SelectedValue + "/";
-          }
-          if (element.FieldType === "Date") {
-            this.item.ProductExpDate = element.SelectedValue;
-          }
-        });
+
+    this.lenslist.forEach((p:any)=>{
+      if(p.purchasePrice == 0){
+        p.productname = p.productname +  '/' + 'Asix' + ' ' + this.lens.axis + '/' + 'Add' + ' ' + this.lens.addtion + '/' + this.lens.eye
+        p.purchasePrice = this.lens.purchasePrice
+        p.GSTtype = this.lens.GSTtype
+        p.GSTPercent = this.lens.GSTPercent
+        p.retailPrice = this.lens.retailPrice
+      }
+    }) 
+
+
+    this.lenslist.forEach((is:any)=>{
+      is.ID = null, 
+      is.PurchaseID= null,
+      is.CompanyID= null, 
+      is.ProductTypeName = this.item.ProductTypeName 
+      is.ProductTypeID = this.item.ProductTypeID,
+      is.ProductName = is.productname
+      is.Quantity = is.quantity
+      is.UnitPrice = is.purchasePrice
+      is.SubTotal = is.Quantity * is.UnitPrice
+      is.DiscountPercentage = 0
+      is.DiscountAmount = 0
+      is.GSTPercentage = is.GSTPercent
+      is.GSTType = is.GSTtype
+      is.GSTAmount =(+is.UnitPrice * +is.Quantity - is.DiscountAmount) * +is.GSTPercentage / 100;
+      is.TotalAmount = +is.SubTotal + +is.GSTAmount; 
+      is.RetailPrice = is.retailPrice
+      is.WholeSalePrice = 0
+      is.BrandType = 0
+      is.Multiple = false,
+      is.Ledger = false
+      is.WholeSale = false,
+      is.BaseBarCode = '', 
+      is.NewBarcode= '', 
+      is.Status = 1,
+      is.ProductExpDate = '0000-00-00',
+      this.itemList.push(is)
+
+      this.selectedPurchaseMaster.Quantity = +this.selectedPurchaseMaster.Quantity + +is.Quantity;
+      this.selectedPurchaseMaster.SubTotal = (+this.selectedPurchaseMaster.SubTotal + +is.SubTotal).toFixed(2);
+      this.selectedPurchaseMaster.DiscountAmount = (+this.selectedPurchaseMaster.DiscountAmount + +is.DiscountAmount).toFixed(2);
+      this.selectedPurchaseMaster.GSTAmount = (+this.selectedPurchaseMaster.GSTAmount + +is.GSTAmount).toFixed(2);
+      this.selectedPurchaseMaster.TotalAmount = (+this.selectedPurchaseMaster.TotalAmount + +is.TotalAmount).toFixed(2);
+    })
+    console.log( this.itemList);
+    console.log( this.selectedPurchaseMaster);
+    this.generateGrid()
+    this.lens = { productname:'', purchasePrice: 0, quantity:0, GSTtype:'None', GSTPercent:0, retailPrice:0 ,axis:'',addtion:'',eye:''}
+    this.lenslist = []
+  }
+
+  qtyAdd(shp:any,cyl:any,qty:number,lens:any){
+    this.item.ProductName = "";
+    this.item.ProductTypeID = "";
+
+    this.lens.productname = '/' + 'Sph'+ ' ' + shp + '/' +'Cyl' + ' ' + cyl 
+    this.lens.quantity = qty;
+
+    this.specList.forEach((element: any) => {
+      this.prodList.forEach((elements: any) => {
+        if (elements.Name === element.ProductName) {
+          this.item.ProductTypeID = elements.ID
+          this.item.ProductTypeName = elements.Name
+        }
+      });
+      if (element.SelectedValue !== "") {
+        this.item.ProductName = this.item.ProductName + element.SelectedValue + "/";
+      }
+      if (element.FieldType === "Date") {
+        this.item.ProductExpDate = element.SelectedValue;
+      }
+    });
+    this.item.ProductExpDate = this.item.ProductExpDate === '' ? "0000-00-00" : this.item.ProductExpDate;
+    this.item.ProductTypeID = this.item.ProductTypeID
+    this.item.ProductTypeName = this.item.ProductTypeName
+    this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
 
     this.lens.productname = this.item.ProductName + this.lens.productname
     this.lenslist.unshift(this.lens);
+
     console.log('Purchasing', this.lenslist);
-    this.lens = {productname:'', purchasePrice: 0, quantity:0, GSTtype:'None',GSTPercent:0,retailPrice:0}
+    this.lens = { productname:'', purchasePrice: 0, quantity:0, GSTtype:'None', GSTPercent:0, retailPrice:0 ,axis:'',addtion:'',eye:''}
+
   }
 
-  qtyAdd(shp:any,cyl:any,qty:number){
-    this.lens.productname = 'Sph'+ ' ' + shp + '/' +'Cyl' + ' ' + cyl
-    this.lens.quantity = qty
-    qty = 0
-  }
+
 }
