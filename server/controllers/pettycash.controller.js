@@ -2,7 +2,7 @@ const createError = require('http-errors')
 const _ = require("lodash")
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
-const { shopID } = require('../helpers/helper_function')
+const { shopID, update_pettycash_report } = require('../helpers/helper_function')
 const mysql2 = require('../database')
 
 
@@ -10,7 +10,7 @@ module.exports = {
     save: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
-
+            console.log("current time =====> ", req.headers.currenttime, typeof req.headers.currenttime);
             const Body = req.body;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -89,6 +89,9 @@ module.exports = {
             const [paymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID,CompanyID,ShopID,PaymentType,CreditType,PaymentDate,PaymentMode,CardNo,PaymentReferenceNo,PayableAmount,PaidAmount,Comments,Status,CreatedBy,CreatedOn) values (${datum.EmployeeID}, ${CompanyID}, ${datum.ShopID},'PettyCash','${CreditType}',now(),'${datum.CashType}','','',${datum.Amount},${datum.Amount},'${datum.Comments}',1, ${LoggedOnUser}, now())`)
 
             const [paymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn) values (${paymentMaster.insertId},'${datum.InvoiceNo}',${saveData.insertId},${datum.EmployeeID},${CompanyID},${datum.Amount},0,'PettyCash','${CreditType}',1,${LoggedOnUser}, now())`)
+
+
+            const update_pettycash = update_pettycash_report(CompanyID, datum.ShopID, datum.CreditType, datum.Amount, datum.CashType, req.headers.currenttime)
 
             console.log(connected("Data Save SuccessFUlly !!!"));
             response.message = "data save sucessfully"

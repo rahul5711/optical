@@ -3,7 +3,7 @@ const _ = require("lodash")
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const mysql2 = require('../database')
-const { shopID } = require('../helpers/helper_function')
+const { shopID, update_pettycash_report } = require('../helpers/helper_function')
 
 module.exports = {
     save: async (req, res, next) => {
@@ -87,6 +87,7 @@ module.exports = {
 
             if (datum.PaymentMode.toUpperCase() === "CASH") {
                 const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${shopid}, ${datum.EmployeeID},${saveData.insertId}, '${datum.CashType}', 'Withdrawal', ${datum.Salary},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${datum.InvoiceNo}', 'Employee')`);
+                const update_pettycash = update_pettycash_report(CompanyID, shopid, "Payroll", datum.Salary, datum.CashType, req.headers.currenttime)
             }
 
 

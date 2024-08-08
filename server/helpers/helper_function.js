@@ -55,7 +55,7 @@ module.exports = {
   doesExistProduct: async (CompanyID, Body) => {
     let qry = ``;
 
-    if (CompanyID === 184 || CompanyID === "184" ) {
+    if (CompanyID === 184 || CompanyID === "184") {
       qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = '${CompanyID}'AND purchasedetailnew.Status = 1 AND DATE_FORMAT(purchasedetailnew.CreatedOn,"%Y-%m-%d") >= '2024-06-07' `
     } else {
       qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = '${CompanyID}'AND purchasedetailnew.Status = 1`
@@ -1355,6 +1355,163 @@ module.exports = {
     } catch (error) {
       console.log(error);
     }
+  },
+  update_pettycash_report: async (CompanyID, ShopID, Type, Amount, RegisterType, CurrentDate) => {
+    try {
+      console.log(CompanyID, ShopID, Type, Amount, RegisterType, CurrentDate);
+
+      let date = moment(CurrentDate).format("YYYY-MM-DD")
+
+      if (!CompanyID) {
+        return ({ success: false, message: "Invalid CompanyID Data" })
+      }
+      if (!ShopID) {
+        return ({ success: false, message: "Invalid ShopID Data" })
+      }
+
+      let datum = {
+        OpeningBalance: 0,
+        ClosingBalance: 0,
+        CompanyID,
+        ShopID,
+        RegisterType,
+        Sale: 0,
+        Expense: 0,
+        Doctor: 0,
+        Employee: 0,
+        Payroll: 0,
+        Fitter: 0,
+        Supplier: 0,
+        Deposit: 0,
+        Withdrawal: 0
+      }
+
+      const [fetchPettyCash] = await mysql2.pool.query(`select * from pettycashreport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID} and RegisterType = '${RegisterType}' `)
+
+      if (!fetchPettyCash.length) {
+
+        const [fetchPettyCashBackDate] = await mysql2.pool.query(`select * from pettycashreport where CompanyID = ${CompanyID} and ShopID = ${ShopID} and RegisterType = '${RegisterType}'`)
+
+        if (fetchPettyCashBackDate.length) {
+          datum.OpeningBalance = fetchPettyCashBackDate[0].ClosingBalance
+        }
+
+      }
+
+      // Sale
+      // Expense
+      // Doctor
+      // Employee
+      // Payroll
+      // Fitter
+      // Supplier
+      // Deposit
+      // Withdrawal
+
+
+      if (fetchPettyCash.length) {
+        // update
+        datum.OpeningBalance = Number(fetchPettyCash[0].ClosingBalance)
+        datum.Sale = Number(fetchPettyCash[0].Sale)
+        datum.Expense = Number(fetchPettyCash[0].Expense)
+        datum.Doctor = Number(fetchPettyCash[0].Doctor)
+        datum.Employee = Number(fetchPettyCash[0].Employee)
+        datum.Payroll = Number(fetchPettyCash[0].Payroll)
+        datum.Fitter = Number(fetchPettyCash[0].Fitter)
+        datum.Supplier = Number(fetchPettyCash[0].Supplier)
+        datum.Deposit = Number(fetchPettyCash[0].Deposit)
+        datum.Withdrawal = Number(fetchPettyCash[0].Withdrawal)
+        if (Type === "Sale") {
+          datum.ClosingBalance = Number(fetchPettyCash[0].ClosingBalance) + Amount;
+          datum.Sale = Number(fetchPettyCash[0].Sale) + Amount
+        }
+        if (Type === "Deposit") {
+          datum.ClosingBalance = Number(fetchPettyCash[0].ClosingBalance) + Amount;
+          datum.Deposit = Number(fetchPettyCash[0].Deposit) + Amount
+        }
+        if (Type === "Expense") {
+          datum.ClosingBalance = Number(fetchPettyCash[0].ClosingBalance) - Amount;
+          datum.Expense = Number(fetchPettyCash[0].Expense) + Amount
+        }
+        if (Type === "Doctor") {
+          datum.ClosingBalance = Number(fetchPettyCash[0].ClosingBalance) - Amount;
+          datum.Doctor = Number(fetchPettyCash[0].Doctor) + Amount
+        }
+        if (Type === "Employee") {
+          datum.ClosingBalance = Number(fetchPettyCash[0].ClosingBalance) - Amount;
+          datum.Employee = Number(fetchPettyCash[0].Employee) + Amount
+        }
+        if (Type === "Payroll") {
+          datum.ClosingBalance = Number(fetchPettyCash[0].ClosingBalance) - Amount;
+          datum.Payroll = Number(fetchPettyCash[0].Payroll) + Amount
+        }
+        if (Type === "Fitter") {
+          datum.ClosingBalance = Number(fetchPettyCash[0].ClosingBalance) - Amount;
+          datum.Fitter = Number(fetchPettyCash[0].Fitter) + Amount
+        }
+        if (Type === "Supplier") {
+          datum.ClosingBalance = Number(fetchPettyCash[0].ClosingBalance) - Amount;
+          datum.Supplier = Number(fetchPettyCash[0].Supplier) + Amount
+        }
+        if (Type === "Withdrawal") {
+          datum.ClosingBalance = Number(fetchPettyCash[0].ClosingBalance) - Amount;
+          datum.Withdrawal = Number(fetchPettyCash[0].Withdrawal) + Amount
+        }
+        console.table(datum)
+
+        const [update] = await mysql2.pool.query(`update pettycashreport set Sale = ${datum.Sale}, Expense = ${datum.Expense}, Doctor = ${datum.Doctor}, Employee = ${datum.Employee} , Payroll = ${datum.Payroll}, Fitter = ${datum.Fitter}, Supplier = ${datum.Supplier}, Withdrawal = ${datum.Withdrawal}, Deposit = ${datum.Deposit}, ClosingBalance = ${datum.ClosingBalance} where ID = ${fetchPettyCash[0].ID}`)
+      }
+
+      if (!fetchPettyCash.length) {
+        // insert
+
+        if (Type === "Sale") {
+          datum.ClosingBalance = datum.ClosingBalance + Amount;
+          datum.Sale = Amount
+        }
+        if (Type === "Deposit") {
+          datum.ClosingBalance = datum.ClosingBalance + Amount;
+          datum.Deposit = Amount
+        }
+        if (Type === "Expense") {
+          datum.ClosingBalance = datum.ClosingBalance - Amount;
+          datum.Expense = Amount
+        }
+        if (Type === "Doctor") {
+          datum.ClosingBalance = datum.ClosingBalance - Amount;
+          datum.Doctor = Amount
+        }
+        if (Type === "Employee") {
+          datum.ClosingBalance = datum.ClosingBalance - Amount;
+          datum.Employee = Amount
+        }
+        if (Type === "Payroll") {
+          datum.ClosingBalance = datum.ClosingBalance - Amount;
+          datum.Payroll = Amount
+        }
+        if (Type === "Fitter") {
+          datum.ClosingBalance = datum.ClosingBalance - Amount;
+          datum.Fitter = Amount
+        }
+        if (Type === "Supplier") {
+          datum.ClosingBalance = datum.ClosingBalance - Amount;
+          datum.Supplier = Amount
+        }
+        if (Type === "Withdrawal") {
+          datum.ClosingBalance = datum.ClosingBalance - Amount;
+          datum.Withdrawal = Amount
+        }
+
+        console.table(datum)
+
+        const [save] = await mysql2.pool.query(`INSERT into pettycashreport(CompanyID,ShopID,RegisterType, Date, OpeningBalance,Sale,Expense,Doctor, Employee, Payroll, Fitter, Supplier,Withdrawal, Deposit, ClosingBalance)values(${datum.CompanyID}, ${datum.ShopID}, '${datum.RegisterType}','${date}',${datum.OpeningBalance}, ${datum.Sale}, ${datum.Expense}, ${datum.Doctor}, ${datum.Employee}, ${datum.Payroll}, ${datum.Fitter}, ${datum.Supplier}, ${datum.Withdrawal}, ${datum.Deposit}, ${datum.ClosingBalance})`)
+
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+
   }
 
 }
