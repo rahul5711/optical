@@ -1387,6 +1387,47 @@ module.exports = {
         ClosingBalance: 0
       }
 
+
+      const [fetch] = await mysql2.pool.query(`select * from pettycashreport where  CompanyID = ${CompanyID} and ShopID = ${ShopID} and RegisterType = '${RegisterType}' `)
+
+      if (!fetch.length) {
+        if (RegisterType === "PettyCash") {
+
+          const [DepositBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and CashType='PettyCash' and CreditType='Deposit'`)
+
+          const [WithdrawalBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and CashType='PettyCash' and CreditType='Withdrawal'`)
+
+          let Balance = DepositBalance[0]?.Amount - WithdrawalBalance[0]?.Amount || 0
+
+          if (Type === "Sale" || Type === "Deposit") {
+            Balance = Balance - Amount
+          } else {
+            Balance = Balance + Amount
+          }
+
+          let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
+
+          const [save] = await mysql2.pool.query(`INSERT into pettycashreport(CompanyID,ShopID,RegisterType, Date, OpeningBalance,Sale,Expense,Doctor, Employee, Payroll, Fitter, Supplier,Withdrawal, Deposit, ClosingBalance)values(${datum.CompanyID}, ${datum.ShopID}, '${datum.RegisterType}','${back_date}',${datum.OpeningBalance}, ${datum.Sale}, ${datum.Expense}, ${datum.Doctor}, ${datum.Employee}, ${datum.Payroll}, ${datum.Fitter}, ${datum.Supplier}, ${datum.Withdrawal}, ${datum.Deposit}, ${Balance})`)
+
+        }
+        if (RegisterType === "CashCounter") {
+
+          const [DepositBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and CashType='CashCounter' and CreditType='Deposit'`)
+
+          const [WithdrawalBalance] = await mysql2.pool.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and CashType='CashCounter' and CreditType='Withdrawal'`)
+
+          let Balance = DepositBalance[0]?.Amount - WithdrawalBalance[0]?.Amount || 0
+          if (Type === "Sale" || Type === "Deposit") {
+            Balance = Balance - Amount
+          } else {
+            Balance = Balance + Amount
+          }
+          let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
+
+          const [save] = await mysql2.pool.query(`INSERT into pettycashreport(CompanyID,ShopID,RegisterType, Date, OpeningBalance,Sale,Expense,Doctor, Employee, Payroll, Fitter, Supplier,Withdrawal, Deposit, ClosingBalance)values(${datum.CompanyID}, ${datum.ShopID}, '${datum.RegisterType}','${back_date}',${datum.OpeningBalance}, ${datum.Sale}, ${datum.Expense}, ${datum.Doctor}, ${datum.Employee}, ${datum.Payroll}, ${datum.Fitter}, ${datum.Supplier}, ${datum.Withdrawal}, ${datum.Deposit}, ${Balance})`)
+        }
+      }
+
       const [fetchPettyCash] = await mysql2.pool.query(`select * from pettycashreport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID} and RegisterType = '${RegisterType}' `)
 
       if (!fetchPettyCash.length) {
@@ -1457,7 +1498,7 @@ module.exports = {
 
       if (!fetchPettyCash.length) {
         // insert
-
+        datum.ClosingBalance = datum.OpeningBalance
         if (Type === "Sale") {
           datum.ClosingBalance = datum.ClosingBalance + Amount;
           datum.Sale = Amount
@@ -1494,7 +1535,6 @@ module.exports = {
           datum.ClosingBalance = datum.ClosingBalance - Amount;
           datum.Withdrawal = Amount
         }
-
 
         const [save] = await mysql2.pool.query(`INSERT into pettycashreport(CompanyID,ShopID,RegisterType, Date, OpeningBalance,Sale,Expense,Doctor, Employee, Payroll, Fitter, Supplier,Withdrawal, Deposit, ClosingBalance)values(${datum.CompanyID}, ${datum.ShopID}, '${datum.RegisterType}','${date}',${datum.OpeningBalance}, ${datum.Sale}, ${datum.Expense}, ${datum.Doctor}, ${datum.Employee}, ${datum.Payroll}, ${datum.Fitter}, ${datum.Supplier}, ${datum.Withdrawal}, ${datum.Deposit}, ${datum.ClosingBalance})`)
 
