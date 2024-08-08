@@ -169,6 +169,8 @@ module.exports = {
 
             if (doesExist[0].PaymentMode.toUpperCase() === "CASH") {
                 const [delPettyCash] = await mysql2.pool.query(`update pettycash set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where RefID = ${Body.ID} and CompanyID = ${CompanyID} and  InvoiceNo = '${doesExist[0].InvoiceNo}'`)
+
+                const update_pettycash = update_pettycash_report(CompanyID, doesExist[0].ShopID, "Payroll", -doesExist[0].Amount, doesExist[0].CashType, req.headers.currenttime)
             }
 
             response.message = "data delete sucessfully"
