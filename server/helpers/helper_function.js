@@ -1358,7 +1358,7 @@ module.exports = {
   },
   update_pettycash_report: async (CompanyID, ShopID, Type, Amount, RegisterType, CurrentDate) => {
     try {
-      console.log(CompanyID, ShopID, Type, Amount, RegisterType, CurrentDate);
+      console.table({ CompanyID, ShopID, Type, Amount, RegisterType, CurrentDate });
 
       let date = moment(CurrentDate).format("YYYY-MM-DD")
 
@@ -1370,8 +1370,8 @@ module.exports = {
       }
 
       let datum = {
+        date: date,
         OpeningBalance: 0,
-        ClosingBalance: 0,
         CompanyID,
         ShopID,
         RegisterType,
@@ -1383,7 +1383,8 @@ module.exports = {
         Fitter: 0,
         Supplier: 0,
         Deposit: 0,
-        Withdrawal: 0
+        Withdrawal: 0,
+        ClosingBalance: 0
       }
 
       const [fetchPettyCash] = await mysql2.pool.query(`select * from pettycashreport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID} and RegisterType = '${RegisterType}' `)
@@ -1393,20 +1394,10 @@ module.exports = {
         const [fetchPettyCashBackDate] = await mysql2.pool.query(`select * from pettycashreport where CompanyID = ${CompanyID} and ShopID = ${ShopID} and RegisterType = '${RegisterType}'`)
 
         if (fetchPettyCashBackDate.length) {
-          datum.OpeningBalance = fetchPettyCashBackDate[0].ClosingBalance
+          datum.OpeningBalance = Number(fetchPettyCashBackDate[0].ClosingBalance)
         }
 
       }
-
-      // Sale
-      // Expense
-      // Doctor
-      // Employee
-      // Payroll
-      // Fitter
-      // Supplier
-      // Deposit
-      // Withdrawal
 
 
       if (fetchPettyCash.length) {
@@ -1457,9 +1448,11 @@ module.exports = {
           datum.ClosingBalance = Number(fetchPettyCash[0].ClosingBalance) - Amount;
           datum.Withdrawal = Number(fetchPettyCash[0].Withdrawal) + Amount
         }
-        console.table(datum)
 
         const [update] = await mysql2.pool.query(`update pettycashreport set Sale = ${datum.Sale}, Expense = ${datum.Expense}, Doctor = ${datum.Doctor}, Employee = ${datum.Employee} , Payroll = ${datum.Payroll}, Fitter = ${datum.Fitter}, Supplier = ${datum.Supplier}, Withdrawal = ${datum.Withdrawal}, Deposit = ${datum.Deposit}, ClosingBalance = ${datum.ClosingBalance} where ID = ${fetchPettyCash[0].ID}`)
+
+        console.table(datum)
+
       }
 
       if (!fetchPettyCash.length) {
@@ -1502,9 +1495,12 @@ module.exports = {
           datum.Withdrawal = Amount
         }
 
-        console.table(datum)
 
         const [save] = await mysql2.pool.query(`INSERT into pettycashreport(CompanyID,ShopID,RegisterType, Date, OpeningBalance,Sale,Expense,Doctor, Employee, Payroll, Fitter, Supplier,Withdrawal, Deposit, ClosingBalance)values(${datum.CompanyID}, ${datum.ShopID}, '${datum.RegisterType}','${date}',${datum.OpeningBalance}, ${datum.Sale}, ${datum.Expense}, ${datum.Doctor}, ${datum.Employee}, ${datum.Payroll}, ${datum.Fitter}, ${datum.Supplier}, ${datum.Withdrawal}, ${datum.Deposit}, ${datum.ClosingBalance})`)
+
+
+        console.table(datum)
+
 
       }
 
